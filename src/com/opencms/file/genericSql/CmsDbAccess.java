@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/19 13:30:07 $
-* Version: $Revision: 1.283 $
+* Date   : $Date: 2003/05/20 10:17:18 $
+* Version: $Revision: 1.284 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.283 $ $Date: 2003/05/19 13:30:07 $ *
+ * @version $Revision: 1.284 $ $Date: 2003/05/20 10:17:18 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -326,25 +326,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             m_doSetBytes(stmt,3,value);
             stmt.executeUpdate();
         } catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e){
-            throw new CmsException("[" + this.getClass().getName() + "]"+CmsException. C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
         }finally {
              // close all db-resources
-             if(stmt != null) {
-                 try {
-                     stmt.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(conn != null) {
-                 try {
-                     conn.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
+             m_SqlQueries.closeAll(conn, stmt, null);
          }
         return readSystemProperty(name);
      }
@@ -396,31 +383,17 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      */
     protected void clearFilesTable() throws CmsException {
-        Connection con = null;
-        PreparedStatement statementDelete = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-
-            statementDelete = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_DELETE_LOST_ID"));
-            statementDelete.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_DELETE_LOST_ID");
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            if(statementDelete != null) {
-                 try {
-                     statementDelete.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -435,60 +408,27 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     public int countLockedResources(CmsProject project)
         throws CmsException {
-
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
         int retValue;
-        String usedPool;
-        String usedStatement;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (project.getId() == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-
         try {
             // create the statement
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_COUNTLOCKED"+usedStatement));
-            statement.setString(1,CmsUUID.getNullUUID().toString());
-            statement.setInt(2,project.getId());
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection(project);
+            stmt = m_SqlQueries.getPreparedStatement(conn, project, "C_RESOURCES_COUNTLOCKED");
+            stmt.setString(1,CmsUUID.getNullUUID().toString());
+            stmt.setInt(2,project.getId());
+            res = stmt.executeQuery();
             if(res.next()) {
                 retValue = res.getInt(1);
             } else {
                 retValue=0;
             }
         } catch( Exception exc ) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
             // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return retValue;
     }
@@ -504,50 +444,29 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     protected int countProperties(CmsPropertydefinition metadef)
         throws CmsException {
-        ResultSet result = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         int returnValue;
         try {
             // create statement
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_READALL_COUNT"));
-            statement.setInt(1, metadef.getId());
-            result = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROPERTIES_READALL_COUNT");
+            stmt.setInt(1, metadef.getId());
+            res = stmt.executeQuery();
 
-            if( result.next() ) {
-                returnValue = result.getInt(1) ;
+            if( res.next() ) {
+                returnValue = res.getInt(1) ;
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] " + metadef.getName(),
                     CmsException.C_UNKNOWN_EXCEPTION);
             }
         } catch(SQLException exc) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         }finally {
             // close all db-resources
-            if(result != null) {
-                 try {
-                     result.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return returnValue;
     }
@@ -564,8 +483,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     public void createProjectResource(int projectId, String resourceName) throws CmsException {
         // do not create entries for online-project
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
             m_ResourceBroker.getVfsAccess().readProjectResource(projectId, resourceName);
             throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
@@ -575,27 +494,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
         }
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTRESOURCES_CREATE"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTRESOURCES_CREATE");
             // write new resource to the database
-            statement.setInt(1, projectId);
-            statement.setString(2, resourceName);
-            statement.executeUpdate();
+            stmt.setInt(1, projectId);
+            stmt.setString(2, resourceName);
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            if (statement != null) {
-                try{
-                    statement.close();
-                } catch (SQLException e){
-                }
-            }
-            if (con != null){
-                try{
-                    con.close();
-                } catch (SQLException e){
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -621,33 +529,31 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
 
         Timestamp createTime = new Timestamp(new java.util.Date().getTime());
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
         int id = nextId(C_TABLE_PROJECTS);
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTS_CREATE");
             // write data to database
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_CREATE"));
-
-            statement.setInt(1, id);
-            statement.setString(2, owner.getId().toString());
-            statement.setString(3, group.getId().toString());
-            statement.setString(4, managergroup.getId().toString());
-            statement.setInt(5, task.getId());
-            statement.setString(6, name);
-            statement.setString(7, description);
-            statement.setInt(8, flags);
-            statement.setTimestamp(9, createTime);
+            stmt.setInt(1, id);
+            stmt.setString(2, owner.getId().toString());
+            stmt.setString(3, group.getId().toString());
+            stmt.setString(4, managergroup.getId().toString());
+            stmt.setInt(5, task.getId());
+            stmt.setString(6, name);
+            stmt.setString(7, description);
+            stmt.setInt(8, flags);
+            stmt.setTimestamp(9, createTime);
             // no publish data
-            statement.setInt(10, type);
-            statement.executeUpdate();
+            stmt.setInt(10, type);
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
         return readProject(id);
@@ -703,42 +609,26 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         throws CmsException {
         byte[] value=null;
 
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
         try {
-                  value = serializeSession(data);
-
-            con = DriverManager.getConnection(m_poolName);
-
+            value = serializeSession(data);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_SESSION_CREATE");
             // write data to database
-            statement = con.prepareStatement(m_SqlQueries.get("C_SESSION_CREATE"));
-
-            statement.setString(1,sessionId);
-            statement.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
-            m_doSetBytes(statement,3,value);
-            statement.executeUpdate();
+            stmt.setString(1,sessionId);
+            stmt.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
+            m_doSetBytes(stmt,3,value);
+            stmt.executeUpdate();
         }
         catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         }
         catch (IOException e){
-            throw new CmsException("[" + this.getClass().getName() + "]:"+CmsException.C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -769,31 +659,18 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // fetch new task id
         int newId = nextId(C_TABLE_TASK);        
         // create the task id entry in the DB                 
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_CREATE"));
-            statement.setInt(1, newId);
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASK_CREATE");
+            stmt.setInt(1, newId);
+            stmt.executeUpdate();
 
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }                
         // create the task object, note that this does not user the "task type" table
         // because the generic SQL does not work with MySQL 4 
@@ -813,18 +690,18 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void deleteAllProperties(int projectId, CmsResource resource) throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
         try {
-            con = m_SqlQueries.getConnection(projectId);
-            statement = m_SqlQueries.getPreparedStatement(con, projectId, "C_PROPERTIES_DELETEALL");
-            statement.setString(1, resource.getResourceId().toString());
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection(projectId);
+            stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETEALL");
+            stmt.setString(1, resource.getResourceId().toString());
+            stmt.executeUpdate();
         } catch (SQLException exc) { 
             throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);         
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -838,46 +715,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     public void deleteAllProperties(int projectId, CmsUUID resourceId)
         throws CmsException {
 
-        Connection con = null;
-        PreparedStatement statement = null;
-        String usedPool = null;
-        String usedStatement = null;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
             // create statement
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_DELETEALL"+usedStatement));
-            statement.setString(1, resourceId.toString());
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection(projectId);
+            stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETEALL");
+            stmt.setString(1, resourceId.toString());
+            stmt.executeUpdate();
         } catch( SQLException exc ) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
+            m_SqlQueries.closeAll(conn, stmt, null);
           }
     }
-
-
 
     /**
      * Deletes a project from the cms.
@@ -897,32 +748,18 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         //clearFilesTable();
 
         // finally delete the project
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTS_DELETE");
             // create the statement
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_DELETE"));
-            statement.setInt(1,project.getId());
-            statement.executeUpdate();
+            stmt.setInt(1,project.getId());
+            stmt.executeUpdate();
         } catch( Exception exc ) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -933,39 +770,24 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public void deleteProjectProperties(CmsProject project)
-        throws CmsException {
+    public void deleteProjectProperties(CmsProject project) throws CmsException {
 
         // delete properties with one statement
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROPERTIES_DELETEALLPROP");
             // create statement
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_DELETEALLPROP"));
-            statement.setInt(1, project.getId());
-            statement.executeQuery();
-        } catch( SQLException exc ) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                CmsException.C_SQL_ERROR, exc);
+            stmt.setInt(1, project.getId());
+            stmt.executeQuery();
+        } catch (SQLException exc) {
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-          }
-
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
+
+    }
 
     /**
      * Deletes a specified project
@@ -973,34 +795,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param project The project to be deleted.
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void deleteProjectResources(CmsProject project)
-        throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
+    public void deleteProjectResources(CmsProject project) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_DELETE_PROJECT");
             // delete all project-resources.
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_DELETE_PROJECT"));
-            statement.setInt(1,project.getId());
-            statement.executeQuery();
-         } catch (SQLException e){
-           throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        }finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-          }
+            stmt.setInt(1, project.getId());
+            stmt.executeQuery();
+        } catch (SQLException e) {
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+        } finally {
+            m_SqlQueries.closeAll(conn, stmt, null);
+        }
     }
 
     /**
@@ -1012,29 +820,18 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void deleteAllProjectResources(int projectId) throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTRESOURCES_DELETEALL"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTRESOURCES_DELETEALL");
             // delete all projectResources from the database
-            statement.setInt(1, projectId);
-            statement.executeUpdate();
+            stmt.setInt(1, projectId);
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            if (statement != null) {
-                try{
-                    statement.close();
-                } catch (SQLException e){
-                }
-            }
-            if (con != null){
-                try{
-                    con.close();
-                } catch (SQLException e){
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -1049,30 +846,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     public void deleteProjectResource(int projectId, String resourceName)
             throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTRESOURCES_DELETE"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTRESOURCES_DELETE");
             // delete resource from the database
-            statement.setInt(1, projectId);
-            statement.setString(2, resourceName);
-            statement.executeUpdate();
+            stmt.setInt(1, projectId);
+            stmt.setString(2, resourceName);
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            if (statement != null) {
-                try{
-                    statement.close();
-                } catch (SQLException e){
-                }
-            }
-            if (con != null){
-                try{
-                    con.close();
-                } catch (SQLException e){
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -1087,16 +873,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     public void deleteProperty(String meta, int projectId, CmsResource resource, int resourceType)
         throws CmsException {
-        String usedPool = null;
-        String usedStatement = null;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
         CmsPropertydefinition propdef = m_ResourceBroker.getVfsAccess().readPropertydefinition(meta, resourceType);
         if( propdef == null) {
             // there is no propdefinition with the overgiven name for the resource
@@ -1104,33 +880,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 CmsException.C_NOT_FOUND);
         } else {
             // delete the metainfo in the db
-            Connection con = null;
-            PreparedStatement statement = null;
+            Connection conn = null;
+            PreparedStatement stmt = null;
             try {
                 // create statement
-                con = DriverManager.getConnection(usedPool);
-                statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_DELETE"+usedStatement));
-                statement.setInt(1, propdef.getId());
-                statement.setString(2, resource.getResourceId().toString());
-                statement.executeUpdate();
+                conn = m_SqlQueries.getConnection(projectId);
+                stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETE");
+                stmt.setInt(1, propdef.getId());
+                stmt.setString(2, resource.getResourceId().toString());
+                stmt.executeUpdate();
             } catch(SQLException exc) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                    CmsException.C_SQL_ERROR, exc);
+                throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
             } finally {
-                if(statement != null) {
-                    try {
-                        statement.close();
-                    } catch(SQLException exc) {
-                        // nothing to do here
-                    }
-                }
-                if(con != null) {
-                    try {
-                        con.close();
-                    } catch(SQLException exc) {
-                        // nothing to do here
-                    }
-                }
+                m_SqlQueries.closeAll(conn, stmt, null);
             }
         }
     }
@@ -1146,52 +908,38 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     public void deletePropertydefinition(CmsPropertydefinition metadef)
         throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
             if(countProperties(metadef) != 0) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + metadef.getName(),
                     CmsException.C_UNKNOWN_EXCEPTION);
             }
-            // delete the propertydef from offline db
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTYDEF_DELETE"));
-            statement.setInt(1, metadef.getId() );
-            statement.executeUpdate();
-            statement.close();
-            con.close();
-            // delete the propertydef from online db
-            con = DriverManager.getConnection(m_poolNameOnline);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTYDEF_DELETE_ONLINE"));
-            statement.setInt(1, metadef.getId() );
-            statement.executeUpdate();
-            statement.close();
-            con.close();
-            // delete the propertydef from backup db
-            con = DriverManager.getConnection(m_poolNameBackup);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTYDEF_DELETE_BACKUP"));
-            statement.setInt(1, metadef.getId() );
-            statement.executeUpdate();
-            statement.close();
-            con.close();
+            for (int i = 0; i < 3; i++){
+                // delete the propertydef from offline db
+                if (i == 0) {
+                    conn = m_SqlQueries.getConnection();
+                    stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROPERTYDEF_DELETE");
+                }
+                // delete the propertydef from online db
+                else if (i == 1){
+                    conn = m_SqlQueries.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                    stmt = m_SqlQueries.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_PROPERTYDEF_DELETE");
+                }
+                // delete the propertydef from backup db
+                else {
+                    conn = m_SqlQueries.getConnectionForBackup();
+                    stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROPERTYDEF_DELETE_BACKUP");
+                }
+                stmt.setInt(1, metadef.getId() );
+                stmt.executeUpdate();
+                stmt.close();
+                conn.close();
+            }
          } catch( SQLException exc ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
          }finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
           }
     }
 
@@ -1200,34 +948,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * Deletes old sessions.
      */
     public void deleteSessions() {
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_SESSION_DELETE"));
-            statement.setTimestamp(1,new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT ));
-
-            statement.execute();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_SESSION_DELETE");
+            stmt.setTimestamp(1,new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT ));
+            stmt.execute();
          }
         catch (Exception e){
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error while deleting old sessions: " + com.opencms.util.Utils.getStackTrace(e));
             }
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -1241,30 +975,17 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     public void deleteSystemProperty(String name)
         throws CmsException {
 
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-           statement = con.prepareStatement(m_SqlQueries.get("C_SYSTEMPROPERTIES_DELETE"));
-           statement.setString(1,name);
-           statement.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_SYSTEMPROPERTIES_DELETE");
+            stmt.setString(1,name);
+            stmt.executeUpdate();
         }catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         }finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
+            m_SqlQueries.closeAll(conn, stmt, null);
           }
     }
 
@@ -1295,33 +1016,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     public void endTask(int taskId)
         throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try{
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_END"));
-            statement.setInt(1, 100);
-            statement.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
-            statement.setInt(3,taskId);
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASK_END");
+            stmt.setInt(1, 100);
+            stmt.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
+            stmt.setInt(3,taskId);
+            stmt.executeUpdate();
 
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -1418,46 +1126,25 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     protected CmsUUID findAgent(CmsUUID roleId)
         throws CmsException {
         CmsUUID result = CmsUUID.getNullUUID();
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_FIND_AGENT"));
-            statement.setString(1,roleId.toString());
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASK_FIND_AGENT");
+            stmt.setString(1,roleId.toString());
+            res = stmt.executeQuery();
 
             if(res.next()) {
                 result = new CmsUUID(res.getString(1));
             }
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } catch( Exception exc ) {
-              throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
-            // close all db-resources
-             if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return result;
     }
@@ -1474,32 +1161,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     public void forwardTask(int taskId, CmsUUID newRoleId, CmsUUID newUserId)
         throws CmsException {
 
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try{
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_FORWARD"));
-            statement.setString(1,newRoleId.toString());
-            statement.setString(2,newUserId.toString());
-            statement.setInt(3,taskId);
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASK_FORWARD");
+            stmt.setString(1,newRoleId.toString());
+            stmt.setString(2,newUserId.toString());
+            stmt.setInt(3,taskId);
+            stmt.executeUpdate();
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -1510,63 +1184,41 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return a Vector of projects.
      */
-     public Vector getAllProjects(int state)
-         throws CmsException {
-         Vector projects = new Vector();
-         ResultSet res = null;
-         PreparedStatement statement = null;
-         Connection con = null;
+    public Vector getAllProjects(int state) throws CmsException {
+        Vector projects = new Vector();
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
-         try {
-             // create the statement
-             con = DriverManager.getConnection(m_poolName);
+        try {
+            // create the statement
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTS_READ_BYFLAG");
 
-             statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READ_BYFLAG"));
+            stmt.setInt(1, state);
+            res = stmt.executeQuery();
 
-             statement.setInt(1,state);
-             res = statement.executeQuery();
-
-             while(res.next()) {
-                 projects.addElement( new CmsProject(res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_ID")),
-                                                    res.getString(m_SqlQueries.get("C_PROJECTS_PROJECT_NAME")),
-                                                    res.getString(m_SqlQueries.get("C_PROJECTS_PROJECT_DESCRIPTION")),
-                                                    res.getInt(m_SqlQueries.get("C_PROJECTS_TASK_ID")),
-                                                    new CmsUUID(res.getString(m_SqlQueries.get("C_PROJECTS_USER_ID"))),
-                                                    new CmsUUID(res.getString(m_SqlQueries.get("C_PROJECTS_GROUP_ID"))),
-                                                    new CmsUUID(res.getString(m_SqlQueries.get("C_PROJECTS_MANAGERGROUP_ID"))),
-                                                    res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_FLAGS")),
-                                                    SqlHelper.getTimestamp(res,m_SqlQueries.get("C_PROJECTS_PROJECT_CREATEDATE")),
-                                                    res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_TYPE"))));
-             }
-         } catch( SQLException exc ) {
-             throw new CmsException("[" + this.getClass().getName() + ".getAllProjects(int)] " + exc.getMessage(),
-                 CmsException.C_SQL_ERROR, exc);
-         } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
+            while (res.next()) {
+                projects.addElement(
+                    new CmsProject(
+                        res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_ID")),
+                        res.getString(m_SqlQueries.get("C_PROJECTS_PROJECT_NAME")),
+                        res.getString(m_SqlQueries.get("C_PROJECTS_PROJECT_DESCRIPTION")),
+                        res.getInt(m_SqlQueries.get("C_PROJECTS_TASK_ID")),
+                        new CmsUUID(res.getString(m_SqlQueries.get("C_PROJECTS_USER_ID"))),
+                        new CmsUUID(res.getString(m_SqlQueries.get("C_PROJECTS_GROUP_ID"))),
+                        new CmsUUID(res.getString(m_SqlQueries.get("C_PROJECTS_MANAGERGROUP_ID"))),
+                        res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_FLAGS")),
+                        SqlHelper.getTimestamp(res, m_SqlQueries.get("C_PROJECTS_PROJECT_CREATEDATE")),
+                        res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_TYPE"))));
             }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-         }
-         return(projects);
-     }
+        } catch (SQLException exc) {
+            throw m_SqlQueries.getCmsException(this, "getAllProjects(int)", CmsException.C_SQL_ERROR, exc);
+        } finally {
+            m_SqlQueries.closeAll(conn, stmt, res);
+        }
+        return (projects);
+    }
 
     /**
      * Returns all projects from the history.
@@ -1577,14 +1229,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      public Vector getAllBackupProjects() throws CmsException {
          Vector projects = new Vector();
          ResultSet res = null;
-         PreparedStatement statement = null;
-         Connection con = null;
+         PreparedStatement stmt = null;
+         Connection conn = null;
 
          try {
              // create the statement
-             con = DriverManager.getConnection(m_poolNameBackup);
-             statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READLAST_BACKUP"));
-             res = statement.executeQuery();
+             conn = m_SqlQueries.getConnectionForBackup();
+             stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTS_READLAST_BACKUP");
+             res = stmt.executeQuery();
              int i = 0;
              int max = 300;
              while(res.next() && (i < max)) {
@@ -1609,31 +1261,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                  i++;
              }
          } catch( SQLException exc ) {
-             throw new CmsException("[" + this.getClass().getName() + ".getAllBackupProjects()] " + exc.getMessage(),
-                 CmsException.C_SQL_ERROR, exc);
+             throw m_SqlQueries.getCmsException(this, "getAllBackupProjects()", CmsException.C_SQL_ERROR, exc);
          } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+             m_SqlQueries.closeAll(conn, stmt, res);
          }
          return(projects);
      }
@@ -1652,19 +1282,18 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
          CmsGroup group;
          CmsGroup parent;
          ResultSet res = null;
-         PreparedStatement statement = null;
-         Connection con = null;
+         PreparedStatement stmt = null;
+         Connection conn = null;
          try {
              // get parent group
              parent=m_ResourceBroker.getUserAccess().readGroup(groupname);
             // parent group exists, so get all childs
             if (parent != null) {
                 // create statement
-                con = DriverManager.getConnection(m_poolName);
-                statement=con.prepareStatement(m_SqlQueries.get("C_GROUPS_GETCHILD"));
-
-                statement.setString(1,parent.getId().toString());
-                res = statement.executeQuery();
+                conn = m_SqlQueries.getConnection();
+                stmt = m_SqlQueries.getPreparedStatement(conn, "C_GROUPS_GETCHILD");
+                stmt.setString(1,parent.getId().toString());
+                res = stmt.executeQuery();
                 // create new Cms group objects
                 while ( res.next() ) {
                      group=new CmsGroup(new CmsUUID(res.getString(m_SqlQueries.get("C_GROUPS_GROUP_ID"))),
@@ -1677,31 +1306,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
              }
 
          } catch (SQLException e){
-
-            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+             throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
          } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
          //check if the child vector has no elements, set it to null.
          if (childs.size() == 0) {
@@ -1725,25 +1333,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     public Vector getFilesWithProperty(int projectId, String propertyDefinition, String propertyValue) throws CmsException {
         Vector names = new Vector();
         ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool = null;
-        String usedStatement = null;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_GET_FILES_WITH_PROPERTY"+usedStatement));
-            statement.setInt(1, projectId);
-            statement.setString(2, propertyValue);
-            statement.setString(3, propertyDefinition);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection(projectId);
+            stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_FILES_WITH_PROPERTY");
+            stmt.setInt(1, projectId);
+            stmt.setString(2, propertyValue);
+            stmt.setString(3, propertyDefinition);
+            res = stmt.executeQuery();
 
             // store the result into the vector
             while (res.next()) {
@@ -1751,32 +1349,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 names.addElement(result);
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (Exception exc) {
-            throw new CmsException("getFilesWithProperty" + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, "getFilesWithProperty(int, String, String)", CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             // close all db-resources
-             if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return names;
     }
@@ -1850,43 +1428,23 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         String result = null;
         ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASKPAR_GET"));
-            statement.setInt(1, taskId);
-            statement.setString(2, parname);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASKPAR_GET");
+            stmt.setInt(1, taskId);
+            stmt.setString(2, parname);
+            res = stmt.executeQuery();
             if(res.next()) {
                 result = res.getString(m_SqlQueries.get("C_PAR_VALUE"));
             }
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return result;
     }
@@ -1904,43 +1462,23 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         throws CmsException {
         int result = 1;
 
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_GET_TASKTYPE"));
-            statement.setString(1, taskName);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASK_GET_TASKTYPE");
+            stmt.setString(1, taskName);
+            res = stmt.executeQuery();
             if (res.next()) {
                 result = res.getInt("id");
             }
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return result;
     }
@@ -1989,94 +1527,64 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     protected Vector getUndeletedResources(Vector resources) {
         Vector undeletedResources=new Vector();
-
         for (int i=0;i<resources.size();i++) {
             CmsResource res=(CmsResource)resources.elementAt(i);
             if (res.getState() != C_STATE_DELETED) {
                 undeletedResources.addElement(res);
             }
         }
-
         return undeletedResources;
     }
 
 
     protected int insertTaskPar(int taskId, String parname, String parvalue)
         throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
-
+        PreparedStatement stmt = null;
+        Connection conn = null;
         int newId = C_UNKNOWN_ID;
-
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASKPAR_INSERT");
             newId = nextId(C_TABLE_TASKPAR);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASKPAR_INSERT"));
-            statement.setInt(1, newId);
-            statement.setInt(2, taskId);
-            statement.setString(3, checkNull(parname));
-            statement.setString(4, checkNull(parvalue));
-            statement.executeUpdate();
+            stmt.setInt(1, newId);
+            stmt.setInt(2, taskId);
+            stmt.setString(3, checkNull(parname));
+            stmt.setString(4, checkNull(parvalue));
+            stmt.executeUpdate();
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
             // close all db-resources
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
         return newId;
     }
 
     protected int insertTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref)
         throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         int newId = C_UNKNOWN_ID;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASKTYPE_INSERT");
             newId = nextId(C_TABLE_TASKPAR);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASKTYPE_INSERT"));
-            statement.setInt(1, autofinish);
-            statement.setInt(2, escalationtyperef);
-            statement.setString(3, htmllink);
-            statement.setInt(4, newId);
-            statement.setString(5, name);
-            statement.setString(6, permission);
-            statement.setInt(7, priorityref);
-            statement.setInt(8, roleref);
-            statement.executeUpdate();
+            stmt.setInt(1, autofinish);
+            stmt.setInt(2, escalationtyperef);
+            stmt.setString(3, htmllink);
+            stmt.setInt(4, newId);
+            stmt.setString(5, name);
+            stmt.setString(6, permission);
+            stmt.setInt(7, priorityref);
+            stmt.setInt(8, roleref);
+            stmt.executeUpdate();
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
             // close all db-resources
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
         return newId;
     }
@@ -2174,46 +1682,33 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                         } catch (CmsException exc) {
                             throw exc;
                         } // end of catch
-                        PreparedStatement statement = null;
-                        Connection con = null;
+                        PreparedStatement stmt = null;
+                        Connection conn = null;
                         try {
-                            con = DriverManager.getConnection(m_poolNameOnline);
+                            conn = m_SqlQueries.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                            stmt = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_UPDATE_ONLINE");
                             // update the onlineFolder with data from offlineFolder
-                            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_ONLINE"));
-                            statement.setInt(1, currentFolder.getType());
-                            statement.setInt(2, currentFolder.getFlags());
-                            statement.setString(3, currentFolder.getOwnerId().toString());
-                            statement.setString(4, currentFolder.getGroupId().toString());
-                            statement.setInt(5, onlineFolder.getProjectId());
-                            statement.setInt(6, currentFolder.getAccessFlags());
-                            statement.setInt(7, C_STATE_UNCHANGED);
-                            statement.setString(8, currentFolder.isLockedBy().toString());
-                            statement.setInt(9, currentFolder.getLauncherType());
-                            statement.setString(10, currentFolder.getLauncherClassname());
-                            statement.setTimestamp(11, new Timestamp(currentFolder.getDateLastModified()));
-                            statement.setString(12, currentFolder.getResourceLastModifiedBy().toString());
-                            statement.setInt(13, 0);
-                            statement.setString(14, onlineFolder.getFileId().toString());
-                            statement.setString(15, onlineFolder.getResourceId().toString());
-                            statement.executeUpdate();
+                            stmt.setInt(1, currentFolder.getType());
+                            stmt.setInt(2, currentFolder.getFlags());
+                            stmt.setString(3, currentFolder.getOwnerId().toString());
+                            stmt.setString(4, currentFolder.getGroupId().toString());
+                            stmt.setInt(5, onlineFolder.getProjectId());
+                            stmt.setInt(6, currentFolder.getAccessFlags());
+                            stmt.setInt(7, C_STATE_UNCHANGED);
+                            stmt.setString(8, currentFolder.isLockedBy().toString());
+                            stmt.setInt(9, currentFolder.getLauncherType());
+                            stmt.setString(10, currentFolder.getLauncherClassname());
+                            stmt.setTimestamp(11, new Timestamp(currentFolder.getDateLastModified()));
+                            stmt.setString(12, currentFolder.getResourceLastModifiedBy().toString());
+                            stmt.setInt(13, 0);
+                            stmt.setString(14, onlineFolder.getFileId().toString());
+                            stmt.setString(15, onlineFolder.getResourceId().toString());
+                            stmt.executeUpdate();
                             newFolder = m_ResourceBroker.getVfsAccess().readFolder(onlineProject.getId(), currentFolder.getResourceName());
-                        } catch (SQLException sqle) {
-                            throw new CmsException("[" + this.getClass().getName() + "] " + sqle.getMessage(), CmsException.C_SQL_ERROR, sqle);
+                        } catch (SQLException exc) {
+                            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
                         } finally {
-                            if (statement != null) {
-                                try {
-                                    statement.close();
-                                } catch (SQLException exc) {
-                                    // nothing to do here
-                                }
-                            }
-                            if (con != null) {
-                                try {
-                                    con.close();
-                                } catch (SQLException exc) {
-                                    // nothing to do here
-                                }
-                            }
+                            m_SqlQueries.closeAll(conn, stmt, null);
                         }
                     } else {
                         throw e;
@@ -2269,45 +1764,32 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                         throw exc;
                     }
                 } // end of catch
-                Connection con = null;
-                PreparedStatement statement = null;
+                Connection conn = null;
+                PreparedStatement stmt = null;
                 try {
-                    con = DriverManager.getConnection(m_poolNameOnline);
+                    conn = m_SqlQueries.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                    stmt = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_UPDATE_ONLINE");
                     // update the onlineFolder with data from offlineFolder
-                    statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_ONLINE"));
-                    statement.setInt(1, currentFolder.getType());
-                    statement.setInt(2, currentFolder.getFlags());
-                    statement.setString(3, currentFolder.getOwnerId().toString());
-                    statement.setString(4, currentFolder.getGroupId().toString());
-                    statement.setInt(5, onlineFolder.getProjectId());
-                    statement.setInt(6, currentFolder.getAccessFlags());
-                    statement.setInt(7, C_STATE_UNCHANGED);
-                    statement.setString(8, currentFolder.isLockedBy().toString());
-                    statement.setInt(9, currentFolder.getLauncherType());
-                    statement.setString(10, currentFolder.getLauncherClassname());
-                    statement.setTimestamp(11, new Timestamp(currentFolder.getDateLastModified()));
-                    statement.setString(12, currentFolder.getResourceLastModifiedBy().toString());
-                    statement.setInt(13, 0);
-                    statement.setString(14, onlineFolder.getFileId().toString());
-                    statement.setString(15, onlineFolder.getResourceId().toString());
-                    statement.executeUpdate();
+                    stmt.setInt(1, currentFolder.getType());
+                    stmt.setInt(2, currentFolder.getFlags());
+                    stmt.setString(3, currentFolder.getOwnerId().toString());
+                    stmt.setString(4, currentFolder.getGroupId().toString());
+                    stmt.setInt(5, onlineFolder.getProjectId());
+                    stmt.setInt(6, currentFolder.getAccessFlags());
+                    stmt.setInt(7, C_STATE_UNCHANGED);
+                    stmt.setString(8, currentFolder.isLockedBy().toString());
+                    stmt.setInt(9, currentFolder.getLauncherType());
+                    stmt.setString(10, currentFolder.getLauncherClassname());
+                    stmt.setTimestamp(11, new Timestamp(currentFolder.getDateLastModified()));
+                    stmt.setString(12, currentFolder.getResourceLastModifiedBy().toString());
+                    stmt.setInt(13, 0);
+                    stmt.setString(14, onlineFolder.getFileId().toString());
+                    stmt.setString(15, onlineFolder.getResourceId().toString());
+                    stmt.executeUpdate();
                 } catch (SQLException e) {
-                    throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+                    throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
                 } finally {
-                    if (statement != null) {
-                        try {
-                            statement.close();
-                        } catch (SQLException exc) {
-                            // nothing to do here
-                        }
-                    }
-                    if (con != null) {
-                        try {
-                            con.close();
-                        } catch (SQLException exc) {
-                            // nothing to do here
-                        }
-                    }
+                    m_SqlQueries.closeAll(conn, stmt, null);
                 }
                 folderIdIndex.put(currentFolder.getResourceId(), onlineFolder.getResourceId());
                 // copy properties
@@ -2419,47 +1901,34 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                         onlineFile = m_ResourceBroker.getVfsAccess().createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId, currentFile.getResourceName());
                     }
                 } // end of catch
-                Connection con = null;
-                PreparedStatement statement = null;
+                Connection conn = null;
+                PreparedStatement stmt = null;
                 try {
-                    con = DriverManager.getConnection(m_poolNameOnline);
+                    conn = m_SqlQueries.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                    stmt = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_UPDATE_ONLINE");
                     // update the onlineFile with data from offlineFile
-                    statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_ONLINE"));
-                    statement.setInt(1, currentFile.getType());
-                    statement.setInt(2, currentFile.getFlags());
-                    statement.setString(3, currentFile.getOwnerId().toString());
-                    statement.setString(4, currentFile.getGroupId().toString());
-                    statement.setInt(5, onlineFile.getProjectId());
-                    statement.setInt(6, currentFile.getAccessFlags());
-                    statement.setInt(7, C_STATE_UNCHANGED);
-                    statement.setString(8, currentFile.isLockedBy().toString());
-                    statement.setInt(9, currentFile.getLauncherType());
-                    statement.setString(10, currentFile.getLauncherClassname());
-                    statement.setTimestamp(11, new Timestamp(currentFile.getDateLastModified()));
-                    statement.setString(12, currentFile.getResourceLastModifiedBy().toString());
-                    statement.setInt(13, currentFile.getLength());
-                    statement.setString(14, onlineFile.getFileId().toString());
-                    statement.setString(15, onlineFile.getResourceId().toString());
-                    statement.executeUpdate();
-                    statement.close();
+                    stmt.setInt(1, currentFile.getType());
+                    stmt.setInt(2, currentFile.getFlags());
+                    stmt.setString(3, currentFile.getOwnerId().toString());
+                    stmt.setString(4, currentFile.getGroupId().toString());
+                    stmt.setInt(5, onlineFile.getProjectId());
+                    stmt.setInt(6, currentFile.getAccessFlags());
+                    stmt.setInt(7, C_STATE_UNCHANGED);
+                    stmt.setString(8, currentFile.isLockedBy().toString());
+                    stmt.setInt(9, currentFile.getLauncherType());
+                    stmt.setString(10, currentFile.getLauncherClassname());
+                    stmt.setTimestamp(11, new Timestamp(currentFile.getDateLastModified()));
+                    stmt.setString(12, currentFile.getResourceLastModifiedBy().toString());
+                    stmt.setInt(13, currentFile.getLength());
+                    stmt.setString(14, onlineFile.getFileId().toString());
+                    stmt.setString(15, onlineFile.getResourceId().toString());
+                    stmt.executeUpdate();
+                    stmt.close();
                     m_ResourceBroker.getVfsAccess().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
                 } catch (SQLException e) {
-                    throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+                    throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
                 } finally {
-                    if (statement != null) {
-                        try {
-                            statement.close();
-                        } catch (SQLException exc) {
-                            // nothing to do here
-                        }
-                    }
-                    if (con != null) {
-                        try {
-                            con.close();
-                        } catch (SQLException exc) {
-                            // nothing to do here
-                        }
-                    }
+                    m_SqlQueries.closeAll(conn, stmt, null);
                 }
                 // copy properties
                 Map props = new HashMap();
@@ -2519,47 +1988,34 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                         } catch (CmsException exc) {
                             throw exc;
                         } // end of catch
-                        Connection con = null;
-                        PreparedStatement statement = null;
+                        Connection conn = null;
+                        PreparedStatement stmt = null;
                         try {
-                            con = DriverManager.getConnection(m_poolNameOnline);
+                            conn = m_SqlQueries.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                            stmt = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_UPDATE_ONLINE");
                             // update the onlineFile with data from offlineFile
-                            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_ONLINE"));
-                            statement.setInt(1, currentFile.getType());
-                            statement.setInt(2, currentFile.getFlags());
-                            statement.setString(3, currentFile.getOwnerId().toString());
-                            statement.setString(4, currentFile.getGroupId().toString());
-                            statement.setInt(5, onlineFile.getProjectId());
-                            statement.setInt(6, currentFile.getAccessFlags());
-                            statement.setInt(7, C_STATE_UNCHANGED);
-                            statement.setString(8, currentFile.isLockedBy().toString());
-                            statement.setInt(9, currentFile.getLauncherType());
-                            statement.setString(10, currentFile.getLauncherClassname());
-                            statement.setTimestamp(11, new Timestamp(currentFile.getDateLastModified()));
-                            statement.setString(12, currentFile.getResourceLastModifiedBy().toString());
-                            statement.setInt(13, currentFile.getLength());
-                            statement.setString(14, onlineFile.getFileId().toString());
-                            statement.setString(15, onlineFile.getResourceId().toString());
-                            statement.executeUpdate();
+                            stmt.setInt(1, currentFile.getType());
+                            stmt.setInt(2, currentFile.getFlags());
+                            stmt.setString(3, currentFile.getOwnerId().toString());
+                            stmt.setString(4, currentFile.getGroupId().toString());
+                            stmt.setInt(5, onlineFile.getProjectId());
+                            stmt.setInt(6, currentFile.getAccessFlags());
+                            stmt.setInt(7, C_STATE_UNCHANGED);
+                            stmt.setString(8, currentFile.isLockedBy().toString());
+                            stmt.setInt(9, currentFile.getLauncherType());
+                            stmt.setString(10, currentFile.getLauncherClassname());
+                            stmt.setTimestamp(11, new Timestamp(currentFile.getDateLastModified()));
+                            stmt.setString(12, currentFile.getResourceLastModifiedBy().toString());
+                            stmt.setInt(13, currentFile.getLength());
+                            stmt.setString(14, onlineFile.getFileId().toString());
+                            stmt.setString(15, onlineFile.getResourceId().toString());
+                            stmt.executeUpdate();
                             m_ResourceBroker.getVfsAccess().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
                             newFile = m_ResourceBroker.getVfsAccess().readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
-                        } catch (SQLException sqle) {
-                            throw new CmsException("[" + this.getClass().getName() + "] " + sqle.getMessage(), CmsException.C_SQL_ERROR, sqle);
+                        } catch (SQLException exc) {
+                            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
                         } finally {
-                            if (statement != null) {
-                                try {
-                                    statement.close();
-                                } catch (SQLException exc) {
-                                    // nothing to do here
-                                }
-                            }
-                            if (con != null) {
-                                try {
-                                    con.close();
-                                } catch (SQLException exc) {
-                                    // nothing to do here
-                                }
-                            }
+                            m_SqlQueries.closeAll(conn, stmt, null);
                         }
                     } else {
                         throw e;
@@ -2612,29 +2068,30 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         } // end of for
         return changedResources;
     }
+    
     /**
      * Get the next version id for the published backup resources
      *
      * @return int The new version id
      */
     public int getBackupVersionId(){
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         ResultSet res = null;
         int versionId = 1;
         int resVersionId = 1;
         try{
             // get the max version id
-            con = DriverManager.getConnection(m_poolNameBackup);
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_BACKUP_MAXVER"));
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnectionForBackup();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_BACKUP_MAXVER");
+            res = stmt.executeQuery();
             if (res.next()){
                 versionId = res.getInt(1)+1;
             }
             res.close();
-            statement.close();
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_BACKUP_MAXVER_RESOURCE"));
-            res = statement.executeQuery();
+            stmt.close();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_BACKUP_MAXVER_RESOURCE");
+            res = stmt.executeQuery();
             if (res.next()){
                 resVersionId = res.getInt(1)+1;
             }
@@ -2645,24 +2102,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         } catch (SQLException exc){
             return 1;
         } finally {
-            if (res != null){
-                try{
-                    res.close();
-                } catch (SQLException ex){
-                }
-            }
-            if (statement != null){
-                try{
-                    statement.close();
-                } catch (SQLException ex){
-                }
-            }
-            if (con != null){
-                try{
-                    con.close();
-                } catch (SQLException ex){
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
     }
 
@@ -2680,8 +2120,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
     public void backupProject(CmsProject project, int versionId,
                               long publishDate, CmsUser currentUser) throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         String ownerName = new String();
         String group = new String();
         String managerGroup = new String();
@@ -2707,53 +2147,40 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Vector projectresources = readAllProjectResources(project.getId());
         // write backup project to the database
         try {
-            con = DriverManager.getConnection(m_poolNameBackup);
+            conn = m_SqlQueries.getConnectionForBackup();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTS_CREATE_BACKUP");
             // first write the project
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_CREATE_BACKUP"));
-            statement.setInt(1, versionId);
-            statement.setInt(2, project.getId());
-            statement.setString(3, project.getName());
-            statement.setTimestamp(4, new Timestamp(publishDate));
-            statement.setString(5, currentUser.getId().toString());
-            statement.setString(6, currentUser.getName()+" "+currentUser.getFirstname()+" "+currentUser.getLastname());
-            statement.setString(7, project.getOwnerId().toString());
-            statement.setString(8, ownerName);
-            statement.setString(9, project.getGroupId().toString());
-            statement.setString(10, group);
-            statement.setString(11, project.getManagerGroupId().toString());
-            statement.setString(12, managerGroup);
-            statement.setString(13, project.getDescription());
-            statement.setTimestamp(14, new Timestamp(project.getCreateDate()));
-            statement.setInt(15, project.getType());
-            statement.setInt(16, project.getTaskId());
-            statement.executeUpdate();
-            statement.close();
+            stmt.setInt(1, versionId);
+            stmt.setInt(2, project.getId());
+            stmt.setString(3, project.getName());
+            stmt.setTimestamp(4, new Timestamp(publishDate));
+            stmt.setString(5, currentUser.getId().toString());
+            stmt.setString(6, currentUser.getName()+" "+currentUser.getFirstname()+" "+currentUser.getLastname());
+            stmt.setString(7, project.getOwnerId().toString());
+            stmt.setString(8, ownerName);
+            stmt.setString(9, project.getGroupId().toString());
+            stmt.setString(10, group);
+            stmt.setString(11, project.getManagerGroupId().toString());
+            stmt.setString(12, managerGroup);
+            stmt.setString(13, project.getDescription());
+            stmt.setTimestamp(14, new Timestamp(project.getCreateDate()));
+            stmt.setInt(15, project.getType());
+            stmt.setInt(16, project.getTaskId());
+            stmt.executeUpdate();
+            stmt.close();
             // now write the projectresources
             for(int i = 0; i < projectresources.size(); i++){
-                statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTRESOURCES_CREATE_BACKUP"));
-                statement.setInt(1, versionId);
-                statement.setInt(2, project.getId());
-                statement.setString(3, (String)projectresources.get(i));
-                statement.executeUpdate();
-                statement.close();
+                stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTRESOURCES_CREATE_BACKUP");
+                stmt.setInt(1, versionId);
+                stmt.setInt(2, project.getId());
+                stmt.setString(3, (String)projectresources.get(i));
+                stmt.executeUpdate();
+                stmt.close();
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                     // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -2772,8 +2199,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
     public void backupResource(int projectId, CmsResource resource, byte[] content,
                                    Map properties, int versionId, long publishDate) throws CmsException {
-            Connection con = null;
-            PreparedStatement statement = null;
+            Connection conn = null;
+            PreparedStatement stmt = null;
             String ownerName = null;
             String groupName = new String();
             String lastModifiedName = null;
@@ -2798,45 +2225,44 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 lastModifiedName = "";
             }
             
-            CmsUUID resourceId = new CmsUUID();
-            
+            CmsUUID resourceId = new CmsUUID();        
             CmsUUID fileId = CmsUUID.getNullUUID();
             
             // write backup resource to the database
             
             try {
-                con = DriverManager.getConnection(m_poolNameBackup);
+                conn = m_SqlQueries.getConnectionForBackup();
+                stmt = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_WRITE_BACKUP");
                 // if the resource is not a folder then backup the filecontent
                 if (resource.getType() != C_TYPE_FOLDER){
                     // write new resource to the database
                     fileId = new CmsUUID();
                     m_ResourceBroker.getVfsAccess().createFileContent(fileId, content, versionId, projectId, true);
                 }
-                statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_WRITE_BACKUP"));
-                statement.setString(1, resourceId.toString());
-                statement.setString(2, CmsUUID.getNullUUID().toString());
-                statement.setString(3, resource.getResourceName());
-                statement.setInt(4, resource.getType());
-                statement.setInt(5, resource.getFlags());
-                statement.setString(6, resource.getOwnerId().toString());
-                statement.setString(7, ownerName);
-                statement.setString(8, resource.getGroupId().toString());
-                statement.setString(9, groupName);
-                statement.setInt(10, projectId);
-                statement.setString(11, fileId.toString());
-                statement.setInt(12, resource.getAccessFlags());
-                statement.setInt(13, resource.getState());
-                statement.setInt(14, resource.getLauncherType());
-                statement.setString(15, resource.getLauncherClassname());
+                stmt.setString(1, resourceId.toString());
+                stmt.setString(2, CmsUUID.getNullUUID().toString());
+                stmt.setString(3, resource.getResourceName());
+                stmt.setInt(4, resource.getType());
+                stmt.setInt(5, resource.getFlags());
+                stmt.setString(6, resource.getOwnerId().toString());
+                stmt.setString(7, ownerName);
+                stmt.setString(8, resource.getGroupId().toString());
+                stmt.setString(9, groupName);
+                stmt.setInt(10, projectId);
+                stmt.setString(11, fileId.toString());
+                stmt.setInt(12, resource.getAccessFlags());
+                stmt.setInt(13, resource.getState());
+                stmt.setInt(14, resource.getLauncherType());
+                stmt.setString(15, resource.getLauncherClassname());
                 // set date created = publish date
-                statement.setTimestamp(16, new Timestamp(publishDate));
-                statement.setTimestamp(17, new Timestamp(resource.getDateLastModified()));
-                statement.setInt(18, content.length);
-                statement.setString(19, resource.getResourceLastModifiedBy().toString());
-                statement.setString(20, lastModifiedName);
-                statement.setInt(21, versionId);
-                statement.executeUpdate();
-                statement.close();
+                stmt.setTimestamp(16, new Timestamp(publishDate));
+                stmt.setTimestamp(17, new Timestamp(resource.getDateLastModified()));
+                stmt.setInt(18, content.length);
+                stmt.setString(19, resource.getResourceLastModifiedBy().toString());
+                stmt.setString(20, lastModifiedName);
+                stmt.setInt(21, versionId);
+                stmt.executeUpdate();
+                stmt.close();
                 // now write the properties
                 // get all metadefs
                 Iterator keys = properties.keySet().iterator();
@@ -2852,33 +2278,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                         CmsException.C_NOT_FOUND);
                     } else {
                         // write the property into the db
-                        statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_CREATE_BACKUP"));
-                        statement.setInt(1, nextId(m_SqlQueries.get("C_TABLE_PROPERTIES_BACKUP")));
-                        statement.setInt(2, propdef.getId());
-                        statement.setString(3, resourceId.toString());
-                        statement.setString(4, checkNull(value));
-                        statement.setInt(5, versionId);
-                        statement.executeUpdate();
-                        statement.close();
+                        stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROPERTIES_CREATE_BACKUP");
+                        stmt.setInt(1, nextId(m_SqlQueries.get("C_TABLE_PROPERTIES_BACKUP")));
+                        stmt.setInt(2, propdef.getId());
+                        stmt.setString(3, resourceId.toString());
+                        stmt.setString(4, checkNull(value));
+                        stmt.setInt(5, versionId);
+                        stmt.executeUpdate();
+                        stmt.close();
                     }
                 }
             } catch (SQLException e) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+                throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
             } finally {
-                if(statement != null) {
-                    try {
-                        statement.close();
-                    } catch(SQLException exc) {
-                         // nothing to do here
-                    }
-                }
-                if(con != null) {
-                    try {
-                        con.close();
-                    } catch(SQLException exc) {
-                        // nothing to do here
-                    }
-                }
+                m_SqlQueries.closeAll(conn, stmt, null);
             }
         }
 
@@ -2891,35 +2304,24 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readAllProjectResources(int projectId) throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
         Vector projectResources = new Vector();
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTRESOURCES_READALL"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTRESOURCES_READALL");
             // select all resources from the database
-            statement.setInt(1, projectId);
-            res = statement.executeQuery();
+            stmt.setInt(1, projectId);
+            res = stmt.executeQuery();
             while (res.next()) {
                 projectResources.addElement(res.getString("RESOURCE_NAME"));
             }
             res.close();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            if (statement != null) {
-                try{
-                    statement.close();
-                } catch (SQLException e){
-                }
-            }
-            if (con != null) {
-                try{
-                    con.close();
-                } catch (SQLException e){
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
         return projectResources;
     }
@@ -2940,15 +2342,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         CmsBackupResource file = null;
         ResultSet res = null;
         Vector allHeaders = new Vector();
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolNameBackup);
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_READ_ALL_BACKUP"));
+            conn = m_SqlQueries.getConnectionForBackup();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_READ_ALL_BACKUP");
             // read file header data from database
-            statement.setString(1, resourceName);
-            res = statement.executeQuery();
+            stmt.setString(1, resourceName);
+            res = stmt.executeQuery();
             
             // create new file headers
             while (res.next()) {
@@ -2956,32 +2358,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 allHeaders.addElement(file);
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (Exception exc) {
-            throw new CmsException("readAllFileHeaders " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, "readAllFileHeadersForHist(String)", CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             // close all db-resources
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException exc) {
-                    // nothing to do here
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return allHeaders;
     }
@@ -2996,31 +2378,18 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param pageId The resourceId (offline) of the page whose links should be deleted
      */
     public void deleteLinkEntrys(CmsUUID pageId)throws CmsException{
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_LM_DELETE_ENTRYS");
             // delete all project-resources.
-            statement = con.prepareStatement(m_SqlQueries.get("C_LM_DELETE_ENTRYS"));
-            statement.setString(1, pageId.toString());
-            statement.executeUpdate();
+            stmt.setString(1, pageId.toString());
+            stmt.executeUpdate();
         } catch (SQLException e){
-           throw new CmsException("[" + this.getClass().getName() + "] deleteLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "deleteLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e);
         }finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -3037,36 +2406,23 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             return;
         }
         // now write it
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_LM_WRITE_ENTRY"));
-            statement.setString(1, pageId.toString());
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_LM_WRITE_ENTRY");
+            stmt.setString(1, pageId.toString());
             for(int i=0; i < linkTargets.size(); i++){
                 try{
-                    statement.setString(2, (String)linkTargets.elementAt(i));
-                    statement.executeUpdate();
+                    stmt.setString(2, (String)linkTargets.elementAt(i));
+                    stmt.executeUpdate();
                 }catch(SQLException e){
                 }
             }
         } catch (SQLException e){
-             throw new CmsException("[" + this.getClass().getName() + "] createLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+             throw m_SqlQueries.getCmsException(this, "createLinkEntrys(CmsUUID, Vector)", CmsException.C_SQL_ERROR, e);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -3078,45 +2434,25 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     public Vector readLinkEntrys(CmsUUID pageId)throws CmsException{
         Vector result = new Vector();
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_LM_READ_ENTRYS"));
-            statement.setString(1, pageId.toString());
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_LM_READ_ENTRYS");
+            stmt.setString(1, pageId.toString());
+            res = stmt.executeQuery();
             while(res.next()){
                 result.add(res.getString(m_SqlQueries.get("C_LM_LINK_DEST")));
             }
             return result;
         }catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] readLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "readLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e);
         }catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "] readLinkEntrys ", e);
+            throw m_SqlQueries.getCmsException(this, "readLinkEntrys(CmsUUID)", CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
     }
 
@@ -3126,31 +2462,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param pageId The resourceId (online) of the page whose links should be deleted
      */
     public void deleteOnlineLinkEntrys(CmsUUID pageId)throws CmsException{
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
+            // CHECK: use online or offline pool here? (was offline before (AZ, 19.05.2003)...)
+            conn = m_SqlQueries.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_LM_DELETE_ENTRYS_ONLINE");
             // delete all project-resources.
-            statement = con.prepareStatement(m_SqlQueries.get("C_LM_DELETE_ENTRYS_ONLINE"));
-            statement.setString(1, pageId.toString());
-            statement.executeUpdate();
+            stmt.setString(1, pageId.toString());
+            stmt.executeUpdate();
         } catch (SQLException e){
-           throw new CmsException("[" + this.getClass().getName() + "] deleteOnlineLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "deleteOnlineLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e);
         }finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -3167,36 +2491,23 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             return;
         }
         // now write it
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_LM_WRITE_ENTRY_ONLINE"));
-            statement.setString(1, pageId.toString());
+            conn = m_SqlQueries.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_LM_WRITE_ENTRY_ONLINE");
+            stmt.setString(1, pageId.toString());
             for(int i=0; i < linkTargets.size(); i++){
                 try{
-                    statement.setString(2, (String)linkTargets.elementAt(i));
-                    statement.executeUpdate();
+                    stmt.setString(2, (String)linkTargets.elementAt(i));
+                    stmt.executeUpdate();
                 }catch(SQLException e){
                 }
             }
         } catch (SQLException e){
-             throw new CmsException("[" + this.getClass().getName() + "] createOnlineLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "createOnlineLinkEntrys(CmsUUID, Vector)", CmsException.C_SQL_ERROR, e);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -3208,63 +2519,43 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     public Vector readOnlineLinkEntrys(CmsUUID pageId)throws CmsException{
         Vector result = new Vector();
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_LM_READ_ENTRYS_ONLINE"));
-            statement.setString(1, pageId.toString());
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_LM_READ_ENTRYS_ONLINE");
+            stmt.setString(1, pageId.toString());
+            res = stmt.executeQuery();
             while(res.next()){
                 result.add(res.getString(m_SqlQueries.get("C_LM_LINK_DEST")));
             }
             return result;
         }catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] readOnlineLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "readOnlineLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e);
         }catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "] readOnlineLinkEntrys ", e);
+            throw m_SqlQueries.getCmsException(this, "readOnlineLinkEntrys(CmsUUID)", CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
     }
 
     /**
-     * serches for broken links in the online project.
+     * searches for broken links in the online project.
      *
      * @return A Vector with a CmsPageLinks object for each page containing broken links
      *          this CmsPageLinks object contains all links on the page withouth a valid target.
      */
     public Vector getOnlineBrokenLinks() throws CmsException{
         Vector result = new Vector();
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_LM_GET_ONLINE_BROKEN_LINKS"));
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_LM_GET_ONLINE_BROKEN_LINKS");
+            res = stmt.executeQuery();
             CmsUUID current = CmsUUID.getNullUUID();
             CmsPageLinks links = null;
             while(res.next()){
@@ -3291,32 +2582,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
             return result;
         }catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] getOnlineBrokenLinks "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "getOnlineBrokenLinks()", CmsException.C_SQL_ERROR, e);
         }catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "] getOnlineBrokenLinks ", e);
+            throw m_SqlQueries.getCmsException(this, "getOnlineBrokenLinks()", CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -3407,19 +2678,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      /**
       * helper method for getBrokenLinks.
       */
-     private Vector getAllOnlineReferencesForLink(String link, Vector exeptions)throws CmsException{
+     private Vector getAllOnlineReferencesForLink(String link, Vector exceptions)throws CmsException{
         Vector resources = new Vector();
         ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_LM_GET_ONLINE_REFERENCES"));
-            statement.setString(1, link);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_LM_GET_ONLINE_REFERENCES");
+            stmt.setString(1, link);
+            res = stmt.executeQuery();
             while(res.next()) {
                 String resName=res.getString(m_SqlQueries.get("C_RESOURCES_RESOURCE_NAME"));
-                if(!exeptions.contains(resName)){
+                if(!exceptions.contains(resName)){
                     CmsPageLinks pl = new CmsPageLinks( new CmsUUID(res.getString(m_SqlQueries.get("C_LM_PAGE_ID"))));
                     pl.setOnline(true);
                     pl.addLinkTarget(link);
@@ -3428,32 +2699,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
             }
         } catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] getAllOnlineReferencesForLink "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "getAllOnlineReferencesForLink(String, Vector)", CmsException.C_SQL_ERROR, e);
         } catch (Exception ex) {
-            throw new CmsException("[" + this.getClass().getName() + "] getAllOnlineReferencesForLink ", ex);
+            throw m_SqlQueries.getCmsException(this, "getAllOnlineReferencesForLink(String, Vector)", CmsException.C_UNKNOWN_EXCEPTION, ex);
         } finally {
             // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return resources;
      }
@@ -3467,44 +2718,24 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         Vector resources = new Vector();
         ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_LM_GET_ALL_ONLINE_RES_NAMES"));
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_LM_GET_ALL_ONLINE_RES_NAMES");
+            res = stmt.executeQuery();
             // create new resource
             while(res.next()) {
                 String resName=res.getString(m_SqlQueries.get("C_RESOURCES_RESOURCE_NAME"));
                 resources.add(resName);
             }
         } catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] getOnlineResourceNames "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "getOnlineResourceNames()", CmsException.C_SQL_ERROR, e);
         } catch (Exception ex) {
-            throw new CmsException("[" + this.getClass().getName() + "] getOnlineResourceNames ", ex);
+            throw m_SqlQueries.getCmsException(this, "getOnlineResourceNames()", CmsException.C_UNKNOWN_EXCEPTION, ex);
         } finally {
             // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return resources;
      }
@@ -3560,16 +2791,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     private CmsUUID readOnlineId(String filename)throws CmsException {
         ResultSet res =null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         CmsUUID resourceId = CmsUUID.getNullUUID();
         
         try {
-            con = DriverManager.getConnection(m_poolNameOnline);
-            statement=con.prepareStatement(m_SqlQueries.get("C_LM_READ_ONLINE_ID"));
+            conn = m_SqlQueries.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_LM_READ_ONLINE_ID");
             // read file data from database
-            statement.setString(1, filename);
-            res = statement.executeQuery();
+            stmt.setString(1, filename);
+            res = stmt.executeQuery();
             // read the id
             if(res.next()) {
                 resourceId = new CmsUUID( res.getString(m_SqlQueries.get("C_RESOURCES_RESOURCE_ID")) );
@@ -3578,32 +2809,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
             }
         } catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] readOnlineId "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "readOnlineId(String)", CmsException.C_SQL_ERROR, e);
         } catch( Exception exc ) {
-            throw new CmsException("readOnlineId "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, "readOnlineId(String)", CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
           }
         return resourceId;
     }
@@ -3621,14 +2832,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
      public CmsExportLink readExportLink(String request) throws CmsException{
         CmsExportLink link = null;
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_EXPORT_LINK_READ"));
-            statement.setString(1, request);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_EXPORT_LINK_READ");
+            stmt.setString(1, request);
+            res = stmt.executeQuery();
 
             // create new Cms exportlink object
             if(res.next()) {
@@ -3640,12 +2851,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 // now the dependencies
                 try{
                     res.close();
-                    statement.close();
+                    stmt.close();
                 }catch(SQLException ex){
                 }
-                statement = con.prepareStatement(m_SqlQueries.get("C_EXPORT_DEPENDENCIES_READ"));
-                statement.setInt(1,link.getId());
-                res = statement.executeQuery();
+                stmt = m_SqlQueries.getPreparedStatement(conn, "C_EXPORT_DEPENDENCIES_READ");
+                stmt.setInt(1,link.getId());
+                res = stmt.executeQuery();
                 while(res.next()){
                     link.addDependency(res.getString(m_SqlQueries.get("C_EXPORT_DEPENDENCIES_RESOURCE")));
                 }
@@ -3653,33 +2864,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             return link;
          }
         catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] readExportLink "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "readExportLink(String)", CmsException.C_SQL_ERROR, e);
         }
         catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "] readExportLink ", e);
+            throw m_SqlQueries.getCmsException(this, "readExportLink(String)", CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
      }
 
@@ -3695,14 +2886,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
      public CmsExportLink readExportLinkHeader(String request) throws CmsException{
         CmsExportLink link = null;
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_EXPORT_LINK_READ"));
-            statement.setString(1, request);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_EXPORT_LINK_READ");
+            stmt.setString(1, request);
+            res = stmt.executeQuery();
 
             // create new Cms exportlink object
             if(res.next()) {
@@ -3715,33 +2906,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             return link;
          }
         catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] readExportLinkHeader "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "readExportLinkHeader(String)", CmsException.C_SQL_ERROR, e);
         }
         catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "] readExportLinkHeader ", e);
+            throw m_SqlQueries.getCmsException(this, "readExportLinkHeader(String)", CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
      }
 
@@ -3762,32 +2933,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 linkId = dbLink.getId();
             }
         }
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_EXPORT_LINK_SET_PROCESSED");
             // delete the link table entry
-            statement=con.prepareStatement(m_SqlQueries.get("C_EXPORT_LINK_SET_PROCESSED"));
-            statement.setBoolean(1, link.getProcessedState());
-            statement.setInt(2, linkId);
-            statement.executeUpdate();
+            stmt.setBoolean(1, link.getProcessedState());
+            stmt.setInt(2, linkId);
+            stmt.executeUpdate();
         } catch (SQLException e){
-             throw new CmsException("[" + this.getClass().getName() + "] writeExportLinkProcessedState "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "writeExportLinkProcessedState(CmsExportLink)", CmsException.C_SQL_ERROR, e);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -3823,39 +2981,26 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 link.setLinkId(deleteId);
             }
         }
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_EXPORT_LINK_DELETE");
             // delete the link table entry
-            statement=con.prepareStatement(m_SqlQueries.get("C_EXPORT_LINK_DELETE"));
-            statement.setInt(1, deleteId);
-            statement.executeUpdate();
+            stmt.setInt(1, deleteId);
+            stmt.executeUpdate();
             // now the dependencies
             try{
-                statement.close();
+                stmt.close();
             }catch(SQLException ex){
             }
-            statement=con.prepareStatement(m_SqlQueries.get("C_EXPORT_DEPENDENCIES_DELETE"));
-            statement.setInt(1, deleteId);
-            statement.executeUpdate();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_EXPORT_DEPENDENCIES_DELETE");
+            stmt.setInt(1, deleteId);
+            stmt.executeUpdate();
         } catch (SQLException e){
-             throw new CmsException("[" + this.getClass().getName() + "] deleteExportLink "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "deleteExportLink(CmsExportLink)", CmsException.C_SQL_ERROR, e);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
     /**
@@ -3874,51 +3019,38 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             link.setLinkId(id);
         }
         // now write it
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_EXPORT_LINK_WRITE");
             // write the link table entry
-            statement=con.prepareStatement(m_SqlQueries.get("C_EXPORT_LINK_WRITE"));
-            statement.setInt(1, id);
-            statement.setString(2, link.getLink());
-            statement.setTimestamp(3, new Timestamp(link.getLastExportDate()));
-            statement.setBoolean(4, link.getProcessedState());
-            statement.executeUpdate();
+            stmt.setInt(1, id);
+            stmt.setString(2, link.getLink());
+            stmt.setTimestamp(3, new Timestamp(link.getLastExportDate()));
+            stmt.setBoolean(4, link.getProcessedState());
+            stmt.executeUpdate();
             // now the dependencies
             try{
-                statement.close();
+                stmt.close();
             }catch(SQLException ex){
             }
-            statement = con.prepareStatement(m_SqlQueries.get("C_EXPORT_DEPENDENCIES_WRITE"));
-            statement.setInt(1, id);
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_EXPORT_DEPENDENCIES_WRITE");
+            stmt.setInt(1, id);
             Vector deps = link.getDependencies();
             for(int i=0; i < deps.size(); i++){
                 try{
-                    statement.setString(2, (String)deps.elementAt(i));
-                    statement.executeUpdate();
+                    stmt.setString(2, (String)deps.elementAt(i));
+                    stmt.executeUpdate();
                 }catch(SQLException e){
                     // this should be an Duplicate entry error and can be ignored
                     // todo: if it is something else we should coutionary delete the whole exportlink
                 }
             }
         } catch (SQLException e){
-             throw new CmsException("[" + this.getClass().getName() + "] writeExportLink "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "writeExportLink(CmsExportLink)", CmsException.C_SQL_ERROR, e);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -3931,15 +3063,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
      public Vector getDependingExportLinks(Vector resources) throws CmsException{
         Vector retValue = new Vector();
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
             Vector firstResult = new Vector();
             Vector secondResult = new Vector();
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_EXPORT_GET_ALL_DEPENDENCIES"));
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_EXPORT_GET_ALL_DEPENDENCIES");
+            res = stmt.executeQuery();
             while(res.next()) {
                 firstResult.add(res.getString(m_SqlQueries.get("C_EXPORT_DEPENDENCIES_RESOURCE")));
                 secondResult.add(res.getString(m_SqlQueries.get("C_EXPORT_LINK")));
@@ -3968,33 +3100,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             return retValue;
          }
         catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] getDependingExportLinks "+e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "getDependingExportlinks(Vector)", CmsException.C_SQL_ERROR, e);
         }
         catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "] getDependingExportLinks ", e);
+            throw m_SqlQueries.getCmsException(this, "getDependingExportLinks(Vector)", CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
      }
 
@@ -4005,46 +3117,26 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
      public Vector getAllExportLinks() throws CmsException{
         Vector retValue = new Vector();
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_EXPORT_GET_ALL_LINKS"));
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_EXPORT_GET_ALL_LINKS");
+            res = stmt.executeQuery();
             while(res.next()) {
                 retValue.add(res.getString(m_SqlQueries.get("C_EXPORT_LINK")));
             }
             return retValue;
          }
         catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] getAllExportLinks "+e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "getAllExportLinks()", CmsException.C_SQL_ERROR, e);
         }
         catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "] getAllExportLinks ", e);
+            throw m_SqlQueries.getCmsException(this, "getAllExportLinks()", CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
      }
 
@@ -4060,17 +3152,17 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsProject readProject(int id) throws CmsException {
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         CmsProject project = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READ"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTS_READ");
 
-            statement.setInt(1, id);
-            res = statement.executeQuery();
+            stmt.setInt(1, id);
+            res = stmt.executeQuery();
 
             if (res.next()) {
                 project =
@@ -4090,32 +3182,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 throw new CmsException("[" + this.getClass().getName() + "] " + id, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + ".readProject()/1]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "readProject(int)", CmsException.C_SQL_ERROR, e);
         } catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + ".readProject()/2]", e);
+            throw m_SqlQueries.getCmsException(this, "readProject(int)", CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             // close all db-resources
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException exc) {
-                    // nothing to do here
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return project;
     }
@@ -4130,18 +3202,17 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     public CmsProject readProject(CmsTask task)
         throws CmsException {
 
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         CmsProject project = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTS_READ_BYTASK");
 
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READ_BYTASK"));
-
-            statement.setInt(1,task.getId());
-            res = statement.executeQuery();
+            stmt.setInt(1,task.getId());
+            res = stmt.executeQuery();
 
             if(res.next())
                  project = new CmsProject(res,m_SqlQueries);
@@ -4151,30 +3222,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     CmsException.C_NOT_FOUND);
          }
         catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "readProject(CmsTask)", CmsException.C_SQL_ERROR, e);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return project;
     }
@@ -4196,16 +3247,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Vector resources = new Vector();
         CmsResource file;
         ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String addStatement = filter+" ORDER BY RESOURCE_NAME";
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        String addStatement = filter + " ORDER BY RESOURCE_NAME";
         
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_PROJECTVIEW")+addStatement);
+            conn = m_SqlQueries.getConnection();
+            stmt = conn.prepareStatement(m_SqlQueries.get("C_RESOURCES_PROJECTVIEW") + addStatement);
             
-            statement.setInt(1,project);
-            res = statement.executeQuery();
+            stmt.setInt(1,project);
+            res = stmt.executeQuery();
             
             // create new resource
             while(res.next()) {
@@ -4213,11 +3264,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 resources.addElement(file);
             }
         } catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + ".readProjectView()/1]" + e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "readProjectView(int, int, String)", CmsException.C_SQL_ERROR, e);
         } catch (Exception ex) {
-            throw new CmsException("[" + this.getClass().getName() + ".readProjectView()/2]", ex);
+            throw m_SqlQueries.getCmsException(this, "readProjectView(int,int, String)", CmsException.C_UNKNOWN_EXCEPTION, ex);
         } finally {
-            m_SqlQueries.closeAll(con,statement,res);
+            m_SqlQueries.closeAll(conn,stmt,res);
         }
         
         return resources;
@@ -4233,16 +3284,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     public CmsBackupProject readBackupProject(int versionId)
         throws CmsException {
 
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         CmsBackupProject project = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolNameBackup);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READBYVERSION_BACKUP"));
+            conn = m_SqlQueries.getConnectionForBackup();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTS_READBYVERSION_BACKUP");
 
-            statement.setInt(1,versionId);
-            res = statement.executeQuery();
+            stmt.setInt(1,versionId);
+            res = stmt.executeQuery();
 
             if(res.next()) {
                 Vector projectresources = readBackupProjectResources(versionId);
@@ -4270,32 +3321,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
          }
         catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "readBackupProjectId(int)", CmsException.C_SQL_ERROR, e);
         } catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "]", e);
+            throw m_SqlQueries.getCmsException(this, "readBackupProjectId(int)", CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return project;
     }
@@ -4310,11 +3341,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     public Vector readProjectLogs(int projectid)
         throws CmsException {
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
 
         CmsTaskLog tasklog = null;
         Vector logs = new Vector();
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         String comment = null;
         java.sql.Timestamp starttime = null;
         int id = C_UNKNOWN_ID;
@@ -4323,11 +3354,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         int type = C_UNKNOWN_ID;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASKLOG_READ_PPROJECTLOGS"));
-            statement.setInt(1, projectid);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASKLOG_READ_PPROJECTLOGS");
+            stmt.setInt(1, projectid);
+            res = stmt.executeQuery();
             while(res.next()) {
                 comment = res.getString(m_SqlQueries.get("C_LOG_COMMENT"));
                 id = res.getInt(m_SqlQueries.get("C_LOG_ID"));
@@ -4340,32 +3370,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 logs.addElement(tasklog);
             }
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } catch( Exception exc ) {
-              throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return logs;
     }
@@ -4383,35 +3393,24 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     protected Vector readBackupProjectResources(int versionId) throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         ResultSet res = null;
         Vector projectResources = new Vector();
         try {
-            con = DriverManager.getConnection(m_poolNameBackup);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTRESOURCES_READ_BACKUP"));
+            conn = m_SqlQueries.getConnectionForBackup();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTRESOURCES_READ_BACKUP");
             // select resource from the database
-            statement.setInt(1, versionId);
-            res = statement.executeQuery();
+            stmt.setInt(1, versionId);
+            res = stmt.executeQuery();
             while (res.next()) {
                 projectResources.addElement(res.getString("RESOURCE_NAME"));
             }
             res.close();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            if (statement != null) {
-                try{
-                    statement.close();
-                } catch (SQLException e){
-                }
-            }
-            if (con != null){
-                try{
-                    con.close();
-                } catch (SQLException e){
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return projectResources;
     }
@@ -4425,19 +3424,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     public Hashtable readSession(String sessionId)
         throws CmsException {
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
         Hashtable sessionData = new Hashtable();
         Hashtable data = null;
-        Connection con = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_SESSION_READ"));
-            statement.setString(1,sessionId);
-            statement.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT ));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_SESSION_READ");
+            stmt.setString(1,sessionId);
+            stmt.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT ));
 
-            res = statement.executeQuery();
+            res = stmt.executeQuery();
 
             // create new Cms user object
             if(res.next()) {
@@ -4462,33 +3461,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
          }
         catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         }
         catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "]", e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return data;
     }
@@ -4508,15 +3487,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Serializable property=null;
         byte[] value;
         ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         // create get the property data from the database
         try {
-            con = DriverManager.getConnection(m_poolName);
-          statement=con.prepareStatement(m_SqlQueries.get("C_SYSTEMPROPERTIES_READ"));
-          statement.setString(1,name);
-          res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_SYSTEMPROPERTIES_READ");
+          stmt.setString(1,name);
+          res = stmt.executeQuery();
           if(res.next()) {
                 value = m_SqlQueries.getBytes(res,m_SqlQueries.get("C_SYSTEMPROPERTY_VALUE"));
                 // now deserialize the object
@@ -4526,36 +3505,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
         }
         catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         }
         catch (IOException e){
-            throw new CmsException("[" + this.getClass().getName() + "]"+CmsException. C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
         }
         catch (ClassNotFoundException e){
-            throw new CmsException("[" + this.getClass().getName() + "]"+CmsException. C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_CLASSLOADER_ERROR, e);
         }finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
           }
         return property;
     }
@@ -4572,47 +3531,24 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 public CmsTask readTask(int id) throws CmsException {
     ResultSet res = null;
     CmsTask task = null;
-    PreparedStatement statement = null;
-    Connection con = null;
-
-
+    PreparedStatement stmt = null;
+    Connection conn = null;
     try {
-        con = DriverManager.getConnection(m_poolName);
-        
-        statement = con.prepareStatement(m_SqlQueries.get("C_TASK_READ"));
-        statement.setInt(1, id);
-        res = statement.executeQuery();
+        conn = m_SqlQueries.getConnection();
+        stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASK_READ");
+        stmt.setInt(1, id);
+        res = stmt.executeQuery();
                 
         if (res.next()) {
             task = createTaskFromResultSet( res );
         }
     } catch (SQLException exc) {
-        throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+        throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
     } catch (Exception exc) {
-        throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+        throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
     } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+        // close all db-resources
+        m_SqlQueries.closeAll(conn, stmt, res);
     }
     return task;
 }
@@ -4628,16 +3564,13 @@ public CmsTask readTask(int id) throws CmsException {
         throws CmsException {
         ResultSet res = null;
         CmsTaskLog tasklog = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-
-
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASKLOG_READ"));
-            statement.setInt(1, id);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASKLOG_READ");
+            stmt.setInt(1, id);
+            res = stmt.executeQuery();
             if(res.next()) {
                 String comment = res.getString(m_SqlQueries.get("C_LOG_COMMENT"));
                 id = res.getInt(m_SqlQueries.get("C_LOG_ID"));
@@ -4649,32 +3582,12 @@ public CmsTask readTask(int id) throws CmsException {
                 tasklog =  new CmsTaskLog(id, comment, task, user, starttime, type);
             }
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } catch( Exception exc ) {
-              throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
 
         return tasklog;
@@ -4689,11 +3602,11 @@ public CmsTask readTask(int id) throws CmsException {
      */
     public Vector readTaskLogs(int taskId)
         throws CmsException {
-        Connection con = null;
+        Connection conn = null;
         ResultSet res = null;
         CmsTaskLog tasklog = null;
         Vector logs = new Vector();
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         String comment = null;
         java.sql.Timestamp starttime = null;
         int id = C_UNKNOWN_ID;
@@ -4702,10 +3615,10 @@ public CmsTask readTask(int id) throws CmsException {
         int type = C_UNKNOWN_ID;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASKLOG_READ_LOGS"));
-            statement.setInt(1, taskId);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASKLOG_READ_LOGS");
+            stmt.setInt(1, taskId);
+            res = stmt.executeQuery();
             while(res.next()) {
                 comment = res.getString(m_SqlQueries.get("C_TASKLOG_COMMENT"));
                 id = res.getInt(m_SqlQueries.get("C_TASKLOG_ID"));
@@ -4717,32 +3630,12 @@ public CmsTask readTask(int id) throws CmsException {
                 logs.addElement(tasklog);
             }
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } catch( Exception exc ) {
-              throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return logs;
     }
@@ -4769,7 +3662,7 @@ public CmsTask readTask(int id) throws CmsException {
         Vector tasks = new Vector(); // vector for the return result
         CmsTask task = null;         // tmp task for adding to vector
         ResultSet recset = null;
-        Connection con = null;
+        Connection conn = null;
 
         // create the sql string depending on parameters
         // handle the project for the SQL String
@@ -4825,13 +3718,12 @@ public CmsTask readTask(int id) throws CmsException {
             }
         }
 
-        Statement statement = null;
+        Statement stmt = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-
-            statement = con.createStatement();
-            recset = statement.executeQuery(sqlstr);           
+            conn = m_SqlQueries.getConnection();
+            stmt = conn.createStatement();
+            recset = stmt.executeQuery(sqlstr);           
 
             // if resultset exists - return vector of tasks
             while(recset.next()) {
@@ -4840,25 +3732,12 @@ public CmsTask readTask(int id) throws CmsException {
             }
 
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } catch( Exception exc ) {
-              throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             // close all db-resources
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
         return tasks;
@@ -4875,49 +3754,25 @@ public CmsTask readTask(int id) throws CmsException {
       */
      public void removeFile(int projectId, String filename)
         throws CmsException{
-
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         CmsResource resource = m_ResourceBroker.getVfsAccess().readFileHeader(projectId, filename, true);
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
         try {
-            con = DriverManager.getConnection(usedPool);
+            conn = m_SqlQueries.getConnection(projectId);
+            stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_RESOURCES_DELETE");
             // delete the file header
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_DELETE"+usedStatement));
-            statement.setString(1, filename);
-            statement.executeUpdate();
-            statement.close();
+            stmt.setString(1, filename);
+            stmt.executeUpdate();
+            stmt.close();
             // delete the file content
-            statement = con.prepareStatement(m_SqlQueries.get("C_FILE_DELETE"+usedStatement));
-            statement.setString(1, resource.getFileId().toString());
-            statement.executeUpdate();
+            stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_FILE_DELETE");
+            stmt.setString(1, resource.getFileId().toString());
+            stmt.executeUpdate();
         } catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
             // close all db-resources
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -4930,19 +3785,8 @@ public CmsTask readTask(int id) throws CmsException {
      */
     public void removeFolder(int projectId, CmsFolder folder)
         throws CmsException{
-
         // the current implementation only deletes empty folders
         // check if the folder has any files in it
-        String usedPool;
-        String usedStatement;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
         Vector files= m_ResourceBroker.getVfsAccess().getFilesInFolder(projectId, folder);
         files=getUndeletedResources(files);
         if (files.size()==0) {
@@ -4951,31 +3795,18 @@ public CmsTask readTask(int id) throws CmsException {
             folders=getUndeletedResources(folders);
             if (folders.size()==0) {
                 //this folder is empty, delete it
-                Connection con = null;
-                PreparedStatement statement = null;
+                Connection conn = null;
+                PreparedStatement stmt = null;
                 try {
-                    con = DriverManager.getConnection(usedPool);
+                    conn = m_SqlQueries.getConnection(projectId);
+                    stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_RESOURCES_ID_DELETE");
                     // delete the folder
-                    statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_ID_DELETE"+usedStatement));
-                    statement.setString(1,folder.getResourceId().toString());
-                    statement.executeUpdate();
+                    stmt.setString(1,folder.getResourceId().toString());
+                    stmt.executeUpdate();
                 } catch (SQLException e){
-                    throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+                    throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
                 } finally {
-                    if(statement != null) {
-                        try {
-                            statement.close();
-                        } catch(SQLException exc) {
-                            // nothing to do here
-                        }
-                    }
-                    if(con != null) {
-                        try {
-                            con.close();
-                        } catch(SQLException exc) {
-                            // nothing to do here
-                        }
-                    }
+                    m_SqlQueries.closeAll(conn, stmt, null);
                 }
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] "+folder.getAbsolutePath(),CmsException.C_NOT_EMPTY);
@@ -4996,43 +3827,19 @@ public CmsTask readTask(int id) throws CmsException {
      */
     protected void removeFolderForPublish(int projectId, String foldername)
         throws CmsException{
-
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if(projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(usedPool);
+            conn = m_SqlQueries.getConnection(projectId);
+            stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_RESOURCES_DELETE");
             // delete the folder
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_DELETE"+usedStatement));
-            statement.setString(1, foldername);
-            statement.executeUpdate();
+            stmt.setString(1, foldername);
+            stmt.executeUpdate();
         } catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
             // close all db-resources
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -5043,49 +3850,42 @@ public CmsTask readTask(int id) throws CmsException {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     protected void removeTemporaryFile(CmsFile file) throws CmsException{
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         PreparedStatement statementCont = null;
         PreparedStatement statementProp = null;
-        Connection con = null;
+        Connection conn = null;
         ResultSet res = null;
               
         String tempFilename = file.getRootName() + file.getPath() + C_TEMP_PREFIX + file.getName()+"%";
         try{
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_GETTEMPFILES");
             // get all temporary files of the resource
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_GETTEMPFILES"));
-            statement.setString(1, tempFilename);
-            res = statement.executeQuery();
+            stmt.setString(1, tempFilename);
+            res = stmt.executeQuery();
             while(res.next()){
                 int fileId = res.getInt("FILE_ID");
                 int resourceId = res.getInt("RESOURCE_ID");
                 // delete the properties
-                statementProp = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_DELETEALL"));
+                statementProp = m_SqlQueries.getPreparedStatement(conn, "C_PROPERTIES_DELETEALL");
                 statementProp.setInt(1, resourceId);
                 statementProp.executeQuery();
                 statementProp.close();
                 // delete the file content
-                statementCont = con.prepareStatement(m_SqlQueries.get("C_FILE_DELETE"));
+                statementCont = m_SqlQueries.getPreparedStatement(conn, "C_FILE_DELETE");
                 statementCont.setInt(1, fileId);
                 statementCont.executeUpdate();
                 statementCont.close();
             }
             res.close();
-            statement.close();
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_DELETETEMPFILES"));
-            statement.setString(1, tempFilename);
-            statement.executeUpdate();
+            stmt.close();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_DELETETEMPFILES");
+            stmt.setString(1, tempFilename);
+            stmt.executeUpdate();
         } catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            // close all db-resources          
             if(statementProp != null) {
                  try {
                      statementProp.close();
@@ -5100,20 +3900,7 @@ public CmsTask readTask(int id) throws CmsException {
                      // nothing to do here
                  }
             }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -5134,16 +3921,16 @@ public CmsTask readTask(int id) throws CmsException {
 
         ResultSet res = null;
         int result = 0;
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASKPAR_TEST");
             // test if the parameter already exists for this task
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASKPAR_TEST"));
-            statement.setInt(1, taskId);
-            statement.setString(2, parname);
-            res = statement.executeQuery();
+            stmt.setInt(1, taskId);
+            stmt.setString(2, parname);
+            res = stmt.executeQuery();
 
             if(res.next()) {
                 //Parameter exisits, so make an update
@@ -5155,30 +3942,10 @@ public CmsTask readTask(int id) throws CmsException {
 
             }
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return result;
     }
@@ -5228,45 +3995,20 @@ public CmsTask readTask(int id) throws CmsException {
      */
     public void unlockProject(CmsProject project)
         throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(project.getId()).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (project.getId() == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(usedPool);
+            conn = m_SqlQueries.getConnection(project);
+            stmt = m_SqlQueries.getPreparedStatement(conn, project, "C_RESOURCES_UNLOCK");
             // create the statement
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UNLOCK"+usedStatement));
-            statement.setString(1,CmsUUID.getNullUUID().toString());
-            statement.setInt(2,project.getId());
-            statement.executeUpdate();
+            stmt.setString(1,CmsUUID.getNullUUID().toString());
+            stmt.setInt(2,project.getId());
+            stmt.executeUpdate();
         } catch( Exception exc ) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
             // close all db-resources
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -5278,43 +4020,20 @@ public CmsTask readTask(int id) throws CmsException {
      */
     public void updateLockstate(CmsResource res, int projectId) throws CmsException {
 
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_LOCK"+usedStatement));
-            statement.setString(1, res.isLockedBy().toString());
-            statement.setInt(2, projectId);
-            statement.setString(3, res.getResourceId().toString());
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection(projectId);
+            stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_RESOURCES_UPDATE_LOCK");
+            stmt.setString(1, res.isLockedBy().toString());
+            stmt.setInt(2, projectId);
+            stmt.setString(3, res.getResourceId().toString());
+            stmt.executeUpdate();
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
             // close all db-resources
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -5326,42 +4045,19 @@ public CmsTask readTask(int id) throws CmsException {
      */
     public void updateResourcestate(CmsResource res) throws CmsException {
 
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (res.getProjectId() == onlineProject) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_STATE"+usedStatement));
-            statement.setInt(1, res.getState());
-            statement.setString(2, res.getResourceId().toString());
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection(res.getProjectId());
+            stmt = m_SqlQueries.getPreparedStatement(conn, res.getProjectId(), "C_RESOURCES_UPDATE_STATE");
+            stmt.setInt(1, res.getState());
+            stmt.setString(2, res.getResourceId().toString());
+            stmt.executeUpdate();
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
             // close all db-resources
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -5375,109 +4071,69 @@ public CmsTask readTask(int id) throws CmsException {
     public int updateSession(String sessionId, Hashtable data)
         throws CmsException {
         byte[] value=null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         int retValue;
 
         try {
-                  value = serializeSession(data);
-            con = DriverManager.getConnection(m_poolName);
-
+            value = serializeSession(data);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_SESSION_UPDATE");
             // write data to database
-            statement = con.prepareStatement(m_SqlQueries.get("C_SESSION_UPDATE"));
-
-            statement.setTimestamp(1,new java.sql.Timestamp(System.currentTimeMillis()));
-            m_doSetBytes(statement,2,value);
-            statement.setString(3,sessionId);
-            retValue = statement.executeUpdate();
+            stmt.setTimestamp(1,new java.sql.Timestamp(System.currentTimeMillis()));
+            m_doSetBytes(stmt,2,value);
+            stmt.setString(3,sessionId);
+            retValue = stmt.executeUpdate();
         }
         catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         }
         catch (IOException e){
-            throw new CmsException("[" + this.getClass().getName() + "]:"+CmsException.C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
         return retValue;
     }
+    
     protected void updateTaskPar(int parid, String parvalue)
         throws CmsException {
 
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASKPAR_UPDATE"));
-            statement.setString(1, parvalue);
-            statement.setInt(2, parid);
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASKPAR_UPDATE");
+            stmt.setString(1, parvalue);
+            stmt.setInt(2, parid);
+            stmt.executeUpdate();
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
     protected void updateTaskType(int taskId, int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref)
         throws CmsException {
 
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASKTYPE_UPDATE"));
-            statement.setInt(1, autofinish);
-            statement.setInt(2, escalationtyperef);
-            statement.setString(3, htmllink);
-            statement.setString(4, name);
-            statement.setString(5, permission);
-            statement.setInt(6, priorityref);
-            statement.setInt(7, roleref);
-            statement.setInt(8, taskId);
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASKTYPE_UPDATE");
+            stmt.setInt(1, autofinish);
+            stmt.setInt(2, escalationtyperef);
+            stmt.setString(3, htmllink);
+            stmt.setString(4, name);
+            stmt.setString(5, permission);
+            stmt.setInt(6, priorityref);
+            stmt.setInt(7, roleref);
+            stmt.setInt(8, taskId);
+            stmt.executeUpdate();
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -5492,40 +4148,25 @@ public CmsTask readTask(int id) throws CmsException {
      public void writeProject(CmsProject project)
          throws CmsException {
 
-         PreparedStatement statement = null;
-         Connection con = null;
+         PreparedStatement stmt = null;
+         Connection conn = null;
 
          try {
-             con = DriverManager.getConnection(m_poolName);
-             // create the statement
-             statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_WRITE"));
+             conn = m_SqlQueries.getConnection();
+             stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTS_WRITE");
 
-             statement.setString(1,project.getOwnerId().toString());
-             statement.setString(2,project.getGroupId().toString());
-             statement.setString(3,project.getManagerGroupId().toString());
-             statement.setInt(4,project.getFlags());
+             stmt.setString(1,project.getOwnerId().toString());
+             stmt.setString(2,project.getGroupId().toString());
+             stmt.setString(3,project.getManagerGroupId().toString());
+             stmt.setInt(4,project.getFlags());
              // no publishing data
-             statement.setInt(7,project.getId());
-             statement.executeUpdate();
+             stmt.setInt(7,project.getId());
+             stmt.executeUpdate();
          } catch( Exception exc ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                 CmsException.C_SQL_ERROR, exc);
+             throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
          } finally {
             // close all db-resources
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
          }
      }
 
@@ -5543,54 +4184,38 @@ public CmsTask readTask(int id) throws CmsException {
      */
     public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition metadef)
         throws CmsException {
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         CmsPropertydefinition returnValue = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            // write the propertydef in the offline db
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTYDEF_UPDATE"));
-            statement.setString(1, metadef.getName() );
-            statement.setInt(2, metadef.getId() );
-            statement.executeUpdate();
-            statement.close();
-            con.close();
-            // write the propertydef in the online db
-            con = DriverManager.getConnection(m_poolNameOnline);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTYDEF_UPDATE_ONLINE"));
-            statement.setString(1, metadef.getName() );
-            statement.setInt(2, metadef.getId() );
-            statement.executeUpdate();
-            statement.close();
-            con.close();
-            // write the propertydef in the backup db
-            con = DriverManager.getConnection(m_poolNameBackup);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTYDEF_UPDATE_BACKUP"));
-            statement.setString(1, metadef.getName() );
-            statement.setInt(2, metadef.getId() );
-            statement.executeUpdate();
-            statement.close();
-            con.close();
+            for (int i=0; i<3; i++){
+                // write the propertydef in the offline db
+                if (i == 0) {
+                    conn = m_SqlQueries.getConnection();
+                    stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROPERTYDEF_UPDATE");
+                }
+                // write the propertydef in the online db
+                else if (i == 1) {
+                    conn = m_SqlQueries.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                    stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROPERTYDEF_UPDATE_ONLINE");
+                }
+                // write the propertydef in the backup db
+                else {
+                    conn = m_SqlQueries.getConnectionForBackup();
+                    stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROPERTYDEF_UPDATE_BACKUP");
+                }
+                stmt.setString(1, metadef.getName() );
+                stmt.setInt(2, metadef.getId() );
+                stmt.executeUpdate();
+                stmt.close();
+                conn.close();
+            }
             // read the propertydefinition
             returnValue = m_ResourceBroker.getVfsAccess().readPropertydefinition(metadef.getName(), metadef.getType());
          } catch( SQLException exc ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
          } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
           return returnValue;
     }
@@ -5609,43 +4234,30 @@ public CmsTask readTask(int id) throws CmsException {
         throws CmsException {
 
         byte[] value=null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
             // serialize the object
             ByteArrayOutputStream bout= new ByteArrayOutputStream();
             ObjectOutputStream oout=new ObjectOutputStream(bout);
             oout.writeObject(object);
             oout.close();
             value=bout.toByteArray();
-
-            statement=con.prepareStatement(m_SqlQueries.get("C_SYSTEMPROPERTIES_UPDATE"));
-            m_doSetBytes(statement,1,value);
-            statement.setString(2,name);
-            statement.executeUpdate();
+            
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_SYSTEMPROPERTIES_UPDATE");
+            m_doSetBytes(stmt,1,value);
+            stmt.setString(2,name);
+            stmt.executeUpdate();
          }
         catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         }
         catch (IOException e){
-            throw new CmsException("[" + this.getClass().getName() + "]"+CmsException. C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
         }finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
           }
 
           return readSystemProperty(name);
@@ -5669,52 +4281,39 @@ public CmsTask readTask(int id) throws CmsException {
     public CmsTask writeTask(CmsTask task)
         throws CmsException {
 
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_UPDATE"));
-            statement.setString(1,task.getName());
-            statement.setInt(2,task.getState());
-            statement.setInt(3,task.getTaskType());
-            statement.setInt(4,task.getRoot());
-            statement.setInt(5,task.getParent());
-            statement.setString(6,task.getInitiatorUser().toString());
-            statement.setString(7,task.getRole().toString());
-            statement.setString(8,task.getAgentUser().toString());
-            statement.setString(9,task.getOriginalUser().toString());
-            statement.setTimestamp(10,task.getStartTime());
-            statement.setTimestamp(11,task.getWakeupTime());
-            statement.setTimestamp(12,task.getTimeOut());
-            statement.setTimestamp(13,task.getEndTime());
-            statement.setInt(14,task.getPercentage());
-            statement.setString(15,task.getPermission());
-            statement.setInt(16,task.getPriority());
-            statement.setInt(17,task.getEscalationType());
-            statement.setString(18,task.getHtmlLink());
-            statement.setInt(19,task.getMilestone());
-            statement.setInt(20,task.getAutoFinish());
-            statement.setInt(21,task.getId());
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASK_UPDATE");
+            stmt.setString(1,task.getName());
+            stmt.setInt(2,task.getState());
+            stmt.setInt(3,task.getTaskType());
+            stmt.setInt(4,task.getRoot());
+            stmt.setInt(5,task.getParent());
+            stmt.setString(6,task.getInitiatorUser().toString());
+            stmt.setString(7,task.getRole().toString());
+            stmt.setString(8,task.getAgentUser().toString());
+            stmt.setString(9,task.getOriginalUser().toString());
+            stmt.setTimestamp(10,task.getStartTime());
+            stmt.setTimestamp(11,task.getWakeupTime());
+            stmt.setTimestamp(12,task.getTimeOut());
+            stmt.setTimestamp(13,task.getEndTime());
+            stmt.setInt(14,task.getPercentage());
+            stmt.setString(15,task.getPermission());
+            stmt.setInt(16,task.getPriority());
+            stmt.setInt(17,task.getEscalationType());
+            stmt.setString(18,task.getHtmlLink());
+            stmt.setInt(19,task.getMilestone());
+            stmt.setInt(20,task.getAutoFinish());
+            stmt.setInt(21,task.getId());
+            stmt.executeUpdate();
 
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
         return(readTask(task.getId()));
     }
@@ -5735,47 +4334,34 @@ public CmsTask readTask(int id) throws CmsException {
         throws CmsException {
 
         int newId = C_UNKNOWN_ID;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try{
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASKLOG_WRITE");
             newId = nextId(C_TABLE_TASKLOG);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASKLOG_WRITE"));
-            statement.setInt(1, newId);
-            statement.setInt(2, taskId);
+            stmt.setInt(1, newId);
+            stmt.setInt(2, taskId);
             if(!userId.isNullUUID()){
-                statement.setString(3, userId.toString());
+                stmt.setString(3, userId.toString());
             }
             else {
                 // no user is specified so set to system user
                 // is only valid for system task log
                 //statement.setInt(3, 1);
                 // TODO: this is a workaround. not sure if this is correct
-                statement.setString(3, m_ResourceBroker.getUserAccess().readUser(I_CmsConstants.C_USER_GUEST,I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
+                stmt.setString(3, m_ResourceBroker.getUserAccess().readUser(I_CmsConstants.C_USER_GUEST,I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
             }
-            statement.setTimestamp(4, starttime);
-            statement.setString(5, checkNull(comment));
-            statement.setInt(6, type);
+            stmt.setTimestamp(4, starttime);
+            stmt.setString(5, checkNull(comment));
+            stmt.setInt(6, type);
 
-            statement.executeUpdate();
+            stmt.executeUpdate();
 
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -5789,15 +4375,15 @@ public CmsTask readTask(int id) throws CmsException {
         throws CmsException {
         ResultSet res = null;
         int result = 0;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_TASK_GET_TASKTYPE");
             // test if the parameter already exists for this task
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_GET_TASKTYPE"));
-            statement.setString(1, name);
-            res = statement.executeQuery();
+            stmt.setString(1, name);
+            res = stmt.executeQuery();
 
             if(res.next()) {
                 //Parameter exists, so make an update
@@ -5810,30 +4396,10 @@ public CmsTask readTask(int id) throws CmsException {
 
             }
         } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return result;
     }
@@ -5847,34 +4413,21 @@ public CmsTask readTask(int id) throws CmsException {
      * @param resourcename The name of the resource to change
      */
     public void changeLockedInProject(int newProjectId, String resourcename) throws CmsException{
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_RESOURCES_UPDATE_PROJECTID");
             // write data to database
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_PROJECTID"));
-            statement.setInt(1, newProjectId);
-            statement.setString(2, resourcename);
-            statement.executeUpdate();
+            stmt.setInt(1, newProjectId);
+            stmt.setString(2, resourcename);
+            stmt.executeUpdate();
         }
         catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
     }
@@ -5889,84 +4442,42 @@ public CmsTask readTask(int id) throws CmsException {
      */
     public int deleteBackups(long maxdate) throws CmsException{
         ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         int maxVersion = 0;
         try{
-            con = DriverManager.getConnection(m_poolNameBackup);
+            conn = m_SqlQueries.getConnectionForBackup();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_BACKUP_READ_MAXVERSION");
             // read the max. version_id from database by the publish_date
-            statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_READ_MAXVERSION"));
-            statement.setTimestamp(1, new Timestamp(maxdate));
-            res = statement.executeQuery();
+            stmt.setTimestamp(1, new Timestamp(maxdate));
+            res = stmt.executeQuery();
             if(res.next()){
                 maxVersion = res.getInt(1);
             }
             res.close();
-            statement.close();
+            stmt.close();
             if(maxVersion > 0){
-                // delete the elder backup projects by versionId
-                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_PROJECT_BYVERSION"));
-                statement.setInt(1, maxVersion);
-                statement.executeUpdate();
-                statement.close();
-                // delete the elder backup projectresources by versionId
-                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_PROJECTRESOURCES_BYVERSION"));
-                statement.setInt(1, maxVersion);
-                statement.executeUpdate();
-                statement.close();
-                // delete the elder backup resources by versionId
-                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_RESOURCES_BYVERSION"));
-                statement.setInt(1, maxVersion);
-                statement.executeUpdate();
-                statement.close();
-                // delete the elder backup files by versionId
-                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_FILES_BYVERSION"));
-                statement.setInt(1, maxVersion);
-                statement.executeUpdate();
-                statement.close();
-                // delete the elder backup properties by versionId
-                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_PROPERTIES_BYVERSION"));
-                statement.setInt(1, maxVersion);
-                statement.executeUpdate();
-                statement.close();
-                // delete the elder backup moduledata by versionId
-                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_MODULEMASTER_BYVERSION"));
-                statement.setInt(1, maxVersion);
-                statement.executeUpdate();
-                statement.close();
-                // delete the elder backup module media by versionId
-                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_MODULEMEDIA_BYVERSION"));
-                statement.setInt(1, maxVersion);
-                statement.executeUpdate();
-                statement.close();
+                String[] statements = { "C_BACKUP_DELETE_PROJECT_BYVERSION",
+                        "C_BACKUP_DELETE_PROJECTRESOURCES_BYVERSION",
+                        "C_BACKUP_DELETE_RESOURCES_BYVERSION",
+                        "C_BACKUP_DELETE_FILES_BYVERSION",
+                        "C_BACKUP_DELETE_PROPERTIES_BYVERSION",
+                        "C_BACKUP_DELETE_MODULEMASTER_BYVERSION",
+                        "C_BACKUP_DELETE_MODULEMEDIA_BYVERSION" };
+                for (int i = 0; i < statements.length; i++) {
+                    stmt = m_SqlQueries.getPreparedStatement(conn, statements[i]);
+                    stmt.setInt(1, maxVersion);
+                    stmt.executeUpdate();
+                    stmt.close();
+                } 
             }
         } catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (Exception ex) {
-            throw new CmsException("[" + this.getClass().getName() + "]", ex);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex);
         } finally {
             // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return maxVersion;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/15 14:02:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/05/20 10:17:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import source.org.apache.java.util.Configurations;
  * MySQL implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/05/15 14:02:43 $
+ * @version $Revision: 1.4 $ $Date: 2003/05/20 10:17:18 $
  */
 public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -95,7 +95,7 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
                 statementDestroy.clearParameters();
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
             m_SqlQueries.closeAll(con, statementSearch, res);
         }
@@ -138,57 +138,47 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
                 throw e;
             }
         }
-
-        String usedPool;
-        String usedStatement;
-        if (project.getId() == onlineProject.getId()) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        
+      
         CmsUUID resourceId = new CmsUUID();
         CmsUUID fileId = new CmsUUID();
 
-        PreparedStatement statement = null;
-        PreparedStatement statementFileWrite = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        PreparedStatement stmtFileWrite = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_WRITE" + usedStatement));
+            conn = m_SqlQueries.getConnection(project);
+            stmt = m_SqlQueries.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");
             // write new resource to the database
-            statement.setString(1, resourceId.toString());
-            statement.setString(2, parentId.toString());
-            statement.setString(3, filename);
-            statement.setInt(4, resourceType.getResourceType());
-            statement.setInt(5, flags);
-            statement.setString(6, user.getId().toString());
-            statement.setString(7, user.getDefaultGroupId().toString());
-            statement.setInt(8, project.getId());
-            statement.setString(9, fileId.toString());
-            statement.setInt(10, C_ACCESS_DEFAULT_FLAGS);
-            statement.setInt(11, state);
-            statement.setString(12, CmsUUID.getNullUUID().toString());
-            statement.setInt(13, resourceType.getLauncherType());
-            statement.setString(14, resourceType.getLauncherClass());
-            statement.setTimestamp(15, new Timestamp(System.currentTimeMillis()));
-            statement.setTimestamp(16, new Timestamp(System.currentTimeMillis()));
-            statement.setInt(17, contents.length);
-            statement.setString(18, user.getId().toString());
-            statement.executeUpdate();
-
-            statementFileWrite = con.prepareStatement(m_SqlQueries.get("C_FILES_WRITE" + usedStatement));
-            statementFileWrite.setString(1, fileId.toString());
-            statementFileWrite.setBytes(2, contents);
-            statementFileWrite.executeUpdate();
+            stmt.setString(1, resourceId.toString());
+            stmt.setString(2, parentId.toString());
+            stmt.setString(3, filename);
+            stmt.setInt(4, resourceType.getResourceType());
+            stmt.setInt(5, flags);
+            stmt.setString(6, user.getId().toString());
+            stmt.setString(7, user.getDefaultGroupId().toString());
+            stmt.setInt(8, project.getId());
+            stmt.setString(9, fileId.toString());
+            stmt.setInt(10, C_ACCESS_DEFAULT_FLAGS);
+            stmt.setInt(11, state);
+            stmt.setString(12, CmsUUID.getNullUUID().toString());
+            stmt.setInt(13, resourceType.getLauncherType());
+            stmt.setString(14, resourceType.getLauncherClass());
+            stmt.setTimestamp(15, new Timestamp(System.currentTimeMillis()));
+            stmt.setTimestamp(16, new Timestamp(System.currentTimeMillis()));
+            stmt.setInt(17, contents.length);
+            stmt.setString(18, user.getId().toString());
+            stmt.executeUpdate();
+            
+            stmtFileWrite = m_SqlQueries.getPreparedStatement(conn, project, "C_FILES_WRITE");
+            stmtFileWrite.setString(1, fileId.toString());
+            stmtFileWrite.setBytes(2, contents);
+            stmtFileWrite.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
-            m_SqlQueries.closeAll(null, statementFileWrite, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
+            m_SqlQueries.closeAll(null, stmtFileWrite, null);
         }
         return readFile(project.getId(), onlineProject.getId(), filename);
     }
@@ -228,25 +218,16 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
      */
     public CmsFile readFile(int projectId, int onlineProjectId, String filename) throws CmsException {
         CmsFile file = null;
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        if (projectId == onlineProjectId) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_SqlQueries.get("C_FILES_READ" + usedStatement));       
+            conn = m_SqlQueries.getConnection(projectId);
+            stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_FILES_READ");
             
-            statement.setString(1, filename);
-            statement.setInt(2, projectId);
-            res = statement.executeQuery();
+            stmt.setString(1, filename);
+            stmt.setInt(2, projectId);
+            res = stmt.executeQuery();
             
             if (res.next()) {                
                 file = createCmsFileFromResultSet(res,projectId,filename);
@@ -259,13 +240,13 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return file;
     }
@@ -283,24 +264,15 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
      */
     public CmsFile readFile(int projectId, int onlineProjectId, String filename, boolean includeDeleted) throws CmsException {
         CmsFile file = null;
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        if (projectId == onlineProjectId) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_SqlQueries.get("C_FILES_READ" + usedStatement));
-            statement.setString(1, filename);
-            statement.setInt(2, projectId);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection(projectId);
+            stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_FILES_READ");
+            stmt.setString(1, filename);
+            stmt.setInt(2, projectId);
+            res = stmt.executeQuery();
             if (res.next()) {                
                 file = createCmsFileFromResultSet(res,projectId,filename);
                 
@@ -312,13 +284,13 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return file;
     }

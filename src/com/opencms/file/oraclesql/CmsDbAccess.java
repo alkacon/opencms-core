@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/05/20 10:17:18 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.10 $ $Date: 2003/05/15 12:39:34 $ *
+ * @version $Revision: 1.11 $ $Date: 2003/05/20 10:17:18 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -88,10 +88,10 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      */
     public Serializable addSystemProperty(String name, Serializable object) throws CmsException {
         byte[] value;
-        PreparedStatement statement = null;
-        PreparedStatement statement2 = null;
-        PreparedStatement nextStatement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        PreparedStatement stmt2 = null;
+        PreparedStatement nextStmt = null;
+        Connection conn = null;
         ResultSet res = null;
         try {
             int id = nextId(C_TABLE_SYSTEMPROPERTIES);
@@ -105,18 +105,18 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
             // create the object
             // first insert the new systemproperty with empty systemproperty_value, then update
             // the systemproperty_value. These two steps are necessary because of using Oracle BLOB
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_SYSTEMPROPERTIES_FORINSERT"));
-            statement.setInt(1, id);
-            statement.setString(2, name);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_FORINSERT");
+            stmt.setInt(1, id);
+            stmt.setString(2, name);
             //statement.setBytes(3,value);
-            statement.executeUpdate();
+            stmt.executeUpdate();
             //statement.close();
             // now update the systemproperty_value
-            statement2 = con.prepareStatement(m_SqlQueries.get("C_ORACLE_SYSTEMPROPERTIES_FORUPDATE"));
-            statement2.setInt(1, id);
-            con.setAutoCommit(false);
-            res = statement2.executeQuery();
+            stmt2 = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_FORUPDATE");
+            stmt2.setInt(1, id);
+            conn.setAutoCommit(false);
+            res = stmt2.executeQuery();
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
                 ByteArrayInputStream instream = new ByteArrayInputStream(value);
@@ -131,56 +131,29 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
             }
             // for the oracle-driver commit or rollback must be executed manually
             // because setAutoCommit = false
-            nextStatement = con.prepareStatement(m_SqlQueries.get("C_COMMIT"));
-            nextStatement.execute();
-            nextStatement.close();
-            con.setAutoCommit(true);
+            nextStmt = m_SqlQueries.getPreparedStatement(conn, "C_COMMIT");
+            nextStmt.execute();
+            nextStmt.close();
+            conn.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + CmsException.C_SERIALIZATION, e);
-        } finally {
-            if (res != null) {
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+        } finally {           
+            if (stmt2 != null) {
                 try {
-                    res.close();
-                } catch (SQLException se) {
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException exc){
-                }
-            }
-            if (statement2 != null) {
-                try {
-                    statement2.close();
+                    stmt2.close();
                 } catch (SQLException exc){
                 }
                 try {
-                    nextStatement = con.prepareStatement(m_SqlQueries.get("C_ROLLBACK"));
-                    nextStatement.execute();
+                    nextStmt = conn.prepareStatement(m_SqlQueries.get("C_ROLLBACK"));
+                    nextStmt.execute();
                 } catch (SQLException exc){
                     // nothing to do here
                 }
             }
-            if (nextStatement != null) {
-                try {
-                    nextStatement.close();
-                } catch (SQLException exc){
-                }
-            }
-            if (con != null) {
-                try {
-                    con.setAutoCommit(true);
-                } catch (SQLException exc){
-                    // nothing to do here
-                }
-                try {
-                    con.close();
-                } catch (SQLException e){
-                }
-            }
+            m_SqlQueries.closeAll(null, nextStmt, null);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return readSystemProperty(name);
     }
@@ -197,10 +170,10 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      */
     public void createSession(String sessionId, Hashtable data) throws CmsException {
         byte[] value = null;
-        PreparedStatement statement = null;
-        PreparedStatement statement2 = null;
-        PreparedStatement nextStatement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        PreparedStatement stmt2 = null;
+        PreparedStatement nextStmt = null;
+        Connection conn = null;
         ResultSet res = null;
         try {
             // serialize the hashtable
@@ -211,16 +184,16 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
             value = bout.toByteArray();
 
             // write data to database
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_SESSION_FORINSERT"));
-            statement.setString(1, sessionId);
-            statement.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
-            statement.executeUpdate();
-            statement.close();
-            statement2 = con.prepareStatement(m_SqlQueries.get("C_ORACLE_SESSION_FORUPDATE"));
-            statement2.setString(1, sessionId);
-            con.setAutoCommit(false);
-            res = statement2.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_SESSION_FORINSERT");
+            stmt.setString(1, sessionId);
+            stmt.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
+            stmt.executeUpdate();
+            stmt.close();
+            stmt2 = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_SESSION_FORUPDATE");
+            stmt2.setString(1, sessionId);
+            conn.setAutoCommit(false);
+            res = stmt2.executeQuery();
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SESSION_DATA");
                 ByteArrayInputStream instream = new ByteArrayInputStream(value);
@@ -233,58 +206,32 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
                 instream.close();
                 outstream.close();
             }
-            statement2.close();
+            stmt2.close();
             res.close();
             // for the oracle-driver commit or rollback must be executed manually
             // because setAutoCommit = false
-            nextStatement = con.prepareStatement(m_SqlQueries.get("C_COMMIT"));
-            nextStatement.execute();
-            nextStatement.close();
-            con.setAutoCommit(true);
+            nextStmt = m_SqlQueries.getPreparedStatement(conn, "C_COMMIT");
+            nextStmt.execute();
+            nextStmt.close();
+            conn.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]:" + CmsException.C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
         } finally {
-            if (res != null) {
+            if (stmt2 != null) {
                 try {
-                    res.close();
-                } catch (SQLException se) {
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (statement2 != null) {
-                try {
-                    statement2.close();
+                    stmt2.close();
                 } catch (SQLException exc) {
                 }
                 try {
-                    nextStatement = con.prepareStatement(m_SqlQueries.get("C_ROLLBACK"));
-                    nextStatement.execute();
+                    nextStmt = conn.prepareStatement(m_SqlQueries.get("C_ROLLBACK"));
+                    nextStmt.execute();
                 } catch (SQLException se) {
                 }
             }
-            if (nextStatement != null) {
-                try {
-                    nextStatement.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (con != null) {
-                try {
-                    con.setAutoCommit(true);
-                } catch (SQLException se) {
-                }
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                }
-            }
+            m_SqlQueries.closeAll(null, nextStmt, null);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
     }
 
@@ -297,15 +244,15 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      public Vector getAllBackupProjects() throws CmsException {
          Vector projects = new Vector();
          ResultSet res = null;
-         PreparedStatement statement = null;
-         Connection con = null;
+         PreparedStatement stmt = null;
+         Connection conn = null;
 
          try {
              // create the statement
-             con = DriverManager.getConnection(m_poolNameBackup);
-             statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_PROJECTS_READLAST_BACKUP"));
-             statement.setInt(1, 300);
-             res = statement.executeQuery();
+             conn = m_SqlQueries.getConnectionForBackup();
+             stmt = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_PROJECTS_READLAST_BACKUP");
+             stmt.setInt(1, 300);
+             res = stmt.executeQuery();
              while(res.next()) {
                  Vector resources = m_ResourceBroker.getVfsAccess().readBackupProjectResources(res.getInt("VERSION_ID"));
                  projects.addElement( new CmsBackupProject(res.getInt("VERSION_ID"),
@@ -327,31 +274,10 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
                                                     resources));
              }
          } catch( SQLException exc ) {
-             throw new CmsException("[" + this.getClass().getName() + ".getAllBackupProjects()] " + exc.getMessage(),
-                 CmsException.C_SQL_ERROR, exc);
+             throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
          } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
          }
          return(projects);
      }
@@ -380,11 +306,11 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
     public int updateSession(String sessionId, Hashtable data) throws CmsException {
 
         byte[] value = null;
-        PreparedStatement statement = null;
-        PreparedStatement statement2 = null;
-        PreparedStatement nextStatement = null;
-        PreparedStatement trimStatement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        PreparedStatement stmt2 = null;
+        PreparedStatement nextStmt = null;
+        PreparedStatement trimStmt = null;
+        Connection conn = null;
         int retValue;
         ResultSet res = null;
         try {
@@ -397,25 +323,25 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 
             // write data to database in two steps because of using Oracle BLOB
             // first update the session_time
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_SESSION_UPDATE"));
-            statement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
-            statement.setString(2, sessionId);
-            retValue = statement.executeUpdate();
-            statement.close();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_SESSION_UPDATE");
+            stmt.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+            stmt.setString(2, sessionId);
+            retValue = stmt.executeUpdate();
+            stmt.close();
             // now update the session_data
-            statement2 = con.prepareStatement(m_SqlQueries.get("C_ORACLE_SESSION_FORUPDATE"));
-            statement2.setString(1, sessionId);
-            con.setAutoCommit(false);
-            res = statement2.executeQuery();
+            stmt2 = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_SESSION_FORUPDATE");
+            stmt2.setString(1, sessionId);
+            conn.setAutoCommit(false);
+            res = stmt2.executeQuery();
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SESSION_DATA");
                 // first trim the blob to 0 bytes, otherwise there could be left some bytes
                 // of the old content
-                trimStatement = con.prepareStatement(m_SqlQueries.get("C_TRIMBLOB"));
-                trimStatement.setBlob(1, blob);
-                trimStatement.setInt(2, 0);
-                trimStatement.execute();
+                trimStmt = m_SqlQueries.getPreparedStatement(conn, "C_TRIMBLOB");
+                trimStmt.setBlob(1, blob);
+                trimStmt.setInt(2, 0);
+                trimStmt.execute();
                 ByteArrayInputStream instream = new ByteArrayInputStream(value);
                 OutputStream outstream = blob.getBinaryOutputStream();
                 byte[] chunk = new byte[blob.getChunkSize()];
@@ -426,64 +352,33 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
                 instream.close();
                 outstream.close();
             }
-            statement2.close();
+            stmt2.close();
             res.close();
             // for the oracle-driver commit or rollback must be executed manually
             // because setAutoCommit = false in CmsDbPool.CmsDbPool
-            nextStatement = con.prepareStatement(m_SqlQueries.get("C_COMMIT"));
-            nextStatement.execute();
-            nextStatement.close();
-            con.setAutoCommit(true);
+            nextStmt = m_SqlQueries.getPreparedStatement(conn, "C_COMMIT");
+            nextStmt.execute();
+            nextStmt.close();
+            conn.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]:" + CmsException.C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
         } finally {
-            if (res != null) {
+            if (stmt2 != null) {
                 try {
-                    res.close();
-                } catch (SQLException se) {
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (statement2 != null) {
-                try {
-                    statement2.close();
+                    stmt2.close();
                 } catch (SQLException exc) {
                 }
                 try {
-                    nextStatement = con.prepareStatement(m_SqlQueries.get("C_ROLLBACK"));
-                    nextStatement.execute();
+                    nextStmt = m_SqlQueries.getPreparedStatement(conn, "C_ROLLBACK");
+                    nextStmt.execute();
                 } catch (SQLException se) {
                 }
             }
-            if (nextStatement != null) {
-                try {
-                    nextStatement.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (trimStatement != null) {
-                try {
-                    trimStatement.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (con != null) {
-                try {
-                    con.setAutoCommit(true);
-                } catch (SQLException se) {
-                }
-                try {
-                    con.close();
-                } catch (SQLException se) {
-                }
-            }
+            m_SqlQueries.closeAll(null, trimStmt, null);
+            m_SqlQueries.closeAll(null, nextStmt, null);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return retValue;
     }
@@ -500,11 +395,11 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      */
     public Serializable writeSystemProperty(String name, Serializable object) throws CmsException {
 
-        PreparedStatement statement = null;
-        PreparedStatement nextStatement = null;
-        PreparedStatement trimStatement = null;
+        PreparedStatement stmt = null;
+        PreparedStatement nextStmt = null;
+        PreparedStatement trimStmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         byte[] value = null;
         try {
             // serialize the object
@@ -513,21 +408,21 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
             oout.writeObject(object);
             oout.close();
             value = bout.toByteArray();
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_SYSTEMPROPERTIES_NAMEFORUPDATE"));
-            statement.setString(1, name);
-            con.setAutoCommit(false);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_NAMEFORUPDATE");
+            stmt.setString(1, name);
+            conn.setAutoCommit(false);
+            res = stmt.executeQuery();
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
                 // first trim the blob to 0 bytes, otherwise ther could be left some bytes
                 // of the old content
 
-                trimStatement = con.prepareStatement(m_SqlQueries.get("C_TRIMBLOB"));
-                trimStatement.setBlob(1, blob);
-                trimStatement.setInt(2, 0);
-                trimStatement.execute();
-                trimStatement.close();
+                trimStmt = m_SqlQueries.getPreparedStatement(conn, "C_TRIMBLOB");
+                trimStmt.setBlob(1, blob);
+                trimStmt.setInt(2, 0);
+                trimStmt.execute();
+                trimStmt.close();
                 ByteArrayInputStream instream = new ByteArrayInputStream(value);
                 OutputStream outstream = blob.getBinaryOutputStream();
                 byte[] chunk = new byte[blob.getChunkSize()];
@@ -538,58 +433,32 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
                 instream.close();
                 outstream.close();
             }
-            statement.close();
+            stmt.close();
             res.close();
             // for the oracle-driver commit or rollback must be executed manually
             // because setAutoCommit = false in CmsDbPool.CmsDbPool
-            nextStatement = con.prepareStatement(m_SqlQueries.get("C_COMMIT"));
-            nextStatement.execute();
-            nextStatement.close();
-            con.setAutoCommit(true);
+            nextStmt = m_SqlQueries.getPreparedStatement(conn, "C_COMMIT");
+            nextStmt.execute();
+            nextStmt.close();
+            conn.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + CmsException.C_SERIALIZATION, e);
-        } finally {
-            if (res != null) {
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+        } finally {           
+            if (stmt != null) {
                 try {
-                    res.close();
-                } catch (SQLException se) {
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
+                    stmt.close();
                 } catch (SQLException se) {
                 }
                 try {
-                    nextStatement = con.prepareStatement(m_SqlQueries.get("C_ROLLBACK"));
-                    nextStatement.execute();
+                    nextStmt = m_SqlQueries.getPreparedStatement(conn, "C_ROLLBACK");
+                    nextStmt.execute();
                 } catch (SQLException exc){
                 }
             }
-            if (nextStatement != null) {
-                try {
-                    nextStatement.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (trimStatement != null) {
-                try {
-                    trimStatement.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (con != null) {
-                try {
-                    con.setAutoCommit(true);
-                } catch (SQLException se) {
-                }
-                try {
-                    con.close();
-                } catch (SQLException se) {
-                }
-            }
+            m_SqlQueries.closeAll(null, nextStmt, null);
+            m_SqlQueries.closeAll(conn, trimStmt, res);
         }
         return readSystemProperty(name);
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/15 14:02:43 $
-* Version: $Revision: 1.89 $
+* Date   : $Date: 2003/05/20 10:17:18 $
+* Version: $Revision: 1.90 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.89 $ $Date: 2003/05/15 14:02:43 $ *
+ * @version $Revision: 1.90 $ $Date: 2003/05/20 10:17:18 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -104,15 +104,15 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      public Vector getAllBackupProjects() throws CmsException {
          Vector projects = new Vector();
          ResultSet res = null;
-         PreparedStatement statement = null;
-         Connection con = null;
+         PreparedStatement stmt = null;
+         Connection conn = null;
 
          try {
              // create the statement
-             con = DriverManager.getConnection(m_poolNameBackup);
-             statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READLAST_BACKUP"));
-             statement.setInt(1, 300);
-             res = statement.executeQuery();
+             conn = m_SqlQueries.getConnectionForBackup();
+             stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTS_READLAST_BACKUP");
+             stmt.setInt(1, 300);
+             res = stmt.executeQuery();
              while(res.next()) {
                  Vector resources = m_ResourceBroker.getVfsAccess().readBackupProjectResources(res.getInt("VERSION_ID"));
                  projects.addElement( new CmsBackupProject(res.getInt("VERSION_ID"),
@@ -134,31 +134,10 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
                                                     resources));
              }
          } catch( SQLException exc ) {
-             throw new CmsException("[" + this.getClass().getName() + ".getAllBackupProjects()] " + exc.getMessage(),
-                 CmsException.C_SQL_ERROR, exc);
+             throw m_SqlQueries.getCmsException(this, "getAllBackupProjects()", CmsException.C_SQL_ERROR, exc);
          } finally {
             // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
+            m_SqlQueries.closeAll(conn, stmt, res);
          }
          return(projects);
      }

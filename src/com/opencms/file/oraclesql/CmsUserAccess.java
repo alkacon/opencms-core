@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/19 13:30:07 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/05/20 10:17:18 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Oracle/OCI implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/05/19 13:30:07 $
+ * @version $Revision: 1.7 $ $Date: 2003/05/20 10:17:18 $
  * 
  * @see com.opencms.file.genericSql.CmsUserAccess
  * @see com.opencms.file.genericSql.I_CmsUserAccess
@@ -168,18 +168,6 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
         } catch (IOException e) {
             throw m_SqlQueries.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e);
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException se) {
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException exc) {
-                }
-            }
             if (stmt2 != null) {
                 try {
                     stmt2.close();
@@ -191,22 +179,8 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
                 } catch (SQLException se) {
                 }
             }
-            if (nextStmt != null) {
-                try {
-                    nextStmt.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (SQLException se) {
-                }
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                }
-            }
+            m_SqlQueries.closeAll(null, nextStmt, null);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return readUser(id);
     }
@@ -303,18 +277,6 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
         } catch (IOException e) {
             throw m_SqlQueries.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e);
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException se) {
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException exc) {
-                }
-            }
             if (stmt2 != null) {
                 try {
                     stmt2.close();
@@ -326,22 +288,8 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
                 } catch (SQLException se) {
                 }
             }
-            if (nextStmt != null) {
-                try {
-                    nextStmt.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (SQLException se) {
-                }
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                }
-            }
+            m_SqlQueries.closeAll(null, nextStmt, null);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
 
         return readUser(id);
@@ -431,12 +379,7 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
         } catch (IOException e) {
             throw m_SqlQueries.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e);
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException exc) {
-                }
-            }
+            
             if (stmt2 != null) {
                 try {
                     stmt2.close();
@@ -448,34 +391,9 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
                 } catch (SQLException se) {
                 }
             }
-            if (nextStmt != null) {
-                try {
-                    nextStmt.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (trimStmt != null) {
-                try {
-                    trimStmt.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (SQLException se) {
-                }
-                try {
-                    conn.close();
-                } catch (SQLException se) {
-                }
-            }
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException se) {
-                }
-            }
+            m_SqlQueries.closeAll(null, trimStmt, null);
+            m_SqlQueries.closeAll(null, nextStmt, null);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
     }
 
