@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2004/01/21 15:02:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/01/22 14:03:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,11 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.10
  */
-public class CmsReport extends CmsDialog {     
+public class CmsReport extends CmsDialog {       
     
     /** Request parameter key for the type of the report */
     public static final String PARAM_REPORT_TYPE = "reporttype";
@@ -57,10 +57,16 @@ public class CmsReport extends CmsDialog {
     public static final String REPORT_TYPE_SIMPLE = "simple";   
     
     /** Request parameter value that this report should create an "extended" output */
-    public static final String REPORT_TYPE_EXTENDED = "extended";     
+    public static final String REPORT_TYPE_EXTENDED = "extended";   
+    
+    /** Request parameter key for the type of the report */
+    public static final String PARAM_REPORT_CONTINUEKEY = "reportcontinuekey";
     
     /** Constant for the "Details" button in the build button method */
     public static final int BUTTON_DETAILS = 101;
+    
+    /** The key name which contains the localized message for the continue checkbox */
+    private String m_paramReportContinueKey;
     
     /** The type of this report */
     private String m_paramReportType;
@@ -71,8 +77,11 @@ public class CmsReport extends CmsDialog {
     /** Update time for report reloading */
     public static final int REPORT_UPDATE_TIME = 2000;
     
-    /** The Thread to display in this report */
+    /** The thread to display in this report */
     private CmsUUID m_paramThread;
+    
+    /** The next thread to display after this report */
+    private String m_paramThreadHasNext;
     
     /**
      * Public constructor.<p>
@@ -121,6 +130,27 @@ public class CmsReport extends CmsDialog {
     } 
     
     /**
+     * Returns the key name which contains the localized message for the continue checkbox.<p>
+     * 
+     * @return the key name which contains the localized message for the continue checkbox
+     */
+    public String getParamReportContinueKey() {
+        if (m_paramReportContinueKey == null) {
+            m_paramReportContinueKey = "";
+        }
+        return m_paramReportContinueKey;
+    }
+    
+    /**
+     * Sets the key name which contains the localized message for the continue checkbox.<p>
+     * 
+     * @param key the key name which contains the localized message for the continue checkbox
+     */
+    public void setParamReportContinueKey(String key) {
+        m_paramReportContinueKey = key;
+    }
+   
+    /**
      * Returns the type of this report.<p>
      * 
      * @return the type of this report
@@ -145,7 +175,28 @@ public class CmsReport extends CmsDialog {
         } else {
             return null;
         }
+    } 
+    
+    /**
+     * Returns if another report is following this report.<p>
+     * 
+     * @return "true" if another report is following this report
+     */
+    public String getParamThreadHasNext() {
+        if (m_paramThreadHasNext == null) { 
+            m_paramThreadHasNext = "";
+        } 
+        return m_paramThreadHasNext;
     }
+    
+    /**
+     * Sets if another report is following this report.<p>
+     * 
+     * @param value "true" if another report is following this report
+     */
+    public void setParamThreadHasNext(String value) {
+        m_paramThreadHasNext = value;
+    }  
     
     /**
      * Returns the part of the report that is ready for output.<p>
@@ -158,6 +209,20 @@ public class CmsReport extends CmsDialog {
             return thread.getReportUpdate();
         } else {
             return "";
+        }
+    }
+    
+    /**
+     * Returns if the report generated an error output.<p>
+     * 
+     * @return true if the report generated an error, otherwise false
+     */
+    public boolean hasError() {
+        A_CmsReportThread thread = OpenCms.getThreadStore().retrieveThread(m_paramThread);
+        if (thread != null) {
+            return thread.hasError();
+        } else {
+            return false;
         }
     }
     
@@ -185,7 +250,7 @@ public class CmsReport extends CmsDialog {
     public String htmlStart(boolean loadStyles) {
         return pageHtml(HTML_START, loadStyles);
     }
-    
+        
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
@@ -207,7 +272,7 @@ public class CmsReport extends CmsDialog {
      */
     public boolean isAlive() {
         A_CmsReportThread thread = OpenCms.getThreadStore().retrieveThread(m_paramThread);
-        if (thread != null) {            
+        if (thread != null) {       
             return thread.isAlive();
         } else {
             return false;
@@ -275,19 +340,6 @@ public class CmsReport extends CmsDialog {
     }  
     
     /**
-     * Builds a button row with a single "ok" button to close the report.<p>
-     *  
-     * @return the button row 
-     */
-    public String dialogButtonRowReportOk() {
-        if (getParamOkLink() == null) {
-            return dialogButtonRow(new int[] {BUTTON_OK}, new String[1]);
-        } else {
-            return dialogButtonRow(new int[] {BUTTON_OK_NO_SUBMIT}, new String[] {getParamOkLink()});
-        }
-    }
-    
-    /**
      * @see org.opencms.workplace.CmsDialog#dialogButtonRowHtml(java.lang.StringBuffer, int, java.lang.String)
      */
     protected void dialogButtonRowHtml(StringBuffer result, int button, String attribute) {
@@ -307,12 +359,46 @@ public class CmsReport extends CmsDialog {
     }
     
     /**
-     * Builds a button row with an "Ok" and a "Details" button.<p>
+     * Builds a button row with an "Ok", a "Cancel" and a "Details" button.<p>
      * 
+     * This row is displayed when the first report is running.<p>
+     * 
+     * @param okAttrs optional attributes for the ok button
+     * @param cancelAttrs optional attributes for the cancel button
+     * @param detailsAttrs optional attributes for the details button
      * @return the button row
      */
-    public String dialogButtonRowOkDetails() {
-        return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_DETAILS}, new String[] {"", "onClick='switchOutputFormat()'"});
-    }    
+    public String dialogButtonRowContinue(String okAttrs, String cancelAttrs, String detailsAttrs) {
+        if (detailsAttrs == null || "".equals(detailsAttrs)) {
+            detailsAttrs = "";
+        } else {
+            detailsAttrs += " ";
+        }
+        return dialogButtonRow(new int[] {BUTTON_OK_NO_SUBMIT, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {okAttrs, cancelAttrs, detailsAttrs + "onclick=\"switchOutputFormat();\""});
+    }
+    
+    /**
+     * Builds a button row with an "Ok", a "Cancel" and a "Details" button.<p>
+     * 
+     * This row is used when a single report is running or after the first report has finished.<p>
+     * 
+     * @param okAttrs optional attributes for the ok button
+     * @param cancelAttrs optional attributes for the cancel button
+     * @param detailsAttrs optional attributes for the details button
+     * @return the button row
+     */
+    public String dialogButtonRowOkCancelDetails(String okAttrs, String cancelAttrs, String detailsAttrs) {
+        
+        if (detailsAttrs == null || "".equals(detailsAttrs)) {
+            detailsAttrs = "";
+        } else {
+            detailsAttrs += " ";
+        }
+        
+        if ("true".equals(getParamThreadHasNext()) && !"".equals(getParamReportContinueKey())) {
+            return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {okAttrs, cancelAttrs, detailsAttrs + "onclick=\"switchOutputFormat();\""});
+        }
+        return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_DETAILS}, new String[] {okAttrs, detailsAttrs + "onclick=\"switchOutputFormat();\""});
+    }
     
 }

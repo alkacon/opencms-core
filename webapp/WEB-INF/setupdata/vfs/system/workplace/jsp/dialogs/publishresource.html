@@ -11,19 +11,9 @@ switch (wp.getAction()) {
 case CmsPublishProject.ACTION_CONFIRMED:
 case CmsPublishProject.ACTION_REPORT_BEGIN:
 case CmsPublishProject.ACTION_REPORT_UPDATE:
+case CmsPublishProject.ACTION_REPORT_END:
 
 	wp.actionReport();
-
-break;
-//////////////////// ACTION: close report and return to workplace
-case CmsPublishProject.ACTION_REPORT_END:
-%>
-<html>
-<head></head>
-<body onload="location.href('<%= wp.getJsp().link("/system/workplace/jsp/explorer_files.html") %>');">
-</body>
-</html>
-<%
 
 break;
 //////////////////// ACTION: show unlock confirmation dialog

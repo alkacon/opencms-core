@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsLogReport.java,v $
- * Date   : $Date: 2004/01/22 11:50:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/22 14:03:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * This prints all messages in the logfile at INFO level.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsLogReport extends A_CmsReport {
 
@@ -119,6 +119,12 @@ public class CmsLogReport extends A_CmsReport {
                 m_buffer.append("!!! ");
                 m_buffer.append(value);
                 m_buffer.append(" !!!");
+                break;
+            case C_FORMAT_ERROR:
+                m_buffer.append("!!! ");
+                m_buffer.append(value);
+                m_buffer.append(" !!!");
+                addError(value);
                 break;
             case C_FORMAT_NOTE:
             case C_FORMAT_OK:

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2004/01/22 11:50:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/01/22 14:03:35 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsHtmlReport extends A_CmsReport {
     
@@ -169,7 +169,7 @@ public class CmsHtmlReport extends A_CmsReport {
         StringBuffer buf = new StringBuffer();
         
         if (!m_writeHtml) {
-            if (m_showExceptionStackTracke) {
+        if (m_showExceptionStackTracke) {
                 buf.append("aT('");
                 buf.append(key("report.exception"));
                 String exception = Encoder.escapeXml(Utils.getStackTrace(throwable));
@@ -192,27 +192,27 @@ public class CmsHtmlReport extends A_CmsReport {
             }
         } else {
             if (m_showExceptionStackTracke) {
-                buf.append("<span class='throw'>");
-                buf.append(key("report.exception"));
-                String exception = Encoder.escapeXml(Utils.getStackTrace(throwable));
-                exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
-                StringTokenizer tok = new StringTokenizer(exception, "\r\n");
-                while (tok.hasMoreTokens()) {
-                    buf.append(tok.nextToken());
-                    buf.append(getLineBreak());
-                }
-                buf.append("</span>");
-            } else {
-                buf.append("<span class='throw'>");
-                buf.append(key("report.exception"));
-                buf.append(throwable.toString());
-                buf.append("</span>");
+            buf.append("<span class='throw'>");
+            buf.append(key("report.exception"));
+            String exception = Encoder.escapeXml(Utils.getStackTrace(throwable));
+            exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
+            StringTokenizer tok = new StringTokenizer(exception, "\r\n");
+            while (tok.hasMoreTokens()) {
+                buf.append(tok.nextToken());
                 buf.append(getLineBreak());
-            }
-        }
-
-        return buf;
-    } 
+            }            
+            buf.append("</span>");
+        } else {
+            buf.append("<span class='throw'>");
+            buf.append(key("report.exception"));
+            buf.append(throwable.toString());
+            buf.append("</span>");
+            buf.append(getLineBreak());
+        }        
+    }
+    
+        return buf;        
+    }
     
     /**
      * Returns the corrent linebreak notation depending on the output style of thsi report.
@@ -230,7 +230,7 @@ public class CmsHtmlReport extends A_CmsReport {
         StringBuffer result = new StringBuffer();
         int indexEnd = m_content.size();
         for (int i=m_indexNext; i<indexEnd; i++) {
-            Object obj = m_content.get(i); 
+            Object obj = m_content.get(i);
             if (obj instanceof String || obj instanceof StringBuffer) {
                 result.append(obj);
             } else if (obj instanceof Throwable) {
@@ -271,6 +271,14 @@ public class CmsHtmlReport extends A_CmsReport {
                     buf.append(value);
                     buf.append("'); ");
                     m_content.add(buf);
+                    break;
+                case C_FORMAT_ERROR :
+                    buf = new StringBuffer();
+                    buf.append("aE('");
+                    buf.append(value);
+                    buf.append("'); ");
+                    m_content.add(buf);
+                    addError(value);
                     break;
                 case C_FORMAT_NOTE :
                     buf = new StringBuffer();
@@ -318,6 +326,14 @@ public class CmsHtmlReport extends A_CmsReport {
                     buf.append("</span>");
                     m_content.add(buf);
                     break;
+                case C_FORMAT_ERROR :
+                    buf = new StringBuffer();
+                    buf.append("<span class='err'>");
+                    buf.append(value);
+                    buf.append("</span>");
+                    m_content.add(buf);
+                    addError(value);
+                    break;
                 case C_FORMAT_NOTE :
                     buf = new StringBuffer();
                     buf.append("<span class='note'>");
@@ -345,7 +361,7 @@ public class CmsHtmlReport extends A_CmsReport {
     public synchronized void println() {
         this.print(getLineBreak());
     }
-
+    
     /**
      * @see org.opencms.report.I_CmsReport#println(java.lang.String)
      */
@@ -366,5 +382,5 @@ public class CmsHtmlReport extends A_CmsReport {
     public synchronized void println(Throwable t) {
         m_content.add(t);
     }
-    
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2004/01/22 11:50:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/01/22 14:03:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,15 @@
 package org.opencms.report;
 
 
+import java.util.List;
+
 /** 
  * This is the interface for the report classes which are used for the output
  * during operations that run on a spearate Thread in OpenCms,
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public interface I_CmsReport {
         
@@ -60,6 +62,9 @@ public interface I_CmsReport {
     /** Indicates warning formatting */
     int C_FORMAT_WARNING = 1;
     
+    /** Indicates error formatting */
+    int C_FORMAT_ERROR = 5;
+    
     /**
      * Adds a bundle specified by it's name to the List of resource bundles.<p>
      * 
@@ -67,6 +72,20 @@ public interface I_CmsReport {
      * @param locale a 2-letter language code according to ISO 639 
      */
     void addBundle(String bundleName, String locale);
+    
+    /**
+     * Adds an error object to the list of errors that occured during the report.<p>
+     * 
+     * @param obj the error object
+     */
+    void addError(Object obj);
+    
+    /**
+     * Returns a list of all errors that occured during the report.<p>
+     * 
+     * @return an error list that occured during the report
+     */
+    List getErrors();
            
     /**
      * Updates this report, this processes all new output added since 
@@ -85,6 +104,13 @@ public interface I_CmsReport {
      * @return the time this report has been running
      */
     long getRuntime();
+    
+    /**
+     * Returns if the report generated an error output.<p>
+     * 
+     * @return true if the report generated an error, otherwise false
+     */
+    boolean hasError();
     
     /**
      * Gets the localized resource string for a given message key.<p>
@@ -120,8 +146,8 @@ public interface I_CmsReport {
     /**
      * Adds a line break to the report.<p>
      */
-    void println();     
-
+    void println();
+    
     /**
      * Prints a String with line break to the report.<p>
      *

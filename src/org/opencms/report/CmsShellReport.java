@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2004/01/22 11:50:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/01/22 14:03:35 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * It stores nothing. It just prints everthing to <code>System.out</code>.
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsShellReport extends A_CmsReport {
         
@@ -96,6 +96,13 @@ public class CmsShellReport extends A_CmsReport {
                 buf.append("!!! ");
                 buf.append(value);
                 System.out.print(buf);
+                break;
+            case C_FORMAT_ERROR:
+                buf = new StringBuffer();
+                buf.append("!!! ");
+                buf.append(value);
+                System.out.print(buf);
+                addError(value);
                 break;
             case C_FORMAT_NOTE:
             case C_FORMAT_OK:

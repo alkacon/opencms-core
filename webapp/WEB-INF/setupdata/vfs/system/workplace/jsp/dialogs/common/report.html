@@ -65,14 +65,38 @@ function init() {
     parent.update();
     
 	if (alive) {
-    	active = setTimeout('reload();', <%= wp.REPORT_UPDATE_TIME %>);
+    	active = setTimeout("reload('<%= wp.REPORT_UPDATE %>');", <%= wp.REPORT_UPDATE_TIME %>);
    	} else {
-   		active = setTimeout('parent.stop();', 10);
+   		var hasNext = "<%= wp.getParamThreadHasNext() %>";
+   		if (hasNext == "true") {
+   			if (!<%= wp.hasError() %> || parent.isContinueChecked()) {
+   				// all actions ok or continue checked, continue automatically
+   				continueReport();
+   			} else {
+   				// wait for user interaction
+   				setTimeout('parent.stop();', 10);
+   			}
+   		} else {
+   			setTimeout('parent.stop();', 10);
+   		}
    	}
 }
 
-function reload() {
-	location.href="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>";
+function reload(actionParam) {
+	location.href="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=" + actionParam + "&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= wp.getParamThreadHasNext() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>";
+}
+
+
+function continueReport() {
+	if (!parent.buttonsInitialized) {
+		parent.initButtons();
+	}
+	parent.disableButtons("buttonrowok");
+	parent.displayButtonRowOk();	
+	setTimeout("reload('<%= wp.REPORT_END %>');", <%= wp.REPORT_UPDATE_TIME %>);
+	if (parent.document.main.<%= wp.PARAM_THREAD_HASNEXT %>) {
+		parent.document.main.<%= wp.PARAM_THREAD_HASNEXT %>.value = "false";
+	}
 }
 
 // -->
@@ -125,6 +149,9 @@ var FORMAT_THROWABLE = 6;
 
 // saves the type of this report, which is either {simple|extended}
 var reportType = "<%= wp.getParamReportType() %>";
+
+// flag indicating that the button rows are initialized
+var buttonsInitialized = false;
 
 function append(message) {
 	reportOutputFormats.push(FORMAT_DEFAULT);
@@ -229,8 +256,7 @@ var pageEndExtended =
 function start() {
 	isRunning = true;
 	
-	document.getElementById("ok").disabled = true;
-	document.getElementById("details").disabled = false;
+	initButtons();
 	
 	updateReportImage();
 }
@@ -238,8 +264,11 @@ function start() {
 function stop() {
 	isRunning = false;
 	
-    document.getElementById("ok").disabled = false;
-	document.getElementById("details").disabled = false;  
+	if (document.main.<%= wp.PARAM_THREAD_HASNEXT %>) {
+		document.main.<%= wp.PARAM_THREAD_HASNEXT %>.value = "false";
+	}
+	enableButtons("buttonrowcontinue");
+	enableButtons("buttonrowok");
 	
 	updateReport();	
 	updateReportImage();
@@ -366,6 +395,71 @@ function doScroll() {
     report.window.scrollTo(0, pos);
 }
 
+function isContinueChecked() {
+	if (document.main.continuereport && document.main.continuereport.checked == true) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function displayButtonRowContinue() {
+	displayButtonRow("buttonrowcontinue", true);
+	displayButtonRow("checkcontinue", true);
+	displayButtonRow("buttonrowok", false);
+}
+
+function displayButtonRowOk() {
+	displayButtonRow("buttonrowcontinue", false);
+	toggleButton("continuereport", true);
+	displayButtonRow("buttonrowok", true);
+}
+
+function displayButtonRow(rowId, show) {
+	if (show) {
+		document.getElementById(rowId).className = "show";
+	} else {
+		document.getElementById(rowId).className = "hide";
+	}
+}
+
+function enableButtons(rowId) {
+	if (rowId == "buttonrowcontinue") {
+		toggleButton("contok", false);
+		toggleButton("contcancel", false);
+	} else {
+		toggleButton("okclose", false);
+	}
+}
+
+function disableButtons(rowId) {
+	if (rowId == "buttonrowcontinue") {
+		toggleButton("contok", true);
+		toggleButton("contcancel", true);
+	} else {
+		toggleButton("okclose", true);
+		toggleButton("okcancel", true);
+	}
+}
+
+function toggleButton(buttonId, disableButton) {
+	if (document.getElementById(buttonId))  {
+		document.getElementById(buttonId).disabled = disableButton;
+	}
+}
+
+function initButtons() {
+	if (document.main.<%= wp.PARAM_THREAD_HASNEXT %> && document.main.<%= wp.PARAM_THREAD_HASNEXT %>.value == "true"
+			&& document.main.<%= wp.PARAM_REPORT_CONTINUEKEY %> && document.main.<%= wp.PARAM_REPORT_CONTINUEKEY %>.value != "") {
+		displayButtonRowContinue();
+	} else {
+		displayButtonRowOk();
+	}
+	disableButtons("buttonrowcontinue");
+	disableButtons("buttonrowok");
+	buttonsInitialized = true;
+}
+
 //-->
 </script>
 
@@ -386,8 +480,13 @@ function doScroll() {
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>
 <td><span style="height:20px; width:20px; display:block"></span></td>
-<td width="100%"><%= wp.dialogButtonRowOkDetails() %></td>
-<td><iframe src="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>" name="update" style="width:20px; height:20px; margin: 0px;" marginwidth="0" marginheight="0" frameborder="0" framespacing="0" scrolling="no"></iframe></td>
+<td width="100%" id="buttonrowcontinue" class="hide"><%= wp.dialogButtonRowContinue("id=\"contok\" onclick=\"update.continueReport();\"", "id=\"contcancel\"", "id=\"contdetails\"") %></td>
+<td width="100%" id="buttonrowok" class="hide"><%= wp.dialogButtonRowOkCancelDetails("id=\"okclose\"", "id=\"okcancel\"", "id=\"details\"") %></td>
+<td><iframe src="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= wp.getParamThreadHasNext() %>" name="update" style="width:20px; height:20px; margin: 0px;" marginwidth="0" marginheight="0" frameborder="0" framespacing="0" scrolling="no"></iframe></td>
+</tr></table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>
+<td class="hide" style="width: 100%; text-align: center;" id="checkcontinue"><input type="checkbox" name="continuereport" value="true">&nbsp;<%= wp.key(wp.getParamReportContinueKey()) %></td>
 </tr></table>
 
 </form>

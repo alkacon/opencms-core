@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/01/14 10:00:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/01/22 14:03:35 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Utils;
 
 import org.opencms.main.OpenCms;
+import org.opencms.threads.CmsHtmlLinkValidatorThread;
 import org.opencms.threads.CmsPublishThread;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1.12
  */
@@ -228,7 +229,7 @@ public class CmsPublishProject extends CmsReport {
      */
     public void setParamProjectname(String value) {
         m_paramProjectname = value;
-    } 
+    }  
         
     /**
      * Performs the publish report, will be called by the JSP page.<p>
@@ -239,6 +240,9 @@ public class CmsPublishProject extends CmsReport {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
+            case ACTION_REPORT_END:
+                closeDialog();
+                break;
             case ACTION_REPORT_UPDATE:
                 setParamAction(REPORT_UPDATE);   
                 getJsp().include(C_FILE_REPORT_OUTPUT);  
@@ -278,25 +282,14 @@ public class CmsPublishProject extends CmsReport {
                     getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
                 }                    
                 
-                // start different publish threads for direct publish and publish project             
-                CmsPublishThread thread = null;
-                if ("true".equals(getParamDirectpublish())) {
-                    // publish resource directly
-                    thread = new CmsPublishThread(getCms(), getParamResource(), "true".equals(getParamPublishsiblings()));
-                } else {
-                    try {
-                        // switch to project which will be published
-                        int projectId = Integer.parseInt(getParamProjectid());
-                        getCms().getRequestContext().setCurrentProject(projectId);
-                    } catch (Exception e) {
-                        // ignore
-                    }
-                    
-                    thread = new CmsPublishThread(getCms());
-                }
-                thread.start();
+                // start the link validation thread before publishing
+                CmsHtmlLinkValidatorThread thread = new CmsHtmlLinkValidatorThread(getCms());
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getId().toString());
+                // set the flag that another thread is following
+                setParamThreadHasNext("true");
+                // set the key name for the continue checkbox
+                setParamReportContinueKey("label.button.continue.brokenlinks");
                 getJsp().include(C_FILE_REPORT_OUTPUT);  
                 break;
         }
@@ -330,7 +323,15 @@ public class CmsPublishProject extends CmsReport {
         } else if (REPORT_BEGIN.equals(getParamAction())) {
             setAction(ACTION_REPORT_BEGIN);
         } else if (REPORT_END.equals(getParamAction())) {
-            setAction(ACTION_REPORT_END);
+            if ("true".equals(getParamThreadHasNext())) {
+                // after the link check start the publish thread
+                startPublishThread();
+                setParamAction(REPORT_UPDATE);
+                setAction(ACTION_REPORT_UPDATE);
+            } else {
+                // ends the publish thread
+                setAction(ACTION_REPORT_END);
+            }
         } else {                        
             setAction(ACTION_DEFAULT);
             // set parameters depending on publishing type
@@ -409,6 +410,34 @@ public class CmsPublishProject extends CmsReport {
             // ignore
         }
         return false;
+    }
+    
+    /**
+     * Starts the publish thread for the project or a resource.<p>
+     * 
+     * The type of publish thread is determined by the value of the "directpublish" parameter.<p>
+     */
+    private void startPublishThread() {
+        // start different publish threads for direct publish and publish project  
+        CmsPublishThread thread = null;
+        if ("true".equals(getParamDirectpublish())) {
+            // publish resource directly
+            thread = new CmsPublishThread(getCms(), getParamResource(), "true".equals(getParamPublishsiblings()));
+        } else {
+            try {
+                // switch to project which will be published
+                int projectId = Integer.parseInt(getParamProjectid());
+                getCms().getRequestContext().setCurrentProject(projectId);
+            } catch (Exception e) {
+                // ignore this exception
+            }           
+            thread = new CmsPublishThread(getCms());
+        }
+        // set the new thread id and flag that no thread is following
+        setParamThread(thread.getId().toString());
+        setParamThreadHasNext("false");
+        // start the publish thread
+        thread.start();
     }
     
     /**

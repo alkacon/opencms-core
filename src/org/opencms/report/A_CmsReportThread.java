@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2004/01/21 15:02:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/01/22 14:03:35 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,19 @@
  
 package org.opencms.report;
 
+import com.opencms.file.CmsObject;
+import com.opencms.workplace.CmsXmlLanguageFile;
+
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.file.CmsObject;
-import com.opencms.workplace.CmsXmlLanguageFile;
+import java.util.List;
 
 /** 
  * Provides a common Thread class for the reports.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public abstract class A_CmsReportThread extends Thread {
 
@@ -85,6 +87,17 @@ public abstract class A_CmsReportThread extends Thread {
     }
     
     /**
+     * Adds an error object to the list of errors that occured during the report.<p>
+     * 
+     * @param obj the error object
+     */
+    public void addError(Object obj) {
+        if (m_report != null) {
+            m_report.addError(obj);
+        }
+    }
+    
+    /**
      * Returns the OpenCms context object this Thread is initialized with.<p>
      * 
      * @return the OpenCms context object this Thread is initialized with
@@ -101,6 +114,19 @@ public abstract class A_CmsReportThread extends Thread {
      */
     public Throwable getError() {
         return null;
+    }
+    
+    /**
+     * Returns a list of all errors that occured during the report.<p>
+     * 
+     * @return an error list that occured during the report
+     */
+    public List getErrors() {
+        if (m_report != null) {
+            return m_report.getErrors();
+        } else {
+            return null;
+        }
     }
         
     /**
@@ -139,6 +165,19 @@ public abstract class A_CmsReportThread extends Thread {
         } else {
             return System.currentTimeMillis() - m_starttime;
         }        
+    }
+    
+    /**
+     * Returns if the report generated an error output.<p>
+     * 
+     * @return true if the report generated an error, otherwise false
+     */
+    public boolean hasError() {
+        if (m_report != null) {
+            return (m_report.getErrors().size() > 0);
+        } else {
+            return false;
+        }
     }
         
     /**
