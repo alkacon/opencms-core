@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/04/04 12:19:14 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/04/27 14:37:37 $
+* Version: $Revision: 1.7 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2001/04/04 12:19:14 $
+ * @version $Revision: 1.7 $ $Date: 2001/04/27 14:37:37 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -616,7 +616,16 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
 
         // Collect the configurations
         try {
-            m_configurations = new Configurations(new ExtendedProperties(CmsBase.getPropertiesPath(true)));
+            ExtendedProperties p = new ExtendedProperties(CmsBase.getPropertiesPath(true));
+
+            // Change path to log file, if given path is not absolute
+            String logFile = (String)p.get("log.file");
+            if(logFile != null) {
+                p.put("log.file", CmsBase.getAbsolutePath(logFile));
+            }
+
+            // m_configurations = new Configurations(new ExtendedProperties(CmsBase.getPropertiesPath(true)));
+            m_configurations = new Configurations(p);
         }
         catch(Exception e) {
             throw new ServletException(e.getMessage() + ".  Properties file is: " + CmsBase.getBasePath() + "opencms.properties");
