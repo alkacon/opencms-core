@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogMsg.java,v $
-* Date   : $Date: 2004/07/08 15:21:13 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2004/12/20 09:17:23 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workflow.CmsTask;
+import org.opencms.workflow.CmsTaskService;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -45,7 +46,7 @@ import java.util.Hashtable;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.28 $ $Date: 2004/07/08 15:21:13 $
+ * @version $Revision: 1.29 $ $Date: 2004/12/20 09:17:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -90,18 +91,19 @@ public class CmsTaskContentDialogMsg extends CmsWorkplaceDefault {
                 taskid = taskidInt.intValue();
                 session.putValue("taskid", taskidInt);
             }
-            CmsTask task = cms.readTask(taskid);
+            CmsTaskService taskService = cms.getTaskService();
+            CmsTask task = taskService.readTask(taskid);
             CmsUser user = null;
             if("query".equals(parameters.get("action"))) {
                 
                 // this is the query-dialog
-                user = cms.readOwner(task);
+                user = taskService.readOwner(task);
                 templateSelector = "query";
             }
             else {
                 
                 // this is the message-dialog
-                user = cms.readAgent(task);
+                user = taskService.readAgent(task);
             }
             userName = CmsUser.getFullName(user);
         }

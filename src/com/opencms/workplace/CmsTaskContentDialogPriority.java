@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
-* Date   : $Date: 2004/12/15 12:29:45 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2004/12/20 09:17:23 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.workflow.CmsTask;
+import org.opencms.workflow.CmsTaskService;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -52,7 +53,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.40 $ $Date: 2004/12/15 12:29:45 $
+ * @version $Revision: 1.41 $ $Date: 2004/12/20 09:17:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -164,19 +165,20 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
                 taskid = taskidInt.intValue();
                 session.putValue("taskid", taskidInt);
             }
-            CmsTask task = cms.readTask(taskid);
+            CmsTaskService taskService = cms.getTaskService();
+            CmsTask task = taskService.readTask(taskid);
             taskName = task.getName();
             taskDescription = CmsTaskAction.getDescription(cms, task.getId());
-            paraAcceptation = cms.getTaskPar(task.getId(), C_TASKPARA_ACCEPTATION);
-            paraAll = cms.getTaskPar(task.getId(), C_TASKPARA_ALL);
-            paraCompletion = cms.getTaskPar(task.getId(), C_TASKPARA_COMPLETION);
-            paraDelivery = cms.getTaskPar(task.getId(), C_TASKPARA_DELIVERY);
+            paraAcceptation = taskService.getTaskPar(task.getId(), C_TASKPARA_ACCEPTATION);
+            paraAll = taskService.getTaskPar(task.getId(), C_TASKPARA_ALL);
+            paraCompletion = taskService.getTaskPar(task.getId(), C_TASKPARA_COMPLETION);
+            paraDelivery = taskService.getTaskPar(task.getId(), C_TASKPARA_DELIVERY);
             due = CmsDateUtil.getDateShort(task.getTimeOut().getTime());
 
             // preselect the old user and role in the dialog for forwarding and resurrection
             // compute the indices of the user and role
-            String username = cms.readAgent(task).getName();
-            String groupname = cms.readGroup(task).getName();
+            String username = taskService.readAgent(task).getName();
+            String groupname = taskService.readGroup(task).getName();
             int userindex = 0;
             int groupindex = 0;
             List groups = cms.getGroups();
@@ -242,7 +244,7 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // read current task for priority-level
-        CmsTask task = cms.readTask(((Integer)session.getValue("taskid")).intValue());
+        CmsTask task = cms.getTaskService().readTask(((Integer)session.getValue("taskid")).intValue());
 
         // add names for priority
         names.addElement(lang.getLanguageValue("task.label.prioritylevel.high"));

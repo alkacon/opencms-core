@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskList.java,v $
-* Date   : $Date: 2004/07/08 15:21:06 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2004/12/20 09:17:23 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.workflow.CmsTask;
+import org.opencms.workflow.CmsTaskService;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -58,7 +59,7 @@ import org.w3c.dom.Element;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.26 $ $Date: 2004/07/08 15:21:06 $
+ * @version $Revision: 1.27 $ $Date: 2004/12/20 09:17:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -150,6 +151,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
         GregorianCalendar newcal = new GregorianCalendar(cal.get(Calendar.YEAR), 
                 cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
         long now = newcal.getTime().getTime();
+        CmsTaskService taskService = cms.getTaskService();
         for(int i = 0;i < list.size();i++) {
             
             // get the actual project
@@ -157,7 +159,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
             CmsProject project = null;
             projectname = "?";
             try {
-                project = cms.readProject(task);
+                project = taskService.readProject(task);
             }
             catch(Exception exc) {
                 
@@ -181,7 +183,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
             CmsUser owner = null;
             String ownerName = "";
             try {
-                owner = cms.readOwner(task);
+                owner = taskService.readOwner(task);
                 ownerName = owner.getName();
             }
             catch(Exception exc) {
@@ -191,7 +193,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
             }
             CmsUser editor = null;
             try {
-                editor = cms.readAgent(task);
+                editor = taskService.readAgent(task);
             }
             catch(Exception exc) {
                 
@@ -201,7 +203,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
             CmsGroup role = null;
             String roleName = "";
             try {
-                role = cms.readGroup(task);
+                role = taskService.readGroup(task);
                 roleName = role.getName();
             }
             catch(Exception exc) {
@@ -314,7 +316,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
             String due = "";
             String from = "";
             try {
-                agent = cms.readAgent(task).getName();
+                agent = taskService.readAgent(task).getName();
             }
             catch(Exception exc) {
                 
@@ -322,7 +324,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
             // ignore the exception
             }
             try {
-                group = cms.readGroup(task).getName();
+                group = taskService.readGroup(task).getName();
             }
             catch(Exception exc) {
                 

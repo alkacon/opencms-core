@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskDocu.java,v $
-* Date   : $Date: 2004/12/15 12:29:45 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2004/12/20 09:17:23 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TASKDOCU&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2004/12/15 12:29:45 $
+ * @version $Revision: 1.24 $ $Date: 2004/12/20 09:17:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  *
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -107,7 +107,7 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement {
         String taskId = (String)parameters.get("taskid");
         if(taskId != null) {
             int id = new Integer(taskId).intValue();
-            taskdocs = cms.readTaskLogs(id);
+            taskdocs = cms.getTaskService().readTaskLogs(id);
         }
         
         // go through all tasklogs
@@ -123,7 +123,7 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement {
                 template.setData("DATE", CmsDateUtil.getDateTimeShort(time.getTime()));
                 
                 // add the user
-                CmsUser user = cms.readOwner(tasklog);
+                CmsUser user = cms.getTaskService().readOwner(tasklog);
                 template.setData("USER", CmsUser.getFullName(user));
                 
                 // set the message

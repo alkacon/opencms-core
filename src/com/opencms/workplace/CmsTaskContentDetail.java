@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
-* Date   : $Date: 2004/07/08 15:21:13 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2004/12/20 09:17:23 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.workflow.CmsTask;
+import org.opencms.workflow.CmsTaskService;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -54,7 +55,7 @@ import java.util.Hashtable;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.44 $ $Date: 2004/07/08 15:21:13 $
+ * @version $Revision: 1.45 $ $Date: 2004/12/20 09:17:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -113,6 +114,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
         int taskid = -1;
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         
+        CmsTaskService taskService = cms.getTaskService();
         // getting the URL to which we need to return when we're done
         String lastUrl;
         String lastRelUrl = (String)parameters.get("lastrelurl");
@@ -142,7 +144,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
             }
             session.putValue("taskid", new Integer(taskid));
             parameters.put("taskid", taskid + "");
-            task = cms.readTask(taskid);
+            task = taskService.readTask(taskid);
             if("acceptok".equals(parameters.get("action"))) {
                 
                 // accept the task
@@ -219,7 +221,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                                                             // add comment
                                                             String comment = (String)parameters.get("DESCRIPTION");
                                                             if((comment != null) && (comment.length() != 0)) {
-                                                                cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_COMMENT);
+                                                                taskService.writeTaskLog(taskid, comment, C_TASKLOGTYPE_COMMENT);
                                                             }
                                                         }
                                                         else {
@@ -250,14 +252,14 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
             
             // update the task-data            
             // it maybe had been changed
-            task = cms.readTask(taskid);
+            task = taskService.readTask(taskid);
         }
         catch(Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
         CmsUser owner = null;
         try {
-            owner = cms.readOwner(task);
+            owner = taskService.readOwner(task);
         }
         catch(Exception exc) {
             
@@ -266,7 +268,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
         }
         CmsUser editor = null;
         try {
-            editor = cms.readAgent(task);
+            editor = taskService.readAgent(task);
         }
         catch(Exception exc) {
             
@@ -276,7 +278,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
         CmsGroup role = null;
         String roleName = "";
         try {
-            role = cms.readGroup(task);
+            role = taskService.readGroup(task);
             roleName = role.getName();
         }
         catch(Exception exc) {
@@ -304,7 +306,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
         GregorianCalendar newcal = new GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
         long now = newcal.getTime().getTime();
         try {
-            projectname = cms.readTask(task.getRoot()).getName();
+            projectname = taskService.readTask(task.getRoot()).getName();
         }
         catch(Exception exc) {
             
