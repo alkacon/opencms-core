@@ -12,7 +12,7 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/01/12 16:38:14 $  
+ * @version $Revision: 1.2 $ $Date: 2000/01/21 14:51:02 $  
  */
 public class CmsResponseHttpServlet implements I_CmsConstants,  
                                                I_CmsResponse{ 
@@ -22,6 +22,11 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
      */
     private HttpServletResponse m_res;
     
+     /**
+     * The original request.
+     */
+    private HttpServletRequest m_req;
+    
     /**
      * The type of this CmsResponset.
      */
@@ -30,11 +35,15 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
     
      /** 
      * Constructor, creates a new CmsResponseHttpServlet object.
+     * It is nescessary to give the HttpServletRequest as well, because it is needed
+     * to transform the CmsRedirect to a real Http redirect.
      * 
-     * @param req The original HttpServletResponse used to create this CmsResponse.
+     * @param req The original HttpServletRequest used to create this CmsRequest.
+     * @param res The original HttpServletResponse used to create this CmsResponse.
      */
-    public CmsResponseHttpServlet (HttpServletResponse res) {
+    public CmsResponseHttpServlet (HttpServletRequest req, HttpServletResponse res) {
         m_res=res;
+        m_req=req;
     }
 
     /**
@@ -93,7 +102,8 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
     
      /**
      * Sets a redirect to send the responst to. 
-     * The original HttpServletResponse redirect is used here.
+     * The original HttpServletResponse redirect is used here. Additional information
+     * about the servlets location is taken from the original HttpServletRequest.
      * 
      * @param location The location the response is send to.
      * @param msg Additional error message.
@@ -101,7 +111,8 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
      */
     public void sendCmsRedirect(String location)
         throws IOException {
-        m_res.sendRedirect(location);
+        String servlet = m_req.getServletPath();
+        m_res.sendRedirect(servlet+location);
     }
     
     /**

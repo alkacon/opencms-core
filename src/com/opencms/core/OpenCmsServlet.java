@@ -37,7 +37,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.8 $ $Date: 2000/01/14 16:15:34 $  
+* @version $Revision: 1.9 $ $Date: 2000/01/21 14:51:02 $  
 * 
 */
 
@@ -128,7 +128,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
 		throws ServletException, IOException {	
         
         CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
-        CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(res);
+        CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(req,res);
        
        try {
             CmsObject cms=initUser(cmsReq,cmsRes);
@@ -163,7 +163,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
 		 } 
          
          CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
-         CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(res);
+         CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(req,res);
          
        try {
             CmsObject cms=initUser(cmsReq,cmsRes);

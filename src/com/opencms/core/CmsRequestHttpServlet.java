@@ -12,7 +12,7 @@ import javax.servlet.http.*;
  * CmsMultipartRequest which is used to upload file into the OpenCms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/01/12 16:38:14 $  
+ * @version $Revision: 1.2 $ $Date: 2000/01/21 14:51:02 $  
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,     
                                               I_CmsRequest { 
@@ -21,6 +21,11 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
      * The original request.
      */
     private HttpServletRequest m_req;
+    
+    /**
+     * The path to the resource
+     */
+    private String m_path=null;
     
     /**
      * The type of theis CmsRequest.
@@ -52,7 +57,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
      */
     public String getRequestedResource() {
         return m_req.getPathInfo();
-     }
+    }
     
     /**
      * Returns the value of a named parameter as a String.

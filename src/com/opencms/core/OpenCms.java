@@ -27,12 +27,18 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.11 $ $Date: 2000/01/14 16:17:11 $  
+* @version $Revision: 1.12 $ $Date: 2000/01/21 14:51:02 $  
 * 
 */
 
 class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels 
 {
+
+    /**
+     * Definition of the index page
+     */
+    private static String C_INDEX ="index.html";
+    
     /**
      * The default mimetype
      */
@@ -102,17 +108,43 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
         throws CmsException, IOException {
           
         CmsFile file=null;
- 
-        //read the requested file
-        file =cms.readFile(cms.getRequestContext().currentUser(),
-                           cms.getRequestContext().currentProject(),
-                           cms.getRequestContext().getUri());
+        try {
+            //read the requested file
+            file =cms.readFile(cms.getRequestContext().currentUser(),
+                               cms.getRequestContext().currentProject(),
+                               cms.getRequestContext().getUri());
+        } catch (CmsException e ) {
+            if (e.getType() == CmsException.C_NOT_FOUND) {
+                // there was no file found with this name. 
+                // it is possible that the requested resource was a folder, so try to access an
+                // index.html there
+                String resourceName=cms.getRequestContext().getUri();
+                // test if the requested file is already the index.html
+                if (!resourceName.endsWith(C_INDEX)) {
+                    // check if the requested file ends with an "/"
+                    if (!resourceName.endsWith("/")) {
+                       resourceName+="/";
+                     }
+                     //redirect the request to the index.html
+                    resourceName+=C_INDEX;
+                    cms.getRequestContext().getResponse().sendCmsRedirect(resourceName);
+                } else {
+                    // throw the CmsException.
+                    throw e;
+                }
+           } else {
+               // throw the CmsException.
+              throw e;
+          }
+        }
         if (file != null) {
-        // test if this file is only available for internal access operations
-        if ((file.getAccessFlags() & C_ACCESS_INTERNAL_READ) >0) {
+            // test if this file is only available for internal access operations
+            if ((file.getAccessFlags() & C_ACCESS_INTERNAL_READ) >0) {
             throw new CmsException (CmsException.C_EXTXT[CmsException.C_INTERNAL_FILE]+cms.getRequestContext().getUri(),
                                     CmsException.C_INTERNAL_FILE);
-        }}
+            }
+        }
+            
         return file;
     }
 
