@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/06/19 08:45:44 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2000/06/20 14:57:33 $
+ * Version: $Revision: 1.88 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.87 $ $Date: 2000/06/19 08:45:44 $
+ * @version $Revision: 1.88 $ $Date: 2000/06/20 14:57:33 $
  */
 public interface I_CmsConstants
 {
@@ -424,6 +424,17 @@ public interface I_CmsConstants
       * This is the defintion for a database mountpoint.
       */
      static final int C_MOUNTPOINT_MYSQL=2;
+     
+     /**
+      * A string in the configuration-file.
+      */
+     static final String C_EXPORTPOINT = "exportpoint.";
+
+      /**
+      * A string in the configuration-file.
+      */
+     static final String C_EXPORTPOINT_PATH = "exportpoint.path.";
+     
      
 	 /**
 	  * The folder - seberator in this system

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/18 14:50:33 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2000/06/20 14:57:33 $
+ * Version: $Revision: 1.72 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.71 $ $Date: 2000/06/18 14:50:33 $ * 
+ * @version $Revision: 1.72 $ $Date: 2000/06/20 14:57:33 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -162,6 +162,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 */
 	private MessageDigest m_digest = null;
 	
+    /**
+     * Storage for all exportpoints
+     */
+    private Hashtable m_exportpointStorage=null;
+
+
+	
 	/**
      * Instanciates the access-module and sets up all required modules and connections.
      * @param config The OpenCms configuration.
@@ -176,9 +183,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		String user = null;
 		String password = null;
 		String digest = null;
+		String exportpoint = null;
+		String exportpath = null;
 		int sleepTime;
 		boolean fillDefaults;
 		int maxConn;
+		
 		
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] init the dbaccess-module.");
@@ -187,6 +197,17 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		// read the name of the rb from the properties
 		rbName = (String)config.getString(C_CONFIGURATION_RESOURCEBROKER);
 		
+		// read the exportpoints
+		m_exportpointStorage = new Hashtable();
+		int i = 0;
+		while ((exportpoint = config.getString(C_EXPORTPOINT + Integer.toString(i))) != null){
+			exportpath = config.getString(C_EXPORTPOINT_PATH + Integer.toString(i));
+			if (exportpath != null){
+				m_exportpointStorage.put(exportpoint, exportpath);
+			} 	
+			i++;
+		}
+
 		// read all needed parameters from the configuration
 		driver = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DRIVER);
 		if(A_OpenCms.isLogging()) {
@@ -2442,6 +2463,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 
         throws CmsException {
 		
+		CmsAccessFilesystem discAccess = new CmsAccessFilesystem(m_exportpointStorage);
 		CmsFolder currentFolder = null;
 		CmsFile currentFile = null;
 		Vector offlineFolders;
@@ -2465,6 +2487,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			// C_STATE_NEW	
 			}else if (currentFolder.getState() == C_STATE_NEW){
        
+				// export to filesystem if necessary
+				String exportKey = checkExport(currentFolder.getAbsolutePath());
+				if (exportKey != null){
+					discAccess.createFolder(currentFolder.getAbsolutePath(), exportKey);
+				}
 				// get parentId for onlineFolder either from folderIdIndex or from the database
 				Integer parentId = (Integer)folderIdIndex.get(new Integer(currentFolder.getParentId()));
 				if (parentId == null){
@@ -2491,7 +2518,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			// C_STATE_CHANGED	 		
 
 			}else if (currentFolder.getState() == C_STATE_CHANGED){
-       
+   				// export to filesystem if necessary
+				String exportKey = checkExport(currentFolder.getAbsolutePath());
+				if (exportKey != null){
+					discAccess.createFolder(currentFolder.getAbsolutePath(), exportKey);
+				}
+
 			   CmsFolder onlineFolder = null;
 			   try{
 					onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
@@ -2601,6 +2633,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 
             // C_STATE_DELETE
             }else if (currentFile.getState() == C_STATE_DELETED){
+            
+   				// delete in filesystem if necessary
+				String exportKey = checkExport(currentFile.getAbsolutePath());
+				if (exportKey != null){
+					discAccess.removeResource(currentFile.getAbsolutePath(), exportKey);
+				}
+							
    				CmsFile currentOnlineFile = readFile(onlineProject.getId(),onlineProject.getId(),currentFile.getAbsolutePath());
 				try {
 					deleteAllProperties(currentOnlineFile.getResourceId());
@@ -2618,6 +2657,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				}	
 			// C_STATE_CHANGED	
 			}else if ( currentFile.getState() == C_STATE_CHANGED){
+			
+				// export to filesystem if necessary
+				String exportKey = checkExport(currentFile.getAbsolutePath());
+				if (exportKey != null){
+					discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, readFileContent(currentFile.getFileId()));
+				}
+				
   				CmsFile onlineFile = null;
 				try{
 					onlineFile = readFileHeader(onlineProject.getId(), currentFile.getAbsolutePath());
@@ -2678,6 +2724,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 
 			// C_STATE_NEW
 			}else if (currentFile.getState() == C_STATE_NEW){
+			
+				// export to filesystem if necessary
+				String exportKey = checkExport(currentFile.getAbsolutePath());
+				if (exportKey != null){
+					discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, readFileContent(currentFile.getFileId()));
+				}
+
       			// get parentId for onlineFile either from folderIdIndex or from the database
 				Integer parentId = (Integer)folderIdIndex.get(new Integer(currentFile.getParentId()));
 				if (parentId == null){
@@ -2702,8 +2755,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			}
 		}// end of for(...
 		// now delete the "deleted" folders
-		for(int i = 0; i < deletedFolders.size(); i++) {
+		for(int i = deletedFolders.size()-1; i > -1; i--) {
 			currentFolder = ((CmsFolder)deletedFolders.elementAt(i));
+			String exportKey = checkExport(currentFolder.getAbsolutePath());
+			if (exportKey != null){
+				discAccess.removeResource(currentFolder.getAbsolutePath(), exportKey);
+			}
 			try {
 				deleteAllProperties(currentFolder.getResourceId());
 			} catch(CmsException exc) {
@@ -2716,82 +2773,60 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
     }
 	
 	/**
-	 * Private helper method for publihing.
+	 * Private helper method for publihing into the filesystem.
+	 * test if resource must be written to the filesystem
 	 * 
-     * @param project The project to be published.
-	 * @param onlineProject The online project of the OpenCms.
-	 * @param state The resource-state.
-	 * @param online in this Vector the result will be filled in.
-	 * @param offline in this Vector the result will be filled in.
+	 * @param filename Name of a resource in the OpenCms system.
+	 * @return key in m_exportpointStorage Hashtable or null.
+	 */
+	private String checkExport(String filename){
+		
+		String key = null;
+		String exportpoint = null;
+		Enumeration e = m_exportpointStorage.keys();
+		
+		while (e.hasMoreElements()) {
+		  exportpoint = (String)e.nextElement();
+		  if (filename.startsWith(exportpoint)){
+			return exportpoint;
+		  }
+		}
+		return key;
+	}
+
+	/**
+	 * Private helper method to read the fileContent for publishProject(export).
+	 * 
+	 * @param fileId the fileId.
+	 *
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	private void publishRead(CmsProject project, CmsProject onlineProject, int state, Vector online, Vector offline)
+	private byte[] readFileContent(int fileId)
 		throws CmsException {
-		ResultSet res = null;
 		PreparedStatement statement = null;
-		CmsResource ol;
-		CmsResource off;
+		ResultSet res = null;
+		byte[] returnValue = null;
 		try {  
-			// read resource data from database
-			statement = m_pool.getPreparedStatement(C_RESOURCES_PUBLISH_MARKED_KEY);
-			statement.setInt(1,project.getId());
-			statement.setInt(2,onlineProject.getId());
-			statement.setInt(3,state);
-			res = statement.executeQuery();
-			
-			// create new resource
-			while(res.next()) {
-                        ol = new CmsResource(res.getInt("OL." + C_RESOURCES_RESOURCE_ID),
-										   res.getInt("OL." + C_RESOURCES_PARENT_ID),
-										   res.getInt("OL." + C_RESOURCES_FILE_ID),
-										   res.getString("OL." + C_RESOURCES_RESOURCE_NAME),
-                                           res.getInt("OL." + C_RESOURCES_RESOURCE_TYPE),
-                                           res.getInt("OL." + C_RESOURCES_RESOURCE_FLAGS),
-                                           res.getInt("OL." + C_RESOURCES_USER_ID),
-                                           res.getInt("OL." + C_RESOURCES_GROUP_ID),
-                                           res.getInt("OL." + C_PROJECT_ID_RESOURCES),
-                                           res.getInt("OL." + C_RESOURCES_ACCESS_FLAGS),
-                                           res.getInt("OL." + C_RESOURCES_STATE),
-                                           res.getInt("OL." + C_RESOURCES_LOCKED_BY),
-                                           res.getInt("OL." + C_RESOURCES_LAUNCHER_TYPE),
-                                           res.getString("OL." + C_RESOURCES_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp("OL." + C_RESOURCES_DATE_CREATED).getTime(),
-                                           res.getTimestamp("OL." + C_RESOURCES_DATE_LASTMODIFIED).getTime(),
-                                           res.getInt("OL." + C_RESOURCES_LASTMODIFIED_BY),
-                                           res.getInt("OL." + C_RESOURCES_SIZE)
-                                           );
-                        off = new CmsResource(res.getInt("OFF." + C_RESOURCES_RESOURCE_ID),
-										   res.getInt("OFF." + C_RESOURCES_PARENT_ID),
-										   res.getInt("OFF." + C_RESOURCES_FILE_ID),
-										   res.getString("OFF." + C_RESOURCES_RESOURCE_NAME),
-                                           res.getInt("OFF." + C_RESOURCES_RESOURCE_TYPE),
-                                           res.getInt("OFF." + C_RESOURCES_RESOURCE_FLAGS),
-                                           res.getInt("OFF." + C_RESOURCES_USER_ID),
-                                           res.getInt("OFF." + C_RESOURCES_GROUP_ID),
-                                           res.getInt("OFF." + C_PROJECT_ID_RESOURCES),
-                                           res.getInt("OFF." + C_RESOURCES_ACCESS_FLAGS),
-                                           res.getInt("OFF." + C_RESOURCES_STATE),
-                                           res.getInt("OFF." + C_RESOURCES_LOCKED_BY),
-                                           res.getInt("OFF." + C_RESOURCES_LAUNCHER_TYPE),
-                                           res.getString("OFF." + C_RESOURCES_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp("OFF." + C_RESOURCES_DATE_CREATED).getTime(),
-                                           res.getTimestamp("OFF." + C_RESOURCES_DATE_LASTMODIFIED).getTime(),
-                                           res.getInt("OFF." + C_RESOURCES_LASTMODIFIED_BY),
-                                           res.getInt("OFF." + C_RESOURCES_SIZE)
-                                           );
-				online.addElement(ol);
-				offline.addElement(off);
-			}
-			res.close();
+			// read fileContent from database
+			statement = m_pool.getPreparedStatement(C_FILE_READ_KEY);
+			statement.setInt(1,fileId);
+            res = statement.executeQuery();
+            if (res.next()) {
+                  returnValue = res.getBytes(C_FILE_CONTENT);
+            } else {
+                  throw new CmsException("["+this.getClass().getName()+"]"+fileId,CmsException.C_NOT_FOUND);  
+            }
+            res.close();       
 		} catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}finally {
 			if( statement != null) {
-				m_pool.putPreparedStatement(C_RESOURCES_PUBLISH_MARKED_KEY, statement);
+				m_pool.putPreparedStatement(C_FILE_READ_KEY, statement);
 			}
 		}
+		return returnValue;
 	}
- 
+
 	/**
 	 * Private helper method to delete a resource.
 	 * 
@@ -3135,7 +3170,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                              int onlineProjectId,
                              String filename)
          throws CmsException {
-          
+         
          CmsFile file = null;
          PreparedStatement statement = null;
          ResultSet res = null;
