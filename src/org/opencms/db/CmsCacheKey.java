@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheKey.java,v $
- * Date   : $Date: 2003/09/17 16:15:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/18 09:50:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/09/17 16:15:06 $
+ * @version $Revision: 1.2 $ $Date: 2003/09/18 09:50:57 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsCacheKey implements I_CmsCacheKey {
@@ -51,14 +51,14 @@ public class CmsCacheKey implements I_CmsCacheKey {
     /**
      * @see org.opencms.db.I_CmsCacheKey#createPermissionKey(com.opencms.file.CmsRequestContext, com.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet, boolean)
      */
-    public String getCacheKeyForUserPermissions (CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions, boolean strongCheck) {
+    public String getCacheKeyForUserPermissions (String prefix, CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions) {
         
         StringBuffer cacheBuffer = new StringBuffer(64);
+        cacheBuffer.append(prefix);
+        cacheBuffer.append("_");
         cacheBuffer.append(context.currentUser().getName());
         cacheBuffer.append(context.currentProject().isOnlineProject()?"_0_":"_1_");
         cacheBuffer.append(requiredPermissions.getPermissionString());
-        cacheBuffer.append("_");
-        cacheBuffer.append(strongCheck);
         cacheBuffer.append("_");
         cacheBuffer.append(resource.getStructureId().toString());
         return cacheBuffer.toString();
@@ -67,8 +67,12 @@ public class CmsCacheKey implements I_CmsCacheKey {
     /**
      * @see org.opencms.db.I_CmsCacheKey#getCacheKeyForUserGroups(com.opencms.file.CmsRequestContext, com.opencms.file.CmsUser)
      */
-    public String getCacheKeyForUserGroups (CmsRequestContext context, CmsUser user) {
+    public String getCacheKeyForUserGroups (String prefix, CmsRequestContext context, CmsUser user) {
         
-        return user.getName();
+        StringBuffer cacheBuffer = new StringBuffer(64);
+        cacheBuffer.append(prefix);
+        cacheBuffer.append("_");
+        cacheBuffer.append(user.getName());
+        return cacheBuffer.toString();       
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/18 09:30:21 $
- * Version: $Revision: 1.237 $
+ * Date   : $Date: 2003/09/18 09:50:57 $
+ * Version: $Revision: 1.238 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.237 $ $Date: 2003/09/18 09:30:21 $
+ * @version $Revision: 1.238 $ $Date: 2003/09/18 09:50:57 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -277,6 +277,10 @@ public class CmsDriverManager extends Object {
 
     /** The class used for password validation */
     private I_CmsPasswordValidation m_passwordValidationClass;
+
+    /** The class used for cache key generation */
+    private I_CmsCacheKey m_keyGenerator;
+        
     protected Map m_permissionCache = null;
     protected Map m_projectCache = null;
 
@@ -3447,9 +3451,9 @@ public class CmsDriverManager extends Object {
     public Vector getGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
 
         CmsUser user = readUser(username);
-        Vector allGroups;
+        String cacheKey = m_keyGenerator.getCacheKeyForUserGroups("", context, user);
 
-        allGroups = (Vector)m_userGroupsCache.get(username);
+        Vector allGroups = (Vector)m_userGroupsCache.get(cacheKey);
         if ((allGroups == null) || (allGroups.size() == 0)) {
 
             CmsGroup subGroup;
@@ -3474,7 +3478,7 @@ public class CmsDriverManager extends Object {
                     allGroups.add(group);
                 }
             }
-            m_userGroupsCache.put(username, allGroups);
+            m_userGroupsCache.put(cacheKey, allGroups);
         }
         return allGroups;
     }
@@ -4198,16 +4202,7 @@ public class CmsDriverManager extends Object {
      */
     public boolean hasPermissions(CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions, boolean strongCheck) throws CmsException {
 
-        StringBuffer cacheBuffer = new StringBuffer(64);
-        cacheBuffer.append(context.currentUser().getName());
-        cacheBuffer.append(context.currentProject().isOnlineProject() ? "_0_" : "_1_");
-        cacheBuffer.append(requiredPermissions.getPermissionString());
-        cacheBuffer.append("_");
-        cacheBuffer.append(strongCheck);
-        cacheBuffer.append("_");
-        cacheBuffer.append(resource.getStructureId().toString());
-
-        String cacheKey = cacheBuffer.toString();
+        String cacheKey = m_keyGenerator.getCacheKeyForUserPermissions(new Boolean(strongCheck).toString(), context, resource, requiredPermissions);
         Boolean cacheResult = (Boolean)m_permissionCache.get(cacheKey);
         if (cacheResult != null) {
             return cacheResult.booleanValue();
@@ -4459,7 +4454,10 @@ public class CmsDriverManager extends Object {
 
         m_configuration = config;
 
-        // initalize the caches 
+        // initialize the key generator
+        m_keyGenerator = (I_CmsCacheKey)Class.forName(config.getString(I_CmsConstants.C_CONFIGURATION_CACHE + ".keygenerator")).newInstance(); 
+
+        // initalize the caches
         m_userCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".user", 50)));
         m_groupCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".group", 50)));
         m_userGroupsCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".usergroups", 50)));
