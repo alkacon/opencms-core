@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/I_CmsNewsConstants.java,v $
- * Date   : $Date: 2000/04/07 15:22:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/05/02 15:58:37 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,9 +36,12 @@ package com.opencms.examples.news;
  * into a <code>news.ini</code> file.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/04/07 15:22:16 $
+ * @version $Revision: 1.8 $ $Date: 2000/05/02 15:58:37 $
  */
 public interface I_CmsNewsConstants {
+    
+    /** Path to the news configuration file */
+    public static final String C_NEWS_INI = "/news/news.ini";
     
     /** Folder for news content XML files */
     public static final String C_NEWS_FOLDER_CONTENT = "/content/news/";
@@ -49,12 +52,6 @@ public interface I_CmsNewsConstants {
     /** Name of the news list definition file */
     public static final String C_NEWS_NEWSLISTDEF = "newsListDefinition";     
 
-    /** Name of the role managing news */
-    public static final String C_NEWS_ROLE = "Users";     
-
-    /** Name of the user managing news */
-    public static final String C_NEWS_USER = "a.kandzior";     
-    
     /** Text of the "active" state */
     public static final String C_NEWS_STATE_ACTIVE = "active";     
 

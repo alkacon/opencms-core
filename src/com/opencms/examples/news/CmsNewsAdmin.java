@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/04/27 12:21:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/05/02 15:58:37 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/04/27 12:21:15 $
+ * @version $Revision: 1.10 $ $Date: 2000/05/02 15:58:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants, I_CmsFileListUsers {
@@ -172,7 +172,8 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                 }
             } else {
                 // this is the POST result of an user input
-                          
+                
+                CmsXmlTemplateFile newsIni = new CmsXmlTemplateFile(cms, C_NEWS_INI);                
                 CmsNewsContentFile newsContentFile = null;                 
                 
                 if(file == null || "".equals(file)) {
@@ -189,8 +190,8 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                     parameters.put(C_NEWS_PARAM_FILE, newsFileName);
                     
                     // create files
-                    newsContentFile = createNewsFile(cms, newsFileName);
-                    createPageFile(cms, newsFileName);
+                    newsContentFile = createNewsFile(cms, newsFileName);                    
+                    createPageFile(cms, newsFileName, newsIni.getDataValue("mastertemplate"));
 
                     // check the date parameter
                     if(newDate == null || "".equals(newDate)) {
@@ -199,7 +200,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                     
                     // Try creating the task
                     try {
-                        makeTask(cms, newsFileName);
+                        makeTask(cms, newsFileName, newsIni.getDataValue("newstask.agent"), newsIni.getDataValue("newstask.role"));
                     } catch(Exception e) {
                         if(A_OpenCms.isLogging()) {
                             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Cannot create news task for news article " + newsFileName + ". ");
@@ -208,6 +209,8 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                     }                    
                 } else {
                     newsContentFile = getNewsContentFile(cms, cms.readFile(file));                
+                    // Touch the page file. This will mark it a "changed".
+                    cms.writeFileHeader((CmsFile)cms.readFileHeader(C_NEWS_FOLDER_PAGE + newsContentFile.getFilename() + "/index.html"));
                 }
                 
                 // Set news content and unlock resource
@@ -461,14 +464,16 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
     /** Create the task for the new news article.
      * @param cms A_CmsObject for accessing system resources.
      * @param newsFileName File name of the news article, used to generate a link.
+     * @param taskuser User of the new task
+     * @param taskgroup Group of the new task. 
      * @exception CmsException
      */
-    private void makeTask(A_CmsObject cms, String newsFileName) throws CmsException {
+    private void makeTask(A_CmsObject cms, String newsFileName, String taskuser, String taskgroup) throws CmsException {
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         HttpServletRequest req = (HttpServletRequest)(cms.getRequestContext().getRequest().getOriginalRequest());
         String taskUrl = req.getScheme() + "://" + req.getHeader("HOST") + req.getServletPath() + C_NEWS_FOLDER_PAGE + newsFileName + "/index.html";
         String taskcomment = "<A HREF=\"javascript:openwinfull('" + taskUrl + "', 'preview', 0, 0);\"> " + taskUrl + "</A>";
-        CmsTaskAction.create(cms, C_NEWS_USER, C_NEWS_ROLE, lang.getLanguageValue("task.label.news"), taskcomment, Utils.getNiceShortDate(new Date().getTime() + 345600000), "1", "", "", "", "");                
+        CmsTaskAction.create(cms, taskuser, taskgroup, lang.getLanguageValue("task.label.news"), taskcomment, Utils.getNiceShortDate(new Date().getTime() + 345600000), "1", "", "", "", "");                
     }
     
     /**
@@ -638,9 +643,10 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
      * 
      * @param cms A_CmsObject for accessing system resources.
      * @param newsFileName filename to be used
+     * @param mastertemplate filename of the master template that should be used for displaying news.
      * @exception CmsException
      */
-    private void createPageFile(A_CmsObject cms, String newsFileName) throws CmsException {
+    private void createPageFile(A_CmsObject cms, String newsFileName, String mastertemplate) throws CmsException {
         
         // Create the news folder
         cms.createFolder(C_NEWS_FOLDER_PAGE, newsFileName);
@@ -650,7 +656,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         CmsXmlControlFile pageFile = new CmsXmlControlFile();
         pageFile.createNewFile(cms, fullFilename, C_TYPE_NEWSPAGE_NAME);
         pageFile.setTemplateClass("com.opencms.template.CmsXmlTemplate");
-        pageFile.setMasterTemplate("/content/templates/mfNewsTeaser");
+        pageFile.setMasterTemplate(mastertemplate);
         pageFile.setElementClass(C_BODY_ELEMENT, "com.opencms.examples.news.CmsNewsTemplate");
         pageFile.setElementTemplate(C_BODY_ELEMENT, C_PATH_INTERNAL_TEMPLATES + "newsTemplate");
         pageFile.setElementParameter(C_BODY_ELEMENT, C_NEWS_PARAM_NEWSFOLDER, C_NEWS_FOLDER_CONTENT);
