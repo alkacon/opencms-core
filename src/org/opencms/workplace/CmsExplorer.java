@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/22 05:50:35 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/07/22 07:57:57 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1
  */
@@ -188,38 +188,43 @@ public class CmsExplorer extends CmsWorkplace {
         boolean projectView = "projectview".equals(getSettings().getExplorerMode());
         // if mode is "vfslinks", the vfs links to a target file will be shown
         boolean vfslinkView = "vfslink".equals(getSettings().getExplorerMode());
-        
+
+        CmsResource currentResource = null;
+                
         String currentFolder = getSettings().getExplorerFolder();
-        if (vfslinkView) {            
-            boolean found = true;
-            try {
-                getCms().readFileHeader(currentFolder);
-            } catch (CmsException e) {
-                // file was not readable
-                found = false;
-            }
-            if (found) {
+        boolean found = true;
+        try {
+            currentResource = getCms().readFileHeader(currentFolder);
+        } catch (CmsException e) {
+            // file was not readable
+            found = false;
+        }
+        if (found) {
+            if (vfslinkView) {
                 // file / folder exists and is readable
                 currentFolder = "vfslink:" + currentFolder;
-            } else {
-                // show the root folder in case of an error and reset the state
-                currentFolder = "/";
-                vfslinkView = false;
-            }          
+            }
+        } else {
+            // show the root folder in case of an error and reset the state
+            currentFolder = "/";
+            vfslinkView = false;
+            try {
+                currentResource = getCms().readFileHeader(currentFolder);
+            } catch (CmsException e) {
+                // should not happen
+            }            
         }
         
         long check = getCms().getFileSystemFolderChanges();
         boolean newTreePlease = getSettings().getExplorerChecksum() != check;
-
+        
         // get the currentFolder Id
-        CmsUUID currentFolderId = CmsUUID.getNullUUID();
-        if (! vfslinkView) {
-            try {
-                currentFolderId = (getCms().readFolder(currentFolder)).getId();
-            } catch (CmsException e) {
-                // we use the null UUID
-            }
-        } 
+        CmsUUID currentFolderId;
+        if (currentResource.isFile()) {
+            currentFolderId = currentResource.getParentId();                    
+        } else {                
+            currentFolderId = currentResource.getId();
+        }
         
         // start creating content
         StringBuffer content = new StringBuffer(2048);
@@ -284,8 +289,14 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.setDirectory(\"");
         content.append(currentFolderId.hashCode());
         content.append("\",\"");
-        content.append(currentFolder);
+        content.append(CmsResource.getPath(getSettings().getExplorerFolder()));
         content.append("\");\n");
+        if (vfslinkView) {
+            content.append("top.addHist('");
+            content.append(CmsResource.getPath(getSettings().getExplorerFolder()));
+            content.append("')\n");
+            
+        }
         content.append("top.rD();\n\n");
 
         // now check which filelist colums we want to show
