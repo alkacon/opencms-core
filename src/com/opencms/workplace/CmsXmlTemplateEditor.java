@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/10/31 13:11:30 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2001/01/10 10:09:29 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.37 $ $Date: 2000/10/31 13:11:30 $
+ * @version $Revision: 1.38 $ $Date: 2001/01/10 10:09:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -558,7 +558,11 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 		session.putValue("te_oldbody", body);
 		session.putValue("te_oldbodytitle", bodytitle);
 		session.putValue("te_oldlayout", layoutTemplateFilename);       
-		session.putValue("te_title", title);       
+		if(title != null) {
+			session.putValue("te_title", title);       
+		} else {
+			session.putValue("te_title", "");       
+		}
 		session.putValue("te_templateclass", layoutTemplateClassName);       
 		
 		CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
