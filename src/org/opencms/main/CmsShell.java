@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2003/09/02 12:15:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/09/22 10:58:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $ $Date: 2003/09/02 12:15:38 $
+ * @version $Revision: 1.5 $ $Date: 2003/09/22 10:58:42 $
  */
 public class CmsShell {
 
@@ -114,8 +114,7 @@ public class CmsShell {
             m_logMemory = conf.getBoolean("log.memory", false);
                     
             m_driverManager = m_openCms.getDriverManager();
-            m_cms = new CmsObject();
-            m_openCms.initUser(m_cms, null, null, m_openCms.getDefaultUsers().getUserGuest(), m_openCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            m_cms = m_openCms.initCmsObject(null, null, m_openCms.getDefaultUsers().getUserGuest(), m_openCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
     
         } catch (Exception exc) {
             printException(exc);

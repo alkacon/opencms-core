@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/09/22 10:58:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.main;
 
 import org.opencms.staticexport.CmsStaticExportData;
 
+import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 
 import java.io.IOException;
@@ -68,7 +69,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class OpenCmsServlet extends HttpServlet {
     
@@ -102,8 +103,17 @@ public class OpenCmsServlet extends HttpServlet {
         }
         switch (error) {
             case 404:
-                CmsObject cms = OpenCmsCore.getInstance().getGuestCmsObject(req, res);            
-                CmsStaticExportData exportData = OpenCms.getStaticExportManager().getExportData(req, cms);
+                CmsObject cms = null;            
+                CmsStaticExportData exportData = null;
+                try {
+                    cms = OpenCmsCore.getInstance().initCmsObject(req, res, null, null);            
+                    exportData = OpenCms.getStaticExportManager().getExportData(req, cms);
+                } catch (CmsException e) {
+                    // unlikley to happen 
+                    if (OpenCms.getLog(this).isWarnEnabled()) {
+                        OpenCms.getLog(this).warn("Error initializing CmsObject in error handler for '" + path + "' code " + error, e);
+                    }                    
+                }
                 if (exportData != null) {
                     synchronized (this) {
                         try {
@@ -114,7 +124,7 @@ public class OpenCmsServlet extends HttpServlet {
                     }
                 } else {
                     res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                }       
+                }    
                 break;
             default:
                 res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

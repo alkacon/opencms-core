@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/22 10:58:42 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public final class OpenCms {
     
@@ -158,7 +158,7 @@ public final class OpenCms {
      * @return an initialized CmsObject with "Guest" user permissions
      */    
     public static CmsObject getGuestCmsObject() {
-        return OpenCmsCore.getInstance().getGuestCmsObject();
+        return OpenCmsCore.getInstance().initCmsObjectGuest();
     }
     
     /**

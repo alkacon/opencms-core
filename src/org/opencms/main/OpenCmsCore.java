@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/09/22 10:58:42 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -686,46 +686,6 @@ public class OpenCmsCore {
     }    
     
     /**
-     * Returns an initialized CmsObject with "Guest" user permissions,
-     * with the "online" project selected and "/" set as the current site root.<p>
-     * 
-     * @return an initialized CmsObject with "Guest" user permissions
-     */
-    protected CmsObject getGuestCmsObject() {
-        CmsObject cms = new CmsObject();
-        try {
-            initUser(cms, null, null, getDefaultUsers().getUserGuest(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);
-        } catch (CmsException e) {
-            // should not happen since the guest user can always be created like this
-        }       
-        return cms;
-    }
-    
-    /**
-     * Initializes a guest user.<p>
-     * 
-     * @param req the current request
-     * @param res the current response
-     * @return a cms context that has been initialized with "Guest" permissions
-     */
-    protected CmsObject getGuestCmsObject(HttpServletRequest req, HttpServletResponse res) {
-        CmsObject cms = new CmsObject();        
-        try {        
-            initStartupClasses(req, res);                
-
-            CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req, getFileTranslator());
-            CmsResponseHttpServlet cmsRes = new CmsResponseHttpServlet(req, res);
-              
-            CmsSite site = OpenCms.getSiteManager().matchRequest(req);  
-            // now initialize the guest user        
-            initUser(cms, cmsReq, cmsRes, OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
-        } catch (Exception e) {
-            // ignore
-        } 
-        return cms;                    
-    }
-    
-    /**
      * Returns the link manager to resolve links in &lt;link&gt; tags.<p>
      * 
      * @return  the link manager to resolve links in &lt;link&gt; tags
@@ -940,6 +900,165 @@ public class OpenCmsCore {
      */
     protected String getVersionNumber() {
         return m_versionNumber;
+    }
+    
+    /**
+     * This method handled the user authentification for each request sent to the
+     * OpenCms. <p>
+     *
+     * User authentification is done in three steps:
+     * <ul>
+     * <li> Session Authentification: OpenCms stores all active sessions of authentificated
+     * users in an internal storage. During the session authetification phase, it is checked
+     * if the session of the active user is stored there. </li>
+     * <li> HTTP Autheification: If session authentification fails, it is checked if the current
+     * user has loged in using HTTP authentification. If this check is positive, the user account is
+     * checked. </li>
+     * <li> Default user: When both authentification methods fail, the current user is
+     * set to the default (guest) user. </li>
+     * </ul>
+     *
+     * @param req the current http request
+     * @param res the current http response
+     * @param cmsReq the wrapped http request
+     * @param cmsRes the wrapped http response
+     * @return the initialized cms context
+     * @throws IOException if user authentication fails
+     * @throws CmsException in case something goes wrong
+     */
+    private CmsObject initCmsObject(
+        HttpServletRequest req, 
+        HttpServletResponse res, 
+        I_CmsRequest cmsReq, 
+        I_CmsResponse cmsRes
+    ) throws IOException, CmsException {
+        CmsObject cms;
+
+        // try to get the current session
+        HttpSession session = req.getSession(false);
+
+        // check if there is user data already stored in the session
+        String user = null;
+        if (session != null) {
+            // session exists, try to reuse the user from the session
+            user = m_sessionStorage.getUserName(session.getId());
+        }
+                   
+        if (user != null) {
+            // a user name is found in the session, reuse this user
+            Integer project = m_sessionStorage.getCurrentProject(session.getId());
+            // initialize the requested site root from session if available
+            String siteroot = m_sessionStorage.getCurrentSite(session.getId());
+            if (siteroot == null) {
+                // initialize site root from request
+                CmsSite site = OpenCms.getSiteManager().matchRequest(req);
+                siteroot = site.getSiteRoot();
+            }        
+            cms = initCmsObject(cmsReq, cmsRes, user, siteroot, project.intValue(), m_sessionStorage);
+        } else {
+            // initialize the requested site root
+            CmsSite site = OpenCms.getSiteManager().matchRequest(req);
+            // no user name found in session or no session, login the user as guest user
+            cms = initCmsObject(cmsReq, cmsRes, OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_sessionStorage);            
+            if (m_useBasicAuthentication) {
+                // check if basic authorization data was provided
+                checkBasicAuthorization(cms, req, res);
+            }
+        }
+        
+        // return the initialized cms user context object
+        return cms;
+    }    
+    
+    /**
+     * Returns an initialized CmsObject with "Guest" user permissions.<p>
+     * 
+     * In case the password is null, or the user is the Guest user,
+     * no password check is done and the Guest user is initialized.<p>
+     * 
+     * @param req the current request
+     * @param res the current response
+     * @param user the user to initialize the CmsObject with
+     * @param password the password of the user 
+     * @return a cms context that has been initialized with "Guest" permissions
+     * @throws CmsException in case the CmsObject could not be initialized
+     */
+    protected CmsObject initCmsObject(
+        HttpServletRequest req, 
+        HttpServletResponse res,
+        String user,
+        String password
+    ) throws CmsException {
+        CmsRequestHttpServlet cmsReq = null;
+        CmsResponseHttpServlet cmsRes = null;
+        String siteroot = null;
+        // gather information from request / response if provided
+        if ((req != null) && (res != null)) {
+            try {
+                initStartupClasses(req, res);
+                cmsReq = new CmsRequestHttpServlet(req, getFileTranslator());
+                cmsRes = new CmsResponseHttpServlet(req, res);
+                siteroot = OpenCms.getSiteManager().matchRequest(req).getSiteRoot();
+            } catch (IOException e) {
+                throw new CmsException("Exception initializing CmsObject for user " + user, CmsException.C_UNKNOWN_EXCEPTION, e);
+            }
+        }
+        // initialize the user        
+        if (user == null) {
+            user = getDefaultUsers().getUserGuest();
+        }
+        if (siteroot == null) {
+            siteroot = "/";
+        }
+        CmsObject cms = initCmsObject(cmsReq, cmsRes, user, siteroot, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+        // login the user if different from Guest
+        if ((password != null) && !getDefaultUsers().getUserGuest().equals(user)) {
+            cms.loginUser(user, password, I_CmsConstants.C_IP_LOCALHOST);
+        }
+        return cms;
+    }
+
+    /**
+     * Inits a CmsObject with the given users information.<p>
+     * 
+     * @param cmsReq the current I_CmsRequest (usually initialized form the HttpServletRequest)
+     * @param cmsRes the current I_CmsResponse (usually initialized form the HttpServletResponse)
+     * @param user the name of the user to init
+     * @param currentSite the users current site 
+     * @param project the id of the current project
+     * @param sessionStorage the session storage for this OpenCms instance
+     * @return the initialized CmsObject
+     * @throws CmsException in case something goes wrong
+     */
+    protected CmsObject initCmsObject(
+        I_CmsRequest cmsReq, 
+        I_CmsResponse cmsRes,
+        String user, 
+        String currentSite, 
+        int project, 
+        CmsCoreSession sessionStorage
+    ) throws CmsException {
+        CmsObject cms = new CmsObject();
+        cms.init(m_driverManager, cmsReq, cmsRes, user, project, currentSite, sessionStorage, m_directoryTranslator, m_fileTranslator);
+        return cms;
+    }
+    
+    /**
+     * Returns an initialized CmsObject with "Guest" user permissions,
+     * with the "online" project selected and "/" set as the current site root.<p>
+     * 
+     * @return a cms context that has been initialized with "Guest" permissions
+     */
+    protected CmsObject initCmsObjectGuest() {
+        try {
+            return initCmsObject(null, null, getDefaultUsers().getUserGuest(), null);
+        } catch (CmsException e) {
+            // should not happen since the guest user can always be created like this
+            if (getLog(this).isWarnEnabled()) {
+                getLog(this).warn("Unable to initialize Guest CmsObject", e);
+            }
+            return new CmsObject();            
+        } 
     }
     
     /**
@@ -1756,93 +1875,6 @@ public class OpenCmsCore {
     }
 
     /**
-     * Inits a user and updates the given CmsObject withs this users information.<p>
-     * 
-     * @param cms the CmsObject to update
-     * @param cmsReq the current I_CmsRequest (usually initialized form the HttpServletRequest)
-     * @param cmsRes the current I_CmsResponse (usually initialized form the HttpServletResponse)
-     * @param user the name of the user to init
-     * @param currentSite the users current site 
-     * @param project the id of the current project
-     * @param sessionStorage the session storage for this OpenCms instance
-     * @throws CmsException in case something goes wrong
-     */
-    protected void initUser(
-        CmsObject cms, 
-        I_CmsRequest cmsReq,
-        I_CmsResponse cmsRes, 
-        String user, 
-        String currentSite, 
-        int project, 
-        CmsCoreSession sessionStorage
-    ) throws CmsException {
-        cms.init(m_driverManager, cmsReq, cmsRes, user, project, currentSite, sessionStorage, m_directoryTranslator, m_fileTranslator);
-    }
-    
-    /**
-     * This method handled the user authentification for each request sent to the
-     * OpenCms. <p>
-     *
-     * User authentification is done in three steps:
-     * <ul>
-     * <li> Session Authentification: OpenCms stores all active sessions of authentificated
-     * users in an internal storage. During the session authetification phase, it is checked
-     * if the session of the active user is stored there. </li>
-     * <li> HTTP Autheification: If session authentification fails, it is checked if the current
-     * user has loged in using HTTP authentification. If this check is positive, the user account is
-     * checked. </li>
-     * <li> Default user: When both authentification methods fail, the current user is
-     * set to the default (guest) user. </li>
-     * </ul>
-     *
-     * @param req the current http request
-     * @param res the current http response
-     * @param cmsReq the wrapped http request
-     * @param cmsRes the wrapped http response
-     * @return the initialized cms context
-     * @throws IOException if user authentication fails
-     * @throws CmsException in case something goes wrong
-     */
-    private CmsObject initUser(HttpServletRequest req, HttpServletResponse res, I_CmsRequest cmsReq, I_CmsResponse cmsRes) throws IOException, CmsException {
-        CmsObject cms = new CmsObject();
-
-        // try to get the current session
-        HttpSession session = req.getSession(false);
-
-        // check if there is user data already stored in the session
-        String user = null;
-        if (session != null) {
-            // session exists, try to reuse the user from the session
-            user = m_sessionStorage.getUserName(session.getId());
-        }
-                   
-        if (user != null) {
-            // a user name is found in the session, reuse this user
-            Integer project = m_sessionStorage.getCurrentProject(session.getId());
-            // initialize the requested site root from session if available
-            String siteroot = m_sessionStorage.getCurrentSite(session.getId());
-            if (siteroot == null) {
-                // initialize site root from request
-                CmsSite site = OpenCms.getSiteManager().matchRequest(req);
-                siteroot = site.getSiteRoot();
-            }        
-            initUser(cms, cmsReq, cmsRes, user, siteroot, project.intValue(), m_sessionStorage);
-        } else {
-            // initialize the requested site root
-            CmsSite site = OpenCms.getSiteManager().matchRequest(req);
-            // no user name found in session or no session, login the user as guest user
-            initUser(cms, cmsReq, cmsRes, OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_sessionStorage);            
-            if (m_useBasicAuthentication) {
-                // check if basic authorization data was provided
-                checkBasicAuthorization(cms, req, res);
-            }
-        }
-        
-        // return the initialized cms user context object
-        return cms;
-    }    
-
-    /**
      * Initializes the version for this OpenCms, will be called by 
      * CmsHttpServlet or CmsShell upon system startup.<p>
      * 
@@ -2040,7 +2072,7 @@ public class OpenCmsCore {
         
         try {
             initStartupClasses(req, res);
-            cms = initUser(req, res, cmsReq, cmsRes);
+            cms = initCmsObject(req, res, cmsReq, cmsRes);
             // user is initialized, now deliver the requested resource
             CmsFile file = initResource(cms, cms.getRequestContext().getUri());
             if (file != null) {
@@ -2081,17 +2113,16 @@ public class OpenCmsCore {
      * @param entry the CmsCronEntry to start.
      */
     public void startScheduleJob(CmsCronEntry entry) {
-        // create a valid cms-object
-        CmsObject cms = new CmsObject();
+        CmsObject cms;
         try {
             // TODO: Maybe implement site root as a parameter in cron job table 
-            initUser(cms, null, null, entry.getUserName(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            cms = initCmsObject(null, null, entry.getUserName(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);
             // create a new ScheduleJob and start it
             CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
             job.start();
         } catch (Exception exc) {
             if (getLog(this).isErrorEnabled()) {
-                getLog(this).error("Error initialising job for " + entry, exc);
+                getLog(this).error("Error initialising cron job for " + entry, exc);
             }
         }
     }
