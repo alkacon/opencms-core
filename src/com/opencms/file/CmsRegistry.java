@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2003/09/05 16:07:07 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.89 $
+ * @version $Revision: 1.90 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1587,6 +1587,78 @@ public class CmsRegistry extends A_CmsXmlContent {
         return retValue;
     }
 
+    /**
+     * Returns a hashmap of key-value pairs for a node identified by key below a given node.<p>
+     * The format
+     *      <node>
+     *          <key1>value1</key1>
+     *          <key2>value2</key2>
+     * 
+     *          <key3>value3-1</key3>
+     *          <key3>value3-2</key3>
+     *      </node>
+     *
+     * is returned by getSubNodeValues(node, null) as
+     * 
+     *      Map {
+     *          key1 -> value1
+     *          key2 -> value2
+     *          ley3 -> List { value3-1, value3-2 }
+     *      }
+     * 
+     * is returned by getSubNodeValues(node, "key3") as
+     * 
+     *      Map {
+     *          key3 -> List { value3-1, value3-2 }
+     *      }
+     * 
+     * The classes of the values are either String, Map or List
+     *  
+     * @param key the key of the system node
+     * @return the values for subnodes
+     */
+    public Map getSubNodeValues(Element node, String key) {
+        HashMap values = new HashMap();
+        try {            
+            NodeList list;
+            if (key != null && !"".equals(key))
+                list = node.getElementsByTagName(key).item(0).getChildNodes();
+            else
+                list = node.getChildNodes();
+                
+            for (int i = 0; i < list.getLength(); i++) {
+                
+                Node n = list.item(i);
+                Node c = n.getFirstChild();
+                Object entry = values.get(n.getNodeName());
+                
+                Object value = null;
+                if (c == null)
+                    value = null;
+                else {
+                    value = (String)c.getNodeValue();
+                    if (value == null)
+                        value = getSubNodeValues((Element)n, "");
+                }
+                    
+                if (entry == null) {
+                    values.put(list.item(i).getNodeName(), value);
+                } else if (entry instanceof List) {
+                    List v = (List)entry;
+                    v.add(value);
+                } else {
+                    List l = new ArrayList();
+                    l.add(entry);
+                    l.add(value);
+                    values.put(list.item(i).getNodeName(), l);
+                }
+            }
+        } catch (Exception exc) {
+            // ignore the exception - registry is not wellformed
+        }
+        return values;
+    }
+    
     /**
      * Returns all views and uris for all installed modules.<p>
      *
