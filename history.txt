@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/07/22 13:01:54 $
- * Version: $Revision: 1.488 $
+ * Date   : $Date: 2003/08/04 11:20:24 $
+ * Version: $Revision: 1.489 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,9 +19,13 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms (next version) Salusa Secundus
+OpenCms 5.1.5 Salusa Secundus - August 4, 2003
+! Introduced org.opencms.security.CmsSecurityException 
+! Most of the new site management features are implemented
+* Fixed several issues regarding the new locking mechanism
+* Fixed several issues regarding the new VFS database stucture
 
-OpenCms 5.1.3 Salusa Secundus - July 22, 2003
+OpenCms 5.1.4 Salusa Secundus - July 22, 2003
 ! Export version set to 3, new format for the export, older versions 
   (up to 2) are still supported and will automatically convert the 
   pages to the new format, i.e. convert resource type of "page" to "newpage"
