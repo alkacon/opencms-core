@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.35 $ $Date: 2000/01/26 17:57:00 $
+ * @version $Revision: 1.36 $ $Date: 2000/01/28 11:39:17 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -219,8 +219,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// merge the projects to the vector
 			for(int j = 0; j < projectsByGroup.size(); j++) {
 				// add only projects, which are new
-				if(!groups.contains(projectsByGroup.elementAt(j))) {
-					groups.addElement(projectsByGroup.elementAt(j));
+				if(!projects.contains(projectsByGroup.elementAt(j))) {
+					projects.addElement(projectsByGroup.elementAt(j));
 				}
 			}
 		}
