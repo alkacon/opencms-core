@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
- * Date   : $Date: 2000/12/07 08:12:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/12/07 09:13:36 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/12/07 08:12:36 $
+ * @version $Revision: 1.5 $ $Date: 2000/12/07 09:13:36 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate, I_CmsLogChannels, I_CmsConstants, I_CmsWpConstants {
 	
@@ -127,9 +127,9 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 			newTreePlease = false;
 		} 
 	} catch (Exception e) {
-		//TODO:			e.printStackTrace();
 	}
-System.err.println("mgm-- checksum="+checksum+"  Kernzahl="+cms.getFileSystemFolderChanges()+"  newTreePlease="+newTreePlease+"\n");
+	check = cms.getFileSystemFolderChanges();
+
 	// get the currentFolder Id
 	int currentFolderId = (cms.readFolder(currentFolder)).getResourceId();
 
@@ -142,7 +142,7 @@ System.err.println("mgm-- checksum="+checksum+"  Kernzahl="+cms.getFileSystemFol
 	// the onlineProject
 	content.append(" top.setOnlineProject(" + cms.onlineProject().getId() + ");\n");
 	// set the checksum for the tree
-	content.append(" top.setChecksum(\"" + check + "\");\n");
+	content.append(" top.setChecksum(" + check + ");\n");
 	// the folder
 	content.append(" top.setDirectory(" + currentFolderId + ",\"" + currentFolder + "\");\n");
 	content.append(" top.rD();\n\n");
