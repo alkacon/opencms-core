@@ -3881,6 +3881,15 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/action/publish_resource.html</source>
+            <destination>system/workplace/action/publish_resource.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
             <source>system/workplace/action/rename.html</source>
             <destination>system/workplace/action/rename.html</destination>
             <type>XMLTemplate</type>
@@ -4058,6 +4067,24 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/action/undelete.html</source>
+            <destination>system/workplace/action/undelete.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/action/undochanges.html</source>
+            <destination>system/workplace/action/undochanges.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
             <properties/>
         </file>
         <file>
@@ -10439,6 +10466,15 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/templates/publish_resource</source>
+            <destination>system/workplace/templates/publish_resource</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
             <source>system/workplace/templates/radioTemplate</source>
             <destination>system/workplace/templates/radioTemplate</destination>
             <type>plain</type>
@@ -10621,6 +10657,24 @@
         <file>
             <source>system/workplace/templates/timerrefresh</source>
             <destination>system/workplace/templates/timerrefresh</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/templates/undelete</source>
+            <destination>system/workplace/templates/undelete</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/templates/undochanges</source>
+            <destination>system/workplace/templates/undochanges</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
