@@ -5,7 +5,7 @@ package com.opencms.file;
  * resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/07 17:25:04 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/07 18:50:35 $
  */
 public interface I_CmsProject
 {
@@ -49,7 +49,7 @@ public interface I_CmsProject
 	public String getDescription();
 
 	/**
-	 * Returns the state of this project.<BR>
+	 * Returns the state of this project.<BR/>
 	 * This may be C_STATE_UNLOCKED, C_STATE_LOCKED, C_STATE_ARCHIVE.
 	 * 
 	 * @return the state of this project.

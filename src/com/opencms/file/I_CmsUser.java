@@ -6,7 +6,7 @@ import java.util.*;
  * This interface describes a user.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/06 09:39:22 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/07 18:50:35 $
  */
 public interface I_CmsUser extends I_CmsFlags{
 	
@@ -115,8 +115,8 @@ public interface I_CmsUser extends I_CmsFlags{
     public int hashCode();
 	
 	/**
-	 * Returns additional information about the user. <BR>
-	 * Additional infos are for example emailadress, adress or surname...<BR><BR>
+	 * Returns additional information about the user. <BR/>
+	 * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
 	 * 
 	 * The additional infos must be requested via the CmsObject.
 	 * 

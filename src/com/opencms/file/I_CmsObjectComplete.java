@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * I_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/07 17:25:04 $ 
+ * @version $Revision: 1.2 $ $Date: 1999/12/07 18:50:35 $ 
  * 
  */
 interface I_CmsObjectComplete extends I_CmsObjectSecure {	
@@ -56,8 +56,8 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 	 * Creates a new file with the overgiven content and resourcetype.
 	 * If there are some mandatory metadefinitions for the resourcetype, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR>
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR>
+	 * the mandatory metainformations.<BR/>
+	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
 	 * If there is already a file with this filename, a CmsDuplicateKey exception will
 	 * be thrown.
 	 * 
@@ -84,8 +84,8 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 	 * Creates a new file with the overgiven content and resourcetype.
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR>
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR>
+	 * the mandatory metainformations.<BR/>
+	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
 	 * If there is already a file with this filename, a CmsDuplicateKey exception will
 	 * be thrown.
 	 * 
@@ -113,7 +113,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException, CmsDuplicateKeyException;
 	
 	/**
-	 * Reads a file from the Cms.<BR>
+	 * Reads a file from the Cms.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param folder The complete path to the folder from which the file will be read.
@@ -129,7 +129,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Reads a file header from the Cms.<BR>
+	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent.
 	 * 
 	 * @param project The project in which the resource will be used.
@@ -147,10 +147,10 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Writes a file to the Cms.<BR>
+	 * Writes a file to the Cms.<BR/>
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be written without
-	 * the mandatory metainformations.<BR>
+	 * the mandatory metainformations.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param file The file to write.
@@ -166,7 +166,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 	 * Writes the fileheader to the Cms.
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be written without
-	 * the mandatory metainformations.<BR>
+	 * the mandatory metainformations.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param resource The resource to write the header of.
@@ -179,10 +179,10 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Writes a file to the Cms.<BR>
+	 * Writes a file to the Cms.<BR/>
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be written without
-	 * the mandatory metainformations.<BR>
+	 * the mandatory metainformations.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param file The file to write.
@@ -201,7 +201,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 	 * Writes the fileheader to the Cms.
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR>
+	 * the mandatory metainformations.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param resource The resource to write the header of.
@@ -295,7 +295,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 	 * Creates a new folder.
 	 * If there are some mandatory metadefinitions for the folder-resourcetype, a 
 	 * CmsException will be thrown, because the folder cannot be created without
-	 * the mandatory metainformations.<BR>
+	 * the mandatory metainformations.<BR/>
 	 * If there is already a folder with this filename, a CmsDuplicateKey exception 
 	 * will be thrown.
 	 * 
@@ -321,8 +321,8 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 	 * Creates a new file with the overgiven content and resourcetype.
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR>
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR>
+	 * the mandatory metainformations.<BR/>
+	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
 	 * If there is already a file with this filename, a CmsDuplicateKey exception will
 	 * be thrown.
 	 * 
@@ -347,7 +347,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException, CmsDuplicateKeyException;
 
 	/**
-	 * Reads a folder from the Cms.<BR>
+	 * Reads a folder from the Cms.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param folder The complete path to the folder from which the folder will be 
@@ -446,7 +446,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException, CmsDuplicateKeyException;
 
 	/**
-	 * Returns a Vector with all subfolders.<BR>
+	 * Returns a Vector with all subfolders.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param foldername the complete path to the folder.
@@ -460,7 +460,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Returns a Vector with all subfiles.<BR>
+	 * Returns a Vector with all subfiles.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param foldername the complete path to the folder.
@@ -536,7 +536,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 	/**
 	 * Tests, if the user has admin-rights to this resource. Admin-rights
 	 * are granted, if the resource is owned by the user or if the user is in
-	 * the administrators-group.<BR>
+	 * the administrators-group.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param filename the complete path to the resource.
@@ -546,7 +546,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 	public boolean adminResource(I_CmsProject project, I_CmsResource resource);
 	
 	/**
-	 * Changes the flags for this resource<BR>
+	 * Changes the flags for this resource<BR/>
 	 * 
 	 * The user may change the flags, if he is admin of the resource.
 	 * 
@@ -561,7 +561,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Changes the owner for this resource<BR>
+	 * Changes the owner for this resource<BR/>
 	 * 
 	 * The user may change this, if he is admin of the resource.
 	 * 
@@ -576,7 +576,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException;
 
 	/**
-	 * Changes the group for this resource<BR>
+	 * Changes the group for this resource<BR/>
 	 * 
 	 * The user may change this, if he is admin of the resource.
 	 * 
@@ -669,7 +669,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException;
 
 	/** 
-	 * Adds a user the Cms.
+	 * Adds a user to the Cms.
 	 * 
 	 * Only a adminstrator can add users to the cms.
 	 * 
@@ -704,7 +704,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Updated the userinformation.<BR>
+	 * Updated the userinformation.<BR/>
 	 * 
 	 * Only the administrator can do this.
 	 * 
@@ -718,7 +718,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Add a new group to the Cms.<BR>
+	 * Add a new group to the Cms.<BR/>
 	 * 
 	 * Only the admin can do this.
 	 * 
@@ -736,18 +736,18 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException, CmsDuplicateKeyException;
 	
 	/**
-	 * Delete a group from the Cms.<BR>
+	 * Delete a group from the Cms.<BR/>
 	 * 
 	 * Only the admin can do this.
 	 * 
 	 * @param delgroup The name of the group that is to be deleted.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	public void deleteGroup(I_CmsGroup delgroup)
+	public void deleteGroup(String delgroup)
 		throws CmsException;
 	
 	/**
-	 * Adds a user to a group.<BR>
+	 * Adds a user to a group.<BR/>
      *
 	 * Only the admin can do this.
 	 * 
@@ -771,7 +771,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Writes the metadefinition for the resource type.<BR>
+	 * Writes the metadefinition for the resource type.<BR/>
 	 * 
 	 * Only the admin can do this.
 	 * 
@@ -788,7 +788,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsDuplicateKeyException, CmsException;
 	
 	/**
-	 * Delete the metadefinition for the resource type.<BR>
+	 * Delete the metadefinition for the resource type.<BR/>
 	 * 
 	 * Only the admin can do this.
 	 * 
@@ -801,7 +801,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException;
 
 	/**
-	 * Writes a shedule-task to the Cms.<BR>
+	 * Writes a shedule-task to the Cms.<BR/>
 	 * The user of the task will be set to the current user.
 	 * 
 	 * @param scheduleTask the task that should be written to the Cms.
@@ -812,7 +812,7 @@ interface I_CmsObjectComplete extends I_CmsObjectSecure {
 		throws CmsException;
 
 	/**
-	 * Deltes a shedule-task from the Cms.<BR>
+	 * Deltes a shedule-task from the Cms.<BR/>
 	 * 
 	 * A task can only be deleted by the owner or a administrator.
 	 * 

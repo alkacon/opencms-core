@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * I_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/07 17:25:04 $ 
+ * @version $Revision: 1.2 $ $Date: 1999/12/07 18:50:35 $ 
  * 
  */
 interface I_CmsObjectSecure {	
@@ -127,7 +127,7 @@ interface I_CmsObjectSecure {
 	public  boolean isAdmin();
 
 	/**
-	 * Determines, if the users current group is the projectleader-group.<BR>
+	 * Determines, if the users current group is the projectleader-group.<BR/>
 	 * All projectleaders can create new projects, or close their own projects.
 	 * 
 	 * @return true, if the users current group is the projectleader-group, 
@@ -137,11 +137,11 @@ interface I_CmsObjectSecure {
 
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * If there are some mandatory metadefinitions for the resourcetype, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR>
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR>
+	 * the mandatory metainformations.<BR/>
+	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
 	 * If there is already a file with this filename, a CmsDuplicateKey exception will
 	 * be thrown.
 	 * 
@@ -165,11 +165,11 @@ interface I_CmsObjectSecure {
 	
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR>
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR>
+	 * the mandatory metainformations.<BR/>
+	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
 	 * If there is already a file with this filename, a CmsDuplicateKey exception will
 	 * be thrown.
 	 * 
@@ -196,8 +196,8 @@ interface I_CmsObjectSecure {
 		throws CmsException, CmsDuplicateKeyException;
 	
 	/**
-	 * Reads a file from the Cms.<BR>
-	 * The onlineproject will be used for this resource<BR>
+	 * Reads a file from the Cms.<BR/>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param folder The complete path to the folder from which the file will be read.
 	 * @param filename The name of the file to be read.
@@ -212,9 +212,9 @@ interface I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Reads a file header from the Cms.<BR>
+	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent. The onlineproject will be used for 
-	 * this resource<BR>
+	 * this resource<BR/>
 	 * 
 	 * @param folder The complete path to the folder from which the file will be read.
 	 * @param filename The name of the file to be read.
@@ -229,11 +229,11 @@ interface I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Writes a file to the Cms.<BR>
+	 * Writes a file to the Cms.<BR/>
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be written without
-	 * the mandatory metainformations.<BR>
-	 * The onlineproject will be used for this resource.<BR>
+	 * the mandatory metainformations.<BR/>
+	 * The onlineproject will be used for this resource.<BR/>
 	 * 
 	 * @param file The file to write.
 	 * 
@@ -248,8 +248,8 @@ interface I_CmsObjectSecure {
 	 * Writes the fileheader to the Cms.
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be written without
-	 * the mandatory metainformations.<BR>
-	 * The onlineproject will be used for this resource<BR>
+	 * the mandatory metainformations.<BR/>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param resource The resource to write the header of.
 	 * 
@@ -261,11 +261,11 @@ interface I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Writes a file to the Cms.<BR>
+	 * Writes a file to the Cms.<BR/>
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be written without
-	 * the mandatory metainformations.<BR>
-	 * The onlineproject will be used for this resource.<BR>
+	 * the mandatory metainformations.<BR/>
+	 * The onlineproject will be used for this resource.<BR/>
 	 * 
 	 * @param file The file to write.
 	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
@@ -283,8 +283,8 @@ interface I_CmsObjectSecure {
 	 * Writes the fileheader to the Cms.
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR>
-	 * The onlineproject will be used for this resource<BR>
+	 * the mandatory metainformations.<BR/>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param resource The resource to write the header of.
 	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
@@ -300,7 +300,7 @@ interface I_CmsObjectSecure {
 
 	/**
 	 * Renames the file to the new name.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param oldname The complete path to the resource which will be renamed.
 	 * @param newname The new name of the resource (No path information allowed).
@@ -314,7 +314,7 @@ interface I_CmsObjectSecure {
 	
 	/**
 	 * Deletes the file.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param filename The complete path of the file.
 	 * 
@@ -327,7 +327,7 @@ interface I_CmsObjectSecure {
 	
 	/**
 	 * Copies the file.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param source The complete path of the sourcefile.
 	 * @param destination The complete path of the destinationfile.
@@ -343,7 +343,7 @@ interface I_CmsObjectSecure {
 	
 	/**
 	 * Moves the file.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param source The complete path of the sourcefile.
 	 * @param destination The complete path of the destinationfile.
@@ -359,7 +359,7 @@ interface I_CmsObjectSecure {
 	
 	/**
 	 * Sets the resource-type of this resource.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param resource The complete path for the resource to be changed.
 	 * @param type The new type for the resource.
@@ -373,10 +373,10 @@ interface I_CmsObjectSecure {
 
 	/**
 	 * Creates a new folder.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * If there are some mandatory metadefinitions for the folder-resourcetype, a 
 	 * CmsException will be thrown, because the folder cannot be created without
-	 * the mandatory metainformations.<BR>
+	 * the mandatory metainformations.<BR/>
 	 * If there is already a folder with this filename, a CmsDuplicateKey exception 
 	 * will be thrown.
 	 * 
@@ -398,11 +398,11 @@ interface I_CmsObjectSecure {
 	
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR>
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR>
+	 * the mandatory metainformations.<BR/>
+	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
 	 * If there is already a file with this filename, a CmsDuplicateKey exception will
 	 * be thrown.
 	 * 
@@ -426,8 +426,8 @@ interface I_CmsObjectSecure {
 		throws CmsException, CmsDuplicateKeyException;
 
 	/**
-	 * Reads a folder from the Cms.<BR>
-	 * The onlineproject will be used for this resource<BR>
+	 * Reads a folder from the Cms.<BR/>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param folder The complete path to the folder from which the folder will be 
 	 * read.
@@ -444,7 +444,7 @@ interface I_CmsObjectSecure {
 	
 	/**
 	 * Renames the folder to the new name.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * This is a very complex operation, because all sub-resources may be
 	 * renamed, too.
@@ -463,7 +463,7 @@ interface I_CmsObjectSecure {
 	
 	/**
 	 * Deletes the folder.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * This is a very complex operation, because all sub-resources may be
 	 * delted, too.
@@ -481,7 +481,7 @@ interface I_CmsObjectSecure {
 	
 	/**
 	 * Copies a folder.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * This is a very complex operation, because all sub-resources may be
 	 * copied, too.
@@ -502,7 +502,7 @@ interface I_CmsObjectSecure {
 	
 	/**
 	 * Moves a folder.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * This is a very complex operation, because all sub-resources may be
 	 * moved, too.
@@ -522,8 +522,8 @@ interface I_CmsObjectSecure {
 		throws CmsException, CmsDuplicateKeyException;
 
 	/**
-	 * Returns a Vector with all subfolders.<BR>
-	 * The onlineproject will be used for this resource<BR>
+	 * Returns a Vector with all subfolders.<BR/>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param foldername the complete path to the folder.
 	 * 
@@ -536,8 +536,8 @@ interface I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Returns a Vector with all subfiles.<BR>
-	 * The onlineproject will be used for this resource<BR>
+	 * Returns a Vector with all subfiles.<BR/>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param foldername the complete path to the folder.
 	 * 
@@ -551,7 +551,7 @@ interface I_CmsObjectSecure {
 	
 	/**
 	 * Tests if the user has full access to a resource.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param filename the complete path to the resource.
 	 * 
@@ -561,7 +561,7 @@ interface I_CmsObjectSecure {
 
 	/**
 	 * Tests if the user may read the resource.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param filename the complete path to the resource.
 	 * 
@@ -571,7 +571,7 @@ interface I_CmsObjectSecure {
 
 	/**
 	 * Tests if the user may write the resource.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param filename the complete path to the resource.
 	 * 
@@ -581,7 +581,7 @@ interface I_CmsObjectSecure {
 
 	/**
 	 * Tests if the user may view the resource.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param filename the complete path to the resource.
 	 * 
@@ -591,7 +591,7 @@ interface I_CmsObjectSecure {
 
 	/**
 	 * Tests if the resource is an internal resource.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param filename the complete path to the resource.
 	 * 
@@ -601,7 +601,7 @@ interface I_CmsObjectSecure {
 
 	/**
 	 * Tests if the resource exists.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param filename the complete path to the resource.
 	 * 
@@ -612,9 +612,9 @@ interface I_CmsObjectSecure {
 	/**
 	 * Tests, if the user has admin-rights to this resource. Admin-rights
 	 * are granted, if the resource is owned by the user or if the user is in
-	 * the administrators-group.<BR>
+	 * the administrators-group.<BR/>
 	 * 
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param filename the complete path to the resource.
 	 * 
@@ -623,11 +623,11 @@ interface I_CmsObjectSecure {
 	public boolean adminResource(I_CmsResource resource);
 	
 	/**
-	 * Changes the flags for this resource<BR>
+	 * Changes the flags for this resource<BR/>
 	 * 
 	 * The user may change the flags, if he is admin of the resource.
 	 * 
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param filename The complete path to the resource.
 	 * @param flags The new flags for the resource.
@@ -639,11 +639,11 @@ interface I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Changes the owner for this resource<BR>
+	 * Changes the owner for this resource<BR/>
 	 * 
 	 * The user may change this, if he is admin of the resource.
 	 * 
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param filename The complete path to the resource.
 	 * @param newOwner The name of the new owner for this resource.
@@ -656,11 +656,11 @@ interface I_CmsObjectSecure {
 
 
 	/**
-	 * Changes the group for this resource<BR>
+	 * Changes the group for this resource<BR/>
 	 * 
 	 * The user may change this, if he is admin of the resource.
 	 * 
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param filename The complete path to the resource.
 	 * @param newGroup The new of the new group for this resource.
@@ -672,14 +672,14 @@ interface I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
-	 * Returns all users<BR>
+	 * Returns all users<BR/>
 	 * 
 	 * @return users A Vector of all existing users.
 	 */
 	public Vector getUsers();
 	
 	/**
-	 * Returns all groups<BR>
+	 * Returns all groups<BR/>
 	 * 
 	 * @return users A Vector of all existing groups.
 	 */
@@ -709,7 +709,8 @@ interface I_CmsObjectSecure {
 	
 	/**
 	 * Authentificates a user to the CmsSystem. If the user exists in the system, 
-	 * a CmsUser object is created and his session is used for identification.
+	 * a CmsUser object is created and his session is used for identification. This
+	 * operation fails, if the password is incorrect.
 	 * 
 	 * @param username The Name of the user.
 	 * @param password The password of the user.
@@ -800,8 +801,8 @@ interface I_CmsObjectSecure {
 	public Vector getAllMetaDefinitions(I_CmsResourceType resourcetype, int type);
 
 	/**
-	 * Returns a MetaInformation of a file or folder.<BR>
-	 * The onlineproject will be used for this resource<BR>
+	 * Returns a MetaInformation of a file or folder.<BR/>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param name The resource-name of which the MetaInformation has to be read.
 	 * @param meta The metadefinition-name of which the MetaInformation has to be read.
@@ -815,7 +816,7 @@ interface I_CmsObjectSecure {
 
 	/**
 	 * Writes a MetaInformation for a file or folder.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param name The resource-name of which the MetaInformation has to be set.
 	 * @param meta The metadefinition-name of which the MetaInformation has to be set.
@@ -828,7 +829,7 @@ interface I_CmsObjectSecure {
 
 	/**
 	 * Writes a couple of MetaInformation for a file or folder.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param name The resource-name of which the MetaInformation has to be set.
 	 * @param metainfos A Hashtable with metadefinition- metainfo-pairs as strings.
@@ -840,7 +841,7 @@ interface I_CmsObjectSecure {
 
 	/**
 	 * Returns a list of all MetaInformations of a file or folder.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param name The resource-name of which the MetaInformation has to be read
 	 * 
@@ -853,7 +854,7 @@ interface I_CmsObjectSecure {
 	
 	/**
 	 * Deletes all MetaInformation for a file or folder.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param resourcename The resource-name of which the MetaInformation has to be delteted.
 	 * 
@@ -864,7 +865,7 @@ interface I_CmsObjectSecure {
 
 	/**
 	 * Deletes a MetaInformation for a file or folder.
-	 * The onlineproject will be used for this resource<BR>
+	 * The onlineproject will be used for this resource<BR/>
 	 * 
 	 * @param resourcename The resource-name of which the MetaInformation has to be delteted.
 	 * @param meta The metadefinition-name of which the MetaInformation has to be set.

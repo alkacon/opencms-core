@@ -6,7 +6,7 @@ import java.util.*;
  * This resource can be a I_CmsFile or a I_CmsFolder.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/07 17:25:04 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/07 18:50:35 $
  */
 public interface I_CmsResource extends I_CmsFlags {
 	
@@ -122,7 +122,7 @@ public interface I_CmsResource extends I_CmsFlags {
 	public static final int C_STATE_DELETED		= 3;
 	
 	/**
-	 * Returns the absolute path for this resource.<BR>
+	 * Returns the absolute path for this resource.<BR/>
 	 * Example: retuns /system/def/language.cms
 	 * 
 	 * @return the absolute path for this resource.
@@ -130,8 +130,8 @@ public interface I_CmsResource extends I_CmsFlags {
     public String getAbsolutePath();
 	
 	/**
-	 * Returns the absolute path of the parent.<BR>
-	 * Example: /system/def has the parent /system/<BR>
+	 * Returns the absolute path of the parent.<BR/>
+	 * Example: /system/def has the parent /system/<BR/>
 	 * / has no parent
 	 * 
 	 * @return the parent absolute path, or null if this is the root-resource.
@@ -139,7 +139,7 @@ public interface I_CmsResource extends I_CmsFlags {
     public String getParent();
 	
 	/**
-	 * Returns the path for this resource.<BR>
+	 * Returns the path for this resource.<BR/>
 	 * Example: retuns /system/def/ for the
 	 * resource /system/def/language.cms
 	 * 
@@ -148,7 +148,7 @@ public interface I_CmsResource extends I_CmsFlags {
 	public String getPath();
 	
 	/**
-	 * Returns the name of this resource.<BR>
+	 * Returns the name of this resource.<BR/>
 	 * Example: retuns language.cms for the
 	 * resource /system/def/language.cms
 	 * 
@@ -228,7 +228,7 @@ public interface I_CmsResource extends I_CmsFlags {
     public int getFlags();
 	
 	/**
-	 * Returns the id of this resource.<BR>
+	 * Returns the id of this resource.<BR/>
 	 * Some resources have no id, C_UNKNOWN_ID will be returned.
 	 * 
 	 * @return the id of this resource.
@@ -250,7 +250,7 @@ public interface I_CmsResource extends I_CmsFlags {
     public boolean isFile();
 	
 	/**
-	 * Returns the state of this resource.<BR>
+	 * Returns the state of this resource.<BR/>
 	 * This may be C_STATE_UNCHANGED, C_STATE_CHANGED, C_STATE_NEW or C_STATE_DELETED.
 	 * 
 	 * @return the state of this resource.

@@ -7,7 +7,7 @@ import java.util.*;
  * for a resource this resource-type is needed.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/06 09:39:22 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/07 18:50:35 $
  */
 public interface I_CmsResourceType {	
 
@@ -64,7 +64,7 @@ public interface I_CmsResourceType {
 	public String getName();
 	
 	/**
-	 * Returns the launcher for this resource-type.<BR>
+	 * Returns the launcher for this resource-type.<BR/>
 	 * The launcher will start the resource in its needed environment.
 	 * Possibly the resource will be processed bevore delivering.
 	 * 
