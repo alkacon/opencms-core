@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/01 15:49:12 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/12/05 13:02:18 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.11 $ $Date: 2000/12/01 15:49:12 $
+ * @version $Revision: 1.12 $ $Date: 2000/12/05 13:02:18 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 	
@@ -883,6 +883,7 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 				con.connect();
 				InputStream in = con.getInputStream();
 				in.close();
+				
 			} catch (Exception ex) {
 				throw new CmsException(0, ex);
 			}

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/01 15:49:09 $
- * Version: $Revision: 1.202 $
+ * Date   : $Date: 2000/12/05 13:02:18 $
+ * Version: $Revision: 1.203 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.202 $ $Date: 2000/12/01 15:49:09 $
+ * @version $Revision: 1.203 $ $Date: 2000/12/05 13:02:18 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3031,7 +3031,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 		Vector folders = new Vector();
 		
 	   // Todo: add caching for getSubFolders
-	   folders=(Vector)m_subresCache.get(C_FOLDER+currentProject.getId()+foldername);
+	   //folders=(Vector)m_subresCache.get(C_FOLDER+currentProject.getId()+foldername);
 	 
 	   if ((folders==null) || (folders.size()==0)){
 	
@@ -3057,7 +3057,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 				// no onlinefolders, ignoring them
 			}			
 		}
-		m_subresCache.put(C_FOLDER+currentProject.getId()+foldername,folders);
+		//m_subresCache.put(C_FOLDER+currentProject.getId()+foldername,folders);
 	   }
 		// return the folders
 		return(folders);
@@ -3863,6 +3863,7 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 				con.connect();
 				InputStream in = con.getInputStream();
 				in.close();
+				System.err.println(in.toString());
 			} catch (Exception ex) {
 				throw new CmsException(0, ex);
 			}
