@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/09/21 06:18:51 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.24 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.25 $ $Date: 2001/09/21 06:18:51 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -413,7 +413,9 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             CmsResource folder = (CmsResource) subFolders.elementAt(i);
             if(folder.getState() != C_STATE_DELETED){
                 // check if this is a system-folder and if it should be included.
-                if(folder.getAbsolutePath().startsWith("/system/")) {
+                if(folder.getAbsolutePath().startsWith("/system/") ||
+                    folder.getAbsolutePath().startsWith("/pics/system/") ||
+                    folder.getAbsolutePath().startsWith("/moduledemos/")) {
                     if(!m_excludeSystem) {
                         // export this folder
                         writeXmlEntrys(folder);
