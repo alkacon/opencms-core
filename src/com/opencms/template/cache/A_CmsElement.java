@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/05/17 14:52:25 $
+* Version: $Revision: 1.9 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -111,7 +111,9 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, toString() + " adding variant \"" + key + "\" to cache. ");
         }
-        m_variants.put(key, variant);
+        if(key != null){
+            m_variants.put(key, variant);
+        }
     }
 
     /**
@@ -128,6 +130,9 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * @return Cached CmsElementVariant object
      */
     public CmsElementVariant getVariant(Object key) {
+        if (key == null){
+            return null;
+        }
         CmsElementVariant result = (CmsElementVariant)m_variants.get(key);
         if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             if(result != null) {
