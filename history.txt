@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.1.31 Arakis - 28 July 2000
+OpenCms 4.1.32 Arakis - 28 July 2000
 
 ! Added task components to the core.
 ! Added recovery-password for users.
