@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/12/21 08:49:21 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2001/01/04 09:40:47 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.23 $ $Date: 2000/12/21 08:49:21 $
+ * @version $Revision: 1.24 $ $Date: 2001/01/04 09:40:47 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -91,7 +91,9 @@ public void acceptTask(String taskId) {
  */
 public void accessCreate(String resource) {
 	try {
-		System.out.println(m_cms.accessCreate(m_cms.readFileHeader(resource)));
+		//System.out.println(m_cms.accessCreate(m_cms.readFileHeader(resource)));
+		// ednfal: resource is read later in resourcebroker
+		System.out.println(m_cms.accessCreate(resource));
 	} catch (Exception exc) {
 		CmsShell.printException(exc);
 	}
@@ -103,7 +105,9 @@ public void accessCreate(String resource) {
  */
 public void accessLock(String resource) {
 	try {
-		System.out.println(m_cms.accessLock(m_cms.readFileHeader(resource)));
+		//System.out.println(m_cms.accessLock(m_cms.readFileHeader(resource)));
+		// ednfal: resource is read later in resourcebroker
+		System.out.println(m_cms.accessLock(resource));
 	} catch (Exception exc) {
 		CmsShell.printException(exc);
 	}
@@ -128,7 +132,9 @@ public void accessLock(String resource) {
  */
 public void accessRead(String resource) {
 	try {
-		System.out.println(m_cms.accessRead(m_cms.readFileHeader(resource)));
+		//System.out.println(m_cms.accessRead(m_cms.readFileHeader(resource)));
+		// ednfal: resource is read later in resourcebroker
+		System.out.println(m_cms.accessRead(resource));
 	} catch (Exception exc) {
 		CmsShell.printException(exc);
 	}
@@ -140,8 +146,10 @@ public void accessRead(String resource) {
 	 */
 	public void accessWrite(String resource) {
 		try {
-				CmsResource res = m_cms.readFileHeader(resource);
-				System.out.println( m_cms.accessWrite(res) );
+			//CmsResource res = m_cms.readFileHeader(resource);
+			//System.out.println( m_cms.accessWrite(res) );
+			// ednfal: resource is read later in resourcebroker
+			System.out.println(m_cms.accessWrite(resource));
 		} catch( Exception exc ) {
 			CmsShell.printException(exc);
 		}		

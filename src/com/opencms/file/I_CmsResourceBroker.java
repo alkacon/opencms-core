@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/21 08:52:47 $
- * Version: $Revision: 1.136 $
+ * Date   : $Date: 2001/01/04 09:42:24 $
+ * Version: $Revision: 1.137 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.136 $ $Date: 2000/12/21 08:52:47 $
+ * @version $Revision: 1.137 $ $Date: 2001/01/04 09:42:24 $
  * 
  */
 
@@ -72,7 +72,7 @@ public interface I_CmsResourceBroker {
 	 * @return wether the user has access, or not.
 	 */
 	public boolean accessCreate(CmsUser currentUser, CmsProject currentProject,
-								 CmsResource resource) throws CmsException;
+								 String resourceName) throws CmsException;
 	/**
 	 * Checks, if the user may lock this resource.
 	 * 
@@ -83,7 +83,7 @@ public interface I_CmsResourceBroker {
 	 * @return wether the user may lock this resource, or not.
 	 */
 	public boolean accessLock(CmsUser currentUser, CmsProject currentProject,
-							   CmsResource resource) throws CmsException;
+							   String resourceName) throws CmsException;
 	// Methods working with projects
 
 	/**
@@ -111,7 +111,7 @@ public interface I_CmsResourceBroker {
 	 * @return wether the user has access, or not.
 	 */
 	public boolean accessRead(CmsUser currentUser, CmsProject currentProject,
-							   CmsResource resource) throws CmsException;
+							   String resourceName) throws CmsException;
 	/**
 	 * Checks, if the user may write this resource.
 	 * 
@@ -122,7 +122,7 @@ public interface I_CmsResourceBroker {
 	 * @return wether the user has access, or not.
 	 */
 	public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
-								CmsResource resource) throws CmsException;
+								String resourceName) throws CmsException;
 	/**
 	 * adds a file extension to the list of known file extensions 
 	 * 

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/12/22 17:31:21 $
- * Version: $Revision: 1.147 $
+ * Date   : $Date: 2001/01/04 09:41:34 $
+ * Version: $Revision: 1.148 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.147 $ $Date: 2000/12/22 17:31:21 $ 
+ * @version $Revision: 1.148 $ $Date: 2001/01/04 09:41:34 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -105,7 +105,7 @@ public void acceptTask(int taskId) throws CmsException {
  *
  * @exception CmsException if operation was not successful.
  */
-public boolean accessCreate(CmsResource resource) throws CmsException {
+public boolean accessCreate(String resource) throws CmsException {
 	try {
 		return m_rb.accessCreate(m_context.currentUser(), m_context.currentProject(), resource);
 	} catch (Exception exc) {
@@ -120,7 +120,7 @@ public boolean accessCreate(CmsResource resource) throws CmsException {
  *
  * @exception CmsException if operation was not successful.
  */
-public boolean accessLock(CmsResource resource) throws CmsException {
+public boolean accessLock(String resource) throws CmsException {
 	try {
 		return m_rb.accessLock(m_context.currentUser(), m_context.currentProject(), resource);
 	} catch (Exception exc) {
@@ -146,7 +146,7 @@ public boolean accessProject(int projectId) throws CmsException {
  *
  * @exception CmsException if operation was not successful.
  */
-public boolean accessRead(CmsResource resource) throws CmsException {
+public boolean accessRead(String resource) throws CmsException {
 	try {
 		return m_rb.accessRead(m_context.currentUser(), m_context.currentProject(), resource);
 	} catch (Exception exc) {
@@ -161,7 +161,7 @@ public boolean accessRead(CmsResource resource) throws CmsException {
  *
  * @exception CmsException if operation was not successful.
  */
-public boolean accessWrite(CmsResource resource) throws CmsException {
+public boolean accessWrite(String resource) throws CmsException {
 	try {
 		return m_rb.accessWrite(m_context.currentUser(), m_context.currentProject(), resource);
 	} catch (Exception exc) {
