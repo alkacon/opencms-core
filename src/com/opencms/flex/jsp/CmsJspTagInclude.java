@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2002/12/13 17:38:13 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/12/16 13:20:36 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,9 +46,9 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
-public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamParent { 
+public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
     // Attribute member variables
     private String m_target = null;
@@ -224,7 +224,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamPar
             String target = null;           
             
             if (m_part != null) {
-                addParameter(CmsJspTagTemplate.C_TEMPLATE_PART, m_part);
+                addParameter(CmsJspTagTemplate.C_TEMPLATE_ELEMENT, m_part);
                 // Check for body part and add special parameters for XMLTemplate if required
                 if (I_CmsConstants.C_XML_BODY_ELEMENT.equalsIgnoreCase(m_part.trim())) {
                     // First check if a body was set in the cms request context
@@ -321,7 +321,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamPar
      * value already exists for the parameter, nothing will be added, since a 
      * value can appear only once per parameter.<p>
      * 
-	 * @see com.opencms.flex.jsp.I_CmsJspParamParent#addParameter(String, String)
+	 * @see com.opencms.flex.jsp.I_CmsJspTagParamParent#addParameter(String, String)
 	 */
 	public void addParameter(String name, String value) {
         // No null values allowed in parameters

@@ -1,7 +1,7 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagWpLabel.java,v $
-* Date   : $Date: 2002/10/30 10:25:45 $
-* Version: $Revision: 1.3 $
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagLabel.java,v $
+* Date   : $Date: 2002/12/16 13:20:36 $
+* Version: $Revision: 1.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,15 +46,15 @@ import com.opencms.flex.cache.CmsFlexRequest;
  * implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  */
-public class CmsJspTagWpLabel extends javax.servlet.jsp.tagext.BodyTagSupport {
+public class CmsJspTagLabel extends javax.servlet.jsp.tagext.BodyTagSupport {
     
     /** Attribute to store WP label definition file */
-    public static final String C_JSP_ATTR_TAGLABEL_DEF = "com.opencms.flex.CmsJspTagWpLabel.labeldeffile";
+    public static final String C_JSP_ATTR_TAGLABEL_DEF = "com.opencms.flex.CmsJspTagLabel.labeldeffile";
     
     /** Attribute to store WP language file */
-    public static final String C_JSP_ATTR_TAGLABEL_LANG = "com.opencms.flex.CmsJspTagWpLabel.langfile";
+    public static final String C_JSP_ATTR_TAGLABEL_LANG = "com.opencms.flex.CmsJspTagLabel.langfile";
             
     public int doAfterBody() throws javax.servlet.jsp.JspException {
         

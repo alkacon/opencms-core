@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagTemplate.java,v $
-* Date   : $Date: 2002/11/17 14:00:16 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/12/16 13:20:36 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,27 +35,27 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
- * Used to select various template parts an a JSP template that
+ * Used to select various template elements form a JSP template that
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
     // Attribute member variables
-    private String m_part = null;
+    private String m_element = null;
 
     /** Template part identifier */
-    public static final String C_TEMPLATE_PART = "_templatepart";
+    public static final String C_TEMPLATE_ELEMENT = "__element";
     
     /**
      * Sets the include page/file target.
      * @param target the target to set
      */
-    public void setPart(String part) {
+    public void setElement(String part) {
         if (part != null) {
-            m_part = part.toLowerCase();
+            m_element = part.toLowerCase();
         }
     }
     
@@ -63,8 +63,8 @@ public class CmsJspTagTemplate extends BodyTagSupport {
      * Returns the include page/file target.
      * @return String
      */
-    public String getPart() {
-        return m_part!=null?m_part:"";
+    public String getElement() {
+        return m_element!=null?m_element:"";
     }
 
     /**
@@ -72,11 +72,11 @@ public class CmsJspTagTemplate extends BodyTagSupport {
      */    
     public void release() {
         super.release();
-        m_part = null;
+        m_element = null;
     }    
 
     public int doStartTag() throws JspException {
-        if (templateTagAction(m_part, (CmsFlexRequest)pageContext.getRequest())) {
+        if (templateTagAction(m_element, (CmsFlexRequest)pageContext.getRequest())) {
             return EVAL_BODY_INCLUDE;
         } else {
             return SKIP_BODY;
@@ -84,7 +84,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
     }
     
     public static boolean templateTagAction(String part, CmsFlexRequest req) {
-        String param =  req.getParameter(C_TEMPLATE_PART);        
+        String param =  req.getParameter(C_TEMPLATE_ELEMENT);        
         return ((param == null) || (param.equals(part)));
     }
  }

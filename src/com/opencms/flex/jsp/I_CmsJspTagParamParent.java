@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspParamSupport.java,v $
- * Date   : $Date: 2002/10/31 11:39:36 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/I_CmsJspTagParamParent.java,v $
+ * Date   : $Date: 2002/12/16 13:20:36 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,7 +27,7 @@
  *
  * 
  * This file is based on:
- * org.apache.taglibs.standard.tag.common.core.ParamSupport
+ * org.apache.taglibs.standard.tag.common.core.ParamParrent
  * from the Apache JSTL 1.0 implmentation.
  * 
  * The Apache Software License, Version 1.1
@@ -83,87 +83,26 @@
  * <http://www.apache.org/>.
  *
  */ 
-
+ 
 package com.opencms.flex.jsp;
 
-import com.opencms.core.A_OpenCms;
-import com.opencms.util.Encoder;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.tagext.Tag;
-
 /**
- * A handler for &lt;param&gt; that accepts attributes as Strings
- * and evaluates them as expressions at runtime.<p>
+ * Interface for tag handlers implementing valid parent tags for
+ * &lt;c:param&gt;.<p>
  *
  * @author Shawn Bayern
  */
-
-public class CmsJspParamSupport extends BodyTagSupport {
-
-    protected String name;        
-    protected String value;
+public interface I_CmsJspTagParamParent {
 
     /**
-     * There used to be an 'encode' attribute; I've left this as a
-     * vestige in case custom subclasses want to use our functionality
-     * but NOT encode parameters.
+     * Add a parameter to this tag.  The intent is that the
+     * &lt;param&gt; subtag will call this to register parameters.
+     * Assumes that 'name' and 'value' are appropriately encoded and do
+     * not contain any meaningful metacharacters; in order words, escaping
+     * is the responsibility of the caller.
+     *
+     * @see CmsJspTagParam
      */
-    protected boolean encode = false;
-    
-	public CmsJspParamSupport() {
-		super();
-		init();
-	}
-
-	private void init() {
-		name = value = null;
-	}
-
-	// for tag attribute
-	public void setName(String name) throws JspTagException {
-		this.name = name;
-	}
-
-	// for tag attribute
-	public void setValue(String value) throws JspTagException {
-		this.value = value;
-	}
-
-	// simply send our name and value to our appropriate ancestor
-	public int doEndTag() throws JspException {
-		Tag t = findAncestorWithClass(this, I_CmsJspParamParent.class);
-		if (t == null)
-			throw new JspTagException("Parameter Tag <param> without parent found!");
-
-		// take no action for null or empty names
-		if (name == null || name.equals(""))
-			return EVAL_PAGE;
-
-		// send the parameter to the appropriate ancestor
-		I_CmsJspParamParent parent = (I_CmsJspParamParent) t;
-		String value = this.value;
-		if (value == null) {
-			if (bodyContent == null || bodyContent.getString() == null)
-				value = "";
-			else
-				value = bodyContent.getString().trim();
-		}
-		if (encode) {
-			parent.addParameter(
-				Encoder.encode(name, A_OpenCms.getDefaultEncoding(), true),
-				Encoder.encode(value, A_OpenCms.getDefaultEncoding(), true));
-		} else
-			parent.addParameter(name, value);
-
-		return EVAL_PAGE;
-	}
-
-    // Releases any resources we may have (or inherit)
-    public void release() {
-    	init();
-    }
+    void addParameter(String name, String value);
 
 }

@@ -1,7 +1,7 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagFileProperty.java,v $
-* Date   : $Date: 2002/12/15 10:42:37 $
-* Version: $Revision: 1.8 $
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagProperty.java,v $
+* Date   : $Date: 2002/12/16 13:20:36 $
+* Version: $Revision: 1.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,9 +37,9 @@ import com.opencms.util.Encoder;
  * This Tag provides access to the currently included files OpenCms properties.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.1 $
  */
-public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport {
+public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
     private String m_propertyName = null;    
     private String m_propertyFile = null;    

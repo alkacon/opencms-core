@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionBean.java,v $
- * Date   : $Date: 2002/12/15 10:42:37 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
+ * Date   : $Date: 2002/12/16 13:20:36 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,17 +53,17 @@ import javax.servlet.jsp.PageContext;
  * 
  * Initialize this bean at the beginning of your JSP like this:
  * <pre>
- * &lt;jsp:useBean id="cms" class="com.opencms.flex.jsp.CmsJspActionBean"&gt;
+ * &lt;jsp:useBean id="cms" class="com.opencms.flex.jsp.CmsJspActionElement"&gt;
  * &lt% cms.init(pageContext, request, response); %&gt;
  * &lt;/jsp:useBean&gt;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.0 beta 2
  */
-public class CmsJspActionBean {
+public class CmsJspActionElement {
 
     /** OpenCms JSP request */
     private CmsFlexRequest m_request;
@@ -78,12 +78,12 @@ public class CmsJspActionBean {
     private boolean m_notInitialized;
     
     /** Error message in case bean was not properly initialized */
-    public final static String C_NOT_INITIALIZED = "+++ CmsJspActionBean not initialized +++";
+    public final static String C_NOT_INITIALIZED = "+++ CmsJspActionElement not initialized +++";
 
     /**
      * Empty constructor, required for every JavaBean.
      */
-    public CmsJspActionBean() {
+    public CmsJspActionElement() {
         m_notInitialized = true;
     }
     
@@ -235,7 +235,7 @@ public class CmsJspActionBean {
      * @param file the file (or folder) to look at for the property
      * @return the value of the property found, or null if the property could not be found
      * 
-     * @see com.opencms.flex.jsp.CmsJspTagFileProperty
+     * @see com.opencms.flex.jsp.CmsJspTagProperty
      */
     public String property(String name, String file) {
         if (m_notInitialized) return C_NOT_INITIALIZED;
@@ -258,7 +258,7 @@ public class CmsJspActionBean {
      * @return the value of the property found, or the value of defaultValue
      *     if the property could not be found
      *
-     * @see  com.opencms.flex.jsp.CmsJspTagFileProperty
+     * @see  com.opencms.flex.jsp.CmsJspTagProperty
      */
     public String property(String name, String file, String defaultValue) {
         if (m_notInitialized) return C_NOT_INITIALIZED;
@@ -283,12 +283,12 @@ public class CmsJspActionBean {
      * @return the value of the property found, or the value of defaultValue 
      *     if the property could not be found
      *
-     * @see  com.opencms.flex.jsp.CmsJspTagFileProperty
+     * @see  com.opencms.flex.jsp.CmsJspTagProperty
      */
     public String property(String name, String file, String defaultValue, boolean escapeHtml) {
         if (m_notInitialized) return C_NOT_INITIALIZED;
         try {
-            return CmsJspTagFileProperty.propertyTagAction(name, file, defaultValue, escapeHtml, m_request);
+            return CmsJspTagProperty.propertyTagAction(name, file, defaultValue, escapeHtml, m_request);
         } catch (CmsException e) {
             if (defaultValue == null) {
                 return "+++ error reading property '" + name + "' +++";
@@ -308,12 +308,12 @@ public class CmsJspActionBean {
      * @param label the label to look up
      * @return label the value of the label
      * 
-     * @see com.opencms.flex.jsp.CmsJspTagWpLabel
+     * @see com.opencms.flex.jsp.CmsJspTagLabel
      */
     public String wpLabel(String label) {
         if (m_notInitialized) return C_NOT_INITIALIZED;
         try {
-            return CmsJspTagWpLabel.wpLabelTagAction(label, m_request);
+            return CmsJspTagLabel.wpLabelTagAction(label, m_request);
         } catch (CmsException e) {
             return "+++ error reading workplace label '" + label + "' +++";
         }         
