@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2002/11/05 10:07:44 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2002/11/10 00:42:04 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.57 $ $Date: 2002/11/05 10:07:44 $
+ * @version $Revision: 1.58 $ $Date: 2002/11/10 00:42:04 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -118,7 +118,7 @@ public class CmsImport implements I_CmsConstants, Serializable {
      * 
      */
     private boolean m_modified = false;
-
+    
     /**
      * This constructs a new CmsImport-object which imports the resources.
      *
@@ -133,7 +133,7 @@ public class CmsImport implements I_CmsConstants, Serializable {
         m_importFile = importFile;
         m_importPath = importPath;
         m_cms = cms;
-        m_report=report;
+        m_report=report;     
 
         // create the digest
         createDigest();
@@ -192,7 +192,7 @@ private void createDigest() throws CmsException {
      * Checks if the file sticks to the rules for files in the content path.
      * If not, it sets the type of the file to compatible_plain.
      * This is for exports of older versions of OpenCms. The imported files
-     * will work as befor, but they cant be edited.
+     * will work as before, but they cant be edited.
      *
      * @param name The name of the resource including path that is imported
      * @param content the content of the resource.
@@ -471,11 +471,15 @@ private void importResource(String source, String destination, String type, Stri
     byte[] content = null;
     String fullname = null;
     try {
-        if (source != null){
+
+        if (source != null) {
             content = getFileBytes(source);
-            // change the filecontent for encoding if necessary
-            content = convertFile(source, content);
+            if ("page".equals(type) || ("plain".equals(type)) || ("XMLTemplate".equals(type))) {
+                // change the filecontent for encoding if necessary
+                content = convertFile(source, content);
+            }
         }
+
         // set invalid files to type compatible_plain
         type = fitFileType(m_importPath + destination, content, type, properties);
 
