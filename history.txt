@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.50 Arakis - xx January 2001
+
+* Bugfixing Editor. Empty-titles causes not a nullpointer-exception any more.
+
 OpenCms 4.1.49 Arakis - 09 January 2001
 
 * Solved some problems with the download and picturegalerie and the new explorer.
