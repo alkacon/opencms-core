@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/03/06 13:00:18 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2001/04/24 13:00:31 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.23 $ $Date: 2001/03/06 13:00:18 $ *
+ * @version $Revision: 1.24 $ $Date: 2001/04/24 13:00:31 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1157,7 +1157,14 @@ public Vector getAllAccessibleProjects(CmsUser user) throws CmsException {
 public Vector getAllGroupsOfUser(String username) throws CmsException {
 	//System.out.println("PL/SQL: getAllGroupsOfUser");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CmsUser user = readUser(username, 0);
+    CmsUser user = null;
+    try {
+	    user = readUser(username, C_USER_TYPE_SYSTEMUSER);
+    } catch (CmsException exc){
+        if (exc.getType() == CmsException.C_NOT_FOUND){
+            user = readUser(username, C_USER_TYPE_WEBUSER);
+        }
+    }
 	CmsGroup group;
 	Vector groups = new Vector();
 	CallableStatement statement = null;
@@ -1165,7 +1172,7 @@ public Vector getAllGroupsOfUser(String username) throws CmsException {
 	ResultSet res = null;
 	try {
 		//  get all all groups of the user
-                con = DriverManager.getConnection(m_poolName);
+        con = DriverManager.getConnection(m_poolName);
 		statement = con.prepareCall(cq.C_PLSQL_GROUPS_GETGROUPSOFUSER);
 		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.setInt(2, user.getId());
