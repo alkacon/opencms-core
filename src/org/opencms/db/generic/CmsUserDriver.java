@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/10/01 14:05:07 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2003/10/10 11:35:39 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.39 $ $Date: 2003/10/01 14:05:07 $
+ * @version $Revision: 1.40 $ $Date: 2003/10/10 11:35:39 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -159,7 +159,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             // group = readGroup(groupName);
             group = new CmsGroup(groupId, parentId, groupName, description, flags);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "[CmsGroup]: " + groupName + ", Id=" + groupId.toString(), CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, "[CmsGroup]: " + groupName + ", Id=" + groupId.toString(), CmsException.C_SQL_ERROR, e, true);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
