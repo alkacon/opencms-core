@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/08/19 12:26:57 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/11/25 09:29:59 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2004/08/19 12:26:57 $
+ * @version $Revision: 1.14 $ $Date: 2004/11/25 09:29:59 $
  */
 public class CmsSetupDb extends Object {
     
@@ -131,10 +131,11 @@ public class CmsSetupDb extends Object {
      * 
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
+     * @param abortOnError indicates if the script is aborted if an error occurs
      */
-    public void dropDatabase(String database, Map replacer) {
+    public void dropDatabase(String database, Map replacer, boolean abortOnError) {
         m_errorLogging = true;
-        executeSql(database, "drop_db.sql", replacer, false);
+        executeSql(database, "drop_db.sql", replacer, abortOnError);
     }
 
     /**
@@ -142,10 +143,11 @@ public class CmsSetupDb extends Object {
      * 
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
+     * @param abortOnError indicates if the script is aborted if an error occurs
      */
-    public void createDatabase(String database, Map replacer) {
+    public void createDatabase(String database, Map replacer, boolean abortOnError) {
         m_errorLogging = true;
-        executeSql(database, "create_db.sql", replacer, true);
+        executeSql(database, "create_db.sql", replacer, abortOnError);
     }
 
     /**
@@ -153,20 +155,23 @@ public class CmsSetupDb extends Object {
      * 
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
+     * @param abortOnError indicates if the script is aborted if an error occurs
      */
-    public void createTables(String database, Map replacer) {
+    public void createTables(String database, Map replacer, boolean abortOnError) {
         m_errorLogging = true;
-        executeSql(database, "create_tables.sql", replacer, true);
+        executeSql(database, "create_tables.sql", replacer, abortOnError);
     }
 
     /**
      * Calls the drop tables script for the given database.<p>
      * 
      * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     * @param abortOnError indicates if the script is aborted if an error occurs
      */
-    public void dropTables(String database) {
+    public void dropTables(String database, Map replacer, boolean abortOnError) {
         m_errorLogging = true;
-        executeSql(database, "drop_tables.sql", null, false);
+        executeSql(database, "drop_tables.sql", replacer, abortOnError);
     }
 
     /**
@@ -174,10 +179,11 @@ public class CmsSetupDb extends Object {
      * 
      * @param updateScript the update script code
      * @param replacers the replacers to use in the script code
+     * @param abortOnError indicates if the script is aborted if an error occurs
      */
-    public void updateDatabase(String updateScript, Map replacers) {
+    public void updateDatabase(String updateScript, Map replacers, boolean abortOnError) {
         StringReader reader = new StringReader(updateScript);
-        executeSql(reader, replacers, true);
+        executeSql(reader, replacers, abortOnError);
     }
     
     /**

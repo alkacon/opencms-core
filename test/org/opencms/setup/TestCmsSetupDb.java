@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupDb.java,v $
- * Date   : $Date: 2004/08/19 12:27:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/25 09:29:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.test.OpenCmsTestCase;
  * Tests the database creation / removal used during setup.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.5
  */
@@ -63,7 +63,8 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         }
         
         // use create method form superclass
-        CmsSetupDb setupDb = createDatabase();    
+        CmsSetupDb setupDb = getSetupDb(m_setupConnection);
+        setupDb.createDatabase(m_dbProduct, getReplacer(m_defaultConnection), true);    
         
         // check for errors 
         checkErrors(setupDb);
@@ -83,7 +84,8 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         }        
         
         // use create method form superclass
-        CmsSetupDb setupDb = createTables();     
+        CmsSetupDb setupDb = getSetupDb(m_defaultConnection);
+        setupDb.createTables(m_dbProduct, getReplacer(m_defaultConnection), true);     
         
         // check for errors 
         checkErrors(setupDb);
@@ -103,7 +105,8 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         }        
         
         // use drop method form superclass
-        CmsSetupDb setupDb = dropTables();         
+        CmsSetupDb setupDb = getSetupDb(m_defaultConnection);
+        setupDb.dropTables(m_dbProduct, getReplacer(m_defaultConnection), true);         
         
         // check for errors 
         checkErrors(setupDb);     
@@ -123,7 +126,8 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         }
         
         // use drop method form superclass
-        CmsSetupDb setupDb = dropDatabase();     
+        CmsSetupDb setupDb = getSetupDb(m_setupConnection);
+        setupDb.dropDatabase(m_dbProduct, getReplacer(m_defaultConnection), true);     
         
         // check for errors 
         checkErrors(setupDb);     

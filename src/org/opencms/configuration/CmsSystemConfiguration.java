@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/11/22 18:03:06 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/11/25 09:29:58 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -669,6 +669,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             .addAttribute(A_CLASS, m_passwordHandler.getClass().getName());
         passwordhandlerElement.addElement(N_PASSWORDENCODING).addText(m_passwordHandler.getInputEncoding());
         passwordhandlerElement.addElement(N_DIGESTTYPE).addText(m_passwordHandler.getDigestType());
+        ExtendedProperties handlerParameters = m_passwordHandler.getConfiguration();
+        if (handlerParameters != null) {
+            Iterator it = handlerParameters.getKeys();
+            while (it.hasNext()) {
+                String name = (String)it.next();
+                String value = handlerParameters.get(name).toString();
+                Element paramNode = passwordhandlerElement.addElement(N_PARAM);
+                paramNode.addAttribute(A_NAME, name);
+                paramNode.addText(value);
+            }
+        }
         
         // create <sites> node 
         Element sitesElement = systemElement.addElement(N_SITES);

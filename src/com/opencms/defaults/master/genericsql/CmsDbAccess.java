@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/11/22 18:03:06 $
-* Version: $Revision: 1.84 $
+* Date   : $Date: 2004/11/25 09:29:59 $
+* Version: $Revision: 1.85 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -144,7 +144,7 @@ public class CmsDbAccess {
         try {
             conn = m_sqlManager.getConnection();
             setup.setConnection(conn);
-            setup.updateDatabase(updateScript, replacers);
+            setup.updateDatabase(updateScript, replacers, true);
             
             Vector errors = setup.getErrors();
             if (!errors.isEmpty()) {
