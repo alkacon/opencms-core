@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2002/12/07 11:14:42 $
-* Version: $Revision: 1.119 $
+* Date   : $Date: 2003/02/04 09:26:37 $
+* Version: $Revision: 1.120 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.119 $ $Date: 2002/12/07 11:14:42 $
+ * @version $Revision: 1.120 $ $Date: 2003/02/04 09:26:37 $
  */
 
 public interface I_CmsWpConstants {
@@ -282,7 +282,9 @@ public interface I_CmsWpConstants {
 
     /** Parameter for the ok value */
     public static final String C_PARA_OK = "OK";
-
+    
+    /** Parameter name of "cancel" value */
+    public static final String C_PARA_CANCEL = "CANCEL";  
 
     /** Parameter for the default value */
     public static final String C_PARA_DEFAULT = "DEFAULT";

@@ -7,17 +7,15 @@
 <script language=JavaScript>
 <!--
 top.help_url=']]><LABEL value="help.explorer.settings.properties"/><![CDATA[';
-//-->
 
-
-function selectPanel(value){
-    document.PREFERENCES.panel.value=value;
-    document.PREFERENCES.submit();
+function selectPanel(panelName,buttonName) {
+    var form = document.PREFERENCES;
+	
+    form.CLICKED_BUTTON.value = "" + buttonName;
+    form.panel.value = "" + panelName;
+    form.submit();
 }
-
-function doSubmit(){
-}
-
+// -->
 </script>
 
 <head>
@@ -33,10 +31,14 @@ function doSubmit(){
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<form id=PREFERENCES name=PREFERENCES
- METHOD=POST
- ACTION="preferences.html";
- onsubmit="doSubmit(); return true;">
+<form name="PREFERENCES" METHOD="POST" ACTION="preferences.html">
+
+<!-- 
+	Whenever you handle a JavaScript event on an input field in Netscape 7, 
+	it's name name/value pair is omitted during form submission. That's why
+	we submit the clicked button in a separate hidden field as a workaround.
+-->
+<input type="hidden" name="CLICKED_BUTTON" value="none">
 
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
@@ -63,9 +65,9 @@ function doSubmit(){
             <tr><td colspan=4 class=dialogtxt>
                 <table cellspacing=0 cellpadding=5 width=100% border=0>
                 <tr>
-                    <td class=formular align=right width=60%><INPUT class=button width = 100 type="submit" value="]]><LABEL value="button.submit" /><![CDATA[" id=SUBMIT name=SUBMIT onClick="javascript:selectPanel(']]><METHOD name="setPanel"></METHOD><![CDATA[');"></td>
-                    <td class=formular align=right width=20%><INPUT class=button width = 100 type="submit" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="javascript:selectPanel(']]><METHOD name="setPanel"></METHOD><![CDATA[');"></td>
-                    <td class=formular align=middle width=20%><INPUT class=button width = 100 type="submit" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="javascript:selectPanel(']]><METHOD name="setPanel"></METHOD><![CDATA[');"></td>
+                    <td class=formular align=right width=60%><INPUT class="button" width="100" type="submit" value="]]><LABEL value="button.submit" /><![CDATA[" name="SUBMIT" onClick="selectPanel(']]><METHOD name="setPanel"></METHOD><![CDATA[','SUBMIT')"></td>
+                    <td class=formular align=right width=20%><INPUT class="button" width="100" type="submit" value="]]><LABEL value="button.ok" /><![CDATA[" name="OK" onClick="selectPanel(']]><METHOD name="setPanel"></METHOD><![CDATA[','OK')"></td>
+                    <td class=formular align=middle width=20%><INPUT class="button" width="100" type="submit" value="]]><LABEL value="button.cancel" /><![CDATA[" name="CANCEL" onClick="selectPanel(']]><METHOD name="setPanel"></METHOD><![CDATA[','CANCEL')"></td>
                 </tr>
                 </table>
             </td>

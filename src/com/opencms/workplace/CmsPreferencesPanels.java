@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/01/30 19:19:06 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/02/04 09:26:37 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.42 $ $Date: 2003/01/30 19:19:06 $
+ * @version $Revision: 1.43 $ $Date: 2003/02/04 09:26:37 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -166,6 +166,8 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         String template = "";
         String panel;
         String oldPanel;
+        String button = "" + parameters.get("CLICKED_BUTTON");
+        
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {
@@ -185,7 +187,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 
 
         // check if the submit or ok button is selected. If so, update all values
-        if((parameters.get(C_PARA_SUBMIT) != null) || (parameters.get(C_PARA_OK) != null)) {
+        if(C_PARA_SUBMIT.equals(button) || C_PARA_OK.equals(button)) {
 
             // get the data values form the active panel and store them in the session.
             // this is nescessary to save this data in the next step.
@@ -319,25 +321,32 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             }
             session.putValue(C_PARA_OLDPANEL, panel);
         }                
+        
+        System.out.println();
+        System.out.println( "button: " + button );   
+        System.out.println( "panel: " + parameters.get(C_PARA_PANEL) );
 
         // if the OK or cancel buttons are pressed return to the explorer and clear
         // the data in the session.
-        if((parameters.get("OK") != null) || (parameters.get("CANCEL") != null)) {
+        if(C_PARA_OK.equals(button) || C_PARA_CANCEL.equals(button)) {
             session.removeValue("EXPLORERSETTINGS");
             session.removeValue("TASKSETTINGS");
             session.removeValue("USERSETTINGS");
             session.removeValue("STARTSETTINGS");
             session.removeValue(C_PARA_OLDPANEL);
+            
             try {
-                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                        + C_WP_RELOAD);
+                System.out.println( "redirecting to " + getConfigFile(cms).getWorkplaceActionPath() + C_WP_RELOAD );
+                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + C_WP_RELOAD);
             }
             catch(Exception e) {
-                throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                        + C_WP_RELOAD, CmsException.C_UNKNOWN_EXCEPTION, e);
+                System.out.println( "failed!" );
+                throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + C_WP_RELOAD, CmsException.C_UNKNOWN_EXCEPTION, e);
             }
+        
             return null;
         }
+        
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
     }
 
