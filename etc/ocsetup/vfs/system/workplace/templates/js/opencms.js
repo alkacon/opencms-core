@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms.js,v $
- * Date   : $Date: 2000/05/22 15:30:18 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/05/23 09:36:40 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -416,46 +416,3 @@ function notImplemented(functionname)
 	alert(message);
 }
 
-//------------------------------------------------------------------------------------
-// checkFormData(formField) 
-// 
-// author:	Matthias Schreiber
-// company:	mindfact interaktive medien ag
-// date:	13.03.2000
-// update:	14.03.2000
-//
-// Method checkFormData performs a client-side check of form fields containing names.
-// Form can be surrounded by <DIV>-section (layer).
-// 
-// @param form Name of the form where the field to be checked is situated
-// @param field Name of the field to be checked
-// @param lyr Name of the layer in which the form is embedded. If there's no layer set it to null.
-// 
-//------------------------------------------------------------------------------------
-
-function checkFormData(form,field,lyr)
-{
-	var result=true;
-	var at_pos, entry, strLength;
-	
-	if (ie || lyr==null)
-		entry = eval('document.' + form +'.'+ field + '.value');
-	else if (ns && lyr!=null) 
-		entry = eval('document["'+lyr+'"].document.forms["'+form+'"].'+ field +'.value');
-	
-	strLength=entry.length;
-	
-	for (i=0; i < strLength; i++) 
-	{
-		if (charList.indexOf(entry.charAt(i))==-1)
-		{
-			alert('Unerlaubtes Zeichen in Eingabefeld: '+ entry.charAt(i));
-			if (ie || lyr==null)
-				eval('document.' + form +'.'+ field + '.focus()');
-			else if (ns && lyr!=null) 
-				eval('document["'+lyr+'"].document.forms["'+form+'"].'+ field + '.focus()');
-			return false;
-		}
-	}
-	return result;
-}

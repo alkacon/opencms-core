@@ -108,6 +108,7 @@
 		
 		<error>		
 			<message>
+				<badcharacter>invalid character : </badcharacter>
 				<chgrp>Sorry, the group could not be changed.</chgrp>
 				<chmod>Sorry, the permission could not be changed.</chmod>
 				<chown>Sorry, the owner could not be changed.</chown>
