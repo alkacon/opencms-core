@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/27 15:56:27 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2000/06/27 16:47:15 $
+ * Version: $Revision: 1.94 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.93 $ $Date: 2000/06/27 15:56:27 $ 
+ * @version $Revision: 1.94 $ $Date: 2000/06/27 16:47:15 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -62,19 +62,33 @@ public class CmsObject implements I_CmsConstants {
 	 */
 	private CmsRequestContext m_context = null;
     
+    /**
+     * The session storage of the cms
+     */
     private CmsSession m_sessionStorage = null;
 
    
+    /**
+     * The default constructor.
+     */
     public CmsObject () {
-
     }
     
+    /**
+     * Contructor 
+     * @param storage The reference to the session storage.
+     */
     public CmsObject (CmsSession storage) {
         m_sessionStorage=storage;
     }
     
+        
+    /**
+     * Returns the session storage.
+     * @return The storage of all active users.
+     */
     public CmsSession getSessionStorage() {
-        return m_sessionStorage;
+        return c_rb.getSessionStorage(m_context.currentUser(),m_sessionStorage);
     }
     
 	/**
@@ -1447,14 +1461,9 @@ public class CmsObject implements I_CmsConstants {
 		CmsUser newUser = c_rb.loginWebUser(m_context.currentUser(), 
 										   m_context.currentProject(),
 										   username, password);
-        System.err.println("+############");
-        System.err.println(newUser);
-   
 		// init the new user
 		init(m_context.getRequest(), m_context.getResponse(), newUser.getName(), 
 			 newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID);
-        System.err.println(this.getRequestContext().currentUser());
-        System.err.println("-############"); 
 		// return the user-name
 		return(newUser.getName());
 	}

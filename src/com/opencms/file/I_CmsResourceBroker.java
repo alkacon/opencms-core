@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/26 13:04:13 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2000/06/27 16:47:15 $
+ * Version: $Revision: 1.89 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.88 $ $Date: 2000/06/26 13:04:13 $
+ * @version $Revision: 1.89 $ $Date: 2000/06/27 16:47:15 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -72,6 +72,17 @@ public interface I_CmsResourceBroker {
      */
     public void clearcache();
    
+     /**
+     * Returns the session storage after a securtity check.
+     * 
+     * <B>Security:</B>
+	 * All users except the guest user are granted.
+     * 
+     * @param currentUser The user who requested this method.
+     * @param storage The storage of all active users.
+     * @return The storage of all active users.
+     */
+    public CmsSession getSessionStorage(CmsUser currentUser, CmsSession storage);
     
     
 	// Method to access the configuration

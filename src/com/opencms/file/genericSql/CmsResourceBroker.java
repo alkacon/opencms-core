@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/26 16:03:23 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2000/06/27 16:47:15 $
+ * Version: $Revision: 1.76 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.75 $ $Date: 2000/06/26 16:03:23 $
+ * @version $Revision: 1.76 $ $Date: 2000/06/27 16:47:15 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -151,6 +151,24 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         m_propertyDefVectorCache.clear();
     }
    
+    
+     /**
+     * Returns the session storage after a securtity check.
+     * 
+     * <B>Security:</B>
+	 * All users except the guest user are granted.
+     * 
+     * @param currentUser The user who requested this method.
+     * @param storage The storage of all active users.
+     * @return The storage of all active users or null.
+     */
+    public CmsSession getSessionStorage(CmsUser currentUser, CmsSession storage) {
+        if (currentUser.getName().equals(C_USER_GUEST)) {
+            return null;    
+        } else {
+            return storage;            
+        }
+    }
     
     
 	// Method to access the configuration

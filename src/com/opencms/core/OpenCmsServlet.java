@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/06/27 15:56:26 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2000/06/27 16:47:14 $
+ * Version: $Revision: 1.47 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.46 $ $Date: 2000/06/27 15:56:26 $  
+* @version $Revision: 1.47 $ $Date: 2000/06/27 16:47:14 $  
 * 
 * */
 
@@ -219,21 +219,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
          CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
          CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(req,res);
          
-         System.err.println("+++DO POST "+cmsReq.getRequestedResource());
-       try {
-           System.err.println("+++ init user "+cmsReq.getRequestedResource());
+        try {
             cms=initUser(cmsReq,cmsRes);
-           System.err.println("+++ checkRelocation "+cmsReq.getRequestedResource());
             checkRelocation(cms);
-              System.err.println("+++ initResource "+cmsReq.getRequestedResource());
             CmsFile file=m_opencms.initResource(cms); 
-                     System.err.println("+++ setResponse "+cmsReq.getRequestedResource());
             m_opencms.setResponse(cms,file);
-                      System.err.println("+++ showResource "+cmsReq.getRequestedResource());
             m_opencms.showResource(cms,file);
-              System.err.println("+++ updateUser "+cmsReq.getRequestedResource());
             updateUser(cms,cmsReq,cmsRes);
-             System.err.println("+++ DONE "+cmsReq.getRequestedResource());
         } catch (CmsException e) {
            errorHandling(cms,cmsReq,cmsRes,e);
         } 
@@ -403,8 +395,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         
         HttpSession session=null;
       
-        System.err.println("+**********************");
-        System.err.println(cms.getRequestContext().currentUser());
         // get the original ServletRequest and response
         HttpServletRequest req=(HttpServletRequest)cmsReq.getOriginalRequest();
            
@@ -413,7 +403,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         // if the user was authenticated via sessions, update the information in the
         // sesssion stroage
         if ((session!= null))  {
-            System.err.println("update session");
             if (!cms.getRequestContext().currentUser().getName().equals(C_USER_GUEST)) {
                 m_sessionStorage.putUser(session.getId(),
                                       cms.getRequestContext().currentUser().getName(),
@@ -439,7 +428,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
              }
             }
         }
-                       System.err.println("-**********************");                       
+           
      }
     
     /**
