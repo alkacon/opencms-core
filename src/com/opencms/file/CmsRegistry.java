@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2003/07/22 08:40:45 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.79 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.80 $ $Date: 2003/07/22 08:40:45 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -1593,8 +1593,8 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     /**
      * @see com.opencms.file.I_CmsRegistry#getCheckResource()
      */
-    public List getCheckResource() {
-        return getSystemSubNodesClasses("checkresource");
+    public List getResourceInit() {
+        return getSystemSubNodes("resourceinit");
     }
 
     /**

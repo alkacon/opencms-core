@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsCheckResource.java,v $
- * Date   : $Date: 2003/05/07 16:03:09 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/exceptions/Attic/CmsResourceInitException.java,v $
+ * Date   : $Date: 2003/07/22 08:40:24 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,32 +28,35 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+package com.opencms.core.exceptions;
 
-package com.opencms.core;
-
-import com.opencms.core.exceptions.CmsCheckResourceException;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
+import com.opencms.core.CmsException;
 
 /**
- * This interface checks the requested resource from the OpenCms request context
- * and returns it to the calling method, which will usually be 
- * OpenCms.initResource(cms).<p>
+ * This exeption is thrown by a class which implements com.opencms.core.I_CmsResourceInit.
+ * When this exeption is thrown, 
+ * all other implementations of I_CmsResourceInit will not be executed.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
-public interface I_CmsCheckResource {
+public class CmsResourceInitException extends CmsException {
 
     /**
-     * Possibility to modify or change the CmsFile with the CmsObject.<p>
-     * 
-     * @param file the requested file
-     * @param cms the current CmsObject
-     * @return CmsFile a file in the OpenCms VFS
-     * @throws CmsCheckResourceException throw this exception if other implementations of the interface should not be executed
+     * Default empty constructor.
      */
-    public CmsFile checkResource(CmsFile file, CmsObject cms) throws CmsCheckResourceException;
+    public CmsResourceInitException() {
+        super();   
+    }
+    
+    /**
+     * Constructor with message String.<p>
+     * 
+     * @param message the detailed exception message
+     */
+    public CmsResourceInitException(String message) {
+        super(message, 0, null, false);
+    }
+    
 
 }
-

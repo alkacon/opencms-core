@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/07/22 05:50:35 $
- * Version: $Revision: 1.147 $
+ * Date   : $Date: 2003/07/22 08:40:24 $
+ * Version: $Revision: 1.148 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.site.CmsSiteManager;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.exceptions.CmsCheckResourceException;
+import com.opencms.core.exceptions.CmsResourceInitException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
@@ -90,7 +90,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.147 $
+ * @version $Revision: 1.148 $
  */
 public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -378,25 +378,24 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         if (C_LOGGING && isLogging(C_OPENCMS_INIT))
             log(C_OPENCMS_INIT, ". File max. upload size: " + (fileMaxUploadSize.intValue() > 0 ? (fileMaxUploadSize + " KB") : "unlimited"));
         
-        // initialize "checkresource" registry classes
+        // initialize "resourceinit" registry classes
         try {
-            Hashtable checkresourceNode = getRegistry().getSystemValues("checkresource");
-            if (checkresourceNode != null) {
-                for (int i = 1; i <= checkresourceNode.size(); i++) {
-                    String currentClass = (String)checkresourceNode.get("class" + i);
-                    try {
-                        m_checkFile.add(Class.forName(currentClass).newInstance());
-                        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                            log(C_OPENCMS_INIT, ". Checkfile class init : " + currentClass + " instanciated");
-                    } catch (Exception e1) {
-                        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                            log(C_OPENCMS_INIT, ". Checkfile class init : non-critical error " + e1.toString());
-                    }
+            List resourceInitClasses = getRegistry().getResourceInit();
+            Iterator i = resourceInitClasses.iterator();
+            while (i.hasNext()) {
+                String currentClass = (String)i.next();
+                try {
+                    m_checkFile.add(Class.forName(currentClass).newInstance());
+                    if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                        log(C_OPENCMS_INIT, ". Resource init class  : " + currentClass + " instanciated");
+                } catch (Exception e1) {
+                    if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                        log(C_OPENCMS_INIT, ". Resource init class  : non-critical error " + e1.toString());
                 }
             }
         } catch (Exception e2) {
             if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Checkfile class init : non-critical error " + e2.toString());
+                log(C_OPENCMS_INIT, ". Resource init class  : non-critical error " + e2.toString());
         }        
         
         // initialize the site manager
@@ -755,9 +754,9 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         Iterator i = m_checkFile.iterator();
         while (i.hasNext()) {
             try {
-                file = ((I_CmsCheckResource)i.next()).checkResource(file, cms);
+                file = ((I_CmsResourceInit)i.next()).initResource(file, cms);
                 // the loop has to be interrupted when the exception is thrown!
-            } catch (CmsCheckResourceException e) {
+            } catch (CmsResourceInitException e) {
                 break;
             }
         }
