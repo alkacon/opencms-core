@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/08/13 10:02:09 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/08/22 16:03:27 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */
@@ -228,9 +228,23 @@ public class CmsCopy extends CmsDialog {
             // check if this exception requires a confirmation or error screen
             if ((e.getType() == CmsException.C_FILE_EXISTS) 
             && !(res.isFolder())) {
-                // file copy but file already exists, show confirmation dialog
-                setParamMessage(message + key("confirm.message." + getParamDialogtype()));
-                getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM);        
+                // file copy but file already exists, now check target file type
+                int targetType = -1;
+                try {
+                    CmsResource targetRes = getCms().readFileHeader(getParamTarget());
+                    targetType = targetRes.getType();
+                } catch (CmsException exc) { }
+                if (res.getType() == targetType) {               
+                    // file type of target is the same as source, show confirmation dialog
+                    setParamMessage(message + key("confirm.message." + getParamDialogtype()));
+                    getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM); 
+                } else {
+                    // file type is different, create error message
+                    setParamErrorstack(e.getStackTraceAsString());
+                    setParamMessage(message);
+                    setParamReasonSuggestion(key("error.reason.copyexists") + "<br>\n" + key("error.suggestion.copyexists") + "\n");
+                    getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);      
+                }
             } else {                
                 // error during copy, show error dialog
                 setParamErrorstack(e.getStackTraceAsString());
