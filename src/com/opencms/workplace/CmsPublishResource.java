@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/10/20 12:54:30 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.30 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.31 $ $Date: 2003/10/20 12:54:30 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault {
@@ -152,14 +152,14 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
          
         else if("showPublishResult".equals(action)){
             
-            // thread is started and we shoud show the report information.
+            // thread is started and we should show the report information.
             A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_PUBLISH_THREAD);
-            if(doTheWork.isAlive()){
+            if (doTheWork != null && doTheWork.isAlive()) {
                 xmlTemplateDocument.setData("endMethod", "");
                 xmlTemplateDocument.setData("text", lang.getLanguageValue("project.publish.message_publish"));
-            }else{
+            } else {
                 xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod"));
-                xmlTemplateDocument.setData("autoUpdate","");
+                xmlTemplateDocument.setData("autoUpdate", "");
                 xmlTemplateDocument.setData("text", lang.getLanguageValue("project.publish.message_publish2"));
                 session.removeValue(C_PUBLISH_THREAD);
             }

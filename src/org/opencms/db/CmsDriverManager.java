@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/17 14:21:41 $
- * Version: $Revision: 1.276 $
+ * Date   : $Date: 2003/10/20 12:54:30 $
+ * Version: $Revision: 1.277 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.276 $ $Date: 2003/10/17 14:21:41 $
+ * @version $Revision: 1.277 $ $Date: 2003/10/20 12:54:30 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5073,6 +5073,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         int publishProjectId = context.currentProject().getId();
         boolean backupEnabled = isHistoryEnabled(cms);
         int tagId = 0;
+        boolean directPublishFile = context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null && directPublishResource.isFile();
 
         // check the security
         if ((isAdmin(context) || isManagerOfProject(context)) && (context.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED) && (publishProjectId != I_CmsConstants.C_PROJECT_ONLINE_ID)) {
@@ -5082,9 +5083,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 } else {
                     tagId = 0;
                 }
+                
                 int maxVersions = cms.getRegistry().getMaximumBackupVersions();
 
-                // if we do a direct publishing, check if all parent resources are already published
+                // if we direct publish a file, check if all parent folders are already published
                 if (directPublishResource != null) {
                     CmsUUID parentID = directPublishResource.getParentStructureId();
                     try {
@@ -5097,51 +5099,53 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
                 m_projectDriver.publishProject(context, report, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), publishHistoryId, directPublishResource, isHistoryEnabled(cms), tagId, maxVersions);
 
-                // now publish the module masters
-                Vector publishModules = new Vector();
-                cms.getRegistry().getModulePublishables(publishModules, null);
+                // don't publish COS module data if a file gets published directly
+                if (!directPublishFile) {
+                    // now publish the module masters
+                    Vector publishModules = new Vector();
+                    cms.getRegistry().getModulePublishables(publishModules, null);
 
-                long publishDate = System.currentTimeMillis();
+                    long publishDate = System.currentTimeMillis();
 
-                if (backupEnabled) {
-                    try {
-                        publishDate = m_backupDriver.readBackupProject(tagId).getPublishingDate();
-                    } catch (CmsException e) {
-                        // nothing to do
-                    }
-
-                    if (publishDate == 0) {
-                        publishDate = System.currentTimeMillis();
-                    }
-                }
-
-                for (int i = 0; i < publishModules.size(); i++) {
-                    // call the publishProject method of the class with parameters:
-                    // cms, m_enableHistory, project_id, version_id, publishDate, subId,
-                    // the vector changedResources and the vector changedModuleMasters
-                    try {
-                        // The changed masters are added to the vector changedModuleMasters, so after the last module
-                        // was published the vector contains the changed masters of all published modules
-                        Class.forName((String)publishModules.elementAt(i)).getMethod("publishProject", new Class[] {CmsObject.class, Boolean.class, Integer.class, Integer.class, Long.class, Vector.class, Vector.class }).invoke(null, new Object[] {cms, new Boolean(isHistoryEnabled(cms)), new Integer(publishProjectId), new Integer(tagId), new Long(publishDate), changedResources, changedModuleMasters });
-                    } catch (ClassNotFoundException ec) {
-                        report.println(report.key("report.publish_class_for_module_does_not_exist_1") + (String)publishModules.elementAt(i) + report.key("report.publish_class_for_module_does_not_exist_2"), I_CmsReport.C_FORMAT_WARNING);
-                        if (OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error("Error calling publish class of module " + (String)publishModules.elementAt(i), ec);
+                    if (backupEnabled) {
+                        try {
+                            publishDate = m_backupDriver.readBackupProject(tagId).getPublishingDate();
+                        } catch (CmsException e) {
+                            // nothing to do
                         }
-                    } catch (Exception ex) {
-                        report.println(ex);
-                        if (OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error("Error while publishing data of module " + (String)publishModules.elementAt(i), ex);
+
+                        if (publishDate == 0) {
+                            publishDate = System.currentTimeMillis();
                         }
                     }
+
+                    for (int i = 0; i < publishModules.size(); i++) {
+                        // call the publishProject method of the class with parameters:
+                        // cms, m_enableHistory, project_id, version_id, publishDate, subId,
+                        // the vector changedResources and the vector changedModuleMasters
+                        try {
+                            // The changed masters are added to the vector changedModuleMasters, so after the last module
+                            // was published the vector contains the changed masters of all published modules
+                            Class.forName((String) publishModules.elementAt(i)).getMethod("publishProject", new Class[] {CmsObject.class, Boolean.class, Integer.class, Integer.class, Long.class, Vector.class, Vector.class}).invoke(null, new Object[] {cms, new Boolean(isHistoryEnabled(cms)), new Integer(publishProjectId), new Integer(tagId), new Long(publishDate), changedResources, changedModuleMasters});
+                        } catch (ClassNotFoundException ec) {
+                            report.println(report.key("report.publish_class_for_module_does_not_exist_1") + (String) publishModules.elementAt(i) + report.key("report.publish_class_for_module_does_not_exist_2"), I_CmsReport.C_FORMAT_WARNING);
+                            if (OpenCms.getLog(this).isErrorEnabled()) {
+                                OpenCms.getLog(this).error("Error calling publish class of module " + (String) publishModules.elementAt(i), ec);
+                            }
+                        } catch (Exception ex) {
+                            report.println(ex);
+                            if (OpenCms.getLog(this).isErrorEnabled()) {
+                                OpenCms.getLog(this).error("Error while publishing data of module " + (String) publishModules.elementAt(i), ex);
+                            }
+                        }
+                    }
+
+                    Iterator i = changedModuleMasters.iterator();
+                    while (i.hasNext()) {
+                        CmsPublishedResource currentCosResource = (CmsPublishedResource) i.next();
+                        m_projectDriver.writePublishHistory(context.currentProject(), publishHistoryId, tagId, currentCosResource.getContentDefinitionName(), currentCosResource.getMasterId(), currentCosResource.getType(), currentCosResource.getState());
+                    }
                 }
-                
-                Iterator i = changedModuleMasters.iterator();
-                while (i.hasNext()) {
-                    CmsPublishedResource currentCosResource = (CmsPublishedResource) i.next();
-                    m_projectDriver.writePublishHistory(context.currentProject(), publishHistoryId, tagId, currentCosResource.getContentDefinitionName(), currentCosResource.getMasterId(), currentCosResource.getType(), currentCosResource.getState());
-                }
-                
             } catch (CmsException e) {
                 throw e;
             } finally {
@@ -8252,6 +8256,13 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             publishedResources = getProjectDriver().readPublishedResources(context.currentProject().getId(), publishHistoryId);
             exportPoints = m_registry.getExportpoints();
             discAccess = new CmsExportPointDriver(exportPoints);
+            
+            if (exportPoints.size() == 0) {
+                if (OpenCms.getLog(this).isWarnEnabled()) {
+                    OpenCms.getLog(this).warn("No export points configured at all. Pls. check registry.xml for configured 'module' XML-nodes if this is correct.");
+                }
+                return;
+            }         
 
             Iterator i = publishedResources.iterator();
             while (i.hasNext()) {
