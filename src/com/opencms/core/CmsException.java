@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2000/04/11 13:38:08 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/04/13 20:58:21 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2000/04/11 13:38:08 $
+ * @version $Revision: 1.26 $ $Date: 2000/04/13 20:58:21 $
  */
 public class CmsException extends Exception {
 	
@@ -205,6 +205,7 @@ public class CmsException extends Exception {
 	
 	/**
 	 * Definition of error code for access denied exception for file resources.
+	 * This exception causes a login-screen.
 	 */
 	public final static int C_ACCESS_DENIED = 31;
         

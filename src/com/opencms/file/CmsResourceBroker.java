@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/13 19:48:08 $
- * Version: $Revision: 1.102 $
+ * Date   : $Date: 2000/04/13 20:58:21 $
+ * Version: $Revision: 1.103 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.102 $ $Date: 2000/04/13 19:48:08 $
+ * @version $Revision: 1.103 $ $Date: 2000/04/13 20:58:21 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1418,7 +1418,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * Checks if a user is member of a group.<P/>
 	 *  
 	 * <B>Security:</B>
-	 * All users are granted, except the anonymous user.
+	 * All users are granted.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
@@ -1431,13 +1431,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public boolean userInGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 							   String username, String groupname)
 		throws CmsException {
-		// check the security
-    	if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
-			return m_userRb.userInGroup(username, groupname);
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
-				CmsException.C_NO_ACCESS);
-		}
+		return m_userRb.userInGroup(username, groupname);
 	}
 
 	/** 
@@ -2736,7 +2730,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			return( newFolder );			
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + folder + newFolderName, 
-				CmsException.C_ACCESS_DENIED);
+				CmsException.C_NO_ACCESS);
 		}
 	}
 
@@ -3222,7 +3216,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			return( file );
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + folder + filename, 
-				CmsException.C_ACCESS_DENIED);
+				CmsException.C_NO_ACCESS);
 		}
 	 }
 
@@ -3262,7 +3256,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			fileSystemChanged(currentProject.getName(), file.getAbsolutePath());
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), 
-				CmsException.C_ACCESS_DENIED);
+				CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -3302,7 +3296,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			fileSystemChanged(currentProject.getName(), file.getAbsolutePath());
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), 
-				CmsException.C_ACCESS_DENIED);
+				CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -3366,7 +3360,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			fileSystemChanged(currentProject.getName(), oldname);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + oldname, 
-				CmsException.C_ACCESS_DENIED);
+				CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -3484,7 +3478,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			fileSystemChanged(currentProject.getName(), foldername + filename);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + destination, 
-				CmsException.C_ACCESS_DENIED);
+				CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -3559,7 +3553,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			fileSystemChanged(currentProject.getName(), filename);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
-				CmsException.C_ACCESS_DENIED);
+				CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -3608,7 +3602,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			fileSystemChanged(currentProject.getName(), filename);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
-				CmsException.C_ACCESS_DENIED);
+				CmsException.C_NO_ACCESS);
 		}
 	}
 	
@@ -3657,7 +3651,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			fileSystemChanged(currentProject.getName(), filename);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
-				CmsException.C_ACCESS_DENIED);
+				CmsException.C_NO_ACCESS);
 		}
 	}
     
@@ -3709,7 +3703,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			fileSystemChanged(currentProject.getName(), filename);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
-				CmsException.C_ACCESS_DENIED);
+				CmsException.C_NO_ACCESS);
 		}
 	}
     
