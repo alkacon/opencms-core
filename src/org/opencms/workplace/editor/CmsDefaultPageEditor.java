@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/06/01 13:47:04 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2004/06/10 19:36:45 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  * 
  * @since 5.1.12
  */
@@ -301,10 +301,15 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         Iterator i = elementList.iterator();
         List options = new ArrayList(elementList.size());
         List values = new ArrayList(elementList.size());
+        String elementName = getParamElementname();
+        if (CmsStringSubstitution.isEmpty(elementName)) {
+            elementName = getParamOldelementname();
+        }     
         while (i.hasNext()) {
             // get the current list element
-            CmsDialogElement element = (CmsDialogElement)i.next();               
-            if (getParamElementname().equals(element.getName())) {
+            CmsDialogElement element = (CmsDialogElement)i.next();
+
+            if (!CmsStringSubstitution.isEmpty(elementName) && elementName.equals(element.getName())) {
                 // current element is the displayed one, mark it as selected
                 currentIndex = counter;
             }
@@ -442,7 +447,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 m_page.addElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLocale);
             }
             try {
-                getCms().writeFile(m_page.write(m_file));
+                m_file.setContents(m_page.marshal());
+                getCms().writeFile(m_file);
             } catch (CmsException e) {
                 // show error page
                 try {
@@ -496,14 +502,15 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     protected void initContent() {
         if (! CmsStringSubstitution.isEmpty(getParamContent())) {
-            if (getParamElementname().equals(getParamOldelementname()) 
-            && getParamElementlanguage().equals(getParamOldelementlanguage())) {            
-                return;
+            if (!CmsStringSubstitution.isEmpty(getParamElementname()) && getParamElementname().equals(getParamOldelementname())) {
+                if (!CmsStringSubstitution.isEmpty(getParamElementlanguage()) && getParamElementlanguage().equals(getParamOldelementlanguage())) {            
+                    return;
+                }
             }
         }
         // get the content from the temporary file        
         try {                                  
-            CmsXmlPage page = CmsXmlPage.read(getCms(), getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL));
+            CmsXmlPage page = CmsXmlPage.unmarshal(getCms(), getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL));
             String elementData = page.getContent(getCms(), getParamElementname(), getElementLocale(), true);
             if (elementData != null) {
                 setParamContent(elementData);
@@ -550,7 +557,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         }
         
         // write the file
-        m_file = getCms().writeFile(m_page.write(m_file));
+        m_file.setContents(m_page.marshal());
+        m_file = getCms().writeFile(m_file);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/06/07 12:44:05 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/06/10 19:37:27 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,8 +30,21 @@
  */
 package org.opencms.importexport;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.CmsResourceTypeXmlPage;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
+import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.xml.page.CmsXmlPage;
+
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -47,19 +60,6 @@ import java.util.zip.ZipFile;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypeFolder;
-import org.opencms.file.CmsResourceTypeXmlPage;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-import org.opencms.report.I_CmsReport;
-import org.opencms.security.I_CmsPrincipal;
-import org.opencms.util.CmsDateUtil;
-import org.opencms.util.CmsUUID;
-import org.opencms.xml.page.CmsXmlPage;
 
 /**
  * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for 
@@ -638,10 +638,8 @@ public class CmsImportVersion4 extends A_CmsImport {
                         encoding = OpenCms.getSystemInfo().getDefaultEncoding();
                     }  
                     
-                    CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content, encoding), "body", getLocale(destination, properties), encoding);
-                    ByteArrayOutputStream pageContent = new ByteArrayOutputStream();
-                    xmlPage.write(pageContent, OpenCms.getSystemInfo().getDefaultEncoding());    
-                    content = pageContent.toByteArray();
+                    CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content, encoding), "body", getLocale(destination, properties), encoding);                     
+                    content = xmlPage.marshal();
                 }
                 resType = CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID;
                 loaderId = m_cms.getResourceType(resType).getLoaderId();

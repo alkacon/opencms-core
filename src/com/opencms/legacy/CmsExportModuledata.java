@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2004/06/07 12:44:05 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2004/06/10 19:35:23 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@
 
 package com.opencms.legacy;
 
-import org.opencms.i18n.CmsMessages;
+import org.opencms.file.CmsObject;
 import org.opencms.importexport.CmsExport;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -46,7 +46,6 @@ import org.opencms.util.CmsXmlSaxWriter;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;
-import org.opencms.file.CmsObject;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -74,7 +73,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $ $Date: 2004/06/07 12:44:05 $
+ * @version $Revision: 1.4 $ $Date: 2004/06/10 19:35:23 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/06/09 15:40:41 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/06/10 19:35:57 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -94,7 +94,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
 
         if (page == null) {
             // make sure a page is only read once (not every time for each element)
-            page = CmsXmlPage.read(cms, CmsFile.upgrade(resource, cms));
+            page = CmsXmlPage.unmarshal(cms, CmsFile.upgrade(resource, cms));
             req.setAttribute(absolutePath, page);
         }    
 
@@ -200,7 +200,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             
         if (page == null) {      
             // make sure a page is only read once (not every time for each element)
-            page = CmsXmlPage.read(cms, CmsFile.upgrade(resource, cms));
+            page = CmsXmlPage.unmarshal(cms, CmsFile.upgrade(resource, cms));
             req.setAttribute(absolutePath, page);
         }        
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/06/09 08:31:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/10 19:37:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,41 +43,24 @@ import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
+import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.DocumentType;
 import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
-import org.dom4j.util.XMLErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Implementation of a page object used to access and manage xml data.<p>
@@ -91,9 +74,9 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
-public class CmsXmlPage {
+public class CmsXmlPage extends A_CmsXmlDocument {
     
     /** Name of the name attribute of the elements node */
     private static final String C_ATTRIBUTE_ENABLED = "enabled";    
@@ -146,106 +129,86 @@ public class CmsXmlPage {
     /** Indicates if relative Links are allowed */
     private boolean m_allowRelativeLinks;
     
-    /** Reference for named elements in the page */
-    private Map m_bookmarks;
-    
-    /** The document object of the page */
-    private Document m_document;
-    
-    /** Maps element names to available locales */
-    private Map m_elementLocales;
-    
-    /** Maps locales to avaliable element names */
-    private Map m_elementNames;    
-    
-    /** The encoding to use for this xml page */    
-    private String m_encoding;
-    
-    /** The file that contains the page data (note: is not set when creating an empty or document based CmsXmlPage) */
-    private CmsFile m_file;
-
-    /** Set of locales contained in this page */
-    private Set m_locales;
-    
     /**
      * Creates a new CmsXmlPage based on the provided document and encoding.<p>
      * 
-     * The encoding is used when saving/serializing the XML document.<p>
+     * The encoding is used for marshalling the XML document later.<p>
      * 
      * @param document the document to create the CmsXmlPage from
      * @param encoding the encoding of the xml page
      */
     public CmsXmlPage(Document document, String encoding) {
         
-        m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
-        m_document = document;
-        initBookmarks();
+        initDocument(document, encoding);
     }
 
     /**
-     * Creates a new empty CmsXmlPage with the provided encoding.<p>
+     * Creates an empty CmsXmlPage with the provided encoding.<p>
      * 
      * The page is initialized according to the minimal neccessary xml structure.
-     * The encoding is used when saving/serializing the XML document.<p>
+     * The encoding is used for marshalling the XML document later.<p>
      * 
      * @param encoding the encoding of the xml page
      */
     public CmsXmlPage(String encoding) {
         
-        m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
-        initDocument();
-        initBookmarks();
-    }
-
-    /**
-     * Reads the xml contents from a byte array into the page.<p>
-     * 
-     * @param xmlData the xml data in a byte array
-     * @param encoding the encoding to use when serializing/saving the xml page
-     * @return the page initialized with the given xml data
-     * @throws CmsXmlException if something goes wrong
-     */
-    public static CmsXmlPage read(byte[] xmlData, String encoding) throws CmsXmlException {
-        
-        try {
-            SAXReader reader = new SAXReader();
-            reader.setEntityResolver(CmsXmlEntityResolver.getResolver());
-            reader.setMergeAdjacentText(true);
-            Document document = reader.read(new ByteArrayInputStream(xmlData));
-            return new CmsXmlPage(document, encoding);
-        } catch (DocumentException e) {
-            throw new CmsXmlException("Reading xml page from a byte array failed: " + e.getMessage(), e);
-        }
+        initDocument(createValidDocument(), encoding);
     }
     
     /**
-     * Reads the xml contents of a file into the page.<p>
+     * Creates a new instance for later initializing using unmarshal helpers.<p> 
+     */
+    private CmsXmlPage() {
+        // noop
+    }
+
+    /**
+     * Factory method to unmarshal (read) a XML page instance from a byte array
+     * that contains XML data.<p>
      * 
-     * @param cms the current cms object
-     * @param file the file with xml data
-     * @return the concrete PageObject instanciated with the xml data
+     * When unmarshalling, the encoding is read directly from the XML header. 
+     * The given encoding is used only when marshalling the XML again later.<p>
+     * 
+     * @param xmlData the XML data in a byte array
+     * @param encoding the encoding to use when marshalling the XML page later
+     * @return a XML page instance unmarshalled from the byte array
      * @throws CmsXmlException if something goes wrong
      */
-    public static CmsXmlPage read(CmsObject cms, CmsFile file) throws CmsXmlException {
+    public static CmsXmlPage unmarshal(byte[] xmlData, String encoding) throws CmsXmlException {
         
-        return read(cms, file, true);
+        return new CmsXmlPage(CmsXmlUtils.unmarshalHelper(xmlData), encoding);
+    }
+    
+    /**
+     * Factory method to unmarshal (read) a XML page instance from a OpenCms VFS file
+     * that contains XML data.<p>
+     * 
+     * @param cms the current cms object
+     * @param file the file with the XML data to unmarshal
+     * @return a XML page instance unmarshalled from the provided file
+     * @throws CmsXmlException if something goes wrong
+     */
+    public static CmsXmlPage unmarshal(CmsObject cms, CmsFile file) throws CmsXmlException {
+        
+        return unmarshal(cms, file, true);
     }
         
     /**
-     * Reads the xml contents of a file into the page, using wither the encoding set
-     * in the xml file header, or the encoding set in the VFS file property.<p>
+     * Factory method to unmarshal (read) a XML page instance from a OpenCms VFS file
+     * that contains XML data, using wither the encoding set
+     * in the XML file header, or the encoding set in the VFS file property.<p>
      * 
      * If you are not sure about the implications of the encoding issues, 
-     * use {@link #read(byte[], String)} instead.<p>
+     * use {@link #unmarshal(byte[], String)} instead.<p>
      * 
      * @param cms the current cms object
-     * @param file the file with xml data
-     * @param keepEncoding if true, the encoding spefified in the xml file head is used, 
-     *    otherwise the encoding from the file poperty is used
-     * @return the concrete PageObject instanciated with the xml data
+     * @param file the file with the XML data to unmarshal
+     * @param keepEncoding if true, the encoding spefified in the XML header is used, 
+     *    otherwise the encoding from the VFS file property is used
+     * @return a XML page instance unmarshalled from the provided file
      * @throws CmsXmlException if something goes wrong
      */
-    public static CmsXmlPage read(CmsObject cms, CmsFile file, boolean keepEncoding) throws CmsXmlException {
+    public static CmsXmlPage unmarshal(CmsObject cms, CmsFile file, boolean keepEncoding) throws CmsXmlException {
         
         byte[] content = file.getContents();
 
@@ -277,13 +240,13 @@ public class CmsXmlPage {
             // content is initialized
             if (keepEncoding) {
                 // use the encoding from the content
-                newPage = read(content, encoding);
+                newPage = unmarshal(content, encoding);
             } else {
                 // use the encoding from the file property
                 // this usually only triggered by a save operation                
                 try {
                     String contentStr = new String(content, encoding);
-                    newPage = read(contentStr, encoding); 
+                    newPage = unmarshal(contentStr, encoding); 
                 } catch (UnsupportedEncodingException e) {
                     // this will not happen since the encodig has already been validated
                     throw new CmsXmlException("Invalid content-encoding property set for xml page '" + fileName + "'", e);
@@ -301,22 +264,34 @@ public class CmsXmlPage {
     }    
 
     /**
-     * Reads the xml contents from a string into the page.<p>
+     * Factory method to unmarshal (read) a XML page instance from a String
+     * that contains XML data.<p>
      * 
-     * @param xmlData the xml data in a String 
-     * @param encoding the encoding to use when serializing/saving the xml page
-     * @return the page initialized with the given xml data
+     * When unmarshalling, the encoding is read directly from the XML header. 
+     * The given encoding is used only when marshalling the XML again later.<p>
+     * 
+     * @param xmlData the XML data in a String
+     * @param encoding the encoding to use when marshalling the XML page later
+     * @return a XML page instance unmarshalled from the String
      * @throws CmsXmlException if something goes wrong
      */
-    public static CmsXmlPage read(String xmlData, String encoding) throws CmsXmlException {  
+    public static CmsXmlPage unmarshal(String xmlData, String encoding) throws CmsXmlException {  
         
-        try {
-            byte[] xmlBytes = xmlData.getBytes(encoding);
-            return read(xmlBytes, encoding);
-        } catch (UnsupportedEncodingException e) {
-            throw new CmsXmlException("Reading xml page from a String failed: " + e.getMessage(), e);
-        }
+        return new CmsXmlPage(CmsXmlUtils.unmarshalHelper(xmlData), encoding);
     }
+    
+    /**
+     * Returns an initialized document object.<p>
+     * 
+     * @return an initialized document object
+     */
+    protected static Document createValidDocument() {        
+        
+        Document doc = DocumentHelper.createDocument(DocumentHelper.createElement(C_DOCUMENT_NODE));
+        doc.addDocType(C_DOCUMENT_NODE, "", C_XMLPAGE_DTD_SYSTEM_ID);
+        doc.getRootElement().addElement(C_NODE_ELEMENTS);
+        return doc;
+    }          
     
     /**
      * Adds a new empty element with the given name and language.<p>
@@ -332,7 +307,7 @@ public class CmsXmlPage {
               .addAttribute(C_ATTRIBUTE_LANGUAGE, locale.toString());       
         element.addElement(C_NODE_LINKS);
         element.addElement(C_NODE_CONTENT);
-        setBookmark(name, locale, true, element);
+        addBookmark(name, locale, true, element);
     }
     
     /**
@@ -369,8 +344,9 @@ public class CmsXmlPage {
                 setContent(cms, elementName, locale, content);                                  
             }
         }
-        // write the modifed xml back to the xmlpage 
-        return write();
+        // write the modifed xml back to the VFS file 
+        m_file.setContents(marshal());
+        return m_file;
     }    
 
     /**
@@ -411,7 +387,7 @@ public class CmsXmlPage {
      */
     public String getContent(CmsObject cms, String name, Locale locale, boolean forEditor) throws CmsXmlException {
 
-        Element element = getBookmark(name, locale);        
+        Element element = (Element)getBookmark(name, locale);        
         String content = "";
         
         if (element != null) {
@@ -441,26 +417,6 @@ public class CmsXmlPage {
     }
     
     /**
-     * Returns the encoding used for the page content.<p>
-     * 
-     * @return the encoding used for the page content
-     */
-    public String getEncoding() {
-        
-        return m_encoding;
-    }
-    
-    /**
-     * Returns the file with the xml page content or <code>null</code> if not set.<p>
-     * 
-     * @return the file with the xml page content
-     */
-    public CmsFile getFile() {
-        
-        return m_file;
-    }
-
-    /**
      * Returns the link table of an element.<p>
      * 
      * @param name name of the element
@@ -469,7 +425,7 @@ public class CmsXmlPage {
      */
     public CmsLinkTable getLinkTable(String name, Locale locale) {
 
-        Element element = getBookmark(name, locale);
+        Element element = (Element)getBookmark(name, locale);
         Element links = element.element(C_NODE_LINKS);
         
         CmsLinkTable linkTable = new CmsLinkTable();
@@ -501,46 +457,6 @@ public class CmsXmlPage {
     }
     
     /**
-     * Returns a List of all locales that have at last one element in this page.<p>
-     * 
-     * @return a List of all locales that have at last one element in this page
-     */
-    public List getLocales() { 
-        
-        return new ArrayList(m_locales);
-    }
-    
-    /**
-     * Returns a List of all locales that have the named element set in this page.<p>
-     * 
-     * @param element the element to look up the locale List for
-     * @return a List of all locales that have the named element set in this page
-     */
-    public List getLocales(String element) {
-        
-        Object result = m_elementLocales.get(element);
-        if (result == null) {
-            return Collections.EMPTY_LIST;
-        }        
-        return new ArrayList((Set)result);
-    }
-    
-    /**
-     * Returns all available elements for a given language.<p>
-     * 
-     * @param locale the locale
-     * @return list of available elements
-     */
-    public List getNames(Locale locale) {
-        
-        Object o = m_elementNames.get(locale);
-        if (o != null) {
-            return new ArrayList((Set)o);
-        }
-        return Collections.EMPTY_LIST;
-    }
-
-    /**
      * Returns the raw (unprocessed) content of an element.<p>
      * 
      * @param name  name of the element
@@ -549,7 +465,7 @@ public class CmsXmlPage {
      */
     public String getRawContent(String name, Locale locale) {
         
-        Element element = getBookmark(name, locale);        
+        Element element = (Element)getBookmark(name, locale);        
         String content = "";
         
         if (element != null) {
@@ -568,18 +484,6 @@ public class CmsXmlPage {
     }
 
     /**
-     * Checks if the page object contains a name specified by name and language.<p>
-     * 
-     * @param name the name of the element
-     * @param locale the locale of the element
-     * @return true if this element exists
-     */
-    public boolean hasElement(String name, Locale locale) {  
-        
-        return getBookmark(name, locale) != null;
-    }
-
-    /**
      * Checks if the element of a page object is enabled.<p>
      * 
      * @param name the name of the element
@@ -588,7 +492,7 @@ public class CmsXmlPage {
      */
     public boolean isEnabled(String name, Locale locale) {
 
-        Element element = getBookmark(name, locale);
+        Element element = (Element)getBookmark(name, locale);
 
         if (element != null) {
             Attribute enabled = element.attribute(C_ATTRIBUTE_ENABLED);            
@@ -607,7 +511,7 @@ public class CmsXmlPage {
     public void removeElement(String name, Locale locale) {
         
         Element elements = m_document.getRootElement().element(C_NODE_ELEMENTS);        
-        Element element = removeBookmark(name, locale);
+        Element element = (Element)removeBookmark(name, locale);
         elements.remove(element);
     }
     
@@ -627,7 +531,7 @@ public class CmsXmlPage {
      */
     public void setContent(CmsObject cms, String name, Locale locale, String content) throws CmsXmlException {
         
-        Element element = getBookmark(name, locale);
+        Element element = (Element)getBookmark(name, locale);
         Element data = element.element(C_NODE_CONTENT);
         Element links = element.element(C_NODE_LINKS);
         CmsLinkTable linkTable = new CmsLinkTable();
@@ -687,7 +591,7 @@ public class CmsXmlPage {
      */
     public void setEnabled(String name, Locale locale, boolean isEnabled) {
 
-        Element element = getBookmark(name, locale);
+        Element element = (Element)getBookmark(name, locale);
         Attribute enabled = element.attribute(C_ATTRIBUTE_ENABLED);
         
         if (enabled == null) {
@@ -697,212 +601,6 @@ public class CmsXmlPage {
         } else {
             enabled.setValue(Boolean.toString(isEnabled));
         }
-    }
-    
-    /**
-     * Validates the xml structure of the page with the xmlpage dtd.<p>
-     * 
-     * This is required in case someone modifies the xml structure of a  
-     * xmlpage file using the "edit control code" option.<p>
-     * 
-     * @throws CmsXmlException if the validation fails
-     */
-    public void validateXmlStructure() throws CmsXmlException  {
-
-        XMLReader reader;
-        try {
-            reader = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
-        } catch (SAXException e) {
-            // xerces parser not available - no schema validation possible
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Could not initialize Xerces SAX reader for validation", e);
-            }
-            // no validation of the content is possible
-            return;
-        }
-        // turn on validation
-        try {
-            reader.setFeature("http://xml.org/sax/features/validation", true);
-            // turn on schema validation
-            reader.setFeature("http://apache.org/xml/features/validation/schema", true);
-            // configure namespace support
-            reader.setFeature("http://xml.org/sax/features/namespaces", true);
-            reader.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
-        } catch (SAXNotRecognizedException e) {
-            // should not happen as Xerces 2 support this feature
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Required SAX reader feature not recognized", e);
-            }
-            // no validation of the content is possible
-            return;
-        } catch (SAXNotSupportedException e) {
-            // should not happen as Xerces 2 support this feature
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Required SAX reader feature not supported", e);
-            }
-            // no validation of the content is possible
-            return;
-        }
-
-        // set the resolver for the "opencms://" URIs
-        reader.setEntityResolver(CmsXmlEntityResolver.getResolver());
-
-        // add an error handler which turns any errors into XML
-        XMLErrorHandler errorHandler = new XMLErrorHandler();
-        reader.setErrorHandler(errorHandler);
-
-        String content = null;
-        try {
-            // generate a new byte array from the content and parse this
-            byte[] contentBytes = ((ByteArrayOutputStream)write(new ByteArrayOutputStream(512), getEncoding())).toByteArray();
-            content = new String(contentBytes, getEncoding());
-            reader.parse(new InputSource(new ByteArrayInputStream(contentBytes)));
-        } catch (IOException e) {
-            // should not happen since we read form a byte array
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Could not read XML from byte array", e);
-            }
-            return;
-        } catch (SAXException e) {
-            // should not happen since all errors are handled in the XML error handler
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Unexpected SAX exception while parsing content", e);
-            }
-            return;
-        }
-
-        if (errorHandler.getErrors().elements().size() > 0) {                  
-            // there was at last one validation error, so throw an exception
-            StringWriter out = new StringWriter(256);
-            OutputFormat format = OutputFormat.createPrettyPrint();            
-            XMLWriter writer = new XMLWriter(out, format);   
-            try {
-                writer.write(errorHandler.getErrors());
-                writer.close();
-            } catch (IOException e) {
-                // should not happen since we write to a StringWriter
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Unexpected IO exception while writing to StringWriter", e);
-                }
-            }
-            if (content != null) {
-                out.write("\n\nThe verfified XML page content was:");
-                out.write("\n-------------------------------------------------------------------\n");
-                out.write(content);
-                out.write("\n-------------------------------------------------------------------\n");
-            }
-            throw new CmsXmlException("XML validation error:\n" + out.toString() + "\n");
-        }        
-    }
-        
-    /**
-     * Writes the xml contents into the assigned CmsFile,
-     * using currently selected encoding.<p>
-     * 
-     * @return the assigned file with the xml content
-     * @throws CmsXmlException if something goes wrong
-     */
-    public CmsFile write() throws CmsXmlException {
-        
-        return write(m_file, m_encoding);
-    }
-    
-    /**
-     * Writes the xml contents into the CmsFile,
-     * using currently selected encoding.<p>
-     * 
-     * @param file the file to write the xml
-     * @return the file with the xml content
-     * @throws CmsXmlException if something goes wrong
-     */
-    public CmsFile write(CmsFile file) throws CmsXmlException {     
-        
-        return write(file, m_encoding);
-    }
-    
-    /**
-     * Writes the xml contents into the CmsFile.<p>
-     * 
-     * @param file the file to write the xml
-     * @param encoding the encoding to use
-     * @return the file with the xml content
-     * @throws CmsXmlException if something goes wrong
-     */
-    public CmsFile write(CmsFile file, String encoding) throws CmsXmlException {      
-        
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        file.setContents(((ByteArrayOutputStream)write(out, encoding)).toByteArray());        
-        return file;
-    }
-
-    /**
-     * Writes the xml contents into an output stream.<p>
-     * 
-     * @param out the output stream to write to
-     * @param encoding the encoding to use
-     * @return the output stream with the xml content
-     * @throws CmsXmlException if something goes wrong
-     */
-    public OutputStream write(OutputStream out, String encoding) throws CmsXmlException {        
-        
-        try {
-            OutputFormat format = OutputFormat.createPrettyPrint();
-            format.setEncoding(encoding);
-            
-            XMLWriter writer = new XMLWriter(out, format);
-            writer.setEscapeText(false);
-            
-            // ensure xml page has proper system doc type set
-            DocumentType type = m_document.getDocType();
-            if (type != null) {
-                String systemId = type.getSystemID();
-                if ((systemId != null) && systemId.endsWith(CmsXmlEntityResolver.C_XMLPAGE_DTD_OLD_SYSTEM_ID)) {
-                    m_document.addDocType(C_DOCUMENT_NODE, "", C_XMLPAGE_DTD_SYSTEM_ID);
-                }
-            }
-            
-            writer.write(m_document);
-            writer.close();
-            
-        } catch (Exception exc) {
-            throw new CmsXmlException("Writing xml page failed", exc);
-        }
-        
-        return out;
-    }
-    
-    /**
-     * Writes the xml contents in the assigned CmsFile using the given encoding.<p>
-     * 
-     * @param encoding the encoding to use
-     * @return the assigned file with the xml content
-     * @throws CmsXmlException if something goes wrong
-     */
-    public CmsFile write(String encoding) throws CmsXmlException {      
-        
-        return write(m_file, encoding);
-    }
-    
-    /**
-     * Returns the bookmarked element for the given key.<p>
-     * 
-     * @param name the name of the element
-     * @param locale the locale of the element
-     * @return the bookemarked element
-     */
-    protected Element getBookmark(String name, Locale locale) {    
-        
-        return (Element)m_bookmarks.get(getBookmarkName(name, locale));
-    }
-    
-    /**
-     * Returns the keys of all bookmarked elements.<p>
-     * 
-     * @return the keys of all bookmarked elements
-     */
-    protected Set getBookmarks() {
-        
-        return (m_bookmarks != null)? m_bookmarks.keySet() : new HashSet(); 
     }
     
     /**
@@ -923,7 +621,7 @@ public class CmsXmlPage {
                 String elementLang = elem.attributeValue(C_ATTRIBUTE_LANGUAGE);
                 String elementEnabled = elem.attributeValue(C_ATTRIBUTE_ENABLED);
                 boolean enabled = (elementEnabled==null)?true:Boolean.valueOf(elementEnabled).booleanValue();
-                setBookmark(elementName, CmsLocaleManager.getLocale(elementLang), enabled, elem);       
+                addBookmark(elementName, CmsLocaleManager.getLocale(elementLang), enabled, elem);       
 
             } catch (NullPointerException e) {
                 OpenCms.getLog(this).error("Error while initalizing xmlPage bookmarks", e);                
@@ -932,87 +630,37 @@ public class CmsXmlPage {
     }
     
     /**
-     * Initializes the internal document object.<p>
-     */
-    protected void initDocument() {        
-        
-        m_document = DocumentHelper.createDocument(DocumentHelper.createElement(C_DOCUMENT_NODE));
-        m_document.addDocType(C_DOCUMENT_NODE, "", C_XMLPAGE_DTD_SYSTEM_ID);
-        m_document.getRootElement().addElement(C_NODE_ELEMENTS);
-    }
-    
-    /**
-     * Removes a bookmark with a given key.<p>
+     * Initializes a CmsXmlPage based on the provided document and encoding
      * 
-     * @param name the name of the element
-     * @param locale the locale of the element
-     * @return the element removed from the bookmarks or null
+     * @param document the document to create the CmsXmlPage from
+     * @param encoding the encoding of the xml page
      */
-    protected Element removeBookmark(String name, Locale locale) {
+    protected void initDocument(Document document, String encoding) {
         
-        // remove mapping of element name to locale
-        Object o;
-        o = m_elementLocales.get(name);
-        if (o != null) {
-            ((Set)o).remove(locale);
-        }
-        // remove mapping of locale to element name
-        o = m_elementNames.get(locale);
-        if (o != null) {
-            ((Set)o).remove(name);
-        }        
-        // remove the bookmark and return the removed element
-        return (Element)m_bookmarks.remove(getBookmarkName(name, locale));
+        m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
+        m_document = document;     
+        initBookmarks();
     }
-    
-    /**
-     * Adds a bookmark for the given element.<p>
-     * 
-     * @param name the name of the element
-     * @param locale the locale of the element
-     * @param element the element to bookmark
-     * @param enabled if true, the element is enabled, if false it is disabled
-     */
-    protected void setBookmark(String name, Locale locale, boolean enabled, Element element) {
         
-        m_locales.add(locale);
-        m_bookmarks.put(getBookmarkName(name, locale), element);
-        // update mapping of element name to locale
-        if (enabled) {
-            // only include enabled elements
-            Object o = m_elementLocales.get(name);
-            if (o != null) {
-                ((Set)o).add(locale);
-            } else {
-                Set set = new HashSet();
-                set.add(locale);
-                m_elementLocales.put(name, set);
+    /**
+     * Writes the xml contents into an output stream.<p>
+     * 
+     * @param out the output stream to write to
+     * @param encoding the encoding to use
+     * @return the output stream with the xml content
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected OutputStream marshal(OutputStream out, String encoding) throws CmsXmlException {        
+
+        // ensure xml page has proper system doc type set
+        DocumentType type = m_document.getDocType();
+        if (type != null) {
+            String systemId = type.getSystemID();
+            if ((systemId != null) && systemId.endsWith(CmsXmlEntityResolver.C_XMLPAGE_DTD_OLD_SYSTEM_ID)) {
+                m_document.addDocType(C_DOCUMENT_NODE, "", C_XMLPAGE_DTD_SYSTEM_ID);
             }
         }
-        // update mapping of locales to element names
-        Object o = m_elementNames.get(locale);
-        if (o != null) {
-            ((Set)o).add(name);
-        } else {
-            Set set = new HashSet();
-            set.add(name);
-            m_elementNames.put(locale, set);
-        }        
-    }            
-    
-    /**
-     * Creates the bookmark name for a localized element to be used in the bookmark lookup table.<p>
-     * 
-     * @param name the element name
-     * @param locale the element locale 
-     * @return the bookmark name for a localized element
-     */
-    private String getBookmarkName(String name, Locale locale) {
         
-        StringBuffer result = new StringBuffer(64);
-        result.append(locale.toString());
-        result.append('|');
-        result.append(name);
-        return result.toString();
-    }    
+        return CmsXmlUtils.marshal(m_document, out, encoding);        
+    }
 }

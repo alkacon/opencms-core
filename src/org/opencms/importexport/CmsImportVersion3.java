@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/06/04 17:14:37 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/06/10 19:37:27 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -514,9 +513,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                     }                    
                     
                     CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content, encoding), "body", getLocale(destination, properties), encoding);
-                    ByteArrayOutputStream pageContent = new ByteArrayOutputStream();
-                    xmlPage.write(pageContent, OpenCms.getSystemInfo().getDefaultEncoding());    
-                    content = pageContent.toByteArray();
+                    content = xmlPage.marshal();
                 }
                 resType = CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID;
             }

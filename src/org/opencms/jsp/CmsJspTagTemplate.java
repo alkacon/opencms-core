@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/05/13 11:09:00 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/10 19:35:48 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -218,7 +218,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
                 if (resource.getType() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
                     try {
                         // make sure a page is only read once (not every time for each element)
-                        page = CmsXmlPage.read(controller.getCmsObject(), CmsFile.upgrade(resource, controller.getCmsObject()));
+                        page = CmsXmlPage.unmarshal(controller.getCmsObject(), CmsFile.upgrade(resource, controller.getCmsObject()));
                         req.setAttribute(filename, page);                
                     } catch (CmsException e) {
                         OpenCms.getLog(CmsJspTagTemplate.class).error("Error checking for XML page", e);

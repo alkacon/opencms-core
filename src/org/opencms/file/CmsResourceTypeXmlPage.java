@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/06/08 14:10:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/10 19:35:35 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -117,7 +117,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
         }
 
         try {
-            xmlPage = CmsXmlPage.read(cms, file);
+            xmlPage = CmsXmlPage.unmarshal(cms, file);
             locales = xmlPage.getLocales();
 
             // iterate over all languages
@@ -196,7 +196,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
      */
     public CmsFile writeFile(CmsObject cms, CmsFile file) throws CmsException {     
         // read the xml page, use the encoding set in the property       
-        CmsXmlPage xmlPage = CmsXmlPage.read(cms, file, false);    
+        CmsXmlPage xmlPage = CmsXmlPage.unmarshal(cms, file, false);    
         // validate the xml structure before writing the file         
         // an exception will be thrown if the structure is invalid
         xmlPage.validateXmlStructure();     
