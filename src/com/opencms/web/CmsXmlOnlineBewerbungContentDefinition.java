@@ -1,29 +1,25 @@
-/*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungContentDefinition.java,v $
- * Date   : $Date: 2000/02/20 16:07:41 $
- * Version: $Revision: 1.5 $
+/**
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungContentDefinition.java,v $ 
+ * Author : $Author: w.babachan $
+ * Date   : $Date: 2000/02/20 19:21:49 $
+ * Version: $Revision: 1.6 $
+ * Release: $Name:  $
  *
- * Copyright (C) 2000  The OpenCms Group 
- * 
- * This File is part of OpenCms -
- * the Open Source Content Mananagement System
+ * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.com
- * 
- * You should have received a copy of the GNU General Public License
- * long with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * THIS SOFTWARE IS NEITHER FREEWARE NOR PUBLIC DOMAIN!
+ *
+ * To use this software you must purchease a licencse from Mindfact.
+ * In order to use this source code, you need written permission from Mindfact.
+ * Redistribution of this source code, in modified or unmodified form,
+ * is not allowed.
+ *
+ * MINDAFCT MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY
+ * OF THIS SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE, OR NON-INFRINGEMENT. MINDFACT SHALL NOT BE LIABLE FOR ANY
+ * DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
+ * THIS SOFTWARE OR ITS DERIVATIVES.
  */
 
 package com.opencms.web;
@@ -40,7 +36,7 @@ import java.io.*;
  * This class is used to access the application form's XML-datablocks.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.5 $ $Date: 2000/02/20 16:07:41 $
+ * @version $Name:  $ $Revision: 1.6 $ $Date: 2000/02/20 19:21:49 $
  * @see com.opencms.template.CmsXmlTemplateFile
  */
 public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
