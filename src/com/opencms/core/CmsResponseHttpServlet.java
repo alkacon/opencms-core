@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2002/10/30 10:09:27 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/12/06 22:05:35 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,11 @@
 
 package com.opencms.core;
 
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Implementation of the I_CmsResponse interface which wraps a HttpServletResponse
@@ -39,7 +40,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.25 $ $Date: 2002/10/30 10:09:27 $
+ * @version $Revision: 1.26 $ $Date: 2002/12/06 22:05:35 $
  */
 public class CmsResponseHttpServlet implements I_CmsResponse {
 
@@ -281,7 +282,7 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      * @param type The contnent type of the response.
      */
     public void setContentType(String type) {        
-        if (DEBUG) System.err.println("CmsResponse.setContentType(" + type + ")");        
+        if (DEBUG) System.err.println("CmsResponse.setContentType(" + type + ")");     
         m_contentType = type;
         m_res.setContentType(type);
     }
