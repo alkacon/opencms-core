@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/28 13:56:38 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/07/28 16:18:00 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1
  */
@@ -472,7 +472,10 @@ public class CmsExplorer extends CmsWorkplace {
                 }
                 content.append("\",");                
             }
-            //int lockedInProject = lock.isNullLock() ? res.getProjectId() : lock.getProjectId();
+            // position 15: type of lock
+            content.append(lock.getType());
+            content.append(",");                
+            // position 16: name of project where resource belongs to            
             int lockedInProject = lock.isNullLock() ? getCms().getRequestContext().currentProject().getId() : lock.getProjectId();
             String lockedInProjectName = "";
             try {
@@ -480,11 +483,10 @@ public class CmsExplorer extends CmsWorkplace {
             } catch (CmsException exc) {
                 // ignore the exception - this is an old project so ignore it
             }
-            // position 15: name of project where resource belongs to            
             content.append("\"");
             content.append(lockedInProjectName);
             content.append("\",");
-            // position 16: id of project where resource belongs to
+            // position 17: id of project where resource belongs to
             content.append(lockedInProject);
             content.append(");\n");
         }
