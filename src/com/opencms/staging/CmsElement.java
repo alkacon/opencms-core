@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsElement.java,v $
-* Date   : $Date: 2001/04/26 07:34:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/04/27 15:21:48 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,4 +44,40 @@ import com.opencms.file.*;
  */
 public class CmsElement {
 
+    /**
+     * A Vector with definitions declared in this element.
+     */
+     private Vector m_elementDefinitions;
+
+     /**
+      * The default constructor for an element.
+      */
+     public CmsElement() {
+        m_elementDefinitions = new Vector();
+     }
+
+     /**
+      * A construcor which creates an element with the given element
+      * definitions.
+      * @param defs - a vector with ElementDefinitions for this element.
+      */
+     public CmsElement(Vector defs) {
+        m_elementDefinitions = defs;
+     }
+
+    /**
+     * Adds a single definition to this element.
+     * @param def - the ElementDefinition to add.
+     */
+     public void addDefinition(CmsElementDefinition def) {
+        m_elementDefinitions.add(def);
+     }
+
+     /**
+      * Returns a Vector with all ElementDefinitions
+      * @returns a Vector with all ElementDefinitions.
+      */
+     public Vector getAllDefinitions() {
+        return m_elementDefinitions;
+     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsElementDefinition.java,v $
-* Date   : $Date: 2001/04/26 07:34:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/04/27 15:21:48 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,4 +41,69 @@ import com.opencms.file.*;
  */
 public class CmsElementDefinition {
 
+    /**
+     * The name of this element.
+     */
+    private String m_name;
+
+    /**
+     * The class-name of this element definition.
+     */
+    private String m_className;
+
+    /**
+     * The template-name of this element definition.
+     */
+    private String m_templateName;
+
+    /**
+     * The template-selector of this element definition.
+     */
+    private String m_templateSelector;
+
+    /**
+     * The parameters of this element.
+     */
+    private Hashtable m_elements;
+
+    /**
+     * The constructor with name, classname and templateName. This fits for some
+     * default - needs.
+     * @param name the name of this element-definition.
+     * @param className the classname of this element-definition.
+     * @param templateName the name of the template for this element-definition.
+     */
+    public CmsElementDefinition(String name, String className,
+        String templateName) {
+        m_name = name;
+        m_className = name;
+        m_templateName = templateName;
+    }
+
+    /**
+     * The constructor without any parameters. This fits for some needs.
+     * @param name the name of this element-definition.
+     * @param className the classname of this element-definition.
+     * @param templateName the name of the template.
+     * @param templateSelector the name of the template selector.
+     */
+    public CmsElementDefinition(String name, String className,
+        String templateName, String templateSelector) {
+        this(name, className, templateName);
+        m_templateSelector = templateSelector;
+    }
+
+    /**
+     * The complete constructor.
+     * @param name the name of this element-definition.
+     * @param className the classname of this element-definition.
+     * @param templateName the name of the template.
+     * @param templateSelector the name of the template selector.
+     * @param elements a hashtable with parameters.
+     */
+    public CmsElementDefinition(String name, String className,
+        String templateName, String templateSelector, Hashtable elements) {
+        this(name, className, templateName, templateSelector);
+        m_elements = elements;
+    }
 }

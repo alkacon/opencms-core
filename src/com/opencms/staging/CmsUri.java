@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/04/26 16:14:52 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/04/27 15:21:48 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,20 +44,9 @@ import com.opencms.file.*;
 public class CmsUri {
 
     /**
-     * the id of the Group that can read the resource
-     * -1 if any Group can read this.
+     * The name of the group that can read this ressource,
      */
-    private int m_readAccessGroup;
-
-    /**
-     * The launcher type for this resource.
-     */
-    private int m_launcherType;
-
-    /**
-     * The Name of the templateclass that should used as root-Template.
-     */
-    private String m_launcherClassname;
+    private String m_readAccessGroup;
 
     /**
      * The Key to the Element used to start the contentgeneration for
@@ -66,18 +55,35 @@ public class CmsUri {
     private CmsElementDescriptor m_startingElement;
 
     /**
+     * A Vector with Element Definitions. For normal URI's this Vector contains
+     * only a definition for the body-element.
+     */
+    private Vector m_elementDefinitions = new Vector();
+
+    /**
      * Constructor.
      *
-     * @param startingElement The Element to start the contentgenerating for this uri.
+     * @param startingElement the Element to start the contentgenerating for this uri.
      * @param readAccessGroup the Group that can read the uri.
-     * @param launcherType The launcher type of this resource.
-     * @param launcherClassname The Name of the templateclass that should used as root-Template.
+     * @param def a content-definition for the an element (normaly body).
      */
-    public CmsUri(CmsElementDescriptor startingElement, int readAccessGroup,
-                    int launcherType, String launcherClassname){
+    public CmsUri(CmsElementDescriptor startingElement, String readAccessGroup,
+        CmsElementDefinition def){
+        this(startingElement, readAccessGroup, new Vector());
+        m_elementDefinitions.add(def);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param startingElement the Element to start the contentgenerating for this uri.
+     * @param readAccessGroup the Group that can read the uri.
+     * @param definitions a vector of definitions for elements.
+     */
+    public CmsUri(CmsElementDescriptor startingElement, String readAccessGroup,
+        Vector definitions) {
         m_startingElement = startingElement;
         m_readAccessGroup = readAccessGroup;
-        m_launcherType = launcherType;
-        m_launcherClassname = launcherClassname;
+        m_elementDefinitions = definitions;
     }
 }

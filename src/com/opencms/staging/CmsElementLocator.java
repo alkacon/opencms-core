@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/04/26 07:34:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/04/27 15:21:48 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,4 +41,33 @@ import com.opencms.file.*;
  */
 public class CmsElementLocator {
 
+    /**
+     * A hashtable to store the elements.
+     */
+    private Hashtable m_elements;
+
+    /**
+     * The default constructor for this locator.
+     */
+    CmsElementLocator() {
+        m_elements = new Hashtable();
+    }
+
+    /**
+     * Adds a new Element to this locator.
+     * @param descriptor - the descriptor for this element.
+     * @param element - the Element to put in this locator.
+     */
+    public void put(CmsElementDescriptor desc, CmsElement element) {
+        m_elements.put(desc.getKey(), element);
+    }
+
+    /**
+     * Gets a Elements from this locator.
+     * @param desc - the descriptor to locate the element.
+     * @returns the element that was found.
+     */
+    public CmsElement get(CmsElementDescriptor desc) {
+        return (CmsElement) m_elements.get(desc.getKey());
+    }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsElementDescriptor.java,v $
-* Date   : $Date: 2001/04/26 07:34:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/04/27 15:21:48 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,5 +39,33 @@ import com.opencms.file.*;
  */
 public class CmsElementDescriptor {
 
+    /**
+     * The name of the class for this descriptor.
+     */
+    private String m_className;
 
+    /**
+     * The name of the template-file for this descriptor.
+     */
+    private String m_templateName;
+
+    /**
+     * The constructor to create a new CmsElementDescriptor.
+     *
+     * @param className the name of the class for this descriptor.
+     * @param templateName the name of the template for this descriptor.
+     */
+    public CmsElementDescriptor(String className, String templateName) {
+        m_className = className;
+        m_templateName = templateName;
+    }
+
+    /**
+     * Returns the key of this descriptor.
+     *
+     * @returns the key of this descriptor.
+     */
+    public String getKey() {
+        return m_className + "|" + m_templateName;
+    }
 }

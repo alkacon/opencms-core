@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsUriLocator.java,v $
-* Date   : $Date: 2001/04/26 16:14:52 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/04/27 15:21:48 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,41 +43,32 @@ import com.opencms.core.*;
 public class CmsUriLocator {
 
     /**
-     * The cach for holding the uris.
+     * A hashtable to store the uri's.
      */
-    private Hashtable m_uriCache;
+    private Hashtable m_uris;
 
     /**
-     * Constructor
+     * The default constructor for this locator.
      */
-    public CmsUriLocator(){
-        m_uriCache = new Hashtable();
-        // later we have to read the cache from the Database here.
+    CmsUriLocator() {
+        m_uris = new Hashtable();
     }
 
     /**
-     * returns a Uri object. either from the cache or if it is not in it,
-     * an new one will be generated and stored in the cache for the future.
-     *
-     * @param cms The cmsObject containing the uri.
-     * @return The uriObject for this uri.
+     * Adds a new Uri to this locator.
+     * @param descriptor - the UriDescriptor for this uri.
+     * @param uri - the Uri to put in this locator.
      */
-    public CmsUri get(CmsObject cms) throws CmsException{
+    public void put(CmsUriDescriptor desc, CmsUri uri) {
+        m_uris.put(desc.getKey(), uri);
+    }
 
-        CmsUriDescriptor  uri = new CmsUriDescriptor(cms.getRequestContext().getUri());
-        if(m_uriCache.containsKey(uri)){
-            // check the accessrights then return it
-            int groupId = cms.getRequestContext().currentGroup().getId();
-            if(false /*TODO: write a method to check if the group has access(checkGroupDependencies(newVector({new Integer(groupId), new Integer(((CmsUri)m_uriCache.get(uri)).getAccessGroup())})))*/){
-                // the group has no read access
-                throw new CmsException("blabla... nein!", CmsException.C_ACCESS_DENIED);
-            }
-            return (CmsUri)m_uriCache.get(uri);
-        }else{
-            // create a new uri Object, put it in the cache and return it
-at work...
-            CmsUri uriObject = new CmsUri(null, 0, 0, "");
-        }
-
+    /**
+     * Gets a uri from this locator.
+     * @param desc - the descriptor to locate the uri.
+     * @returns the uri that was found.
+     */
+    public CmsUri get(CmsUriDescriptor desc) {
+        return (CmsUri) m_uris.get(desc.getKey());
     }
 }

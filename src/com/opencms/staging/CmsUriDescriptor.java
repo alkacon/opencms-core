@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsUriDescriptor.java,v $
-* Date   : $Date: 2001/04/26 16:14:52 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/04/27 15:21:48 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,13 +45,18 @@ public class CmsUriDescriptor {
     private String m_uri;
 
     /**
-     * Constructor.
+     * Creates a new UriDescriptor
+     * @param uri - the uri
      */
     public CmsUriDescriptor(String uri){
         m_uri = uri;
     }
 
-    public String getUri(){
+    /**
+     * Returns the uri.
+     * @returns the uri
+     */
+    public String getKey(){
         return m_uri;
     }
 }
