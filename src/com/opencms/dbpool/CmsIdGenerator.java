@@ -3,8 +3,8 @@ package com.opencms.dbpool;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsIdGenerator.java,v $
- * Date   : $Date: 2001/02/06 18:33:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/02/09 09:21:31 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -43,7 +43,7 @@ import com.opencms.core.*;
 public class CmsIdGenerator {
 
 	/**
-	 * Hashtable with current id's
+	 * Hashtable with next available id's
 	 */
 	private static Hashtable c_currentId = new Hashtable();
 
@@ -63,14 +63,16 @@ public class CmsIdGenerator {
 	public static synchronized int nextId(String poolName, String tableName)
 		throws CmsException {
 		String key = poolName + "." + tableName;
-
 		if( c_currentId.containsKey(key) ) {
 			int id = ((Integer)c_currentId.get(key)).intValue();
 			int borderId = ((Integer)c_borderId.get(key)).intValue();
 			if(id < borderId) {
-				id++;
-				c_currentId.put(key, new Integer(id));
-				return id;
+                            //EF: c_currentId contains the next available key
+                            //like the systemid table
+                            //id++;
+                            int nextId = id + 1;
+                            c_currentId.put(key, new Integer(nextId));
+                            return id;
 			}
 		}
 
@@ -99,7 +101,9 @@ public class CmsIdGenerator {
 				id = readId(con, tableName);
 				if( id == I_CmsConstants.C_UNKNOWN_ID ) {
 					// there was no entry - set it to 0
-					id = 0;
+                                        // EF: set id to 1 because the table contains
+                                        // the next available id
+					id = 1;
 					createId(con, tableName, id);
 				}
 				borderId = id + C_GROW_VALUE;
@@ -107,7 +111,7 @@ public class CmsIdGenerator {
 			} while(!writeId(con, tableName, id, borderId));
 			// store the generated values in the cache
 			c_currentId.put(key, new Integer(id));
-			c_borderId.put(key, new Integer(borderId - 1));
+			c_borderId.put(key, new Integer(borderId));
 		} catch (SQLException e){
 			throw new CmsException("["+CmsIdGenerator.class.getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}finally {
