@@ -6581,11 +6581,37 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Simple textarea editor]]></value>
+					<value><![CDATA[XmlContent editor frameset]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/editors/xmlcontent/editor_buttons.jsp</source>
+			<destination>system/workplace/editors/xmlcontent/editor_buttons.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>ab8c7e75-22b0-11d9-8c13-c726a0fc5cd5</uuidresource>
+			<datelastmodified>Thu, 21 Oct 2004 12:35:56 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Oct 2004 17:56:57 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Editor button bar frame]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file> 
 		<file>
 			<source>system/workplace/editors/xmlcontent/editor_configuration.xml</source>
 			<destination>system/workplace/editors/xmlcontent/editor_configuration.xml</destination>
@@ -6600,6 +6626,32 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Editor configuration file]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/xmlcontent/editor_form.jsp</source>
+			<destination>system/workplace/editors/xmlcontent/editor_form.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>b15c39dc-22b0-11d9-8c13-c726a0fc5cd5</uuidresource>
+			<datelastmodified>Thu, 21 Oct 2004 12:36:44 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Oct 2004 17:57:06 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Editor form frame]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/10/20 10:54:08 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/10/21 11:21:46 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog;
@@ -67,7 +66,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -118,7 +117,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             setParamAction(EDITOR_ACTION_NEW);
         } else {
             try {
-                m_file = getCms().readFile(this.getParamResource(), CmsResourceFilter.ALL);
+                // lock resource if autolock is enabled
+                checkLock(getParamResource());
+                m_file = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
                 m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
                 m_contentDefinition = m_content.getContentDefinition(new CmsXmlEntityResolver(getCms()));              
             } catch (CmsException e) {
@@ -151,12 +152,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         } else {
             // initial call of editor
             setAction(ACTION_DEFAULT);
-            initContent();
-        }
-        
-        setParamContent(encodeContent(getParamContent()));        
+        }      
     }   
-    
     
     /**
      * Returns the "new link" parameter.<p>
@@ -187,41 +184,31 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     
     /**
      * Initializes the editor content when opening the editor for the first time.<p>
+     * 
+     * Not necessary for the xmlcontent editor.<p>
      */
     protected void initContent() {
-        // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        // get the default encoding
-        String content = getParamContent();
-        if (CmsStringUtil.isNotEmpty(content)) {
-            // content already read, must be decoded 
-            setParamContent(decodeContent(content));
-            return;
-        } else {
-            content = "";
-        }
-        
-        try {
-            // lock resource if autolock is enabled
-            checkLock(getParamResource());
-            CmsFile editFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
+        // nothing to be done for the xmlcontent editor form
+    }
+    
+    /**
+     * Unlocks the edited resource when in direct edit mode.<p>
+     * 
+     * @param forceUnlock if true, the resource will be unlocked anyway
+     */
+    public void actionClear(boolean forceUnlock) {
+
+        if ("true".equals(getParamDirectedit()) || forceUnlock) {
+            // unlock the resource when in direct edit mode or force unlock is true
             try {
-                content = new String(editFile.getContents(), getFileEncoding());
-            } catch (UnsupportedEncodingException e) {
-                throw new CmsException("Invalid content encoding encountered while editing file '" + getParamResource() + "'");
-            }
-        } catch (CmsException e) {
-            // reading of file contents failed, show error dialog
-            try {
-                showErrorPage(this, e, "read");
-            } catch (JspException exc) {
+                getCms().unlockResource(getParamResource());
+            } catch (CmsException e) {
                 // should usually never happen
                 if (OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info(e);
-                }
+                }       
             }
         }
-        setParamContent(content);
     }
     
     /**
@@ -234,6 +221,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // save and exit was canceled
             return;
         }
+        // unlock resource, if in directedit mode
+        actionClear(false);
         // close the editor
         actionClose();
     }
@@ -293,7 +282,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             
             // wipe out parameters for the editor to ensure proper operation
             setParamNewLink(null);
-            setParamContent(null);
             setParamAction(null);
             setParamResource(newFileName);
             setAction(ACTION_DEFAULT);
@@ -318,8 +306,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      */
     public void actionSave() throws JspException {
         try {            
-            // ensure all chars in the content are valid for the selected encoding
-            String decodedContent = CmsEncoder.adjustHtmlEncoding(decodeContent(getParamContent()), getFileEncoding());
              
             Locale locale = getElementLocale();             
             
@@ -337,8 +323,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     widget.setEditorValue(getCms(), m_content, getJsp().getRequest().getParameterMap(), this, value);
                 }               
             }
-            decodedContent = m_content.toString();
-            
+            String decodedContent = m_content.toString();
             
             try {
                 m_file.setContents(decodedContent.getBytes(getFileEncoding()));
@@ -354,7 +339,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             } catch (UnsupportedEncodingException e) {
                 throw new CmsException("Invalid content encoding encountered while editing file '" + getParamResource() + "'");
             }
-            setParamContent(encodeContent(decodedContent));            
+            
         } catch (CmsXmlException e) {
             showErrorPage(e, "xml");
         } catch (CmsException e) {
