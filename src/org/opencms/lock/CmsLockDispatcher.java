@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/18 17:22:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/21 11:25:13 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Map;
  * re-initialize itself while the app. with a clear cache event.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/07/18 17:22:50 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/21 11:25:13 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -234,7 +234,6 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      * @param resourcename the full resource name including the site root
      */
     public void removeResource(String resourcename) {
-        CmsLock lock = null;
         String lockedPath = null;
         Iterator i = null;
 
@@ -245,9 +244,8 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
             i = m_lockedResources.keySet().iterator();
             while (i.hasNext()) {
                 lockedPath = (String) i.next();
-                lock = (CmsLock) m_lockedResources.get(lockedPath);
 
-                if (lockedPath.startsWith(resourcename) && lock.getHierarchy() == CmsLock.C_HIERARCHY_INDIRECT_LOCKED) {
+                if (lockedPath.startsWith(resourcename)) {
                     // send the lock to slumberland...
                     i.remove();
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/18 14:11:18 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/07/21 11:25:13 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -80,22 +80,29 @@ public class CmsExplorer extends CmsWorkplace {
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        String currentResource = null;
         String mode = request.getParameter("mode");
         settings.setExplorerMode(mode);
 
-        String currentFolder = request.getParameter("folder");
-        if ((currentFolder != null) && (currentFolder.startsWith("vfslink:"))) {
-            // this is a link check, remove the prefix
-            settings.setExplorerMode("vfslink");
-            settings.setExplorerFolder(currentFolder.substring(8));
+        if ("vfslink".equals(settings.getExplorerMode())) {
+            currentResource = request.getParameter("file");
+            settings.setExplorerFolder(currentResource);
         } else {
-            if ((currentFolder != null) && (!"".equals(currentFolder)) && folderExists(getCms(), currentFolder)) {
-                settings.setExplorerFolder(currentFolder);                
+            currentResource = request.getParameter("folder");
+
+            if ((currentResource != null) && (currentResource.startsWith("vfslink:"))) {
+                // this is a link check, remove the prefix
+                settings.setExplorerMode("vfslink");
+                settings.setExplorerFolder(currentResource.substring(8));
             } else {
-                currentFolder = settings.getExplorerFolder();
-                if ((currentFolder == null) || (!folderExists(getCms(), currentFolder))) {
-                    currentFolder = "/";
-                    settings.setExplorerFolder(currentFolder);                
+                if ((currentResource != null) && (!"".equals(currentResource)) && folderExists(getCms(), currentResource)) {
+                    settings.setExplorerFolder(currentResource);
+                } else {
+                    currentResource = settings.getExplorerFolder();
+                    if ((currentResource == null) || (!folderExists(getCms(), currentResource))) {
+                        currentResource = "/";
+                        settings.setExplorerFolder(currentResource);
+                    }
                 }
             }
         }
@@ -372,7 +379,9 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(res.getState());
             content.append(",");            
             // position 8: project
-            content.append(res.getProjectId());
+            //int projectId = lock.isNullLock() ? res.getProjectId() : lock.getProjectId();
+            int projectId = lock.isNullLock() ? getCms().getRequestContext().currentProject().getId() : lock.getProjectId();
+            content.append(projectId);
             content.append(",");                             
             // position 9: date of last modification
             if (showDateLastModified) {
@@ -434,13 +443,15 @@ public class CmsExplorer extends CmsWorkplace {
             } else {
                 content.append("\"");                
                 try {
-                    content.append(getCms().lockedBy(res).getName());
+                    //content.append(getCms().lockedBy(res).getName());
+                    content.append(getCms().readUser(lock.getUserId()).getName());
                 } catch (CmsException e) {
                     content.append(e.getMessage());
                 }
                 content.append("\",");                
             }
-            int lockedInProject = lock.isNullLock() ? res.getProjectId() : lock.getProjectId();
+            //int lockedInProject = lock.isNullLock() ? res.getProjectId() : lock.getProjectId();
+            int lockedInProject = lock.isNullLock() ? getCms().getRequestContext().currentProject().getId() : lock.getProjectId();
             String lockedInProjectName = "";
             try {
                 lockedInProjectName = getCms().readProject(lockedInProject).getName();
@@ -598,17 +609,17 @@ public class CmsExplorer extends CmsWorkplace {
      * @param folder the fodler to read the files from
      * @return a vector with ressources to display
      */
-    private Vector getRessources(CmsObject cms, String mode, String folder) {
+    private Vector getRessources(CmsObject cms, String mode, String resource) {
         
         if ("vfslink".equals(mode)) {
             try {
-                return new Vector(getCms().fetchVfsLinksForResource(folder));
+                return new Vector(getCms().fetchVfsLinksForResource(resource));
             } catch (CmsException e) {
                 return new Vector();
             }
         } else {
             try {
-                return getCms().getResourcesInFolder(folder);
+                return getCms().getResourcesInFolder(resource);
             } catch (CmsException e) {
                 return new Vector();
             }                

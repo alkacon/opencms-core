@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/21 08:17:42 $
-* Version: $Revision: 1.338 $
+* Date   : $Date: 2003/07/21 11:25:13 $
+* Version: $Revision: 1.339 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.338 $
+ * @version $Revision: 1.339 $
  */
 public class CmsObject extends Object {
 
@@ -1608,11 +1608,8 @@ public class CmsObject extends Object {
      * @return an ArrayList with the resources names of all links pointint to the specified resource
      * @throws CmsException
      */
-    public ArrayList fetchVfsLinksForResource(String theResourceName) throws CmsException {
-        // TODO: the following code requires a change of the database schema first!        
-        //return m_driverManager.fetchVfsLinksForResource( m_context.currentUser(), m_context.currentProject(), this.getSiteRoot(theResourceName) );
-
-        return new ArrayList(0);
+    public List fetchVfsLinksForResource(String resourcename) throws CmsException {       
+        return m_driverManager.fetchVfsLinksForResource( m_context, addSiteRoot(resourcename) );
     }
 
     /**

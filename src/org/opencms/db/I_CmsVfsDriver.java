@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/18 08:22:42 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/07/21 11:25:13 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2003/07/18 08:22:42 $
+ * @version $Revision: 1.15 $ $Date: 2003/07/21 11:25:13 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -165,7 +165,7 @@ public interface I_CmsVfsDriver {
     long fetchDateFromResource(int theProjectId, int theResourceId, long theDefaultDate) throws CmsException;
     int fetchResourceFlags(CmsProject theProject, String theResourceName) throws CmsException;
     int fetchResourceID(CmsProject theProject, String theResourceName, int skipResourceTypeID) throws CmsException;
-    ArrayList fetchVfsLinksForResourceID(CmsProject theProject, int theResourceID, int theResourceTypeLinkID) throws CmsException;
+    List fetchVfsLinksForResourceID(CmsProject theProject, CmsResource resource) throws CmsException;
     void getBrokenLinks(I_CmsReport report, Vector changed, Vector deleted, Vector newRes) throws CmsException;
     Vector getFilesWithProperty(int projectId, String propertyDefinition, String propertyValue) throws CmsException;
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/20 15:45:00 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2003/07/21 11:25:13 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.72 $ $Date: 2003/07/20 15:45:00 $
+ * @version $Revision: 1.73 $ $Date: 2003/07/21 11:25:13 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2508,21 +2508,13 @@ public class CmsDriverManager extends Object {
      * @return an ArrayList with the resource names of the fetched VFS links
      * @throws CmsException
      */
-    public ArrayList fetchVfsLinksForResource(CmsRequestContext context, String theResourceName) throws CmsException {
-        if (theResourceName == null || "".equals(theResourceName))
-            return new ArrayList(0);
-
-        ArrayList vfsLinks = null;
-
-        // fetch the ID of the resource
-        int resourceID = m_vfsDriver.fetchResourceID(context.currentProject(), theResourceName, -1);
-        if (resourceID > 0) {
-            vfsLinks = m_vfsDriver.fetchVfsLinksForResourceID(context.currentProject(), resourceID, CmsResourceTypePointer.C_RESOURCE_TYPE_ID);
-        } else {
-            vfsLinks = new ArrayList(0);
+    public List fetchVfsLinksForResource(CmsRequestContext context, String resourcename) throws CmsException {        
+        if (resourcename == null || "".equals(resourcename)) {
+            return (List) new ArrayList(0);
         }
-
-        return vfsLinks;
+        
+        CmsResource resource = readFileHeader(context, resourcename);
+        return m_vfsDriver.fetchVfsLinksForResourceID(context.currentProject(), resource);
     }
 
     /**

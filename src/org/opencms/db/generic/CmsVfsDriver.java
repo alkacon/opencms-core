@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/19 01:51:37 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2003/07/21 11:25:13 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.41 $ $Date: 2003/07/19 01:51:37 $
+ * @version $Revision: 1.42 $ $Date: 2003/07/21 11:25:13 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1417,28 +1417,24 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      * @return an ArrayList with the resource names of the fetched VFS links
      * @throws CmsException
      */
-    public ArrayList fetchVfsLinksForResourceID(CmsProject theProject, int theResourceID, int theResourceTypeLinkID) throws CmsException {
+    public List fetchVfsLinksForResourceID(CmsProject currentProject, CmsResource resource) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
-        ArrayList vfsLinks = new ArrayList();
+        CmsResource currentResource = null;
+        List vfsLinks = (List) new ArrayList();
 
         try {
-            // execute the query
-            conn = m_sqlManager.getConnection(theProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, theProject, "C_SELECT_VFS_LINKS");
-            stmt.setInt(1, theResourceID);
-            stmt.setInt(2, theResourceTypeLinkID);
+            conn = m_sqlManager.getConnection(currentProject);
+            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_VFS_LINKS");
+            stmt.setString(1, resource.getResourceId().toString());
+            stmt.setInt(2, I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
             stmt.setInt(3, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
             res = stmt.executeQuery();
 
             while (res.next()) {
-                CmsResource resource = null;
-                //this.readFileHeader(theProject.getId(), parentId, res.getString(1), false);
-
-                if (resource != null) {
-                    vfsLinks.add(resource);
-                }
+                currentResource = createCmsFileFromResultSet(res, currentProject.getId(), false);
+                vfsLinks.add(currentResource);
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1457,6 +1453,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         m_sqlManager = null;      
         m_driverManager = null;        
     }
+    
     /**
      * helper method for getBrokenLinks.
      */
