@@ -34,10 +34,7 @@
 			<param name="additionalresources">/system/galleries/pics/ocms-templateone/;/system/modules/org.opencms.frontend.templateone/;/system/workplace/resources/filetypes/microsite.gif</param>
 		</parameters>
 		<resourcetypes>
-			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended">
-				<param name="resource.type.id">19</param>
-				<param name="resource.type.name">microsite</param>
-			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="microsite" id="19" />
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="microsite" key="fileicon.microsite" icon="microsite.gif" reference="folder">

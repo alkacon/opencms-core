@@ -37,19 +37,13 @@
 			<param name="additionalresources">/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/;/system/workplace/resources/filetypes/article.gif;/xmlcontent/</param>
 		</parameters>
 		<resourcetypes>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
-				<param name="resource.type.id">12</param>
-				<param name="resource.type.name">article</param>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="article" id="25">
 				<param name="schema">/sites/default/xmlcontent/article.xsd</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
-				<param name="resource.type.id">13</param>
-				<param name="resource.type.name">widgetdemo</param>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="widgetdemo" id="26">
 				<param name="schema">/sites/default/xmlcontent/widgetdemo/widgetdemo.xsd</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
-				<param name="resource.type.id">14</param>
-				<param name="resource.type.name">bookmark</param>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="bookmark" id="27">
 				<param name="schema">/sites/default/xmlcontent/nestedcontent/bookmark.xsd</param>
 			</type>
 		</resourcetypes>
