@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/08 14:10:52 $
- * Version: $Revision: 1.376 $
+ * Date   : $Date: 2004/06/08 15:13:05 $
+ * Version: $Revision: 1.377 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.db;
 
 import org.opencms.file.*;
 import org.opencms.flex.CmsFlexRequestContextInfo;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockManager;
@@ -71,7 +72,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.376 $ $Date: 2004/06/08 14:10:52 $
+ * @version $Revision: 1.377 $ $Date: 2004/06/08 15:13:05 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8093,6 +8094,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         CmsProperty property = null;
 
         try {
+            
+            // TODO: check if this is encoding stuff here is required
+            int warning = 0;
+            
             // make sure files are written using the correct character encoding 
             contents = file.getContents();
             property = getVfsDriver().readPropertyObject(
@@ -8100,10 +8105,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 context.currentProject(),
                 file);
             encoding = (property != null) ? property.getValue() : null;
+            encoding = CmsEncoder.lookupEncoding(encoding, null);
 
             if (encoding != null) {
                 // only files that have the encodig property set will be encoded,
-                // other files will be ignored. images etc. are not touched.                        
+                // other files will be ignored. images etc. are not touched.    
+
                 try {
                     contents = (new String(contents, encoding)).getBytes();
                 } catch (UnsupportedEncodingException e) {
