@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2001/12/20 10:48:56 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/12/21 08:27:48 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2001/12/20 10:48:56 $
+ * @version $Revision: 1.25 $ $Date: 2001/12/21 08:27:48 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -371,7 +371,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     */
     public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException {
         //String resourceName = linkManager.getResourceName(resourceId);
-        CmsFile file = cms.readFile(resourceName);
+        CmsFile file = cms.readFile(resourceName, true);
         cms.doCopyResourceToProject(resourceName);
         //check if the file type name is page
         String bodyPath = checkBodyPath(cms, (CmsFile)file);
