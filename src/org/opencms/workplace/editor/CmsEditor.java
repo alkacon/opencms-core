@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2003/12/08 11:37:43 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/12/08 16:35:16 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1.12
  */
@@ -94,8 +94,11 @@ public abstract class CmsEditor extends CmsDialog {
     private String m_paramNoActiveX;
     private String m_paramEditAsText;
        
-    /** Helper variable to store the clients browser type.<p> */
+    /** Helper variable to store the clients browser type */
     private String m_browserType = null;
+    
+    /** Helper variable to store the uri to the editors pictures */
+    private String m_picsUri = null;
     
     /** Helper variable to store the id of the current project */
     private int m_currentProjectId = -1;
@@ -405,6 +408,18 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
+     * Returns the path to the images used by this editor.<p>
+     * 
+     * @return the path to the images used by this editor
+     */
+    public final String getPicsUri() {
+        if (m_picsUri == null) {
+            m_picsUri = getEditorResourceUri() + "pics/";
+        }
+        return m_picsUri;
+    }
+    
+    /**
      * Determines if the online help is available in the currently selected user language.<p>
      * 
      * @return true if the online help is found, otherwise false
@@ -497,6 +512,13 @@ public abstract class CmsEditor extends CmsDialog {
      * @throws JspException if including an element fails
      */
     public abstract void actionSave() throws CmsException, IOException, JspException;
+    
+    /**
+     * Returns the URI to the editor resource folder where button images and javascripts are located.<p>
+     * 
+     * @return the URI to the editor resource folder
+     */
+    public abstract String getEditorResourceUri();
     
     /**
      * Initializes the editor content when openening the editor for the first time.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsLEditEditor.java,v $
- * Date   : $Date: 2003/12/08 11:37:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/12/08 16:35:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import com.opencms.flex.jsp.CmsJspActionElement;
  * Creates the output for editing a resource.<p> 
  * 
  * This class extends the simple editor class and uses the same methods.
- * Be careful when changing anything in the CmsSimpleEditr class.<p>
+ * Be careful when changing anything in the CmsSimpleEditor class.<p>
  * 
  * The following files use this class:
  * <ul>
@@ -44,7 +44,7 @@ import com.opencms.flex.jsp.CmsJspActionElement;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
@@ -59,6 +59,13 @@ public class CmsLEditEditor extends CmsSimpleEditor {
      */
     public CmsLEditEditor(CmsJspActionElement jsp) {
         super(jsp);
+    }
+    
+    /**
+     * @see org.opencms.workplace.editor.CmsEditor#getEditorResourceUri()
+     */
+    public final String getEditorResourceUri() {
+        return getSkinUri() + "editors/" + EDITOR_TYPE + "/";   
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/12/08 11:37:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/12/08 16:35:16 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1.12
  */
@@ -190,6 +190,13 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
         }
         return content;
     }  
+    
+    /**
+     * @see org.opencms.workplace.editor.CmsEditor#getEditorResourceUri()
+     */
+    public final String getEditorResourceUri() {
+        return getSkinUri() + "editors/" + EDITOR_TYPE + "/";   
+    }
     
     /**
      * Builds the html String for the editor views available in the editor screens.<p>

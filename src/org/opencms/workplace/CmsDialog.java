@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/12/05 16:22:27 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/12/08 16:35:16 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.1
  */
@@ -176,7 +176,7 @@ public class CmsDialog extends CmsWorkplace {
      * The action parameter is very important, 
      * it will select the dialog action to perform.
      * The value of the {@link #getAction()} method will be
-     * initilized form the action parameter.<p>
+     * initialized from the action parameter.<p>
      * 
      * @return the value of the action parameter
      */    
