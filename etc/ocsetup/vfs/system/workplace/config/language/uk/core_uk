@@ -422,7 +422,7 @@
                 <access>Change Permissions</access>
                 <chgrp>Change Group</chgrp>
                 <chown>Change Owner</chown>
-                <chnav>Change Position</chnav>
+                <chnav>Change Navigation</chnav>
                 <copy>Copy</copy>
                 <copytoproject>Copy To Project</copytoproject>
                 <delete>Delete</delete>
@@ -516,6 +516,7 @@
             <page>Page:</page>
             <promptgroup>Please choose group ...</promptgroup>
             <propertydef>Select Property</propertydef>
+            <navtext>Navigationtext</navtext>
             <newposition>New Position</newposition>
             <newpropertydefvalue>Enter Property Value</newpropertydefvalue>
             <newpropertydef>New Property</newpropertydef>

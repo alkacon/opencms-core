@@ -420,7 +420,7 @@
                 <access>Zugriff ändern</access>
                 <chgrp>Gruppe ändern</chgrp>
                 <chown>Eigentümer ändern</chown>
-                <chnav>Position ändern</chnav>
+                <chnav>Navigation ändern</chnav>
                 <copy>Kopieren</copy>
                 <copytoproject>In Projekt übernehmen</copytoproject>
                 <delete>Löschen</delete>
@@ -514,6 +514,7 @@
             <moveto>Verschieben nach</moveto>
             <promptgroup>Bitte Verwalter wählen ...</promptgroup>
             <propertydef>Eigenschaft wählen</propertydef>
+            <navtext>Navigationstext</navtext>
             <newposition>Neue Position</newposition>
             <newpropertydefvalue>Wert der Eigenschaft eingeben</newpropertydefvalue>
             <newpropertydef>Neue Eigenschaft</newpropertydef>
