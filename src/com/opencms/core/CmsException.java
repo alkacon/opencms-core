@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2000/11/17 15:17:45 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/11/24 14:37:46 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import java.util.*;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2000/11/17 15:17:45 $
+ * @version $Revision: 1.36 $ $Date: 2000/11/24 14:37:46 $
  */
 public class CmsException extends Exception {
 	
@@ -367,27 +367,33 @@ public class CmsException extends Exception {
  * Creation date: (10/23/00 %r)
  * @return java.lang.String
  */
-public String getStackTrace()
-{
+public String getStackTrace() {
 	java.io.StringWriter sw = new java.io.StringWriter();
 	java.io.PrintWriter pw = new java.io.PrintWriter(sw);
 	//now put all the StackTraces into the returning string
 	super.printStackTrace(pw);
 
 	//if there are any encapsulated exceptions, write them also.
-	if (m_Exception != null)
-	{
+	if (m_Exception != null) {
 		StringWriter _sw = new StringWriter();
 		PrintWriter _pw = new PrintWriter(_sw);
 		m_Exception.printStackTrace(_pw);
 		_pw.close();
-		_sw.close();
-		StringTokenizer st = new StringTokenizer(_sw.toString(),"\n");
+		try {
+			_sw.close();
+		} catch (Exception exc) {
+			// ignore the exception
+		}
+		StringTokenizer st = new StringTokenizer(_sw.toString(), "\n");
 		while (st.hasMoreElements())
-			pw.println(">" + st.nextElement());		
+			pw.println(">" + st.nextElement());
 	}
 	pw.close();
-	sw.close();
+	try {
+		sw.close();
+	} catch (Exception exc) {
+		// ignore the exception
+	}
 	return sw.toString();
 }
 	/**
