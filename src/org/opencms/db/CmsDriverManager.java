@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/09 15:30:13 $
- * Version: $Revision: 1.269 $
+ * Date   : $Date: 2003/10/09 18:57:30 $
+ * Version: $Revision: 1.270 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.269 $ $Date: 2003/10/09 15:30:13 $
+ * @version $Revision: 1.270 $ $Date: 2003/10/09 18:57:30 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1864,7 +1864,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             try {
                 m_backupDriver.readBackupPropertyDefinition(name, resourcetype);
             } catch (CmsException e) {
-                m_backupDriver.createBackupPropertyDefinition(name, resourcetype);
+                 m_backupDriver.createBackupPropertyDefinition(name, resourcetype);
             }            
             
             //propertyDefinition = m_vfsDriver.createPropertyDefinition(name, context.currentProject().getId(), resourcetype));
