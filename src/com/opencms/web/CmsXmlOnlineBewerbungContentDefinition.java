@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungContentDefinition.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/20 19:21:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/20 20:43:11 $
+ * Version: $Revision: 1.7 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -36,7 +36,7 @@ import java.io.*;
  * This class is used to access the application form's XML-datablocks.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.6 $ $Date: 2000/02/20 19:21:49 $
+ * @version $Name:  $ $Revision: 1.7 $ $Date: 2000/02/20 20:43:11 $
  * @see com.opencms.template.CmsXmlTemplateFile
  */
 public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
@@ -80,6 +80,7 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
 	private static final String C_BEWERBUNGSTEXT="bewerbungsText";
 	private static final String C_MESSAGE="message";
 	private static final String C_ERROR="error";
+	private static final String C_LINK="link";
 	// Hashtable keys for building a form
 	private static final String C_HASH_CERTIFICATES="certificates";
 	private static final String C_HASH_TEXT="text";		
@@ -106,6 +107,7 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
 	private static final String C_HASH_FAX="fax";
 	private static final String C_HASH_EMAIL="email";	
 	private static final String C_HASH_URL="url";
+	private static final String C_HASH_LINK="link";
 
 	
     /**
@@ -174,6 +176,7 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
 		setData(C_FAX,(String)mailInfo.get(C_HASH_FAX));
 		setData(C_EMAIL,(String)mailInfo.get(C_HASH_EMAIL));
 		setData(C_URL,(String)mailInfo.get(C_HASH_URL));
+		setData(C_LINK,(String)mailInfo.get(C_HASH_LINK));
         return getProcessedDataValue(C_BEWERBUNGSTEXT);
 	}
 		

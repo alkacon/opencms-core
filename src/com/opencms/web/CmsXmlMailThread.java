@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlMailThread.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/19 12:49:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/20 20:43:11 $
+ * Version: $Revision: 1.2 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -40,7 +40,7 @@ import java.io.*;
  * This class is used to send a mail, it used the Threads to send it.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.1 $ $Date: 2000/02/19 12:49:13 $
+ * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/02/20 20:43:11 $
  * @see java.lang.Thread
  */
 public class CmsXmlMailThread extends Thread {
@@ -67,6 +67,7 @@ public class CmsXmlMailThread extends Thread {
 	private final String c_HOST;
 	private final String c_SUBJECT;
 	private final String c_CONTENT;
+	
 	
 	public CmsXmlMailThread(Hashtable mail) {
 		c_CERTIFICATES=(String)mail.get(C_HASH_CERTIFICATES);
@@ -96,9 +97,7 @@ public class CmsXmlMailThread extends Thread {
 			if (c_BCC != null) {
 				msg.setRecipients(Message.RecipientType.BCC,InternetAddress.parse(c_BCC, false));
 			}
-			
 			msg.setSubject(c_SUBJECT,"ISO-8859-1");
-			
 			if (!c_CERTIFICATES.equals("")) {
 				// create and fill the first message part
 				MimeBodyPart mbp1=new MimeBodyPart();
@@ -123,6 +122,7 @@ public class CmsXmlMailThread extends Thread {
 			}
 			msg.setSentDate(new Date());
 			Transport.send(msg);
+			
 		}catch (Exception e) {			
 			if (A_OpenCms.isLogging()) {
 				A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e.getMessage());

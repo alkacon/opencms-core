@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/20 19:21:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/02/20 20:43:11 $
+ * Version: $Revision: 1.12 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -42,7 +42,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.11 $ $Date: 2000/02/20 19:21:49 $
+ * @version $Name:  $ $Revision: 1.12 $ $Date: 2000/02/20 20:43:11 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -145,6 +145,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 	private static final String C_HASH_EMAIL="email";	
 	private static final String C_HASH_URL="url";
 	private static final String C_HASH_IP="ip";
+	private static final String C_HASH_LINK="link";
 	
 	
     /**
@@ -311,7 +312,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 			} else {
 				
 				// save File
-				//certificates=saveFile(certificates,certificatesContent);
+				certificates=saveFile(certificates,certificatesContent);
 				
 				HttpServletRequest req=(HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
 				
@@ -342,7 +343,13 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				mailInfo.put(C_HASH_FAX,(fax.equals("")?"nicht angegeben":fax));
 				mailInfo.put(C_HASH_EMAIL,(email.equals("")?"nicht angegeben":email));
 				mailInfo.put(C_HASH_URL,(url.equals("")?"nicht angegeben":url));
-				mailInfo.put(C_HASH_IP,req.getRemoteAddr());
+				mailInfo.put(C_HASH_IP,req.getRemoteAddr());				
+				// write in database
+				String link=startWorkflow(cms,mailInfo);
+				mailInfo.put(C_HASH_LINK,link);
+				writeInDatabase(mailInfo);				
+				
+				
 				// this is nessesary because of "nicht angegeben" must be send
 				// or displayed if the user has nothing entered.
 				datablock.setText((String)mailInfo.get(C_HASH_TEXT));
@@ -389,16 +396,10 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				mailTable.put(C_HASH_HOST,host);
 				mailTable.put(C_HASH_SUBJECT,subject);
 				mailTable.put(C_HASH_CONTENT,content);
-										
-				// write in database
-				// returns a string that contain HTML Link
-				String link=startWorkflow(cms,mailInfo);
-				System.err.println("link->"+link);
-				writeInDatabase(mailInfo);
 				
 				// send mail
-				//CmsXmlMailThread mail=new CmsXmlMailThread(mailTable);
-				//mail.start();
+				CmsXmlMailThread mail=new CmsXmlMailThread(mailTable);				
+				mail.start();
 				
 				return startProcessing(cms, datablock, elementName, parameters, "Answer");
 			}
