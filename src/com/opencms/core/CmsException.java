@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2000/04/13 20:58:21 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/06/06 08:23:07 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2000/04/13 20:58:21 $
+ * @version $Revision: 1.27 $ $Date: 2000/06/06 08:23:07 $
  */
 public class CmsException extends Exception {
 	
@@ -213,6 +213,11 @@ public class CmsException extends Exception {
 	 * Definition of error code for accessing a deleted resource
 	 */
 	public final static int C_RESOURCE_DELETED = 32;
+
+    /**
+	 * Definition of error code for RB-INIT-ERRORS
+	 */
+	public final static int C_RB_INIT_ERROR = 33;
 	
 	public final static String C_EXTXT[] = {
 							"Unknown exception ",
@@ -248,6 +253,7 @@ public class CmsException extends Exception {
                             "New password is too short ",
 							"Access denied to resource ",
                             "Resource deleted ",
+                            "Resourcebroker-init error",
 };
     
 	/** 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/06/05 13:48:04 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/06/06 08:23:07 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.25 $ $Date: 2000/06/05 13:48:04 $  
+* @version $Revision: 1.26 $ $Date: 2000/06/06 08:23:07 $  
 * 
 * */
 
@@ -90,15 +90,12 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
      
      /**
       * Constructor, creates a new OpenCms object.
-      * It connects to the poerty database to read all requred data to set up the
-      * OpenCms system and creates an initalizer object which initiates all requires
-      * access modules and resource brokers.
       * 
-      * @param driver The database driver for the property database.
-      * @param connect The connect string to the property database.
-      * @param classname The name of the initalizer class. 
+      * It gets the configurations and inits a rb via the CmsRbManager.
+      * 
+      * @param conf The configurations from the property-file.
       */
-     OpenCms(String driver, String connect, String classname) {
+     OpenCms(Configurations conf) {
         // invoke the ResourceBroker via the initalizer
         try {
 			
@@ -109,9 +106,12 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the cms-object and the main resource-broker");
 			}
+			
 
-			// TODO: 41 use the new RB-Manager to init
-            // cms.init(((A_CmsInit) Class.forName(classname).newInstance() ).init(driver, connect));
+			// init the rb via the manager with the configuration 			
+			// and init the cms-object with the rb.
+			cms.init(CmsRbManager.init(conf));
+
 			printCopyrightInformation(cms);
             // initalize the Hashtable with all available mimetypes
 			if(A_OpenCms.isLogging()) {

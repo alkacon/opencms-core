@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/06/05 13:37:50 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/06/06 08:23:07 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,20 +66,11 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.39 $ $Date: 2000/06/05 13:37:50 $  
+* @version $Revision: 1.40 $ $Date: 2000/06/06 08:23:07 $  
 * 
 * */
 
 public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_CmsLogChannels {
-    /**
-     * The name of the property driver entry in the configuration file.
-     */
-     static final String C_PROPERTY_DRIVER="property.driver";
-         
-     /**
-     * The name of the property connect string entry in the configuration file.
-     */
-     static final String C_PROPERTY_CONNECT="property.connectString";
 
      /**
      * The name of the redirect entry in the configuration file.
@@ -91,11 +82,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
      */
      static final String C_PROPERTY_REDIRECTLOCATION="redirectlocation";
      
-      /**
-     * The name of the initializer classname entry in the configuration file.
-     */
-     static final String C_INILITALIZER_CLASSNAME="initializer.classname";
-          
      /**
       * The configuration for the OpenCms servlet.
       */
@@ -106,11 +92,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
       */
      private CmsSession m_sessionStorage;
  
-     /**
-      * Database scheduler for keeping the connection alive.
-      */
-     private CmsSchedulerDbConnector m_schedulerDbConnector;
-          
      /**
       * The reference to the OpenCms system.
       */
@@ -140,10 +121,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		
         super.init(config);
            
-        String propertyDriver=null;
-        String propertyConnect=null;
-        String initializerClassname=null;
-     
         // Collect the configurations
     	try {	
             m_configurations = new Configurations (new ExtendedProperties(config.getInitParameter("properties")));
@@ -158,18 +135,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] logging started");
 		}
 		
-
-		// get the connect information for the property db from the configuration
-        propertyDriver=(String)m_configurations.getString(C_PROPERTY_DRIVER);
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] " + C_PROPERTY_DRIVER + " = " + propertyDriver);
-		}
-        propertyConnect=(String)m_configurations.getString(C_PROPERTY_CONNECT);
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] " + C_PROPERTY_CONNECT + " = " + propertyConnect);
-		}
-
-        
         // initialize the redirect information
         int count =0;
         String redirect;
@@ -183,29 +148,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] redirect-rule: " + redirect + " -> " + redirectlocation);
 			}
         }                                                                                                      
-	
-       
-        
-		// get the classname of the initializer class
-        initializerClassname=(String)m_configurations.getString(C_INILITALIZER_CLASSNAME);
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing opencms with initializer: " + initializerClassname);
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] connecting to propertyDB via " + propertyDriver);
-		}
         
         // invoke the OpenCms
-        m_opencms=new OpenCms(propertyDriver,propertyConnect,initializerClassname);
-
-        
-        // build the database scheduler for keeping connections alive
-        CmsObject cms=new CmsObject();
-        try {
-            cms.init(null, null, C_USER_ADMIN, C_GROUP_ADMIN, C_PROJECT_ONLINE_ID);
-    	} catch (CmsException e) {
-    		throw new ServletException("Could not initialize cms object for DB scheduler. " + e);
-    	}
-        m_schedulerDbConnector = new CmsSchedulerDbConnector(cms, 120);
-        m_schedulerDbConnector.start();
+        m_opencms=new OpenCms(m_configurations);
         
         //initalize the session storage
 		if(A_OpenCms.isLogging()) {
@@ -293,7 +238,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Performing Shutdown....");
         }
-        m_schedulerDbConnector.destroy();
+		
+		// no destroying actions here - at the moment...
+		// TODO: check if we have to destroy the rb...
 			
         if(A_OpenCms.isLogging()) {
 	        A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet] Shutdown Completed");
