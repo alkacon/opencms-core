@@ -85,6 +85,9 @@
 	id=EDITOR
 	METHOD=POST>
 ]]><ELEMENT name="editor"/> <![CDATA[
+	<INPUT TYPE=HIDDEN NAME="content">	
+	<INPUT TYPE=HIDDEN NAME="action">	
+	<INPUT TYPE=HIDDEN NAME="file" value="]]><PROCESS>file</PROCESS><![CDATA[">	
 </form>
 </td> </tr> </table>
 </body>
