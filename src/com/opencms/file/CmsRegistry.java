@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2003/01/23 10:43:11 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.58 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.59 $ $Date: 2003/01/23 10:43:11 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
@@ -545,11 +545,9 @@ public Vector deleteCheckDependencies(String modulename) throws CmsException {
                     
                     if (DEBUG>0) {
                         System.err.println( "Adding resource: " + currentResource );
-                        System.err.println( "Adding resource: " + C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + currentResource );
                     }
                                             
                     resources.add( currentResource );
-                    resources.add( C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + currentResource );                           
                 }                       
             }          
             
