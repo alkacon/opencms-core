@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/08/02 14:54:30 $
- * Version: $Revision: 1.559 $
+ * Date   : $Date: 2004/08/10 15:47:01 $
+ * Version: $Revision: 1.560 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,18 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.5.0 Ix - August xx, 2004
+! Junit test suites now have nice display names
+* Improved "Cache-Control" headers by adding a "max-age=0" for all Workplace requests 
+  to prevent caching, this should allow operation with a browser 
+  setting "Check for new version of a page" of "Auto"
+! Removed "CmsObject" member from CmsEvent
+! Added first implementation of XmlContent packages 
+! Refacored XmlPage to use the same code as XmlContent objects do where possible
+! Changed validation for XmlPage from DTD to W3C XML schema
+! Changed DB schema: "FILES" tables are now named "CONTENT"
+! Changed DB schema: Content now points to resource record instead of vice-versa
 
 OpenCms 5.3.6 Ix - August 2, 2004
 ! Improved core search configuration by adding configurable "input sources" for the indexers
