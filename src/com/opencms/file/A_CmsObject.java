@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 1999/12/20 18:06:36 $ 
+ * @version $Revision: 1.6 $ $Date: 1999/12/22 14:02:30 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1024,15 +1024,4 @@ public abstract class A_CmsObject {
 	abstract public Vector readAllScheduleTasks()
 		throws CmsException;
 	
-	/**
-	 * Gets the current valid session associated with this request, if create 
-	 * is false or, if necessary, creates a new session for the request, if 
-	 * create is true.
-	 * 
-	 * @param create decides if a new session should be created, if needed.
-	 * 
-	 * @return the session associated with this request or null if create 
-	 * was false and no valid session is associated with this request. 
-	 */
-	public abstract HttpSession getSession(boolean create);
 }

@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/17 14:37:04 $ 
+ * @version $Revision: 1.3 $ $Date: 1999/12/22 14:02:30 $ 
  * 
  */
 public abstract class A_CmsRequestContext
@@ -109,4 +109,16 @@ public abstract class A_CmsRequestContext
 	 */
 	abstract public A_CmsProject setCurrentProject(String projectname)
 		throws CmsException;
+
+	/**
+	 * Gets the current valid session associated with this request, if create 
+	 * is false or, if necessary, creates a new session for the request, if 
+	 * create is true.
+	 * 
+	 * @param create decides if a new session should be created, if needed.
+	 * 
+	 * @return the session associated with this request or null if create 
+	 * was false and no valid session is associated with this request. 
+	 */
+	public abstract HttpSession getSession(boolean create);
 }
