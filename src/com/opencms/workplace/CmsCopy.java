@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/05/02 10:03:34 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/05/02 16:12:10 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.23 $ $Date: 2000/05/02 10:03:34 $
+ * @version $Revision: 1.24 $ $Date: 2000/05/02 16:12:10 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -156,7 +156,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
             if (file.isFile()) {
                 // this is a file, so copy it    
                 try {
-                    copyFile(cms,(CmsFile)file,newFolder,newFile,flags,false);
+                    copyFile(cms,(CmsFile)file,newFolder,newFile,flags);
                 } catch (CmsException ex) {
                     // something went wrong, so remove all session parameters
                     session.removeValue(C_PARA_FILE);
@@ -211,7 +211,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     for (int i=0;i<allFiles.size();i++) {
                         CmsFile newfile=(CmsFile)allFiles.elementAt(i);  
                         if (newfile.getState() != C_STATE_DELETED) {
-                            copyFile(cms,newfile,newFolder+newFile+"/",newfile.getAbsolutePath().substring(file.getAbsolutePath().length()),flags,true);
+                            copyFile(cms,newfile,newFolder+newFile+"/",newfile.getAbsolutePath().substring(file.getAbsolutePath().length()),flags);
                         }
                     }    
                 	// everything is done, so remove all session parameters		
@@ -506,8 +506,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * @param lock Flag showing if the resource has to locked.
      * @exception Throws CmsException if something goes wrong.
      */
-    private void copyFile(A_CmsObject cms,CmsFile file, String newFolder, String newFile,String flags,
-                          boolean lock) 
+    private void copyFile(A_CmsObject cms,CmsFile file, String newFolder, String newFile,String flags) 
         throws CmsException {
 
         // copy the file and set the access flags if nescessary
@@ -522,19 +521,11 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
 				    String newbodyPath=(C_CONTENTBODYPATH.substring(0,help))+newFolder+newFile;
 		            CmsFile newContent = cms.readFile(newFolder+newFile);
          
-                    if (lock) {
-                        cms.lockResource(newContent.getAbsolutePath());
-                    }
-         
 			        changeContent(cms, newContent, newbodyPath);
             
 				    cms.copyFile(bodyPath,newbodyPath);
-             
-                     if (lock) {
-                        cms.unlockResource(newContent.getAbsolutePath());
-                     }
-           
-			}else{
+    
+			} else {
 			    // unlock the template file, to prevent access errors, because
 				// new template file will automatically be locked to the user
 				cms.unlockResource(file.getAbsolutePath());
