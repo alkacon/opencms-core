@@ -15,11 +15,14 @@ import java.util.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/27 15:01:43 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/28 11:43:04 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate {
-        
+    
+    /** URL of the pics folder in the webserver's docroot */
+    private String m_picsurl = null;
+    
     /**
      * Gets the key that should be used to cache the results of
      * this template class. 
@@ -54,5 +57,33 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate {
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);       
         return xmlTemplateDocument;
     }        
+
+    /**
+     * User method to generate an URL for the pics folder.
+     * <P>
+     * All pictures should reside in the docroot of the webserver for
+     * performance reasons. This folder can be mounted into the OpenCms system to 
+     * make it accessible for the OpenCms explorer.
+     * <P>
+     * The path to the docroot can be set in the workplace ini.
+     * <P>
+     * In any workplace template file, this method can be invoked by
+     * <code>&lt;METHOD name="picsUrl"&gt;<em>PictureName</em>&lt;/METHOD&gt;</code>.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
+     * @param userObj Hashtable with parameters <em>(not used here)</em>.
+     * @return String with the pics URL.
+     * @exception CmsException
+     */
     
+    public Object picsUrl(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+            throws CmsException {
+        if(m_picsurl == null) {            
+            CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+            m_picsurl = configFile.getPictureUrl();
+        }
+        return m_picsurl + tagcontent;
+    }
 }
