@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2003/09/15 10:51:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/05 17:44:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.ServletException;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
     
@@ -407,6 +407,13 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
     public int getLruCacheCosts() {
         return m_byteSize;
     }
+
+    /**
+     * @see org.opencms.cache.I_CmsLruCacheObject#getValue()
+     */
+    public Object getValue() {
+        return m_elements;
+    }    
     
     // methods to clean-up/finalize the object instance
     
