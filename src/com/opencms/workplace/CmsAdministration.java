@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
- * Date   : $Date: 2001/01/12 12:58:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2001/01/12 16:42:45 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * 
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.9 $ $Date: 2001/01/12 12:58:36 $
+ * @version $Name:  $ $Revision: 1.10 $ $Date: 2001/01/12 16:42:45 $
  */
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
 
@@ -332,7 +332,7 @@ private String getStringValue(String param) {
 				}
 			}
 	 	}catch(Exception e){
-			
+			System.err.println("cmsAdministration.sort : adminpoints unsorted cause I cant get a valid floatvalue \n"+e.toString());
 	 	}
 	}  // of sort
 }
