@@ -8,6 +8,19 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.0a24 Giedi Prime: Rabban - 31 March 2000
+! File upload implemented on the workplace.
+! A basic file history is added to the workplace.
+! DB-export and import implemented on the workplace.
+! Added a method is added to the request-context for extracting the current filename from the URI.
+! New workplace view "News" added.
+! News editing and deleting implemented on the workplace.
+* Error-box compatibility for Netscape.
+* IE5 DHTMLcontrol-bug corrected. Umlauts are possible now.
+* Corrected some errors in tasks.
+* Changed the security of chmod, chown, chgrp: The owner is now allways allowed.
+* Export and import modified, it now filters hex-chars.
+* Changed NavTitle into NavText.
 
 OpenCms 4.0a23 Giedi Prime: Rabban - 24 March 2000
 ! Folders can now be created, modified and deleted via the workplace.
