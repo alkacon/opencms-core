@@ -11,6 +11,9 @@
 
 	/* next page to be accessed */
 	String nextPage = "";
+	
+	/* previous page in the setup process */
+	String prevPage = "index.jsp";
 
 	/* request parameters */
 	boolean submited = (request.getParameter("systemInfo") != null);
@@ -73,7 +76,7 @@ OpenCms Setup Wizard - Check components
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (setupOk) { %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
-<table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%;">
+<table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 350px;">
 <tr>
 	<td style="vertical-align: middle; height: 100%;">
 		<%  if (submited) {
@@ -164,10 +167,10 @@ OpenCms Setup Wizard - Check components
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='index.jsp';">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
 <%
 String disabled = "";
-if(submited && info && !accepted) {
+if (submited && info && !accepted) {
 	disabled = " disabled=\"disabled\"";
 } %>
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton"<%= disabled %>>
