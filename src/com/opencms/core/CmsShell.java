@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/06/05 13:48:04 $
- * Version: $Revision: 1.44 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
+ * Date   : $Date: 2000/06/06 08:41:18 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,20 +26,20 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.setup;
+package com.opencms.core;
 
 import java.util.*;
 import java.io.*;
 import com.opencms.file.*;
-import com.opencms.core.*;
 import java.lang.reflect.*;
+import source.org.apache.java.util.*;
 
 /**
  * This class is a commadnlineinterface for the opencms. It can be used to test
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.44 $ $Date: 2000/06/05 13:48:04 $
+ * @version $Revision: 1.1 $ $Date: 2000/06/06 08:41:18 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -47,6 +47,11 @@ public class CmsShell implements I_CmsConstants {
 	 * The resource broker to get access to the cms.
 	 */
 	private CmsObject m_cms;
+
+	/**
+	 * The open-cms.
+	 */
+	private A_OpenCms m_openCms;
 
 	/**
 	 * The main entry point for the commandline interface to the opencms. 
@@ -60,7 +65,7 @@ public class CmsShell implements I_CmsConstants {
 		
 		try {
 		
-			if( (args.length == 0) || (args.length > 3) ) {
+			if( (args.length == 0) || (args.length > 1) ) {
 				// print out usage-information.
 				shell.usage();
 			} else {
@@ -87,10 +92,12 @@ public class CmsShell implements I_CmsConstants {
 	 */
 	private void init(String[] args)
 		throws Exception {
+		Configurations conf = new Configurations (new ExtendedProperties(args[0]));
+
+		m_openCms = new OpenCms(conf);
 		m_cms = new CmsObject();
-		// TODO: 41 use the new RB-Manager to init
-		// m_cms.init(((A_CmsInit) Class.forName(args[0]).newInstance() ).init(args[1], args[2]));
-		// m_cms.init(null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
+		
+		m_cms.init(null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
 	}	
 	
 	/**
@@ -125,7 +132,7 @@ public class CmsShell implements I_CmsConstants {
 	 * Gives the usage-information to the user.
 	 */
 	private void usage() {
-		System.out.println("Usage: java com.opencms.setup.CmsShell initializer-classname sqldriver-classname connectstring");
+		System.out.println("Usage: java com.opencms.core.CmsShell proprties-file");
 	}
 	
 	/**
