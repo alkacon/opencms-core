@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsPropertydefinition.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/06/30 21:56:05 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,9 +32,10 @@ package com.opencms.file;
  * This class describes a Propertydefinition in the Cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.8 $ $Date: 2002/06/30 21:56:05 $
  */
-public class CmsPropertydefinition implements Cloneable {
+// TESTFIX (a.kandzior@alkacon.com) Old code: public class CmsPropertydefinition implements Cloneable {
+public class CmsPropertydefinition implements Cloneable, Comparable {
     /**
      * The name of this Propertydefinition.
      */
@@ -129,4 +130,15 @@ public class CmsPropertydefinition implements Cloneable {
         output.append(getType());
         return output.toString();
     }
+    
+    /**
+     * TESTFIX (a.kandzior@alkacon.com) New code:
+     * Implements the comparable interface.
+     */
+    public int compareTo(Object obj) {
+        if ((obj == null) || ! (obj instanceof CmsPropertydefinition)) return 0;
+        CmsPropertydefinition def = (CmsPropertydefinition)obj;
+        return (getName().compareTo(def.getName()));
+    }    
+    // End TESTFIX
 }
