@@ -48,7 +48,8 @@ var win;
 var buttonType = 1;
 
 var link_newresource = "/system/workplace/commons/newresource.jsp";
-var link_showresource = "/system/workplace/action/explorerShowResource.html";
+
+var link_showresource = "/system/workplace/commons/displayresource.jsp";
 
 var last_id = -1;
 var last_id_style = "";
@@ -547,12 +548,12 @@ function printList(wo) {
 					wo.write(vi.liste[i].name);
 				} else if (flaturl != "") {
 					wo.write("<a href=\"javascript:top.openwinfull('");
-					wo.write(vr.servpath + vr.actDirectory + vi.liste[i].name);
-					wo.writeln("')\" id=\"a" + i + "\" " + ssclass + ">&" + vi.liste[i].name + "</a>");
+					wo.write(vr.actDirectory + vi.liste[i].name);
+					wo.writeln("');\" id=\"a" + i + "\" " + ssclass + ">&" + vi.liste[i].name + "</a>");
 				} else {
 					wo.write("<a href=\"javascript:top.openwinfull('");
-					wo.write(vr.servpath + vr.actDirectory + vi.liste[i].name);
-					wo.writeln("')\" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].name + "</a>");
+					wo.write(vr.actDirectory + vi.liste[i].name);
+					wo.writeln("');\" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].name + "</a>");
 				}
 			}
 			wo.writeln("</td>");
@@ -749,11 +750,10 @@ function openwinfull(url) {
 	if (url != '#') {
 		w = screen.availWidth - 50;
 		h = screen.availHeight - 200;
-		workplace = window.open(vr.servpath + link_showresource + "?url=" + url, 'preview', 'toolbar = yes, location = yes, directories = no, status = yes, menubar = 1, scrollbars = yes, resizable = yes, width = '+w+', height = '+h);
+		workplace = window.open(vr.servpath + link_showresource + "?resource=" + url, 'preview', 'toolbar = yes, location = yes, directories = no, status = yes, menubar = 1, scrollbars = yes, resizable = yes, left = 20, top = 20, width = '+w+', height = '+h);
 		if (workplace != null) {
 			workplace.focus();
 		}
-
 	}
 }
 
