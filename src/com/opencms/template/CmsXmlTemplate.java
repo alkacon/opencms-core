@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2002/03/20 10:53:18 $
-* Version: $Revision: 1.91 $
+* Date   : $Date: 2002/03/20 12:37:30 $
+* Version: $Revision: 1.92 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.91 $ $Date: 2002/03/20 10:53:18 $
+ * @version $Revision: 1.92 $ $Date: 2002/03/20 12:37:30 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -776,10 +776,10 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @exception CmsException
      */
     public Object getUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        if(tagcontent == null || "".equals(tagcontent) || !cms.isStaticExportEnabled()){
-            return (cms.getRequestContext().getRequest().getServletUrl() + cms.getRequestContext().getUri()).getBytes();
+        String res = cms.getRequestContext().getUri();
+        if(tagcontent == null || "".equals(tagcontent)){
+            return (cms.getLinkSubstitution(res)).getBytes();
         }else{
-            String res = cms.getRequestContext().getUri();
             return (cms.getLinkSubstitution(res+"?"+tagcontent)).getBytes();
         }
     }
