@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/09/08 08:16:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/09/12 11:44:33 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/09/08 08:16:41 $
+ * @version $Revision: 1.9 $ $Date: 2000/09/12 11:44:33 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -200,6 +200,85 @@ public I_CmsRegistry clone(CmsObject cms) {
 	return new CmsRegistry(this, cms);
 }
 /**
+ * This method checks which modules need this module. If a module depends on this the name 
+ * will be returned in the vector.
+ * @param modulename The name of the module to check.
+ * @returns a Vector with modulenames that depends on the overgiven module.
+ */
+public Vector deleteCheckDependencies(String modulename) throws CmsException {
+	Enumeration names = getModuleNames();
+	Vector modules;
+	Vector minVersions;
+	Vector maxVersions;
+	Vector result = new Vector();
+	while (names.hasMoreElements()) {
+		String name = (String) names.nextElement();
+		modules = new Vector();
+		minVersions = new Vector();
+		maxVersions = new Vector();
+		getModuleDependencies(name, modules, minVersions, maxVersions);
+		// needs this module the module to test?
+		if (modules.contains(modulename)) {
+			// yes - store it in the result
+			result.addElement(name);
+		}
+	}
+	return result;
+}
+/**
+ * This method checks for conflicting files before the deletion of a module.
+ * It uses several Vectors to return the different conflicting files.
+ *
+ * @param modulename the name of the module that should be deleted.
+ * @param filesWithProperty a return value. The files that are marked with the module-property for this module.
+ * @param missingFiles a return value. The files that are missing.
+ * @param wrongChecksum a return value. The files that should be deleted but have another checksum as at import-time.
+ * @param filesInUse a return value. The files that should be deleted but are in use by other modules.
+ */
+public void deleteGetConflictingFileNames(String modulename, Vector filesWithProperty, Vector missingFiles, Vector wrongChecksum, Vector filesInUse) throws CmsException {
+	// the files and checksums for this module
+	Vector moduleFiles = new Vector();
+	Vector moduleChecksums = new Vector();
+	getModuleFiles(modulename, moduleFiles, moduleChecksums);
+
+	// the files and checksums for all other modules
+	Vector otherFiles = new Vector();
+	Vector otherChecksums = new Vector();
+	Enumeration modules = getModuleNames();
+
+	while(modules.hasMoreElements()) {
+		String module = (String)modules.nextElement();
+		// get the files only for modules that are not for the current module.
+		if(!module.equals(modulename)) {
+			// get the files
+			getModuleFiles(module, otherFiles, otherChecksums);
+		}
+	}
+
+	for(int i = 0; i < moduleFiles.size(); i++) {
+		// get the current file and checksum
+		String currentFile = (String)moduleFiles.elementAt(i);
+		String currentChecksum = (String)moduleChecksums.elementAt(i);
+
+		// exists the file in the cms?
+		System.err.println(currentFile);
+		try {
+			m_cms.readFileHeader(currentFile);
+		} catch(CmsException exc) {
+			// the file dosen't exist - mark it as deleted
+			missingFiles.addElement(currentFile);
+		}
+
+		// is the file in use of another module?
+		if( otherFiles.contains(currentFile) ) {
+			// yes - mark it as in use
+			filesInUse.addElement(currentFile);
+		}
+
+		// todo: was the file changed? Is the checksum correct
+	}
+}
+/**
  *  Deletes a module. This method is synchronized, so only one module can be deleted at one time.
  *
  *  @param module-name the name of the module that should be deleted.
@@ -249,19 +328,6 @@ public synchronized void deleteModule(String module, Vector exclusion) throws Cm
 	} catch (Exception exc) {
 		throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
 	}
-}
-/**
- *  Checks for files that already exist in the system but should be replaced by the module.
- *
- *  @param moduleZip The name of the zip-file to import.
- *  @returns The complete paths to the resources that have conflicts.
- */
-public Vector getConflictingFileNames(String moduleZip) throws CmsException {
-	if (!hasAccess()) {
-		throw new CmsException("No access to perform the action 'getConflictingFileNames'", CmsException.C_REGISTRY_ERROR);
-	}
-	// TODO: getConflictingFileNames
-	return new Vector();
 }
 	/**
 	 * Gets a description of this content type.

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/09/08 08:16:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/09/12 11:44:33 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/09/08 08:16:41 $
+ * @version $Revision: 1.8 $ $Date: 2000/09/12 11:44:33 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -50,19 +50,30 @@ public interface I_CmsRegistry extends Cloneable {
  */
 public I_CmsRegistry clone(CmsObject cms);
 /**
+ * This method checks which modules need this module. If a module depends on this the name 
+ * will be returned in the vector.
+ * @param modulename The name of the module to check.
+ * @returns a Vector with modulenames that depends on the overgiven module.
+ */
+public Vector deleteCheckDependencies(String modulename) throws CmsException;
+/**
+ * This method checks for conflicting files before the deletion of a module.
+ * It uses several Vectors to return the different conflicting files.
+ *
+ * @param modulename the name of the module that should be deleted.
+ * @param filesWithProperty a return value. The files that are marked with the module-property for this module.
+ * @param missingFiles a return value. The files that are missing.
+ * @param wrongChecksum a return value. The files that should be deleted but have another checksum as at import-time.
+ * @param filesInUse a return value. The files that should be deleted but are in use by other modules.
+ */
+public void deleteGetConflictingFileNames(String modulename, Vector filesWithProperty, Vector missingFiles, Vector wrongChecksum, Vector filesInUse) throws CmsException;
+/**
  *  Deletes a module. This method is synchronized, so only one module can be deleted at one time.
  *
  *  @param module-name the name of the module that should be deleted.
  *  @param exclusion a Vector with resource-names that should be excluded from this deletion.
  */
 public void deleteModule(String module, Vector exclusion) throws CmsException;
-	/**
-	 *  Checks for files that already exist in the system but should be replaced by the module.
-	 *
-	 *  @param moduleZip The name of the zip-file to import.
-	 *  @returns The complete paths to the resources that have conflicts.
-	 */
-	public Vector getConflictingFileNames(String moduleZip) throws CmsException;
 /**
  * This method returns the author of the module.
  *
