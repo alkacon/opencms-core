@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
- * Date   : $Date: 2000/08/02 13:34:57 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/08/08 07:24:00 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.19 $ $Date: 2000/08/02 13:34:57 $
+ * @version $Revision: 1.20 $ $Date: 2000/08/08 07:24:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -85,6 +85,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
+		
 		
 		CmsRequestContext context = cms.getRequestContext();
 		CmsXmlWpTemplateFile xmlTemplateDocument = 
@@ -424,9 +425,10 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 		xmlTemplateDocument.setData("button6", button6); 
 		
 		// now check where to go back
+		
 		if ((templateSelector == null || templateSelector=="") && lastUrl != null) {   
 			// tasks either completed or aborted, go back
-			try { 
+			try {
 				if (lastUrl.startsWith("http:")) {
 					// complete path 
 					context.getResponse().sendRedirect(lastUrl);

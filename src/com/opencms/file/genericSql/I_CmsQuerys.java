@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/08/02 13:34:54 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2000/08/08 07:24:00 $
+ * Version: $Revision: 1.56 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.55 $ $Date: 2000/08/02 13:34:54 $
+ * @version $Revision: 1.56 $ $Date: 2000/08/08 07:24:00 $
  */
 public interface I_CmsQuerys {
     
@@ -555,7 +555,7 @@ public interface I_CmsQuerys {
 	
 	// Constants for TaskLog table
 	public static final String C_LOG_ID         = C_TABLENAME_TASKLOG + ".id";
-	public static final String C_LOG_COMMENT    = C_TABLENAME_TASKLOG + ".comment"; 
+	public static final String C_LOG_COMMENT    = C_TABLENAME_TASKLOG + ".coment"; 
 	public static final String C_LOG_EXUSERNAME = C_TABLENAME_TASKLOG + ".externalusername"; 
 	public static final String C_LOG_STARTTIME  = C_TABLENAME_TASKLOG + ".starttime"; 
 	public static final String C_LOG_TASK		 = C_TABLENAME_TASKLOG + ".taskref";
@@ -618,7 +618,7 @@ public interface I_CmsQuerys {
 	public static final String C_TASKLOG_READ = "SELECT * FROM " + C_TABLENAME_TASKLOG + " WHERE " + C_LOG_ID + "=?";
 	
 	public static final Integer C_TASK_FIND_AGENT_KEY = new Integer(807);
-	public static final String C_TASK_FIND_AGENT = "SELECT * " +
+	public static final String C_TASK_FIND_AGENT = "SELECT "+C_DATABASE_PREFIX+"USERS.USER_ID " +
 													"FROM "+C_DATABASE_PREFIX+"GROUPUSERS, "+C_DATABASE_PREFIX+"USERS " +
 													"WHERE GROUP_ID=? AND "+
 													C_DATABASE_PREFIX+"GROUPUSERS.USER_ID="+C_DATABASE_PREFIX+"USERS.USER_ID " +

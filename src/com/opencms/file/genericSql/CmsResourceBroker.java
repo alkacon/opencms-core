@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/04 14:11:31 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2000/08/08 07:24:00 $
+ * Version: $Revision: 1.98 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.97 $ $Date: 2000/08/04 14:11:31 $
+ * @version $Revision: 1.98 $ $Date: 2000/08/08 07:24:00 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -524,6 +524,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 								   CmsTask task)
          throws CmsException {
 		 // read the parent of the task, until it has no parents.
+		 task = this.readTask(currentUser, currentProject, task.getId());
+		 
 		 while(task.getParent() != 0) {
 			 task = readTask(currentUser, currentProject, task.getParent());
 		 }

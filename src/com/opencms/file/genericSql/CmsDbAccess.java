@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/08/02 13:34:54 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2000/08/08 07:23:59 $
+ * Version: $Revision: 1.110 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.109 $ $Date: 2000/08/02 13:34:54 $ * 
+ * @version $Revision: 1.110 $ $Date: 2000/08/08 07:23:59 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -5183,7 +5183,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			
         try {
 			statement = m_pool.getPreparedStatement(C_SYSTEMID_INIT_KEY);
-			for (int i = 0; i < C_MAX_TABLES; i++){
+			for (int i = 0; i <= C_MAX_TABLES; i++){
 				statement.setInt(1,i);
 				statement.executeUpdate();
 				statement.clearParameters();
@@ -5786,7 +5786,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 */
 	protected int findAgent(int roleid)
 		throws CmsException {
-		
 		int result = C_UNKNOWN_ID;
 		PreparedStatement statement = null;
 		ResultSet res = null; 
@@ -5798,7 +5797,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			res = statement.executeQuery();
 
 			if(res.next()) {
-				result = res.getInt(C_DATABASE_PREFIX+"USERS.USER_ID");
+				result = res.getInt(1);
 			} else {
 				System.out.println("No User for role "+ roleid + " found");
 			}

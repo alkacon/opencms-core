@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
- * Date   : $Date: 2000/08/02 13:34:53 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/08/08 07:23:59 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import javax.servlet.http.*;
  * session-failover in distributed-server environments.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/08/02 13:34:53 $  
+ * @version $Revision: 1.11 $ $Date: 2000/08/08 07:23:59 $  
  */
 public class CmsSession implements I_CmsSession, I_CmsConstants {
 	
@@ -96,7 +96,7 @@ public class CmsSession implements I_CmsSession, I_CmsConstants {
 	 * @param name the key for the value to remove.
 	 */
 	public void removeValue(String name) {
-		m_session.removeValue(name);
+		m_sessionData.remove(name);
 		// indicate, that the session should be stored after the request.
 		m_session.putValue(C_SESSION_IS_DIRTY, new Boolean(true));
 	}
