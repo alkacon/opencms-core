@@ -210,7 +210,7 @@
 <contextmenue name="XMLTemplatelockuser">
 	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.edit" href="#"/>
+	<contextentry name="explorer.context.edit" href="javascript:doAction(DO_EDIT)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
@@ -345,64 +345,6 @@
 </contextmenue>
 <!-- context menues for pages end -->
 
-<!-- context menues for pdfpages start -->
-<contextmenue name="pdfpage">
-	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
-	<contextspacer/>
-	<contextdisabled name="explorer.context.pageedit"/>
-	<contextdisabled name="explorer.context.editcontrolfile" />
-	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
-	<contextdisabled name="explorer.context.rename"/>
-	<contextdisabled name="explorer.context.move"/>
-	<contextdisabled name="explorer.context.delete"/>
-	<contextspacer/>	
-	<contextdisabled name="explorer.context.chown"/>
-	<contextdisabled name="explorer.context.chgrp"/>
-	<contextdisabled name="explorer.context.access"/>
-	<contextspacer/>	
-	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
-	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
-</contextmenue>
-
-<contextmenue name="pdfpagelock">
-	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
-	<contextspacer/>
-	<contextdisabled name="explorer.context.pageedit"/>
-    <contextdisabled name="explorer.context.editcontrolfile" />
-	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
-	<contextdisabled name="explorer.context.rename"/>
-	<contextdisabled name="explorer.context.move"/>
-	<contextdisabled name="explorer.context.delete"/>
-	<contextspacer/>	
-	<contextdisabled name="explorer.context.chown"/>
-	<contextdisabled name="explorer.context.chgrp"/>
-	<contextdisabled name="explorer.context.access"/>
-	<contextspacer/>	
-	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
-	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
-</contextmenue>
-
-<contextmenue name="pdfpagelockuser">
-	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
-	<contextspacer/>
-	<contextentry name="explorer.context.pageedit" href="javascript:doAction(DO_TEMPLATEEDIT)"/>
-	<contextentry name="explorer.context.editcontrolfile" href="javascript:doAction(DO_EDIT)"/>
-	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
-	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
-	<contextentry name="explorer.context.move" href="javascript:doAction(DO_MOVE)"/>
-	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
-	<contextspacer/>	
-	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
-	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
-	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
-	<contextspacer/>	
-	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
-	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
-</contextmenue>
-<!-- context menues for pdfpages end -->
 
 <!-- context menues for image files start -->
 <contextmenue name="image">

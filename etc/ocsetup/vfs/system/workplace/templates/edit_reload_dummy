@@ -9,8 +9,8 @@
 	<title>opencms</title>
 </head>
 
-<body bgcolor="#C0C0C0">
-<!-- This is an empty dummy document reloaded every 10 minutes. -->
+<body>
+This is an empty dummy document reloaded every 10 minutes.
 </body>
 ]]>
 </TEMPLATE>

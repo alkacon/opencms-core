@@ -100,7 +100,7 @@
 		
 		<database>
 			<label>
-				<includewp>include system folder</includewp>
+				<nosystem>exclude system folder</nosystem>
 				<filename>Name of Exportfile</filename>
 				<files>existing Files</files><titleexport>Export Database</titleexport>
 				<titleimport>Import Database</titleimport>

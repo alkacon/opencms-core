@@ -81,6 +81,7 @@ function show_help()
 {
 	return 'help/3.html';
 }
+var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 function check_textfeld(formular, feld)
 {

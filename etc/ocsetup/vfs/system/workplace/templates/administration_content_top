@@ -22,7 +22,7 @@
 <link rel=stylesheet type="text/css" href="../css/format.css">
 </head>
 
-<body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed>
+<body onLoad="parent.frames[0].location.href='administration_head.html'" bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed>
 
 <table cellspacing=0 cellpadding=0 border=0>
 	<tr>
@@ -33,31 +33,29 @@
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
 	</tr>
-	<tr valign=top align=center>
-		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=120></td>
-		
-		<td>]]><ICON name="ic_project" label="project" action="location.href='administration_content_project.html';" href="administration_head_2.html" target="admin_head" visiblemethod="isProjectManager"/><![CDATA[</td>
-		<td>]]><ICON name="ic_usermanagement" label="user" action="location.href='administration_content_usermanagement.html';" href="administration_head_2.html" target="admin_head" visiblemethod="isAdmin"/><![CDATA[</td>
-		
-<!--	<td>]]><ICON name="ic_computer" label="mountpoint" method="doNotShow" action="notImplemented('Mountpointverwaltung');" href="#" target=""/><![CDATA[</td> -->
-<!--	<td>]]><ICON name="ic_clock" label="processmanagement" method="doNotShow" action="notImplemented('Vorgangsverwaltung');" href="#" target=""/><![CDATA[</td> -->
-		
-		<td>]]><ICON name="ic_data" label="database" action="location.href='administration_content_database.html';" href="administration_head_2.html" target="admin_head" visiblemethod="isAdmin"/><![CDATA[</td>
-		
-<!--	<td>]]><ICON name="ic_admin_newsarchive" label="news" method="isNotOnlineProject" action="" href="javascript:window.top.body.location.href='newsadmin.html';"/><![CDATA[</td> --> 
-		
-		<td>]]><ICON name="ic_admin_datatypes" label="datatypes" action="location.href='administration_content_datatypes.html';" href="administration_head_2.html" target="admin_head" visiblemethod="isAdmin"/><![CDATA[</td>
-		<td>]]><ICON name="ic_admin_properties" label="properties" action="location.href='administration_content_properties.html';" href="administration_head_2.html" target="admin_head" visiblemethod="isAdmin"/><![CDATA[</td>
- 	</tr>
-	<tr valign=top align=center>
-		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=120></td>
-		<td>]]><ICON name="ic_picgallery" label="picgallery" action="location.href='administration_content_picgalleries.html?initial=true';" href="administration_head_picgalleries1.html" target="admin_head" visiblemethod="isProjectManager" activemethod="isNotOnlineProject"/><![CDATA[</td>
-		<td>]]><ICON name="ic_downloadgallery" label="downloadgallery" action="location.href='administration_content_downgalleries.html?initial=true';" href="administration_head_downgalleries1.html" target="admin_head" visiblemethod="isProjectManager" activemethod="isNotOnlineProject"/><![CDATA[</td>
-	</tr>
+	]]><PROCESS>iconTable</PROCESS><![CDATA[
+
 </table>
 
 </body>
 </html>
 ]]>
 </TEMPLATE>
+
+<list_row><![CDATA[
+	<tr valign="top" align="center">
+		<td><img src="]]><PROCESS>emptyPic</PROCESS><![CDATA[" border=0 width=1 height=120></td>
+		]]><PROCESS>entrys</PROCESS><![CDATA[
+ 	</tr>]]>
+</list_row>
+
+<defaulticon><![CDATA[
+<td><a href="javascript:document.location.href=']]><PROCESS>linkTo</PROCESS><![CDATA['"> <img src="]]><PROCESS>picture</PROCESS><![CDATA[" border=0 width=32 height=32 vspace=4><br>]]><PROCESS>linkName</PROCESS><![CDATA[ </a></td>]]> 
+</defaulticon>
+
+<deactivatedicon><![CDATA[
+<td><img src="]]><PROCESS>picture</PROCESS><![CDATA[" border=0 width=32 height=32 vspace=4><br><font color="silver">]]><PROCESS>linkName</PROCESS><![CDATA[ </font></td>]]> 
+</deactivatedicon>
+
+<noicon></noicon>
 </WORKPLACE>

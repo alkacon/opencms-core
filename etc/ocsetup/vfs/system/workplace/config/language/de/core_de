@@ -100,7 +100,7 @@
 		
 		<database>
 			<label>
-				<includewp>Ordner 'system' miteinbeziehen</includewp>
+				<nosystem>Ordner 'system' ausschließen</nosystem>
 				<titleexport>Datenbank exportieren</titleexport>
 				<titleimport>Datenbank importieren</titleimport>
 				<filename>Exportdatei</filename>
