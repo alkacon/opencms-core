@@ -107,7 +107,7 @@ following:
   sites", and they remain disabled for all other web sites.
 -----------------------------------------------------------------------
 </textarea>
-<p><input type="checkbox" name="understood" value="true"><b> I have understood how configure my browser</b></p>
+<p><input type="checkbox" name="understood" value="true"><b>I have understood how to configure my browser</b></p>
 
 </td>
 			</tr>
