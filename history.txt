@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.7.2 Ecaz - ?? ?? 2002
+- Copied the web-app_2_3.dtd for distribution with OpenCms. Tomcat with no network
+  access should start without getting the web-app_2_3.dtd from network.
+
 OpenCms 4.7.1 Ecaz - 15 March 2002
 - Changed one sql datatype from bigint to datetime to support ms sql server 7.
 
