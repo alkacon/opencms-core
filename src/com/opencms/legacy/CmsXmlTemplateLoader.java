@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/03/25 19:34:22 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/03/29 10:39:54 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspTagInclude;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.I_CmsLoaderIncludeExtension;
@@ -106,7 +105,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
@@ -773,11 +772,6 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             result = generateOutput(cms, fx, cms_req);                                    
             // append the result to the output stream
             if (result != null) {
-                // Encoding project:
-                // The byte array must internally be encoded in the OpenCms
-                // default encoding. It will be converted to the requested encoding 
-                // on the most top-level JSP element
-                result = CmsEncoder.changeEncoding(result, enc, dnc);
                 if (DEBUG > 1) {
                     System.err.println("CmsXmlTemplateLoader.service(): encoding=" + enc + " requestEncoding=" + rnc + " defaultEncoding=" + dnc);
                 }

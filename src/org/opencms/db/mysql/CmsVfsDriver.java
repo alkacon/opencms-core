@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/03/29 10:39:53 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.27 $ $Date: 2004/02/13 13:41:46 $
+ * @version $Revision: 1.28 $ $Date: 2004/03/29 10:39:53 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
@@ -59,6 +59,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
      */
     public Map readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException {
         Map original = super.readProperties(projectId, resource, resourceType);
+        // FIXME: Encoding in mySQL
         if (CmsSqlManager.singleByteEncoding()) {
             return original;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/03/29 10:39:53 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.flex;
 
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -55,7 +54,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -846,9 +845,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             }
         }
         if (m_writer == null) {
-            // Encoding project:
-            // Create a PrintWriter that uses the OpenCms default encoding
-            m_writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(m_out, OpenCms.getSystemInfo().getDefaultEncoding())), false);
+            // encoding project:
+            // create a PrintWriter that uses the encoding required for the request context
+            m_writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(m_out, m_encoding)), false);
         }
     }
 

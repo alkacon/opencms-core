@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2004/03/22 16:34:06 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/03/29 10:39:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
-import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.util.Arrays;
@@ -56,65 +56,68 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsFlexCacheKey {
     
+    /** Debugging flag */
+    private static final boolean DEBUG = false;
+    
     /** Marker to identify use of certain String key members (m_uri, m_ip) */
     private static final String IS_USED = "/ /";
-    
-    /** The OpenCms resource that this key is used for. */    
-    public String m_resource;
-    
-    /** The cache behaviour description for the resource. */    
-    public String m_variation;
-
-    /** Cache key variable: Determines if this resource can be cached alwys, never or under certain conditions. -1 = never, 0=check, 1=always */
-    public int m_always; 
-    
-    /** Cache key variable: The uri of the original request */
-    public String m_uri;
-    
-    /** Cache key variable: The user id */
-    public String m_user;
-
-    /** Cache key variable: List of parameters */
-    public Map m_params;
-    
-    /** Cache key variable: List of "blocking" parameters */
-    public Set m_noparams;
-    
-    /** Cache key variable: Timeout of the resource */
-    public long m_timeout;
-    
-    /** Cache key variable: Determines if the resource sould be always cleared at publish time */
-    public boolean m_publish;
-    
-    /** Cache key variable: The ip address of the request */
-    public String m_ip; 
-        
-    /** Cache key variable: Distinguishes request schemes (http, https etc.) */
-    public Set m_schemes;
-    
-    /** Cache key variable: The request TCP/IP port */
-    public Set m_ports;
-    
-    /** Cache key variable: The requested element */
-    public String m_element;
-    
-    /** Cache key variable: The requested locale */
-    public String m_locale;
 
     /** The list of keywords of the Flex cache language */
     private static final List m_cacheCmds = Arrays.asList(new String[] {
-        "always", "never", "uri", "user", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error", "true", "ip", "element", "locale"});
-    //   0         1        2      3       4         5            6          7                8          9        10       11             12      13    14         15
+        "always", "never", "uri", "user", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error", "true", "ip", "element", "locale", "encoding"});
+    //   0         1        2      3       4         5            6          7                8          9        10       11             12      13    14         15        16
+
+    /** Cache key variable: Determines if this resource can be cached alwys, never or under certain conditions. -1 = never, 0=check, 1=always */
+    private int m_always; 
+    
+    /** Cache key variable: The requested element */
+    private String m_element;
+    
+    /** Cache key variable: The requested encoding */    
+    private String m_encoding;
+    
+    /** Cache key variable: The ip address of the request */
+    private String m_ip; 
+    
+    /** Cache key variable: The requested locale */
+    private String m_locale;
+    
+    /** Cache key variable: List of "blocking" parameters */
+    private Set m_noparams;
+
+    /** Cache key variable: List of parameters */
+    private Map m_params;
     
     /** Flag raised in case a key parse error occured */
     private boolean m_parseError;
     
-    /** Debugging flag */
-    private static final boolean DEBUG = false;
+    /** Cache key variable: The request TCP/IP port */
+    private Set m_ports;
+    
+    /** Cache key variable: Determines if the resource sould be always cleared at publish time */
+    private boolean m_publish;
+
+    /** The OpenCms resource that this key is used for. */    
+    protected String m_resource;
+    
+    /** Cache key variable: Distinguishes request schemes (http, https etc.) */
+    private Set m_schemes;
+    
+    /** Cache key variable: Timeout of the resource */
+    protected long m_timeout;
+    
+    /** Cache key variable: The uri of the original request */
+    private String m_uri;
+    
+    /** Cache key variable: The user id */
+    private String m_user;
+            
+    /** The cache behaviour description for the resource. */    
+    protected String m_variation;
     
     /**
      * This constructor is used when building a cache key from a request.<p>
@@ -162,8 +165,10 @@ public class CmsFlexCacheKey {
         m_ip = cms.getRequestContext().getRemoteAddress();
         // save the request Locale
         m_locale = cms.getRequestContext().getLocale().toString();
+        // save the request encoding
+        m_encoding = cms.getRequestContext().getEncoding();
         // save the requested element
-        m_element = request.getParameter(I_CmsResourceLoader.C_TEMPLATE_ELEMENT);
+        m_element = request.getParameter(I_CmsConstants.C_PARAMETER_ELEMENT);
         if (OpenCms.getLog(this).isDebugEnabled()) {        
             OpenCms.getLog(this).debug("Creating CmsFlexCacheKey for Request: " + this.toString());
         }        
@@ -299,6 +304,12 @@ public class CmsFlexCacheKey {
             str.append(key.m_locale);
             str.append(");");
         }        
+        
+        if (m_encoding != null) {
+            str.append("encoding=(");
+            str.append(key.m_encoding);
+            str.append(");");
+        }           
         
         if (m_ip != null) {
             str.append("ip=(");
@@ -446,7 +457,17 @@ public class CmsFlexCacheKey {
                 str.append(m_locale);
                 str.append(");");
             }
-        }        
+        }       
+        if (m_encoding != null) {
+            // add encoding
+            if (m_encoding == IS_USED) {
+                str.append("encoding;");
+            } else {
+                str.append("encoding=(");
+                str.append(m_encoding);
+                str.append(");");
+            }
+        }            
         if (m_ip != null) {
             // add ip
             if (m_ip == IS_USED) {
@@ -476,7 +497,7 @@ public class CmsFlexCacheKey {
                 Iterator i = m_params.keySet().iterator();
                 while (i.hasNext()) {
                     Object o = i.next();
-                    if (I_CmsResourceLoader.C_TEMPLATE_ELEMENT.equals(o)) {
+                    if (I_CmsConstants.C_PARAMETER_ELEMENT.equals(o)) {
                         continue;
                     }
                     str.append(o);                    
@@ -593,10 +614,10 @@ public class CmsFlexCacheKey {
                         break;
                     case 4: // params
                         m_params = parseValueMap(v);
-                        if (m_params.containsKey(I_CmsResourceLoader.C_TEMPLATE_ELEMENT)) {
+                        if (m_params.containsKey(I_CmsConstants.C_PARAMETER_ELEMENT)) {
                             // workaround for element setting by parameter in OpenCms < 6.0
                             m_element = IS_USED;
-                            m_params.remove(I_CmsResourceLoader.C_TEMPLATE_ELEMENT);
+                            m_params.remove(I_CmsConstants.C_PARAMETER_ELEMENT);
                             if (m_params.size() == 0) {
                                 m_params = null;
                             }
@@ -634,6 +655,9 @@ public class CmsFlexCacheKey {
                     case 15: // locale
                         m_locale = IS_USED;
                         break;
+                    case 16: // encoding
+                        m_encoding = IS_USED;
+                        break;                        
                     default: // unknown directive, throw error
                         m_parseError = true;
                 }      

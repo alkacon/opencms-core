@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/03/22 16:34:12 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/03/29 10:39:54 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package org.opencms.jsp;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexResponse;
-import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.editor.I_CmsEditorActionHandler;
@@ -55,7 +55,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -342,7 +342,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         
         if (element != null) {            
             // add template element selector for JSP templates
-            addParameter(parameterMap, I_CmsResourceLoader.C_TEMPLATE_ELEMENT, element, true);
+            addParameter(parameterMap, I_CmsConstants.C_PARAMETER_ELEMENT, element, true);
         }        
         
         // resolve possible relative URI
@@ -437,7 +437,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         CmsFlexController controller = (CmsFlexController) req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         
         Map parameterMap = new HashMap();
-        addParameter(parameterMap, I_CmsResourceLoader.C_TEMPLATE_ELEMENT, element, true);
+        addParameter(parameterMap, I_CmsConstants.C_PARAMETER_ELEMENT, element, true);
         // set additional request parameters required by the included direct edit JSP 
         addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET, editTarget, true);        
         addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_ELEMENT, editElement, true);        
@@ -445,11 +445,6 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         CmsUserSettings settings = new CmsUserSettings(controller.getCmsObject().getRequestContext().currentUser());        
         addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE, String.valueOf(settings.getDirectEditButtonStyle()), true);        
         
-//        req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_ELEMENT, element);
-//        req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE, controller.getCmsObject().getRequestContext().getLocale().toString());
-//        req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET, target);
-//        req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE, "" + settings.getDirectEditButtonStyle());
-
         try {
             
             controller.getCurrentRequest().addParameterMap(parameterMap); 

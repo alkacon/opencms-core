@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/03/25 15:08:52 $
- * Version: $Revision: 1.341 $
+ * Date   : $Date: 2004/03/29 10:39:54 $
+ * Version: $Revision: 1.342 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.341 $ $Date: 2004/03/25 15:08:52 $
+ * @version $Revision: 1.342 $ $Date: 2004/03/29 10:39:54 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6531,20 +6531,21 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             if (allProperties != null) {
                 // map of properties already read, look up value there 
                 value = (String)allProperties.get(property);
-                if (value == null) {
-                    // unfortunatly, the Map is always case sentitive, but in MySQL 
-                    // using readProperty() is not, so to make really sure a property is found
-                    // we  must look up all the entries in the map manually, which should be faster 
-                    // then a connect to the DB nevertheless
-                    Iterator i = allProperties.keySet().iterator();
-                    while (i.hasNext()) {
-                        String key = (String)i.next();
-                        if (key.equalsIgnoreCase(property)) {
-                            value = (String)allProperties.get(key);
-                            break;
-                        }
-                    }
-                }
+// Properties are now case sensitive in mySQL                
+//                if (value == null) {
+//                    // unfortunatly, the Map is always case sentitive, but in MySQL 
+//                    // using readProperty() is not, so to make really sure a property is found
+//                    // we  must look up all the entries in the map manually, which should be faster 
+//                    // then a connect to the DB nevertheless
+//                    Iterator i = allProperties.keySet().iterator();
+//                    while (i.hasNext()) {
+//                        String key = (String)i.next();
+//                        if (key.equalsIgnoreCase(property)) {
+//                            value = (String)allProperties.get(key);
+//                            break;
+//                        }
+//                    }
+//                }
             } else if (search) {
                 // result not cached, look it up recursivly with search enabled
                 String cacheKey3 = getCacheKey(property + false, context.currentProject().getId(), res.getRootPath());

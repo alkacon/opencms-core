@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/03/22 16:27:20 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/03/29 10:39:54 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,13 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
 import org.htmlparser.Parser;
 import org.htmlparser.lexer.Lexer;
+import org.htmlparser.lexer.Page;
 import org.htmlparser.tags.ImageTag;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.ParserException;
@@ -47,7 +52,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -95,18 +100,20 @@ public class CmsLinkProcessor {
      * 
      * @param cms the cms object
      * @param content the content to process
+     * @param encoding the encoding to use
      * @param processEditorLinks flag to process links for editing purposes
      * @return the processed content with replaced macros
      * 
      * @throws ParserException if something goes wrong
      */
-    public String processLinks(CmsObject cms, String content, boolean processEditorLinks) throws ParserException {
+    public String processLinks(CmsObject cms, String content, String encoding, boolean processEditorLinks) throws ParserException {
                 
         m_processEditorLinks = processEditorLinks;
         m_mode = C_PROCESS_LINKS;
         m_cms = cms;        
 
-        return processContent(content);
+        String result = processContent(content, encoding);
+        return result;
     }
     
     /**
@@ -116,18 +123,20 @@ public class CmsLinkProcessor {
      * 
      * @param cms the cms object
      * @param content the content to process
+     * @param encoding the encoding to use
      * @param relativePath additional path for links with relative path
      * @return the processed content with replaced links
      * 
      * @throws ParserException if something goes wrong
      */
-    public String replaceLinks(CmsObject cms, String content, String relativePath) throws ParserException {
+    public String replaceLinks(CmsObject cms, String content, String encoding, String relativePath) throws ParserException {
                                 
         m_relativePath = relativePath;
         m_mode = C_REPLACE_LINKS;
         m_cms = cms; 
         
-        return processContent(content);
+        String result = processContent(content, encoding);
+        return result;
     }
     
     /**
@@ -226,24 +235,37 @@ public class CmsLinkProcessor {
      * Initialized the parser and processes the content input.<p>
      * 
      * @param content the content to process
+     * @param encoding the encoding to use
      * @return the processed content with replaced links
      * 
      * @throws ParserException if something goes wrong
      */    
-    private String processContent(String content) throws ParserException  {
+    private String processContent(String content, String encoding) throws ParserException  {
         // we must make sure that the content passed to the parser always is 
         // a "valid" HTML page, i.e. is surrounded by <html><body>...</body></html> 
         // otherwise you will get strange results for some specific HTML constructs
         StringBuffer newContent = new StringBuffer(content.length() + 32);
+        
         newContent.append(C_HTML_START);
         newContent.append(content);
         newContent.append(C_HTML_END);
+        
         // create the link visitor
         CmsLinkVisitor visitor = new CmsLinkVisitor(this);
         // create the parser and parse the input
-        Parser parser = new Parser();
-        Lexer lexer = new Lexer(newContent.toString());
-        parser.setLexer(lexer);        
+        Parser parser = new Parser();        
+        Lexer lexer = new Lexer();
+        Page page;
+        try {
+            // make sure the Lexer uses the right encoding
+            InputStream stream = new ByteArrayInputStream(newContent.toString().getBytes(encoding));
+            page = new Page(stream, encoding);
+        } catch (UnsupportedEncodingException e) {
+            // fall back to default encoding
+            page = new Page(newContent.toString());                
+        }
+        lexer.setPage(page);
+        parser.setLexer(lexer);      
         parser.visitAllNodesWith(visitor);
         // remove the addition HTML  
         String result = visitor.getHtml();

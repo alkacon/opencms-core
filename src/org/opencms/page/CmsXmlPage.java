@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/03/22 16:34:48 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/03/29 10:39:53 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  */
 public class CmsXmlPage {
     
@@ -143,6 +143,9 @@ public class CmsXmlPage {
     
     /** The file that contains the page data (note: is not set when creating an empty or document based CmsXmlPage) */
     private CmsFile m_file;
+    
+    /** The encoding to use for this xml page */    
+    private String m_encoding;
 
     /**
      * Creates a new empty CmsXmlPage.<p>
@@ -185,31 +188,36 @@ public class CmsXmlPage {
             allowRelative = "false";
         }
         
+        String encoding;
+        try { 
+            encoding = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, OpenCms.getSystemInfo().getDefaultEncoding());
+        } catch (CmsException e) {
+            encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+        }        
+        
         if (content.length > 0) {
             // content is initialized
-            String encoding;
-            try { 
-                encoding = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false, OpenCms.getSystemInfo().getDefaultEncoding());
-            } catch (CmsException e) {
-                encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-            }
             
             String xmlData;
             try {
                 xmlData = new String(content, encoding);
             } catch (UnsupportedEncodingException e) {
-                xmlData = new String(content);
+                try {
+                    xmlData = new String(content, OpenCms.getSystemInfo().getDefaultEncoding());
+                }  catch (UnsupportedEncodingException e2) {
+                    xmlData = new String();
+                }
             }            
             newPage = read(cms, xmlData);
-            newPage.m_file = file;
-            newPage.m_allowRelativeLinks = "true".equals(allowRelative);
             
         } else {
-            // file is empty
+            // content is empty
             newPage = new CmsXmlPage();
-            newPage.m_file = file;
-            newPage.m_allowRelativeLinks = "true".equals(allowRelative);
         }
+        
+        newPage.m_file = file;
+        newPage.m_encoding = encoding;
+        newPage.m_allowRelativeLinks = Boolean.valueOf(allowRelative).booleanValue();
         
         return newPage;
     }    
@@ -328,7 +336,7 @@ public class CmsXmlPage {
                 
                     try {
                     
-                        content = macroReplacer.processLinks(cms, content, forEditor);
+                        content = macroReplacer.processLinks(cms, content, getEncoding(), forEditor);
                     } catch (Exception exc) {
                         throw new CmsXmlPageException ("HTML data processing failed", exc);
                     }
@@ -373,6 +381,15 @@ public class CmsXmlPage {
      */
     public CmsFile getFile() {
         return m_file;
+    }
+    
+    /**
+     * Returns the encoding used for the page content.<p>
+     * 
+     * @return the encoding used for the page content
+     */
+    public String getEncoding() {
+        return m_encoding;
     }
 
     /**
@@ -570,9 +587,9 @@ public class CmsXmlPage {
             data.setContent(null);
             if (!m_allowRelativeLinks && m_file != null) {
                 String relativeRoot = CmsResource.getParentFolder(cms.readAbsolutePath(m_file));
-                data.addCDATA(linkReplacer.replaceLinks(cms, content, relativeRoot));
+                data.addCDATA(linkReplacer.replaceLinks(cms, content, getEncoding(), relativeRoot));
             } else {
-                data.addCDATA(linkReplacer.replaceLinks(cms, content, null));
+                data.addCDATA(linkReplacer.replaceLinks(cms, content, getEncoding(), null));
             }
                         
         } catch (Exception exc) {
@@ -629,25 +646,25 @@ public class CmsXmlPage {
     
     /**
      * Writes the xml contents into the assigned CmsFile,
-     * using the opencms default encoding.<p>
+     * using currently selected encoding.<p>
      * 
      * @return the assigned file with the xml content
      * @throws CmsXmlPageException if something goes wrong
      */
     public CmsFile write() throws CmsXmlPageException {        
-        return write(m_file, OpenCms.getSystemInfo().getDefaultEncoding());
+        return write(m_file, m_encoding);
     }
     
     /**
      * Writes the xml contents into the CmsFile,
-     * using the opencms default encoding.<p>
+     * using currently selected encoding.<p>
      * 
      * @param file the file to write the xml
      * @return the file with the xml content
      * @throws CmsXmlPageException if something goes wrong
      */
     public CmsFile write(CmsFile file) throws CmsXmlPageException {        
-        return write(file, OpenCms.getSystemInfo().getDefaultEncoding());
+        return write(file, m_encoding);
     }
     
     /**

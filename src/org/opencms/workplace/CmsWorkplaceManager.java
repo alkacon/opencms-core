@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/03/19 14:15:16 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/03/29 10:39:54 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
+import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.I_CmsLocaleHandler;
 import org.opencms.main.CmsException;
@@ -60,22 +61,29 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.3.1
  */
 public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     
-    /** The name of the temp file project */
-    public static final String C_TEMP_FILE_PROJECT_NAME = "tempFileProject";
+    /** The default encoding for the workplace (UTF-8) */
+    // TODO: Encoding feature of the workplace is not active 
+    public static final String C_DEFAULT_WORKPLACE_ENCODING = "UTF-8";
     
     /** The description of the temp file project */
     public static final String C_TEMP_FILE_PROJECT_DESCRIPTION = "The project for temporary Workplace files";
     
+    /** The name of the temp file project */
+    public static final String C_TEMP_FILE_PROJECT_NAME = "tempFileProject";
+    
     /** Indicates if auto-locking of resources is enabled or disabled */
     private boolean m_autoLockResources;
     
-    /** The default locale of the workplace*/
+    /** The configured default encoding of the workplace */
+    private String m_defaultEncoding;
+    
+    /** The configured default locale of the workplace */
     private Locale m_defaultLocale;
     
     /** The configured dialog handlers */
@@ -110,12 +118,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     
     /** Indicates if the user managemet icon should be displayed in the workplace */
     private boolean m_showUserGroupIcon;
-    
-    /** The configured workplace views */
-    private List m_views;
         
     /** The temporary file project used by the editors */
     private CmsProject m_tempFileProject;    
+    
+    /** The configured workplace views */
+    private List m_views;
     
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
@@ -135,19 +143,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_fileMaxUploadSize = -1;
         m_explorerTypeSettings = new ArrayList();
         m_explorerTypeSettingsMap = new HashMap();
-    }
-    
-    /**
-     * Returns the id of the temporary file project required by the editors.<p>
-     * 
-     * @return the id of the temporary file project required by the editors
-     */
-    public int getTempFileProjectId() {
-        if (m_tempFileProject != null) {
-            return m_tempFileProject.getId();
-        } else {
-            return -1;
-        }
+        // TODO: Set workplace encoding independent from main system (use UTF-8 as default)
+        m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
     }
     
     /**
@@ -226,6 +223,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      */
     public boolean autoLockResources() {
         return m_autoLockResources;
+    }
+    
+    /**
+     * Returns the default workplace encoding.<p>
+     * 
+     * @return the default workplace encoding
+     */
+    public String getDefaultEncoding() {
+        return m_defaultEncoding;
     }
     
     /**
@@ -338,6 +344,47 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         return m_fileMaxUploadSize;
     }
     
+    /**
+     * @see org.opencms.i18n.I_CmsLocaleHandler#getI18nInfo(javax.servlet.http.HttpServletRequest, org.opencms.file.CmsUser, org.opencms.file.CmsProject, java.lang.String)
+     */
+    public CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resource) {
+        
+        Locale locale = null;
+        // try to read locale from session
+        if (req != null) {
+            HttpSession session = req.getSession(false);
+            if (session != null) {
+                CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+                if (settings != null) {
+                    locale = settings.getUserSettings().getLocale();
+                }
+            }    
+        }
+        
+        if (locale == null) {
+            // no session available, try to read the locale form the user additional info
+            if (! user.isGuestUser()) {
+                // check user settings only for "real" users
+                Hashtable userInfo = (Hashtable)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);  
+                if (userInfo != null) {
+                    locale = CmsLocaleManager.getLocale((String)userInfo.get(I_CmsConstants.C_START_LOCALE));
+                }    
+            }
+            List acceptedLocales = (new CmsAcceptLanguageHeaderParser(req, getDefaultLocale())).getAcceptedLocales();
+            if ((locale != null) && (! acceptedLocales.contains(locale))) {
+                acceptedLocales.add(0, locale);
+            }
+            locale = OpenCms.getLocaleManager().getFirstMatchingLocale(acceptedLocales, m_locales);
+            
+            // if no locale was found, use the default
+            if (locale == null) {
+                locale = getDefaultLocale();
+            }
+        }
+        
+        return new CmsI18nInfo(locale, m_defaultEncoding);
+    }
+    
     
     /**
      * Returns a list of site folders which generate labeled links.<p>
@@ -349,44 +396,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
     
     /**
-     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(javax.servlet.http.HttpServletRequest, org.opencms.file.CmsUser, org.opencms.file.CmsProject, java.lang.String)
-     */
-    public Locale getLocale(HttpServletRequest req, CmsUser user, CmsProject project, String resource) {
-        
-        // try to read locale from session
-        if (req != null) {
-            HttpSession session = req.getSession(false);
-            if (session != null) {
-                CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
-                if (settings != null) {
-                    return settings.getUserSettings().getLocale();
-                }
-            }    
-        }
-        
-        // no session available, try to read the locale form the user additional info
-        Locale locale = null;
-        if (! user.isGuestUser()) {
-            // check user settings only for "real" users
-            Hashtable userInfo = (Hashtable)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);  
-            if (userInfo != null) {
-                locale = CmsLocaleManager.getLocale((String)userInfo.get(I_CmsConstants.C_START_LOCALE));
-            }    
-        }
-        List acceptedLocales = (new CmsAcceptLanguageHeaderParser(req, getDefaultLocale())).getAcceptedLocales();
-        if ((locale != null) && (! acceptedLocales.contains(locale))) {
-            acceptedLocales.add(0, locale);
-        }
-        locale = OpenCms.getLocaleManager().getFirstMatchingLocale(acceptedLocales, m_locales);
-        
-        // if no locale was found, use the default
-        if (locale == null) {
-            locale = getDefaultLocale();
-        }
-        return locale;
-    }
-    
-    /**
      * Returns the set of available workplace locales.<p>
      * 
      * Please note: Be careful not to modify the returned Set as it is not a clone.<p>
@@ -395,6 +404,19 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      */
     public Set getLocales() {
         return m_locales;        
+    }
+    
+    /**
+     * Returns the id of the temporary file project required by the editors.<p>
+     * 
+     * @return the id of the temporary file project required by the editors
+     */
+    public int getTempFileProjectId() {
+        if (m_tempFileProject != null) {
+            return m_tempFileProject.getId();
+        } else {
+            return -1;
+        }
     }
     
     /**
@@ -456,39 +478,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 OpenCms.getLog(this).error("Workplace temporary file project does not yet exist!");
             }
         }
-    }
-    
-    /**
-     * Initilizes the workplace locale set.<p>
-     * 
-     * Currently, this is defined by the existence of a special folder 
-     * <code>/system/workplace/locales/{locale-name}/".
-     * This is likley to change in future implementations.
-     * 
-     * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
-     * @return the workplace locale set
-     */
-    private Set initWorkplaceLocales(CmsObject cms) {
-        m_locales = new HashSet();
-        List localeFolders;
-        try {
-            localeFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_LOCALES);
-        } catch (CmsException e) {
-            OpenCms.getLog(this).error("Unable to read locales folder " + I_CmsWpConstants.C_VFS_PATH_LOCALES, e);
-            localeFolders = new ArrayList();
-        }
-        Iterator i = localeFolders.iterator();
-        while (i.hasNext()) {
-            CmsFolder folder = (CmsFolder)i.next();
-            Locale locale = CmsLocaleManager.getLocale(folder.getName());
-            // add locale
-            m_locales.add(locale);
-            // add less specialized locale
-            m_locales.add(new Locale(locale.getLanguage(), locale.getCountry()));    
-            // add even less specialized locale            
-            m_locales.add(new Locale(locale.getLanguage()));         
-        }        
-        return m_locales;
     }
     
     
@@ -581,5 +570,38 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      */
     public boolean showUserGroupIcon() {
         return m_showUserGroupIcon;
+    }
+    
+    /**
+     * Initilizes the workplace locale set.<p>
+     * 
+     * Currently, this is defined by the existence of a special folder 
+     * <code>/system/workplace/locales/{locale-name}/".
+     * This is likley to change in future implementations.
+     * 
+     * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
+     * @return the workplace locale set
+     */
+    private Set initWorkplaceLocales(CmsObject cms) {
+        m_locales = new HashSet();
+        List localeFolders;
+        try {
+            localeFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_LOCALES);
+        } catch (CmsException e) {
+            OpenCms.getLog(this).error("Unable to read locales folder " + I_CmsWpConstants.C_VFS_PATH_LOCALES, e);
+            localeFolders = new ArrayList();
+        }
+        Iterator i = localeFolders.iterator();
+        while (i.hasNext()) {
+            CmsFolder folder = (CmsFolder)i.next();
+            Locale locale = CmsLocaleManager.getLocale(folder.getName());
+            // add locale
+            m_locales.add(locale);
+            // add less specialized locale
+            m_locales.add(new Locale(locale.getLanguage(), locale.getCountry()));    
+            // add even less specialized locale            
+            m_locales.add(new Locale(locale.getLanguage()));         
+        }        
+        return m_locales;
     }
 }

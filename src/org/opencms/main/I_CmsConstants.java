@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/03/25 13:45:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/03/29 10:39:53 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.9 $ $Date: 2004/03/25 13:45:30 $
+ * @version $Revision: 1.10 $ $Date: 2004/03/29 10:39:53 $
  */
 public interface I_CmsConstants {
 
@@ -1242,4 +1242,13 @@ public interface I_CmsConstants {
     
     /** HTTP Header for internal requests used during static export */
     String C_HEADER_OPENCMS_EXPORT =  "OpenCms-Export";
+
+    /** Request parameter to force locale selection */
+    String C_PARAMETER_LOCALE = "__locale";
+
+    /** Request parameter to force element selection */
+    String C_PARAMETER_ELEMENT = "__element";
+    
+    /** Request parameter to force encoding selection */
+    String C_PARAMETER_ENCODING = "__encoding";    
 }

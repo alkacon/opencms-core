@@ -123,10 +123,31 @@ function checkValue(propName) {
 	}
 }
 
+function doSubmit(p1, p2, formId) {
+
+	// alert("doSubmit");
+	encodeFormValues(formId);	
+	return submitAction(p1, p2, formId);
+}
+
+function encodeFormValues(formId) {
+
+	// alert("encodeFormValues");
+	var form = document.getElementById(formId);
+	if (form != null) {
+		form.style.visibility = "hidden";
+		for(i=0; i<form.elements.length; ++i) {
+			form.elements[i].value = encodeURIComponent(form.elements[i].value);
+			// alert(form.elements[i].value + " - " + decodeURIComponent(form.elements[i].value));
+		}
+	}
+}
+
 function submitAdvanced() {
 	document.forms["main"].action.value = "<%= wp.DIALOG_SHOW_DEFAULT %>";
 	document.forms["main"].submit();
 }
+
 <% if (wp.showNavigation()) { %>
 function toggleNav() {
 	var checked = document.getElementById("enablenav").checked;
@@ -159,9 +180,11 @@ function toggleNav() {
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
+
+<form id="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 

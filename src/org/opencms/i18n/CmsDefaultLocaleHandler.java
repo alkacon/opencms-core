@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2004/02/22 13:52:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/03/29 10:39:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package org.opencms.i18n;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.util.List;
@@ -45,7 +47,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
@@ -67,25 +69,37 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
     }
     
     /**
-     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(javax.servlet.http.HttpServletRequest, org.opencms.file.CmsUser, org.opencms.file.CmsProject, java.lang.String)
+     * @see org.opencms.i18n.I_CmsLocaleHandler#getI18nInfo(javax.servlet.http.HttpServletRequest, org.opencms.file.CmsUser, org.opencms.file.CmsProject, java.lang.String)
      */
-    public Locale getLocale(HttpServletRequest req, CmsUser user, CmsProject project, String resourceName) {
+    public CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resourceName) {
         
         CmsLocaleManager localeManager = OpenCms.getLocaleManager();
         
-        List defaultLocales = null;
+        String encoding;
+        List defaultLocales;
         synchronized (m_adminCmsObject) {
             // must switch project id in stored Admin context to match current project
             m_adminCmsObject.getRequestContext().setCurrentProject(project);            
             // now get default m_locale names
             defaultLocales = localeManager.getDefaultLocales(m_adminCmsObject, resourceName);
+            // get the encoding
+            try {
+                encoding = m_adminCmsObject.readProperty(resourceName, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, OpenCms.getSystemInfo().getDefaultEncoding());
+            } catch (CmsException e) {
+                // should never happen since the resource must exist
+                OpenCms.getLog(this).error("Could not read encoding property for resource " + resourceName, e);
+                encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+            }
         }
         
-        // return the first default name 
+        Locale locale;
+        // return the first default locale name 
         if ((defaultLocales != null) && (defaultLocales.size() > 0)) {
-            return (Locale)defaultLocales.get(0);
+            locale = (Locale)defaultLocales.get(0);
         } else {
-            return localeManager.getDefaultLocale();
+            locale = localeManager.getDefaultLocale();
         }
-    }        
+        
+        return new CmsI18nInfo(locale, encoding);        
+    }     
 }

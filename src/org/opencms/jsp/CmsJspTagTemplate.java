@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/03/22 16:34:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/03/29 10:39:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,8 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeXmlPage;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.util.CmsStringSubstitution;
@@ -51,7 +51,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -260,7 +260,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
         }
         
         // otherwise, check if an element was defined and if its equal to the desired element
-        String param = req.getParameter(I_CmsResourceLoader.C_TEMPLATE_ELEMENT);        
+        String param = req.getParameter(I_CmsConstants.C_PARAMETER_ELEMENT);        
         return ((element ==  null) || (param == null) || (param.equals(element)));
     }
  }

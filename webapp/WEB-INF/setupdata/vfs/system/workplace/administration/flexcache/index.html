@@ -7,16 +7,33 @@
 	org.opencms.main.*,
 	java.util.*" 
 	buffer="none" 
-%><html>
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= OpenCms.getWorkplaceManager().getDefaultEncoding() %>">
 
-<script language=JavaScript>
+<script type="text/javascript">
 <!--
-top.head.helpUrl='administration/index.html';
+// top.head.helpUrl='administration/index.html';
+
+function doSubmit(formId) {
+	// encodeFormValues(formId);	
+	return true;
+}
+		
+function encodeFormValues(formId) {
+	var form = document.getElementById(formId);
+	if (form != null) {
+		form.style.visibility= "hidden";
+		for(i=0; i<form.elements.length; ++i) {
+			form.elements[i].value = encodeURIComponent(form.elements[i].value);
+			// alert(form.elements[i].value + " - " + decodeURIComponent(form.elements[i].value));
+		}
+	}
+}
+
 //-->
 </script>
-
-<head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
 
 <title>Flex Cache Administration</title>
 <link rel=stylesheet type="text/css" href="<cms:link>/system/workplace/resources/format.css</cms:link>">
@@ -27,7 +44,6 @@ top.head.helpUrl='administration/index.html';
     background="<cms:link>/system/workplace/resources/bg_weiss.gif</cms:link>"
     bgproperties=fixed
     onLoad="window.top.body.admin_head.location.href='<cms:link>/system/workplace/action/administration_head.html</cms:link>';">
-
 
 <%
     int sizeEntries = 0;
@@ -69,7 +85,7 @@ top.head.helpUrl='administration/index.html';
     String label_4 = messages.key("flexcache.admin.label4");
     String label_10 = messages.key("flexcache.admin.label10");
 	
-    String action = request.getParameter("action");
+    String action = CmsEncoder.decode(request.getParameter("action"));
     // out.write("Request action is: " + action);
 
     if (action != null) {
@@ -138,7 +154,7 @@ top.head.helpUrl='administration/index.html';
 
 </blockquote>
 
-<form action="<%=request.getRequestURI()%>">
+<form id="cache1" action="<%=request.getRequestURI()%>" method="POST" onsubmit="return doSubmit('cache1');">
 <table border="0" cellpadding="3" cellspacing="0">
 <tr>
     <td><input type="submit" name="action" value="<%= label_10 %>"></td>
@@ -149,7 +165,7 @@ top.head.helpUrl='administration/index.html';
 
 <h2><%= messages.key("flexcache.admin.clear_options") %></h2>
 
-<form method="POST" action="index.html">
+<form id="cache2" action="<%=request.getRequestURI()%>" method="POST" onsubmit="return doSubmit('cache2');">
 <table border="0" cellpadding="3" cellspacing="0">
 <tr>
 	<td><input type="submit" name="action" value="<%= label_1 %>"></td>

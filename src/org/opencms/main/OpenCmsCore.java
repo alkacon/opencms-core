@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2004/03/29 10:39:53 $
+ * Version: $Revision: 1.109 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.importexport.CmsImportExportManager;
@@ -101,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.108 $
+ * @version $Revision: 1.109 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -114,9 +115,6 @@ public final class OpenCmsCore {
 
     /** Prefix for a critical init error */
     public static final String C_MSG_CRITICAL_ERROR = "Critical init error/";
-
-    /** Request parameter to force locale selection */
-    public static final String C_PARAMETER_LOCALE = "_locale";
 
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
@@ -851,74 +849,61 @@ public final class OpenCmsCore {
             remoteAddr = I_CmsConstants.C_IP_LOCALHOST;
         }
         
-        // get locale
-        Locale locale;
+        // get locale and encoding        
+        Locale locale = null;
+        String encoding = null;
+        CmsI18nInfo i18nInfo;
         if (getLocaleManager() != null) {
             // locale manager is initialized
-            String localeStr;
-            if ((req != null) && ((localeStr = req.getParameter(C_PARAMETER_LOCALE)) != null)) {
-                // "_locale" parameter found in request
-                locale = CmsLocaleManager.getLocale(localeStr);
-            } else if (requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE) || requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_MODULES) || requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
-                // the workplace/login requires a special locale handler
-                locale = getWorkplaceManager().getLocale(req, user, project, requestedResource);
+            String localeParam;
+            if (req != null) {
+                // check request for parameters
+                if ((localeParam = req.getParameter(I_CmsConstants.C_PARAMETER_LOCALE)) != null) {
+                    // "__locale" parameter found in request
+                    locale = CmsLocaleManager.getLocale(localeParam);
+                }
+                // check for "__encoding" parameter in request
+                encoding = req.getParameter(I_CmsConstants.C_PARAMETER_ENCODING);
+            }             
+            if (requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE) 
+            || requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_MODULES) 
+            || requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
+                // the workplace/login/modules use the workplace locale handler
+                i18nInfo = getWorkplaceManager().getI18nInfo(req, user, project, currentSite.concat(requestedResource));                
             } else {
                 // request for resource outside of workplace, use default handler
-                locale = getLocaleManager().getLocaleHandler().getLocale(req, user, project, requestedResource);
+                i18nInfo = getLocaleManager().getLocaleHandler().getI18nInfo(req, user, project, currentSite.concat(requestedResource));
             }
-
+            // merge values from request with values from locale handler
             if (locale == null) {
-                locale = OpenCms.getLocaleManager().getDefaultLocale();
+                locale = i18nInfo.getLocale();
+            }
+            if (encoding == null) {
+                encoding = i18nInfo.getEncoding();
+            }
+            // still some value might be "null"
+            if (locale == null) {
+                locale = getLocaleManager().getDefaultLocale();
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("No locale found - using default: " + locale);
                 }
             }
+            if (encoding == null) {
+                encoding = getSystemInfo().getDefaultEncoding();
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("No encoding found - using default: " + encoding);
+                }
+            }            
         } else {
             // locale manager not initialized, this will be true _only_ during system startup
-            // the value set does not matter, no locale information form VFS is used on system startup
+            // the values set does not matter, no locale information form VFS is used on system startup
             // this is just to protect against null pointer exceptions
             locale = Locale.ENGLISH;
-        }      
+            encoding = getSystemInfo().getDefaultEncoding();
+        }
         
-        
-        // TODO: andling of encoding is broken, fix it
-       
-//    Here is the old code used to determine the encoding:         
-//        
-//    /**
-//     * Detects current content encoding to be used in HTTP response
-//     * based on requested resource or session state.
-//     */
-//    public void initEncoding() {
-//        try {
-//            m_encoding = m_driverManager.readProperty(this, addSiteRoot(m_req.getRequestedResource()), getAdjustedSiteRoot(m_req.getRequestedResource()), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true);
-//        } catch (CmsException e) {
-//            m_encoding = null;
-//        }
-//        if ((m_encoding != null) && ! "".equals(m_encoding)) {
-//            // encoding was read from resource property
-//            return;
-//        } else if (getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
-//            // try to get encoding from session for special system folder only                
-//            if (OpenCms.getLog(this).isDebugEnabled()) {                                
-//                OpenCms.getLog(this).debug("Can't get encoding property for resource "
-//                    + m_req.getRequestedResource() + ", trying to get it from session.");
-//            }                    
-//            I_CmsSession session = getSession(false);
-//            if (session != null) {
-//                m_encoding = (String)session.getValue(I_CmsConstants.C_SESSION_CONTENT_ENCODING);
-//            }
-//        }
-//        if (m_encoding == null || "".equals(m_encoding)) {
-//            // no encoding found - use default one
-//            if (OpenCms.getLog(this).isDebugEnabled()) {                                
-//                OpenCms.getLog(this).debug("No encoding found - using default: " + OpenCms.getSystemInfo().getDefaultEncoding());
-//            }                  
-//            m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-//        }
-//    }
-        
-        CmsRequestContext context = new CmsRequestContext(user, project, requestedResource, currentSite, locale, getSystemInfo().getDefaultEncoding(), remoteAddr, m_directoryTranslator, m_fileTranslator);
+        // now create the context and init the CmsObject
+        CmsRequestContext context = new CmsRequestContext(user, project, requestedResource, currentSite, locale, encoding, remoteAddr, m_directoryTranslator, m_fileTranslator);
         cms.init(m_driverManager, context, sessionStorage);
         return cms;
     }
