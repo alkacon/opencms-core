@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2003/09/25 16:09:38 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  */
 public class CmsException extends Exception {
 
@@ -346,7 +346,7 @@ public class CmsException extends Exception {
      * @return the exception description message
      */
     public String getMessage() {
-        return C_CMS_EXCEPTION_PREFIX + ": " + m_message;
+        return (m_message!=null) ? getClass().getName() + ": " + m_message : getClass().getName();
     }
 
     /**
@@ -365,7 +365,7 @@ public class CmsException extends Exception {
      * @return a short String describing this exception
      */
     public String getShortException() {
-        return C_CMS_EXCEPTION_PREFIX + ": " + getType() + " " + getErrorDescription(getType()) + ". Detailed Error: " + m_message + ".";
+        return getMessage() + " [Code " + getType() + " - " + getErrorDescription(getType()) + "]";
     }
 
     /**
@@ -468,18 +468,12 @@ public class CmsException extends Exception {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        StringBuffer output = new StringBuffer();
-        output.append(C_CMS_EXCEPTION_PREFIX + ": ");
-        output.append(m_type + " ");
-        output.append(getErrorDescription(m_type) + ". ");
-        if (m_message != null && (!"".equals(m_message))) {
-            output.append("Detailed error: ");
-            output.append(m_message + ". ");
-        }
+        StringBuffer result = new StringBuffer();
+        result.append(getShortException());
         if (m_rootCause != null) {
-            output.append("\nroot cause was ");
-            output.append(m_rootCause);
+            result.append("\nRoot cause was: ");
+            result.append(m_rootCause);
         }
-        return output.toString();
+        return result.toString();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2003/09/25 16:08:00 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.loader.CmsPointerLoader;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
 
 import com.opencms.core.CmsException;
@@ -86,7 +87,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 5.0 beta 2
  */
@@ -483,11 +484,15 @@ public class CmsJspActionElement {
         try {
             if (file == null) file = m_controller.getCmsObject().getRequestContext().getUri();
             return CmsJspTagProperty.propertyTagAction(name, file, defaultValue, escapeHtml, m_request);
+        } catch (CmsSecurityException e) {
+            if (defaultValue == null) {
+                handleException(e);
+            }
         } catch (Throwable t) {
             handleException(t);
         }   
         if (defaultValue == null) {
-            return "+++ error reading file property '" + name + "' on '" + file + "' +++";
+            return "+++ file property '" + name + "' on '" + file + "' not found +++";
         } else {
             return defaultValue;
         }
