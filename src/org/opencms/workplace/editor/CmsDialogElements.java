@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/04/07 07:41:18 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,11 +37,13 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -60,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.3.0
  */
@@ -131,7 +133,7 @@ public class CmsDialogElements extends CmsDialog {
      */
     public static List computeElements(CmsObject cms, String resource) throws CmsException {   
         List elementList = new ArrayList();
-        String currentTemplate = cms.readProperty(resource, I_CmsConstants.C_PROPERTY_TEMPLATE, true);
+        String currentTemplate = cms.readPropertyObject(resource, I_CmsConstants.C_PROPERTY_TEMPLATE, true).getValue();
         if (currentTemplate == null || currentTemplate.length() == 0) {
             // no template found, return empty list
             return elementList;
@@ -140,13 +142,15 @@ public class CmsDialogElements extends CmsDialog {
         
         try {
             // read the property from the template file
-            elements = cms.readProperty(currentTemplate, I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS, false, null);
+            elements = cms.readPropertyObject(currentTemplate, I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS, false).getValue(null);
         } catch (CmsException e) {
-            // ignore this exception
+            if (OpenCms.getLog(CmsDialogElements.class.getName()).isWarnEnabled()) {
+                OpenCms.getLog(CmsDialogElements.class.getName()).warn("Error reading property '" + I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS + "' on resource " + currentTemplate, e);
+            }
         }
         if (elements == null) {
             // no elements defined on template file , return empty list
-            return elementList;
+            return Collections.EMPTY_LIST;
         }
         StringTokenizer T = new StringTokenizer(elements, ",");
         while (T.hasMoreTokens()) {
