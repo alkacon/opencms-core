@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/02/01 22:58:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/02/09 17:01:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.0 beta 2
  */
@@ -155,19 +155,33 @@ public class CmsJspActionElement {
      * Include a sub-element without paramters from the OpenCms VFS, same as
      * using the <code>&lt;cms:include file="..." /&gt;</code> tag.
      * 
-     * @param target The target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
      * @throws JspException in case there were problems including the target
      *
      * @see com.opencms.flex.jsp.CmsJspTagInclude
      */
     public void include(String target) throws JspException {
-        if (m_notInitialized) return;
-        this.include(target, null);
+        this.include(target, null, null);
+    }
+    
+    /**
+     * Include a named sub-element without paramters from the OpenCms VFS, same as
+     * using the <code>&lt;cms:include file="..." element="..." /&gt;</code> tag.
+     * 
+     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param element the element (template selector) to display from the target
+     * @throws JspException in case there were problems including the target
+     *
+     * @see com.opencms.flex.jsp.CmsJspTagInclude
+     */    
+    public void include(String target, String element) throws JspException  {
+        this.include(target, element, null);
     }
 
     /**
-     * Include a sub-element with paramters from the OpenCms VFS, same as
-     * using the <code>&lt;cms:include file="..." body="params" /&gt;</code> tag.<p>
+     * Include a named sub-element with paramters from the OpenCms VFS, same as
+     * using the <code>&lt;cms:include file="..." element="..." /&gt;</code> tag
+     * with parameters in the tag body.<p>
      * 
      * The parameter map should be a map where the keys are Strings 
      * (the parameter names) and the values are of type String[].
@@ -175,15 +189,20 @@ public class CmsJspActionElement {
      * in case you provide just a String for the parameter value, 
      * it will automatically be translated to a String[1].<p>
      * 
+     * The handling of the <code>element</code> parameter depends on the 
+     * included file type. Most often it is used as template selector.<p>
+     * 
      * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param element the element (template selector) to display from the target
      * @param parameterMap a map of the request parameters
      * @throws JspException in case there were problems including the target
      * 
      * @see com.opencms.flex.jsp.CmsJspTagInclude
      */
-    public void include(String target, Map parameterMap) throws JspException {
+    public void include(String target, String element, Map parameterMap) throws JspException {
         if (m_notInitialized) return;
         if (parameterMap != null) {
+            // ensure parameters are always of type String[] not just String
             Iterator i = parameterMap.keySet().iterator();
             while (i.hasNext()) {
                 String key = (String)i.next();
@@ -194,9 +213,9 @@ public class CmsJspActionElement {
                 }
             }
         }
-        CmsJspTagInclude.includeTagAction(m_context, target, parameterMap, m_request, m_response);
+        CmsJspTagInclude.includeTagAction(m_context, target, element, parameterMap, m_request, m_response);
     }
-    
+            
     /**
      * Calculate a link with the OpenCms link management,
      * same as using the <code>&lt;cms:link&gt;...&lt;/cms:link&gt;</code> tag.<p>

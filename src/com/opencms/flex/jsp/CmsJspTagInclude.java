@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2003/01/20 17:57:52 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/02/09 17:01:48 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,10 +29,13 @@
 
 package com.opencms.flex.jsp;
 
+import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsResource;
 import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.cache.CmsFlexResponse;
 import com.opencms.launcher.CmsXmlLauncher;
+import com.opencms.template.CmsXmlTemplate;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.HashMap;
@@ -46,7 +49,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -56,7 +59,6 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     private String m_suffix = null;
     private String m_property = null;    
     private String m_attribute = null;    
-    private String m_body = null;
     private String m_element = null;
     
     /** Hashmap to save paramters to the include in */
@@ -65,6 +67,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     /** Debugging on / off */
     private static final boolean DEBUG = false;
     
+    /** URI of the bodyloader XML file in the OpenCms VFS*/    
+    public final static String C_BODYLOADER_URI = "/system/opt/bodyloader.html";
+        
     /**
      * Sets the include page/file target.
      * @param target The target to set
@@ -172,15 +177,6 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             this.m_element = element.toLowerCase();
         }
     }
-    
-    /**
-     * Sets the include body attribute to indicate the body is to be evaluated.
-     * @param value This must be "eval" or "params", otherweise the TEI will generate an error.
-     */
-    public void setBody(String value) {
-        m_body = value;
-    }
-        
 
     /**
      * Internal utility method to update the target.
@@ -199,13 +195,11 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         m_page = null;
         m_suffix = null;
         m_property = null;           
-        m_body = null; 
         m_element = null;
         m_parameterMap = null;
     }    
     
     public int doStartTag() throws JspException {
-        if (m_body == null) return SKIP_BODY;
         return EVAL_BODY_BUFFERED;
     }    
 
@@ -221,21 +215,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             com.opencms.flex.cache.CmsFlexRequest c_req = (com.opencms.flex.cache.CmsFlexRequest)req;
             com.opencms.flex.cache.CmsFlexResponse c_res = (com.opencms.flex.cache.CmsFlexResponse)res;    
 
-            String target = null;           
-            
-            if (m_element != null) {
-                addParameter(CmsJspTagTemplate.C_TEMPLATE_ELEMENT, m_element);
-                // Check for body part and add special parameters for XMLTemplate if required
-                if (I_CmsConstants.C_XML_BODY_ELEMENT.equalsIgnoreCase(m_element.trim())) {
-                    // First check if a body was set in the cms request context
-                    String body = (String)c_req.getCmsObject().getRequestContext().getAttribute(I_CmsConstants.C_XML_BODY_ELEMENT);
-                    if (body == null) {
-                        // no body was set, try to calculate the name (will not work with linked files, though)
-                        body = I_CmsWpConstants.C_VFS_PATH_BODIES + c_req.getCmsRequestedResource().substring(1);
-                    }
-                    addParameter(CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + body);
-                }
-            }
+            String target = null;                       
             
             // Try to find out what to do
             if (m_target != null) {
@@ -253,18 +233,20 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                     String attr = (String)c_req.getAttribute(m_attribute);
                     if (attr != null) target = attr + getSuffix();
                 } catch (Exception e) {} // target will be null
-            }else {
-                // Option 4: target is set in body
+            } else {
+                // Option 4: target might be set in body
                 String body = null;
                 if (getBodyContent() != null) {
                     body = getBodyContent().getString();
                     if ((body != null) && (! "".equals(body.trim()))) {
+                        // target IS set in body
                         target = body;
-                    }
+                    } 
+                    // else target is not set at all, default will be used 
                 }
             } 
               
-            includeTagAction(pageContext, target, m_parameterMap, c_req, c_res);
+            includeTagAction(pageContext, target, m_element, m_parameterMap, c_req, c_res);
             
             // must call release here manually to make sure m_parameterMap is cleared
             release();
@@ -273,18 +255,95 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         return EVAL_PAGE;
     }
     
-    public static void includeTagAction(PageContext context, String target, Map parameterMap, CmsFlexRequest req, CmsFlexResponse res) 
+    /**
+     * Include action method.
+     * 
+     * @param context the current JSP page context
+     * @param target the target for the include, might be <code>null</code>
+     * @param element the element to select form the target might be <code>null</code>
+     * @param parameterMap a map of parameters for the include, will be merged with the request 
+     *      parameters, might be <code>null</code>
+     * @param req the current request
+     * @param res the current response
+     * @throws JspException in case something goes wrong
+     */
+    static void includeTagAction(PageContext context, String target, String element, Map parameterMap, CmsFlexRequest req, CmsFlexResponse res) 
     throws JspException {
+        // The logic in this mehod is more complex than it should be.
+        // This is because of the XMLTemplate integration, which requires some settings 
+        // to the parameters understandable only to XMLTemplate gurus.
+        // By putting this logic here it is not required to care about these issues
+        // on JSP pages, and you end up with considerable less JSP code.
+        // Also JSP developers need not to know the intrinsics of XMLTemplates this way.
+        
         if (target == null) {
-            throw new JspException("CmsJspIncludeTag: No target specified!");
+            // set target to default
+            target = req.getCmsObject().getRequestContext().getUri();
         }
-                                  
+        
+        if (parameterMap == null) {
+            // make sure we have a map available
+            parameterMap = new HashMap();
+        }
+        
+        if (element != null) {
+            // add template element selector for JSP templates
+            addParameter(parameterMap, CmsJspTagTemplate.C_TEMPLATE_ELEMENT, element);
+            if (!("body".equals(element) || "(default)".equals(element))) {
+                // add template selector for multiple body XML files
+                addParameter(parameterMap, CmsXmlTemplate.C_FRAME_SELECTOR, element);
+            }
+        }
+                       
+        // try to figure out if the target is a page or XMLTemplate file        
+        boolean isPageTarget = false;         
+        try {
+            target = req.toAbsolute(target);
+            CmsResource resource = req.getCmsObject().readFileHeader(target);
+            isPageTarget = ((req.getCmsObject().getResourceType("page").getResourceType() == resource.getType()));
+        } catch (CmsException e) {
+            // any exception here and we will treat his as non-Page file
+            throw new JspException("File not found: " + target, e);
+        }
+                
+        String bodyAttribute = (String) req.getCmsObject().getRequestContext().getAttribute(I_CmsConstants.C_XML_BODY_ELEMENT);               
+        if (bodyAttribute == null) {
+            // no body attribute is set: this is NOT a sub-element in a XML mastertemplate
+            if (isPageTarget) {
+                // add body file path to target 
+                if (! target.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) {
+                    target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);
+                }              
+                // save target as "element replace" parameter  
+                addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + target);  
+                target = C_BODYLOADER_URI;              
+            } 
+            // for other cases setting of "target" is fine 
+        } else {
+            // body attribute is set: this is a sub-element in a XML mastertemplate
+            if (target.equals(req.getCmsObject().getRequestContext().getUri())) {
+                // target can be ignored, set body attribute as "element replace" parameter  
+                addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + bodyAttribute);
+                // redirect target to body loader
+                target = C_BODYLOADER_URI;                
+            } else {
+                if (isPageTarget) {
+                    // add body file path to target 
+                    if (! target.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) {
+                        target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);
+                    }              
+                    // save target as "element replace" parameter  
+                    addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + target);  
+                    target = C_BODYLOADER_URI;                     
+                }
+            }
+            // for other cases setting of "target" is fine             
+        }
+        
         java.util.Map oldParamterMap = null;        
         // Check parameters and update if required
-        if (parameterMap != null) {
-            oldParamterMap = req.getParameterMap();
-            req.addParameterMap(parameterMap);                
-        }
+        oldParamterMap = req.getParameterMap();
+        req.addParameterMap(parameterMap);                
                                             
         try {         
             // Write out a C_FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimeter later
@@ -334,19 +393,28 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             m_parameterMap = new HashMap();
         }
         
+        addParameter(m_parameterMap, name, value);
+    }
+
+    /**
+     * Internal method to add parameters.
+     */
+    private static void addParameter(Map parameters, String name, String value) {
+        // No null values allowed in parameters
+        if ((parameters == null) || (name == null) || (value == null)) return;
+        
         // Check if the parameter name (key) exists
-        if (m_parameterMap.containsKey(name)) {
+        if (parameters.containsKey(name)) {
             // Yes: Check name values if value exists, if so do nothing, else add new value
-            String[] values = (String[]) m_parameterMap.get(name);
+            String[] values = (String[]) parameters.get(name);
             String[] newValues = new String[values.length+1];
             System.arraycopy(values, 0, newValues, 0, values.length);
             newValues[values.length] = value;
-            m_parameterMap.put(name, newValues);
+            parameters.put(name, newValues);
         } else {
             // No: Add new parameter name / value pair
             String[] values = new String[] { value };
-            m_parameterMap.put(name, values);
+            parameters.put(name, values);
         } 
     }
-
 }
