@@ -31,9 +31,17 @@ var code ='<html><body>Hello World</body></html>';
 
 
 <!-- Inhalt -->
-
-<center><textarea name="TextEditor" rows=34 cols= 120 wrap=virtual>
-</textarea></center>
+<center>
+<script language="JavaScript">
+	getDimensions();
+	str = '<textarea class="textarea" name="TextEditor" rows='+windowHeight+' cols='+windowWidth+' wrap=virtual></textarea>';
+	document.open();
+	document.write(str);
+	document.close();
+</script>
+</center>
+<!--<textarea class="textarea" name="TextEditor" rows= cols= 120 wrap=virtual>
+</textarea>-->
 </form>
 </body>
 </html>
