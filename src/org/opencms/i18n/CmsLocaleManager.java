@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/06/09 16:13:04 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
     
@@ -78,7 +78,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
     private I_CmsLocaleHandler m_localeHandler;
     
     /** A cache for accelerated locale lookup, this should never get so large to require a "real" cache */
-    private static Map m_localeCache;
+    // must initialize this or some test cases won't run
+    private static Map m_localeCache = new LRUMap();
     
     /**
      * Initializes a new CmsLocaleManager, called from the configuration.<p>
