@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/02/23 15:23:52 $
-  * Version: $Revision: 1.22 $
+  * Date   : $Date: 2001/03/27 10:02:54 $
+  * Version: $Revision: 1.23 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -1084,6 +1084,16 @@ function enableNewButton(showit){
  								}
  							}
  						}
+						if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='3'){
+							if(vr.actProject==vr.onlineProject){
+ 								if(vi.menus[vi.liste[i].type].items[a].name=="-"){
+ 									wo.writeln("<tr><td><hr size=1></td></tr>");
+ 								} else {
+									if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+									 else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+								}
+							}
+						}
                      }
                  }else{
                      /* if not locked */
