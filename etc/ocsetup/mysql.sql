@@ -222,7 +222,7 @@ create table CMS_BACKUP_RESOURCES       (RESOURCE_ID int not null,
                                          index parent_resource_type (PARENT_ID, RESOURCE_TYPE),
                                          index resources_project_type (PROJECT_ID, RESOURCE_TYPE),
                                          index resources_resourceid_project (RESOURCE_ID, PROJECT_ID),
-                                         unique(RESOURCE_NAME,DATE_LASTMODIFIED));
+                                         unique(RESOURCE_NAME,VERSION_ID));
                                          
 create table CMS_FILES                  (FILE_ID int not null,
                                          FILE_CONTENT mediumblob not null,
