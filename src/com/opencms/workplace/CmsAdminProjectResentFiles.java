@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
- * Date   : $Date: 2000/04/28 14:12:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/05/11 10:18:39 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/04/28 14:12:14 $
+ * @version $Revision: 1.5 $ $Date: 2000/05/11 10:18:39 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -104,7 +104,8 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 				throw new CmsException("Could not redirect to administration_head_5.html", exc);
 			}
 			
-			return "".getBytes();
+			//return "".getBytes();
+            return null;
 		}
 		
 		if(filter == null) {

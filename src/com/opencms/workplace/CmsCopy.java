@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/05/05 09:09:58 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/05/11 10:18:40 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.26 $ $Date: 2000/05/05 09:09:58 $
+ * @version $Revision: 1.27 $ $Date: 2000/05/11 10:18:40 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -185,6 +185,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 } catch (Exception e) {
                     throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
                 } 
+                return null;
                          
             } else {
                 // the selected resource is a folder, so copy it and all its subresources

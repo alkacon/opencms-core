@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/04/28 13:47:07 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/05/11 10:18:40 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.25 $ $Date: 2000/04/28 13:47:07 $
+ * @version $Revision: 1.26 $ $Date: 2000/05/11 10:18:40 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -340,7 +340,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             } catch(IOException e) {
                 throwException("Could not send redirect to workplace main screen.", e);
             }
-            return "".getBytes();
+            //return "".getBytes();
+            return null;
         }
 
         // Include the datablocks of the layout file into the body file.

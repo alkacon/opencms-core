@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2000/05/02 14:04:44 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/05/11 10:18:40 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2000/05/02 14:04:44 $
+ * @version $Revision: 1.21 $ $Date: 2000/05/11 10:18:40 $
  */
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -167,6 +167,7 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 					} catch (Exception e) {
 						throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
 					}
+                    return null;
 				}else{
 					xmlTemplateDocument.setData("details", "unknown error");
 					template="error";

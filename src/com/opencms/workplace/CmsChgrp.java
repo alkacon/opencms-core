@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChgrp.java,v $
- * Date   : $Date: 2000/05/03 11:16:41 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/05/11 10:18:39 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/05/03 11:16:41 $
+ * @version $Revision: 1.15 $ $Date: 2000/05/11 10:18:39 $
  */
 public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -211,6 +211,7 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			    } catch (Exception e) {
 			        throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
 			    }
+                return null;
             } else {
                 // the current user is not allowed to change the file owner
 				xmlTemplateDocument.setData("details", "the current user is not allowed to change the file owner");

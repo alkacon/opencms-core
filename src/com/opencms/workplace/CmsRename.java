@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/05/05 09:09:58 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/05/11 10:18:40 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.21 $ $Date: 2000/05/05 09:09:58 $
+ * @version $Revision: 1.22 $ $Date: 2000/05/11 10:18:40 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -150,7 +150,8 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                         }                            
                     } catch (Exception e) {
                         throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
-                    }   
+                    }  
+                    return null;
                     
                 } else {
                     // this is a folder

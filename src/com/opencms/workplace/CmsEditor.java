@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
- * Date   : $Date: 2000/04/28 13:47:07 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/05/11 10:18:40 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/04/28 13:47:07 $
+ * @version $Revision: 1.14 $ $Date: 2000/05/11 10:18:40 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsEditor extends CmsWorkplaceDefault {
@@ -131,7 +131,8 @@ public class CmsEditor extends CmsWorkplaceDefault {
             } catch(IOException e) {
                 throwException("Could not send redirect to workplace main screen.", e);
             }
-            return "".getBytes();
+            //return "".getBytes();
+            return null;
         }
        
             

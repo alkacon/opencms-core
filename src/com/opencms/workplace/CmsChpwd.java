@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChpwd.java,v $
- * Date   : $Date: 2000/04/06 09:26:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/05/11 10:18:40 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/04/06 09:26:34 $
+ * @version $Revision: 1.3 $ $Date: 2000/05/11 10:18:40 $
  */
 public class CmsChpwd extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -109,7 +109,7 @@ public class CmsChpwd extends CmsWorkplaceDefault implements I_CmsWpConstants,
                         throw exp;
                     }
                 }
-
+                return null;
             } else {
                 // the new passwords do not match
 				xmlTemplateDocument.setData("details", "The new passwords do not match.");

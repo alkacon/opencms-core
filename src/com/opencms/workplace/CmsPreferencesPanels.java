@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/05/05 09:10:46 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/05/11 10:18:40 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/05/05 09:10:46 $
+ * @version $Revision: 1.16 $ $Date: 2000/05/11 10:18:40 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                          I_CmsConstants {
@@ -342,7 +342,8 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                    cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_RELOAD);
                 } catch (Exception e) {
                     throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_RELOAD,CmsException.C_UNKNOWN_EXCEPTION,e);
-                }     
+                }   
+            return null;
         }
                     
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);

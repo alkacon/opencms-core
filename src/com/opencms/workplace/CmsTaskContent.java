@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContent.java,v $
- * Date   : $Date: 2000/04/20 15:16:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/05/11 10:18:40 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/04/20 15:16:01 $
+ * @version $Revision: 1.11 $ $Date: 2000/05/11 10:18:40 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -93,6 +93,7 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 					A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName()+ " " + e.getMessage());
 				}
 			}
+            return null;
 		}
 		
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);

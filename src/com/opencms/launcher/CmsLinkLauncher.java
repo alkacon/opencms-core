@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLinkLauncher.java,v $
- * Date   : $Date: 2000/05/11 09:17:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/05/11 10:18:39 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/05/11 09:17:47 $
+ * @version $Revision: 1.2 $ $Date: 2000/05/11 10:18:39 $
  */
 public class CmsLinkLauncher extends A_CmsLauncher { 	
         
@@ -62,7 +62,7 @@ public class CmsLinkLauncher extends A_CmsLauncher {
 	 */	
     protected void launch(A_CmsObject cms, CmsFile file, String startTemplateClass) throws CmsException {
         
-        byte[] result = null;
+        //byte[] result = null;
 
         String link=new String(file.getContents());
      
