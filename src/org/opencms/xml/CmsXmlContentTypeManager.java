@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2004/12/07 15:13:07 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/12/08 10:17:48 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
@@ -123,9 +123,6 @@ public class CmsXmlContentTypeManager {
         typeManager.addSchemaType(
             "org.opencms.xml.types.CmsXmlLocaleValue",
             "org.opencms.workplace.xmlwidgets.CmsXmlStringWidget");
-        typeManager.addSchemaType(
-            "org.opencms.xml.types.CmsXmlSimpleHtmlValue",
-            "org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget");
         typeManager.addSchemaType(
             "org.opencms.xml.types.CmsXmlStringValue",
             "org.opencms.workplace.xmlwidgets.CmsXmlStringWidget");
