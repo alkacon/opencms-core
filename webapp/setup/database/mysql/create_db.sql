@@ -2,4 +2,4 @@
 # replacer = "${database}"
 ############################
 
-CREATE DATABASE ${database} ;
+CREATE DATABASE ${database};

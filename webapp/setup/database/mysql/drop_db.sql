@@ -2,4 +2,4 @@
 # replacer = "${replacer}"
 ############################
 
-DROP DATABASE ${database} ;
+DROP DATABASE ${database};

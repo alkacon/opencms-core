@@ -2,4 +2,4 @@
 # replacer = "${replacer}"
 ############################
 
-drop user ${user} cascade;
+DROP USER ${user} CASCADE;
