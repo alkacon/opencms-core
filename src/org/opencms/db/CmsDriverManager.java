@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/15 14:20:38 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2003/07/15 15:38:01 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.50 $ $Date: 2003/07/15 14:20:38 $
+ * @version $Revision: 1.51 $ $Date: 2003/07/15 15:38:01 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1984,7 +1984,7 @@ public class CmsDriverManager extends Object {
         CmsResource offlineFile = null;
 
         try {
-            List onlinePath = readPath(context, filename, false);
+            List onlinePath = readPathInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, filename, false);
             onlineFile = (CmsResource) onlinePath.get(onlinePath.size() - 1);
         } catch (CmsException exc) {
             onlineFile = null;
@@ -2048,7 +2048,7 @@ public class CmsDriverManager extends Object {
         // read the folder, that should be deleted
         CmsFolder cmsFolder = readFolder(context, foldername);
         try {
-            onlineFolder = readFolder(context, foldername);
+            onlineFolder = readFolderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, foldername);
         } catch (CmsException exc) {
             // the file dosent exist
             onlineFolder = null;
@@ -3002,6 +3002,41 @@ public class CmsDriverManager extends Object {
         return buffer.toString();
     }
 
+    /**
+     * Return a cache key build from the provided information.<p>
+     * 
+     * @param prefix a prefix for the key
+     * @param user the user for which to genertate the key
+     * @param projectId the project for which to genertate the key
+     * @param resource the resource for which to genertate the key
+     * @return String a cache key build from the provided information
+     */
+    private String getCacheKey(String prefix, CmsUser user, int projectId, String resource) {
+        StringBuffer buffer = new StringBuffer(32);
+        if (prefix != null) {
+            buffer.append(prefix);
+            buffer.append("_");
+        }
+        //if (user != null) {
+        //    buffer.append(user.getId());
+        //    buffer.append("_");            
+        //}
+        if (projectId >= I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            //if (project.getFlags() >= 0) {
+            //    buffer.append(project.getId());
+            //} else {
+            if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+                buffer.append("on");
+            } else {
+                buffer.append("of");
+            }
+            //}
+            buffer.append("_");
+        }
+        buffer.append(resource);
+        return buffer.toString();
+    }
+    
     /**
      * Returns all child groups of a group<P/>
      *
@@ -5808,7 +5843,7 @@ public class CmsDriverManager extends Object {
             foldername += I_CmsConstants.C_FOLDER_SEPARATOR;
         }
 
-        List path = readPath(context, foldername, false);
+        List path = readPathInProject(context, projectId, foldername, false);
         CmsFolder cmsFolder = (CmsFolder) path.get(path.size() - 1);
         int[] pathProjectId = m_vfsDriver.getProjectsForPath(projectId, foldername);
 
@@ -6140,13 +6175,31 @@ public class CmsDriverManager extends Object {
      * This is done by climbing up the path to the root folder by using the resource parent-ID's.
      * Use this method with caution! Results are cached but reading path's increases runtime costs.
      * 
-     * @param context.currentUser() the current user
-     * @param context.currentProject() the current project
+     * @param context the context (user/project) of the request
      * @param resource the resource
+     * @param includeDeleted include resources that are marked as deleted
      * @return String the path of the resource
      * @throws CmsException if something goes wrong
      */
     public String readPath(CmsRequestContext context, CmsResource resource, boolean includeDeleted) throws CmsException {
+        return readPathInProject(context, context.currentProject().getId(), resource, includeDeleted);
+    }
+
+    /**
+     * Builds the path for a given CmsResource including the site root,
+     * e.g. <code>/default/vfs/some_folder/index.html</code>.<p>
+     * 
+     * This is done by climbing up the path to the root folder by using the resource parent-ID's.
+     * Use this method with caution! Results are cached but reading path's increases runtime costs.
+     * 
+     * @param context the context (user/project) of the request
+     * @param projectId the project to lookup the resource
+     * @param resource the resource
+     * @param includeDeleted include resources that are marked as deleted
+     * @return String the path of the resource
+     * @throws CmsException if something goes wrong
+     */        
+    public String readPathInProject(CmsRequestContext context, int projectId, CmsResource resource, boolean includeDeleted) throws CmsException {
         if (resource.hasFullResourceName()) {
             // we did already what we want to do- no further operations required here!
             return resource.getFullResourceName();
@@ -6173,16 +6226,16 @@ public class CmsDriverManager extends Object {
 
         while (!(currentParentId = currentResource.getParentId()).equals(CmsUUID.getNullUUID())) {
             // see if we can find an already cached path for the current parent-ID
-            pathCacheKey = getCacheKey("path", context.currentUser(), context.currentProject(), currentParentId.toString());
+            pathCacheKey = getCacheKey("path", context.currentUser(), projectId, currentParentId.toString());
             if ((cachedPath = (String) m_resourceCache.get(pathCacheKey)) != null) {
                 path = cachedPath + path;
                 break;
             }
 
             // see if we can find a cached parent-resource for the current parent-ID
-            resourceCacheKey = getCacheKey("parent", context.currentUser(), context.currentProject(), currentParentId.toString());
+            resourceCacheKey = getCacheKey("parent", context.currentUser(), projectId, currentParentId.toString());
             if ((currentResource = (CmsResource) m_resourceCache.get(resourceCacheKey)) == null) {
-                currentResource = (CmsResource) m_vfsDriver.readFileHeader(context.currentProject().getId(), currentParentId, includeDeleted);
+                currentResource = (CmsResource) m_vfsDriver.readFileHeader(projectId, currentParentId, includeDeleted);
                 m_resourceCache.put(resourceCacheKey, currentResource);
             }
 
@@ -6196,7 +6249,7 @@ public class CmsDriverManager extends Object {
         }
 
         // cache the calculated path
-        pathCacheKey = getCacheKey("path", context.currentUser(), context.currentProject(), parentId.toString());
+        pathCacheKey = getCacheKey("path", context.currentUser(), projectId, parentId.toString());
         m_resourceCache.put(pathCacheKey, path);
 
         // build the full path of the resource
@@ -6219,13 +6272,32 @@ public class CmsDriverManager extends Object {
      * resource names. Use this method with caution! Results are cached but reading path's 
      * inevitably increases runtime costs.
      * 
-     * @param context.currentUser() the current user
-     * @param context.currentProject() the current project
+     * @param context the context (user/project) of the request
      * @param path the requested path
+     * @param includeDeleted include resources that are marked as deleted
      * @return List of CmsResource's
      * @throws CmsException if something goes wrong
      */
     public List readPath(CmsRequestContext context, String path, boolean includeDeleted) throws CmsException {
+        return readPathInProject(context, context.currentProject().getId(), path, includeDeleted);
+    }
+    
+    /**
+     * Builds a list of resources for a given path.<p>
+     * 
+     * Use this method if you want to select a resource given by it's full filename and path. 
+     * This is done by climbing down the path from the root folder using the parent-ID's and
+     * resource names. Use this method with caution! Results are cached but reading path's 
+     * inevitably increases runtime costs.
+     * 
+     * @param context the context (user/project) of the request
+     * @param projectId the project to lookup the resource
+     * @param path the requested path
+     * @param includeDeleted include resources that are marked as deleted
+     * @return List of CmsResource's
+     * @throws CmsException if something goes wrong
+     */    
+    public List readPathInProject(CmsRequestContext context, int projectId, String path, boolean includeDeleted) throws CmsException {
         // splits the path into folder and filename tokens
         StringTokenizer tokens = null;
         // # of folders in the path
@@ -6249,7 +6321,7 @@ public class CmsDriverManager extends Object {
         // true if a upper folder in the path was locked
         boolean visitedLockedFolder = false;
         // the project ID of an upper locked folder
-        int lockedInProject = context.currentProject().getId();
+        int lockedInProject = projectId;
         // the user ID of an upper locked folder
         CmsUUID lockedByUserId = CmsUUID.getNullUUID();
 
@@ -6267,9 +6339,9 @@ public class CmsDriverManager extends Object {
 
         // read the root folder, coz it's ID is required to read any sub-resources
         currentResourceName = currentPath = I_CmsConstants.C_ROOT;
-        cacheKey = getCacheKey(null, context.currentUser(), context.currentProject(), currentPath);
+        cacheKey = getCacheKey(null, context.currentUser(), projectId, currentPath);
         if ((currentResource = (CmsResource) m_resourceCache.get(cacheKey)) == null) {
-            currentResource = (CmsResource) m_vfsDriver.readFolder(context.currentProject().getId(), CmsUUID.getNullUUID(), currentResourceName);
+            currentResource = (CmsResource) m_vfsDriver.readFolder(projectId, CmsUUID.getNullUUID(), currentResourceName);
             currentResource.setFullResourceName(currentPath);
             m_resourceCache.put(cacheKey, currentResource);
         }
@@ -6296,9 +6368,9 @@ public class CmsDriverManager extends Object {
             currentPath += currentResourceName + I_CmsConstants.C_FOLDER_SEPARATOR;
 
             // read the folder
-            cacheKey = getCacheKey(null, context.currentUser(), context.currentProject(), currentPath);
+            cacheKey = getCacheKey(null, context.currentUser(), projectId, currentPath);
             if ((currentResource = (CmsResource) m_resourceCache.get(cacheKey)) == null) {
-                currentResource = (CmsResource) m_vfsDriver.readFolder(context.currentProject().getId(), lastParent.getId(), currentResourceName);
+                currentResource = (CmsResource) m_vfsDriver.readFolder(projectId, lastParent.getId(), currentResourceName);
                 currentResource.setFullResourceName(currentPath);
                 m_resourceCache.put(cacheKey, currentResource);
             }
@@ -6329,9 +6401,9 @@ public class CmsDriverManager extends Object {
             currentPath += currentResourceName;
 
             // read the file
-            cacheKey = getCacheKey(null, context.currentUser(), context.currentProject(), currentPath);
+            cacheKey = getCacheKey(null, context.currentUser(), projectId, currentPath);
             if ((currentResource = (CmsResource) m_resourceCache.get(cacheKey)) == null) {
-                currentResource = (CmsResource) m_vfsDriver.readFileHeader(context.currentProject().getId(), lastParent.getId(), currentResourceName, includeDeleted);
+                currentResource = (CmsResource) m_vfsDriver.readFileHeader(projectId, lastParent.getId(), currentResourceName, includeDeleted);
                 currentResource.setFullResourceName(currentPath);
                 m_resourceCache.put(cacheKey, currentResource);
             }
