@@ -473,16 +473,21 @@ span.tabactive {
 }
 
 .xmlLabel { 
-	font-family:verdana, sans-serif; 
-	font-size:11px; 
-	height: 22px; 
-	white-space: nowrap; 
+	white-space: nowrap;
 }
 
 .xmlInput { 
-	font-family:verdana, sans-serif; 
-	font-size:11px; 
-	font-weight:normal; 
+	border: 1px solid WindowFrame; 
+}
+
+.xmlInputSmall { 
+	width: 200px; 
+	border: 1px solid WindowFrame; 
+}
+
+.xmlInputMedium { 
+	width: 400px;
+	border: 1px solid WindowFrame;  
 }
 
 .help { 
@@ -496,14 +501,6 @@ span.tabactive {
     background-color: InfoBackground; 
     visibility: hidden; 
     font-size: 8pt; 
-}
-
-.xmlInputSmall { 
-	width: 200px; 
-}
-
-.xmlInputMedium { 
-	width: 400px; 
 }
 
 /* special definition for IE bug displaying horizontal scroll bar in STRICT mode,
