@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2001/10/12 15:51:56 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/10/16 09:08:28 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2001/10/12 15:51:56 $
+ * @version $Revision: 1.21 $ $Date: 2001/10/16 09:08:28 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -452,7 +452,13 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         cms.doDeleteFile(filename);
         String bodyPath = checkBodyPath(cms, (CmsFile)file);
         if (bodyPath != null){
-            cms.doDeleteFile(bodyPath);
+            try{
+                cms.doDeleteFile(bodyPath);
+            } catch (CmsException e){
+                if(e.getType() != CmsException.C_NOT_FOUND){
+                    throw e;
+                }
+            }
         }
 
         // The page file contains XML.
@@ -475,7 +481,13 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         cms.doUndeleteFile(filename);
         String bodyPath = checkBodyPath(cms, (CmsFile)file);
         if (bodyPath != null){
-            cms.doUndeleteFile(bodyPath);
+            try{
+                cms.doUndeleteFile(bodyPath);
+            } catch (CmsException e){
+                if(e.getType() != CmsException.C_NOT_FOUND){
+                    throw e;
+                }
+            }
         }
 
         // The page file contains XML.
