@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/I_CmsLauncher.java,v $
-* Date   : $Date: 2002/03/07 13:42:40 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/04/14 22:03:21 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,12 +37,19 @@ import javax.servlet.http.*;
  * Classes for each customized launcher have to be implemtented.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2002/03/07 13:42:40 $
+ * @version $Revision: 1.14 $ $Date: 2002/04/14 22:03:21 $
  */
 public interface I_CmsLauncher {
 
     /** Constants used as launcher IDs */
-    public final static int C_TYPE_DUMP = 1, C_TYPE_JAVASCRIPT = 2, C_TYPE_XML = 3, C_TYPE_LINK = 4, C_TYPE_PDF = 5;
+    public final static int C_TYPE_DUMP = 1;
+    public final static int C_TYPE_JAVASCRIPT = 2;
+    public final static int C_TYPE_XML = 3;
+    public final static int C_TYPE_LINK = 4;
+    public final static int C_TYPE_PDF = 5;
+    public final static int C_TYPE_JSP = 6;
+    public final static int C_TYPE_VELOCITY = 7;
+    
     public void clearCache();
 
     /**
