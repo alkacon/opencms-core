@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/10/06 11:21:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/10/09 14:24:33 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.2 $ $Date: 2000/10/06 11:21:29 $
+ * @version $Revision: 1.3 $ $Date: 2000/10/09 14:24:33 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -329,6 +329,22 @@ public CmsShellCommands(String[] args, A_OpenCms openCms,CmsObject cms) throws E
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Insert the method's description here.
+ * Creation date: (09-10-2000 10:06:25)
+ * @param fromProjectId java.lang.String
+ */
+public void copyProjectToProject(String fromProjectId)
+{
+	try
+	{
+		m_cms.copyProjectToProject(m_cms.readProject(Integer.parseInt(fromProjectId)));
+	}
+	catch (CmsException e)
+	{
+		CmsShell.printException(e);
+	}
+}
 	/**
 	 * Copies a resource from the online project to a new, specified project.<br>
 	 * Copying a resource will copy the file header or folder into the specified 

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/06 11:21:31 $
- * Version: $Revision: 1.124 $
+ * Date   : $Date: 2000/10/09 14:20:18 $
+ * Version: $Revision: 1.125 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.124 $ $Date: 2000/10/06 11:21:31 $
+ * @version $Revision: 1.125 $ $Date: 2000/10/09 14:20:18 $
  * 
  */
 
@@ -443,6 +443,16 @@ public interface I_CmsResourceBroker {
 		throws CmsException;
 /**
  * Insert the method's description here.
+ * Creation date: (09-10-2000 13:01:38)
+ * @param currentProject com.opencms.file.CmsProject
+ * @param fromProject com.opencms.file.CmsProject
+ * @param resource com.opencms.file.CmsResource
+ * @exception com.opencms.core.CmsException The exception description.
+ * @author Martin Langelund
+ */
+public void copyResourceToProject(CmsProject currentProject, CmsProject fromProject, CmsResource resource) throws com.opencms.core.CmsException;
+/**
+ * Insert the method's description here.
  * Creation date: (06-10-2000 08:54:00)
  * @param currentUser com.opencms.file.CmsUser
  * @param currentProject com.opencms.file.CmsProject
@@ -669,6 +679,16 @@ public CmsLanguage createLanguage(CmsUser currentUser, CmsProject currentProject
 													String resourcetype, 
 													int type)
 		throws CmsException;
+/**
+ * Insert the method's description here.
+ * Creation date: (09-10-2000 11:35:40)
+ * @param project com.opencms.file.CmsProject
+ * @param onlineProject com.opencms.file.CmsProject
+ * @param resource com.opencms.file.CmsResource
+ * @exception com.opencms.core.CmsException The exception description.
+ * author Martin Langelund
+ */
+public void createResource(CmsProject project, CmsProject onlineProject, CmsResource resource) throws com.opencms.core.CmsException;
 	 /**
 	  * Creates a new task.
 	  * 
@@ -1085,6 +1105,14 @@ public Vector getAllSites(CmsUser currentUser, CmsProject currentProject) throws
  * @exception CmsException Throws CmsException if something goes wrong.
  */
 Vector getAllSiteUrls(CmsUser currentUser, CmsProject currentProject) throws com.opencms.core.CmsException;
+/**
+ * Insert the method's description here.
+ * Creation date: (06-10-2000 13:57:24)
+ * @return int
+ * @param project int
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public int getBaseProjectId(int project) throws com.opencms.core.CmsException;
 		public Hashtable getCacheInfo();
 /**
  * Returns a CmsCategory object
@@ -2409,6 +2437,14 @@ public void newSiteProjectsRecord(CmsUser currentUser, CmsProject currentProject
 												  CmsProject currentProject, 
 												  String name, String resourcetype)
 		throws CmsException;
+/**
+ * Insert the method's description here.
+ * Creation date: (09-10-2000 09:30:47)
+ * @return java.util.Vector
+ * @param project com.opencms.file.CmsProject
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public Vector readResources(CmsProject project) throws com.opencms.core.CmsException;
 	 /**
 	  * Read a task by id.
 	  * 
