@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsVfsIndexResource.java,v $
- * Date   : $Date: 2004/07/05 14:32:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/07/06 08:39:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,17 +28,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.search;
 
 import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
 
 /**
- * Wrapper class to hide the concrete type of a data object.<p>
- * The type is either <code>CmsResource</code> while indexing vfs data,
- * or <code>CmsMasterDataSet</code> while indexing cos data.
+ * Contains the data of a VFS Cms resource specified by a Lucene 
+ * search result document.<p>
  * 
- * @version $Revision: 1.6 $ $Date: 2004/07/05 14:32:44 $
+ * @version $Revision: 1.7 $ $Date: 2004/07/06 08:39:39 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -51,6 +51,7 @@ public class CmsVfsIndexResource extends A_CmsIndexResource {
      * @param res the data object
      */
     public CmsVfsIndexResource(CmsResource res) {
+
         m_data = res;
         m_id = res.getResourceId();
         m_name = res.getName();
@@ -64,6 +65,7 @@ public class CmsVfsIndexResource extends A_CmsIndexResource {
      * @see org.opencms.search.A_CmsIndexResource#getDocumentKey()
      */
     public String getDocumentKey() {
-        return  "VFS" + getType() + ":" + getMimetype();
+
+        return "VFS" + getType() + ":" + getMimetype();
     }
 }

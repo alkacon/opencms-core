@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexException.java,v $
- * Date   : $Date: 2004/02/17 12:09:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/07/06 08:39:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,18 +28,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.search;
 
 import org.opencms.main.CmsException;
 
 /**
  * Signals an error during an indexing operation.<p> 
+ * 
  * This exception is thrown by various classes 
  * in the <code>org.opencms.search</code> package.
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2004/02/17 12:09:57 $
+ * @version $Revision: 1.5 $ $Date: 2004/07/06 08:39:39 $
  * @since 5.3.1
  */
 public class CmsIndexException extends CmsException {
@@ -50,6 +51,7 @@ public class CmsIndexException extends CmsException {
      * @param message the detail message
      */
     public CmsIndexException(String message) {
+
         super(message, 0);
     }
 
@@ -60,9 +62,10 @@ public class CmsIndexException extends CmsException {
      * @param type the type
      */
     public CmsIndexException(String message, int type) {
+
         super(message, type);
     }
-    
+
     /**
      * Constructs a CmsIndexException with the specified detail message
      * and adds the original exception as a delegated root cause.<p>
@@ -71,6 +74,7 @@ public class CmsIndexException extends CmsException {
      * @param rootCause the delegated exception
      */
     public CmsIndexException(String message, Throwable rootCause) {
+
         super(message, 0, rootCause);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndexSource.java,v $
- * Date   : $Date: 2004/07/05 14:32:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/06 08:39:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.search;
 
 import java.io.Serializable;
@@ -37,42 +37,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * A search index source is a description of a list of Cms resources
  * to be indexed.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3.6
  */
 public class CmsSearchIndexSource implements Serializable, Cloneable {
 
     /** The logical key/name of this index. */
     private String m_name;
-    
+
     /** The class name of the indexer. */
     private String m_indexerClassName;
-    
+
     /** A map of optional key/value parameters. */
     private Map m_params;
-    
+
     /** A list of Cms resources to be indexed. */
     private List m_resourcesNames;
-    
+
     /** A list of Cms resource types to be indexed. */
     private List m_documentTypes;
-    
+
     /**
      * Creates a new CmsSearchIndexSource.<p>
      */
     public CmsSearchIndexSource() {
-        
+
         m_params = new HashMap();
         m_resourcesNames = new ArrayList();
         m_documentTypes = new ArrayList();
     }
-    
+
     /**
      * Returns the list of Cms resource types to be indexed.<p>
      *
@@ -82,7 +81,7 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
 
         return m_documentTypes;
     }
-    
+
     /**
      * Returns the class name of the indexer.<p>
      *
@@ -92,7 +91,7 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
 
         return m_indexerClassName;
     }
-    
+
     /**
      * Returns the logical key/name of this search index source.<p>
      *
@@ -102,7 +101,7 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
 
         return m_name;
     }
-    
+
     /**
      * Returns the map of optional key/value parameters.<p>
      *
@@ -112,7 +111,7 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
 
         return m_params;
     }
-    
+
     /**
      * Returns the list of Cms resources to be indexed.<p>
      *
@@ -122,7 +121,7 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
 
         return m_resourcesNames;
     }
-    
+
     /**
      * Sets the list of Cms resource types to be indexed.<p>
      *
@@ -132,7 +131,7 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
 
         m_documentTypes = documentTypes;
     }
-    
+
     /**
      * Sets the class name of the indexer.<p>
      *
@@ -142,7 +141,7 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
 
         m_indexerClassName = indexerClassName;
     }
-    
+
     /**
      * Sets the logical key/name of this search index source.<p>
      *
@@ -152,7 +151,7 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
 
         m_name = name;
     }
-    
+
     /**
      * Sets the map of optional key/value parameters.<p>
      *
@@ -162,7 +161,7 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
 
         m_params = params;
     }
-    
+
     /**
      * Sets the list of Cms resources to be indexed.<p>
      *
@@ -172,7 +171,7 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
 
         m_resourcesNames = resources;
     }
-    
+
     /**
      * Adds a parameter.<p>
      * 
@@ -180,30 +179,30 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
      * @param value the value of the parameter
      */
     public void addConfigurationParameter(String key, String value) {
-        
+
         m_params.put(key, value);
     }
-    
+
     /**
      * Adds the path of a Cms resource.<p>
      * 
      * @param resourceName the path of a Cms resource
      */
     public void addResourceName(String resourceName) {
-        
+
         m_resourcesNames.add(resourceName);
     }
-    
+
     /**
      * Adds the key/name of a document type.<p>
      * 
      * @param key the key/name of a document type
      */
     public void addDocumentType(String key) {
-        
+
         m_documentTypes.add(key);
     }
-    
+
     /**
      * Returns the value for a specified parameter key.<p>
      * 
@@ -211,7 +210,7 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
      * @return the value for the specified parameter key
      */
     public String getParam(String key) {
-        
+
         return (String)m_params.get(key);
     }
 }

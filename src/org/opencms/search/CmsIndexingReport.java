@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsIndexingReport.java,v $
- * Date   : $Date: 2004/03/16 11:46:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/07/06 08:39:39 $
+ * Version: $Revision: 1.6 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -43,13 +43,12 @@
  * This program is also available under a commercial non-GPL license. For
  * pricing and ordering information, please inquire at sales@alkacon.com.
  */
- 
+
 package org.opencms.search;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
-
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,11 +59,11 @@ import javax.servlet.jsp.PageContext;
  * Implements methods for <code>CmsReport</code> to display the indexing progress.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.3.1
  */
 public class CmsIndexingReport extends CmsReport {
-        
+
     /** Postfix for error.message dialog keys in the resource bundle.<p> */
     public static final String DIALOG_TYPE = "indexing";
 
@@ -74,9 +73,10 @@ public class CmsIndexingReport extends CmsReport {
      * @param jsp an initialized JSP action element
      */
     public CmsIndexingReport(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -85,26 +85,27 @@ public class CmsIndexingReport extends CmsReport {
      * @param res the JSP response
      */
     public CmsIndexingReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         this(new CmsJspActionElement(context, req, res));
-    }    
-        
+    }
+
     /**
      * Performs the report, will be called by the JSP page.<p>
      * 
      * @throws JspException if problems including sub-elements occur
      */
     public void actionReport() throws JspException {
-        
+
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
-            case ACTION_REPORT_UPDATE :
+            case ACTION_REPORT_UPDATE:
                 setParamAction(REPORT_UPDATE);
                 getJsp().include(C_FILE_REPORT_OUTPUT);
                 break;
-            case ACTION_REPORT_BEGIN :
-            case ACTION_CONFIRMED :
-            default :   
+            case ACTION_REPORT_BEGIN:
+            case ACTION_CONFIRMED:
+            default:
 
                 CmsIndexingReportThread thread = new CmsIndexingReportThread(getCms());
                 setParamAction(REPORT_BEGIN);
@@ -113,11 +114,12 @@ public class CmsIndexingReport extends CmsReport {
                 break;
         }
     }
-        
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
         // fill the parameter values in the get/set methods
         fillParamValues(request);
         // set the dialog type
@@ -126,18 +128,18 @@ public class CmsIndexingReport extends CmsReport {
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_CONFIRMED);
         } else if (REPORT_UPDATE.equals(getParamAction())) {
-            setAction(ACTION_REPORT_UPDATE);         
+            setAction(ACTION_REPORT_UPDATE);
         } else if (REPORT_BEGIN.equals(getParamAction())) {
             setAction(ACTION_REPORT_BEGIN);
         } else if (REPORT_END.equals(getParamAction())) {
             setAction(ACTION_REPORT_END);
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
-        } else {                        
+        } else {
             setAction(ACTION_DEFAULT);
             // add the title for the dialog 
             setParamTitle(key("title." + getParamDialogtype()));
-        }                 
+        }
     }
-   
+
 }

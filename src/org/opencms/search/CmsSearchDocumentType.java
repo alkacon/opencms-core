@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchDocumentType.java,v $
- * Date   : $Date: 2004/07/05 14:32:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/06 08:39:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * in a document factory class instance.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3.6
  */
 public class CmsSearchDocumentType implements Serializable, Cloneable {
@@ -159,7 +159,7 @@ public class CmsSearchDocumentType implements Serializable, Cloneable {
 
         m_resourceTypes.add(resourceType);
     }
-    
+
     /**
      * Adds a mimetype.<p>
      * 
@@ -168,6 +168,6 @@ public class CmsSearchDocumentType implements Serializable, Cloneable {
     public void addMimeType(String mimeType) {
 
         m_mimeTypes.add(mimeType);
-    }    
+    }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/07/05 14:16:41 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/07/06 08:39:39 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.search;
 
 import org.opencms.file.CmsObject;
@@ -59,71 +60,32 @@ import org.apache.lucene.search.Searcher;
 
 /**
  * Implements the search within an index and the management of the index configuration.<p>
- * 
- * A search index is configured in the registry using the following tags:
- * <pre>
- * &lt;index&gt;
- *     &lt;name&gt;Default (Online)&lt;/name&gt;
- *     &lt;rebuild&gt;auto&lt;/rebuild&gt;
- *     &lt;project&gt;online&lt;/project&gt;
- *     &lt;site&gt;/sites/default/&lt;/site&gt;
- *     &lt;lang&gt;en&lt;/lang&gt;
- *     &lt;folder&gt;
- *         &lt;source&gt;/&lt;/source&gt;
- *         &lt;documenttype&gt;xmlpage&lt;/documenttype&gt;
- *         ...
- *     &lt;/folder&gt;
- *     &lt;channel&gt;
- *         &lt;source&gt;/jobs/&lt;/source&gt;
- *         &lt;documenttype&gt;jobs&lt;/documenttype&gt;
- *         &lt;displayuri&gt;/showjob.html&lt;/displayuri&gt;
- *         &lt;displayparam&gt;id&lt;/displayparam&gt;
- *     &lt;/channel&gt;
- * &lt;/index&gt;
- * </pre>
- * <p>In this example, an index with display name "Default (Online)" is configured.
- * The index is automatically updated when the CmsSearchManager is started as cron job
- * (<code>manual</code> here means that the index is not automatically updated).</p>
- * 
- * <p>The index contains published resources within the site with the root <code>/sites/default</code>.
- * Only resource data for the language "en" will be indexed using the appropriate analyzer.</p>
- * 
- * <p>Within the site, only resource data below the folder "/" will be indexed and only if
- * the resource has the document type "xmlpage" (Typically you will have to specify more 
- * documenttypes here or to leave it out completely in order to index all available documenttypes).</p>
- * 
- * <p>Additionally, the cos data of type "jobs" of the channel "jobs" will be indexed.
- * Note: For a channel specification, only one documenttype is allowed.
- * To access a cos data item in a search result, a uri will be formed using the
- * displayuri and displayid, i.e. <code>/showjob.html?id=....</code></p>
- * 
- * <p>Certainly, you can specify more than one folder or channel to index.</p>
  *   
- * @version $Revision: 1.18 $ $Date: 2004/07/05 14:16:41 $
+ * @version $Revision: 1.19 $ $Date: 2004/07/06 08:39:39 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
 public class CmsSearchIndex {
-  
+
     /** Manual rebuild as default value. */
     public static final String C_DEFAULT_REBUILD = "manual";
-    
+
     /** Automatic rebuild. */
-    public static final String C_AUTO_REBUILD = "auto";    
+    public static final String C_AUTO_REBUILD = "auto";
 
     /** The incremental mode for this index. */
     private boolean m_incremental;
-    
+
     /** The language filter of this index. */
     private String m_locale;
-    
+
     /** The name of this index. */
     private String m_name;
-                
+
     /** Path to index data. */
     private String m_path;
-    
+
     /** The project of this index. */
     private String m_project;
 
@@ -132,19 +94,19 @@ public class CmsSearchIndex {
 
     /** Documenttypes of folders/channels. */
     private Map m_documenttypes;
-    
-    /** The configures sources for this index. */ 
+
+    /** The configures sources for this index. */
     private List m_sourceNames;
-    
+
     /**
      * Creates a new CmsSearchIndex.<p>
      */
     public CmsSearchIndex() {
-        
+
         m_sourceNames = new ArrayList();
         m_documenttypes = new HashMap();
     }
-    
+
     /**
      * Initializes the search index.<p>
      */
@@ -160,20 +122,20 @@ public class CmsSearchIndex {
             OpenCms.getSearchManager().getDirectory() + "/" + m_name);
 
         for (int i = 0, n = m_sourceNames.size(); i < n; i++) {
-            
+
             sourceName = (String)m_sourceNames.get(i);
             indexSource = OpenCms.getSearchManager().getIndexSource(sourceName);
             resourceNames = indexSource.getResourcesNames();
             searchIndexSourceDocumentTypes = indexSource.getDocumentTypes();
-            
+
             for (int j = 0, m = resourceNames.size(); j < m; j++) {
-                
+
                 resourceName = (String)resourceNames.get(j);
                 m_documenttypes.put(resourceName, searchIndexSourceDocumentTypes);
             }
         }
     }
-    
+
     /**
      * Returns the excerpt of a given resource.<p>
      *  
@@ -183,46 +145,51 @@ public class CmsSearchIndex {
      * @throws CmsException if something goes wrong
      */
     public String getExcerpt(CmsSearchResult result) throws CmsException {
-        
+
         String excerpt = null;
-        
+
         Analyzer analyzer = null;
         Query query = null;
         CmsHighlightExtractor highlighter = null;
         String rawContent = null;
-        
+
         try {
             analyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
             query = QueryParser.parse(result.getQuery(), I_CmsDocumentFactory.DOC_CONTENT, analyzer);
-            highlighter= new CmsHighlightExtractor(new CmsHtmlHighlighter(), query, analyzer);
-            
+            highlighter = new CmsHighlightExtractor(new CmsHtmlHighlighter(), query, analyzer);
+
             rawContent = result.getRawContent();
-         
-            if (rawContent!= null) {
-            
-                int highlightFragmentSizeInBytes=60;
-                int maxNumFragmentsRequired=5;
-                String fragmentSeparator=".. ";
-            
-                excerpt =
-                    highlighter.getBestFragments(
-                        rawContent,
-                        highlightFragmentSizeInBytes,
-                        maxNumFragmentsRequired,
-                        fragmentSeparator);
+
+            if (rawContent != null) {
+
+                int highlightFragmentSizeInBytes = 60;
+                int maxNumFragmentsRequired = 5;
+                String fragmentSeparator = ".. ";
+
+                excerpt = highlighter.getBestFragments(
+                    rawContent,
+                    highlightFragmentSizeInBytes,
+                    maxNumFragmentsRequired,
+                    fragmentSeparator);
                 excerpt = excerpt.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
             }
-           
+
         } catch (Exception exc) {
-            String message="[Analyzer: "+analyzer+"][Query: "+query+"][CmsHighlightExtractor: "+highlighter+"][RawContent: ";
-            if (rawContent!=null) {
-                message += rawContent.length()+"]";
+            String message = "[Analyzer: "
+                + analyzer
+                + "][Query: "
+                + query
+                + "][CmsHighlightExtractor: "
+                + highlighter
+                + "][RawContent: ";
+            if (rawContent != null) {
+                message += rawContent.length() + "]";
             } else {
-                message += rawContent+"]";
+                message += rawContent + "]";
             }
             throw new CmsException(message, exc);
         }
-        
+
         return excerpt;
     }
 
@@ -232,9 +199,10 @@ public class CmsSearchIndex {
      * @return the index manager
      */
     protected CmsSearchManager getIndexManager() {
+
         return OpenCms.getSearchManager();
     }
-        
+
     /**
      * Returns a new index writer for this index.<p>
      * 
@@ -242,14 +210,14 @@ public class CmsSearchIndex {
      * @throws CmsIndexException if something goes wrong
      */
     public IndexWriter getIndexWriter() throws CmsIndexException {
-        
+
         IndexWriter indexWriter;
         Analyzer analyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
-        
+
         try {
-            
+
             File f = new File(m_path);
-            
+
             if (f.exists()) {
                 indexWriter = new IndexWriter(m_path, analyzer, !m_incremental);
             } else {
@@ -257,16 +225,16 @@ public class CmsSearchIndex {
                 if (f != null && !f.exists()) {
                     f.mkdir();
                 }
-        
+
                 indexWriter = new IndexWriter(m_path, analyzer, true);
             }
-                    
+
         } catch (Exception exc) {
             throw new CmsIndexException("Can't create IndexWriter for " + m_name, exc);
         }
-        
-        return indexWriter;    
-    }      
+
+        return indexWriter;
+    }
 
     /**
      * Gets the langauge of this index.<p>
@@ -274,7 +242,8 @@ public class CmsSearchIndex {
      * @return the language of the index, i.e. de
      */
     public String getLocale() {
-        return m_locale;    
+
+        return m_locale;
     }
 
     /**
@@ -283,17 +252,19 @@ public class CmsSearchIndex {
      * @return the name of the index
      */
     public String getName() {
+
         return m_name;
     }
-    
+
     /**
      * Gets the project of this index.<p>
      * 
      * @return the project of the index, i.e. "online"
      */
     public String getProject() {
-        return m_project;    
-    }   
+
+        return m_project;
+    }
 
     /**
      * Get the rebuild mode of this index.<p>
@@ -301,9 +272,10 @@ public class CmsSearchIndex {
      * @return the current rebuild mode
      */
     public String getRebuildMode() {
+
         return m_rebuild;
     }
-    
+
     /**
      * Gets the set of documenttypes of a folder or channel.<p>
      * The set contains Strings with the names of the documenttypes.
@@ -312,6 +284,7 @@ public class CmsSearchIndex {
      * @return the name set of documenttypes of a folder
      */
     public Set getDocumenttypes(String path) {
+
         Set documenttypes = null;
         if (m_documenttypes != null) {
             documenttypes = (Set)m_documenttypes.get(path);
@@ -320,8 +293,8 @@ public class CmsSearchIndex {
             documenttypes = OpenCms.getSearchManager().getDocumentTypes();
         }
         return documenttypes;
-    }      
-    
+    }
+
     /**
      * Performs a search on the index within the given fields.<p>
      * 
@@ -352,9 +325,9 @@ public class CmsSearchIndex {
             + m_name
             + "_"
             + searchQuery
-            + "_"            
+            + "_"
             + searchRoot
-            + "_"            
+            + "_"
             + fields;
 
         result = (ArrayList)searchCache.get(key);
@@ -444,7 +417,7 @@ public class CmsSearchIndex {
         searchCache.put(key, result);
         return result;
     }
-    
+
     /**
      * Returns a A_CmsIndexResource for a specified Lucene search result document.<p>
      * 
@@ -486,65 +459,65 @@ public class CmsSearchIndex {
 
         return result;
     }
-    
+
     /**
      * Adds a source name to this search index.<p>
      * 
      * @param sourceName a source name
      */
     public void addSourceName(String sourceName) {
-        
+
         m_sourceNames.add(sourceName);
     }
-    
+
     /**
      * Sets the logical key/name of this search index.<p>
      * 
      * @param name the logical key/name of this search index
      */
     public void setName(String name) {
-        
+
         m_name = name;
     }
-    
+
     /**
      * Sets the rebuild mode of this search index.<p>
      * 
      * @param rebuildMode the rebuild mode of this search index {auto|manual}
      */
     public void setRebuildMode(String rebuildMode) {
-        
+
         m_rebuild = rebuildMode;
     }
-    
+
     /**
      * Sets the name of the project used to index resources.<p>
      * 
      * @param projectName the name of the project used to index resources
      */
     public void setProjectName(String projectName) {
-        
+
         m_project = projectName;
     }
-    
+
     /**
      * Sets the locale to index resources.<p>
      * 
      * @param locale the locale to index resources
      */
     public void setLocale(String locale) {
-        
+
         m_locale = locale;
     }
-    
+
     /**
      * Returns all configured sources names of this search index.<p>
      * 
      * @return a list with all configured sources names of this search index
      */
     public List getSourceNames() {
-        
+
         return m_sourceNames;
     }
-        
+
 }

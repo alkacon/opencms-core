@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2004/07/05 14:16:41 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/07/06 08:39:39 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.search;
 
 import org.opencms.file.CmsFolder;
@@ -48,61 +49,66 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 
 /**
- * Implements the indexing of vfs data.<p>
+ * Implementation for an indexer indexing VFS Cms resources.<p>
  * 
- * @version $Revision: 1.11 $ $Date: 2004/07/05 14:16:41 $
+ * @version $Revision: 1.12 $ $Date: 2004/07/06 08:39:39 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
 public class CmsVfsIndexer implements I_CmsIndexer {
-        
+
     /** The writer. */
     private IndexWriter m_writer;
-    
+
     /** The index. */
     private CmsSearchIndex m_index;
-    
+
     /** The report. */
     private I_CmsReport m_report;
-    
+
     /** The thread manager. */
     private CmsIndexingThreadManager m_threadManager;
 
     /**
      * @see org.opencms.search.I_CmsIndexer#init(org.opencms.report.I_CmsReport, org.opencms.search.CmsSearchIndex, org.opencms.search.CmsSearchIndexSource, org.apache.lucene.index.IndexWriter, org.opencms.search.CmsIndexingThreadManager)
      */
-    public void init(I_CmsReport report, CmsSearchIndex index, CmsSearchIndexSource indexSource, IndexWriter writer, CmsIndexingThreadManager threadManager) {
-        
+    public void init(
+        I_CmsReport report,
+        CmsSearchIndex index,
+        CmsSearchIndexSource indexSource,
+        IndexWriter writer,
+        CmsIndexingThreadManager threadManager) {
+
         m_writer = writer;
         m_index = index;
         m_report = report;
-        m_threadManager = threadManager;          
+        m_threadManager = threadManager;
     }
-    
+
     /**
      * @see org.opencms.search.I_CmsIndexer#updateIndex(CmsObject, java.lang.String)
      */
     public void updateIndex(CmsObject cms, String path) throws CmsIndexException {
-                
+
         boolean folderReported = false;
         List resources = null;
         CmsResource res = null;
-        
+
         try {
-            if (CmsResource.isFolder(path)) {            
+            if (CmsResource.isFolder(path)) {
                 resources = cms.getResourcesInFolder(path, CmsResourceFilter.DEFAULT);
             } else {
                 resources = Collections.EMPTY_LIST;
             }
-            
+
             for (int i = 0; i < resources.size(); i++) {
-                
+
                 res = (CmsResource)resources.get(i);
-                if (res instanceof CmsFolder) {                    
+                if (res instanceof CmsFolder) {
                     updateIndex(cms, cms.getRequestContext().removeSiteRoot(res.getRootPath()));
                     continue;
-                } 
+                }
 
                 if (m_report != null && !folderReported) {
                     m_report.print(m_report.key("search.indexing_folder"), I_CmsReport.C_FORMAT_NOTE);
@@ -111,46 +117,50 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 }
 
                 if (m_report != null) {
-                    m_report.print("( " + (m_threadManager.getCounter()+1) + " ) ", I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print("( " + (m_threadManager.getCounter() + 1) + " ) ", I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(m_report.key("search.indexing_file_begin"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(res.getName(), I_CmsReport.C_FORMAT_DEFAULT);
                     m_report.print(m_report.key("search.dots"), I_CmsReport.C_FORMAT_DEFAULT);
                 }
-                
-                A_CmsIndexResource ires = new CmsVfsIndexResource(res); 
+
+                A_CmsIndexResource ires = new CmsVfsIndexResource(res);
                 m_threadManager.createIndexingThread(m_writer, ires, m_index);
             }
-            
+
         } catch (CmsIndexException exc) {
-            
+
             if (m_report != null) {
                 m_report.println();
-                m_report.println(m_report.key("search.indexing_file_failed") + " : " + exc.getMessage(), 
-                        I_CmsReport.C_FORMAT_WARNING);
+                m_report.println(
+                    m_report.key("search.indexing_file_failed") + " : " + exc.getMessage(),
+                    I_CmsReport.C_FORMAT_WARNING);
             }
             if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn("Failed to index " + path, exc);
             }
 
         } catch (CmsException exc) {
-            
+
             if (m_report != null) {
-                m_report.println(m_report.key("search.indexing_folder") + path + m_report.key("search.indexing_folder_failed") + " : " + exc.getMessage(), 
-                        I_CmsReport.C_FORMAT_WARNING);
+                m_report.println(m_report.key("search.indexing_folder")
+                    + path
+                    + m_report.key("search.indexing_folder_failed")
+                    + " : "
+                    + exc.getMessage(), I_CmsReport.C_FORMAT_WARNING);
             }
             if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn("Failed to index " + path, exc);
             }
 
         } catch (Exception exc) {
-            
+
             if (m_report != null) {
                 m_report.println(m_report.key("search.indexing_folder_failed"), I_CmsReport.C_FORMAT_WARNING);
             }
             if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn("Failed to index " + path, exc);
             }
-            
+
             throw new CmsIndexException("Indexing contents of " + path + " failed.", exc);
         }
     }
@@ -179,5 +189,5 @@ public class CmsVfsIndexer implements I_CmsIndexer {
 
         return result;
     }
-    
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/07/06 08:39:39 $
+ * Version: $Revision: 1.6 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -57,14 +57,14 @@ import org.opencms.file.CmsObject;
  * Implements methods to utilize a report thread for <code>CmsIndexingReport</code>.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.3.1
  */
 public class CmsIndexingReportThread extends A_CmsReportThread {
 
     /** The name of the index to refresh or null for all indexes. */
     private String m_indexName;
-    
+
     /** The last error occured. */
     private Throwable m_error;
 
@@ -74,15 +74,15 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      * @param cms the current OpenCms context object
      */
     public CmsIndexingReportThread(CmsObject cms) {
-        
+
         super(cms, "OpenCms: Reindexing all");
         initHtmlReport(cms.getRequestContext().getLocale());
-        
+
         m_indexName = null;
-        
+
         start();
     }
-    
+
     /**
      * Creates an indexing thread for refreshing a single index.<p>
      * 
@@ -90,21 +90,22 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      * @param indexName the name of the index to refresh
      */
     public CmsIndexingReportThread(CmsObject cms, String indexName) {
-        
+
         super(cms, "OpenCms: Reindexing " + indexName);
         initHtmlReport(cms.getRequestContext().getLocale());
-                
+
         m_indexName = indexName;
-        
+
         start();
     }
-    
+
     /**
      * Returns the last error.<p>
      * 
      * @see org.opencms.report.A_CmsReportThread#getError()
      */
     public Throwable getError() {
+
         return m_error;
     }
 
@@ -114,6 +115,7 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
+
         return getReport().getReportUpdate();
     }
 
@@ -122,29 +124,29 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      * 
      * @see java.lang.Runnable#run()
      */
-    public void run() {     
-        
+    public void run() {
+
         getReport().println(getReport().key("search.indexing_rebuild_begin"), I_CmsReport.C_FORMAT_HEADLINE);
         try {
-            
+
             if (m_indexName == null) {
-                OpenCms.getSearchManager().updateIndex(getReport());              
+                OpenCms.getSearchManager().updateIndex(getReport());
             } else {
-                OpenCms.getSearchManager().updateIndex(m_indexName, getReport());   
+                OpenCms.getSearchManager().updateIndex(m_indexName, getReport());
             }
             getReport().println(getReport().key("search.indexing_rebuild_finished"), I_CmsReport.C_FORMAT_HEADLINE);
-            
+
         } catch (CmsException exc) {
-            
+
             if (exc.getType() == CmsException.C_NOT_FOUND) {
                 getReport().println(getReport().key("search.indexing_missing_config"), I_CmsReport.C_FORMAT_NOTE);
             } else {
                 getReport().println(getReport().key("search.indexing_failed"), I_CmsReport.C_FORMAT_WARNING);
                 getReport().println(exc);
             }
-            
+
             m_error = exc;
-        } 
+        }
     }
-        
+
 }

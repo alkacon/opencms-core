@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2004/07/05 14:16:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/07/06 08:39:39 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.search;
 
 import org.opencms.i18n.CmsEncoder;
@@ -57,7 +58,7 @@ import java.util.TreeMap;
  * <li>contentdefinition - the name of the content definition class of a cos resource</li>
  * </ul>
  * 
- * @version $Revision: 1.8 $ $Date: 2004/07/05 14:16:41 $
+ * @version $Revision: 1.9 $ $Date: 2004/07/06 08:39:39 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -67,69 +68,70 @@ public class CmsSearch {
     /** The cms object. */
     CmsObject m_cms;
 
-    /** The list of fields to search. */    
+    /** The list of fields to search. */
     String m_fields;
-    
+
     /** The index to search. */
     CmsSearchIndex m_index;
-    
+
     /** The name of the search index. */
     String m_indexName;
-    
+
     /** The current query. */
     String m_query;
-    
+
     /** The minimum length of the search query. */
     int m_queryLength = -1;
-    
+
     /** The current search result. */
     List m_result;
 
     /** The latest exception. */
     Exception m_exc;
-    
+
     /** The current result page. */
     int m_page;
-    
+
     /** The number of matches per page. */
     int m_matchesPerPage = -1;
-    
+
     /** The number of pages for the result list. */
     int m_pageCount;
-    
+
     /** The number of displayed pages returned by getPageLinks(). */
     int m_displayPages = -1;
-    
+
     /** The URL which leads to the previous result page. */
     String m_prevUrl;
-    
-    /** The URL which leads to the next result page. */    
+
+    /** The URL which leads to the next result page. */
     String m_nextUrl;
-    
+
     /** The search parameter String. */
     String m_searchParameters;
-    
+
     /** The search root. */
     String m_searchRoot;
-        
+
     /**
      * Default constructor, used to instanciate the search facility as a bean.<p>
      */
-    public CmsSearch () {
-        
+    public CmsSearch() {
+
         super();
         m_searchRoot = "";
-    } 
-    
+    }
+
     /**
      * Returns the maximum number of pages which should be shown.<p> 
      * 
      * @return the maximum number of pages which should be shown
      */
     public int getDisplayPages() {
+
         return m_displayPages;
     }
-    
+
     /**
      * Sets the maximum number of pages which should be shown.<p>
      * 
@@ -138,24 +140,27 @@ public class CmsSearch {
      * @param value the maximum number of pages which should be shown
      */
     public void setDisplayPages(int value) {
+
         m_displayPages = value;
     }
-    
+
     /**
      * Gets the current fields list.<p>
      * 
      * @return the fields to search
      */
     public String getFields() {
+
         return m_fields;
     }
-    
+
     /**
      * Gets the name of the current search index.<p>
      * 
      * @return the name of the index
      */
-    public String getIndex () {
+    public String getIndex() {
+
         return m_indexName;
     }
 
@@ -164,45 +169,51 @@ public class CmsSearch {
      * 
      * @return the exception occured in a search operation or null
      */
-    public Exception getLastException () {
+    public Exception getLastException() {
+
         return m_exc;
-    } 
-    
+    }
+
     /**
      * Gets the number of matches displayed on each page.<p>
      * 
      * @return matches per result page
      */
     public int getMatchesPerPage() {
-            return m_matchesPerPage;
+
+        return m_matchesPerPage;
     }
-    
+
     /**
      * Gets the URL for the link to the next result page.<p>
      * 
      * @return the URL to the next result page
      */
     public String getNextUrl() {
+
         return m_nextUrl;
     }
-    
+
     /**
      * Gets the current result page.<p>
      * 
      * @return the current result page
      */
     public int getPage() {
+
         return m_page;
     }
-       
+
     /**
      * Creates a sorted map of URLs to link to other search result pages.<p>
      * 
-     * The key values are Integers representing the page number, the entry holds the corresponding link.<p>
+     * The key values are Integers representing the page number, the entry 
+     * holds the corresponding link.<p>
      *  
      * @return a map with String URLs
      */
     public Map getPageLinks() {
+
         Map links = new TreeMap();
         if (m_pageCount <= 1) {
             return links;
@@ -239,47 +250,51 @@ public class CmsSearch {
                 endIndex = m_pageCount;
             }
         }
-        
+
         // build the sorted tree map of page links
-        for (int i=startIndex; i<=endIndex; i++) {
+        for (int i = startIndex; i <= endIndex; i++) {
             links.put(new Integer(i), (link + i));
         }
         return links;
     }
-    
+
     /**
      * Gets the URL for the link to the previous result page.<p>
      * 
      * @return the URL to the previous result page
      */
     public String getPreviousUrl() {
+
         return m_prevUrl;
-    }   
-    
+    }
+
     /**
      * Gets the current search query.<p>
      * 
      * @return the current query string or null if no query was set before
      */
-    public String getQuery () {
+    public String getQuery() {
+
         return m_query;
     }
-    
+
     /**
      * Gets the minimum search query length.<p>
      * 
      * @return the minimum search query length
      */
     public int getQueryLength() {
+
         return m_queryLength;
     }
-    
+
     /**
      * Creates a String with the necessary search parameters for page links.<p>
      * 
      * @return String with search parameters
      */
     public String getSearchParameters() {
+
         if (m_searchParameters == null) {
             StringBuffer params = new StringBuffer(128);
             params.append("?action=search&query=");
@@ -298,7 +313,7 @@ public class CmsSearch {
             return m_searchParameters;
         }
     }
-    
+
     /**
      * Gets the search result for the current query.<p>
      * 
@@ -307,24 +322,24 @@ public class CmsSearch {
     public List getSearchResult() {
 
         if (m_cms != null && m_result == null && m_index != null && m_query != null && !"".equals(m_query.trim())) {
-            
+
             if ((this.getQueryLength() > 0) && (m_query.trim().length() < this.getQueryLength())) {
-                
+
                 m_exc = new CmsSearchException("Search query too short, enter at least "
                     + this.getQueryLength()
                     + " characters!");
-                
+
                 return m_result;
             }
-            
+
             try {
                 m_result = m_index.search(m_cms, m_searchRoot, m_query, m_fields);
             } catch (Exception exc) {
-                
+
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("[" + this.getClass().getName() + "] " + "Searching failed", exc);
                 }
-                
+
                 m_result = null;
                 m_exc = exc;
             }
@@ -332,13 +347,14 @@ public class CmsSearch {
 
         return m_result;
     }
-    
+
     /**
      * Gets the search result for the current query and the current page.<p>
      * 
      * @return the search result for the current page (may be empty) or null if no index or query was set before
      */
     public List getSearchResultForPage() {
+
         if (this.getMatchesPerPage() < 0) {
             return getSearchResult();
         }
@@ -346,7 +362,7 @@ public class CmsSearch {
             this.setPage(1);
         }
         List result = new ArrayList(this.getMatchesPerPage());
-        
+
         // get the complete list of search results
         if (m_result == null) {
             getSearchResult();
@@ -354,15 +370,15 @@ public class CmsSearch {
                 return null;
             }
         }
-        
+
         // calculate the start and end index for the current page
         int startIndex = (this.getPage() - 1) * this.getMatchesPerPage();
         int endIndex = this.getPage() * this.getMatchesPerPage();
-        
+
         // calculate the number of pages for the result list and the previous and next URLs
         if (this.getMatchesPerPage() < 1) {
             m_pageCount = 1;
-        } else { 
+        } else {
             m_pageCount = m_result.size() / this.getMatchesPerPage();
             if ((m_result.size() % this.getMatchesPerPage()) != 0) {
                 m_pageCount++;
@@ -375,16 +391,16 @@ public class CmsSearch {
         if (this.getPage() < m_pageCount) {
             m_nextUrl = url + (this.getPage() + 1);
         }
-        
+
         // create the result list for the current page
-        for (int i=startIndex; i<endIndex; i++) {
-           try { 
+        for (int i = startIndex; i < endIndex; i++) {
+            try {
                 result.add(m_result.get(i));
-           } catch (IndexOutOfBoundsException e) {
-               // end of list reached, interrupt loop
-               break;
-           }
-        }       
+            } catch (IndexOutOfBoundsException e) {
+                // end of list reached, interrupt loop
+                break;
+            }
+        }
         return result;
     }
 
@@ -393,7 +409,8 @@ public class CmsSearch {
      * 
      * @param cms the cms object
      */
-    public void init (CmsObject cms) {
+    public void init(CmsObject cms) {
+
         m_cms = cms;
         m_result = null;
         m_exc = null;
@@ -401,20 +418,22 @@ public class CmsSearch {
         m_nextUrl = null;
         m_prevUrl = null;
         m_searchParameters = null;
-        
+
         if (m_indexName != null) {
             setIndex(m_indexName);
         }
     }
-    
+
     /**
-     * Method to replace a subString with replaceItem.
+     * Method to replace a subString with replaceItem.<p>
+     * 
      * @param testString the original String
      * @param searchString the subString that has to be replaced
      * @param replaceItem the String that replaces searchString
      * @return String with replaced subStrings
      */
     private String replaceString(String testString, String searchString, String replaceItem) {
+
         /* if searchString isn't in testString, return (better performance) */
         if (testString.indexOf(searchString) == -1) {
             return testString;
@@ -426,7 +445,7 @@ public class CmsSearch {
         while (searchIndex != -1) {
             returnString.append(testString.substring(0, searchIndex));
             returnString.append(replaceItem);
-            tempIndex = searchIndex+searchLen;
+            tempIndex = searchIndex + searchLen;
             testString = testString.substring(tempIndex);
             searchIndex = testString.indexOf(searchString);
         }
@@ -436,90 +455,100 @@ public class CmsSearch {
 
     /**
      * Sets the fields to search.<p>
+     * 
      * Syntax and fieldnames depend on the search engine used.
-     * A former search result will be deleted.
+     * A former search result will be deleted.<p>
      * 
      * @param fields the fields to search
-     */ 
-    public void setField (String[] fields) {
-        
+     */
+    public void setField(String[] fields) {
+
         StringBuffer fBuf = new StringBuffer();
         for (int i = 0; i < fields.length; i++) {
             fBuf.append(fields[i]);
             fBuf.append(" ");
-        }    
-        m_fields = fBuf.toString(); 
+        }
+        m_fields = fBuf.toString();
         m_result = null;
-        m_exc = null;    
+        m_exc = null;
     }
-    
+
     /**
      * Set the name of the index to search.<p>
-     * A former search result will be deleted.
+     * 
+     * A former search result will be deleted.<p>
      * 
      * @param indexName the name of the index
      */
-    public void setIndex (String indexName) {
+    public void setIndex(String indexName) {
+
         m_indexName = indexName;
         m_result = null;
         m_index = null;
         m_exc = null;
-        
+
         if (m_cms != null && indexName != null && !"".equals(indexName)) {
-            try {       
+            try {
                 m_index = OpenCms.getSearchManager().getIndex(indexName);
                 if (m_index == null) {
-                    throw new CmsException("Index " + indexName + " not found");    
+                    throw new CmsException("Index " + indexName + " not found");
                 }
             } catch (Exception exc) {
                 if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("[" + this.getClass().getName() + "] " + "Accessing index " + indexName + " failed", exc); 
+                    OpenCms.getLog(this).debug(
+                        "[" + this.getClass().getName() + "] " + "Accessing index " + indexName + " failed",
+                        exc);
                 }
                 m_exc = exc;
             }
         }
     }
-    
+
     /**
      * Sets the number of matches per page.<p>
      * 
      * @param matches the number of matches per page
      */
     public void setMatchesPerPage(int matches) {
+
         m_matchesPerPage = matches;
     }
-    
+
     /**
      * Sets the current result page.<p>
      * 
      * @param page the current result page
      */
     public void setPage(int page) {
+
         m_page = page;
     }
-    
+
     /**
      * Sets the search query.<p>
+     * 
      * The syntax of the query depends on the search engine used. 
-     * A former search result will be deleted.
+     * A former search result will be deleted.<p>
      * 
      * @param query the search query (escaped format)
      */
-    public void setQuery (String query) {
+    public void setQuery(String query) {
+
         m_query = CmsEncoder.unescape(query, null);
         m_result = null;
         m_exc = null;
     }
-    
+
     /**
      * Sets the minimum length of the search query.<p>
      * 
      * @param length the minimum search query length
      */
     public void setQueryLength(int length) {
+
         m_queryLength = length;
     }
-    
+
     /**
      * Returns the search root.<p>
      * 
@@ -534,6 +563,7 @@ public class CmsSearch {
 
         return m_searchRoot;
     }
+
     /**
      * Sets the search root.<p>
      * 
