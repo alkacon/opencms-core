@@ -16,7 +16,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/02/03 10:08:49 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/03 14:36:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -122,7 +122,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
     private final static String C_STYLE_UNCHANGED="dateingeaendert";
 
     /** The style for files or folders not in project*/
-    private final static String C_STYLE_NOTINPROJECT="dateintproject";
+    private final static String C_STYLE_NOTINPROJECT="dateintprojekt";
     
     /** The style for new files or folders */
     private final static String C_STYLE_NEW="dateineu";
@@ -203,6 +203,8 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             StringBuffer output=new StringBuffer();  
             String foldername;
             String currentFolder;
+            
+            String servlets=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
             
             //get the template
             CmsXmlWpTemplateFile template=(CmsXmlWpTemplateFile)doc;
@@ -289,7 +291,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     // Set output style class according to the project and state of the file.
                     template.setXmlData(C_CLASS_VALUE,getStyle(cms,file));        
                     // set the link
-                    template.setXmlData(C_LINK_VALUE,file.getName());  
+                    template.setXmlData(C_LINK_VALUE,servlets+file.getAbsolutePath());  
                     // set the lock icon if nescessary
                     template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,file,template,lang),this));                      
                     // set the filename
@@ -551,7 +553,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      private String getStyle(A_CmsObject cms, CmsResource file) {
          StringBuffer output=new StringBuffer();
          // check if the resource is in the actual project
-         if (file.inProject(cms.getRequestContext().currentProject())) {
+         if (!file.inProject(cms.getRequestContext().currentProject())) {
+             output.append(C_STYLE_NOTINPROJECT); 
+         }else {         
             int style=file.getState();
             switch (style) {
             case 0: output.append(C_STYLE_UNCHANGED);
@@ -564,8 +568,6 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                      break;
             default: output.append(C_STYLE_UNCHANGED);
             }
-         } else {
-            output.append(C_STYLE_NOTINPROJECT);
          }
          return output.toString();
      }
