@@ -1,0 +1,16 @@
+package com.opencms.util;
+
+import com.opencms.core.*;
+import com.opencms.file.*;
+
+public interface I_PasswordValidation {
+
+    /**
+     * The method to check the password.
+     *
+     * @param cms The CmsObject
+     * @param password the password to check
+     * @param oldPassword the old password.
+     */
+    public void checkNewPassword(CmsObject cms, String password, String oldPassword)throws CmsException;
+}

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/07/01 11:07:02 $
-* Version: $Revision: 1.179 $
+* Date   : $Date: 2002/07/04 09:58:37 $
+* Version: $Revision: 1.180 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.179 $ $Date: 2002/07/01 11:07:02 $
+ * @version $Revision: 1.180 $ $Date: 2002/07/04 09:58:37 $
  *
  */
 
@@ -184,7 +184,7 @@ public interface I_CmsResourceBroker {
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public CmsUser addUser(CmsUser currentUser, CmsProject currentProject,
+    public CmsUser addUser(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                              String name, String password,
                       String group, String description,
                       Hashtable additionalInfos, int flags)
@@ -262,7 +262,7 @@ public interface I_CmsResourceBroker {
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public CmsUser addWebUser(CmsUser currentUser, CmsProject currentProject,
+    public CmsUser addWebUser(CmsObject cms,CmsUser currentUser, CmsProject currentProject,
                              String name, String password,
                       String group, String description,
                       Hashtable additionalInfos, int flags)
@@ -288,7 +288,7 @@ public interface I_CmsResourceBroker {
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public CmsUser addWebUser(CmsUser currentUser, CmsProject currentProject,
+    public CmsUser addWebUser(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                              String name, String password,
                              String group, String additionalGroup, String description,
                              Hashtable additionalInfos, int flags)
@@ -3053,7 +3053,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public void recoverPassword(CmsUser currentUser, CmsProject currentProject,
+    public void recoverPassword(CmsObject cms,CmsUser currentUser, CmsProject currentProject,
                             String username, String recoveryPassword, String newPassword)
         throws CmsException;
     /**
@@ -3178,7 +3178,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public void setPassword(CmsUser currentUser, CmsProject currentProject,
+    public void setPassword(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                             String username, String newPassword)
         throws CmsException;
     /**
@@ -3197,7 +3197,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public void setPassword(CmsUser currentUser, CmsProject currentProject,
+    public void setPassword(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                             String username, String oldPassword, String newPassword)
         throws CmsException;
      /**
@@ -3233,7 +3233,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public void setRecoveryPassword(CmsUser currentUser, CmsProject currentProject,
+    public void setRecoveryPassword(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                                     String username, String password, String newPassword)
         throws CmsException;
      /**

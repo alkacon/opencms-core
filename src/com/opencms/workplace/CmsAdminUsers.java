@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2002/02/08 13:51:21 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2002/07/04 09:58:37 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.20 $ $Date: 2002/02/08 13:51:21 $
+ * @version $Revision: 1.21 $ $Date: 2002/07/04 09:58:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -293,10 +293,9 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                                     throw new CmsException("unequal passwords",
                                             CmsException.C_SHORT_PASSWORD);
                                 }
-                                if(pwd.length() < C_PASSWORD_MINIMUMSIZE) {
-                                    throw new CmsException("password too short",
-                                            CmsException.C_SHORT_PASSWORD);
-                                }
+                                // check the password
+                                Utils.validateNewPassword(cms, pwd, null);
+
                                 Hashtable additionalInfo = new Hashtable();
 
                                 // additionalInfo.put(C_ADDITIONAL_INFO_ZIPCODE, zipcode);
@@ -342,7 +341,9 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                                         if(e.getMessage().equals("password too short")) {
                                             templateSelector = "passworderror2";
                                         }else {
-                                            throw e;
+                                            xmlTemplateDocument.setData("reasonOfError", e.getMessage());
+                                            xmlTemplateDocument.setData("perspective", "newuser");
+                                            templateSelector = "passworderror5";
                                         }
                                     }
                                 }else {
@@ -450,10 +451,6 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                                                 CmsException.C_SHORT_PASSWORD);
                                     }
                                     if(!pwd.equals("")) {
-                                        if(pwd.length() < C_PASSWORD_MINIMUMSIZE) {
-                                            throw new CmsException("password too short",
-                                                    CmsException.C_SHORT_PASSWORD);
-                                        }
                                         cms.setPassword(user, pwd);
                                     } // if nothing is entered don't change the password
                                     CmsUser theUser = (CmsUser)cms.readUser(user);
@@ -504,8 +501,9 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                                             if(e.getMessage().equals("password too short")) {
                                                 templateSelector = "passworderror4";
                                             }else {
-                                                session.putValue("ERROR", new String("yes"));
-                                                throw e;
+                                                xmlTemplateDocument.setData("reasonOfError", e.getMessage());
+                                                xmlTemplateDocument.setData("perspective", "changeuser");
+                                                templateSelector = "passworderror5";
                                             }
                                         }
                                     }else {

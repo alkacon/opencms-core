@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
-* Date   : $Date: 2002/05/10 20:10:42 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2002/07/04 09:58:36 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import java.util.*;
  * This exception is thrown for security reasons in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.45 $ $Date: 2002/05/10 20:10:42 $
+ * @version $Revision: 1.46 $ $Date: 2002/07/04 09:58:36 $
  */
 public class CmsException extends Exception {
 
@@ -201,6 +201,12 @@ public class CmsException extends Exception {
     public final static int C_SHORT_PASSWORD = 30;
 
     /**
+     * Definition of error code for error"Password not valid".
+     * for comptibility reasons the same like for short password.
+     */
+    public final static int C_INVALID_PASSWORD = C_SHORT_PASSWORD;
+
+    /**
      * Definition of error code for access denied exception for file resources.
      * This exception causes a login-screen.
      */
@@ -237,11 +243,11 @@ public class CmsException extends Exception {
      * Definition of error code for HTTP sreaming error
      */
     public final static int C_HTTPS_REQUEST_ERROR = 38;
-    
+
     /**
      * Error code for Flex cache
      */
-    public final static int C_FLEX_CACHE = 39;    
+    public final static int C_FLEX_CACHE = 39;
     /**
      * Error code for Flex loader
      */
@@ -250,8 +256,8 @@ public class CmsException extends Exception {
      * Unspecified Flex error code
      */
     public final static int C_FLEX_OTHER = 41;
-    
-    
+
+
     public final static String C_EXTXT[] =  {
         "Unknown exception", "Access denied", "Not found",
         "Bad name", "Sql exception", "Folder not empty", "Admin access required",

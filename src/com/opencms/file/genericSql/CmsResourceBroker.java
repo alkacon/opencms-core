@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/07/01 11:07:02 $
-* Version: $Revision: 1.325 $
+* Date   : $Date: 2002/07/04 09:58:37 $
+* Version: $Revision: 1.326 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.template.*;
 import com.opencms.report.*;
+import com.opencms.util.*;
 import java.sql.SQLException;
 import java.util.zip.*;
 import org.w3c.dom.*;
@@ -55,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.325 $ $Date: 2002/07/01 11:07:02 $
+ * @version $Revision: 1.326 $ $Date: 2002/07/04 09:58:37 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -829,7 +830,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public CmsUser addUser(CmsUser currentUser, CmsProject currentProject, String name,
+    public CmsUser addUser(CmsObject cms, CmsUser currentUser, CmsProject currentProject, String name,
                            String password, String group, String description,
                            Hashtable additionalInfos, int flags)
         throws CmsException {
@@ -839,8 +840,9 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
             name = name.trim();
             // check the username
             validFilename(name);
-            // check the password minimumsize
-            if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
+            // check the password
+            Utils.validateNewPassword(cms, password, null);
+            if(name.length() > 0 ) {
                 CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
                 CmsUser newUser = m_dbAccess.addUser(name, password, description, " ", " ", " ", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", C_USER_TYPE_SYSTEMUSER);
                 addUserToGroup(currentUser, currentProject, newUser.getName(),defaultGroup.getName());
@@ -974,7 +976,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public CmsUser addWebUser(CmsUser currentUser, CmsProject currentProject,
+    public CmsUser addWebUser(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                              String name, String password,
                              String group, String description,
                              Hashtable additionalInfos, int flags)
@@ -983,8 +985,9 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
         name = name.trim();
         // check the username
         validFilename(name);
-         // check the password minimumsize
-        if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
+        // check the password
+        Utils.validateNewPassword(cms, password, null);
+        if( (name.length() > 0) ) {
                 CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
                 CmsUser newUser = m_dbAccess.addUser(name, password, description, " ", " ", " ", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", C_USER_TYPE_WEBUSER);
                 CmsUser user;
@@ -1037,7 +1040,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public CmsUser addWebUser(CmsUser currentUser, CmsProject currentProject,
+    public CmsUser addWebUser(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                              String name, String password,
                              String group, String additionalGroup,
                              String description,
@@ -1047,8 +1050,9 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
         name = name.trim();
         // check the username
         validFilename(name);
-         // check the password minimumsize
-        if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
+        // check the password
+        Utils.validateNewPassword(cms, password, null);
+        if( (name.length() > 0) ) {
             CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
             CmsUser newUser = m_dbAccess.addUser(name, password, description, " ", " ", " ", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", C_USER_TYPE_WEBUSER);
             CmsUser user;
@@ -6455,14 +6459,12 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public void recoverPassword(CmsUser currentUser, CmsProject currentProject,
+    public void recoverPassword(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                             String username, String recoveryPassword, String newPassword)
         throws CmsException {
-        // check the length of the new password.
-        if(newPassword.length() < C_PASSWORD_MINIMUMSIZE) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username,
-                CmsException.C_SHORT_PASSWORD);
-        }
+
+        // check the password
+        Utils.validateNewPassword(cms, newPassword, null);
 
         // check the length of the recovery password.
         if(recoveryPassword.length() < C_PASSWORD_MINIMUMSIZE) {
@@ -6714,14 +6716,12 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public void setPassword(CmsUser currentUser, CmsProject currentProject,
+    public void setPassword(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                             String username, String newPassword)
         throws CmsException {
-        // check the length of the new password.
-        if(newPassword.length() < C_PASSWORD_MINIMUMSIZE) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username,
-                CmsException.C_SHORT_PASSWORD);
-        }
+
+        // check the password
+        Utils.validateNewPassword(cms, newPassword, null);
 
         if( isAdmin(currentUser, currentProject) ) {
             m_dbAccess.setPassword(username, newPassword);
@@ -6746,14 +6746,12 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public void setPassword(CmsUser currentUser, CmsProject currentProject,
+    public void setPassword(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                             String username, String oldPassword, String newPassword)
         throws CmsException {
-        // check the length of the new password.
-        if(newPassword.length() < C_PASSWORD_MINIMUMSIZE) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username,
-                CmsException.C_SHORT_PASSWORD);
-        }
+
+        // check the password
+        Utils.validateNewPassword(cms, newPassword, oldPassword);
 
         // read the user
         CmsUser user;
@@ -6816,14 +6814,12 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      *
      * @exception CmsException Throws CmsException if operation was not succesfull.
      */
-    public void setRecoveryPassword(CmsUser currentUser, CmsProject currentProject,
+    public void setRecoveryPassword(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                             String username, String password, String newPassword)
         throws CmsException {
-        // check the length of the new password.
-        if(newPassword.length() < C_PASSWORD_MINIMUMSIZE) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username,
-                CmsException.C_SHORT_PASSWORD);
-        }
+
+        // check the password
+        Utils.validateNewPassword(cms, newPassword, password);
 
         // read the user
         CmsUser user;

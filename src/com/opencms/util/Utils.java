@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2002/07/01 11:07:03 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2002/07/04 09:58:37 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -527,4 +527,33 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
         }
     }
 
+    /**
+     * This method checks if a new password sticks to the rules for
+     * new passwords (i.e. a new password must have at least 4 characters).
+     * For this purpose a class defined in the opencms.properties is called.
+     * If this class throws no exception the password is ok. The default class
+     * only checks for the min 4 characters rule.
+     *
+     * @param cms The CmsObject.
+     * @param password The new password that has to be checked.
+     * @param oldPassword The old password or null if not needed.
+     *
+     * @exception CmsException is thrown if the password is not valid.
+     */
+    public static void validateNewPassword(CmsObject cms, String password, String oldPassword)throws CmsException{
+
+        // first get the class from the properties
+        String className = OpenCms.getPasswordValidatingClass();
+        try{
+            I_PasswordValidation pwClass = (I_PasswordValidation)Class.forName(className).getConstructor(new Class[] {}).newInstance(new Class[] {});
+            pwClass.checkNewPassword(cms, password, oldPassword);
+        }catch(Exception e){
+            if(e instanceof CmsException){
+                throw (CmsException)e;
+            }else{
+                throw new CmsException("could not validate password with class:"+className,
+                            CmsException.C_UNKNOWN_EXCEPTION, e);
+            }
+        }
+    }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/07/01 11:07:02 $
-* Version: $Revision: 1.235 $
+* Date   : $Date: 2002/07/04 09:58:36 $
+* Version: $Revision: 1.236 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.235 $ $Date: 2002/07/01 11:07:02 $
+ * @version $Revision: 1.236 $ $Date: 2002/07/04 09:58:36 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -237,7 +237,7 @@ public CmsGroup addGroup(String name, String description, int flags, String pare
  * @exception CmsException if operation was not successful.
  */
 public CmsUser addUser(String name, String password, String group, String description, Hashtable additionalInfos, int flags) throws CmsException {
-    return (m_rb.addUser(m_context.currentUser(), m_context.currentProject(), name, password, group, description, additionalInfos, flags));
+    return (m_rb.addUser(this, m_context.currentUser(), m_context.currentProject(), name, password, group, description, additionalInfos, flags));
 }
 
 /**
@@ -305,7 +305,7 @@ public void addUserToGroup(String username, String groupname) throws CmsExceptio
  * @exception CmsException if operation was not successful.
  */
 public CmsUser addWebUser(String name, String password, String group, String description, Hashtable additionalInfos, int flags) throws CmsException {
-    return (m_rb.addWebUser(m_context.currentUser(), m_context.currentProject(), name, password, group, description, additionalInfos, flags));
+    return (m_rb.addWebUser(this, m_context.currentUser(), m_context.currentProject(), name, password, group, description, additionalInfos, flags));
 }
 /**
  * Adds a web user to the Cms.
@@ -327,7 +327,7 @@ public CmsUser addWebUser(String name, String password, String group, String des
  * @exception CmsException if operation was not successful.
  */
 public CmsUser addWebUser(String name, String password, String group, String additionalGroup, String description, Hashtable additionalInfos, int flags) throws CmsException {
-    CmsUser newWebUser = m_rb.addWebUser(m_context.currentUser(), m_context.currentProject(), name, password, group, additionalGroup, description, additionalInfos, flags);
+    CmsUser newWebUser = m_rb.addWebUser(this, m_context.currentUser(), m_context.currentProject(), name, password, group, additionalGroup, description, additionalInfos, flags);
     return newWebUser;
 }
 /**
@@ -3415,7 +3415,7 @@ public void reaktivateTask(int taskId) throws CmsException {
  * @exception CmsException if operation was not successfull.
  */
 public void recoverPassword(String username, String recoveryPassword, String newPassword) throws CmsException {
-    m_rb.recoverPassword(m_context.currentUser(), m_context.currentProject(), username, recoveryPassword, newPassword);
+    m_rb.recoverPassword(this, m_context.currentUser(), m_context.currentProject(), username, recoveryPassword, newPassword);
 }
 /**
  * Removes a user from a group.
@@ -3549,7 +3549,7 @@ public void setParentGroup(String groupName, String parentGroupName) throws CmsE
  * @exception CmsException if operation was not successful.
  */
 public void setPassword(String username, String newPassword) throws CmsException {
-    m_rb.setPassword(m_context.currentUser(), m_context.currentProject(), username, newPassword);
+    m_rb.setPassword(this, m_context.currentUser(), m_context.currentProject(), username, newPassword);
 }
 /**
  * Sets the password for a user.
@@ -3561,7 +3561,7 @@ public void setPassword(String username, String newPassword) throws CmsException
  * @exception CmsException if operation was not successful.
  */
 public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
-    m_rb.setPassword(m_context.currentUser(), m_context.currentProject(), username, oldPassword, newPassword);
+    m_rb.setPassword(this, m_context.currentUser(), m_context.currentProject(), username, oldPassword, newPassword);
 }
 /**
  * Sets the priority of a task.
@@ -3584,7 +3584,7 @@ public void setPriority(int taskId, int priority) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void setRecoveryPassword(String username, String oldPassword, String newPassword) throws CmsException {
-    m_rb.setRecoveryPassword(m_context.currentUser(), m_context.currentProject(), username, oldPassword, newPassword);
+    m_rb.setRecoveryPassword(this, m_context.currentUser(), m_context.currentProject(), username, oldPassword, newPassword);
 }
 /**
  * Set a parameter for a task.

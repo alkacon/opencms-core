@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/07/01 11:07:02 $
-* Version: $Revision: 1.86 $
+* Date   : $Date: 2002/07/04 09:58:36 $
+* Version: $Revision: 1.87 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.86 $ $Date: 2002/07/01 11:07:02 $
+ * @version $Revision: 1.87 $ $Date: 2002/07/04 09:58:36 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -109,6 +109,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * Indicates, if the streaming should be enabled by the configurations
      */
     private boolean m_streaming = true;
+
+    /**
+     * The name of the class used to validate a new password.
+     */
+    private static String c_passwordValidatingClass = "";
 
     /**
      * Indicates, if the element cache should be enabled by the configurations
@@ -224,6 +229,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
             }
         }
+
+        // get the password validating class
+        c_passwordValidatingClass = conf.getString("passwordvalidatingclass", "com.opencms.util.PasswordValidtation");
 
         // Check, if the element cache should be enabled
         m_enableElementCache = conf.getBoolean("elementcache.enabled", false);
@@ -384,6 +392,13 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     public static CmsElementCache getOnlineElementCache(){
         return c_elementCache;
+    }
+
+    /**
+     * Gets the Class that is used for the password validation.
+     */
+    public static String getPasswordValidatingClass(){
+        return c_passwordValidatingClass;
     }
 
     /**
