@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/04/13 21:45:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/13 22:32:22 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.12 $ $Date: 2000/04/13 21:45:09 $
+ * @version $Revision: 1.13 $ $Date: 2000/04/13 22:32:22 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -82,6 +82,9 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // the template to be displayed
         String template=null;
         
+        // get the lasturl parameter
+        String lasturl = getLastUrl(cms, parameters);
+                        
         System.err.println("");
         System.err.println("#############");
         String[] names=session.getValueNames();
@@ -141,7 +144,11 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 	    		    session.removeValue(C_PARA_NAME);
                 
                     try {
-                        cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                        if(lasturl == null || "".equals(lasturl)) {
+                            cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                        } else {
+                            ((HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse())).sendRedirect(lasturl);                       
+                        }                            
                     } catch (Exception e) {
                         throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
                     }   
