@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2000/03/22 09:42:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/03/24 08:21:28 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/03/22 09:42:24 $
+ * @version $Revision: 1.4 $ $Date: 2000/03/24 08:21:28 $
  */
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -124,14 +124,15 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                 // TODO: ErrorHandling
                 
                 // now return to filelist
-                try {
+                template="update";
+               /* try {
                     cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
                 } catch (Exception e) {
                       throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
-                }
+                }*/
             }
         } else {
-            session.removeValue(C_PARA_FOLDER);
+            //session.removeValue(C_PARA_FOLDER);
         }
         // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          

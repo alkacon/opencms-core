@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
- * Date   : $Date: 2000/03/09 17:01:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/24 08:21:28 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/03/09 17:01:27 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/24 08:21:28 $
  */
 public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -350,6 +350,9 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
               (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_VISIBLE) > 0) ||
               (cms.readGroup(res).equals(cms.getRequestContext().currentGroup()) && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0)) {
              access=true;
+         }
+         if (res.getState()==C_STATE_DELETED) {
+             access=false;
          }
          return access;
      }

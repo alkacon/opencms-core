@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/03/21 16:14:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/03/24 08:21:28 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.10 $ $Date: 2000/03/21 16:14:00 $
+  * @version $Revision: 1.11 $ $Date: 2000/03/24 08:21:28 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -116,18 +116,22 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
 				    }
 			    }
                 cms.deleteFile(filename);
+                session.removeValue(C_PARA_FILE);
+                try {
+                  cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);        
+                } catch (Exception e) {
+                  throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
+                } 
             } else {               
                 cms.deleteFolder(filename);
+                session.removeValue(C_PARA_FILE);
+                template="update";
             }
             
-            session.removeValue(C_PARA_FILE);
+          
             
             // TODO: Error handling
-            try {
-                cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
-            } catch (Exception e) {
-                  throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
-            } 
+           
         }
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
