@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2004/02/26 16:14:30 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/04/07 07:39:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsRegistry;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.I_CmsReport;
 
 import java.util.Arrays;
@@ -51,7 +52,7 @@ import org.dom4j.Element;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2004/02/26 16:14:30 $
+ * @version $Revision: 1.6 $ $Date: 2004/04/07 07:39:12 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler extends Object implements I_CmsImportExportHandler {
@@ -97,7 +98,11 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
      */
     public void exportData(CmsObject cms, I_CmsReport report) throws CmsException {
         report.print(report.key("report.export_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-        report.println(" <i>" + getModuleName() + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
+        if (report instanceof CmsHtmlReport) {
+            report.println(" <i>" + getModuleName() + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
+        } else {
+            report.println(" " + getModuleName(), I_CmsReport.C_FORMAT_HEADLINE);
+        }
         
         CmsRegistry registry = cms.getRegistry();
         registry.exportModule(getModuleName(), getAdditionalResources(), getFileName(), report);
@@ -164,7 +169,11 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
             }
 
             report.print(report.key("report.import_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-            report.println(" <i>" + modulePackageName + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
+            if (report instanceof CmsHtmlReport) {
+                report.println(" <i>" + modulePackageName + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
+            } else {
+                report.println(" " + modulePackageName, I_CmsReport.C_FORMAT_HEADLINE);
+            }
 
             registry.importModule(importFile, conflictFiles, report);
 
