@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsLinkCheck.java,v $
-* Date   : $Date: 2002/07/10 07:55:55 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/07/22 12:31:14 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -133,12 +133,12 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsCo
                         if((ownerEmail == null) || ("".equals(ownerEmail.trim()))){
                             ownerEmail = (String)emailValues.get("mailto");
                         }
-                        Vector ownerLinks = null;
-                        ownerLinks = (Vector)ownerLinkList.get(ownerEmail);
+                        Hashtable ownerLinks = null;
+                        ownerLinks = (Hashtable)ownerLinkList.get(ownerEmail);
                         if(ownerLinks == null){
-                            ownerLinks = new Vector();
+                            ownerLinks = new Hashtable();
                         }
-                        ownerLinks.addElement(linkName+", "+linkUrl);
+                        ownerLinks.put(linkName,linkUrl);
                         ownerLinkList.put(ownerEmail, ownerLinks);                  
                     }
                     
@@ -161,12 +161,16 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsCo
                         StringBuffer ownerContent = new StringBuffer();
                         ownerContent.append(mailContent.toString());
                         String mailTo = (String)ownerKeys.nextElement();
-                        Vector linknames = (Vector)ownerLinkList.get(mailTo);
+                        Hashtable linknames = (Hashtable)ownerLinkList.get(mailTo);
                         // get all failed links of the owner
-                        for(int i=0; i < linknames.size(); i++){
+                        Enumeration linkKeys = linknames.keys();
+                        String singleLink = "";
+                        while(linkKeys.hasMoreElements()){
                             // set the data for the link
-                            template.setData("linkname", (String)linknames.elementAt(i));
-                            ownerContent.append(template.getProcessedDataValue("single_link"));
+                            singleLink = (String)linkKeys.nextElement();
+                            template.setData("ownerlinkname", singleLink);
+                            template.setData("ownerlinkurl", (String)linknames.get(singleLink));
+                            ownerContent.append(template.getProcessedDataValue("ownermail_link"));
                         }
                         // get the email data
                         String mailSubject = template.getProcessedDataValue("emailsubject");
