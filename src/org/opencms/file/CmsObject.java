@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/09 15:53:29 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2004/06/10 12:21:45 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  */
 public class CmsObject {
 
@@ -2436,7 +2436,7 @@ public class CmsObject {
     public String readAbsolutePath(CmsResource resource) {
         int warning = 0;
         // TODO: check where this is used and ensure proper filter is selected
-        return readAbsolutePath(resource, CmsResourceFilter.DEFAULT);
+        return readAbsolutePath(resource, CmsResourceFilter.IGNORE_EXPIRATION);
     }
 
     /**
