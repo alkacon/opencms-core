@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2004/10/15 15:09:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/22 13:18:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.ExtendedProperties;
@@ -49,7 +50,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1.11 
  */
 public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
@@ -62,6 +63,11 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     
     /**  The minimum length of a password. */
     public static final int C_PASSWORD_MINLENGTH = 4;
+
+    /*
+     * The secure random number generator.
+     */
+    private static SecureRandom prng = null;
     
     /**
      * The constructor does not perform any operation.<p>
@@ -173,24 +179,50 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     public String digest(String password, String digestType, String inputEncoding) throws CmsException {
         
         MessageDigest md;
-        byte[] result;
+        String result;
                 
-        try {     
-            if (I_CmsPasswordHandler.C_DIGEST_TYPE_PLAIN.equals(digestType.toLowerCase())) {
-                result = password.getBytes(inputEncoding);
-            } else {
-                md = MessageDigest.getInstance(digestType);
-        
+        try {
+            if (C_DIGEST_TYPE_PLAIN.equals(digestType.toLowerCase())) {
+                
+                result = password;
+                
+            } else if (C_DIGEST_TYPE_SSHA.equals(digestType.toLowerCase())) {
+                
+                byte[] salt = new byte[4];
+                byte[] digest;
+                byte[] total;
+                
+                if (prng == null) {
+                    prng = SecureRandom.getInstance ("SHA1PRNG");
+                }
+                prng.nextBytes(salt);
+                    
+                md = MessageDigest.getInstance(C_DIGEST_TYPE_SHA);
                 md.reset();
                 md.update(password.getBytes(inputEncoding));
-                result = md.digest();
-            } 
+                md.update(salt);
+                
+                digest = md.digest();
+                total = new byte[digest.length + salt.length];
+                System.arraycopy(digest, 0, total, 0, digest.length);
+                System.arraycopy(salt, 0, total, digest.length, salt.length);
+                
+                result = new String(Base64.encodeBase64(total));
+                
+            } else {
+                
+                md = MessageDigest.getInstance(digestType);
+                md.reset();
+                md.update(password.getBytes(inputEncoding));
+                result = new String(Base64.encodeBase64(md.digest()));
+                
+            }
         } catch (NoSuchAlgorithmException exc) {
             throw new CmsException("Digest algorithm " + digestType + " not supported.");
         } catch (UnsupportedEncodingException exc) {
             throw new CmsException("Password encoding " + inputEncoding + " not supported.");
         }
         
-        return new String(Base64.encodeBase64(result));
+        return result;
     }
 }
