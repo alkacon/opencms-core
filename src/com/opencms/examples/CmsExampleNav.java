@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsExampleNav.java,v $
- * Date   : $Date: 2000/03/16 13:42:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/03/22 10:29:36 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import javax.servlet.http.*;
  * the same technique, too.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/03/16 13:42:59 $
+ * @version $Revision: 1.3 $ $Date: 2000/03/22 10:29:36 $
  */
 public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
         
@@ -124,7 +124,6 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
      */
     public Object getNav(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
-
         // Reference to our own document.
         CmsExampleNavFile xmlTemplateDocument = (CmsExampleNavFile)doc;     
         
@@ -133,11 +132,13 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
         StringBuffer result = new StringBuffer();        
         
         Vector allFolders = cms.getSubFolders("/");
-        Hashtable sortedFolders = new Hashtable();
         int numFolders = allFolders.size();
         int maxfolder = 0;
 
-        
+        String folderNames[] = new String[numFolders];
+        String folderTitles[] = new String[numFolders];
+        String folderPos[] = new String[numFolders];
+                    
         // First scan all subfolders of the root folder
         // for any navigation metainformations and store
         // the maximum position found
@@ -147,82 +148,135 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
             String navpos = cms.readMetainformation(filename, C_METAINFO_NAVPOS);
             String navtext = cms.readMetainformation(filename, C_METAINFO_NAVTITLE);     
             if(currFolder.getState() != C_STATE_DELETED) { 
-                // Only list files in the nav bar if they are not deleted!
+                // Only list folders in the nav bar if they are not deleted!
                 if(navpos != null && navtext != null && (!"".equals(navpos)) && (!"".equals(navtext))
                      && ((!currFolder.getName().startsWith(C_TEMP_PREFIX)) || filename.equals(requestedUri))) {
-                    Integer npValue = new Integer(navpos);
-                    int npIntValue = npValue.intValue();
-                    if(maxfolder < npIntValue) {
-                        maxfolder = npIntValue;
-                    }
-                    sortedFolders.put(npValue, filename);
+                    folderNames[maxfolder] = filename;
+                    folderTitles[maxfolder] = navtext;
+                    folderPos[maxfolder] = navpos;
+                    maxfolder++;
                 }
             }        
         }
-        
-        // The Hashtable sortedFolders now contains all folders
-        // that should appear in the nav.
-        
-        for(int i=1; i<=maxfolder; i++) {
-            String currFolder = (String)sortedFolders.get(new Integer(i));
-            if(currFolder != null && !"".equals(currFolder)) {
-                String navtext = cms.readMetainformation(currFolder, C_METAINFO_NAVTITLE);                 
-                //if(! currFolder.equals("/" + requestedFolder + "/")) {
-                if(! requestedUri.startsWith(currFolder)) {
-                    result.append(xmlTemplateDocument.getOtherSectionNavEntry(servletPath + currFolder + "index.html", navtext));                
-                } else {
-                    result.append(xmlTemplateDocument.getCurrentSectionNavEntry(servletPath + currFolder + "index.html", navtext));                
-                
-                    // This is the currently requested folder.
-                    // Only for this folder we should display the list of files
-                    Vector allFiles = cms.getFilesInFolder(currFolder);
-                    Hashtable sortedNav = new Hashtable();
-                    int numFiles = 0;
-                    if(allFiles != null) {
-                        numFiles = allFiles.size();
-                    }
-                    int maxindex = 0;
-               
-                    // First scan all files in the given folder
-                    // for any navigation metainformations and store
-                    // the maximum position found
-                    for(int j=0; j<numFiles; j++) {
-                        A_CmsResource currFile = (A_CmsResource)allFiles.elementAt(j);
-                        String filename = currFile.getAbsolutePath();
-                        String navpos = cms.readMetainformation(filename, C_METAINFO_NAVPOS);
-                        navtext = cms.readMetainformation(filename, C_METAINFO_NAVTITLE);     
-                        if(currFile.getState() != C_STATE_DELETED) { 
-                            // Only list files in the nav bar if they are not deleted!
-                            if(navpos != null && navtext != null && (!"".equals(navpos)) && (!"".equals(navtext))
-                                 && ((!currFile.getName().startsWith(C_TEMP_PREFIX)) || filename.equals(requestedUri))) {
-                                Integer npValue = new Integer(navpos);
-                                int npIntValue = npValue.intValue();
-                                if(maxindex < npIntValue) {
-                                    maxindex = npIntValue;
-                                }
-                                sortedNav.put(npValue, filename);
-                            }
-                        }        
-                    }
 
-                    // The Hashtable sortedNav now contains all navigation
-                    // elements with its positions as key.
-                    // So we can loop through all possible positions
-                    // and print out the nav elements
-                    for(int j=1; j<=maxindex; j++) {
-                        String filename = (String)sortedNav.get(new Integer(j));
-                        if(filename != null && !"".equals(filename)) {
-                            navtext = cms.readMetainformation(filename, C_METAINFO_NAVTITLE);                 
-                            if(filename.equals(requestedUri)) {
-                                result.append(xmlTemplateDocument.getCurrentNavEntry(navtext));                    
-                            } else {
-                                result.append(xmlTemplateDocument.getOtherNavEntry(servletPath + filename, navtext));
-                            }
-                        }                
-                    }            
-                }
+        // Sort all selected folders by position
+        sort(cms, folderNames, folderTitles, folderPos, maxfolder);
+        
+        // The arrays folderNames and folderTitles now contain all folders
+        // that should appear in the nav.
+        // Loop through all folders and generate output        
+        for(int i=0; i<maxfolder; i++) {
+            String currFolder = folderNames[i];
+            String navtext = folderTitles[i];                
+            if(! requestedUri.startsWith(currFolder)) {
+                result.append(xmlTemplateDocument.getOtherSectionNavEntry(servletPath + currFolder + "index.html", navtext));                
+            } else {
+                result.append(xmlTemplateDocument.getCurrentSectionNavEntry(servletPath + currFolder + "index.html", navtext));                
+                
+                // This is the currently requested folder.
+                // Only for this folder we should display the list of files
+                result.append(filesNav(cms, currFolder, xmlTemplateDocument));
             }                        
         }         
         return result.toString().getBytes();            
     }        
+
+    /**
+     * Generates the navigation entries of all files in a given subfolder.
+     * Used by getNav().
+     * @param cms Cms object for accessing system resources.
+     * @param folderName Name of the folder the navigation should be generated for.
+     * @param xmlTemplateDocument Navigation definition document.
+     * @return String containing generated output.
+     * @exception CmsException if file or folder access failed.
+     */    
+    protected String filesNav(A_CmsObject cms, String folderName, CmsExampleNavFile xmlTemplateDocument) throws CmsException {
+
+        String requestedUri = cms.getRequestContext().getUri();        
+        String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
+
+        StringBuffer result = new StringBuffer();
+        
+        Vector allFiles = cms.getFilesInFolder(folderName);
+        int numFiles = 0;
+        if(allFiles != null) {
+            numFiles = allFiles.size();
+        }
+        String fileNames[] = new String[numFiles];
+        String fileTitles[] = new String[numFiles];
+        String filePos[] = new String[numFiles];
+        int maxindex = 0;
+               
+        // First scan all files in the given folder
+        // for any navigation metainformations and store
+        // the maximum position found
+        for(int j=0; j<numFiles; j++) {
+            A_CmsResource currFile = (A_CmsResource)allFiles.elementAt(j);
+            String filename = currFile.getAbsolutePath();
+            String navpos = cms.readMetainformation(filename, C_METAINFO_NAVPOS);
+            String navtext = cms.readMetainformation(filename, C_METAINFO_NAVTITLE);     
+            if(currFile.getState() != C_STATE_DELETED) { 
+                // Only list files in the nav bar if they are not deleted!
+                if(navpos != null && navtext != null && (!"".equals(navpos)) && (!"".equals(navtext))
+                     && ((!currFile.getName().startsWith(C_TEMP_PREFIX)) || filename.equals(requestedUri))) {
+                    fileNames[maxindex] = filename;
+                    fileTitles[maxindex] = navtext;
+                    filePos[maxindex] = navpos;
+                    maxindex++;                                
+                }
+            }        
+        }
+                
+        // Sort all selected files
+        sort(cms, fileNames, fileTitles, filePos, maxindex);
+
+        // The arrays fileNames and fileTitles now contain all navigation
+        // elements with its positions as key.
+        // So we can loop through the arrays and print out the nav elements
+        for(int j=0; j<maxindex; j++) {
+            String filename = fileNames[j];
+            String navtext = fileTitles[j];
+            if(filename.equals(requestedUri)) {
+                result.append(xmlTemplateDocument.getCurrentNavEntry(navtext));                    
+            } else {
+                result.append(xmlTemplateDocument.getOtherNavEntry(servletPath + filename, navtext));
+            }
+        }            
+        
+        return new String(result);
+    }
+    
+   /**
+    * Sorts a set of three String arrays containing navigation information depending on 
+    * their navigation positions.
+    * @param cms Cms Object for accessign files.
+    * @param filenames Array of filenames
+    * @param nicenames Array of well formed navigation names
+    * @param positions Array of navpostions
+    */
+    private void sort(A_CmsObject cms, String[] filenames, String[] nicenames,
+                                 String[] positions, int max){
+        // Sorting algorithm
+        // This method uses an bubble sort, so replace this with something more
+        // efficient
+     
+        for (int i=max-1;i>0;i--) {
+            for (int j=0;j<i;j++) {
+              
+                float a=new Float(positions[j]).floatValue();
+                float b=new Float(positions[j+1]).floatValue();
+                if (a > b) {
+                    String tempfilename= filenames[j];
+                    String tempnicename = nicenames[j];
+                    String tempposition = positions[j];
+                    filenames[j]=filenames[j+1];
+                    nicenames[j]=nicenames[j+1];
+                    positions[j]=positions[j+1];
+                    filenames[j+1]=tempfilename;
+                    nicenames[j+1]=tempnicename;
+                    positions[j+1]=tempposition;                    
+                }
+            }
+        }
+    }    
 }
