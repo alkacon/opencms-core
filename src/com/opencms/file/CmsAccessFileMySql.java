@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/03/16 20:44:23 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/03/17 08:23:00 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2000/03/16 20:44:23 $
+ * @version $Revision: 1.40 $ $Date: 2000/03/17 08:23:00 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -1204,10 +1204,10 @@ import com.opencms.util.*;
          
          // the current implementation only deletes empty folders
          // check if the folder has any files in it
-         Vector files= removeDeletedResources( getFilesInFolder(project,foldername) );
+         Vector files= getFilesInFolder(project,foldername);
          if (files.size()==0) {
              // check if the folder has any folders in it
-             Vector folders= removeDeletedResources( getSubFolders(project,foldername) );
+             Vector folders= getSubFolders(project,foldername);
              if (folders.size()==0) {
                  //this folder is empty, delete it
                  try { 
@@ -1240,28 +1240,15 @@ import com.opencms.util.*;
      public void removeFolder(A_CmsProject project, String foldername) 
         throws CmsException{
          // the current implementation only deletes empty folders
-         // check if the folder has any files in it
-         Vector files= removeDeletedResources( getFilesInFolder(project,foldername) );
-         if (files.size()==0) {
-             // check if the folder has any folders in it
-             Vector folders= removeDeletedResources( getSubFolders(project,foldername) );
-             if (folders.size()==0) {
-                 //this folder is empty, delete it
-				 try { 
-					 // delete the folder
-					 PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
-				     statementResourceDelete.setString(1,absoluteName(foldername));
-				     statementResourceDelete.setInt(2,project.getId());
-				     statementResourceDelete.executeUpdate();
-				 } catch (SQLException e){
-					 throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-				 }
-			 } else {
-				 throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_EMPTY);  
-			 }
-		 } else {
-			 throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_EMPTY);  
-		 }
+		try { 
+		    // delete the folder
+		    PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
+		    statementResourceDelete.setString(1,absoluteName(foldername));
+		    statementResourceDelete.setInt(2,project.getId());
+		    statementResourceDelete.executeUpdate();
+		} catch (SQLException e){
+		    throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		}
 	 }
      
 	/**
@@ -1593,24 +1580,5 @@ import com.opencms.util.*;
 	   }
  
 	   return name;
-	}
-	
-	/**
-	 * Deletes all deleted resources from the givenb Vector and returns the cleaned one.
-	 * @param resources The Vector of resources to clean.
-	 * @return the cleaned Vector.
-	 */
-	private Vector removeDeletedResources(Vector resources) {
-		// create the return-vector.
-		Vector retValue = new Vector();
-		A_CmsResource currentResource;
-		for(int i = 0;  i < resources.size(); i++) {
-			currentResource = (A_CmsResource) resources.elementAt(i);
-			if(currentResource.getState() != this.C_STATE_DELETED) {
-				// copy the resource only, if it has NOT the state deleted.
-				retValue.addElement(currentResource);
-			}
-		}
-		return retValue;
 	}
 }
