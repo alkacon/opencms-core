@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2003/10/06 14:20:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/10/06 16:04:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -413,7 +413,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             if ((parentgroupName != null) && (!"".equals(parentgroupName))) {
                 try {
                     parentGroup = m_cms.readGroup(parentgroupName);
-                } catch (CmsException exc) {}
+                } catch (CmsException exc) { }
             }
 
             if (((parentgroupName != null) && (!"".equals(parentgroupName))) && (parentGroup == null)) {
@@ -506,7 +506,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 for (int i = 0; i < userGroups.size(); i++) {
                     try {
                         m_cms.addUserToGroup(name, (String)userGroups.elementAt(i));
-                    } catch (CmsException exc) {}
+                    } catch (CmsException exc) { }
                 }
                 m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
             } catch (CmsException exc) {
