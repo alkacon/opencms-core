@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/08/21 11:32:45 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2002/08/22 08:23:51 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.28 $ $Date: 2002/08/21 11:32:45 $
+ * @version $Revision: 1.29 $ $Date: 2002/08/22 08:23:51 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -439,7 +439,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             // HACK: Hardcode the export date to get results, must move that to Workplace Export Dialog
             java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
             try {
-                m_minFileChangeDate = dateFormat.parse("01.07.2002 00:00:00").getTime();
+                m_minFileChangeDate = dateFormat.parse("01.01.1990 00:00:00").getTime();
                 // m_minFileChangeDate = dateFormat.parse("25.07.2002 00:00:00").getTime();
             } catch (Exception e) {                
                 System.err.println("exportResources(): Date format error!");
