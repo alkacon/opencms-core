@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/04/01 12:51:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/04/01 13:30:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/04/01 12:51:03 $
+ * @version $Revision: 1.3 $ $Date: 2004/04/01 13:30:11 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -380,6 +380,28 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     public String getValue() {
 
         return (m_structureValue != null) ? m_structureValue : m_resourceValue;
+    }
+    
+    /**
+     * Returns the compound value of this property, or a specified default value,
+     * if both the structure and resource values are null.<p>
+     * 
+     * In other words, this method returns the defaultValue if this property object 
+     * is the null property (see {@link CmsProperty#getNullProperty()}).<p>
+     * 
+     * @param defaultValue a default value which is returned if both the structure and resource values are null
+     * @return the compound value of this property, or the default value
+     */
+    public String getValue(String defaultValue) {
+        
+        if (this == CmsProperty.C_NULL_PROPERTY) {
+            // return the default value if this property is the null property
+            return defaultValue;
+        }
+        
+        // somebody might have set both values to null manually
+        // on a property object different from the null property...
+        return (m_structureValue != null) ? m_structureValue : ((m_resourceValue != null) ? m_resourceValue : defaultValue);
     }
 
     /**
