@@ -16,7 +16,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/02/09 14:15:00 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/09 14:43:33 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -656,25 +656,38 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      
      
      /** 
-      * Selects the context 
+      * Selects the context menue displayed for this entry iin the file list.
+      * @param cms The CmsObject.
+      * @param res The resource displayed in this entry.
+      * @param template The file list template.
+      * @return String containing the name of the context menu.
+      * @exception Throws CmsException if something goes wrong.
+      * 
       */
      private String getContextMenue(A_CmsObject cms, CmsResource res, 
                                     CmsXmlWpTemplateFile template) 
          throws CmsException {
-      
          String contextMenu=null;
-         // get the type of the resource
-         A_CmsResourceType type=cms.getResourceType(res.getType());
-         // get the context menu
-         contextMenu=type.getResourceName();
-         // test if this resource is locked
-         if (res.isLocked()) {
-             contextMenu+=C_CONTEXT_LOCK;
-             // is this resource locked by the current user    
-             if (cms.getRequestContext().currentUser().getId()==res.isLockedBy()){
-                contextMenu+=C_CONTEXT_LOCKUSER;          
-             }             
-         } 
+         
+         // test if the resource is in the project or if the online project is displayed
+         if ((cms.getRequestContext().currentProject().equals(cms.onlineProject())) ||
+             (!res.inProject(cms.getRequestContext().currentProject()))) {
+                   contextMenu=C_DEFAULT_CONTEXTMENU;     
+         } else {
+             // get the type of the resource
+            A_CmsResourceType type=cms.getResourceType(res.getType());
+            // get the context menu
+            contextMenu=type.getResourceName();
+            // test if this resource is locked
+            if (res.isLocked()) {
+                 contextMenu+=C_CONTEXT_LOCK;
+                // is this resource locked by the current user    
+                if (cms.getRequestContext().currentUser().getId()==res.isLockedBy()){
+                    contextMenu+=C_CONTEXT_LOCKUSER;          
+                }             
+            } 
+             
+         }
          return contextMenu;
      }
      
