@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/10/09 09:40:31 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/10/09 15:31:27 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -171,6 +171,9 @@ public class OpenCmsCore {
 
     /** The name of the class used to validate a new password */
     private String m_passwordValidatingClass;
+    
+    /** Map of request handlers */
+    private Map m_requestHandlers;
 
     /** The runlevel of this OpenCmsCore object instance */
     private int m_runLevel;
@@ -317,6 +320,22 @@ public class OpenCmsCore {
                 listeners.add(listener);
             }
         }
+    }
+    
+    /**
+     * Adds the specified request handler to the Map of OpenCms request handlers.<p>
+     * 
+     * @param handler the handler to add
+     */
+    protected void addRequestHandler(I_CmsRequestHandler handler) {
+        if (handler == null) return;
+        if (m_requestHandlers.get(handler.getHandlerName()) != null) {
+            if (getLog(this).isErrorEnabled()) {
+                getLog(this).error("Duplicate OpenCms request handler, ignoring '" + handler.getHandlerName() + "'");
+            }
+            return;
+        }
+        m_requestHandlers.put(handler.getHandlerName(), handler);
     }
     
     /**
@@ -802,6 +821,17 @@ public class OpenCmsCore {
             return null;
         }
         return m_driverManager.getRegistry(null);
+    }
+    
+    /**
+     * Returns the handler instance for the specified name, 
+     * or null if the name does not match any handler name.<p>
+     * 
+     * @param name the name of the handler instance to return
+     * @return the handler instance for the specified name
+     */
+    protected I_CmsRequestHandler getRequestHandler(String name) {
+        return (I_CmsRequestHandler)m_requestHandlers.get(name);
     }
 
     /** 
@@ -1643,6 +1673,30 @@ public class OpenCmsCore {
         // initalize the session storage
         m_sessionStorage = new CmsCoreSession();
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) getLog(CmsLog.CHANNEL_INIT).info(". Session storage      : initialized");
+                         
+        // initialize "requesthandler" registry classes
+        try {
+            List resourceHandlers = OpenCms.getRegistry().getSystemSubNodes("requesthandler");
+            Iterator i = resourceHandlers.iterator();
+            while (i.hasNext()) {
+                String currentClass = (String)i.next();
+                try {
+                    I_CmsRequestHandler handler = (I_CmsRequestHandler)Class.forName(currentClass).newInstance();
+                    m_requestHandlers.put(handler.getHandlerName(), handler);
+                    if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                        getLog(CmsLog.CHANNEL_INIT).info(". Request handler class: " + currentClass + " instanciated");
+                    }
+                } catch (Exception e1) {
+                    if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                        getLog(CmsLog.CHANNEL_INIT).warn(". Request handler class: non-critical error " + e1.toString());
+                    }
+                }
+            }
+        } catch (Exception e2) {
+            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).warn(". Request handler class: non-critical error " + e2.toString());
+            }
+        }                           
                                      
         // check if basic or form based authentication should be used      
         m_useBasicAuthentication = m_configurations.getBoolean("auth.basic", true);        
@@ -1667,6 +1721,7 @@ public class OpenCmsCore {
         m_checkFile = new ArrayList();
         m_defaultEncoding = C_DEFAULT_ENCODING;
         m_listeners = new HashMap();
+        m_requestHandlers = new HashMap();
         m_startupClassesInitialized = false;
         m_userDefaultaccessFlags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
         m_versionName = C_DEFAULT_VERSION_NUMBER + " " + C_DEFAULT_VERSION_NAME;

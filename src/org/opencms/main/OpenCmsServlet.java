@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2003/09/25 16:07:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/10/09 15:32:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,76 +69,12 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
-public class OpenCmsServlet extends HttpServlet {
+public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
-    /**
-     * @see javax.servlet.Servlet#init(javax.servlet.ServletConfig)
-     */
-    public synchronized void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        try {
-            new OpenCmsCore(config.getServletContext());
-        } catch (CmsInitException e) {
-            // log output will be provided by OpenCms
-        }        
-    }
-
-    /**
-     * Handler for OpenCms error requests.<p>
-     * 
-     * @param req the current request
-     * @param res the current response 
-     * @throws ServletException
-     * @throws IOException in case an error occurs
-     */
-    private void handleError(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String path = req.getPathInfo();     
-        int error = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-        try {
-            error = Integer.parseInt(path.substring("/handle".length()));
-        } catch (NumberFormatException e) {
-            // use default error
-        }
-        switch (error) {
-            case 404:
-                CmsObject cms = null;            
-                CmsStaticExportData exportData = null;
-                try {
-                    cms = OpenCmsCore.getInstance().initCmsObject(req, res, OpenCms.getDefaultUsers().getUserExport(), null);            
-                    exportData = OpenCms.getStaticExportManager().getExportData(req, cms);
-                } catch (CmsException e) {
-                    // unlikley to happen 
-                    if (OpenCms.getLog(this).isWarnEnabled()) {                    
-                        OpenCms.getLog(this).warn("Error initializing CmsObject in error handler for '" + path + "' code " + error, e);
-                    }
-                }
-                if (exportData != null) {
-                    synchronized (this) {
-                        try {
-                            OpenCms.getStaticExportManager().export(req, res, cms, exportData);
-                        } catch (Throwable t) {
-                            if (OpenCms.getLog(this).isWarnEnabled()) {                    
-                                OpenCms.getLog(this).warn("Error exporting " + exportData, t);
-                            }
-                            res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                        }
-                    }
-                } else {
-                    res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                }    
-                break;
-            default:
-                res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        } 
-    }
-    
-    /**
-     * @see javax.servlet.Servlet#destroy()
-     */
-    public void destroy() {
-    }
+    /** Handler prefix */
+    private static final String C_HANDLE = "/handle";
 
     /**
      * OpenCms servlet main request handling method.<p>
@@ -147,8 +83,8 @@ public class OpenCmsServlet extends HttpServlet {
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String path = req.getPathInfo();
-        if ((path != null) && path.startsWith("/handle")) {
-            handleError(req, res);                                     
+        if ((path != null) && path.startsWith(C_HANDLE)) {
+            invokeHandler(req, res);                                     
         } else {
             OpenCmsCore.getInstance().showResource(req, res);
         }
@@ -162,6 +98,77 @@ public class OpenCmsServlet extends HttpServlet {
      */
     public void doPost (HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {            
         doGet(req, res);
+    }
+    
+    /**
+     * @see org.opencms.main.I_CmsRequestHandler#getHandlerName()
+     */
+    public String getHandlerName() {
+        return "404";
+    }
+
+    /**
+     * @see org.opencms.main.I_CmsRequestHandler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public void handle(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        String path = req.getPathInfo();      
+        CmsObject cms = null;            
+        CmsStaticExportData exportData = null;
+        try {
+            cms = OpenCmsCore.getInstance().initCmsObject(req, res, OpenCms.getDefaultUsers().getUserExport(), null);            
+            exportData = OpenCms.getStaticExportManager().getExportData(req, cms);
+        } catch (CmsException e) {
+            // unlikley to happen 
+            if (OpenCms.getLog(this).isWarnEnabled()) {                    
+                OpenCms.getLog(this).warn("Error initializing CmsObject in 404 handler for '" + path + "'", e);
+            }
+        }
+        if (exportData != null) {
+            synchronized (this) {
+                try {
+                    OpenCms.getStaticExportManager().export(req, res, cms, exportData);
+                } catch (Throwable t) {
+                    if (OpenCms.getLog(this).isWarnEnabled()) {                    
+                        OpenCms.getLog(this).warn("Error exporting " + exportData, t);
+                    }
+                    res.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
+            }
+        } else {
+            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }          
+    }
+    
+    /**
+     * @see javax.servlet.Servlet#init(javax.servlet.ServletConfig)
+     */
+    public synchronized void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        try {
+            new OpenCmsCore(config.getServletContext());
+        } catch (CmsInitException e) {
+            // log output will be provided by OpenCms
+        }        
+        // add this as handler for 404 requests
+        OpenCmsCore.getInstance().addRequestHandler(this);
+    }
+    
+    /**
+     * Manages request to internal OpenCms request handlers.<p>
+     * 
+     * @param req the current request
+     * @param res the current response 
+     * @throws ServletException
+     * @throws IOException in case an error occurs
+     */
+    private void invokeHandler(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        String name = req.getPathInfo().substring(C_HANDLE.length());
+        I_CmsRequestHandler handler = OpenCmsCore.getInstance().getRequestHandler(name);
+        if (handler != null) {
+            handler.handle(req, res);   
+        } else {
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
     
 
