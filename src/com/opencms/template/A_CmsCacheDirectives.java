@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/08/15 13:04:26 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/08/15 13:51:40 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -212,7 +212,6 @@ public abstract class A_CmsCacheDirectives implements I_CmsLogChannels{
                 key += paramKey + "=" + parameters.get(paramKey) + ";";
             }
         }
-        System.out.println("KEY for element " + elementName + " = " + key);
         return key;
     }
 
