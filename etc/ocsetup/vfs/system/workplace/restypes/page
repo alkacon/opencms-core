@@ -12,7 +12,7 @@
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(a a aaaa aaaa dddd dddd dddd)");
 
     addMenuEntry(resource_id, "language_key(explorer.context.pageedit)",        "edit_page.html?init=true",             "_top", "rules_key(d d iiii aaai dddd dddd dddd)");
-    addMenuEntry(resource_id, "language_key(explorer.context.editcontrolfile)", "edit_text.html?init=true",             "_top", "rules_key(d d iiii aaai dddd dddd dddd)");
+	addMenuEntry(resource_id, "language_key(explorer.context.edit)",    "edit_page.html?init=true&startview=edit",             "_top", "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(d d aaaa aaaa dddd dddd dddd)");
 
     addMenuEntry(resource_id, "language_key(explorer.context.copy)",            "copy.html?initial=true",               "''",   "rules_key(d d aaai aaai dddd dddd dddd)");
@@ -26,6 +26,9 @@
     addMenuEntry(resource_id, "language_key(explorer.context.chown)",           "chown.html?initial=true",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.chgrp)",           "chgrp.html?initial=true",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.access)",          "chmod.html?initial=true",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
+    addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(d d aaaa aaaa dddd dddd dddd)");
+
+    addMenuEntry(resource_id, "language_key(explorer.context.editcontrolfile)", "edit_text.html?init=true",             "_top", "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(d d aaaa aaaa dddd dddd dddd)");
 
     addMenuEntry(resource_id, "language_key(explorer.context.history)",         "history.html?initial=true",            "''",   "rules_key(a a aaaa aaaa aaaa aaaa aaaa)");
