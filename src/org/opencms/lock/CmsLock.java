@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/09/17 13:04:46 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,12 +47,15 @@ import com.opencms.core.I_CmsConstants;
  * CmsLock object that represents the current lock state of a resource.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/09/15 10:51:15 $
+ * @version $Revision: 1.13 $ $Date: 2003/09/17 13:04:46 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLockDispatcher
  */
 public class CmsLock extends Object implements Cloneable {
+
+    /** The shared Null lock object */
+    private static final CmsLock C_NULL_LOCK = new CmsLock("", CmsUUID.getNullUUID(), I_CmsConstants.C_UNKNOWN_ID, CmsLock.C_TYPE_UNLOCKED);
 
     /** 
      * A lock that allows the user to edit the resource’s structure record, 
@@ -90,17 +93,14 @@ public class CmsLock extends Object implements Cloneable {
      */    
     public static final int C_TYPE_UNLOCKED = 0;
 
-    /** The shared Null lock object */
-    private static final CmsLock C_NULL_LOCK = new CmsLock("", CmsUUID.getNullUUID(), I_CmsConstants.C_UNKNOWN_ID, CmsLock.C_TYPE_UNLOCKED);
-
-    /** Saves how the resource is locked */
-    private int m_type;
-
     /** The ID of the project where the resource is locked */
     private int m_projectId;
 
     /** The name of the locked resource */
     private String m_resourceName;
+
+    /** Saves how the resource is locked */
+    private int m_type;
 
     /** The ID of the user who locked the resource */
     private CmsUUID m_userId;
@@ -147,22 +147,6 @@ public class CmsLock extends Object implements Cloneable {
 
         return false;
     }
-    
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() { 
-        return getResourceName().hashCode();
-    }
-
-    /**
-     * Returns the type about how the resource is locked.<p>
-     * 
-     * @return the type of the lock
-     */
-    public int getType() {
-        return m_type;
-    }
 
     /**
      * Returns the ID of the project where the resource is currently locked.<p>
@@ -183,12 +167,28 @@ public class CmsLock extends Object implements Cloneable {
     }
 
     /**
+     * Returns the type about how the resource is locked.<p>
+     * 
+     * @return the type of the lock
+     */
+    public int getType() {
+        return m_type;
+    }
+
+    /**
      * Returns the ID of the user who currently locked the resource.<p>
      * 
      * @return the ID of the user
      */
     public CmsUUID getUserId() {
         return m_userId;
+    }
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() { 
+        return getResourceName().hashCode();
     }
 
     /**

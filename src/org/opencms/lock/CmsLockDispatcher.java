@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/09/17 09:30:16 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2003/09/17 13:04:46 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,8 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.44 $ $Date: 2003/09/17 09:30:16 $
+ * @author Michael Emmerich (m.emmerich@alkacon.com) 
+ * @version $Revision: 1.45 $ $Date: 2003/09/17 13:04:46 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -117,13 +118,34 @@ public final class CmsLockDispatcher extends Object {
             String lockedPath = null;
 
             while (i.hasNext()) {
-                lockedPath = (String) i.next();
+                lockedPath = (String)i.next();
 
                 if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
                     i.remove();
                 }
             }
         }
+    }
+
+    /**
+     * Counts the exclusive locked resources inside a folder.<p>
+     * 
+     * @param foldername the folder
+     * @return the number of exclusive locked resources in the specified folder
+     */
+    public int countExclusiveLocksInFolder(String foldername) {
+        Iterator i = m_exclusiveLocks.values().iterator();
+        CmsLock lock = null;
+        int count = 0;
+
+        while (i.hasNext()) {
+            lock = (CmsLock)i.next();
+            if (lock.getResourceName().startsWith(foldername)) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     /**
@@ -138,7 +160,7 @@ public final class CmsLockDispatcher extends Object {
         int count = 0;
 
         while (i.hasNext()) {
-            lock = (CmsLock) i.next();
+            lock = (CmsLock)i.next();
             if (lock.getProjectId() == project.getId()) {
                 count++;
             }
@@ -146,38 +168,50 @@ public final class CmsLockDispatcher extends Object {
 
         return count;
     }
-    
-    /**
-     * Counts the exclusive locked resources inside a folder.<p>
-     * 
-     * @param foldername the folder
-     * @return the number of exclusive locked resources in the specified folder
-     */    
-    public int countExclusiveLocksInFolder(String foldername) {
-        Iterator i = m_exclusiveLocks.values().iterator();
-        CmsLock lock = null;
-        int count = 0;
-
-        while (i.hasNext()) {
-            lock = (CmsLock) i.next();
-            if (lock.getResourceName().startsWith(foldername)) {
-                count++;
-            }
-        }
-
-        return count;
-    }   
 
     /**
      * @see java.lang.Object#finalize()
      */
-    protected void finalize() throws Throwable {   
+    protected void finalize() throws Throwable {
         if (m_exclusiveLocks != null) {
             m_exclusiveLocks.clear();
 
             m_exclusiveLocks = null;
             sharedInstance = null;
         }
+    }
+
+    /**
+     * Returns the lock of the exclusive locked sibling pointing to the resource record of a 
+     * specified resource name.<p>
+     * 
+     * @param driverManager the driver manager
+     * @param context the current request context
+     * @param resourcename the name of the specified resource
+     * @return the lock of the exclusive locked sibling
+     * @throws CmsException if somethong goes wrong
+     */
+    public CmsLock getExclusiveLockedSibling(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
+        CmsResource sibling = null;
+
+        // check first if the specified resource itself is already the exclusive locked sibling
+        if (m_exclusiveLocks.containsKey(resourcename)) {
+            // yup...
+            return (CmsLock)m_exclusiveLocks.get(resourcename);
+        }
+
+        // nope, fetch all siblings of the resource to the same content record
+        List siblings = internalReadSiblings(driverManager, context, resourcename);
+
+        for (int i = 0; i < siblings.size(); i++) {
+            sibling = (CmsResource)siblings.get(i);
+
+            if (m_exclusiveLocks.containsKey(sibling.getRootPath())) {
+                return (CmsLock)m_exclusiveLocks.get(sibling.getRootPath());
+            }
+        }
+
+        return CmsLock.getNullLock();
     }
 
     /**
@@ -194,7 +228,7 @@ public final class CmsLockDispatcher extends Object {
         CmsLock siblingLock = null;
         CmsResource sibling = null;
         CmsResource resource = null;
-      
+
         // check some abort conditions first
 
         if (context.currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
@@ -213,7 +247,7 @@ public final class CmsLockDispatcher extends Object {
 
         if (m_exclusiveLocks.containsKey(resourcename)) {
             // the resource is exclusive locked
-            return (CmsLock) m_exclusiveLocks.get(resourcename);
+            return (CmsLock)m_exclusiveLocks.get(resourcename);
         }
 
         // calculate the lock state
@@ -225,8 +259,8 @@ public final class CmsLockDispatcher extends Object {
             // all parent folders are unlocked
 
             for (int i = 0; i < siblings.size(); i++) {
-                sibling = (CmsResource) siblings.get(i);
-                siblingLock = (CmsLock) m_exclusiveLocks.get(sibling.getRootPath());
+                sibling = (CmsResource)siblings.get(i);
+                siblingLock = (CmsLock)m_exclusiveLocks.get(sibling.getRootPath());
 
                 if (siblingLock != null) {
                     // a sibling is already exclusive locked
@@ -240,7 +274,7 @@ public final class CmsLockDispatcher extends Object {
             // a parent folder is locked
 
             for (int i = 0; i < siblings.size(); i++) {
-                sibling = (CmsResource) siblings.get(i);
+                sibling = (CmsResource)siblings.get(i);
 
                 if (m_exclusiveLocks.containsKey(sibling.getRootPath())) {
                     // a sibling is already exclusive locked
@@ -252,39 +286,6 @@ public final class CmsLockDispatcher extends Object {
             return new CmsLock(resourcename, parentFolderLock.getUserId(), parentFolderLock.getProjectId(), CmsLock.C_TYPE_INHERITED);
         }
     }
-    
-    /**
-     * Returns the lock of the exclusive locked sibling pointing to the resource record of a 
-     * specified resource name.<p>
-     * 
-     * @param driverManager the driver manager
-     * @param context the current request context
-     * @param resourcename the name of the specified resource
-     * @return the lock of the exclusive locked sibling
-     * @throws CmsException if somethong goes wrong
-     */
-    public CmsLock getExclusiveLockedSibling(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
-        CmsResource sibling = null;
-        
-        // check first if the specified resource itself is already the exclusive locked sibling
-        if (m_exclusiveLocks.containsKey(resourcename)) {
-            // yup...
-            return (CmsLock) m_exclusiveLocks.get(resourcename);
-        }        
-                
-        // nope, fetch all siblings of the resource to the same content record
-        List siblings = internalReadSiblings(driverManager, context, resourcename);
-                
-        for (int i = 0; i < siblings.size(); i++) {
-            sibling = (CmsResource) siblings.get(i);
-            
-            if (m_exclusiveLocks.containsKey(sibling.getRootPath())) {
-                return (CmsLock) m_exclusiveLocks.get(sibling.getRootPath());
-            }
-        }
-        
-        return CmsLock.getNullLock();
-    }
 
     /**
      * Returns the lock of a possible locked parent folder of a resource.<p>
@@ -294,13 +295,13 @@ public final class CmsLockDispatcher extends Object {
      */
     private CmsLock getParentFolderLock(String resourcename) {
         String lockedPath = null;
-        List keys = (List) new ArrayList(m_exclusiveLocks.keySet());
+        List keys = (List)new ArrayList(m_exclusiveLocks.keySet());
 
         for (int i = 0; i < keys.size(); i++) {
             lockedPath = (String)keys.get(i);
 
             if (resourcename.startsWith(lockedPath) && !resourcename.equals(lockedPath) && lockedPath.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-                return (CmsLock) m_exclusiveLocks.get(lockedPath);
+                return (CmsLock)m_exclusiveLocks.get(lockedPath);
             }
 
         }
@@ -325,7 +326,7 @@ public final class CmsLockDispatcher extends Object {
 
         try {
             List path = driverManager.readPath(context, resourcename, false);
-            resource = (CmsResource) path.get(path.size() - 1);
+            resource = (CmsResource)path.get(path.size() - 1);
             resource.setFullResourceName(resourcename);
         } catch (CmsException e) {
             resource = null;
@@ -333,7 +334,16 @@ public final class CmsLockDispatcher extends Object {
 
         return resource;
     }
-    
+
+    /**
+     * Reads all siblings from a given resource.<p>
+     * 
+     * @param driverManager the driver manager
+     * @param context the current request context
+     * @param resourcename the name of the resource to find all siblings from
+     * @return list of CmsResources
+     * @throws CmsException if something goes wrong
+     */
     private List internalReadSiblings(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
 
         // reading siblings using the DriverManager methods while the lock state is checked would
@@ -341,10 +351,10 @@ public final class CmsLockDispatcher extends Object {
 
         CmsResource resource = internalReadFileHeader(driverManager, context, resourcename);
         List siblings = driverManager.getVfsDriver().readSiblings(context.currentProject(), resource);
-        
+
         int n = siblings.size();
         for (int i = 0; i < n; i++) {
-            CmsResource currentResource = (CmsResource) siblings.get(i);
+            CmsResource currentResource = (CmsResource)siblings.get(i);
 
             if (currentResource.getStructureId().equals(resource.getStructureId())) {
                 siblings.remove(i);
@@ -417,7 +427,7 @@ public final class CmsLockDispatcher extends Object {
                 String lockedPath = null;
 
                 while (i.hasNext()) {
-                    lockedPath = (String) i.next();
+                    lockedPath = (String)i.next();
                     if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
                         // remove the exclusive locked sub-resource
                         i.remove();
@@ -425,7 +435,7 @@ public final class CmsLockDispatcher extends Object {
                 }
             }
 
-            return (CmsLock) m_exclusiveLocks.remove(resourcename);
+            return (CmsLock)m_exclusiveLocks.remove(resourcename);
         }
 
         if (lock.getType() == CmsLock.C_TYPE_SHARED_EXCLUSIVE) {
@@ -434,7 +444,7 @@ public final class CmsLockDispatcher extends Object {
             List siblings = internalReadSiblings(driverManager, context, resourcename);
 
             for (int i = 0; i < siblings.size(); i++) {
-                sibling = (CmsResource) siblings.get(i);
+                sibling = (CmsResource)siblings.get(i);
 
                 if (m_exclusiveLocks.containsKey(sibling.getRootPath())) {
                     // remove the exclusive locked sibling
@@ -459,7 +469,7 @@ public final class CmsLockDispatcher extends Object {
         CmsLock currentLock = null;
 
         while (i.hasNext()) {
-            currentLock = (CmsLock) m_exclusiveLocks.get(i.next());
+            currentLock = (CmsLock)m_exclusiveLocks.get(i.next());
 
             if (currentLock.getProjectId() == projectId) {
                 // iterators are fail-fast!
@@ -468,12 +478,21 @@ public final class CmsLockDispatcher extends Object {
         }
     }
 
+    /**
+     * Returns the number of exclusive locked resources.<p>
+     * 
+     * @return the number of exclusive locked resources
+     */
+    public int size() {
+        return m_exclusiveLocks.size();
+    }
+
     /** 
      * @see java.lang.Object#toString()
      */
     public String toString() {
         // bring the list of locked resources into a human readable order first
-        List lockedResources = (List) new ArrayList(m_exclusiveLocks.keySet());
+        List lockedResources = (List)new ArrayList(m_exclusiveLocks.keySet());
         Collections.sort(lockedResources);
 
         Iterator i = lockedResources.iterator();
@@ -482,21 +501,12 @@ public final class CmsLockDispatcher extends Object {
         CmsLock currentLock = null;
 
         while (i.hasNext()) {
-            lockedPath = (String) i.next();
-            currentLock = (CmsLock) m_exclusiveLocks.get(lockedPath);
+            lockedPath = (String)i.next();
+            currentLock = (CmsLock)m_exclusiveLocks.get(lockedPath);
             buf.append(currentLock.toString()).append("\n");
         }
 
         return buf.toString();
-    }
-    
-    /**
-     * Returns the number of exclusive locked resources.<p>
-     * 
-     * @return the number of exclusive locked resources
-     */
-    public int size() {
-        return m_exclusiveLocks.size();
     }
 
 }

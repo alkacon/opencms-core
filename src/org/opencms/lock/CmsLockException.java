@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockException.java,v $
- * Date   : $Date: 2003/07/29 10:43:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/17 13:04:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.core.CmsException;
  * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/07/29 10:43:47 $
+ * @version $Revision: 1.7 $ $Date: 2003/09/17 13:04:46 $
  * @since 5.1.4
  */
 public class CmsLockException extends CmsException {
@@ -46,9 +46,6 @@ public class CmsLockException extends CmsException {
     
     /** A resource is locked, but a particular action requires the resource to be unlocked */
     public static final int C_RESOURCE_LOCKED = 200;
-    
-    /** A resource is unlocked, but a particular action requires the resource to be locked */
-    public static final int C_RESOURCE_UNLOCKED = 201;
     
     /** A resource is locked by the current user, but a particular action requires that the resource is unlocked */
     public static final int C_RESOURCE_LOCKED_BY_CURRENT_USER = 202;
@@ -61,6 +58,9 @@ public class CmsLockException extends CmsException {
     
     /** A resource has a non-exclusive lock, but a particular action requires an exclusive lock */
     public static final int C_RESOURCE_LOCKED_NON_EXCLUSIVE = 205;
+    
+    /** A resource is unlocked, but a particular action requires the resource to be locked */
+    public static final int C_RESOURCE_UNLOCKED = 201;
     
     /**
      * Default constructor for a CmsLockException.<p>
