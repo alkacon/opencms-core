@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/01/13 14:57:59 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,16 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
+import com.opencms.file.CmsResourceTypeNewPage;
 import com.opencms.file.CmsResourceTypePage;
+import com.opencms.file.CmsResourceTypeXmlPage;
+
+import org.opencms.page.CmsXmlPage;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -71,13 +76,15 @@ import org.w3c.dom.NodeList;
  */
 public class CmsImportVersion3 extends A_CmsImport {
 
-
+    /** flag for conversion to xml pages */
+    private boolean m_convertToXmlPage;
 
     /**
      * Creates a new CmsImportVerion3 object.<p>
      */
     public CmsImportVersion3() {
         m_importVersion = 3;
+        m_convertToXmlPage = true;
     }
 
     /**
@@ -289,6 +296,12 @@ public class CmsImportVersion3 extends A_CmsImport {
         if (immutableResources == null) {
             immutableResources = new ArrayList();
         }
+        // get the wanted page type for imported pages
+        String convertToXmlPage = (String)OpenCms.getRuntimeProperty("import.convert.xmlpage");
+        if (convertToXmlPage != null) {
+            m_convertToXmlPage = "true".equals(convertToXmlPage);
+        }        
+        
         try {
             // get all file-nodes
             fileNodes = m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_FILE);
@@ -488,6 +501,17 @@ public class CmsImportVersion3 extends A_CmsImport {
                 resname = resname.substring(resname.lastIndexOf("/") + 1, resname.length());
             }
 
+            // convert to xml page if wanted
+            if (m_convertToXmlPage 
+                && (resType == CmsResourceTypePage.C_RESOURCE_TYPE_ID || resType == CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID)) {
+                
+                CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content), "body", "en");
+                ByteArrayOutputStream pageContent = new ByteArrayOutputStream();
+                xmlPage.write(pageContent, OpenCms.getDefaultEncoding());    
+                content = pageContent.toByteArray();
+                resType = CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID;
+            }
+            
             // create a new CmsResource                         
             CmsResource resource = new CmsResource(newUuidstructure, newUuidresource, CmsUUID.getNullUUID(), newUuidcontent, resname, resType, new Integer(flags).intValue(), m_cms.getRequestContext().currentProject().getId(), I_CmsConstants.C_STATE_NEW, m_cms.getResourceType(resType).getLoaderId(), datelastmodified, newUserlastmodified, datecreated, newUsercreated, size, 1);
             // import this resource in the VFS   

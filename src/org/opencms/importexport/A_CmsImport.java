@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/01/12 14:43:55 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/01/13 14:57:59 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -134,7 +134,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /** The object to report the log messages */
     protected I_CmsReport m_report = null;
-
+    
     /**
       * Constructs a new uninitialized import, required for the module data import.<p>
       * 

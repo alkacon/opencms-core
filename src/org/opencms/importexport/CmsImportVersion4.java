@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2003/10/15 09:50:42 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/01/13 14:57:59 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.importexport;
 
 import org.opencms.main.OpenCms;
+import org.opencms.page.CmsXmlPage;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
 
@@ -40,9 +41,12 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsResourceTypeLink;
+import com.opencms.file.CmsResourceTypeNewPage;
 import com.opencms.file.CmsResourceTypePage;
+import com.opencms.file.CmsResourceTypeXmlPage;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -71,12 +75,15 @@ import org.w3c.dom.NodeList;
  */
 public class CmsImportVersion4 extends A_CmsImport {
 
-
+    /** flag for conversion to xml pages */
+    private boolean m_convertToXmlPage;
+    
     /**
      * Creates a new CmsImportVerion4 object.<p>
      */
     public CmsImportVersion4() {
         m_importVersion = 4;
+        m_convertToXmlPage = true;
     }
 
     /**
@@ -485,6 +492,17 @@ public class CmsImportVersion4 extends A_CmsImport {
                 resname = resname.substring(resname.lastIndexOf("/") + 1, resname.length());
             }
 
+            // convert to xml page if wanted
+            if (m_convertToXmlPage 
+                    && (resType == CmsResourceTypePage.C_RESOURCE_TYPE_ID || resType == CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID)) {
+                
+                CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content), "body", "en");
+                ByteArrayOutputStream pageContent = new ByteArrayOutputStream();
+                xmlPage.write(pageContent, OpenCms.getDefaultEncoding());    
+                content = pageContent.toByteArray();
+                resType = CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID;
+            }
+            
             // create a new CmsResource                         
             CmsResource resource = new CmsResource(
                 new CmsUUID(), // structure ID is always a new UUID
@@ -504,8 +522,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 size, 
                 1
             );
-            
-            
+             
             if (resType==CmsResourceTypeLink.C_RESOURCE_TYPE_ID) {
                 // store links for later conversion
                 m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);

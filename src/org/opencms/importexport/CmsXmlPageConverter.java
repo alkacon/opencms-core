@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2004/01/12 14:43:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/13 14:57:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package org.opencms.importexport;
 
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
-import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringSubstitution;
 
 import com.opencms.core.CmsException;
@@ -40,13 +39,15 @@ import com.opencms.file.CmsObject;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.StringReader;
+import java.util.Iterator;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/01/12 14:43:55 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/13 14:57:59 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public final class CmsXmlPageConverter {
@@ -65,11 +66,10 @@ public final class CmsXmlPageConverter {
      * @param content the content used with xml templates
      * @param body the name of the body
      * @param language the language of the body
-     * @param report the report output
      * @return the xml page content or null if conversion failed
      * @throws CmsException if something goes wrong
      */
-    public static CmsXmlPage convertToXmlPage(CmsObject cms, String content, String body, String language, I_CmsReport report) throws CmsException {
+    public static CmsXmlPage convertToXmlPage(CmsObject cms, String content, String body, String language) throws CmsException {
 
         CmsXmlPage xmlPage = null;
         
@@ -92,7 +92,23 @@ public final class CmsXmlPageConverter {
             } else {
                 Element template = xmltemplate.element("TEMPLATE");
                 if (template != null) {
-                    bodyContent = template.getText();
+                    StringBuffer contentBuffer = new StringBuffer();
+                    for (Iterator i = template.nodeIterator(); i.hasNext();) {
+                        Node n = (Node)i.next();
+                        if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
+                            contentBuffer.append(n.getText());
+                        } else if (n.getNodeType() == Node.ELEMENT_NODE) {
+                            if ("LINK".equals(n.getName())) {
+                                contentBuffer.append(OpenCms.getOpenCmsContext());
+                                contentBuffer.append(n.getText());
+                            } else {
+                               throw new Exception ("Cannot handle element <" + n.getName() + ">"); 
+                            }
+                        } else {
+                            throw new Exception ("Cannot handle nodes of type " + n.getNodeTypeName());
+                        }
+                    }
+                    bodyContent = contentBuffer.toString();
                 }
             }
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/01/12 10:06:25 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/01/13 14:57:59 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsXmlPage {
     
@@ -484,9 +484,6 @@ public class CmsXmlPage {
      * When setting the element data, the content of this element will be
      * processed automatically.
      * 
-     * Note: setting the content will also automatically enable the element
-     * (the enabled attribute is removed).
-     * 
      * @param cms the cms object
      * @param name name of the element
      * @param language language of the element
@@ -513,13 +510,7 @@ public class CmsXmlPage {
             } else {
                 data.addCDATA(linkReplacer.replaceLinks(cms, content, null));
             }
-            
-            // remove enabled attribute (leads to default true)
-            Attribute enabled = element.attribute("enabled");
-            if (enabled != null) {
-                element.remove(enabled);
-            }
-            
+                        
         } catch (Exception exc) {
             throw new CmsPageException ("HTML data processing failed", exc);
         }
@@ -551,6 +542,9 @@ public class CmsXmlPage {
     /**
      * Sets the enabled flag of an already existing element.<p>
      * 
+     * Note: if isEnabled is set to true, the attribute is removed
+     * since true is the default
+     * 
      * @param name name name of the element
      * @param language language of the element
      * @param isEnabled enabled flag for the element
@@ -562,6 +556,8 @@ public class CmsXmlPage {
         
         if (enabled == null) {
             element.addAttribute("enabled", Boolean.toString(isEnabled));
+        } else if (isEnabled) {
+            element.remove(enabled);
         } else {
             enabled.setValue(Boolean.toString(isEnabled));
         }
