@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsFlexLruCache.java,v $
- * Date   : $Date: 2002/09/13 15:15:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/09/16 11:45:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsFlexLruCache extends java.lang.Object {
     
@@ -290,7 +290,7 @@ public class CmsFlexLruCache extends java.lang.Object {
      */
     public synchronized I_CmsFlexLruCacheObject remove( I_CmsFlexLruCacheObject theCacheObject ) {
         if (!this.isCached(theCacheObject)) {
-            // this object was never ever before added to the cache
+            // theCacheObject is null or not inside the cache
             return null;
         }
         
@@ -298,13 +298,25 @@ public class CmsFlexLruCache extends java.lang.Object {
         if (theCacheObject.getNextLruObject()==null) {
             // remove the object from the head pos.
             I_CmsFlexLruCacheObject newHead = theCacheObject.getPreviousLruObject();
-            newHead.setNextLruObject( null );
+            
+            if (newHead!=null) {
+                // if newHead is null, theCacheObject 
+                // was the only object in the cache
+                newHead.setNextLruObject( null );
+            }
+            
             this.m_ListHead = newHead;
         }
         else if (theCacheObject.getPreviousLruObject()==null) {
             // remove the object from the tail pos.
             I_CmsFlexLruCacheObject newTail = theCacheObject.getNextLruObject();
-            newTail.setPreviousLruObject( null );
+            
+            if (newTail!=null) {
+                // if newTail is null, theCacheObject 
+                // was the only object in the cache                
+                newTail.setPreviousLruObject( null );
+            }
+            
             this.m_ListTail = newTail;
         }
         else {
@@ -436,6 +448,7 @@ public class CmsFlexLruCache extends java.lang.Object {
             this.removeTail();
         }
         
+        // reset the data structure
         this.m_ObjectCosts = this.m_ObjectCount = 0;
         this.m_ListHead = this.m_ListTail = null;
         
