@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/flex/util/Attic/CmsStringSubstitutionTest.java,v $
- * Date   : $Date: 2003/04/09 12:49:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/04/09 14:04:18 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import junit.framework.TestCase;
  * Test cases for the class "CmsStringSubstitution"
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.0
  */
@@ -150,6 +150,9 @@ public class CmsStringSubstitutionTest extends TestCase {
         
         System.err.println(this.getClass().getName() + ".testCmsContentReplacement():");   
         System.err.println(test);  
-        assertEquals(test, result);        
+        assertEquals(test, result);      
+        
+        test = CmsStringSubstitution.substituteContextPath(content, context);  
+        assertEquals(test, result);            
     }    
 }

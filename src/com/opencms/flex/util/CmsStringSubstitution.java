@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2003/03/07 15:16:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/04/09 14:04:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,17 @@
 
 package com.opencms.flex.util;
 
-import org.apache.oro.text.perl.Perl5Util;
+import com.opencms.workplace.I_CmsWpConstants;
+
 import org.apache.oro.text.perl.MalformedPerl5PatternException;
+import org.apache.oro.text.perl.Perl5Util;
 
 /**
  * Provides a String substitution functionality
  * with Perl regular expressions.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.0
  */
 public class CmsStringSubstitution {
@@ -47,6 +49,10 @@ public class CmsStringSubstitution {
     /** DEBUG flag */
     private static final int DEBUG = 0;
     
+    // static members, will only be initilized once, for performance reasons    
+    private static String contextSearch = null;
+    private static String contextReplace = null;
+        
     /** 
      * Default constructor (empty).<p>
      */
@@ -95,6 +101,21 @@ public class CmsStringSubstitution {
     		if (DEBUG>0) System.err.println("[CmsStringSubstitution]: "+e.toString());				
     	}
     	return content;		
+    }
+        
+    /**
+     * Substitutes the OpenCms context path (e.g. /opencms/opencms/) in a HTML page with a 
+     * special variable so that the content also runs if the  context path of the server changes.<p>
+     * 
+     * @param htmlContent the HTML to replace the context path in 
+     * @return the HTML with the replaced context path
+     */
+    public static String substituteContextPath(String htmlContent, String context) {
+        if (contextSearch == null) {
+            contextSearch = "([^\\w/])" + context;
+            contextReplace = "$1" + CmsStringSubstitution.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/"; 
+        }       
+        return CmsStringSubstitution.substitutePerl(htmlContent, contextSearch, contextReplace, "g");            
     }
         
     /**
