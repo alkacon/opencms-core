@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/05/28 15:01:52 $
- * Version: $Revision: 1.197 $
+ * Date   : $Date: 2001/05/29 07:29:50 $
+ * Version: $Revision: 1.198 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.197 $ $Date: 2001/05/28 15:01:52 $ *
+ * @version $Revision: 1.198 $ $Date: 2001/05/29 07:29:50 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -4328,6 +4328,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Vector deletedFolders = new Vector();
 		// folderIdIndex:    offlinefolderId   |   onlinefolderId
 		Hashtable folderIdIndex = new Hashtable();
+        Vector changedResources = new Vector();
 
 		// read all folders in offlineProject
 
@@ -4338,6 +4339,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 			// C_STATE_DELETE
 			if (currentFolder.getState() == C_STATE_DELETED){
 				deletedFolders.addElement(currentFolder);
+                changedResources.addElement(currentFolder.getAbsolutePath());
 
 				// C_STATE_NEW
 			}else if (currentFolder.getState() == C_STATE_NEW){
@@ -4430,6 +4432,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 
 					// C_STATE_CHANGED
 				}else if (currentFolder.getState() == C_STATE_CHANGED){
+                        changedResources.addElement(currentFolder.getAbsolutePath());
 						// export to filesystem if necessary
 						String exportKey = checkExport(currentFolder.getAbsolutePath());
 						if (exportKey != null){
@@ -4553,7 +4556,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 
 				// C_STATE_DELETE
 			}else if (currentFile.getState() == C_STATE_DELETED){
-
+                    changedResources.addElement(currentFile.getAbsolutePath());
 					// delete in filesystem if necessary
 					String exportKey = checkExport(currentFile.getAbsolutePath());
 					if (exportKey != null){
@@ -4579,7 +4582,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 
 					// C_STATE_CHANGED
 				}else if (currentFile.getState() == C_STATE_CHANGED){
-
+                        changedResources.addElement(currentFile.getAbsolutePath());
 						// export to filesystem if necessary
 						String exportKey = checkExport(currentFile.getAbsolutePath());
 						if (exportKey != null){
@@ -4755,8 +4758,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		} // end of for
 		//clearFilesTable();
 
-        // mgm TODO: get a real Vector
-        return null;
+        return changedResources;
 	}
 
 	 /**

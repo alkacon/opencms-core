@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/05/28 15:01:54 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2001/05/29 07:29:50 $
+ * Version: $Revision: 1.53 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.52 $ $Date: 2001/05/28 15:01:54 $ *
+ * @version $Revision: 1.53 $ $Date: 2001/05/29 07:29:50 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -520,6 +520,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
 	Vector deletedFolders = new Vector();
 	// folderIdIndex:    offlinefolderId   |   onlinefolderId
 	Hashtable folderIdIndex = new Hashtable();
+    Vector changedResources = new Vector();
 
 	// read all folders in offlineProject
 
@@ -532,6 +533,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
 		if (currentFolder.getState() == C_STATE_DELETED)
 		{
 			deletedFolders.addElement(currentFolder);
+            changedResources.addElement(currentFolder.getAbsolutePath());
 			// C_STATE_NEW
 		}
 		else
@@ -632,6 +634,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
 			else
 				if (currentFolder.getState() == C_STATE_CHANGED)
 				{
+                    changedResources.addElement(currentFolder.getAbsolutePath());
 					// export to filesystem if necessary
 					String exportKey = checkExport(currentFolder.getAbsolutePath());
 					if (exportKey != null)
@@ -793,6 +796,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
 		else
 			if (currentFile.getState() == C_STATE_DELETED)
 			{
+                changedResources.addElement(currentFile.getAbsolutePath());
 				// delete in filesystem if necessary
 				String exportKey = checkExport(currentFile.getAbsolutePath());
 				if (exportKey != null)
@@ -843,6 +847,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
 			else
 				if (currentFile.getState() == C_STATE_CHANGED)
 				{
+                    changedResources.addElement(currentFile.getAbsolutePath());
 					// export to filesystem if necessary
 					String exportKey = checkExport(currentFile.getAbsolutePath());
 					if (exportKey != null)
@@ -996,8 +1001,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
 	} // end of for
 	//clearFilesTable();
 
-    // mgm TODO: get a real Vector
-    return null;
+    return changedResources;
 }
 /**
  * Reads a file from the Cms.<BR/>
