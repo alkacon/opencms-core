@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/11/10 00:42:55 $
- * Version: $Revision: 1.417 $
+ * Date   : $Date: 2002/12/04 15:03:23 $
+ * Version: $Revision: 1.418 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,13 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.0 (next release)
+! Help system will now look up if a directory for the current locale exists and display the "online help" button only in this case
+! Preference panel for startup options will not display language selection if only one locale directory exists
+! New "relativeroot" property tells the link substitution in the editor to generate relative URLs instead of absolute URLs
+* Fixed template selection issue when creating a new page
+- Some cleanup of code comments
 
 OpenCms 5.0 beta 2 Kaitain - 11 November 2002
 ! Default index.jsp "welcome to OpenCms" page is now included in a new installation
