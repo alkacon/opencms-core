@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/12/21 15:06:52 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/01/03 13:20:34 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1.4
  * 
@@ -141,6 +141,7 @@ public final class CmsLockManager extends Object {
      * Counts the exclusive locked resources inside a folder.<p>
      * 
      * @param foldername the folder
+     * 
      * @return the number of exclusive locked resources in the specified folder
      */
     public int countExclusiveLocksInFolder(String foldername) {
@@ -162,6 +163,7 @@ public final class CmsLockManager extends Object {
      * Counts the exclusive locked resources in a project.<p>
      * 
      * @param project the project
+     * 
      * @return the number of exclusive locked resources in the specified project
      */
     public int countExclusiveLocksInProject(CmsProject project) {
