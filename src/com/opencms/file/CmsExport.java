@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2002/12/07 11:13:49 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,23 +28,43 @@
 
 package com.opencms.file;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.report.*;
-import org.w3c.dom.*;
-
-import com.opencms.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.report.CmsShellReport;
+import com.opencms.report.I_CmsReport;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.I_CmsXmlParser;
+import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
  * This class holds the functionaility to export resources from the cms
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.38 $ $Date: 2002/12/06 23:16:45 $
+ * @version $Revision: 1.39 $ $Date: 2002/12/07 11:13:49 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -134,12 +154,13 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * @param importFile the file or folder to import from.
      * @param importPath the path to the cms to import into.
      * @param cms the cms-object to work with.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsExport(String exportFile, String[] exportPaths, CmsObject cms)
         throws CmsException {
         this(exportFile, exportPaths, cms, false, false);
     }
+    
     /**
      * This constructs a new CmsImport-object which imports the resources.
      *
@@ -147,26 +168,28 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * @param importPath the path to the cms to import into.
      * @param cms the cms-object to work with.
      * @param Node moduleNode module informations in a Node for module-export.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, Node moduleNode)
         throws CmsException {
         this(exportFile, exportPaths, cms, false, false, moduleNode);
     }
-/**
- * This constructs a new CmsImport-object which imports the resources.
- *
- * @param importFile the file or folder to import from.
- * @param exportPaths the paths of folders and files to write into the exportFile
- * @param cms the cms-object to work with.
- * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
- *        exportPaths are included
- * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
- * @exception CmsException the CmsException is thrown if something goes wrong.
- */
-public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged) throws CmsException {
-    this(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, null);
-}
+    
+    /**
+     * This constructs a new CmsImport-object which imports the resources.
+     *
+     * @param importFile the file or folder to import from.
+     * @param exportPaths the paths of folders and files to write into the exportFile
+     * @param cms the cms-object to work with.
+     * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
+     *        exportPaths are included
+     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
+     */
+    public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged) throws CmsException {
+        this(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, null);
+    }
+    
     /**
      * This constructs a new CmsImport-object which imports the resources.
      *
@@ -177,12 +200,13 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
      *        exportPaths are included
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
      * @param Node moduleNode module informations in a Node for module-export.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, Node moduleNode)
         throws CmsException {
         this(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, moduleNode, false);
     }
+    
     /**
      * This constructs a new CmsImport-object which imports the resources.
      *
@@ -194,7 +218,7 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
      * @param Node moduleNode module informations in a Node for module-export.
      * @param exportUserdata if true, the userdata and groupdata are exported
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem
                             , boolean excludeUnchanged, Node moduleNode, boolean exportUserdata)
@@ -215,7 +239,7 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
      * @param Node moduleNode module informations in a Node for module-export.
      * @param exportUserdata if true, the userdata and groupdata are exported
      * @param report the cmsReport to handle the log messages.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, Node moduleNode, boolean exportUserdata, long contentAge, I_CmsReport report)
         throws CmsException {
@@ -239,7 +263,7 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
             }
         }
 
-        // open the import resource
+        // open the export resource
         getExportResource();
 
         // create the xml-config file
@@ -525,7 +549,9 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
                 // check if this is a system-folder and if it should be included.
                 String export = folder.getAbsolutePath();
                 if( // new VFS, always export "/system/bodies/" OR
-                    (I_CmsWpConstants.C_VFS_NEW_STRUCTURE && export.startsWith("/system/bodies/")) ||
+                    (I_CmsWpConstants.C_VFS_NEW_STRUCTURE && export.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) ||
+                    // new VFS, always export "/system/gallieries" OR
+                    (I_CmsWpConstants.C_VFS_NEW_STRUCTURE && export.startsWith(I_CmsWpConstants.C_VFS_PATH_GALLERIES)) ||
                     // option "exclude system folder" selected AND
                     !(m_excludeSystem && 
                         // export folder is a system folder 
