@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/03/31 12:39:43 $
- * Version: $Revision: 1.621 $
+ * Date   : $Date: 2005/03/31 14:05:58 $
+ * Version: $Revision: 1.622 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March 31, 2005
 ! New "secure" feature allows easy re-directing of secure (https) pages "inside" a OpenCms site
 ! New "Export/Secure" dialog for easy setting (and controlling) of export and secure property
 ! OpenCms sites can now have multiple alias names in the configuration
+* Fixed issue with cookies not getting set on OpenCms controlled JSP pages
 
 OpenCms 5.7.1 Corrin (aka 6.0 beta 1) - February 21, 2005
 ! Static export "file scrubbing" can now be customized implementing I_CmsStaticExportHandler
