@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/08/28 15:48:08 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/08/08 14:08:30 $
+ * @version $Revision: 1.10 $ $Date: 2000/08/28 15:48:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsLogChannels {
@@ -83,9 +83,15 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
 			try { 
 				cms.getRequestContext().setCurrentProject(cms.onlineProject().getId()); 
 				cms.publishProject(projectId); 
+				
+				// clear the languagefile cache
+				CmsXmlWpTemplateFile.clearcache();
+
+		
 				// publish process was successfull
 				// redirect to the project overview... 
-				templateSelector="done"; 
+				templateSelector="done";
+				
 			} catch (CmsException exc) {
 				// error while publishing...
 				if(A_OpenCms.isLogging()) {

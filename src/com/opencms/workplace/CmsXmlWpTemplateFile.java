@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/08/24 15:10:34 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2000/08/28 15:48:08 $
+ * Version: $Revision: 1.47 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.46 $ $Date: 2000/08/24 15:10:34 $
+ * @version $Revision: 1.47 $ $Date: 2000/08/28 15:48:08 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
 																		I_CmsWpConstants {
@@ -53,7 +53,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 
 	/** Reference to the actual language file. */
 	private CmsXmlLanguageFile m_languageFile = null;
-	
+
 	/**
 	 * Default constructor.
 	 */
@@ -84,6 +84,13 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 		super();
 		registerMyTags();
 		init(cms, filename);
+	}
+	/**
+	* Clears the internal language cache
+	**/
+	public static void clearcache() {
+	    m_langFiles = new Hashtable();
+	    
 	}
 	/**
 	 * Clears the startup tag that can be used in workplace documents.
