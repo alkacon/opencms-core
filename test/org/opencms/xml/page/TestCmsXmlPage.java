@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2004/10/03 11:37:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/11 08:12:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.xml.page;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -48,11 +49,11 @@ import java.util.Locale;
 import junit.framework.TestCase;
 
 /**
- * Tests for the XML page that dosen't require a running OpenCms system.<p>
+ * Tests for the XML page that doesn't require a running OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.0
  */
@@ -273,5 +274,78 @@ public class TestCmsXmlPage extends TestCase {
 
         // ensure content definitions are equal
         assertEquals(cd1, cd3);    
+    }    
+    
+    /**
+     * Tests reading and updating link elements from the XML page.<p> 
+     * 
+     * @throws Exception in case something goes wrong
+     */    
+    public void testUpdateXmlPageLink() throws Exception {
+        
+        // create a XML entity resolver
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+        
+        CmsXmlPage page;
+        CmsLink link;
+        String content; 
+        
+        // validate xmlpage 4
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-4.xml", UTF8);        
+        page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        // test values provided in input
+        assertEquals("/sites/default/test.html", link.getTarget());
+        assertEquals(null, link.getAnchor());
+        assertEquals(null, link.getQuery());
+        
+        // validate xmlpage 3
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-3.xml", UTF8);        
+        page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        // test values provided in input
+        assertEquals("/sites/default/folder1/image2.gif", link.getTarget());
+        assertEquals("test", link.getAnchor());
+        assertEquals("param=1&param2=2", link.getQuery());
+        
+        // update xml page link with components
+        link.updateLink("/test/link1/changed2.gif", "foo", "a=b&c=d");
+        page.marshal();
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        assertEquals("/test/link1/changed2.gif", link.getTarget());
+        assertEquals("foo", link.getAnchor());
+        assertEquals("a=b&c=d", link.getQuery());
+        
+        // update xml page link with uri
+        link.updateLink("/foo/bar/link/test.jpg#bar?c=d&x=y");
+        page.marshal();
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        assertEquals("/foo/bar/link/test.jpg", link.getTarget());
+        assertEquals("bar", link.getAnchor());
+        assertEquals("c=d&x=y", link.getQuery());
+        
+        // update xml page link with components, query null
+        link.updateLink("/test/link1/changed3.jpg", "bizz", null);
+        page.marshal();
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        assertEquals("/test/link1/changed3.jpg", link.getTarget());
+        assertEquals("bizz", link.getAnchor());
+        assertEquals(null, link.getQuery());
+        
+        // update xml page link with components, anchor null
+        link.updateLink("/test/link1/changed4.jpg", null, "c=d&x=y");
+        page.marshal();
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        assertEquals("/test/link1/changed4.jpg", link.getTarget());
+        assertEquals(null, link.getAnchor());
+        assertEquals("c=d&x=y", link.getQuery());
+        
+        // update xml page link with uri without components
+        link.updateLink("/foo/bar/baz/test.png");
+        page.marshal();
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        assertEquals("/foo/bar/baz/test.png", link.getTarget());
+        assertEquals(null, link.getAnchor());
+        assertEquals(null, link.getQuery());        
     }
 }

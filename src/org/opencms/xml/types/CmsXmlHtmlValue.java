@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/10/03 11:37:53 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/11 08:12:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -200,6 +200,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                 Element query = lelem.element(CmsXmlPage.NODE_QUERY);
 
                 CmsLink link = new CmsLink(
+                    lelem,
                     lname.getValue(), 
                     type.getValue(), 
                     (target != null) ? target.getText(): null, 
