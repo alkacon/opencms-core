@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/05/02 16:13:19 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2000/05/18 12:37:41 $
+ * Version: $Revision: 1.72 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.71 $ $Date: 2000/05/02 16:13:19 $ 
+ * @version $Revision: 1.72 $ $Date: 2000/05/18 12:37:41 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -2034,6 +2034,34 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		}			
 	}
 
+	/**
+	 * Imports a import-resource (folder or zipfile) to the cms.
+	 * 
+	 * @param importFile the name (absolute Path) of the import resource (zip or folder)
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void importResources(String importFile, String importPath)
+		throws CmsException {
+		// import the resources
+		c_rb.importResources(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this);
+	}
+	
+	/**
+	 * Exports cms-resources to zip.
+	 * 
+	 * @param exportFile the name (absolute Path) of the export resource (zip)
+	 * @param exportPath the name (absolute Path) of folder from which should be exported
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void exportResources(String exportFile, String exportPath)
+		throws CmsException {
+		// export the resources
+		c_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPath, this);
+	}
+	
 	/**
 	 * Checks, if the user may read this resource.
 	 * 

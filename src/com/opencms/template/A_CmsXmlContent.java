@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/05/12 07:43:55 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/05/18 12:37:41 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,8 +39,8 @@ import org.xml.sax.*;
 
 import com.opencms.launcher.*;
 
-import com.sun.xml.*;
-import com.sun.xml.tree.*;
+// import com.sun.xml.*;
+// import com.sun.xml.tree.*;
                   
 //import org.apache.xerces.*;
 //import org.apache.xerces.dom.*;
@@ -75,7 +75,7 @@ import com.sun.xml.tree.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2000/05/12 07:43:55 $
+ * @version $Revision: 1.25 $ $Date: 2000/05/18 12:37:41 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/04/28 14:12:14 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/05/18 12:37:41 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.39 $ $Date: 2000/04/28 14:12:14 $
+ * @version $Revision: 1.40 $ $Date: 2000/05/18 12:37:41 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1246,6 +1246,20 @@ public class CmsShell implements I_CmsConstants {
 	}
 
 	/**
+	 * Reads a file from the Cms.<BR/>
+	 * 
+	 * @param filename The complete path to the file
+	 */
+	public void readFileContent(String filename) {
+		try {
+			System.out.println(m_cms.readFile(filename));
+			System.out.println(new String(m_cms.readFile(filename).getContents()));
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	
+	/**
 	 * Publishes a project.
 	 * 
 	 * @param id The id of the project to be published.
@@ -1482,6 +1496,39 @@ public class CmsShell implements I_CmsConstants {
 		}
 	}
 
+	/**
+	 * Imports a import-resource (folder or zipfile) to the cms.
+	 * 
+	 * @param importFile the name (absolute Path) of the import resource (zip or folder)
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 */
+	public void importResources(String importFile, String importPath) {
+		// import the resources
+		try {
+			m_cms.importResources(importFile, importPath);
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+
+	/**
+	 * Exports cms-resources to zip.
+	 * 
+	 * @param exportFile the name (absolute Path) of the export resource (zip)
+	 * @param exportPath the name (absolute Path) of folder from which should be exported
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void exportResources(String exportFile, String exportPath)
+		throws CmsException {
+		// export the resources
+		try {
+			m_cms.exportResources(exportFile, exportPath);
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	
 	/**
 	 * Writes the export-path for the system.
 	 * This path is used for db-export and db-import.

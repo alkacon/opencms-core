@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/05/02 16:13:19 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2000/05/18 12:37:40 $
+ * Version: $Revision: 1.69 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.68 $ $Date: 2000/05/02 16:13:19 $ 
+ * @version $Revision: 1.69 $ $Date: 2000/05/18 12:37:40 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1611,6 +1611,28 @@ public abstract class A_CmsObject {
 	abstract public void importDb(String importFile, String importPath)
 		throws CmsException;
 
+	/**
+	 * Imports a import-resource (folder or zipfile) to the cms.
+	 * 
+	 * @param importFile the name (absolute Path) of the import resource (zip or folder)
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	abstract public void importResources(String importFile, String importPath)
+		throws CmsException;
+	
+	/**
+	 * Exports cms-resources to zip.
+	 * 
+	 * @param exportFile the name (absolute Path) of the export resource (zip)
+	 * @param exportPath the name (absolute Path) of folder from which should be exported
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	abstract public void exportResources(String exportFile, String exportPath)
+		throws CmsException;
+	
 	/**
 	 * Checks, if the user may read this resource.
 	 * 

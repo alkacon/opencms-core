@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/05/09 11:46:50 $
- * Version: $Revision: 1.117 $
+ * Date   : $Date: 2000/05/18 12:37:41 $
+ * Version: $Revision: 1.118 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.117 $ $Date: 2000/05/09 11:46:50 $
+ * @version $Revision: 1.118 $ $Date: 2000/05/18 12:37:41 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4108,7 +4108,53 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	}
 	
+	/**
+	 * Imports a import-resource (folder or zipfile) to the cms.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param importFile the name (absolute Path) of the import resource (zip or folder)
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 * @param cms the cms-object to use for the import.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void importResources(A_CmsUser currentUser,  A_CmsProject currentProject, String importFile, String importPath, A_CmsObject cms)
+		throws CmsException {
+		if(isAdmin(currentUser, currentProject)) {
+			new CmsImport(importFile, importPath, cms);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] importResources",
+				 CmsException.C_NO_ACCESS);
+		}
+	}
 	
+	/**
+	 * Exports cms-resources to zip.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param exportFile the name (absolute Path) of the export resource (zip)
+	 * @param exportPath the name (absolute Path) of folder from which should be exported
+	 * @param cms the cms-object to use for the export.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void exportResources(A_CmsUser currentUser,  A_CmsProject currentProject, String exportFile, String exportPath, A_CmsObject cms)
+		throws CmsException {
+		if(isAdmin(currentUser, currentProject)) {
+			new CmsExport(exportFile, exportPath, cms);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] exportResources",
+				 CmsException.C_NO_ACCESS);
+		}
+	}
 
 	// now the private stuff
 	

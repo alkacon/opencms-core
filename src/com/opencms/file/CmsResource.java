@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2000/04/07 15:22:17 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/05/18 12:37:41 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/04/07 15:22:17 $
+ * @version $Revision: 1.15 $ $Date: 2000/05/18 12:37:41 $
  */
  public class CmsResource extends A_CmsResource implements I_CmsConstants,
                                                            Cloneable,
@@ -315,6 +315,8 @@ import com.opencms.core.*;
         output.append(getFlagString());
         output.append(" : Resource-type=");
         output.append(getType());
+        output.append(" : length=");
+        output.append(getLength());
         return output.toString();
       }
                                  
