@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/01/11 13:36:59 $
-* Version: $Revision: 1.301 $
+* Date   : $Date: 2002/01/15 13:24:02 $
+* Version: $Revision: 1.302 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.301 $ $Date: 2002/01/11 13:36:59 $
+ * @version $Revision: 1.302 $ $Date: 2002/01/15 13:24:02 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -7559,5 +7559,15 @@ protected void validName(String name, boolean blank) throws CmsException {
     public void clearResourceCache(){
         m_resourceCache.clear();
         m_subresCache.clear();
+    }
+
+    /**
+     * Method to encrypt the passwords.
+     *
+     * @param value The value to encrypt.
+     * @return The encrypted value.
+     */
+    public String digest(String value) {
+        return m_dbAccess.digest(value);
     }
 }
