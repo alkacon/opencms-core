@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/03 13:22:03 $
- * Version: $Revision: 1.437 $
+ * Date   : $Date: 2004/11/04 15:58:00 $
+ * Version: $Revision: 1.438 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.437 $ $Date: 2004/11/03 13:22:03 $
+ * @version $Revision: 1.438 $ $Date: 2004/11/04 15:58:00 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2319,13 +2319,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         Vector childs = null;
         Vector users = null;
+        CmsGroup group = readGroup(runtimeInfo, name);
         // get all child groups of the group
         childs = getChild(context, name);
         // get all users in this group
         users = getUsersOfGroup(context, name);
         // delete group only if it has no childs and there are no users in this group.
         if ((childs == null) && ((users == null) || (users.size() == 0))) {
+            CmsProject onlineProject = readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
             m_userDriver.deleteGroup(runtimeInfo, name);
+            m_userDriver.removeAccessControlEntriesForPrincipal(runtimeInfo, context.currentProject(), onlineProject, group.getId());
             m_groupCache.remove(new CacheId(name));
         } else {
             throw new CmsException(name, CmsException.C_GROUP_NOT_EMPTY);
@@ -2742,14 +2745,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * Only users, which are in the group "administrators" are granted.<p>
      * 
      * @param runtimeInfo the current runtime info
+     * @param project the current project
      * @param userId the Id of the user to be deleted
      * 
      * @throws CmsException if operation was not succesfull
      */
-    public void deleteUser(I_CmsRuntimeInfo runtimeInfo, CmsUUID userId) throws CmsException {
+    public void deleteUser(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID userId) throws CmsException {
 
         CmsUser user = readUser(runtimeInfo, userId);
-        deleteUser(runtimeInfo, user.getName());
+        deleteUser(runtimeInfo, project, user.getName());
     }
 
     /**
@@ -2757,16 +2761,19 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      *
      * Only users, which are in the group "administrators" are granted.
      * @param runtimeInfo the current runtime info
+     * @param project the current project
      * @param username the name of the user to be deleted
      * 
      * @throws CmsException if operation was not succesfull
      */
-    public void deleteUser(I_CmsRuntimeInfo runtimeInfo, String username) throws CmsException {
+    public void deleteUser(I_CmsRuntimeInfo runtimeInfo, CmsProject project, String username) throws CmsException {
 
         // Test is this user is existing
         CmsUser user = readUser(runtimeInfo, username);
 
-        m_userDriver.deleteUser(runtimeInfo, username);
+        CmsProject onlineProject = readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+        m_userDriver.deleteUser(runtimeInfo, username);    
+        m_userDriver.removeAccessControlEntriesForPrincipal(runtimeInfo, project, onlineProject, user.getId());
         // delete user from cache
         clearUserCache(user);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/10/29 17:26:24 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/11/04 15:58:00 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.37 $ $Date: 2004/10/29 17:26:24 $
+ * @version $Revision: 1.38 $ $Date: 2004/11/04 15:58:00 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -391,6 +391,18 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      */
     void removeAccessControlEntries(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID resource) throws CmsException;
 
+    /**
+     * Removes all access control entries belonging to a principal from the database.<p>
+     * 
+     * @param runtimeInfo the current runtime info
+     * @param project the project to write the entry
+     * @param onlineProject the online project 
+     * @param principal the id of the principal
+     * @throws CmsException if something goes wrong
+     */
+    void removeAccessControlEntriesForPrincipal(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsProject onlineProject, CmsUUID principal) throws CmsException;
+
+    
     /**
      * Removes an access control entry from the database.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/11/02 12:41:56 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2004/11/04 15:58:00 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.68 $ $Date: 2004/11/02 12:41:56 $
+ * @version $Revision: 1.69 $ $Date: 2004/11/04 15:58:00 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -1132,6 +1132,44 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         }
     }
 
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#removeAccessControlEntriesForPrincipal(org.opencms.db.I_CmsRuntimeInfo, org.opencms.file.CmsProject, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     */
+    public void removeAccessControlEntriesForPrincipal(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsProject onlineProject, CmsUUID principal) throws CmsException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection(runtimeInfo, project);
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL");
+
+            stmt.setString(1, principal.toString());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
+        }
+        
+        try {
+            conn = m_sqlManager.getConnection(runtimeInfo, project);
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_ONLINE");
+
+            stmt.setString(1, principal.toString());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
+        }
+    }    
+    
     /**
      * @see org.opencms.db.I_CmsUserDriver#removeAccessControlEntry(I_CmsRuntimeInfo, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */

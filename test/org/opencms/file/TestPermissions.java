@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2004/09/20 08:19:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/04 15:58:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,15 @@ import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.util.CmsUUID;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -51,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -83,6 +87,7 @@ public class TestPermissions extends OpenCmsTestCase {
         suite.addTest(new TestPermissions("testDefaultPermissions"));
         suite.addTest(new TestPermissions("testPermissionOverwrite"));
         suite.addTest(new TestPermissions("testPermissionInheritance"));
+        suite.addTest(new TestPermissions("testUserDeletion"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -119,6 +124,43 @@ public class TestPermissions extends OpenCmsTestCase {
         assertEquals("+r+w+v+c", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("+r+v", cms.getPermissions(resourcename, "testGuest").getPermissionString());
     }
+    
+    
+    /**
+     * @throws Throwable if something goes wrong
+     */
+    public void testUserDeletion() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing permissions after deleting a user");
+
+        String resourcename = "userDelete.txt";
+        String username = "deleteUser";
+        // create a resource
+        cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        // create a user
+        cms.addUser(username, "deleteMe", "Users", "", null);
+        // add a permission for this user
+        cms.chacc(resourcename, I_CmsPrincipal.C_PRINCIPAL_USER, username, "+r+w+v+c+d");
+        // now delete the user again
+        cms.deleteUser(username);
+        
+        // get all ace of this resource
+        Vector aces = cms.getAccessControlEntries(resourcename);
+        
+        Iterator i = aces.iterator();
+        // loop through all ace and check if the users/groups belonging to this entry still exist
+        while (i.hasNext()) {
+            CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
+
+            CmsUUID principal = ace.getPrincipal();
+            // the principal is missing, so the test must fail
+            if (cms.lookupPrincipal(principal) == null) {
+                fail("Principal " + principal.toString() + " is missing");
+            }
+        }   
+      }
+    
     
     /**
      * Tests the overwriting of permissions.<p>

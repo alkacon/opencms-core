@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/04 15:58:00 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.map.LRUMap;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -1358,7 +1358,7 @@ public final class CmsSecurityManager {
                 I_CmsRuntimeInfo.C_RUNTIMEINFO_USER);
 
             try {
-                m_driverManager.deleteUser(runtimeInfo, userId);
+                m_driverManager.deleteUser(runtimeInfo, context.currentProject(), userId);
                 runtimeInfo.pop();
             } catch (CmsException e) {
                 runtimeInfo.report(null, "Error deleting user " + username, e);
@@ -1401,7 +1401,7 @@ public final class CmsSecurityManager {
                 I_CmsRuntimeInfo.C_RUNTIMEINFO_USER);
 
             try {
-                m_driverManager.deleteUser(runtimeInfo, username);
+                m_driverManager.deleteUser(runtimeInfo, context.currentProject(), username);
                 runtimeInfo.pop();
             } catch (CmsException e) {
                 runtimeInfo.report(null, "Error deleting user " + username, e);
