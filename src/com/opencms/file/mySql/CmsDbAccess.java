@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/06/29 13:45:50 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2001/07/09 08:10:51 $
+ * Version: $Revision: 1.56 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.55 $ $Date: 2001/06/29 13:45:50 $ *
+ * @version $Revision: 1.56 $ $Date: 2001/07/09 08:10:51 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -239,22 +239,17 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		// If so, delete it
 		try {
 		    readFileHeader(project.getId(),filename);
+            throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
         } catch (CmsException e) {
 		    // if the file is maked as deleted remove it!
 			if (e.getType()==CmsException.C_RESOURCE_DELETED) {
-                removeFile(project.getId(),filename);
-                state=C_STATE_CHANGED;
+                //removeFile(project.getId(),filename);
+                //state=C_STATE_CHANGED;
+                throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
             }
-            if (e.getType()==CmsException.C_NOT_FOUND){
-                try{
-                    readFileHeader(C_PROJECT_ONLINE_ID, filename);
-                    throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
-                } catch(CmsException e2){
-                    if(e2.getType()==CmsException.C_FILE_EXISTS){
-                        throw e2;
-                    }
-                }
-            }
+            if (e.getType()==CmsException.C_FILE_EXISTS) {
+		        throw e;
+		    }
         }
 
         String usedPool;
@@ -794,6 +789,12 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
 					{
 					}
 				}
+                if (enableHistory){
+                    // read the properties for backup
+                    Hashtable props = readAllProperties(projectId, currentFile, currentFile.getType());
+                    // backup the offline resource
+                    backupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);
+                }
 				try
 				{
 					CmsFile currentOnlineFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getAbsolutePath());
@@ -995,6 +996,11 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
 		{
 			discAccess.removeResource(currentFolder.getAbsolutePath(), exportKey);
 		}
+        if (enableHistory){
+            Hashtable props = readAllProperties(projectId, currentFolder,currentFolder.getType());
+            // backup the offline resource
+            backupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
+        }
 		try
 		{
 			deleteAllProperties(projectId,currentFolder);
@@ -1010,7 +1016,8 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
         removeFolderForPublish(projectId, currentFolder.getAbsolutePath());
 	} // end of for
 	//clearFilesTable();
-
+    // store the projectdata to the backuptables for history
+    backupProject(currentProject, versionId, publishDate, user);
     return changedResources;
 }
 /**

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2001/06/22 16:01:33 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/07/09 08:09:31 $
+* Version: $Revision: 1.21 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2001/06/22 16:01:33 $
+ * @version $Revision: 1.21 $ $Date: 2001/07/09 08:09:31 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -83,41 +83,41 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         filename = (String)session.getValue(C_PARA_FILE);
 
         // get the project
-        String projectId = (String)parameters.get(C_PARA_PROJECT);
+        String versionId = (String)parameters.get(C_PARA_PROJECT);
         Integer id = null;
-        CmsFile file = null;
-        if(projectId != null) {
-            id = new Integer(Integer.parseInt(projectId));
+        CmsBackupResource backupFile = null;
+        String theFileName = "";
+        if(versionId != null) {
+            id = new Integer(Integer.parseInt(versionId));
             session.putValue(C_PARA_PROJECT, id);
-            file = (CmsFile)cms.readFileHeaderForHist(filename, id.intValue());
+            backupFile = (CmsBackupResource)cms.readFileHeaderForHist(filename, id.intValue());
+            theFileName = backupFile.getName();
         }
         else {
-            file = (CmsFile)cms.readFileHeader(filename);
+            CmsFile offlineFile = (CmsFile)cms.readFileHeader(filename);
+            theFileName = offlineFile.getName();
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
-        // test if the prohject paremeter was included, display the detail dialog.
+        // test if the project paremeter was included, display the detail dialog.
         if(id != null) {
             template = "detail";
-            CmsProject project = cms.readProject(id.intValue());
+            CmsBackupProject project = cms.readBackupProject(id.intValue());
             xmlTemplateDocument.setData("PROJECT", project.getName());
             String title = cms.readProperty(filename, C_PROPERTY_TITLE);
             if(title == null) {
                 title = "";
             }
+            String editedBy = backupFile.getLastModifiedByName();
             xmlTemplateDocument.setData("TITLE", title);
-            xmlTemplateDocument.setData("SIZE", new Integer(file.getLength()).toString());
-            xmlTemplateDocument.setData("EDITEDBY", cms.readUser(file.getResourceLastModifiedBy()).getName());
-            xmlTemplateDocument.setData("EDITEDAT", Utils.getNiceDate(file.getDateLastModified()));
-            xmlTemplateDocument.setData("PUBLISHEDBY", "Not yet available");
-            String published = "---";
-            if(project.getFlags() == this.C_PROJECT_STATE_ARCHIVE) {
-                published = Utils.getNiceDate(project.getPublishingDate());
-            }
-            xmlTemplateDocument.setData("PUBLISHEDAT", published);
+            xmlTemplateDocument.setData("SIZE", new Integer(backupFile.getLength()).toString());
+            xmlTemplateDocument.setData("EDITEDBY", editedBy);
+            xmlTemplateDocument.setData("EDITEDAT", Utils.getNiceDate(backupFile.getDateLastModified()));
+            xmlTemplateDocument.setData("PUBLISHEDBY", project.getPublishedByName());
+            xmlTemplateDocument.setData("PUBLISHEDAT", Utils.getNiceDate(project.getPublishingDate()));
             xmlTemplateDocument.setData("PROJECTDESCRIPTION", project.getDescription());
         }
-        xmlTemplateDocument.setData("FILENAME", file.getName());
+        xmlTemplateDocument.setData("FILENAME", theFileName);
 
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
@@ -143,34 +143,27 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String filename = (String)session.getValue(C_PARA_FILE);
         if(filename != null) {
-            Vector allFiles = cms.readAllFileHeaders(filename);
-            if(allFiles.size() > 0) {
-                allFiles = Utils.sort(cms, allFiles, Utils.C_SORT_PUBLISHED_DOWN);
-            }
+            Vector allFiles = cms.readAllFileHeadersForHist(filename);
+            // vector is already sorted by version id
+            //if(allFiles.size() > 0) {
+            //    allFiles = sort(allFiles, Utils.C_SORT_PUBLISHED_DOWN);
+            //}
             // fill the names and values
             for(int i = 0;i < allFiles.size();i++) {
-                CmsFile file = ((CmsFile)allFiles.elementAt(i));
-                //if(file.getState() != C_STATE_UNCHANGED) {
-                    CmsProject project = cms.readProject(file);
-                  //  if(project.getFlags() == this.C_PROJECT_STATE_ARCHIVE) {
-                        String projectName = "unknown Project";
-                        String projectId = "-1";
-                        if(project != null) {
-                            projectName = project.getName();
-                            projectId = project.getId() + "";
-                        }
-                        //long updated = file.getDateLastModified();
-                        //long updated = cms.readProject(file).getPublishingDate();
-                        long updated = file.getDateCreated();
-                        String userName = cms.readUser(file.getResourceLastModifiedBy()).getName();
-                        long lastModified = file.getDateLastModified();
-                        String output = Utils.getNiceDate(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                                        + Utils.getNiceDate(updated) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                                        + userName;
-                        names.addElement(output);
-                        values.addElement(projectId);
-                    //}
-                //}
+                CmsBackupResource file = ((CmsBackupResource)allFiles.elementAt(i));
+                long updated = file.getDateCreated();
+                String userName = "";
+                try{
+                    userName = cms.readUser(file.getResourceLastModifiedBy()).getName();
+                } catch(CmsException exc){
+                    userName = file.getLastModifiedByName();
+                }
+                long lastModified = file.getDateLastModified();
+                String output = Utils.getNiceDate(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                                + Utils.getNiceDate(updated) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                                + userName;
+                names.addElement(output);
+                values.addElement(file.getVersionId()+"");
             }
         }
         return new Integer(-1);

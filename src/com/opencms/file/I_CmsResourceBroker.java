@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2001/06/29 13:42:22 $
- * Version: $Revision: 1.146 $
+ * Date   : $Date: 2001/07/09 08:10:22 $
+ * Version: $Revision: 1.147 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.146 $ $Date: 2001/06/29 13:42:22 $
+ * @version $Revision: 1.147 $ $Date: 2001/07/09 08:10:22 $
  *
  */
 
@@ -632,15 +632,13 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
 	 * @param currentProject The current project of the user.
 	 * @param name The name of the propertydefinition to overwrite.
 	 * @param resourcetype The name of the resource-type for the propertydefinition.
-	 * @param type The type of the propertydefinition (normal|mandatory|optional)
 	 *
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public CmsPropertydefinition createPropertydefinition(CmsUser currentUser,
 													CmsProject currentProject,
 													String name,
-													String resourcetype,
-													int type)
+													String resourcetype)
 		throws CmsException;
 /**
  * Insert the method's description here.
@@ -766,6 +764,31 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 	 */
 	public void deleteFolder(CmsUser currentUser, CmsProject currentProject,
 							 String foldername)
+		throws CmsException;
+
+	/**
+	 * Undeletes a resource in the Cms.<br>
+	 *
+	 * A resource can only be undeleted in an offline project.
+	 * A resource is undeleted by setting its state to CHANGED (1). <br>
+	 *
+	 *
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callinUser</li>
+	 * </ul>
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The complete path of the resource.
+	 *
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public void undeleteResource(CmsUser currentUser, CmsProject currentProject,
+						   String filename)
 		throws CmsException;
 	/**
 	 * Delete a group from the Cms.<BR/>
@@ -1128,6 +1151,32 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 	public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject,
 								   String foldername)
 		throws CmsException;
+
+	 /**
+	 * Returns a Vector with all files of a folder.<br>
+	 *
+	 * Files of a folder can be read from an offline Project and the online Project.<br>
+	 *
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read this resource</li>
+	 * </ul>
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param foldername the complete path to the folder.
+     * @param includeDeleted Include if the folder is marked as deleted
+	 *
+	 * @return subfiles A Vector with all subfiles for the overgiven folder.
+	 *
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject,
+								   String foldername, boolean includeDeleted)
+		throws CmsException;
+
 /**
  * Returns a Vector with all resource-names that have set the given property to the given value.
  *
@@ -1355,6 +1404,32 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	public Vector getSubFolders(CmsUser currentUser, CmsProject currentProject,
 								String foldername)
 		throws CmsException;
+
+ 	/**
+	 * Returns a Vector with all subfolders.<br>
+	 *
+	 * Subfolders can be read from an offline project and the online project. <br>
+	 *
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read this resource</li>
+	 * </ul>
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param foldername the complete path to the folder.
+     * @param includeDeleted Include if the folder is marked as deleted
+	 *
+	 * @return subfolders A Vector with all subfolders for the given folder.
+	 *
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public Vector getSubFolders(CmsUser currentUser, CmsProject currentProject,
+								String foldername, boolean includeDeleted)
+		throws CmsException;
+
 	 /**
 	  * Get a parameter value for a task.
 	  *
@@ -1716,7 +1791,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 		throws CmsException ;
 	 /**
 	 * Reads all file headers of a file in the OpenCms.<BR>
-	 * This method returns a vector with the histroy of all file headers, i.e.
+	 * This method returns a vector with all file headers, i.e.
 	 * the file headers of a file, independent of the project they were attached to.<br>
 	 *
 	 * The reading excludes the filecontent.
@@ -1738,6 +1813,32 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 public Vector readAllFileHeaders(CmsUser currentUser, CmsProject currentProject,
 									  String filename)
 		 throws CmsException;
+
+	 /**
+	 * Reads all file headers of a file in the OpenCms.<BR>
+	 * This method returns a vector with the histroy of all file headers, i.e.
+	 * the file headers of a file, independent of the project they were attached to.<br>
+	 *
+	 * The reading excludes the filecontent.
+	 *
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The name of the file to be read.
+	 *
+	 * @return Vector of file headers read from the Cms.
+	 *
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	 public Vector readAllFileHeadersForHist(CmsUser currentUser, CmsProject currentProject,
+									  String filename)
+		 throws CmsException;
+
 	/**
 	 * Returns a list of all propertyinformations of a file or folder.
 	 *
@@ -1764,8 +1865,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 *
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param id The id of the resource type to read the propertydefinitions for.
-	 * @param type The type of the propertydefinition (normal|mandatory|optional).
+	 * @param resourcetype The resource type to read the propertydefinitions for.
 	 *
 	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
 	 * The Vector is maybe empty.
@@ -1773,7 +1873,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject,
-										     int id, int type)
+										     int resourcetype)
 		throws CmsException;
 	/**
 	 * Reads all propertydefinitions for the given resource type.
@@ -1792,25 +1892,6 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 */
 	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject,
 										 String resourcetype)
-		throws CmsException;
-	 /**
-	 * Reads all propertydefinitions for the given resource type.
-	 *
-	 * <B>Security</B>
-	 * All users are granted.
-	 *
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resourcetype The name of the resource type to read the propertydefinitions for.
-	 * @param type The type of the propertydefinition (normal|mandatory|optional).
-	 *
-	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
-	 * The Vector is maybe empty.
-	 *
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject,
-										     String resourcetype, int type)
 		throws CmsException;
 	// Methods working with system properties
 
@@ -1938,9 +2019,8 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 public CmsResource readFileHeader(CmsUser currentUser,
 										 CmsProject currentProject, String filename)
 		 throws CmsException;
-
-         /**
-	 * Reads a file header a previous project of the Cms.<BR/>
+	 /**
+	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent. <br>
 	 *
 	 * A file header can be read from an offline project or the online project.
@@ -1954,17 +2034,72 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 *
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param projectId The id of the project to read the file from.
+	 * @param filename The name of the file to be read.
+     * @param includeDeleted If false then throw exception if the file is marked as deleted
+	 *
+	 * @return The file read from the Cms.
+	 *
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	 public CmsResource readFileHeader(CmsUser currentUser,
+										 CmsProject currentProject, String filename,
+                                         boolean includeDeleted)
+		 throws CmsException;
+
+    /**
+	 * Reads a file header from the history of the Cms.<BR/>
+	 * The reading excludes the filecontent. <br>
+	 *
+	 * The file header is read from the backup resources.
+	 *
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param versionId The versionid of the file.
 	 * @param filename The name of the file to be read.
 	 *
 	 * @return The file read from the Cms.
 	 *
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public CmsResource readFileHeaderForHist(CmsUser currentUser,
-									   CmsProject currentProject,
-									   int projectId,
-									   String filename)
+	 public CmsBackupResource readFileHeaderForHist(CmsUser currentUser,
+									                CmsProject currentProject,
+									                int versionId,
+									                String filename)
+		 throws CmsException;
+
+    /**
+	 * Reads a file from the history of the Cms.<BR/>
+	 * The reading includes the filecontent. <br>
+	 *
+	 * The file is read from the backup resources.
+	 *
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param versionId The versionid of the file.
+	 * @param filename The name of the file to be read.
+	 *
+	 * @return The file read from the Cms.
+	 *
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	 public CmsBackupResource readFileForHist(CmsUser currentUser,
+									          CmsProject currentProject,
+                                              int versionId,
+									          String filename)
 		 throws CmsException;
 
 	/**
@@ -2031,6 +2166,32 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
 								String folder, String folderName)
 		throws CmsException ;
+
+	/**
+	 * Reads a folder from the Cms.<BR/>
+	 *
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param foldername The complete path of the folder to be read.
+     * @param includeDeleted Include the folder if it is marked as deleted
+	 *
+	 * @return folder The read folder.
+	 *
+	 * @exception CmsException will be thrown, if the folder couldn't be read.
+	 * The CmsException will also be thrown, if the user has not the rights
+	 * for this resource.
+	 */
+	public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
+								String folder, boolean includeDeleted)
+		throws CmsException ;
+
 	 /**
 	  * Reads all given tasks from a user for a project.
 	  *
@@ -2262,6 +2423,22 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject,
 									 CmsTask task)
 		 throws CmsException ;
+
+	/**
+	 * Reads the backup of a project from the Cms.
+	 *
+	 * <B>Security</B>
+	 * All users are granted.
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param versionId The versionId of the project.
+	 *
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+     public CmsBackupProject readBackupProject(CmsUser currentUser, CmsProject currentProject, int versionId)
+         throws CmsException;
+
 	 /**
 	  * Reads log entries for a project.
 	  *
@@ -2599,6 +2776,20 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 	 */
 	public Hashtable restoreSession(String oldSessionId)
 		throws CmsException;
+
+    /**
+     * Restores a file in the current project with a version in the backup
+     *
+     * @param currentUser The current user
+     * @param currentProject The current project
+     * @param versionId The version id of the resource
+     * @param filename The name of the file to restore
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void restoreResource(CmsUser currentUser, CmsProject currentProject,
+                                   int versionId, String filename) throws CmsException;
+
 	 /**
 	  * Set a new name for a task
 	  *
@@ -2749,6 +2940,20 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 	 */
 	public void storeSession(String sessionId, Hashtable sessionData)
 		throws CmsException;
+
+    /**
+     * Undo all changes in the resource, restore the online file.
+     *
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resourceName The name of the resource to be restored.
+     *
+     * @exception CmsException Throws CmsException if something goes wrong.
+     */
+    public void undoChanges(CmsUser currentUser, CmsProject currentProject, String resourceName)
+        throws CmsException;
+
 	/**
 	 * Unlocks all resources in this project.
 	 *

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2001/05/15 19:29:01 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2001/07/09 08:10:22 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -44,7 +44,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.42 $ $Date: 2001/05/15 19:29:01 $
+ * @version $Revision: 1.43 $ $Date: 2001/07/09 08:10:22 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -140,14 +140,14 @@ private void createDigest() throws CmsException {
      *
      * @exception throws CmsException if something goes wrong.
      */
-    private void createPropertydefinition(String name, String propertyType, String resourceType)
+    private void createPropertydefinition(String name, String resourceType)
         throws CmsException {
         // does the propertydefinition exists already?
         try {
             m_cms.readPropertydefinition(name, resourceType);
         } catch(CmsException exc) {
             // no: create it
-            m_cms.createPropertydefinition(name, resourceType, Integer.parseInt(propertyType));
+            m_cms.createPropertydefinition(name, resourceType);
         }
     }
 /**
@@ -512,7 +512,7 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
                 if (propertyName != null && propertyValue != null && !"".equals(propertyName)) {
                     if (!types.contains(type)) {
                         types.addElement(type);
-                        createPropertydefinition(propertyName, "" + C_PROPERTYDEF_TYPE_NORMAL, type);
+                        createPropertydefinition(propertyName, type);
                     }
                     properties.put(propertyName, propertyValue);
                 }
@@ -521,7 +521,6 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
                     currentProperty = (Element) propertyNodes.item(j);
                     // get all information for this property
                     String name = getTextNodeValue(currentProperty, C_EXPORT_TAG_NAME);
-                    String propertyType = getTextNodeValue(currentProperty, C_EXPORT_TAG_TYPE);
                     String value = getTextNodeValue(currentProperty, C_EXPORT_TAG_VALUE);
                     if(value == null) {
                         // create an empty property
@@ -530,7 +529,7 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
                     // store these informations
                     if ((name != null) && (value != null)) {
                         properties.put(name, value);
-                        createPropertydefinition(name, propertyType, type);
+                        createPropertydefinition(name, type);
                     }
                 }
 

@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/06/29 13:46:01 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2001/07/09 08:11:02 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.33 $ $Date: 2001/06/29 13:46:01 $ *
+ * @version $Revision: 1.34 $ $Date: 2001/07/09 08:11:02 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -781,27 +781,17 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 	// If so, delete it
 	try {
 		CmsResource resource = readFileHeader(project.getId(), filename);
-                throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
+        throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
 	} catch (CmsException e) {
 		// if the file is maked as deleted remove it!
 		if (e.getType()==CmsException.C_RESOURCE_DELETED) {
-		   removeFile(project.getId(),filename);
-		   state=C_STATE_CHANGED;
+		   //removeFile(project.getId(),filename);
+		   //state=C_STATE_CHANGED;
+           throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
 		}
-                if (e.getType()==CmsException.C_FILE_EXISTS) {
-				   throw e;
+        if (e.getType()==CmsException.C_FILE_EXISTS) {
+		   throw e;
 		}
-                if (e.getType() == CmsException.C_NOT_FOUND) {
-                        try{
-                                // Test if file is in OnlineProject
-                                readFileHeader(onlineProject.getId(), filename);
-                                throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
-                        }catch(CmsException e2){
-                                if (e2.getType() == CmsException.C_FILE_EXISTS ){
-                                        throw e2;
-                                }
-                        }
-                }
 	}
 	int resourceId = nextId(m_cq.get("C_TABLE_RESOURCES"));
 	int fileId = nextId(m_cq.get("C_TABLE_FILES"));
@@ -1066,8 +1056,6 @@ public Vector getAllAccessibleProjects(CmsUser user) throws CmsException {
                                 res.getInt(m_cq.get("C_PROJECTS_MANAGERGROUP_ID")),
                                 res.getInt(m_cq.get("C_PROJECTS_PROJECT_FLAGS")),
                                 SqlHelper.getTimestamp(res, m_cq.get("C_PROJECTS_PROJECT_CREATEDATE")),
-                                SqlHelper.getTimestamp(res, m_cq.get("C_PROJECTS_PROJECT_PUBLISHDATE")),
-                                res.getInt(m_cq.get("C_PROJECTS_PROJECT_PUBLISHED_BY")),
                                 res.getInt(m_cq.get("C_PROJECTS_PROJECT_TYPE"))));
 		}
 	} catch (SQLException sqlexc) {
@@ -2078,6 +2066,97 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 	}
 	return file;
 }
+
+	/**
+	 * Reads a file from the history of the Cms.<BR/>
+	 *
+	 * @param versionId The versionId of the resource.
+	 * @param filename The complete name of the file (including pathinformation).
+	 *
+	 * @return file The read file.
+	 *
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public CmsBackupResource readFileForHist(int versionId, String filename)
+		 throws CmsException {
+        CmsBackupResource file = null;
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		Connection con = null;
+		try {
+            con = DriverManager.getConnection(m_poolNameBackup);
+            // if the actual project is the online project read file header and content
+			// from the online project
+			statement = con.prepareStatement(m_cq.get("C_FILES_READ_BACKUP"));
+			statement.setString(1, filename);
+			statement.setInt(2, versionId);
+			res = statement.executeQuery();
+			if(res.next()) {
+			    int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+				int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+				int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+				int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+                String userName = res.getString(m_cq.get("C_RESOURCES_USER_NAME"));
+				int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+                String groupName = res.getString(m_cq.get("C_RESOURCES_GROUP_NAME"));
+				int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+				int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+				int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
+				int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
+				String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+				long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+                String modifiedByName = res.getString(m_cq.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
+				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+                // read the file_content from an oracle blob
+			    oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.get("C_RESOURCES_FILE_CONTENT"));
+			    byte[] content = new byte[ (int) blob.length()];
+			    content = blob.getBytes(1, (int) blob.length());
+
+                int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+				file = new CmsBackupResource(versionId,resId,parentId,fileId,filename,resType,
+                                             resFlags,userId,userName,groupId,groupName,
+                                             resProjectId,accessFlags,state,
+								             launcherType,launcherClass,created,modified,modifiedBy,
+								             modifiedByName,content,resSize);
+            } else {
+			    throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
+            }
+        } catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+ 		} catch (CmsException ex) {
+			throw ex;
+ 		} catch( Exception exc ) {
+			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		} finally {
+			// close all db-resources
+			if(res != null) {
+                try {
+				    res.close();
+                } catch(SQLException exc) {
+				    // nothing to do here
+                }
+			}
+			if(statement != null) {
+				try {
+				    statement.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
+			}
+			if(con != null) {
+                try {
+				    con.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
+			}
+        }
+        return file;
+	 }
+
 	/**
 	 * Private helper method to read the fileContent for publishProject(export).
 	 *

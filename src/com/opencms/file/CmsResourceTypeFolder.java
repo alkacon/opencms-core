@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/06/29 13:42:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/07/09 08:10:22 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -471,6 +471,29 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     }
 
 	/**
+	* Copies a resource from the online project to a new, specified project.
+	* <br>
+	* Copying a resource will copy the file header or folder into the specified
+	* offline project and set its state to UNCHANGED.
+	*
+	* @param resource the name of the resource.
+    * @exception CmsException if operation was not successful.
+	*/
+    public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException {
+        // copy the folder to the current project
+        cms.doCopyResourceToProject(resourceName);
+        // try to copy the corresponding folder in /content/bodys/ to the project
+        try{
+            CmsResource contentFolder = (CmsResource)cms.readFolder(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/"))+resourceName);
+            if (contentFolder != null){
+                cms.doCopyResourceToProject(contentFolder.getAbsolutePath());
+            }
+        } catch(CmsException e){
+            // cannot read the folder in /content/bodys/ so do nothing
+        }
+    }
+
+	/**
 	* Creates a new resource.<br>
 	*
 	* @param folder the complete path to the folder in which the file will be created.
@@ -501,7 +524,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 	*/
 	public void deleteResource(CmsObject cms, String folder) throws CmsException{
 
+       // do not delete all subresources because only empty folders or folders
+       // with deleted subresources can be deleted
        // we have to delete the folder and all resources in the folder
+       /*
         Vector allSubFolders = new Vector();
         Vector allSubFiles   = new Vector();
         getAllResources(cms, folder, allSubFiles, allSubFolders);
@@ -519,8 +545,61 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                 cms.doDeleteFolder(curFolder.getAbsolutePath());
             }
         }
+        */
         // finaly the folder
         cms.doDeleteFolder(folder);
+        // delete the corresponding folder in /content/bodys/
+        String bodyFolder = C_CONTENTBODYPATH.substring(0,
+                    C_CONTENTBODYPATH.lastIndexOf("/")) + folder;
+        try {
+            cms.readFolder(bodyFolder);
+            cms.deleteResource(bodyFolder);
+        }
+        catch(CmsException ex) {
+            // no folder is there, so do nothing
+        }
+    }
+
+	/**
+	* Uneletes a resource.
+	*
+	* @param folder the complete path of the folder.
+	*
+	* @exception CmsException if the file couldn't be undeleted, or if the user
+	* has not the appropriate rights to undelete the file.
+	*/
+	public void undeleteResource(CmsObject cms, String folder) throws CmsException{
+
+       // we have to undelete the folder and all resources in the folder
+        Vector allSubFolders = new Vector();
+        Vector allSubFiles   = new Vector();
+        getAllResources(cms, folder, allSubFiles, allSubFolders);
+        // first undelete all the files
+        for (int i=0; i<allSubFiles.size(); i++){
+            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
+            if(curFile.getState() == C_STATE_DELETED){
+                cms.undeleteResource(curFile.getAbsolutePath());
+            }
+        }
+        // now all the empty subfolders
+        for (int i=0; i<allSubFolders.size(); i++){
+            CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
+            if(curFolder.getState() == C_STATE_DELETED){
+                cms.doUndeleteFolder(curFolder.getAbsolutePath());
+            }
+        }
+        // finally the folder
+        cms.doUndeleteFolder(folder);
+        // undelete the corresponding folder in /content/bodys/
+        String bodyFolder = C_CONTENTBODYPATH.substring(0,
+                    C_CONTENTBODYPATH.lastIndexOf("/")) + folder;
+        try {
+            cms.readFolder(bodyFolder,true);
+            cms.undeleteResource(bodyFolder);
+        }
+        catch(CmsException ex) {
+            // no folder is there, so do nothing
+        }
     }
 
     /**
@@ -687,6 +766,32 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 
     }
 
+    /**
+     * Restores a file in the current project with a version in the backup
+     *
+     * @param cms The CmsObject
+     * @param versionId The version id of the resource
+     * @param filename The name of the file to restore
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException{
+        // cannot restore a folder
+    }
+
+	/**
+	* Undo changes in a resource.
+	* <br>
+	*
+	* @param resource the complete path to the resource to be restored.
+	*
+	* @exception CmsException if the user has not the rights
+	* to write this resource.
+	*/
+	public void undoChanges(CmsObject cms, String resource) throws CmsException{
+        // folders are not unchanged
+	}
+
 	/**
 	* Unlocks a resource.
 	* <br>
@@ -744,8 +849,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         Vector files = new Vector();
 
         // get files and folders of this rootFolder
-        folders = cms.getSubFolders(rootFolder);
-        files = cms.getFilesInFolder(rootFolder);
+        folders = cms.getSubFolders(rootFolder, true);
+        files = cms.getFilesInFolder(rootFolder, true);
 
         //copy the values into the allFiles and allFolders Vectors
         for(int i = 0;i < folders.size();i++) {

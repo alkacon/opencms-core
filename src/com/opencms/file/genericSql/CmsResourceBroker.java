@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/06/29 13:42:43 $
- * Version: $Revision: 1.245 $
+ * Date   : $Date: 2001/07/09 08:10:39 $
+ * Version: $Revision: 1.246 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.245 $ $Date: 2001/06/29 13:42:43 $
+ * @version $Revision: 1.246 $ $Date: 2001/07/09 08:10:39 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -645,6 +645,84 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
         return accessWrite(currentUser,currentProject,resource);
     }
     /**
+     * Checks, if the user may write the unlocked resource.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resource The resource to check.
+     *
+     * @return wether the user has access, or not.
+     */
+    public boolean accessWriteUnlocked(CmsUser currentUser, CmsProject currentProject,
+                               CmsResource resource) throws CmsException {
+
+
+        // check, if this is the onlineproject
+
+        if(onlineProject(currentUser, currentProject).equals(currentProject)){
+            // the online-project is not writeable!
+            return(false);
+        }
+
+        // check the access to the project
+        if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
+            // no access to the project!
+            return(false);
+        }
+
+        // check if the resource belongs to the current project
+        if(resource.getProjectId() != currentProject.getId()) {
+            return false;
+        }
+
+        // check the rights for the current resource
+        if( ! ( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) ||
+                accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
+                accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) ) {
+            // no write access to this resource!
+            return false;
+        }
+
+        // read the parent folder
+        if(resource.getParent() != null) {
+            // readFolder without checking access
+            //resource = readFolder(currentUser,currentProject, resource.getParent());
+            resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getParent());
+        } else {
+            // no parent folder!
+            return true;
+        }
+
+
+        // check the rights and if the resource is not locked
+        // for parent folders only read access is needed
+        do {
+           if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) ||
+                accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) ||
+                accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
+
+                // is the resource locked?
+                if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
+                    // resource locked by anopther user, no creation allowed
+                    return(false);
+                }
+
+                // read next resource
+                if(resource.getParent() != null) {
+                    // readFolder without checking access
+                    //resource = readFolder(currentUser,currentProject, resource.getParent());
+                    resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getParent());
+                }
+            } else {
+                // last check was negative
+                return(false);
+            }
+        } while(resource.getParent() != null);
+
+        // all checks are done positive
+        return(true);
+    }
+    /**
      * adds a file extension to the list of known file extensions
      *
      * <B>Security:</B>
@@ -956,7 +1034,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
         throws CmsException {
         // read the mandatory metadefs
         Vector metadefs = readAllPropertydefinitions(currentUser, currentProject,
-                                                      resourceType, C_PROPERTYDEF_TYPE_MANDATORY);
+                                                      resourceType);
 
         // check, if the mandatory metainfo is given
         for(int i = 0; i < metadefs.size(); i++) {
@@ -1441,17 +1519,22 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 	    // and is the current project state UNLOCKED?
 	    if ((!currentProject.equals(online)) && (currentProject.getOwnerId() == currentUser.getId()) && (currentProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
 		    // is offlineproject and is owner
-            // try to read the resource from the offline project
+            // try to read the resource from the offline project, include deleted
             CmsResource offlineRes = null;
             try{
-                offlineRes = readFileHeader(currentUser, currentProject, currentProject.getId(), resource);
+                if(resource.endsWith("/")){
+                    m_resourceCache.remove(C_FOLDER+currentProject.getId()+resource);
+                } else {
+                    m_resourceCache.remove(C_FILE+currentProject.getId()+resource);
+                }
+                offlineRes = readFileHeader(currentUser, currentProject, currentProject.getId(),resource);
             } catch (CmsException exc){
                 // if the resource does not exist in the offlineProject - it's ok
             }
-            // create the projectresource only if the resource cannot be read
-            if (offlineRes == null){
+            // create the projectresource only if the resource is not in the current project
+            if ((offlineRes == null) || (offlineRes.getProjectId() != currentProject.getId())){
                 try {
-			        m_dbAccess.createProjectResource(currentProject.getId(), resource);
+                    m_dbAccess.createProjectResource(currentProject.getId(), resource);
 			    } catch (CmsException exc) {
 			        // if the subfolder exists already - all is ok
 			    }
@@ -1798,15 +1881,13 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
      * @param currentProject The current project of the user.
      * @param name The name of the propertydefinition to overwrite.
      * @param resourcetype The name of the resource-type for the propertydefinition.
-     * @param type The type of the propertydefinition (normal|mandatory|optional)
      *
      * @exception CmsException Throws CmsException if something goes wrong.
      */
     public CmsPropertydefinition createPropertydefinition(CmsUser currentUser,
                                                     CmsProject currentProject,
                                                     String name,
-                                                    String resourcetype,
-                                                    int type)
+                                                    String resourcetype)
         throws CmsException {
         // check the security
         if( isAdmin(currentUser, currentProject) ) {
@@ -1818,8 +1899,7 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
             return( m_dbAccess.createPropertydefinition(name,
                                                         getResourceType(currentUser,
                                                                         currentProject,
-                                                                        resourcetype),
-                                                         type) );
+                                                                        resourcetype)) );
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + name,
                 CmsException.C_NO_ACCESS);
@@ -1952,8 +2032,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
                 CmsException.C_NO_ACCESS);
         }
         // are there some mandatory metadefs?
-        if(readAllPropertydefinitions(currentUser, currentProject,res.getType(),
-                                               C_PROPERTYDEF_TYPE_MANDATORY).size() == 0  ) {
+        if(readAllPropertydefinitions(currentUser, currentProject,res.getType()).size() == 0  ) {
             // no - delete them all
             m_dbAccess.deleteAllProperties(currentProject.getId(),res);
             m_propertyCache.clear();
@@ -2005,11 +2084,9 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         if( accessWrite(currentUser, currentProject, file) ) {
             // write-acces  was granted - delete the file.
             // and the metainfos
-            deleteAllProperties(currentUser,currentProject,file.getAbsolutePath());
-
             if(onlineFile == null) {
                 // the onlinefile dosent exist => remove the file realy!
-
+                deleteAllProperties(currentUser,currentProject,file.getAbsolutePath());
                 m_dbAccess.removeFile(currentProject.getId(), filename);
 
             } else {
@@ -2069,9 +2146,9 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         if( accessWrite(currentUser, currentProject, cmsFolder) ) {
 
             // write-acces  was granted - delete the folder and metainfos.
-            deleteAllProperties(currentUser,currentProject, cmsFolder.getAbsolutePath());
             if(onlineFolder == null) {
                 // the onlinefile dosent exist => remove the file realy!
+                deleteAllProperties(currentUser,currentProject, cmsFolder.getAbsolutePath());
                 m_dbAccess.removeFolder(currentProject.getId(),cmsFolder);
             } else {
                 m_dbAccess.deleteFolder(currentProject,cmsFolder, false);
@@ -2088,6 +2165,64 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
                 CmsException.C_NO_ACCESS);
         }
     }
+
+    /**
+     * Undeletes a file in the Cms.<br>
+     *
+     * A file can only be undeleted in an offline project.
+     * A file is undeleted by setting its state to CHANGED (1). <br>
+     *
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can write the resource</li>
+     * <li>the resource is locked by the callinUser</li>
+     * </ul>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param filename The complete path of the file.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void undeleteResource(CmsUser currentUser, CmsProject currentProject,
+                                String filename)
+        throws CmsException {
+        boolean isFolder=false;
+        CmsResource resource=null;
+        int state = C_STATE_CHANGED;
+        // read the resource to check the access
+        if (filename.endsWith("/")) {
+            isFolder=true;
+            resource = m_dbAccess.readFolder(currentProject.getId(),filename);
+        } else {
+            resource = (CmsFile)m_dbAccess.readFileHeader(currentProject.getId(),filename, true);
+        }
+
+        // has the user write-access?
+        if( accessWriteUnlocked(currentUser, currentProject, resource)) {
+            resource.setState(state);
+            // write-acces  was granted - write the file.
+            if (filename.endsWith("/")) {
+                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false);
+                // update the cache
+                m_resourceCache.put(C_FOLDER+currentProject.getId()+filename,(CmsFolder)resource);
+            } else {
+                m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,false);
+                // update the cache
+                m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);
+            }
+            m_subresCache.clear();
+            // inform about the file-system-change
+            fileSystemChanged(isFolder);
+        } else {
+            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+                CmsException.C_NO_ACCESS);
+        }
+    }
+
     /**
      * Delete a group from the Cms.<BR/>
      * Only groups that contain no subgroups can be deleted.
@@ -2183,8 +2318,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         CmsPropertydefinition metadef = readPropertydefinition(currentUser,currentProject,property, resType.getResourceTypeName());
 
         // is this a mandatory metadefinition?
-        if(  (metadef != null) &&
-             (metadef.getPropertydefType() != C_PROPERTYDEF_TYPE_MANDATORY )  ) {
+        if(  (metadef != null)  ) {
             // no - delete the information
             m_dbAccess.deleteProperty(property,currentProject.getId(),res,res.getType());
             // set the file-state to changed
@@ -2730,6 +2864,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         throws CmsException {
         return m_dbAccess.getGroupsOfUser(username);
     }
+
 /**
  * Returns a Vector with all files of a folder.<br>
  *
@@ -2752,6 +2887,32 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
  */
 public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, String foldername) throws CmsException
 {
+    return getFilesInFolder(currentUser, currentProject, foldername, false);
+}
+
+/**
+ * Returns a Vector with all files of a folder.<br>
+ *
+ * Files of a folder can be read from an offline Project and the online Project.<br>
+ *
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user can read this resource</li>
+ * </ul>
+ *
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param foldername the complete path to the folder.
+ * @param includeDeleted Include the folder if it is deleted
+ *
+ * @return A Vector with all subfiles for the overgiven folder.
+ *
+ * @exception CmsException  Throws CmsException if operation was not succesful.
+ */
+public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, String foldername, boolean includeDeleted) throws CmsException
+{
     Vector files;
 
     // Todo: add caching for getFilesInFolder
@@ -2762,7 +2923,7 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
     // try to get the files in the current project
     try
     {
-        files = helperGetFilesInFolder(currentUser, currentProject, foldername);
+        files = helperGetFilesInFolder(currentUser, currentProject, foldername, includeDeleted);
     }
     catch (CmsException e)
     {
@@ -2779,6 +2940,7 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
         //we are not allowed to read the folder (folder deleted)
         return new Vector();
     }
+/*
     Vector onlineFiles = null;
     if (!currentProject.equals(onlineProject(currentUser, currentProject)))
     {
@@ -2786,7 +2948,7 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
         // from the onlineproject, too
         try
         {
-            onlineFiles = helperGetFilesInFolder(currentUser, onlineProject(currentUser, currentProject), foldername);
+            onlineFiles = helperGetFilesInFolder(currentUser, onlineProject(currentUser, currentProject), foldername, includeDeleted);
             // merge the resources
         }
         catch (CmsException exc)
@@ -2803,14 +2965,11 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
 
     if(onlineFiles == null) //if it was null, the folder was marked deleted -> no files in online project.
         return files;
-
+*/
     //m_subresCache.put(C_FILE+currentProject.getId()+foldername,files);
 
-    return files = mergeResources(files, onlineFiles);
-
-
-
-
+   // return files = mergeResources(files, onlineFiles);
+   return files;
 }
 /**
  * Returns a Vector with all resource-names that have set the given property to the given value.
@@ -3164,6 +3323,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 				CmsException.C_NOT_FOUND);
 		}
 	}
+
     /**
      * Returns a Vector with all subfolders.<br>
      *
@@ -3185,7 +3345,32 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
     public Vector getSubFolders(CmsUser currentUser, CmsProject currentProject,
-                                String foldername)
+                                String foldername) throws CmsException {
+        return getSubFolders(currentUser, currentProject, foldername, false);
+    }
+    /**
+     * Returns a Vector with all subfolders.<br>
+     *
+     * Subfolders can be read from an offline project and the online project. <br>
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can read this resource</li>
+     * </ul>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param foldername the complete path to the folder.
+     * @param includeDeleted Include the folder if it is deleted
+     *
+     * @return subfolders A Vector with all subfolders for the given folder.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public Vector getSubFolders(CmsUser currentUser, CmsProject currentProject,
+                                String foldername, boolean includeDeleted)
         throws CmsException {
         Vector folders = new Vector();
 
@@ -3201,7 +3386,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         } catch (CmsException exc) {
             // no folders, ignoring them
         }
-
+/*
         if( !currentProject.equals(onlineProject(currentUser, currentProject))) {
             // this is not the onlineproject, get the files
             // from the onlineproject, too
@@ -3217,6 +3402,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             }
         }
         //m_subresCache.put(C_FOLDER+currentProject.getId()+foldername,folders);
+*/
        }
         // return the folders
         return(folders);
@@ -3389,7 +3575,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      */
     protected Vector helperGetFilesInFolder(CmsUser currentUser,
                                           CmsProject currentProject,
-                                          String foldername)
+                                          String foldername, boolean includeDeleted)
             throws CmsException {
             // get the folder
             CmsFolder cmsFolder = null;
@@ -3405,7 +3591,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                 }
             }
 
-            if (cmsFolder.getState() == I_CmsConstants.C_STATE_DELETED)
+            if ((cmsFolder.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted))
             {
                  //indicate that the folder was found, but deleted, and resources are not avaiable.
                  return null;
@@ -4029,7 +4215,8 @@ public void setCmsObjectForStaticExport(CmsObject cms){
      *
      * @exception CmsException Throws CmsException if something goes wrong.
      */
-    public Vector publishProject(CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
+    public synchronized Vector publishProject(CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
+
         CmsProject publishProject = readProject(currentUser, currentProject, id);
         Vector changedResources = null;
         // check the security
@@ -4050,23 +4237,11 @@ public void setCmsObjectForStaticExport(CmsObject cms){
             // inform about the file-system-change
             fileSystemChanged(true);
 
-            // the published date of the project will be set.
-            // the project must be written to the cms.
-            CmsProject project = readProject(currentUser, currentProject, id);
+            // the project was stored in the backuptables for history
             //new projectmechanism: the project can be still used after publishing
             // it will be deleted if the project_flag = C_PROJECT_STATE_TEMP
-            if (project.getType() == C_PROJECT_TYPE_TEMPORARY) {
-                //deleteProject(currentUser, currentProject, id);
-                project.setFlags(C_PROJECT_STATE_ARCHIVE);
-                project.setPublishingDate(new Date().getTime());
-                project.setPublishedBy(currentUser.getId());
-                m_dbAccess.writeProject(project);
-                m_projectCache.put(project.getId(), project);
-            } else {
-                project.setPublishingDate(new Date().getTime());
-                project.setPublishedBy(currentUser.getId());
-                m_dbAccess.writeProject(project);
-                m_projectCache.put(project.getId(), project);
+            if (publishProject.getType() == C_PROJECT_TYPE_TEMPORARY) {
+                deleteProject(currentUser, currentProject, id);
             }
 
             // finally set the refrish signal to another server if nescessary
@@ -4130,9 +4305,10 @@ public void setCmsObjectForStaticExport(CmsObject cms){
         throws CmsException {
         return readUser(currentUser,currentProject,task.getAgentUser());
     }
+
      /**
      * Reads all file headers of a file in the OpenCms.<BR>
-     * This method returns a vector with the histroy of all file headers, i.e.
+     * This method returns a vector with all file headers, i.e.
      * the file headers of a file, independent of the project they were attached to.<br>
      *
      * The reading excludes the filecontent.
@@ -4157,8 +4333,43 @@ public void setCmsObjectForStaticExport(CmsObject cms){
          CmsResource cmsFile = readFileHeader(currentUser,currentProject, filename);
          if( accessRead(currentUser, currentProject, cmsFile) ) {
 
-            // acces to all subfolders was granted - return the file-history.
-            return(m_dbAccess.readAllFileHeaders(currentProject.getId(), filename, true));
+            // access to all subfolders was granted - return the file-history.
+            return(m_dbAccess.readAllFileHeaders(currentProject.getId(), filename));
+        } else {
+            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+                 CmsException.C_ACCESS_DENIED);
+        }
+     }
+
+     /**
+     * Reads all file headers of a file in the OpenCms.<BR>
+     * This method returns a vector with the histroy of all file headers, i.e.
+     * the file headers of a file, independent of the project they were attached to.<br>
+     *
+     * The reading excludes the filecontent.
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user can read the resource</li>
+     * </ul>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param filename The name of the file to be read.
+     *
+     * @return Vector of file headers read from the Cms.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public Vector readAllFileHeadersForHist(CmsUser currentUser, CmsProject currentProject,
+                                      String filename)
+         throws CmsException {
+         CmsResource cmsFile = readFileHeader(currentUser,currentProject, filename);
+         if( accessRead(currentUser, currentProject, cmsFile) ) {
+
+            // access to all subfolders was granted - return the file-history.
+            return(m_dbAccess.readAllFileHeadersForHist(currentProject.getId(), filename));
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + filename,
                  CmsException.C_ACCESS_DENIED);
@@ -4219,8 +4430,7 @@ public void setCmsObjectForStaticExport(CmsObject cms){
      *
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
-     * @param id The id the resource type to read the propertydefinitions for.
-     * @param type The type of the propertydefinition (normal|mandatory|optional).
+     * @param resourceType The resource type to read the propertydefinitions for.
      *
      * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
      * The Vector is maybe empty.
@@ -4228,13 +4438,13 @@ public void setCmsObjectForStaticExport(CmsObject cms){
      * @exception CmsException Throws CmsException if something goes wrong.
      */
     public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject,
-                                         int id, int type)
+                                         int resourceType)
         throws CmsException {
         Vector returnValue = null;
-        returnValue = (Vector) m_propertyDefVectorCache.get(Integer.toString(id) + "_" + Integer.toString(type));
+        returnValue = (Vector) m_propertyDefVectorCache.get(Integer.toString(resourceType));
         if (returnValue == null){
-            returnValue = m_dbAccess.readAllPropertydefinitions(id,type);
-            m_propertyDefVectorCache.put(Integer.toString(id) + "_" + Integer.toString(type), returnValue);
+            returnValue = m_dbAccess.readAllPropertydefinitions(resourceType);
+            m_propertyDefVectorCache.put(Integer.toString(resourceType), returnValue);
         }
 
         return returnValue;
@@ -4267,29 +4477,7 @@ public void setCmsObjectForStaticExport(CmsObject cms){
         }
         return returnValue;
     }
-     /**
-     * Reads all propertydefinitions for the given resource type.
-     *
-     * <B>Security</B>
-     * All users are granted.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resourcetype The name the resource type to read the propertydefinitions for.
-     * @param type The type of the propertydefinition (normal|mandatory|optional).
-     *
-     * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
-     * The Vector is maybe empty.
-     *
-     * @exception CmsException Throws CmsException if something goes wrong.
-     */
-    public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject,
-                                         String resourcetype, int type)
-        throws CmsException {
 
-        I_CmsResourceType restype=getResourceType(currentUser,currentProject,resourcetype);
-        return readAllPropertydefinitions(currentUser, currentProject, restype.getResourceType(),type);
-    }
     // Methods working with system properties
 
 
@@ -4472,7 +4660,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
                                        int projectId,
                                        String filename)
          throws CmsException  {
-         CmsResource cmsFile;
+         CmsResource cmsFile = null;
          // check if this method is misused to read a folder
          if (filename.endsWith("/")) {
              return (CmsResource) readFolder(currentUser, currentProject, projectId,filename);
@@ -4550,7 +4738,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
      }
 
     /**
-     * Reads a file header a previous project of the Cms.<BR/>
+     * Reads a file header from the Cms.<BR/>
      * The reading excludes the filecontent. <br>
      *
      * A file header can be read from an offline project or the online project.
@@ -4564,32 +4752,106 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
      *
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
-     * @param projectId The id of the project to read the file from.
      * @param filename The name of the file to be read.
      *
      * @return The file read from the Cms.
      *
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-     public CmsResource readFileHeaderForHist(CmsUser currentUser,
-                                       CmsProject currentProject,
-                                       int projectId,
-                                       String filename)
-         throws CmsException  {
+     public CmsResource readFileHeader(CmsUser currentUser,
+                                         CmsProject currentProject, String filename,
+                                         boolean includeDeleted)
+         throws CmsException {
          CmsResource cmsFile;
+         // check if this method is misused to read a folder
+         if (filename.endsWith("/")) {
+             return (CmsResource) readFolder(currentUser,currentProject,filename, includeDeleted);
+         }
+
          // read the resource from the currentProject, or the online-project
          try {
-             cmsFile=(CmsResource)m_resourceCache.get(C_FILE+projectId+filename);
+             // try to read form cache first
+             cmsFile=(CmsResource)m_resourceCache.get(C_FILE+currentProject.getId()+filename);
              if (cmsFile==null) {
-                cmsFile = m_dbAccess.readFileHeader(projectId, filename);
-                m_resourceCache.put(C_FILE+projectId+filename,cmsFile);
+                cmsFile = m_dbAccess.readFileHeader(currentProject.getId(), filename, includeDeleted);
+                m_resourceCache.put(C_FILE+currentProject.getId()+filename,cmsFile);
              }
-                        return cmsFile;
          } catch(CmsException exc) {
+             // the resource was not readable
              throw exc;
          }
 
+         if( accessRead(currentUser, currentProject, cmsFile) ) {
+            // acces to all subfolders was granted - return the file-header.
+            return cmsFile;
+        } else {
+            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+                 CmsException.C_ACCESS_DENIED);
+        }
      }
+
+    /**
+     * Reads a file header from the history of the Cms.<BR/>
+     * The reading excludes the filecontent. <br>
+     *
+     * A file header is read from the backup resources.
+     *
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param versionId The id of the version of the file.
+     * @param filename The name of the file to be read.
+     *
+     * @return The file read from the Cms.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public CmsBackupResource readFileHeaderForHist(CmsUser currentUser,
+                                                    CmsProject currentProject,
+                                                    int versionId,
+                                                    String filename)
+         throws CmsException  {
+         CmsBackupResource resource;
+         // read the resource from the backup resources
+         try {
+            resource = m_dbAccess.readFileHeaderForHist(versionId, filename);
+         } catch(CmsException exc) {
+             throw exc;
+         }
+        return resource;
+     }
+
+    /**
+     * Reads a file from the history of the Cms.<BR/>
+     * The reading includes the filecontent. <br>
+     *
+     * A file is read from the backup resources.
+     *
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param versionId The id of the version of the file.
+     * @param filename The name of the file to be read.
+     *
+     * @return The file read from the Cms.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public CmsBackupResource readFileForHist(CmsUser currentUser,
+                                              CmsProject currentProject,
+                                              int versionId,
+                                              String filename)
+         throws CmsException  {
+         CmsBackupResource resource;
+         // read the resource from the backup resources
+         try {
+             resource = m_dbAccess.readFileForHist(versionId, filename);
+         } catch(CmsException exc) {
+             throw exc;
+         }
+        return resource;
+     }
+
      /**
      * Reads all file headers for a project from the Cms.<BR/>
      *
@@ -4654,6 +4916,7 @@ protected CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, i
     }
     return cmsFolder;
 }
+
 /**
  * Reads a folder from the Cms.<BR/>
  *
@@ -4675,6 +4938,31 @@ protected CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, i
  * for this resource.
  */
 public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder) throws CmsException {
+    return readFolder(currentUser, currentProject, folder, false);
+}
+
+/**
+ * Reads a folder from the Cms.<BR/>
+ *
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user can read the resource</li>
+ * </ul>
+ *
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param foldername The complete path of the folder to be read.
+ * @param includeDeleted Include the folder it it is marked as deleted
+ *
+ * @return folder The read folder.
+ *
+ * @exception CmsException will be thrown, if the folder couldn't be read.
+ * The CmsException will also be thrown, if the user has not the rights
+ * for this resource.
+ */
+public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder, boolean includeDeleted) throws CmsException {
     CmsFolder cmsFolder;
     // read the resource from the currentProject, or the online-project
     try {
@@ -4703,7 +4991,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
     }
     if (accessRead(currentUser, currentProject, (CmsResource) cmsFolder)) {
         // acces to all subfolders was granted - return the folder.
-        if (cmsFolder.getState() == C_STATE_DELETED) {
+        if ((cmsFolder.getState() == C_STATE_DELETED) && (!includeDeleted)) {
             throw new CmsException("[" + this.getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
         } else {
             return cmsFolder;
@@ -5057,6 +5345,24 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
          }
          return m_dbAccess.readProject(task);
      }
+
+     /**
+     * Reads the backupinformation of a project from the Cms.
+     *
+     * <B>Security</B>
+     * All users are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param versionId The versionId of the project.
+     *
+     * @exception CmsException Throws CmsException if something goes wrong.
+     */
+     public CmsBackupProject readBackupProject(CmsUser currentUser, CmsProject currentProject, int versionId)
+         throws CmsException {
+         return m_dbAccess.readBackupProject(versionId);
+     }
+
     /**
      * Reads log entries for a project.
      *
@@ -5089,19 +5395,12 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
                                       String resource, String property)
         throws CmsException {
         CmsResource res;
-        // read the resource from the currentProject, or the online-project
+        // read the resource from the currentProject
         try {
-            res = readFileHeader(currentUser,currentProject, resource);
+            res = readFileHeader(currentUser,currentProject, resource, true);
         } catch(CmsException exc) {
             // the resource was not readable
-            if(currentProject.equals(onlineProject(currentUser, currentProject))) {
-                // this IS the onlineproject - throw the exception
-                throw exc;
-            } else {
-                // try to read the resource in the onlineproject
-                res = readFileHeader(currentUser,onlineProject(currentUser, currentProject),
-                                              resource);
-            }
+            throw exc;
         }
 
         // check the security
@@ -5647,6 +5946,52 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 
         return m_dbAccess.readSession(oldSessionId);
     }
+
+    /**
+     * Restores a file in the current project with a version in the backup
+     *
+     * @param currentUser The current user
+     * @param currentProject The current project
+     * @param versionId The version id of the resource
+     * @param filename The name of the file to restore
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void restoreResource(CmsUser currentUser, CmsProject currentProject,
+                                   int versionId, String filename) throws CmsException {
+        CmsBackupResource backupFile = null;
+        CmsFile offlineFile = null;
+        // read the backup file
+        backupFile = readFileForHist(currentUser, currentProject, versionId, filename);
+        // try to read the owner and the group
+        int ownerId = currentUser.getId();
+        int groupId = currentUser.getDefaultGroupId();
+        try{
+            ownerId = readUser(currentUser, currentProject, backupFile.getOwnerName()).getId();
+        } catch(CmsException exc){
+            // user can not be read, set the userid of current user
+        }
+        try{
+            groupId = readGroup(currentUser, currentProject, backupFile.getGroupName()).getId();
+        } catch(CmsException exc){
+            // group can not be read, set the groupid of current user
+        }
+        offlineFile = readFile(currentUser, currentProject, filename);
+        if (backupFile != null && offlineFile != null){
+            CmsFile newFile = new CmsFile(offlineFile.getResourceId(), offlineFile.getParentId(),
+                                      offlineFile.getFileId(), offlineFile.getAbsolutePath(),
+                                      backupFile.getType(), backupFile.getFlags(),
+                                      ownerId, groupId,
+                                      currentProject.getId(), backupFile.getAccessFlags(),
+                                      C_STATE_CHANGED, offlineFile.isLockedBy(),
+                                      backupFile.getLauncherType(), backupFile.getLauncherClassname(),
+                                      offlineFile.getDateCreated(), offlineFile.getDateLastModified(),
+                                      currentUser.getId(), backupFile.getContents(),
+                                      backupFile.getLength());
+            writeFile(currentUser, currentProject, newFile);
+        }
+    }
+
     /**
      * Set a new name for a task
      *
@@ -5917,6 +6262,41 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
             m_dbAccess.createSession(sessionId, sessionData);
         }
     }
+
+    /**
+     * Undo all changes in the resource, restore the online file.
+     *
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resourceName The name of the resource to be restored.
+     *
+     * @exception CmsException Throws CmsException if something goes wrong.
+     */
+    public void undoChanges(CmsUser currentUser, CmsProject currentProject, String resourceName)
+        throws CmsException {
+        CmsProject onlineProject = readProject(currentUser, currentProject, C_PROJECT_ONLINE_ID);
+        // read the file from the online project
+        CmsFile onlineFile = readFile(currentUser, onlineProject, resourceName);
+	    // read the file from the offline project and change the data
+        CmsFile offlineFile = readFile(currentUser, currentProject, resourceName);
+        CmsFile restoredFile = new CmsFile(offlineFile.getResourceId(), offlineFile.getParentId(),
+                                            offlineFile.getFileId(), offlineFile.getAbsolutePath(),
+                                            onlineFile.getType(), onlineFile.getFlags(),
+                                            onlineFile.getOwnerId(), onlineFile.getGroupId(),
+                                            currentProject.getId(), onlineFile.getAccessFlags(),
+                                            C_STATE_CHANGED, offlineFile.isLockedBy(), onlineFile.getLauncherType(),
+                                            onlineFile.getLauncherClassname(), offlineFile.getDateCreated(),
+                                            offlineFile.getDateLastModified(), currentUser.getId(),
+                                            onlineFile.getContents(), onlineFile.getLength());
+        // write the file in the offline project
+        writeFile(currentUser, currentProject, restoredFile);
+        // restore the properties in the offline project
+        deleteAllProperties(currentUser, currentProject, resourceName);
+        Hashtable propertyInfos = readAllProperties(currentUser, onlineProject, resourceName);
+        writeProperties(currentUser, currentProject, resourceName, propertyInfos);
+    }
+
     /**
      * Unlocks all resources in this project.
      *

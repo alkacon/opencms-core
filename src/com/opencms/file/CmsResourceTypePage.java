@@ -3,8 +3,8 @@ import java.util.zip.*;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2001/06/29 13:42:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/07/09 08:10:22 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -43,7 +43,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2001/06/29 13:42:22 $
+ * @version $Revision: 1.3 $ $Date: 2001/07/09 08:10:22 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -387,6 +387,37 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         return content;
     }
 
+	/**
+	* Copies a resource from the online project to a new, specified project.
+	* <br>
+	* Copying a resource will copy the file header or folder into the specified
+	* offline project and set its state to UNCHANGED.
+	*
+	* @param resource the name of the resource.
+	* @exception CmsException if operation was not successful.
+	*/
+    public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException {
+    	//String resourceName = linkManager.getResourceName(resourceId);
+        CmsFile file = cms.readFile(resourceName);
+        cms.doCopyResourceToProject(resourceName);
+		//check if the file type name is page
+		String bodyPath = checkBodyPath(cms, (CmsFile)file);
+		if (bodyPath != null){
+		    cms.doCopyResourceToProject(bodyPath);
+		}
+    }
+
+    /**
+     * Creates a new resource
+     *
+     * @param cms The CmsObject
+     * @param folder The name of the parent folder
+     * @param name The name of the file
+     * @param properties The properties of the file
+     * @param contents The file content
+     *
+     * @exception CmsException if operation was not successful.
+     */
 	public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents) throws CmsException{
 
         // Scan for mastertemplates
@@ -444,6 +475,29 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 		String bodyPath = checkBodyPath(cms, (CmsFile)file);
 		if (bodyPath != null){
 		    cms.doDeleteFile(bodyPath);
+		}
+
+        // The page file contains XML.
+        // So there could be some data in the parser's cache.
+        // Clear it!
+        String currentProject = cms.getRequestContext().currentProject().getName();
+        CmsXmlControlFile.clearFileCache(currentProject + ":" + filename);
+	}
+
+	/**
+	* Undeletes a resource.
+	*
+	* @param filename the complete path of the file.
+	*
+	* @exception CmsException if the file couldn't be undeleted, or if the user
+	* has not the appropriate rights to undelete the file.
+	*/
+	public void undeleteResource(CmsObject cms, String filename) throws CmsException{
+		CmsFile file = cms.readFile(filename);
+		cms.doUndeleteFile(filename);
+		String bodyPath = checkBodyPath(cms, (CmsFile)file);
+		if (bodyPath != null){
+		    cms.doUndeleteFile(bodyPath);
 		}
 
         // The page file contains XML.
@@ -614,6 +668,42 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 	 	cms.doRenameFile(oldname,newname);
 	}
 
+    /**
+     * Restores a file in the current project with a version in the backup
+     *
+     * @param cms The CmsObject
+     * @param versionId The version id of the resource
+     * @param filename The name of the file to restore
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException{
+        CmsFile file = cms.readFile(filename);
+		cms.doRestoreResource(versionId, filename);
+		String bodyPath = checkBodyPath(cms, (CmsFile)file);
+		if (bodyPath != null){
+            cms.doRestoreResource(versionId, bodyPath);
+		}
+    }
+
+	/**
+	* Undo changes in a resource.
+	* <br>
+	*
+	* @param resource the complete path to the resource to be restored.
+	*
+	* @exception CmsException if the user has not the rights
+	* to write this resource.
+	*/
+	public void undoChanges(CmsObject cms, String resource) throws CmsException{
+        CmsFile file = cms.readFile(resource);
+		cms.doUndoChanges(resource);
+		String bodyPath = checkBodyPath(cms, (CmsFile)file);
+		if (bodyPath != null){
+		    cms.doUndoChanges(bodyPath);
+		}
+	}
+
 	/**
 	* Unlocks a resource.
 	* <br>
@@ -676,7 +766,13 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 	private String readBodyPath(CmsObject cms, CmsFile file)
 		throws CmsException{
 		CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
-		return hXml.getElementTemplate("body");
+        String body = "";
+        try{
+            body = hXml.getElementTemplate("body");
+        } catch (CmsException exc){
+            // could not read body
+        }
+		return body;
 	}
 
     /**

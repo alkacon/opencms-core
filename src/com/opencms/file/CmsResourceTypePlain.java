@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
- * Date   : $Date: 2001/06/29 13:42:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/07/09 08:10:22 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -273,7 +273,28 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
         return content;
     }
 
+    /**
+     * Copies the resourcename to the current offline project
+     * @param cms The CmsObject
+     * @param resourceName The name of the resource
+     *
+     * @exception CmsException if operation was not successful.
+     */
+    public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException{
+        cms.doCopyResourceToProject(resourceName);
+    };
 
+    /**
+     * Creates a new resource
+     *
+     * @param cms The CmsObject
+     * @param folder The name of the parent folder
+     * @param name The name of the file
+     * @param properties The properties of the file
+     * @param contents The file content
+     *
+     * @exception CmsException if operation was not successful.
+     */
 	public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents) throws CmsException{
 		CmsResource res = cms.doCreateFile(folder, name, contents, I_CmsConstants.C_TYPE_PLAIN_NAME, properties);
 		// lock the new file
@@ -293,6 +314,18 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
 	*/
 	public void deleteResource(CmsObject cms, String filename) throws CmsException{
 		cms.doDeleteFile(filename);
+	}
+
+	/**
+	* Deletes a resource.
+	*
+	* @param filename the complete path of the file.
+	*
+	* @exception CmsException if the file couldn't be deleted, or if the user
+	* has not the appropriate rights to delete the file.
+	*/
+	public void undeleteResource(CmsObject cms, String filename) throws CmsException{
+		cms.doUndeleteFile(filename);
 	}
 
     /**
@@ -393,6 +426,32 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
 	*/
 	public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
 		cms.doRenameFile(oldname, newname);
+	}
+
+    /**
+     * Restores a file in the current project with a version in the backup
+     *
+     * @param cms The CmsObject
+     * @param versionId The version id of the resource
+     * @param filename The name of the file to restore
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException{
+	    cms.doRestoreResource(versionId, filename);
+    }
+
+	/**
+	* Undo changes in a resource.
+	* <br>
+	*
+	* @param resource the complete path to the resource to be restored.
+	*
+	* @exception CmsException if the user has not the rights
+	* to write this resource.
+	*/
+	public void undoChanges(CmsObject cms, String resource) throws CmsException{
+		cms.doUndoChanges(resource);
 	}
 
 	/**

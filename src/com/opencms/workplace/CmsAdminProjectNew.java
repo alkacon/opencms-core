@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/06/22 16:01:33 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2001/07/09 08:09:21 $
+* Version: $Revision: 1.50 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.49 $ $Date: 2001/06/22 16:01:33 $
+ * @version $Revision: 1.50 $ $Date: 2001/07/09 08:09:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -383,6 +383,7 @@ session.putValue("startTime", new Long(System.currentTimeMillis()));
                 String contentpath = ";"+C_CONTENTDEFAULTBODIESPATH+
                                      ";"+C_CONTENTINTERNALPATH+
                                      ";"+C_CONTENTTEMPLATEPATH;
+                /* the existing contentbodys path is added with copyResourceToProject
                 Vector addResources = parseResources(allResources);
                 for (int j = 0; j < addResources.size(); j++){
                     String foldername = (String)addResources.get(j);
@@ -393,6 +394,7 @@ session.putValue("startTime", new Long(System.currentTimeMillis()));
                         contentpath = contentpath+";/content/bodys"+foldername;
                     }
                 }
+                */
                 allResources = allResources + contentpath + ";" + picspath + ";"
                         + downloadpath;
                 // 'allResurces' has the "form res1;res2;...resk;"

@@ -1082,17 +1082,48 @@ PACKAGE BODY opencmsresource IS
     recProperties cms_properties%ROWTYPE;
     vNewResourceId NUMBER;
     vNewPropertiesId NUMBER;
+    vOwnerName VARCHAR2(135);
+    vGroupName VARCHAR2(16);
+    vLastModifiedByName VARCHAR2(135);
   BEGIN
+    BEGIN
+      select user_name||' '||user_firstname||' '||user_lastname into vOwnerName
+             from cms_users where user_id = pFolder.user_id;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+    	vOwnerName := '';
+      WHEN OTHERS THEN
+        RAISE;
+    END;
+    BEGIN
+      select user_name||' '||user_firstname||' '||user_lastname into vLastModifiedByName
+             from cms_users where user_id = pFolder.resource_lastmodified_by;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+    	vLastModifiedByName := '';
+      WHEN OTHERS THEN
+        RAISE;
+    END;
+    BEGIN
+      select group_name into vGroupName
+             from cms_groups where group_id = pFolder.group_id;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+    	vGroupName := '';
+      WHEN OTHERS THEN
+        RAISE;
+    END;    
     vNewResourceId := getNextId('CMS_BACKUP_RESOURCES');
     insert into cms_backup_resources
-           (resource_id, parent_id, resource_name, resource_type, resource_flags, user_id,
-            group_id, project_id, file_id, access_flags, state, locked_by, launcher_type,
+           (resource_id, parent_id, resource_name, resource_type, resource_flags, user_id, user_name,
+            group_id, group_name, project_id, file_id, access_flags, state, launcher_type,
             launcher_classname, date_created, date_lastmodified, resource_size,
-            resource_lastmodified_by, version_id)
+            resource_lastmodified_by, resource_lastmodified_by_name, version_id)
     values (vNewResourceId, -1, pFolder.resource_name, pFolder.resource_type, pFolder.resource_flags,
-            pFolder.user_id, pFolder.group_id, pProjectId, pFolder.file_id, pFolder.access_flags,
-            pFolder.state, -1, pFolder.launcher_type, pFolder.launcher_classname, pPublishDate,
-            pFolder.date_lastmodified, pFolder.resource_size, pFolder.resource_lastmodified_by, pVersionId);
+            pFolder.user_id, vOwnerName, pFolder.group_id, vGroupName, pProjectId, pFolder.file_id, 
+            pFolder.access_flags, pFolder.state, pFolder.launcher_type, pFolder.launcher_classname, 
+            pPublishDate, pFolder.date_lastmodified, pFolder.resource_size, pFolder.resource_lastmodified_by, 
+            vLastModifiedByName, pVersionId);
     OPEN curProperties(pFolder.resource_id);
     LOOP
       FETCH curProperties INTO recProperties;
@@ -1123,19 +1154,50 @@ PACKAGE BODY opencmsresource IS
     vNewFileId NUMBER;
     vNewResourceId NUMBER;
     vNewPropertiesId NUMBER;
+    vOwnerName VARCHAR2(135);
+    vGroupName VARCHAR2(16);
+    vLastModifiedByName VARCHAR2(135);
   BEGIN
+    BEGIN
+      select user_name||' '||user_firstname||' '||user_lastname into vOwnerName
+             from cms_users where user_id = pFile.user_id;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+    	vOwnerName := '';
+      WHEN OTHERS THEN
+        RAISE;
+    END;
+    BEGIN
+      select user_name||' '||user_firstname||' '||user_lastname into vLastModifiedByName
+             from cms_users where user_id = pFile.resource_lastmodified_by;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+    	vLastModifiedByName := '';
+      WHEN OTHERS THEN
+        RAISE;
+    END;
+    BEGIN
+      select group_name into vGroupName
+             from cms_groups where group_id = pFile.group_id;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+    	vGroupName := '';
+      WHEN OTHERS THEN
+        RAISE;
+    END;  
     vNewFileId := getNextId('CMS_BACKUP_FILES');
     insert into cms_backup_files (file_id, file_content) values(vNewFileId, pFile.file_content);
     vNewResourceId := getNextId('CMS_BACKUP_RESOURCES');
     insert into cms_backup_resources
-           (resource_id, parent_id, resource_name, resource_type, resource_flags, user_id,
-            group_id, project_id, file_id, access_flags, state, locked_by, launcher_type,
+           (resource_id, parent_id, resource_name, resource_type, resource_flags, user_id, user_name,
+            group_id, group_name, project_id, file_id, access_flags, state, launcher_type,
             launcher_classname, date_created, date_lastmodified, resource_size,
-            resource_lastmodified_by, version_id)
+            resource_lastmodified_by, resource_lastmodified_by_name, version_id)
     values (vNewResourceId, -1, pFile.resource_name, pFile.resource_type, pFile.resource_flags,
-            pFile.user_id, pFile.group_id, pProjectId, vNewFileId, pFile.access_flags,
-            pFile.state, -1, pFile.launcher_type, pFile.launcher_classname, pPublishDate,
-            pFile.date_lastmodified, pFile.resource_size, pFile.resource_lastmodified_by, pVersionId);
+            pFile.user_id, vOwnerName, pFile.group_id, vGroupName, pProjectId, vNewFileId, pFile.access_flags,
+            pFile.state, pFile.launcher_type, pFile.launcher_classname, pPublishDate,
+            pFile.date_lastmodified, pFile.resource_size, pFile.resource_lastmodified_by, 
+            vLastModifiedByName, pVersionId);
     OPEN curProperties(pFile.resource_id);
     LOOP
       FETCH curProperties INTO recProperties;

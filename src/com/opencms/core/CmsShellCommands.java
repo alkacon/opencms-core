@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/06/29 13:41:41 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2001/07/09 08:08:52 $
+* Version: $Revision: 1.33 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.32 $ $Date: 2001/06/29 13:41:41 $
+ * @version $Revision: 1.33 $ $Date: 2001/07/09 08:08:52 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -440,6 +440,21 @@ public class CmsShellCommands implements I_CmsConstants {
     }
 
     /**
+     * Copies a resource.
+     *
+     * @param source the complete path of the sourcefolder.
+     * @param destination the complete path of the destinationfolder.
+     */
+    public void copyResource(String source, String destination) {
+        try {
+            m_cms.copyResource(source, destination);
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
      * Copies a resource from the online project to a new, specified project.<br>
      * Copying a resource will copy the file header or folder into the specified
      * offline project and set its state to UNCHANGED.
@@ -557,13 +572,12 @@ public class CmsShellCommands implements I_CmsConstants {
      *
      * @param name The name of the propertydefinition to overwrite.
      * @param resourcetype The name of the resource-type for the propertydefinition.
-     * @param type The type of the propertydefinition (normal|mandatory|optional)
      *
      * @exception CmsException Throws CmsException if something goes wrong.
      */
-    public void createPropertydefinition(String name, String resourcetype, String type) throws CmsException {
+    public void createPropertydefinition(String name, String resourcetype) throws CmsException {
         try {
-            System.out.println(m_cms.createPropertydefinition(name, resourcetype, Integer.parseInt(type)));
+            System.out.println(m_cms.createPropertydefinition(name, resourcetype));
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -656,6 +670,32 @@ public class CmsShellCommands implements I_CmsConstants {
     public void deleteFolder(String foldername) {
         try {
             m_cms.deleteFolder(foldername);
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Deletes a Resource.
+     *
+     * @param filename the complete path of the sourcefolder.
+     */
+    public void deleteResource(String filename) {
+	    try {
+		    m_cms.deleteResource(filename);
+	    } catch (Exception exc) {
+		    CmsShell.printException(exc);
+	    }
+    }
+    /**
+     * Undeletes the resource.
+     *
+     * @param resourcename The complete path of the resource.
+     */
+    public void undeleteResource(String resourcename) {
+        try {
+            m_cms.undeleteResource(resourcename);
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1939,6 +1979,21 @@ public class CmsShellCommands implements I_CmsConstants {
     }
 
     /**
+     * Moves a resource to the given destination.
+     *
+     * @param source the complete path of the sourcefile.
+     * @param destination the complete path of the destinationfile.
+     */
+    public void moveResource(String source, String destination) {
+        try {
+            m_cms.moveResource(source, destination);
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
      * Reads a the online-project from the Cms.
      */
     public void onlineProject() {
@@ -1974,6 +2029,20 @@ public class CmsShellCommands implements I_CmsConstants {
             int projectId = Integer.parseInt(id);
             m_cms.unlockProject(projectId);
             m_cms.publishProject(projectId);
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Publishes a resource in the current project.
+     *
+     * @param resourceName The name of the resource to be published.
+     */
+    public void publishResource(String resourceName) {
+        try {
+            m_cms.publishResource(resourceName);
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -2018,9 +2087,9 @@ public class CmsShellCommands implements I_CmsConstants {
      *
      * @param filename The name of the file to be read.
      */
-    public void readAllFileHeaders(String filename) {
+    public void readAllFileHeadersForHist(String filename) {
         try {
-            Vector files = m_cms.readAllFileHeaders(filename);
+            Vector files = m_cms.readAllFileHeadersForHist(filename);
             for(int i = 0;i < files.size();i++) {
                 System.out.println((CmsResource)files.elementAt(i));
             }
@@ -2628,6 +2697,37 @@ public class CmsShellCommands implements I_CmsConstants {
     }
 
     /**
+     * Renames the resource to the new name.
+     *
+     * @param oldname The complete path to the resource which will be renamed.
+     * @param newname The new name of the resource (No path information allowed).
+     */
+    public void renameResource(String oldname, String newname) {
+        try {
+            m_cms.renameResource(oldname, newname);
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Restores a file in the current project with a version in the backup
+     *
+     * @param versionId The version id of the resource
+     * @param filename The name of the file to restore
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void restoreResource(String versionId, String filename) throws CmsException{
+        try{
+	        m_cms.restoreResource(Integer.parseInt(versionId), filename);
+        } catch(Exception exc){
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
      * Returns the root-folder object.
      *
      * @return the root-folder object.
@@ -2972,6 +3072,22 @@ public class CmsShellCommands implements I_CmsConstants {
     }
 
     /**
+     * Undo changes in a file by copying the online file.
+     *
+     * @param filename the complete path of the file.
+     *
+     * @exception CmsException if the file couldn't be deleted, or if the user
+     * has not the appropriate rights to write the file.
+     */
+    public void undoChanges(String filename) throws CmsException {
+        try {
+            m_cms.undoChanges(filename);
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
      * Unlocks all resources of a project.
      *
      * @param id the id of the project to be unlocked.
@@ -3127,11 +3243,12 @@ public class CmsShellCommands implements I_CmsConstants {
      * @param type The new type of the propertydefinition (normal|mandatory|optional).
      *
      * @exception CmsException Throws CmsException if something goes wrong.
+     * @deprecated Do not use this method any longer because there is no type of propertydefinition
      */
     public void writePropertydefinition(String name, String resourcetype, String type) {
         try {
             CmsPropertydefinition propertydef = m_cms.readPropertydefinition(name, resourcetype);
-            propertydef.setPropertydefType(Integer.parseInt(type));
+            //propertydef.setPropertydefType(Integer.parseInt(type));
             System.out.println(m_cms.writePropertydefinition(propertydef));
         }
         catch(Exception exc) {

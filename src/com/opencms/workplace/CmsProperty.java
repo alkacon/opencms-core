@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2001/06/29 13:44:06 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/07/09 08:09:46 $
+* Version: $Revision: 1.24 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2001/06/29 13:44:06 $
+ * @version $Revision: 1.24 $ $Date: 2001/07/09 08:09:46 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -252,7 +252,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                     // try to add the property
                     I_CmsResourceType type = cms.getResourceType(file.getType());
                     try {
-                        CmsPropertydefinition def = cms.createPropertydefinition(newValue, type.getResourceTypeName(), C_PROPERTYDEF_TYPE_NORMAL);
+                        CmsPropertydefinition def = cms.createPropertydefinition(newValue, type.getResourceTypeName());
                         cms.writePropertydefinition(def);
                         template = "ownlocked";
 

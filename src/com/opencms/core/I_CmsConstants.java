@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/07/05 07:30:49 $
-* Version: $Revision: 1.170 $
+* Date   : $Date: 2001/07/09 08:08:52 $
+* Version: $Revision: 1.171 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.170 $ $Date: 2001/07/05 07:30:49 $
+ * @version $Revision: 1.171 $ $Date: 2001/07/09 08:08:52 $
  */
 public interface I_CmsConstants {
 
@@ -140,25 +140,6 @@ public interface I_CmsConstants {
      * The resource type-name for body files.
      */
     final static String C_TYPE_BODY_NAME = "body";
-
-    /**
-     * This constant signs a normal "classic" propertydefinition.
-     */
-    static final int C_PROPERTYDEF_TYPE_NORMAL = 0;
-
-    /**
-     * This constant signs a optional propertydefinition.
-     * These propertydefinitions will be shown at creation-time for a resource.
-     * They may be filled out by the user.
-     */
-    static final int C_PROPERTYDEF_TYPE_OPTIONAL = 1;
-
-    /**
-     * This constant signs a mandatory propertydefinition.
-     * These propertydefinitions will be shown at creation-time for a resource.
-     * They must be filled out by the user, else the resource will not be created.
-     */
-    static final int C_PROPERTYDEF_TYPE_MANDATORY = 2;
 
     /**
      * Property for resource title

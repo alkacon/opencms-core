@@ -2,11 +2,11 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2000/08/08 14:08:23 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2001/07/09 08:10:22 $
+ * Version: $Revision: 1.33 $
  *
- * Copyright (C) 2000  The OpenCms Group 
- * 
+ * Copyright (C) 2000  The OpenCms Group
+ *
  * This File is part of OpenCms -
  * the Open Source Content Mananagement System
  *
@@ -14,15 +14,15 @@ package com.opencms.file;
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.com
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -35,9 +35,9 @@ import com.opencms.core.*;
 /**
  * This class describes a resource in the Cms.
  * This resource can be a A_CmsFile or a A_CmsFolder.
- * 
+ *
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2000/08/08 14:08:23 $
+ * @version $Revision: 1.33 $ $Date: 2001/07/09 08:10:22 $
  */
  public class CmsResource implements I_CmsConstants,
 														   Cloneable,
@@ -46,32 +46,32 @@ import com.opencms.core.*;
 	  * The database ID
 	  */
 	 private int m_resourceId;
-	 
+
 	 /**
 	  * The database Parent ID
 	  */
 	 private int m_parentId;
-	 
+
 	 /**
 	  * The database Parent ID
 	  */
 	 private int m_fileId;
-	 
+
 	 /**
 	  * The name of this resource.
 	  */
 	 private String m_resourceName;
-  
+
 	 /**
 	  * The type of this resource.
 	  */
 	 private int m_resourceType;
-	 
+
 	 /**
 	  * The flags of this resource.
 	  */
 	 private int m_resourceFlags;
-	 
+
 	 /**
 	  * The project id this recouce belongs to.
 	  */
@@ -81,32 +81,32 @@ import com.opencms.core.*;
 	  * The owner  of this resource.
 	  */
 	 private int m_user;
-	 
+
 	 /**
 	  * The group  of this resource.
 	  */
 	 private int m_group;
-	  
+
 	 /**
 	  * The access flags of this resource.
 	  */
 	 private int m_accessFlags;
-	  
+
 	 /**
 	  * The creation date of this resource.
 	  */
 	 private long m_dateCreated;
-	  
+
 	 /**
 	  * The date of the last modification of this resource.
 	  */
 	 private long m_dateLastModified;
-	  
+
 	  /**
 	  * The size of the file content.
 	  */
 	  protected int m_size;
-	  
+
 	  /**
 	  * The state of this resource. <br>
 	  * A resource can have the following states:
@@ -118,31 +118,30 @@ import com.opencms.core.*;
 	  * </ul>
 	  */
 	 private int m_state;
-	  
+
 	 /**
 	  * The user id of the usrer who locked this resource.
 	  */
-	 private int m_lockedBy;   
-	 
+	 private int m_lockedBy;
+
 	 /**
 	  * The type of the launcher which is used to process this resource.
 	  */
 	 private int m_launcherType;
-	 
+
 	 /**
 	  * The Java class thas is invoked by the launcher to process this resource.
 	  */
 	 private String m_launcherClassname;
-	 
+
 	 /**
 	  * The UserId of the user who modified this resource last.
 	  */
 	 private int m_resourceLastModifiedBy;
-	 
-	 
+
 	 /**
 	  * Constructor, creates a new CmsRecource object.
-	  * 
+	  *
 	  * @param resourceId The database Id.
 	  * @param parentId The database Id of the parent folder.
 	  * @param fileId The id of the content.
@@ -153,7 +152,7 @@ import com.opencms.core.*;
 	  * @param groupId The id of the group of this resource.
 	  * @param projectId The project id this resource belongs to.
 	  * @param accessFlags The access flags of this resource.
-	  * @param state The state of this resource. 
+	  * @param state The state of this resource.
 	  * @param lockedBy The user id of the user who has locked this resource.
 	  * @param launcherType The launcher that is require to process this recource.
 	  * @param launcherClassname The name of the Java class invoked by the launcher.
@@ -169,7 +168,7 @@ import com.opencms.core.*;
 						int launcherType, String launcherClassname,
 						long dateCreated, long dateLastModified,
 						int resourceLastModifiedBy,int size){
-		 
+
 		m_resourceId = resourceId;
 		m_parentId = parentId;
 		m_fileId = fileId;
@@ -187,24 +186,24 @@ import com.opencms.core.*;
 		m_dateCreated=dateCreated;
 		m_dateLastModified=dateLastModified;
 		m_resourceLastModifiedBy = resourceLastModifiedBy;
-		m_size=size;    
-	 } 
-	/** 
+		m_size=size;
+	 }
+	/**
 	 * Clones the CmsResource by creating a new CmsObject.
 	 * @return Cloned CmsObject.
 	 */
 	public Object clone() {
-		return new CmsResource(m_resourceId, m_parentId,m_fileId, 
+		return new CmsResource(m_resourceId, m_parentId,m_fileId,
 							   m_resourceName, m_resourceType, m_resourceFlags,
 							   m_user, m_group, m_projectId,
 							   m_accessFlags, m_state, m_lockedBy,
 							   m_launcherType, m_launcherClassname,
 							   m_dateCreated, m_dateLastModified,
-							   m_resourceLastModifiedBy,m_size);                                   
+							   m_resourceLastModifiedBy,m_size);
 	}
 	/**
 	 * Compares the overgiven object with this object.
-	 * 
+	 *
 	 * @return true, if the object is identically else it returns false.
 	 */
 	  public boolean equals(Object obj) {
@@ -217,43 +216,43 @@ import com.opencms.core.*;
 			}
 		}
 		return equal;
-	  }  
+	  }
 	/**
 	 * Returns the absolute path for this resource.<BR/>
 	 * Example: retuns /system/def/language.cms
-	 * 
+	 *
 	 * @return the absolute path for this resource.
 	 */
 	 public String getAbsolutePath(){
 		 return m_resourceName;
-	 } 
+	 }
 	/**
 	 * Returns the accessflags of this resource.
-	 * 
+	 *
 	 * @return the accessflags of this resource.
 	 */
 	  public int getAccessFlags() {
 		 return m_accessFlags;
-	  }  
+	  }
 	/**
 	 * Returns the date of the creation for this resource.
-	 * 
+	 *
 	 * @return the date of the creation for this resource.
 	 */
 	 public long getDateCreated() {
 		 return m_dateCreated;
-	 } 
+	 }
 	/**
 	 * Returns the date of the last modification for this resource.
-	 * 
+	 *
 	 * @return the date of the last modification for this resource.
 	 */
 	 public long getDateLastModified() {
 		 return m_dateLastModified;
-	 } 
+	 }
 	/**
 	 * Gets the File id for this resource.
-	 * 
+	 *
 	 * @return the File id of this resource.
 	 */
 	 public int getFileId(){
@@ -261,16 +260,16 @@ import com.opencms.core.*;
 	 }
 	/**
 	 * Returns the flags of this resource.
-	 * 
+	 *
 	 * @return the flags of this resource.
 	 */
 	  public int getFlags() {
 		 return m_resourceFlags;
-	  }  
+	  }
 	/**
-	 * Creates a Unix-Style string of access rights from the access right flag of a 
+	 * Creates a Unix-Style string of access rights from the access right flag of a
 	 * CmsResource
-	 * 
+	 *
 	 * @return String of access rights
 	 */
 	public String getFlagString()
@@ -290,41 +289,41 @@ import com.opencms.core.*;
 	}
 	/**
 	 * Returns the groupid of this resource.
-	 * 
+	 *
 	 * @return the groupid of this resource.
 	 */
 	 public int getGroupId() {
 		 return  m_group;
-	  }  
+	  }
 	/**
 	 * Gets the launcher classname for this resource.
-	 * 
+	 *
 	 * @return the launcher classname for this resource.
 	 */
 	 public String getLauncherClassname() {
 		 return m_launcherClassname;
-	 } 
+	 }
 	 /**
 	 * Gets the launcher type id for this resource.
-	 * 
+	 *
 	 * @return the launcher type id of this resource.
 	 */
 	 public int getLauncherType() {
 		 return m_launcherType;
-	 } 
+	 }
 	 /**
 	 * Gets the length of the content (filesize).
-	 * 
+	 *
 	 * @return the length of the content.
 	 */
 	 public int getLength() {
 		return m_size;
-	 } 
+	 }
 	/**
 	 * Returns the name of this resource.<BR/>
 	 * Example: retuns language.cms for the
 	 * resource /system/def/language.cms
-	 * 
+	 *
 	 * @return the name of this resource.
 	 */
 	 public String getName() {
@@ -338,22 +337,22 @@ import com.opencms.core.*;
 			  name=name.substring(name.lastIndexOf("/")+1,
 								  name.length());
 		 }
-			 
+
 		 return name;
-	 } 
+	 }
 	/**
 	 * Returns the userid of the resource owner.
-	 * 
+	 *
 	 * @return the userid of the resource owner.
 	 */
 	public int getOwnerId() {
 		 return m_user;
-	  }  
+	  }
 	/**
 	 * Returns the absolute path of the parent.<BR/>
 	 * Example: /system/def has the parent /system/<BR/>
 	 * / has no parent
-	 * 
+	 *
 	 * @return the parent absolute path, or null if this is the root-resource.
 	 */
 	 public String getParent(){
@@ -361,13 +360,13 @@ import com.opencms.core.*;
 		 // check if this is the root resource
 		 if (!m_resourceName.equals(C_ROOT)) {
 				parent=m_resourceName.substring(0,m_resourceName.length()-1);
-				parent=parent.substring(0,parent.lastIndexOf("/")+1);         
+				parent=parent.substring(0,parent.lastIndexOf("/")+1);
 		 }
 		 return parent;
-	 } 
+	 }
 	 /**
 	 * Gets the Parent database id for this resource.
-	 * 
+	 *
 	 * @return the Parent database id of this resource.
 	 */
 	public int getParentId(){
@@ -377,23 +376,23 @@ import com.opencms.core.*;
 	 * Returns the path for this resource.<BR/>
 	 * Example: retuns /system/def/ for the
 	 * resource /system/def/language.cms
-	 * 
+	 *
 	 * @return the path for this resource.
 	 */
 	 public String getPath() {
 		 return m_resourceName.substring(0,m_resourceName.lastIndexOf("/")+1);
-	 } 
+	 }
 	/**
 	 * Returns the project id for this resource.
-	 * 
+	 *
 	 * @return the project id for this resource.
 	 */
 	  public int getProjectId() {
 		  return m_projectId;
-	  }  
+	  }
 	/**
 	 * Gets the database id for this resource.
-	 * 
+	 *
 	 * @return the database id of this resource.
 	 */
 	 public int getResourceId(){
@@ -401,7 +400,7 @@ import com.opencms.core.*;
 	 }
 	/**
 	 * Gets the userId from the user who made the last change.
-	 * 
+	 *
 	 * @return the userId from the user who made the last change.
 	 */
 	 public int getResourceLastModifiedBy(){
@@ -410,21 +409,21 @@ import com.opencms.core.*;
 	/**
 	 * Returns the state of this resource.<BR/>
 	 * This may be C_STATE_UNCHANGED, C_STATE_CHANGED, C_STATE_NEW or C_STATE_DELETED.
-	 * 
+	 *
 	 * @return the state of this resource.
 	 */
 	  public int getState() {
 	  return m_state;
-	  }  
+	  }
 	/**
 	 * Gets the type id for this resource.
-	 * 
+	 *
 	 * @return the type id of this resource.
 	 */
 	 public int getType() {
 	   return m_resourceType;
-	 } 
-	 /** 
+	 }
+	 /**
 	  * Checks if a resource belongs to a project.
 	  * @param project The project which the resources is checked about.
 	  * @return true if the resource is in the project, false otherwise.
@@ -435,10 +434,10 @@ import com.opencms.core.*;
 			 inProject=true;
 		 }
 		 return inProject;
-	 } 
+	 }
 	/**
 	 * Determines, if this resource is a file.
-	 * 
+	 *
 	 * @return true, if this resource is a file, else it returns false.
 	 */
 	  public boolean isFile() {
@@ -447,10 +446,10 @@ import com.opencms.core.*;
 			 isFile=false;
 		 }
 		 return isFile;
-	  }  
+	  }
 	/**
 	 * Determines, if this resource is a folder.
-	 * 
+	 *
 	 * @return true, if this resource is a folder, else it returns false.
 	 */
 	  public boolean isFolder(){
@@ -459,11 +458,11 @@ import com.opencms.core.*;
 			 isFolder=true;
 		 }
 		 return isFolder;
-		  
-	  }  
+
+	  }
 	/**
 	 * Determines, if this resource is locked by a user.
-	 * 
+	 *
 	 * @return true, if this resource is locked by a user, else it returns false.
 	 */
 	  public boolean isLocked() {
@@ -473,27 +472,27 @@ import com.opencms.core.*;
 			  isLocked=false;
 		  }
 		  return isLocked;
-	  }  
+	  }
 	/**
 	 * Returns the user idthat locked this resource.
-	 * 
+	 *
 	 * @return the user id that locked this resource.
 	 * If this resource is free it returns the unknown user id.
 	 */
 	  public int isLockedBy() {
 		return m_lockedBy;
-	  }  
+	  }
 	 /**
 	 * Sets the accessflags of this resource.
-	 * 
+	 *
 	 * @param The new accessflags of this resource.
 	 */
 	  public void setAccessFlags(int flags){
 		  m_accessFlags=flags;
-	  }  
+	  }
 	/**
 	 * Sets the File id for this resource.
-	 * 
+	 *
 	 * @param The File id of this resource.
 	 */
 	public void setFileId(int fileId){
@@ -501,47 +500,47 @@ import com.opencms.core.*;
 	}
 	 /**
 	 * Sets the flags of this resource.
-	 * 
+	 *
 	 * @param The new flags of this resource.
 	 */
 	  void setFlags(int flags){
 		  m_resourceFlags=flags;
-	  }  
+	  }
 	/**
 	 * Sets the groupId of this resource.
-	 * 
+	 *
 	 * @param The new groupId of this resource.
 	 */
 	  public void setGroupId(int group) {
 		  m_group= group;
-	  }  
+	  }
 	 /**
 	 * Sets launcher classname for this resource.
-	 * 
+	 *
 	 * @param The new launcher classname for this resource.
 	 */
 	 void setLauncherClassname(String name) {
 	  m_launcherClassname=name;
-		 } 
+		 }
 	 /**
 	 * Sets launcher the type id for this resource.
-	 * 
+	 *
 	 * @param The new launcher type id of this resource.
 	 */
 	 public void setLauncherType(int type){
 		 m_launcherType=type;
-	 } 
+	 }
 	 /**
 	 * Sets the the user id that locked this resource.
-	 * 
+	 *
 	 * @param The new the user id that locked this resource.
 	 */
 	 public void setLocked(int id) {
 		  m_lockedBy=id;
-	  }  
+	  }
 	 /**
 	 * Sets the parent database id for this resource.
-	 * 
+	 *
 	 * @param The new database id of this resource.
 	 */
 	public void setParentId(int parentId){
@@ -549,7 +548,7 @@ import com.opencms.core.*;
 	}
 	/**
 	 * Sets the user id from the user who changes the resource.
-	 * 
+	 *
 	 * @param The userId from the user who changes the resource.
 	 */
 	void setResourceLastModifiedBy(int resourceLastModifiedBy){
@@ -557,32 +556,42 @@ import com.opencms.core.*;
 	}
 	  /**
 	 * Sets the state of this resource.
-	 * 
+	 *
 	 * @param The new state of this resource.
 	 */
 	  public void setState(int state) {
 		  m_state=state;
-	  }  
+	  }
 	 /**
 	 * Sets the type id for this resource.
-	 * 
+	 *
 	 * @param The new type id of this resource.
 	 */
 	 public void setType(int type) {
 		 m_resourceType=type;
-	 } 
+	 }
 	/**
 	 * Sets the userId of this resource.
-	 * 
+	 *
 	 * @param The new userId of this resource.
 	 */
 	public  void setUserId(int user) {
 		  m_user = user;
-	  }  
+	  }
+
+	/**
+	 * Sets the projectId of this resource.
+	 *
+	 * @param The new projectId of this resource.
+	 */
+	public  void setProjectId(int project) {
+		  m_projectId = project;
+	  }
+
 	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.
-	 * 
+	 *
 	 * @return string-representation for this object.
 	 */
 	  public String toString() {
@@ -610,5 +619,5 @@ import com.opencms.core.*;
 		output.append(" : state=");
 		output.append(getState());
 		return output.toString();
-	  }  
+	  }
 }

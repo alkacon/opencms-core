@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2001/06/29 13:42:22 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2001/07/09 08:10:23 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -212,6 +212,15 @@ public interface I_CmsResourceType
     //public byte[] copyResourceToProject(CmsObject cms, I_CmsLinkManager linkManager, int resourceId, byte[] content) throws CmsException;
     public byte[] copyResourceToProject(CmsObject cms, String resourceName, byte[] content) throws CmsException;
 
+    /**
+     * Copies the resourcename to the current offline project
+     * @param cms The CmsObject
+     * @param resourceName The name of the resource
+     *
+     * @exception CmsException if operation was not successful.
+     */
+    public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException;
+
 	/**
 	* Creates a new resource.<br>
 	*
@@ -238,6 +247,16 @@ public interface I_CmsResourceType
 	* has not the appropriate rights to delete the file.
 	*/
 	public void deleteResource(CmsObject cms, String filename) throws CmsException;
+
+	/**
+	* Deletes a resource.
+	*
+	* @param filename the complete path of the file.
+	*
+	* @exception CmsException if the file couldn't be deleted, or if the user
+	* has not the appropriate rights to delete the file.
+	*/
+	public void undeleteResource(CmsObject cms, String filename) throws CmsException;
 
     /**
      * Does the Linkmanagement when a resource will be exported.
@@ -294,10 +313,30 @@ public interface I_CmsResourceType
 	public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException;
 
     /**
+     * Restores a file in the current project with a version in the backup
+     *
+     * @param cms The CmsObject
+     * @param versionId The version id of the resource
+     * @param filename The name of the file to restore
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException;
+
+    /**
      *
      */
     //public byte[] publishResource(I_CmsLinkManager linkManager, int resourceId, byte[] content) throws CmsException;
     public byte[] publishResource(String resourceName, byte[] content) throws CmsException;
+
+    /**
+     * Undo all changes in the resource, restore the online file.
+     *
+     * @param resourceName The name of the resource to be restored.
+     *
+     * @exception CmsException Throws CmsException if something goes wrong.
+     */
+    public void undoChanges(CmsObject cms, String filename) throws CmsException;
 
 	/**
 	* Unlocks a resource.

@@ -3,6 +3,7 @@ PACKAGE BODY OpenCmsProject IS
    -- variable/funktions/procedures which are used only in this package
    bAnyList VARCHAR2(32767) := '';
    FUNCTION addInList(pAnyId NUMBER) RETURN BOOLEAN;
+   PROCEDURE backupProject (pProjectId NUMBER, pVersionId NUMBER, pPublishDate DATE, pUserId NUMBER);
 --------------------------------------------------------------------
 -- return all project which the user has access
 -- this function calls the function getGroupsOfUser
@@ -110,9 +111,9 @@ PACKAGE BODY OpenCmsProject IS
     vProjectId := getNextId(opencmsConstants.C_TABLE_PROJECTS);
     insert into cms_projects
            (project_id, user_id, group_id, managergroup_id, task_id, project_name, project_description,
-            project_flags, project_createdate, project_publishdate, project_published_by, project_type)
+            project_flags, project_createdate, project_type)
     values (vProjectId, pUserId, vGroupId, vManagerGroupId, pTaskId, pProjectName,
-            pProjectDescription, 0, sysdate, NULL, -1, 0);
+            pProjectDescription, 0, sysdate, 0);
     commit;
     --
     -- return the project
@@ -188,7 +189,7 @@ PACKAGE BODY OpenCmsProject IS
     -- pEnableHistory = 1 => enable history
     ---------------------------------------
     IF pEnableHistory = 1 THEN
-      select nvl(max(version_id),0) + 1 into vVersionId from cms_backup_resources;
+      select nvl(max(version_id),0) + 1 into vVersionId from cms_backup_projects;
     END IF;
     ---------------------------------
     -- for all folders of the project
@@ -205,6 +206,10 @@ PACKAGE BODY OpenCmsProject IS
       ELSIF recFolders.state = opencmsConstants.C_STATE_DELETED THEN
         -- add to list with deleted folders
         vDeletedFolders := vDeletedFolders||'/'||to_char(recFolders.resource_id);
+        IF pEnableHistory = 1 THEN
+          -- backup the resource
+          opencmsResource.backupFolder(pProjectId, recFolders, vVersionId, pPublishDate);
+        END IF;
       -- is the resource marked as new?
       ELSIF recFolders.state = opencmsConstants.C_STATE_NEW THEN
         BEGIN
@@ -335,10 +340,13 @@ PACKAGE BODY OpenCmsProject IS
         delete from cms_resources where resource_name = recFiles.resource_name;
       -- resource is deleted
       ELSIF recFiles.state = opencmsConstants.C_STATE_DELETED THEN
-        --checkExport ???
         curNewFile := opencmsResource.readFileNoAccess(pUserId, pOnlineProjectId, pOnlineProjectId, recFiles.resource_name);
         FETCH curNewFile INTO recNewFile;
         CLOSE curNewFile;
+        IF pEnableHistory = 1 THEN
+          -- backup the resource
+          opencmsResource.backupFile(pProjectId, recFiles, vVersionId, pPublishDate);
+        END IF;
         -- delete the file from online project
         delete from cms_online_properties where resource_id = recNewFile.resource_id;
         delete from cms_online_resources where resource_id = recNewFile.resource_id;
@@ -363,7 +371,7 @@ PACKAGE BODY OpenCmsProject IS
           CLOSE curNewFile;
           --recNewFile.state := opencmsConstants.C_STATE_UNCHANGED;
           --opencmsResource.writeFile(pOnlineProjectId, recNewFile, 'FALSE');
-          update cms_online_resources set state = opencmsConstants.C_STATE_UNCHANGED 
+          update cms_online_resources set state = opencmsConstants.C_STATE_UNCHANGED
                  where resource_id=recNewFile.resource_id;
         EXCEPTION
           WHEN OTHERS THEN
@@ -427,7 +435,7 @@ PACKAGE BODY OpenCmsProject IS
           CLOSE curNewFile;
           --recNewFile.state := opencmsConstants.C_STATE_UNCHANGED;
           --opencmsResource.writeFile(pOnlineProjectId, recNewFile, 'FALSE');
-          update cms_online_resources set state = opencmsConstants.C_STATE_UNCHANGED 
+          update cms_online_resources set state = opencmsConstants.C_STATE_UNCHANGED
                  where resource_id=recNewFile.resource_id;
         END IF;
         -- update the file in the online-project
@@ -489,6 +497,8 @@ PACKAGE BODY OpenCmsProject IS
       END LOOP;
       commit;
     END IF;
+    -- backup the project
+    backupProject(pProjectId, vVersionId, pPublishDate, pUserId);
     -- build the cursors which are used in java for the discAccess
     BEGIN
       IF length(vCurDelFolders) > 0 THEN
@@ -569,7 +579,41 @@ PACKAGE BODY OpenCmsProject IS
         CLOSE curNewFile;
       END IF;
       RAISE;
-  END publishProject;
+  END publishProject;  
+-----------------------------------------------------------------------------------------
+-- makes a backup of the published project for history
+-----------------------------------------------------------------------------------------
+  PROCEDURE backupProject (pProjectId NUMBER, pVersionId NUMBER, pPublishDate DATE, pUserId NUMBER) IS
+    vUserName VARCHAR2(135);
+  BEGIN
+    BEGIN
+      select user_name||' '||user_firstname||' '||user_lastname into vUserName
+             from cms_users
+             where user_id = pUserId;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        vUserName := '';
+    END;
+    insert into cms_backup_projects
+      (version_id, project_id, project_name, project_publishdate, project_published_by, 
+       project_published_by_name, user_id, user_name, group_id, group_name, managergroup_id, 
+       managergroup_name, project_description, project_createdate, project_type, task_id)
+    select pVersionId, project_id, project_name, pPublishDate, pUserId, 
+           vUserName, p.user_id, u.user_name||' '||u.user_firstname||' '||u.user_lastname, 
+           p.group_id, g.group_name, managergroup_id, mg.group_name, project_description, 
+           project_createdate, project_type, task_id
+           from cms_projects p, cms_users u, cms_groups g, cms_groups mg
+           where project_id = pProjectId
+           and p.user_id = u.user_id(+)
+           and p.group_id = g.group_id(+)
+           and p.managergroup_id = mg.group_id(+);
+    insert into cms_backup_projectresources
+      (version_id, project_id, resource_name)
+    select pVersionId, project_id, resource_name from cms_projectresources where project_id = pProjectId;
+  EXCEPTION
+    WHEN OTHERS THEN
+      raise_application_error(-20004, 'error when backup project');
+  END;
 -----------------------------------------------------------------------------------------
 -- returns a cursor with the online-project
 -----------------------------------------------------------------------------------------

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/06/29 13:42:21 $
- * Version: $Revision: 1.162 $
+ * Date   : $Date: 2001/07/09 08:10:22 $
+ * Version: $Revision: 1.163 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.162 $ $Date: 2001/06/29 13:42:21 $
+ * @version $Revision: 1.163 $ $Date: 2001/07/09 08:10:22 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -704,6 +704,7 @@ public void copyFile(String source, String destination) throws CmsException {
 public void copyFolder(String source, String destination) throws CmsException {
     m_rb.copyFolder(m_context.currentUser(), m_context.currentProject(), source, destination);
 }
+
 /**
  * Copies a resource from the online project to a new, specified project.
  * <br>
@@ -714,8 +715,24 @@ public void copyFolder(String source, String destination) throws CmsException {
      * @exception CmsException if operation was not successful.
  */
 public void copyResourceToProject(String resource) throws CmsException {
+	CmsResource res = readFileHeader(resource);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.copyResourceToProject(this, resource);
+}
+
+/**
+ * Copies a resource from the online project to a new, specified project.
+ * <br>
+ * Copying a resource will copy the file header or folder into the specified
+ * offline project and set its state to UNCHANGED.
+ *
+ * @param resource the name of the resource.
+     * @exception CmsException if operation was not successful.
+ */
+protected void doCopyResourceToProject(String resource) throws CmsException {
     m_rb.copyResourceToProject(m_context.currentUser(), m_context.currentProject(), resource);
 }
+
 /**
  * Returns the copyright information for this OpenCms.
  *
@@ -1023,10 +1040,24 @@ public CmsProject createProject(String name, String description, String groupnam
  * @param type the type of the property-definition (normal|mandatory|optional)
  *
  * @exception CmsException if operation was not successful.
+ * @deprecated Use createPropertydefinition without type of propertydefinition instead.
  */
 public CmsPropertydefinition createPropertydefinition(String name, String resourcetype, int type) throws CmsException {
-    return (m_rb.createPropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype, type));
+    return createPropertydefinition(name, resourcetype);
 }
+
+/**
+ * Creates the property-definition for a resource type.
+ *
+ * @param name the name of the property-definition to overwrite.
+ * @param resourcetype the name of the resource-type for the property-definition.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public CmsPropertydefinition createPropertydefinition(String name, String resourcetype) throws CmsException {
+    return (m_rb.createPropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype));
+}
+
 /**
   * Creates a new task.
   * <p>
@@ -1194,6 +1225,99 @@ protected void doDeleteFolder(String foldername) throws CmsException {
 	//End of Linkmanagement
 */
     m_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), foldername);
+}
+
+/**
+ * Undeletes a resource.
+ *
+ * @param filename the complete path of the file.
+ *
+ * @exception CmsException if the file couldn't be undeleted, or if the user
+ * has not the appropriate rights to undelete the file.
+ */
+public void undeleteResource(String filename) throws CmsException {
+    //read the file header including deleted
+	CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), filename, true);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.undeleteResource(this, filename);
+}
+
+/**
+ * Undeletes a file.
+ *
+ * @param filename the complete path of the file.
+ *
+ * @exception CmsException if the file couldn't be undeleted, or if the user
+ * has not the appropriate rights to undelete the file.
+ */
+protected void doUndeleteFile(String filename) throws CmsException {
+/*
+	//Linkmanagement
+	//*** für Aufruf mit der Shell
+	if (m_lm == null) {
+        m_lm = m_rb.getLinkManager();
+    }
+
+	int projectId = m_context.currentProject().getId();
+	CmsFile file = readFile(filename);
+	int resId = file.getResourceId();
+	int urlId = file.getUrlId();
+
+	Vector resources  = m_lm.selectReferencingResources(urlId, projectId, onlineProject().getId());
+        if (!resources.isEmpty()) {
+          // there are resources that refer to the resource that should be deleted
+          System.err.println("!!! There are resources that refer to the resource that should be deleted: !!!");
+          for (int i=0; i<resources.size(); i++){
+            CmsResource res = (CmsResource)resources.elementAt(i);
+            String resName = res.getName();
+            System.err.println("!!! " + resName);
+          }
+//          System.err.println("*** do not delete the resource!");
+//          return;
+        }
+
+	//delete all entries with this resourceId from CMS_LINKS, CMS_EXTERNALLINKS and CMS_ANCHOR
+	m_lm.deleteLinksOfResource(resId);
+	m_lm.deleteExternallinksOfResource(resId);
+	m_lm.deleteAnchorsOfResource(resId);
+
+	//check Url if it is still needed in CMS_URL. If not, delete it.
+	if (!m_lm.urlStillNeeded(urlId,projectId)) {
+		m_lm.deleteUrl(urlId);
+	}
+	//End of Linkmanagement
+*/
+	m_rb.undeleteResource(m_context.currentUser(), m_context.currentProject(), filename);
+}
+
+/**
+ * Undeletes a folder.
+ * <br>
+ * This is a very complex operation, because all sub-resources may be
+ * undeleted too.
+ *
+ * @param foldername the complete path of the folder.
+ *
+ * @exception CmsException if the folder couldn't be undeleted, or if the user
+ * has not the rights to undelete this folder.
+ */
+protected void doUndeleteFolder(String foldername) throws CmsException {
+/*
+	//Linkmanagement
+	//*** für Aufruf mit der Shell
+	if (m_lm == null) {
+        m_lm = m_rb.getLinkManager();
+    }
+
+   	int projectId = m_context.currentProject().getId();
+	int urlId = m_lm.getUrlId(foldername, projectId);
+    //check Url if it is still needed in CMS_URL. If not, delete it.
+	if (!m_lm.urlStillNeeded(urlId,projectId)) {
+		m_lm.deleteUrl(urlId);
+	}
+	//End of Linkmanagement
+*/
+    m_rb.undeleteResource(m_context.currentUser(), m_context.currentProject(), foldername);
 }
 
 /**
@@ -1506,8 +1630,25 @@ public Vector getDirectGroupsOfUser(String username) throws CmsException {
  * @exception CmsException if the user has not hte appropriate rigths to access or read the resource.
  */
 public Vector getFilesInFolder(String foldername) throws CmsException {
-    return (m_rb.getFilesInFolder(m_context.currentUser(), m_context.currentProject(), foldername));
+    return (m_rb.getFilesInFolder(m_context.currentUser(), m_context.currentProject(), foldername, false));
 }
+
+/**
+ * Returns a Vector with all files of a given folder.
+ * <br>
+ * Files of a folder can be read from an offline Project and the online Project.
+ *
+ * @param foldername the complete path to the folder.
+ * @param includeDeleted Include if the folder is marked as deleted
+ *
+ * @return subfiles a Vector with all files of the given folder.
+ *
+ * @exception CmsException if the user has not hte appropriate rigths to access or read the resource.
+ */
+public Vector getFilesInFolder(String foldername, boolean includeDeleted) throws CmsException {
+    return (m_rb.getFilesInFolder(m_context.currentUser(), m_context.currentProject(), foldername, includeDeleted));
+}
+
 /**
  * Returns a Vector with all resource-names of the resources that have set the given property to the given value.
  *
@@ -1673,8 +1814,23 @@ public I_CmsResourceType getResourceType(String resourceType) throws CmsExceptio
  * @exception CmsException if the user has not the rights to access or read the resource.
  */
 public Vector getSubFolders(String foldername) throws CmsException {
-    return (m_rb.getSubFolders(m_context.currentUser(), m_context.currentProject(), foldername));
+    return (m_rb.getSubFolders(m_context.currentUser(), m_context.currentProject(), foldername, false));
 }
+
+/**
+ * Returns a Vector with all subfolders of a given folder.
+ *
+ * @param foldername the complete path to the folder.
+ * @param includeDeleted Include if the folder is marked as deleted
+ *
+ * @return subfolders a Vector with all subfolders for the given folder.
+ *
+ * @exception CmsException if the user has not the rights to access or read the resource.
+ */
+public Vector getSubFolders(String foldername, boolean includeDeleted) throws CmsException {
+    return (m_rb.getSubFolders(m_context.currentUser(), m_context.currentProject(), foldername, includeDeleted));
+}
+
 /**
   * Get a parameter value for a task.
   *
@@ -2102,6 +2258,28 @@ public void publishProject(int id) throws CmsException {
     }
     clearcache();
 }
+
+/**
+ * Publishes a single resource.
+ *
+ * @param id the id of the project to be published.
+ * @return a Vector of resources, that have been changed.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public void publishResource(String resourcename) throws CmsException {
+    int oldProjectId = m_context.currentProject().getId();
+    int newProjectId = m_rb.createProject(m_context.currentUser(), m_context.currentProject(),
+                                          "__forPublish","project for single resource publishing","Users",
+                                          "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
+    getRequestContext().setCurrentProject(newProjectId);
+	CmsResource res = readFileHeader(resourcename);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.copyResourceToProject(this, resourcename);
+    publishProject(newProjectId);
+    getRequestContext().setCurrentProject(oldProjectId);
+}
+
 /**
  * Reads the agent of a task from the OpenCms.
  *
@@ -2113,6 +2291,26 @@ public void publishProject(int id) throws CmsException {
 public CmsUser readAgent(CmsTask task) throws CmsException {
     return (m_rb.readAgent(m_context.currentUser(), m_context.currentProject(), task));
 }
+
+/**
+ * Reads all file headers of a file in the OpenCms.
+ * <br>
+ * This method returns a vector with all file headers, i.e.
+ * the file headers of a file, independent of the project they were attached to.<br>
+ *
+ * The reading excludes the filecontent.
+ *
+ * @param filename the name of the file to be read.
+ *
+ * @return a Vector of file headers read from the Cms.
+ *
+ * @exception CmsException  if operation was not successful.
+ * @deprecated For reading the file history use method readAllFileHeadersForHist
+ */
+public Vector readAllFileHeaders(String filename) throws CmsException {
+    return (m_rb.readAllFileHeaders(m_context.currentUser(), m_context.currentProject(), filename));
+}
+
 /**
  * Reads all file headers of a file in the OpenCms.
  * <br>
@@ -2127,8 +2325,8 @@ public CmsUser readAgent(CmsTask task) throws CmsException {
  *
  * @exception CmsException  if operation was not successful.
  */
-public Vector readAllFileHeaders(String filename) throws CmsException {
-    return (m_rb.readAllFileHeaders(m_context.currentUser(), m_context.currentProject(), filename));
+public Vector readAllFileHeadersForHist(String filename) throws CmsException {
+    return (m_rb.readAllFileHeadersForHist(m_context.currentUser(), m_context.currentProject(), filename));
 }
 /**
  * Returns a list of all properties of a file or folder.
@@ -2142,6 +2340,7 @@ public Vector readAllFileHeaders(String filename) throws CmsException {
 public Hashtable readAllProperties(String name) throws CmsException {
     return (m_rb.readAllProperties(m_context.currentUser(), m_context.currentProject(), name));
 }
+
 /**
  * Reads all property-definitions for the given resource type.
  *
@@ -2152,10 +2351,26 @@ public Hashtable readAllProperties(String name) throws CmsException {
  * The Vector may be empty.
  *
  * @exception CmsException if operation was not successful.
+ * @deprecated Use the method readAllPropertydefinitions without type of propertydefinition instead
  */
 public Vector readAllPropertydefinitions(int id, int type) throws CmsException {
-    return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), id, type));
+	return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), id));
 }
+
+/**
+ * Reads all property-definitions for the given resource type.
+ *
+ * @param id the id of the resource type to read the property-definitions for.
+ *
+ * @return a Vector with property-defenitions for the resource type.
+ * The Vector may be empty.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public Vector readAllPropertydefinitions(int resourceType) throws CmsException {
+    return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourceType));
+}
+
 /**
  * Reads all property-definitions for the given resource type.
  *
@@ -2170,6 +2385,7 @@ public Vector readAllPropertydefinitions(int id, int type) throws CmsException {
 public Vector readAllPropertydefinitions(String resourcetype) throws CmsException {
     return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype));
 }
+
 /**
  * Reads all property-definitions for the given resource type.
  *
@@ -2181,10 +2397,12 @@ public Vector readAllPropertydefinitions(String resourcetype) throws CmsExceptio
  * The Vector may be empty.
  *
  * @exception CmsException if operation was not successful.
+ * @deprecated Use the method readAllPropertydefinitions without type of propertydefinition instead
  */
 public Vector readAllPropertydefinitions(String resourcetype, int type) throws CmsException {
-    return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype, type));
+	return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype));
 }
+
 /**
  * Reads the export-path of the system.
  * This path is used for db-export and db-import.
@@ -2266,24 +2484,39 @@ public CmsResource readFileHeader(String folder, String filename) throws CmsExce
     return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), folder + filename));
 }
 
-
 /**
- * Reads a file header from the Cms.
+ * Reads a file header from the Cms for history.
  * <br>
  * The reading excludes the filecontent.
  *
  * @param filename the complete path of the file to be read.
- * @param projectId the project id of the resource
+ * @param versionId the version id of the resource
  *
  * @return file the read file.
  *
  * @exception CmsException , if the user has not the rights
  * to read the file headers, or if the file headers couldn't be read.
  */
-public CmsResource readFileHeaderForHist(String filename, int projectId) throws CmsException {
-    return (m_rb.readFileHeaderForHist(m_context.currentUser(), m_context.currentProject(), projectId, filename));
+public CmsResource readFileHeaderForHist(String filename, int versionId) throws CmsException {
+    return (m_rb.readFileHeaderForHist(m_context.currentUser(), m_context.currentProject(), versionId, filename));
 }
 
+/**
+ * Reads a file from the Cms for history.
+ * <br>
+ * The reading includes the filecontent.
+ *
+ * @param filename the complete path of the file to be read.
+ * @param versionId the version id of the resource
+ *
+ * @return file the read file.
+ *
+ * @exception CmsException , if the user has not the rights
+ * to read the file, or if the file couldn't be read.
+ */
+public CmsBackupResource readFileForHist(String filename, int versionId) throws CmsException {
+    return (m_rb.readFileForHist(m_context.currentUser(), m_context.currentProject(), versionId, filename));
+}
 /**
  * Reads all file headers of a project from the Cms.
  *
@@ -2310,6 +2543,22 @@ public Vector readFileHeaders(int projectId) throws CmsException {
 public CmsFolder readFolder(String folder) throws CmsException {
     return (readFolder(folder, ""));
 }
+
+/**
+ * Reads a folder from the Cms.
+ *
+ * @param folder the complete path to the folder to be read.
+ * @param includeDeleted Include the folder if it is marked as deleted
+ *
+ * @return folder the read folder.
+ *
+ * @exception CmsException if the user has not the rights
+ * to read this resource, or if the folder couldn't be read.
+ */
+public CmsFolder readFolder(String folder, boolean includeDeleted) throws CmsException {
+    return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), folder, includeDeleted));
+}
+
 /**
  * Reads a folder from the Cms.
  *
@@ -2482,6 +2731,18 @@ public CmsProject readProject(CmsResource res) throws CmsException {
 public CmsProject readProject(CmsTask task) throws CmsException {
     return (m_rb.readProject(m_context.currentUser(), m_context.currentProject(), task));
 }
+
+/**
+ * Reads a project from the Cms.
+ *
+ * @param task the task for which the project will be read.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public CmsBackupProject readBackupProject(int versionId) throws CmsException {
+    return (m_rb.readBackupProject(m_context.currentUser(), m_context.currentProject(), versionId));
+}
+
 /**
   * Reads log entries for a project.
   *
@@ -2735,6 +2996,32 @@ protected void doRenameFile(String oldname, String newname) throws CmsException 
 */
 }
 
+    /**
+     * Restores a file in the current project with a version in the backup
+     *
+     * @param versionId The version id of the resource
+     * @param filename The name of the file to restore
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void restoreResource(int versionId, String filename) throws CmsException{
+	    CmsResource res = readFileHeader(filename);
+	    I_CmsResourceType rt = getResourceType(res.getType());
+	    rt.restoreResource(this, versionId, filename);
+    }
+
+    /**
+     * Restores a file in the current project with a version in the backup
+     *
+     * @param versionId The version id of the resource
+     * @param filename The name of the file to restore
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    protected void doRestoreResource(int versionId, String filename) throws CmsException{
+        m_rb.restoreResource(m_context.currentUser(), m_context.currentProject(), versionId, filename);
+    }
+
 /**
  * Returns the root-folder object.
  *
@@ -2886,6 +3173,34 @@ public void unlockResource(String resource) throws CmsException {
 }
 
 /**
+ * Undo changes in a file by copying the online file.
+ *
+ * @param filename the complete path of the file.
+ *
+ * @exception CmsException if the file couldn't be deleted, or if the user
+ * has not the appropriate rights to write the file.
+ */
+public void undoChanges(String filename) throws CmsException {
+    //read the file header including deleted
+	CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), filename, true);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.undoChanges(this, filename);
+}
+
+/**
+ * Undo changes in a file.
+ * <br>
+ *
+ * @param resource the complete path to the resource to be unlocked.
+ *
+ * @exception CmsException if the user has not the rights
+ * to write this resource.
+ */
+protected void doUndoChanges(String resource) throws CmsException {
+    m_rb.undoChanges(m_context.currentUser(), m_context.currentProject(), resource);
+}
+
+/**
  * Unlocks a resource.
  * <br>
  * A user can unlock a resource, so other users may lock this file.
@@ -3005,9 +3320,11 @@ public void writeProperty(String name, String property, String value) throws Cms
  * @param propertydef the property-definition to be written.
  *
  * @exception CmsException if operation was not successful.
+ * @deprecated Do not use this method any longer because there is no type of propertydefinition
  */
 public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition definition) throws CmsException {
-    return (m_rb.writePropertydefinition(m_context.currentUser(), m_context.currentProject(), definition));
+    return readPropertydefinition(definition.getName(), getResourceType(definition.getType()).getResourceTypeName());
+    //return (m_rb.writePropertydefinition(m_context.currentUser(), m_context.currentProject(), definition));
 }
 
 /**

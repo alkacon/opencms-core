@@ -1,31 +1,31 @@
 echo on
 login Admin admin
-createPropertydefinition Title plain 0
-createPropertydefinition Title page 0
-createPropertydefinition Title XMLTemplate 0
-createPropertydefinition Title binary 0
-createPropertydefinition Title script 0
-createPropertydefinition Title image 0
-createPropertydefinition Title link 0
-createPropertydefinition NavText page 0
-createPropertydefinition NavPos page 0
-createPropertydefinition NavText plain 0
-createPropertydefinition NavPos plain 0
-createPropertydefinition NavText folder 0
-createPropertydefinition NavPos folder 0
-createPropertydefinition Title folder 0
-createPropertydefinition Title pdfpage 0
-createPropertydefinition NavText pdfpage 0
-createPropertydefinition NavPos pdfpage 0
-createPropertydefinition TemplateType plain 0
-createPropertydefinition TemplateType pdfpage 0
-createPropertydefinition TemplateType XMLTemplate 0
-createPropertydefinition Description page 0
-createPropertydefinition Keywords page 0
-createPropertydefinition Description plain 0
-createPropertydefinition Keywords plain 0
-createPropertydefinition Description script 0
-createPropertydefinition Keywords script 0
+createPropertydefinition Title plain
+createPropertydefinition Title page
+createPropertydefinition Title XMLTemplate
+createPropertydefinition Title binary
+createPropertydefinition Title script
+createPropertydefinition Title image
+createPropertydefinition Title link
+createPropertydefinition NavText page
+createPropertydefinition NavPos page
+createPropertydefinition NavText plain
+createPropertydefinition NavPos plain
+createPropertydefinition NavText folder
+createPropertydefinition NavPos folder
+createPropertydefinition Title folder
+createPropertydefinition Title pdfpage
+createPropertydefinition NavText pdfpage
+createPropertydefinition NavPos pdfpage
+createPropertydefinition TemplateType plain
+createPropertydefinition TemplateType pdfpage
+createPropertydefinition TemplateType XMLTemplate
+createPropertydefinition Description page
+createPropertydefinition Keywords page
+createPropertydefinition Description plain
+createPropertydefinition Keywords plain
+createPropertydefinition Description script
+createPropertydefinition Keywords script
 addFileExtension doc binary
 addFileExtension pdf binary
 addFileExtension zip binary
