@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/06/05 15:38:46 $
-* Version: $Revision: 1.247 $
+* Date   : $Date: 2002/06/30 22:00:02 $
+* Version: $Revision: 1.248 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,8 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.247 $ $Date: 2002/06/05 15:38:46 $ *
+ * @author Mark Foley
+ * @version $Revision: 1.248 $ $Date: 2002/06/30 22:00:02 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -189,13 +190,29 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
    protected com.opencms.file.genericSql.CmsQueries m_cq;
 
+   /**
+    * TESTFIX (mfoley@iee.org) New Code:
+    * Performs an Oracle-safe setBytes() action.
+    * @param statement The PreparedStatement.
+    * @param posn The parameter placeholder in the prepared statement.
+    * @param content The byte array to be inserted into the prepared statement.
+    * @exception SQLException Throws SQLException if something goes wrong.
+    */
+   protected void m_doSetBytes(PreparedStatement statement, int posn, byte[] content)
+        throws SQLException {
+        if(content.length < 2000) {
+            statement.setBytes(posn,content);
+        } else {
+            statement.setBinaryStream(posn, new ByteArrayInputStream(content), content.length);
+        }
+    }
+
     /**
      * Instanciates the access-module and sets up all required modules and connections.
      * @param config The OpenCms configuration.
      * @exception CmsException Throws CmsException if something goes wrong.
      */
-    public CmsDbAccess(Configurations config)
-        throws CmsException {
+    public CmsDbAccess(Configurations config) throws CmsException {
 
         // set configurations for the dbpool driver
         com.opencms.dbpool.CmsDriver.setConfigurations(config);
@@ -325,7 +342,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement=  con.prepareStatement(m_cq.get("C_SYSTEMPROPERTIES_WRITE"));
             statement.setInt(1,nextId(C_TABLE_SYSTEMPROPERTIES));
             statement.setString(2,name);
-            statement.setBytes(3,value);
+            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(3,value);
+            m_doSetBytes(statement,3,value);
             statement.executeUpdate();
         } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
@@ -408,7 +426,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.setTimestamp(9, new Timestamp(lastlogin));
             statement.setTimestamp(10, new Timestamp(lastused));
             statement.setInt(11,flags);
-            statement.setBytes(12,value);
+            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(12,value);
+            m_doSetBytes(statement,12,value);
             statement.setInt(13,defaultGroup.getId());
             statement.setString(14,checkNull(address));
             statement.setString(15,checkNull(section));
@@ -497,7 +516,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.setTimestamp(9, new Timestamp(lastlogin));
             statement.setTimestamp(10, new Timestamp(lastused));
             statement.setInt(11,flags);
-            statement.setBytes(12,value);
+            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(12,value);
+            m_doSetBytes(statement,12,value);
             statement.setInt(13,defaultGroup.getId());
             statement.setString(14,checkNull(address));
             statement.setString(15,checkNull(section));
@@ -876,7 +896,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             try {
                 statement = con.prepareStatement(m_cq.get("C_FILES_WRITE"+usedStatement));
                 statement.setInt(1, newFileId);
-                statement.setBytes(2, file.getContents());
+                // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(2, file.getContents());
+                m_doSetBytes(statement,2,file.getContents());
                 statement.executeUpdate();
                 statement.close();
             } catch (SQLException se) {
@@ -1021,7 +1042,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             // write the file content
             statementFileWrite = con.prepareStatement(m_cq.get("C_FILES_WRITE"+usedStatement));
             statementFileWrite.setInt(1, fileId);
-            statementFileWrite.setBytes(2, contents);
+            // TESTFIX (mfoley@iee.org) Old Code: statementFileWrite.setBytes(2, contents);
+            m_doSetBytes(statementFileWrite,2,contents);
             statementFileWrite.executeUpdate();
         } catch (SQLException e) {
             throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
@@ -1617,7 +1639,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
             statement.setString(1,sessionId);
             statement.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
-            statement.setBytes(3,value);
+            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(3,value);
+            m_doSetBytes(statement,3,value);
             statement.executeUpdate();
         }
         catch (SQLException e){
@@ -5003,7 +5026,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     statement.executeUpdate();
                     statement.close();
                     statement = con.prepareStatement(m_cq.get("C_FILES_UPDATE_ONLINE"));
-                    statement.setBytes(1, currentFile.getContents());
+                    // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(1, currentFile.getContents());
+                    m_doSetBytes(statement,1,currentFile.getContents());
                     statement.setInt(2, onlineFile.getFileId());
                     statement.executeUpdate();
                     statement.close();
@@ -5094,7 +5118,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                             statement.setInt(15, onlineFile.getResourceId());
                             statement.executeUpdate();
                             statement = con.prepareStatement(m_cq.get("C_FILES_UPDATE_ONLINE"));
-                            statement.setBytes(1, currentFile.getContents());
+                            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(1, currentFile.getContents());
+                            m_doSetBytes(statement,1,currentFile.getContents());
                             statement.setInt(2, onlineFile.getFileId());
                             statement.executeUpdate();
                             statement.close();
@@ -5368,7 +5393,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 // write new resource to the database
                 statement = con.prepareStatement(m_cq.get("C_FILES_WRITE_BACKUP"));
                 statement.setInt(1, fileId);
-                statement.setBytes(2, content);
+                // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(2, content);
+                m_doSetBytes(statement,2,content);
                 statement.executeUpdate();
                 statement.close();
             }
@@ -10973,7 +10999,8 @@ public CmsTask readTask(int id) throws CmsException {
             statement = con.prepareStatement(m_cq.get("C_SESSION_UPDATE"));
 
             statement.setTimestamp(1,new java.sql.Timestamp(System.currentTimeMillis()));
-            statement.setBytes(2,value);
+            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(2,value);
+            m_doSetBytes(statement,2,value);
             statement.setString(3,sessionId);
             retValue = statement.executeUpdate();
         }
@@ -11173,7 +11200,8 @@ public CmsTask readTask(int id) throws CmsException {
             writeFileHeader(project, file, changed, userId);
             // update the file content in the FILES database.
             statement = con.prepareStatement(m_cq.get("C_FILES_UPDATE"+usedStatement));
-            statement.setBytes(1,file.getContents());
+            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(1,file.getContents());
+            m_doSetBytes(statement,1,file.getContents());
             statement.setInt(2,file.getFileId());
             statement.executeUpdate();
 
@@ -11682,7 +11710,8 @@ public CmsTask readTask(int id) throws CmsException {
             value=bout.toByteArray();
 
             statement=con.prepareStatement(m_cq.get("C_SYSTEMPROPERTIES_UPDATE"));
-            statement.setBytes(1,value);
+            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(1,value);
+            m_doSetBytes(statement,1,value);
             statement.setString(2,name);
             statement.executeUpdate();
          }
@@ -11927,7 +11956,8 @@ public CmsTask readTask(int id) throws CmsException {
             statement.setTimestamp(5, new Timestamp(user.getLastlogin()));
             statement.setTimestamp(6, new Timestamp(user.getLastUsed()));
             statement.setInt(7,user.getFlags());
-            statement.setBytes(8,value);
+            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(8,value);
+            m_doSetBytes(statement,8,value);
             statement.setInt(9, user.getDefaultGroupId());
             statement.setString(10,checkNull(user.getAddress()));
             statement.setString(11,checkNull(user.getSection()));
