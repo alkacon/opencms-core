@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/07/27 12:53:59 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2000/08/02 13:34:53 $
+ * Version: $Revision: 1.52 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.51 $ $Date: 2000/07/27 12:53:59 $  
+* @version $Revision: 1.52 $ $Date: 2000/08/02 13:34:53 $  
 * 
 * */
 
@@ -323,12 +323,40 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
             if (loginParameter != null) {
                 cms.clearcache();
             }
-            
+			
             // get the actual session
             session=req.getSession(false);
+			
+			// there is no session
+			if( (session == null) ) {
+				// was there an old session-id?
+				String oldSessionId = req.getRequestedSessionId();
+				if(oldSessionId != null) {
+					// yes - try to load that session
+					Hashtable sessionData = null;
+					try {
+						sessionData = m_opencms.restoreSession(oldSessionId);
+					} catch(CmsException exc) {
+						if(A_OpenCms.isLogging()) {
+							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] cannot restore session: " + com.opencms.util.Utils.getStackTrace(exc));
+						}
+					}
+					
+					// can the session be restored?
+					if(sessionData != null) {
+						// create a new session first
+						session=req.getSession(true);
+						m_sessionStorage.putUser(session.getId() ,sessionData);
+						
+						// restore the session-data
+						session.putValue(C_SESSION_DATA, sessionData.get(C_SESSION_DATA));
+					}
+				}
+			}
+			
+			
             // there was a session returned, now check if this user is already authorized
             if (session !=null) {
-             
                 // get the username
                 user=m_sessionStorage.getUserName(session.getId());
                 //System.err.println("Session authentifcation "+user.toString());
@@ -397,7 +425,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
      * is processed.<br>
      * 
      * This is nescessary if the user data (current group or project) was changed in 
-     * the requested dockument. <br>
+     * the requested document. <br>
      * 
      * The user data is only updated if the user was authenticated to the system.
      * 
@@ -411,7 +439,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         
         HttpSession session=null;
       
-        // get the original ServletRequest and response
+		// get the original ServletRequest and response
         HttpServletRequest req=(HttpServletRequest)cmsReq.getOriginalRequest();
            
         //get the session if it is there
@@ -420,28 +448,53 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         // sesssion stroage
         if ((session!= null))  {
             if (!cms.getRequestContext().currentUser().getName().equals(C_USER_GUEST)) {
-                m_sessionStorage.putUser(session.getId(),
-                                      cms.getRequestContext().currentUser().getName(),
-                                      cms.getRequestContext().currentGroup().getName(),
-									  new Integer(cms.getRequestContext().currentProject().getId()));
-             
-             // check if the session notify is set, it is nescessary to remove the
-             // session from the internal storage on its destruction.      
+				Hashtable sessionData = new Hashtable(4);
+		        sessionData.put(C_SESSION_USERNAME,cms.getRequestContext().currentUser().getName());
+				sessionData.put(C_SESSION_CURRENTGROUP,cms.getRequestContext().currentGroup().getName());
+				sessionData.put(C_SESSION_PROJECT,new Integer(cms.getRequestContext().currentProject().getId()));
+				sessionData.put(C_SESSION_DATA, session.getValue(C_SESSION_DATA));
+
+				// was there any change on current-user, current-group or current-project?
+				boolean dirty = false;
+				dirty = dirty || ( !sessionData.get(C_SESSION_USERNAME).equals(m_sessionStorage.getUserName(session.getId()) ) );
+				dirty = dirty || ( !sessionData.get(C_SESSION_CURRENTGROUP).equals(m_sessionStorage.getCurrentGroup(session.getId()) ) );
+				dirty = dirty || ( !sessionData.get(C_SESSION_PROJECT).equals(m_sessionStorage.getCurrentProject(session.getId())) );
+
+				// update the user-data
+                m_sessionStorage.putUser(session.getId(),sessionData);
+				
+				// was the session changed?
+				if( (session.getValue(C_SESSION_IS_DIRTY) != null) || dirty) {
+					// yes- store it to the database
+					session.removeValue(C_SESSION_IS_DIRTY);
+					try {
+						long ms = System.currentTimeMillis();
+						m_opencms.storeSession(session.getId(), sessionData);
+						System.err.println("Storing session takes: " + (System.currentTimeMillis() - ms) + " ms");
+					} catch(CmsException exc) {
+						if(A_OpenCms.isLogging()) {
+							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] cannot store session: " + com.opencms.util.Utils.getStackTrace(exc));
+						}
+					}
+				}
+				
+				// check if the session notify is set, it is nescessary to remove the
+				// session from the internal storage on its destruction.      
         
-             OpenCmsServletNotify notify = null;
-             Object sessionValue = session.getValue("NOTIFY");        
-                       
-             if (sessionValue instanceof OpenCmsServletNotify) {
+				OpenCmsServletNotify notify = null;
+				Object sessionValue = session.getValue("NOTIFY");        
+				          
+				if (sessionValue instanceof OpenCmsServletNotify) {
              
-                notify = (OpenCmsServletNotify)sessionValue;     
-                if (notify == null) {
-                    notify = new OpenCmsServletNotify(session.getId(),m_sessionStorage);             
-                    session.putValue("NOTIFY",notify);                  
-                }                
-             } else {
-                    notify = new OpenCmsServletNotify(session.getId(),m_sessionStorage);             
-                    session.putValue("NOTIFY",notify);                    
-             }
+				   notify = (OpenCmsServletNotify)sessionValue;     
+				   if (notify == null) {
+				       notify = new OpenCmsServletNotify(session.getId(),m_sessionStorage);             
+				       session.putValue("NOTIFY",notify);                  
+				   }                
+				} else {
+				       notify = new OpenCmsServletNotify(session.getId(),m_sessionStorage);             
+				       session.putValue("NOTIFY",notify);                    
+				}
             }
         }
            

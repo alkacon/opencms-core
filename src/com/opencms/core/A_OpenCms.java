@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2000/07/27 12:53:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/08/02 13:34:53 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -29,6 +29,7 @@
 package com.opencms.core;
 
 import java.io.*;
+import java.util.*;
 
 import com.opencms.file.*;
 import com.opencms.launcher.*;
@@ -48,7 +49,7 @@ import source.org.apache.java.util.*;
 *   
 * @author Alexander Lucas
 * @author Michael Emmerich
-* @version $Revision: 1.8 $ $Date: 2000/07/27 12:53:59 $  
+* @version $Revision: 1.9 $ $Date: 2000/08/02 13:34:53 $  
 * 
 */
 public abstract class A_OpenCms implements I_CmsLogChannels {
@@ -149,5 +150,26 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
 	 * @param project The id of the current project.
 	 */
 	abstract public void initUser(CmsObject cms,I_CmsRequest cmsReq,I_CmsResponse cmsRes,String user,String group,int project)
+		throws CmsException;
+	
+	/**
+	 * This method loads old sessiondata from the database. It is used 
+	 * for sessionfailover.
+	 * 
+	 * @param oldSessionId the id of the old session.
+	 * @return the old sessiondata.
+	 */
+	abstract Hashtable restoreSession(String oldSessionId) 
+		throws CmsException;
+
+	/**
+	 * This method stores sessiondata into the database. It is used 
+	 * for sessionfailover.
+	 * 
+	 * @param sessionId the id of the session.
+	 * @param isNew determines, if the session is new or not.
+	 * @return data the sessionData.
+	 */
+	abstract void storeSession(String sessionId, Hashtable sessionData) 
 		throws CmsException;
 }

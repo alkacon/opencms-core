@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
- * Date   : $Date: 2000/08/01 17:31:26 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/08/02 13:34:56 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/08/01 17:31:26 $
+ * @version $Revision: 1.13 $ $Date: 2000/08/02 13:34:56 $
  */
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -83,7 +83,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         String link=null;
         String foldername=null;
         String type=null;
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
 		CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
 		
 		// get the document to display
@@ -217,7 +217,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
      */
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
         
         // get a previous value from the session
         String filename=(String)session.getValue(C_PARA_FILE);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/24 06:44:22 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/08/02 13:34:55 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/07/24 06:44:22 $
+ * @version $Revision: 1.12 $ $Date: 2000/08/02 13:34:55 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -6236,4 +6236,35 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}	
 	}
 	
+ 	/**
+	 * This method loads old sessiondata from the database. It is used 
+	 * for sessionfailover.
+	 * 
+	 * @param oldSessionId the id of the old session.
+	 * @return the old sessiondata.
+	 */
+	public Hashtable restoreSession(String oldSessionId) 
+		throws CmsException {
+		
+		return m_dbAccess.readSession(oldSessionId);
+	}
+	
+	/**
+	 * This method stores sessiondata into the database. It is used 
+	 * for sessionfailover.
+	 * 
+	 * @param sessionId the id of the session.
+	 * @param isNew determines, if the session is new or not.
+	 * @return data the sessionData.
+	 */
+	public void storeSession(String sessionId, Hashtable sessionData) 
+		throws CmsException {
+
+		// update the session
+		int rowCount = m_dbAccess.updateSession(sessionId, sessionData);
+		if(rowCount != 1) {
+			// the entry dosn't exists - create it
+			m_dbAccess.createSession(sessionId, sessionData);			
+		}
+	}
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
- * Date   : $Date: 2000/07/18 16:13:50 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/08/02 13:34:56 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/07/18 16:13:50 $
+ * @version $Revision: 1.14 $ $Date: 2000/08/02 13:34:56 $
  */
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -76,7 +76,7 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
         
         // the template to be displayed
         String template=null;
@@ -157,7 +157,7 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
     public Integer getFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
        
         String filename=(String)session.getValue(C_PARA_FILE);
         if (filename != null) {

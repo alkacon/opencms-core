@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2000/07/18 16:13:51 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/08/02 13:34:57 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/07/18 16:13:51 $
+ * @version $Revision: 1.17 $ $Date: 2000/08/02 13:34:57 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -76,7 +76,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
         
         // the template to be displayed
         String template=null;
@@ -285,7 +285,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
 		throws CmsException {
 	
 		int retValue = -1;
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
        
         String filename=(String)session.getValue(C_PARA_FILE);       
         if (filename != null) {
@@ -320,7 +320,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         
         String propertyValue=null;
         
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
         
         // get the filename
         String filename=(String)session.getValue(C_PARA_FILE);        
@@ -356,7 +356,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
 		throws CmsException {
 	
 		int retValue = -1;
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
        
         String filename=(String)session.getValue(C_PARA_FILE);       
         if (filename != null) {
@@ -401,7 +401,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
 		throws CmsException {
 	
 		int retValue = -1;
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
        
         String filename=(String)session.getValue(C_PARA_FILE);       
         if (filename != null) {

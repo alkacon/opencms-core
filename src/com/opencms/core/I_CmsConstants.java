@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/07/28 15:25:28 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2000/08/02 13:34:53 $
+ * Version: $Revision: 1.93 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.92 $ $Date: 2000/07/28 15:25:28 $
+ * @version $Revision: 1.93 $ $Date: 2000/08/02 13:34:53 $
  */
 public interface I_CmsConstants
 {
@@ -491,6 +491,16 @@ public interface I_CmsConstants
      */
     static final String C_SESSION_PROJECT="PROJECT";
      
+     /**
+     * The key for the dirty-flag in the session.
+     */
+    static final String C_SESSION_IS_DIRTY="_core_session_is_dirty_";
+	
+	/**
+	 * The key for the original session to store the session data.
+	 */
+	static final String C_SESSION_DATA = "_session_data_";
+	
     /** Identifier for request type http */
     public static final int C_REQUEST_HTTP = 0;
     

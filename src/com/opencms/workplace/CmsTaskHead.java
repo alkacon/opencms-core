@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskHead.java,v $
- * Date   : $Date: 2000/07/18 16:13:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/08/02 13:34:57 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/07/18 16:13:51 $
+ * @version $Revision: 1.12 $ $Date: 2000/08/02 13:34:57 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -85,7 +85,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 		
-		CmsSession session = cms.getRequestContext().getSession(true);
+		I_CmsSession session = cms.getRequestContext().getSession(true);
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
 		// is this the first-time, this page is viewed?
@@ -130,7 +130,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
      */    
     public Object checked(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
 		throws CmsException {
-		CmsSession session = cms.getRequestContext().getSession(true);
+		I_CmsSession session = cms.getRequestContext().getSession(true);
 		Object allProjects = session.getValue(C_SESSION_TASK_ALLPROJECTS);
 		
 		// was the allprojects checkbox checked?
@@ -165,7 +165,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
 		throws CmsException {
         
         // Let's see if we have a session
-        CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = cms.getRequestContext().getSession(true);
 		String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
 
 		int selected = 0;

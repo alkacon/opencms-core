@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/27 12:54:00 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2000/08/02 13:34:54 $
+ * Version: $Revision: 1.109 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,9 +49,15 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.108 $ $Date: 2000/07/27 12:54:00 $ * 
+ * @version $Revision: 1.109 $ $Date: 2000/08/02 13:34:54 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
+	
+	/**
+	 * The session-timeout value:
+	 * currently six hours. After that time the session can't be restored.
+	 */
+	public static final long C_SESSION_TIMEOUT = 6 * 60 * 60 * 1000;
 	
 	/**
 	 * The maximum amount of tables.
@@ -182,8 +188,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
      * Storage for all exportpoints
      */
     private Hashtable m_exportpointStorage=null;
-
-
 	
 	/**
      * Instanciates the access-module and sets up all required modules and connections.
@@ -314,6 +318,160 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		m_guard.start();		
     }
 
+	// methods working with session-storage
+	
+	/**
+	 * This method creates a new session in the database. It is used 
+	 * for sessionfailover.
+	 * 
+	 * @param sessionId the id of the session.
+	 * @return data the sessionData.
+	 */
+	public void createSession(String sessionId, Hashtable data) 
+		throws CmsException {
+        byte[] value=null;
+		PreparedStatement statement = null;
+		
+		try	{			
+            // serialize the hashtable
+            ByteArrayOutputStream bout= new ByteArrayOutputStream();            
+            ObjectOutputStream oout=new ObjectOutputStream(bout);
+            oout.writeObject(data);
+            oout.close();
+            value=bout.toByteArray();
+			
+            // write data to database     
+            statement = m_pool.getPreparedStatement(C_SESSION_CREATE_KEY);
+			
+			statement.setString(1,sessionId);
+			statement.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
+			statement.setBytes(3,value);
+			statement.executeUpdate();
+		}
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		}
+        catch (IOException e){
+            throw new CmsException("["+this.getClass().getName()+"]:"+CmsException.C_SERIALIZATION, e);
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_SESSION_CREATE_KEY, statement);
+			}
+		}
+	}
+
+	/**
+	 * This method updates a session in the database. It is used 
+	 * for sessionfailover.
+	 * 
+	 * @param sessionId the id of the session.
+	 * @return data the sessionData.
+	 */
+	public int updateSession(String sessionId, Hashtable data) 
+		throws CmsException {
+        byte[] value=null;
+		PreparedStatement statement = null;
+		int retValue;
+		
+		try	{			
+            // serialize the hashtable
+            ByteArrayOutputStream bout= new ByteArrayOutputStream();            
+            ObjectOutputStream oout=new ObjectOutputStream(bout);
+            oout.writeObject(data);
+            oout.close();
+            value=bout.toByteArray();
+			
+            // write data to database     
+            statement = m_pool.getPreparedStatement(C_SESSION_UPDATE_KEY);
+			
+			statement.setTimestamp(1,new java.sql.Timestamp(System.currentTimeMillis()));
+			statement.setBytes(2,value);
+			statement.setString(3,sessionId);
+			retValue = statement.executeUpdate();
+		}
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		}
+        catch (IOException e){
+            throw new CmsException("["+this.getClass().getName()+"]:"+CmsException.C_SERIALIZATION, e);
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_SESSION_UPDATE_KEY, statement);
+			}
+		}
+		return retValue;
+	}
+	
+	/**
+	 * Reads a session from the database.
+	 * 
+	 * @param sessionId, the id og the session to read.
+	 * @return the read session as Hashtable.
+	 * @exception thorws CmsException if something goes wrong.
+	 */
+	public Hashtable readSession(String sessionId) 
+		throws CmsException {
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		Hashtable session = null;
+        
+		try	{			
+            statement = m_pool.getPreparedStatement(C_SESSION_READ_KEY);
+            statement.setString(1,sessionId);
+            statement.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT ));
+			
+			res = statement.executeQuery();
+			
+			// create new Cms user object
+			if(res.next()) {
+				// read the additional infos.
+                byte[] value = res.getBytes(1);
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				session =(Hashtable)oin.readObject();
+            } else {
+				deleteSessions();
+			}
+
+			res.close();            
+         }
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+		catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_SESSION_READ_KEY, statement);
+			}
+		}
+		return session;
+	}
+	
+	/**
+	 * Deletes old sessions.
+	 */
+	public void deleteSessions() {
+		PreparedStatement statement = null;
+        
+		try	{			
+            statement = m_pool.getPreparedStatement(C_SESSION_DELETE_KEY);
+            statement.setTimestamp(1,new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT ));
+
+			statement.execute();
+         }
+        catch (Exception e){
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error while deleting old sessions: " + com.opencms.util.Utils.getStackTrace(e));
+			}
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_SESSION_READ_KEY, statement);
+			}
+		}
+	}
+	
      // methods working with users and groups
     
     /**
@@ -4900,6 +5058,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		m_pool.initPreparedStatement(C_SYSTEMID_READ_KEY,C_SYSTEMID_READ);
 		m_pool.initPreparedStatement(C_SYSTEMID_WRITE_KEY,C_SYSTEMID_WRITE);
 		m_pool.initPreparedStatement(C_SYSTEMID_UNLOCK_KEY,C_SYSTEMID_UNLOCK);	
+
+		// init statements for sessions
+		m_pool.initPreparedStatement(C_SESSION_CREATE_KEY, C_SESSION_CREATE);
+		m_pool.initPreparedStatement(C_SESSION_UPDATE_KEY, C_SESSION_UPDATE);
+		m_pool.initPreparedStatement(C_SESSION_READ_KEY, C_SESSION_READ);	
+		m_pool.initPreparedStatement(C_SESSION_DELETE_KEY, C_SESSION_DELETE);	
 	}
 	
 

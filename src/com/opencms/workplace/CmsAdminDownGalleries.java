@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
- * Date   : $Date: 2000/07/18 16:13:49 $
+ * Date   : $Date: 2000/08/02 13:34:55 $
  * Version: $ $
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.6 $ $Date: 2000/07/18 16:13:49 $
+ * @version $Revision: 1.7 $ $Date: 2000/08/02 13:34:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -73,7 +73,7 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
        
-		CmsSession session = cms.getRequestContext().getSession(true);
+		I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
    
 		// clear session values on first load

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsSession.java,v $
  * Date   : $Date: 2000/08/02 13:34:53 $
- * Version: $Revision: 1.10 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,35 +38,10 @@ import javax.servlet.http.*;
  * session-failover in distributed-server environments.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/08/02 13:34:53 $  
+ * @author Andreas Schouten
+ * @version $Revision: 1.8 $ $Date: 2000/08/02 13:34:53 $  
  */
-public class CmsSession implements I_CmsSession, I_CmsConstants {
-	
-	/**
-	 * The original HttpSession
-	 */
-	private HttpSession m_session;
-	
-	/**
-	 * The sessiondata.
-	 */
-	private Hashtable m_sessionData;
-
-	/**
-	 * Constructs a new CmsSession on base of a HttpSession.
-	 * 
-	 * @param originalSession the original session to use.
-	 */
-	public CmsSession(HttpSession originalSession) {
-		m_session = originalSession;
-		m_sessionData = (Hashtable) m_session.getValue(C_SESSION_DATA);
-		
-		// if there is no session-data, create a new one.
-		if(m_sessionData == null) {
-			m_sessionData = new Hashtable();
-			m_session.putValue(C_SESSION_DATA, m_sessionData);
-		}
-	}
+public interface I_CmsSession  {
 	
 	/**
 	 * Puts a value into the session
@@ -74,11 +49,7 @@ public class CmsSession implements I_CmsSession, I_CmsConstants {
 	 * @param name the key.
 	 * @param value a object to store the value.
 	 */
-	public void putValue(String name, Object value) {
-		m_sessionData.put(name, value);
-		// indicate, that the session should be stored after the request.
-		m_session.putValue(C_SESSION_IS_DIRTY, new Boolean(true));
-	}
+	public void putValue(String name, Object value);
 	
 	/**
 	 * Gets a value from the session.
@@ -86,18 +57,12 @@ public class CmsSession implements I_CmsSession, I_CmsConstants {
 	 * @param name the key.
 	 * @return the object for this key.
 	 */
-	public Object getValue(String name) {
-		return m_sessionData.get(name);
-	}
+	public Object getValue(String name);
 	
 	/**
 	 * Removes a value from the session.
 	 * 
 	 * @param name the key for the value to remove.
 	 */
-	public void removeValue(String name) {
-		m_session.removeValue(name);
-		// indicate, that the session should be stored after the request.
-		m_session.putValue(C_SESSION_IS_DIRTY, new Boolean(true));
-	}
+	public void removeValue(String name);
 }

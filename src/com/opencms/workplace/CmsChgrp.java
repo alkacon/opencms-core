@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChgrp.java,v $
- * Date   : $Date: 2000/08/01 17:31:26 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/08/02 13:34:55 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/08/01 17:31:26 $
+ * @version $Revision: 1.20 $ $Date: 2000/08/02 13:34:55 $
  */
 public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -76,7 +76,7 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
         
         // the template to be displayed
         String template=null;            
@@ -256,7 +256,7 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		// get all groups
 		Vector groups = cms.getGroups();
 		int retValue = -1;
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
        
         String filename=(String)session.getValue(C_PARA_FILE);
         if (filename != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
- * Date   : $Date: 2000/07/18 16:13:49 $
- * Version: $Revision: 1.9 $Selector
+ * Date   : $Date: 2000/08/02 13:34:55 $
+ * Version: $Revision: 1.10 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.9 $ $Date: 2000/07/18 16:13:49 $
+ * @version $Revision: 1.10 $ $Date: 2000/08/02 13:34:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -86,7 +86,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
-		CmsSession session= cms.getRequestContext().getSession(true);
+		I_CmsSession session= cms.getRequestContext().getSession(true);
         CmsRequestContext reqCont = cms.getRequestContext();   	
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
 		 
@@ -461,7 +461,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 		throws CmsException {
 		int retValue = -1;
 		
-		CmsSession session= cms.getRequestContext().getSession(true);
+		I_CmsSession session= cms.getRequestContext().getSession(true);
 
 		String 	actualGroup = (String) session.getValue("GROUPNAME");
 		String temp = (String) parameters.get("GROUPNAME");
@@ -515,7 +515,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 	public Integer getNotSelectedUsers(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 	 
-		CmsSession session= cms.getRequestContext().getSession(true);
+		I_CmsSession session= cms.getRequestContext().getSession(true);
        	Vector notSelectedUsers =(Vector) session.getValue("notSelectedUsers");
 		
 		if (notSelectedUsers != null){
@@ -546,7 +546,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 	public Integer getSelectedUsers(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		 
-		CmsSession session= cms.getRequestContext().getSession(true);
+		I_CmsSession session= cms.getRequestContext().getSession(true);
 		Vector selectedUsers =(Vector) session.getValue("selectedUsers");
 		
 		if (selectedUsers != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/07/18 14:05:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/08/02 13:34:55 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.4 $ $Date: 2000/07/18 14:05:57 $
+ * @version $Revision: 1.5 $ $Date: 2000/08/02 13:34:55 $
  */
 public interface I_CmsQuerys {
     
@@ -675,6 +675,20 @@ public interface I_CmsQuerys {
     
     public static final Integer C_SYSTEMID_UNLOCK_KEY = new Integer(5);
     public static final String C_SYSTEMID_UNLOCK = "UNLOCK TABLES ";
+	
+	
+	// Constants for session-failover
+	
+    public static final Integer C_SESSION_CREATE_KEY = new Integer(900);
+	public static final String C_SESSION_CREATE = "INSERT into " + C_DATABASE_PREFIX + "SESSIONS (SESSION_ID, SESSION_LASTUSED, SESSION_DATA) values(?,?,?)";
 
+    public static final Integer C_SESSION_UPDATE_KEY = new Integer(901);
+    public static final String C_SESSION_UPDATE = "UPDATE " + C_DATABASE_PREFIX + "SESSIONS set SESSION_LASTUSED = ?, SESSION_DATA = ? where SESSION_ID = ?";
+
+    public static final Integer C_SESSION_READ_KEY = new Integer(902);
+    public static final String C_SESSION_READ = "select SESSION_DATA from " + C_DATABASE_PREFIX + "SESSIONS where SESSION_ID = ? and SESSION_LASTUSED > ?";
+
+    public static final Integer C_SESSION_DELETE_KEY = new Integer(903);
+    public static final String C_SESSION_DELETE = "delete from " + C_DATABASE_PREFIX + "SESSIONS where SESSION_LASTUSED < ?";
 }
 

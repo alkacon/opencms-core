@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/07/18 16:13:50 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2000/08/02 13:34:56 $
+ * Version: $Revision: 1.45 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import javax.servlet.http.*;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.44 $ $Date: 2000/07/18 16:13:50 $
+ * @version $Revision: 1.45 $ $Date: 2000/08/02 13:34:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -201,7 +201,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 			
             String servlets=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
             
-            CmsSession session= cms.getRequestContext().getSession(true);
+            I_CmsSession session= cms.getRequestContext().getSession(true);
            
             String currentFilelist=(String)session.getValue(C_PARA_FILELIST);
             if ((currentFilelist==null) ||(currentFilelist.length()==0)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/07/28 07:28:52 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/08/02 13:34:53 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.33 $ $Date: 2000/07/28 07:28:52 $  
+* @version $Revision: 1.34 $ $Date: 2000/08/02 13:34:53 $  
 * 
 * */
 
@@ -92,6 +92,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
       * Hashtable with all available Mimetypes.
       */
      private Hashtable m_mt=new Hashtable();
+	 
+	 /**
+	  * Indicates, if the session-failover should be enabled or not.
+	  */
+	 private boolean m_sessionFailover = false;
      
      /**
       * Constructor, creates a new OpenCms object.
@@ -112,6 +117,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the main resource-broker");
 			}
+			
+			m_sessionFailover = conf.getBoolean("sessionfailover.enabled", false);
 
 			// init the rb via the manager with the configuration 			
 			// and init the cms-object with the rb.
@@ -306,4 +313,39 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         cms.destroy();
     }
     
+	/**
+	 * This method loads old sessiondata from the database. It is used 
+	 * for sessionfailover.
+	 * 
+	 * @param oldSessionId the id of the old session.
+	 * @return the old sessiondata.
+	 */
+	Hashtable restoreSession(String oldSessionId) 
+		throws CmsException {
+		// is session-failopver enabled?
+		if(m_sessionFailover) {
+			// yes
+			return c_rb.restoreSession(oldSessionId);
+		} else {
+			// no - do nothing
+			return null;
+		}
+	}
+	
+	/**
+	 * This method stores sessiondata into the database. It is used 
+	 * for sessionfailover.
+	 * 
+	 * @param sessionId the id of the session.
+	 * @param isNew determines, if the session is new or not.
+	 * @return data the sessionData.
+	 */
+	void storeSession(String sessionId, Hashtable sessionData) 
+		throws CmsException {
+		// is session failover enabled?
+		if(m_sessionFailover) {
+			// yes
+			c_rb.storeSession(sessionId, sessionData);
+		}
+	}
 }

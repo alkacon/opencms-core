@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/07/18 16:13:51 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/08/02 13:34:57 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/07/18 16:13:51 $
+ * @version $Revision: 1.21 $ $Date: 2000/08/02 13:34:57 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                          I_CmsConstants {
@@ -168,7 +168,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         
         // get request context and session
         CmsRequestContext reqCont = cms.getRequestContext();     
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
         
         // define varialbes to store template and panel
         String template="";
@@ -359,7 +359,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param reqCont The request context.
      * @param xmlTemplateDocument The template in which all data is added.
      */    
-    private void setExplorerSettings(CmsSession session, Hashtable parameters,
+    private void setExplorerSettings(I_CmsSession session, Hashtable parameters,
                                      CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
              
         //get the actual user settings  
@@ -489,7 +489,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param reqCont The request context.
      * @param xmlTemplateDocument The template in which all data is added.
      */    
-    private void setTaskSettings(CmsSession session, Hashtable parameters,
+    private void setTaskSettings(I_CmsSession session, Hashtable parameters,
                                  CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
         // get the actual user settings  
         // first try to read them from the session
@@ -552,7 +552,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param parameters Hashtable containing all request parameters
      * @return Explorer filelist flags.
      */
-    private Hashtable getTaskSettings(Hashtable parameters, CmsSession session) {
+    private Hashtable getTaskSettings(Hashtable parameters, I_CmsSession session) {
               
         Hashtable taskSettings=new Hashtable();
                
@@ -607,7 +607,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param reqCont The request context.
      * @param xmlTemplateDocument The template in which all data is added.
      */    
-    private void setStartSettings(CmsSession session, Hashtable parameters,
+    private void setStartSettings(I_CmsSession session, Hashtable parameters,
                                  CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
            
         // get the actual user settings  
@@ -786,7 +786,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param reqCont The request context.
      * @param xmlTemplateDocument The template in which all data is added.
      */    
-    private void setUserSettings(CmsSession session, Hashtable parameters,
+    private void setUserSettings(I_CmsSession session, Hashtable parameters,
                                  CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
         
         // get the current user
@@ -830,7 +830,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
     public Object setPanel(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
         throws CmsException {
         
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
         String panel=(String)session.getValue(C_PARA_OLDPANEL);
       
         return panel;
@@ -855,7 +855,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 		throws CmsException {
         
         // Let's see if we have a session
-        CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = cms.getRequestContext().getSession(true);
       
         String filter= null;
         // try to get the default value
@@ -972,7 +972,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             throws CmsException {
 
         CmsRequestContext reqCont = cms.getRequestContext();
-        CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = cms.getRequestContext().getSession(true);
         String group=(String)session.getValue("USERSETTINGS");
        
         // Get a vector of all of the user's groups by asking the request context
@@ -1024,7 +1024,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 	
         String langName=null;
         Hashtable startSettings=null;
-        CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = cms.getRequestContext().getSession(true);
        
         startSettings=(Hashtable)session.getValue("STARTSETTINGS");
         // if this fails, get the settings from the user obeject
@@ -1081,7 +1081,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         
         // Let's see if we have a session
         CmsRequestContext reqCont = cms.getRequestContext();
-        CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = cms.getRequestContext().getSession(true);
 
         Hashtable startSettings=null;
         String currentView = null;
@@ -1154,7 +1154,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             throws CmsException {
         // Get all project information
         CmsRequestContext reqCont = cms.getRequestContext();
-        CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = cms.getRequestContext().getSession(true);
 
         Integer currentProject=null;
         Vector allProjects = cms.getAllAccessibleProjects();
@@ -1216,7 +1216,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             throws CmsException {
 
         CmsRequestContext reqCont = cms.getRequestContext();
-        CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = cms.getRequestContext().getSession(true);
        
         String group=null;
        

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
- * Date   : $Date: 2000/07/18 16:13:51 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/08/02 13:34:56 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/07/18 16:13:51 $
+ * @version $Revision: 1.19 $ $Date: 2000/08/02 13:34:56 $
  */
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -92,7 +92,7 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
         String title=null;
         String foldername=null;
         String type=null;
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
   
         // clear session values on first load
         String initial=(String)parameters.get(C_PARA_INITIAL);
@@ -171,7 +171,7 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
      */
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
-        CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
         
         // get a previous value from the session
         String filename=(String)session.getValue(C_PARA_FILE);
@@ -197,7 +197,7 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
 	public int getResources(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) 
 		throws CmsException {
 			
-		CmsSession session= cms.getRequestContext().getSession(true);
+		I_CmsSession session= cms.getRequestContext().getSession(true);
 		String filename = (String) session.getValue(C_PARA_FILE); 
 		String resType = new String();
 		if (filename != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/07/18 16:13:52 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/08/02 13:34:57 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/07/18 16:13:52 $
+ * @version $Revision: 1.21 $ $Date: 2000/08/02 13:34:57 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -84,7 +84,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 
-		CmsSession session = cms.getRequestContext().getSession(true);
+		I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsRequestContext reqCont = cms.getRequestContext();
         String newGroup = (String)parameters.get("group");
         String newProject = (String)parameters.get("project");
@@ -248,7 +248,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
         
         // Let's see if we have a session
         CmsRequestContext reqCont = cms.getRequestContext();
-        CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = cms.getRequestContext().getSession(true);
 
         // try to get an existing view
         String currentView = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContent.java,v $
- * Date   : $Date: 2000/07/18 16:13:51 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/08/02 13:34:57 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/07/18 16:13:51 $
+ * @version $Revision: 1.15 $ $Date: 2000/08/02 13:34:57 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -79,7 +79,7 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 		
-		CmsSession session = cms.getRequestContext().getSession(true);
+		I_CmsSession session = cms.getRequestContext().getSession(true);
 		String taskid=(String)session.getValue(C_PARA_STARTTASKID);
 		if (session.getValue(C_PARA_STARTTASKID)!=null) {
 			session.removeValue(C_PARA_STARTTASKID);
@@ -113,7 +113,7 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 		throws CmsException {
 		String orderBy = "";
 		String groupBy = "";
-		CmsSession session = cms.getRequestContext().getSession(true);
+		I_CmsSession session = cms.getRequestContext().getSession(true);
 		Object allProjects = session.getValue(C_SESSION_TASK_ALLPROJECTS);
 		int project = cms.getRequestContext().currentProject().getId();
 		String filter = (String)session.getValue(C_SESSION_TASK_FILTER);

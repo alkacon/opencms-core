@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2000/07/27 12:54:00 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/08/02 13:34:53 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2000/07/27 12:54:00 $
+ * @version $Revision: 1.25 $ $Date: 2000/08/02 13:34:53 $
  * 
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -256,7 +256,7 @@ public class CmsRequestContext implements I_CmsConstants {
 	 * 
 	 * This method should be used instead of the originalRequest.getSession() method.
 	 */
-	public CmsSession getSession(boolean value) {
-		return new CmsSession(((HttpServletRequest)m_req.getOriginalRequest()).getSession(value));
+	public I_CmsSession getSession(boolean value) {
+			return (I_CmsSession) new CmsSession(((HttpServletRequest)m_req.getOriginalRequest()).getSession(value));
 	}
 }

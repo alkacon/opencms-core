@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
- * Date   : $Date: 2000/07/18 16:13:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/08/02 13:34:55 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/07/18 16:13:49 $
+ * @version $Revision: 1.9 $ $Date: 2000/08/02 13:34:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -76,7 +76,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         
 		// get the session
-        CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = cms.getRequestContext().getSession(true);
 		
         // load the template file
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
@@ -143,7 +143,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
         throws CmsException {
         Vector resources = new Vector();
 		// get the session
-        CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = cms.getRequestContext().getSession(true);
 		
 		String filter = (String) session.getValue("filter");
 		if(filter == null) {
