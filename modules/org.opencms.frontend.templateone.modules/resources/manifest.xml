@@ -50,21 +50,29 @@
 				<param name="resource.type.id">30</param>
 				<param name="resource.type.name">news</param>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/news.xsd</param>
+				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html</param>
+				<param name="property.create.content-conversion">cleanup;xhtml</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
 				<param name="resource.type.id">35</param>
 				<param name="resource.type.name">faq</param>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/faq.xsd</param>
+				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html</param>
+				<param name="property.create.content-conversion">cleanup;xhtml</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
 				<param name="resource.type.id">40</param>
 				<param name="resource.type.name">event</param>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/event.xsd</param>
+				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-events.html</param>
+				<param name="property.create.content-conversion">cleanup;xhtml</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
 				<param name="resource.type.id">45</param>
 				<param name="resource.type.name">job</param>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/job.xsd</param>
+				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-jobs.html</param>
+				<param name="property.create.content-conversion">cleanup;xhtml</param>
 			</type>
 		</resourcetypes>
 		<explorertypes>
