@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $
- * Date   : $Date: 2000/02/20 18:45:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/20 18:56:09 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.8 $ $Date: 2000/02/20 18:45:25 $
+ * @version $Name:  $ $Revision: 1.9 $ $Date: 2000/02/20 18:56:09 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -396,8 +396,8 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 										
 				// write in database
 				// returns a string that contain HTML Link
-				//String link=startWorkflow(cms,mailInfo);
-				//System.err.println("link->"+link);
+				String link=startWorkflow(cms,mailInfo);
+				System.err.println("link->"+link);
 				writeInDatabase(mailInfo);
 				
 				// send mail
