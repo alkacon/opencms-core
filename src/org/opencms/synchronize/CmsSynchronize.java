@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/31 13:19:37 $
- * Version: $Revision: 1.3 $
- * Date   : $Date: 2003/07/31 13:19:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/31 16:09:10 $
+ * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/31 16:09:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.4 $ $Date: 2003/07/31 16:09:10 $
  */
 public class CmsSynchronize {
 
@@ -308,7 +308,8 @@ public class CmsSynchronize {
                     break;
                 }
             }
-            m_cms.unlockResource(translate(folder), false);
+            // lock the resource
+            //m_cms.unlockResource(translate(folder), false);
             // we have to read the new resource again, to get the correct
             // timestamp.
             newFolder = m_cms.readFolder(translate(folder));
@@ -446,7 +447,7 @@ public class CmsSynchronize {
             }
             // unlock it
 
-            m_cms.unlockResource(m_cms.readAbsolutePath(newFile), false);
+            //m_cms.unlockResource(m_cms.readAbsolutePath(newFile), false);
             // we have to read the new resource again, to get the correct
             // timestamp.
             CmsResource newRes = m_cms.readFileHeader(m_cms.readAbsolutePath(newFile));
@@ -578,7 +579,7 @@ public class CmsSynchronize {
                 }
             }
             // everything is done now, so unlock the resource
-            m_cms.unlockResource(resourcename, false);
+            //m_cms.unlockResource(resourcename, false);
             //read the resource again, nescessary to get the actual timestamps
             res = m_cms.readFileHeader(resourcename);
             //add resource to synchronisation list
