@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorHandler.java,v $
- * Date   : $Date: 2003/12/05 16:15:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/12/12 12:11:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,12 @@ import com.opencms.flex.jsp.CmsJspActionElement;
 /**
  * Provides a method for selecting an individual file editor.<p>
  * 
- * You can define the class of your own editor handler in the OpenCms registry.xml
- * changing the &lt;class&gt; subnode of the system node &lt;dialoghandler&gt; to another value. 
- * The class you enter must implement this interface to obtain the URI of the displayed dialog.<p>  
+ * You can define the class of your own editor handler in the OpenCms registry.xml by
+ * changing the &lt;class&gt; subnode of the system node &lt;editorhandler&gt; to another value. 
+ * The class you enter must implement this interface to obtain the URI of the displayed editor.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.14
  */
