@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/21 14:04:05 $
- * Version: $Revision: 1.298 $
+ * Date   : $Date: 2003/12/12 10:26:20 $
+ * Version: $Revision: 1.299 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.298 $ $Date: 2003/11/21 14:04:05 $
+ * @version $Revision: 1.299 $ $Date: 2003/12/12 10:26:20 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2921,7 +2921,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         CmsUUID structureId;
         while (getInherited && !(structureId = res.getParentStructureId()).isNullUUID()) {
 
-            res = m_vfsDriver.readFolder(res.getProjectLastModified(), structureId);
+            res = m_vfsDriver.readFolder(context.currentProject().getId(), structureId);
             acEntries.addAll(m_userDriver.readAccessControlEntries(context.currentProject(), res.getResourceId(), getInherited));
         }
 
