@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $
- * Date   : $Date: 2000/02/20 16:07:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/20 16:44:29 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.5 $ $Date: 2000/02/20 16:07:41 $
+ * @version $Name:  $ $Revision: 1.6 $ $Date: 2000/02/20 16:44:29 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -395,7 +395,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				mailTable.put(C_HASH_CONTENT,content);
 										
 				// write in database
-				//writeInDatabase(mailInfo);
+				writeInDatabase(mailInfo);
 				
 				// send mail
 				//CmsXmlMailThread mail=new CmsXmlMailThread(mailTable);
