@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/16 09:10:01 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2001/10/18 07:05:35 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.42 $ $Date: 2001/10/16 09:10:01 $ *
+ * @version $Revision: 1.43 $ $Date: 2001/10/18 07:05:35 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1797,36 +1797,36 @@ public Vector publishProject(CmsUser currentUser, int projectId, CmsProject onli
         // for deleted folder
         res1 = (ResultSet) statement.getObject(6);
         while (res1.next()) {
-            String exportKey = checkExport(res1.getString("RESOURCE_NAME"));
+            String exportKey = checkExport(getShortResourceName(res1.getString("RESOURCE_NAME")));
             if (exportKey != null) {
-                discAccess.removeResource(res1.getString("RESOURCE_NAME"), exportKey);
+                discAccess.removeResource(getShortResourceName(res1.getString("RESOURCE_NAME")), exportKey);
             }
         }
         // for changed/new folder
         res2 = (ResultSet) statement.getObject(7);
         while (res2.next()) {
             changedResources.add(res2.getString("RESOURCE_NAME"));
-            String exportKey = checkExport(res2.getString("RESOURCE_NAME"));
+            String exportKey = checkExport(getShortResourceName(res2.getString("RESOURCE_NAME")));
             if (exportKey != null) {
-                discAccess.createFolder(res2.getString("RESOURCE_NAME"), exportKey);
+                discAccess.createFolder(getShortResourceName(res2.getString("RESOURCE_NAME")), exportKey);
             }
         }
         // for deleted files
         res3 = (ResultSet) statement.getObject(8);
         while (res3.next()) {
             changedResources.add(res3.getString("RESOURCE_NAME"));
-            String exportKey = checkExport(res3.getString("RESOURCE_NAME"));
+            String exportKey = checkExport(getShortResourceName(res3.getString("RESOURCE_NAME")));
             if (exportKey != null) {
-                discAccess.removeResource(res3.getString("RESOURCE_NAME"), exportKey);
+                discAccess.removeResource(getShortResourceName(res3.getString("RESOURCE_NAME")), exportKey);
             }
         }
         // for changed/new files
         res4 = (ResultSet) statement.getObject(9);
         while (res4.next()) {
             changedResources.add(res4.getString("RESOURCE_NAME"));
-            String exportKey = checkExport(res4.getString("RESOURCE_NAME"));
+            String exportKey = checkExport(getShortResourceName(res4.getString("RESOURCE_NAME")));
             if (exportKey != null) {
-                discAccess.writeFile(res4.getString("RESOURCE_NAME"), exportKey, readFileContent(projectId, res4.getInt("FILE_ID")));
+                discAccess.writeFile(getShortResourceName(res4.getString("RESOURCE_NAME")), exportKey, readFileContent(projectId, res4.getInt("FILE_ID")));
             }
         }
         res1.close();
@@ -3466,6 +3466,18 @@ public void writeUser(CmsUser user) throws CmsException {
 
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] shutdown complete.");
+        }
+    }
+
+    /**
+     * Returns the resourcename without the name for the siteroot
+     */
+    private String getShortResourceName(String resourceName){
+        try{
+            int rootIndex = resourceName.indexOf("/", resourceName.indexOf("/",1)+1);
+            return resourceName.substring(rootIndex);
+        } catch (Exception e){
+            return resourceName;
         }
     }
 }
