@@ -613,6 +613,7 @@
             <projectdescription>Beschreibung</projectdescription>
             <projectname>Projektname</projectname>
             <projecttype>Projekt nach dem Veröffentlichen löschen</projecttype>
+            <projectstaticexport>Statischer Export nach dem Veröffentlichen</projectstaticexport>
             <publishedat>Veröffentlicht am</publishedat>
             <publishedby>Veröffentlicht von</publishedby>
             <readrights>Leseberechtigung für andere</readrights>
