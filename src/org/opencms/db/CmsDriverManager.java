@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/21 14:55:14 $
- * Version: $Revision: 1.278 $
+ * Date   : $Date: 2003/10/21 16:35:21 $
+ * Version: $Revision: 1.279 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.278 $ $Date: 2003/10/21 14:55:14 $
+ * @version $Revision: 1.279 $ $Date: 2003/10/21 16:35:21 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -436,7 +436,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // register the driver manager for clearcache events
         org.opencms.main.OpenCms.addCmsEventListener(driverManager, new int[] {
-            I_CmsEventListener.EVENT_CLEAR_CACHES
+            I_CmsEventListener.EVENT_CLEAR_CACHES,
+            I_CmsEventListener.EVENT_PUBLISH_PROJECT
         });
         
         // return the configured driver manager
@@ -1086,7 +1087,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             org.opencms.main.OpenCms.getLog(this).debug("handling event: " + event.getType());
         }
         
-        switch (event.getType()) {                
+        switch (event.getType()) {      
+            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:          
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 this.clearcache();
                 break;
