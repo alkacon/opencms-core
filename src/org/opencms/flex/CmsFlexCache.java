@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/06/18 17:33:46 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,10 @@ import org.opencms.main.OpenCms;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
@@ -86,7 +89,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -250,7 +253,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         
         if (m_enabled) {
             CmsFlexKeyMap hashMap = new CmsFlexKeyMap(maxKeys);
-            this.m_keyCache = java.util.Collections.synchronizedMap(hashMap);     
+            this.m_keyCache = Collections.synchronizedMap(hashMap);     
 
             if (OpenCms.getMemoryMonitor().enabled()) {
                 OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_resourceMap", hashMap);    
@@ -310,7 +313,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 if (DEBUG > 0) {
                     System.err.println("FlexCache: Recieved event, clearing part of cache!");
                 }
-                java.util.Map m = event.getData();
+                Map m = event.getData();
                 if (m == null) {
                     break;
                 }
@@ -390,7 +393,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @param cms the CmsObject used for user authorization
      * @return a Set of cached resource names (which are of type String)
      */
-    public java.util.Set getCachedResources(CmsObject cms) {
+    public Set getCachedResources(CmsObject cms) {
         if (! isEnabled() || ! isAdmin(cms)) {
             return null;
         }
@@ -411,7 +414,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @param cms the CmsObject used for user authorization
      * @return a Set of cached variations (which are of type String)
      */
-    public java.util.Set getCachedVariations(String key, CmsObject cms) {
+    public Set getCachedVariations(String key, CmsObject cms) {
         if (! isEnabled() || ! isAdmin(cms)) {
             return null;
         }
@@ -701,8 +704,8 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      *         the entries and the keys will be cleared
      */    
     private synchronized void clearAccordingToSuffix(String suffix, boolean entriesOnly) {
-        java.util.Set keys = new java.util.HashSet(m_keyCache.keySet());
-        java.util.Iterator i = keys.iterator();
+        Set keys = new HashSet(m_keyCache.keySet());
+        Iterator i = keys.iterator();
         while (i.hasNext()) {
             String s = (String)i.next();
             if (s.endsWith(suffix)) {
@@ -710,17 +713,17 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 if (entriesOnly) {
                     // Clear only entry
                     m_size -= v.m_map.size();
-                    java.util.Iterator allEntries = v.m_map.values().iterator();
+                    Iterator allEntries = v.m_map.values().iterator();
                     while (allEntries.hasNext()) {
                         I_CmsLruCacheObject nextObject = (I_CmsLruCacheObject)allEntries.next();
                         allEntries.remove();
                         this.m_variationCache.remove(nextObject);
                     }
-                    v.m_map = java.util.Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_VARIATIONS));
+                    v.m_map = Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_VARIATIONS));
                 } else {
                     // Clear key and entry
                     m_size -= v.m_map.size();
-                    java.util.Iterator allEntries = v.m_map.values().iterator();
+                    Iterator allEntries = v.m_map.values().iterator();
                     while (allEntries.hasNext()) {
                         I_CmsLruCacheObject nextObject = (I_CmsLruCacheObject)allEntries.next();
                         allEntries.remove();
@@ -758,16 +761,16 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (DEBUG > 0) {
             System.err.println("FlexCache: Clearing all entries");
         }
-        java.util.Iterator i = m_keyCache.keySet().iterator();
+        Iterator i = m_keyCache.keySet().iterator();
         while (i.hasNext()) {
             CmsFlexCacheVariation v = (CmsFlexCacheVariation)m_keyCache.get(i.next());
-            java.util.Iterator allEntries = v.m_map.values().iterator();
+            Iterator allEntries = v.m_map.values().iterator();
             while (allEntries.hasNext()) {
                 I_CmsLruCacheObject nextObject = (I_CmsLruCacheObject)allEntries.next();
                 allEntries.remove();
                 this.m_variationCache.remove(nextObject);
             }
-            v.m_map = java.util.Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_VARIATIONS));
+            v.m_map = Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_VARIATIONS));
         }
         m_size = 0;
     }
@@ -912,7 +915,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     private void purgeDirectory(File d) {
         if (d.canRead() && d.isDirectory()) {
-            java.io.File[] files = d.listFiles();
+            File[] files = d.listFiles();
             if (DEBUG > 0) {
                 System.err.println("FlexCache.purgeDirectory() Deleting directory = " + d.getAbsolutePath());
                 System.err.println("FlexCache.purgeDirectory() Files in directory = " + files.length);
@@ -958,10 +961,10 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
 
         File d;
-        d = new java.io.File(org.opencms.loader.CmsJspLoader.getJspRepository() + "online" + java.io.File.separator);
+        d = new File(org.opencms.loader.CmsJspLoader.getJspRepository() + "online" + File.separator);
         purgeDirectory(d);
 
-        d = new java.io.File(org.opencms.loader.CmsJspLoader.getJspRepository() + "offline" + java.io.File.separator);
+        d = new File(org.opencms.loader.CmsJspLoader.getJspRepository() + "offline" + File.separator);
         purgeDirectory(d);
          
         clear();
@@ -984,7 +987,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
         if (o != null) {
             // We already have a variation map for this resource
-            java.util.Map m = ((CmsFlexCacheVariation)o).m_map;
+            Map m = ((CmsFlexCacheVariation)o).m_map;
             boolean wasAdded = true;
             if (! m.containsKey(key.m_variation)) {
                 wasAdded = this.m_variationCache.add(theCacheEntry);
