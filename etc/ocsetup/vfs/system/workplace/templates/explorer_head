@@ -31,7 +31,7 @@
 	<tr valign=center>
 		]]><PROCESS>PREVIOUS</PROCESS><![CDATA[
 		]]><PROCESS>PARENT</PROCESS><![CDATA[
-		]]><PROCESS>NEW_DISABLED</PROCESS><![CDATA[
+		]]><PROCESS>NEW</PROCESS><![CDATA[
 		<td class=menu width=30px nowrap align=right>&nbsp;</td>
 		<td class=menubold nowrap align=right valign=middle><IMG border=0  src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" width=16 height=16></td>
 		<td class=menubold nowrap align=right valign=middle><p class=einzug>]]><LABEL value="input.adress" /><![CDATA[:</td>
@@ -92,6 +92,11 @@
 <NEW_DISABLED>
 <![CDATA[<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="picsUrl">bt_new_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.new" />"<![CDATA[" name="bt_new" border=0 width=32 height=32></a></td>]]>
 </NEW_DISABLED>	
+
+<NEW_ENABLED>
+<![CDATA[<td class=menu nowrap width=32px>]]><BUTTON href="javascript:updateFrame('body.explorer_content.explorer_files','explorer_files_new.html')" name="bt_new" action="" alt="new"/><![CDATA[</td>]]>
+</NEW_ENABLED>	
+
 
 <STARTUP_FOLDER>
 <![CDATA[

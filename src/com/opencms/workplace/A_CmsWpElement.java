@@ -17,7 +17,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/02/10 10:24:53 $
+ * @version $Revision: 1.14 $ $Date: 2000/02/11 18:44:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -57,6 +57,10 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      */
     protected static CmsXmlWpErrorDefFile m_errordef = null;
 
+     /**
+     * Reference to the radio button defintion file
+     */
+    protected static CmsXmlWpRadioDefFile m_radiodef = null;
     
      /**
      * Reference to the box defintion file
@@ -223,6 +227,23 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
             m_boxdef = new CmsXmlWpBoxDefFile(cms, m_workplaceElementPath + C_BOXTEMPLATE);  
         }
         return m_boxdef;
+    }
+  
+      /**
+     * Reads the radiobutton definition file.
+     * @param cms The actual cms object
+     * @return Reference to the radiobutton defintion file.
+     * @exception CmsException
+     */
+     public CmsXmlWpRadioDefFile getRadioDefinitions(A_CmsObject cms) throws CmsException {
+        if(m_radiodef == null) {
+            if(m_workplaceElementPath == null) {
+                CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+                m_workplaceElementPath = configFile.getWorkplaceElementPath();
+            }
+            m_radiodef = new CmsXmlWpRadioDefFile(cms, m_workplaceElementPath + C_RADIOTEMPLATE);  
+        }
+        return m_radiodef;
     }
      
      

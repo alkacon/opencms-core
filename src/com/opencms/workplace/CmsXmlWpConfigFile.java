@@ -13,7 +13,7 @@ import java.util.*;
  * Content definition for "/workplace/workplace.ini".
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/02/10 09:45:11 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/11 18:44:19 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -210,7 +210,20 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
             values.addElement(link);
         }
     }
+     
+    
+    public void getNewResource(Vector names, Vector values, String tag) throws CmsException {
+        // Check if the requested tag is in the config file
+        if(!hasData(tag)) {
+            throwException("Tag \""+tag+"\" missing in workplace configuration file.", CmsException.C_XML_TAG_MISSING);
+        }   
+        Element viewsElement = getData(tag);
         
+        // Now get a NodeList of all available views
+        NodeList allViews = viewsElement.getElementsByTagName("RESOURCE");        
+    }
+    
+    
     /**
      * Overridden internal method for getting datablocks.
      * This method first checkes, if the requested value exists.

@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2000/02/10 14:09:24 $
+ * @version $Revision: 1.31 $ $Date: 2000/02/11 18:44:19 $
  */
 public interface I_CmsWpConstants {
 
@@ -90,6 +90,11 @@ public interface I_CmsWpConstants {
      *  Name of the template containing messagebox definitions
      */
     public static final String C_BOXTEMPLATE = "messageboxTemplate";    
+
+     /**
+     *  Name of the template containing radiobutton definitions
+     */
+    public static final String C_RADIOTEMPLATE = "radioTemplate";    
     
     // tag defnitions
 	
@@ -196,6 +201,10 @@ public interface I_CmsWpConstants {
     /** Name of the value */
     public static final String C_LABEL_VALUE = "value";
     
+    // Parameters for radiobuttons
+    
+    /** Name of the icon */
+    public static final String C_RADIO_NAME = "name";
 
     // Parameters for input fields
     

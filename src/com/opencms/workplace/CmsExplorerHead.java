@@ -14,7 +14,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/02/10 14:59:00 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/11 18:44:19 $
  */
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                      I_CmsConstants {
@@ -35,6 +35,16 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
 
      /** Definition of the Datablock PREVIOUS_DISABLED */   
      private final static String C_PREVIOUS_DISABLED="PREVIOUS_DISABLED"; 
+     
+     /** Definition of the Datablock NEW */   
+     private final static String C_NEW="NEW";
+     
+     /** Definition of the Datablock NEW_ENABLED */   
+     private final static String C_NEW_ENABLED="NEW_ENABLED";    
+
+     /** Definition of the Datablock NEW_DISABLED */   
+     private final static String C_NEW_DISABLED="NEW_DISABLED"; 
+     
      
      /** Definition of the Datablock FILELIST */   
      private final static String C_FILELIST="FILELIST";
@@ -205,6 +215,13 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
                 xmlTemplateDocument.setXmlData(C_PREVIOUS,xmlTemplateDocument.getProcessedXmlDataValue(C_PREVIOUS_ENABLED,this));
             }
             
+            // check if the new resource button must be enabeld.
+            // this is only done if the project is not the online project.
+            if (cms.getRequestContext().currentProject().equals(cms.onlineProject())) {
+                xmlTemplateDocument.setXmlData(C_NEW,xmlTemplateDocument.getProcessedXmlDataValue(C_NEW_DISABLED,this));                
+            } else {
+                xmlTemplateDocument.setXmlData(C_NEW,xmlTemplateDocument.getProcessedXmlDataValue(C_NEW_ENABLED,this));       
+            }
         }
         // process the selected template
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);

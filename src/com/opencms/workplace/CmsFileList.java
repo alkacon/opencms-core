@@ -16,7 +16,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/02/11 14:04:30 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/11 18:44:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -241,6 +241,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             StringBuffer output=new StringBuffer();  
             String foldername;
             String currentFolder;
+            String title = null;
             int contextNumber=0;
             
             String servlets=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
@@ -258,7 +259,6 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
             preferences=(Hashtable)session.getValue(C_ADDITIONAL_INFO_PREFERENCES);            
                     
-            // hack do this for testing the explorer
             if (preferences == null ) {
                 preferences=getDefaultPreferences();
             }
@@ -304,7 +304,10 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     template.setXmlData(C_NAME_VALUE,folder.getName());
                     template.setXmlData(C_NAME_FILEFOLDER,template.getProcessedXmlDataValue(getName(cms,folder),this));     
                     // set the folder title
-                    String title=cms.readMetainformation(folder.getAbsolutePath(),C_METAINFO_TITLE);
+                    try {
+                        title=cms.readMetainformation(folder.getAbsolutePath(),C_METAINFO_TITLE);
+                    } catch (CmsException e) {
+                    }
                     if (title==null) {
                         title="";
                     }
@@ -339,13 +342,10 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     output.append(template.getProcessedXmlDataValue(C_LIST_ENTRY,callingObject));                
                 } else {        
                     file=(CmsFile)res; 
-                    System.err.println("****"+res.getAbsolutePath());
                     // Set output style class according to the project and state of the file.
-                    System.err.println("*1");
                     template.setXmlData(C_CLASS_VALUE,getStyle(cms,file));                   
                     // set the icon
-                    System.err.println("*2");
-                  
+                            
                     template.setXmlData(C_CONTEXT_LINK,res.getAbsolutePath());
                     template.setXmlData(C_CONTEXT_MENU,getContextMenue(cms,res,template));
                     template.setXmlData(C_CONTEXT_NUMBER,new Integer(contextNumber++).toString());
@@ -354,72 +354,55 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     String icon=getIcon(cms,type,config);
                     template.setXmlData(C_ICON_VALUE,config.getPictureUrl()+icon);
                     // set the link, but only if the resource is not deleted
-                    System.err.println("*3");
                     if (res.getState()!=C_STATE_DELETED) {
                         template.setXmlData(C_LINK_VALUE,servlets+file.getAbsolutePath());  
                     } else {
                          template.setXmlData(C_LINK_VALUE,"#");
                     }
                     // set the lock icon if nescessary
-                    System.err.println("*4");
                     template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,file,template,lang),callingObject));                      
                     // set the filename
                     //template.setXmlData(C_NAME_VALUE,template.getProcessedXmlDataValue("COLUMN_NAME_VALUE_FILE",this));   
-                       System.err.println("*5");
                     template.setXmlData(C_NAME_VALUE,file.getName());     
                     template.setXmlData(C_NAME_FILEFOLDER,template.getProcessedXmlDataValue(getName(cms,file),this));     
                    
                     // set the file title
-                       System.err.println("*6");
-                    String title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
+                    try {
+                        title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
+                    } catch (CmsException e) {
+                    }
                     if (title==null) {
                         title="";
                     }
                     template.setXmlData(C_TITLE_VALUE,title);   
                     // set the file type 
-                       System.err.println("*7");
                     type=cms.getResourceType(file.getType());
                     template.setXmlData(C_TYPE_VALUE,type.getResourceName());   
                     // get the file date
-                       System.err.println("*8");
                     long time=file.getDateLastModified();
                     template.setXmlData(C_CHANGED_VALUE,getNiceDate(time));   
                     // get the file size
-                       System.err.println("*9");
                     template.setXmlData(C_SIZE_VALUE,new Integer(file.getLength()).toString());   
                     // get the file state
-                       System.err.println("*10");
                     template.setXmlData(C_STATE_VALUE,getState(cms,file,lang));  
                     // get the owner of the file
-                       System.err.println("*11");
                     A_CmsUser owner = cms.readOwner(file);
                     template.setXmlData(C_OWNER_VALUE,owner.getName());
                     // get the group of the file
-                       System.err.println("*12");
                     A_CmsGroup group = cms.readGroup(file);
                     template.setXmlData(C_GROUP_VALUE,group.getName());
                     // get the access flags
-                       System.err.println("*13");
                     int access=file.getAccessFlags();
                     template.setXmlData(C_ACCESS_VALUE,getAccessFlags(access));
                     // get the locked by
-                       System.err.println("*14");
                     int lockedby = file.isLockedBy();
-                       System.err.println("*14a");
                     if (lockedby == C_UNKNOWN_ID) {
-                           System.err.println("*14b");
                         template.setXmlData(C_LOCKED_VALUE,"");
-                           System.err.println("*14bb");
                     } else {
-                           System.err.println("*14c");
                         template.setXmlData(C_LOCKED_VALUE,cms.lockedBy(file).getName());
-                           System.err.println("*14cc");
-                        
                     }
-                    
                     // as a last step, check which colums must be displayed and add the file
                     // to the output.
-                       System.err.println("*15");
                     template=checkDisplayedColumns(filelist,template,C_SUFFIX_VALUE);
                     output.append(template.getProcessedXmlDataValue(C_LIST_ENTRY,callingObject));                
                 }
@@ -743,7 +726,6 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      
      /**
      * Sets the default preferences for the current user if those values are not available.
-     * THIS METHOD IS ONLY ADDED FOR TESTING PURPOSES!
      * @return Hashtable with default preferences.
      */
     private Hashtable getDefaultPreferences() {

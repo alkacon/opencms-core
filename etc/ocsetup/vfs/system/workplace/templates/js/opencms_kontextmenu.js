@@ -85,7 +85,6 @@ function showkontext(welche, parameter, id)
 	// set the kontextparameter
 	kontextparam = parameter;
 	
-	if(ns) alert("Hi Netscape");
 	
 	if (!shown || id!=altid)
 	{
