@@ -34,6 +34,17 @@
         <param-value>ROOT</param-value>
     </context-param>    
     
+	<!-- 
+	    Uncomment this parameter in case you change the web application context using an application server 
+	    specific deployment descriptor. E.g. in Jboss, you could use the jboss-web.xml file to deploy opencms under the
+	    context 'myopencms' but still keep the files in the folder 'opencms.war'
+
+    <context-param>
+        <param-name>WebApplicationContext</param-name>
+        <param-value>myopencms</param-value>
+    </context-param>
+    -->
+
     <listener>
         <listener-class>org.opencms.main.OpenCmsListener</listener-class>
     </listener>    

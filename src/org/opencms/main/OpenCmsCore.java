@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/10/22 14:37:40 $
- * Version: $Revision: 1.145 $
+ * Date   : $Date: 2004/10/24 08:48:46 $
+ * Version: $Revision: 1.146 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.145 $
+ * @version $Revision: 1.146 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1076,8 +1076,12 @@ public final class OpenCmsCore {
             defaultWebApplication = "ROOT";
         }
         
+        // read the the webapp context name from the servlet context parameters
+        // this is needed in case an application server specific deployment descriptor is used to changed the webapp context
+        String webApplicationContext = context.getInitParameter("WebApplicationContext");
+        
         // now initialize the system info with the path and mapping information
-        getSystemInfo().init(base, servletMapping, defaultWebApplication);
+        getSystemInfo().init(base, servletMapping, webApplicationContext, defaultWebApplication);
 
         // Collect the configurations 
         ExtendedProperties configuration = null;

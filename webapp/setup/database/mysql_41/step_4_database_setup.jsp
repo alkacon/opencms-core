@@ -207,15 +207,16 @@ Uncheck this option if an already existing database should be used.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "6") %>
-<b>MySQL configuration notes:</b><br>&nbsp;<br>
+<b>MySQL 4.1 configuration notes:</b><br>&nbsp;<br>
 MySQL limits the size of packets which can be stored in the database. 
 In order to increase the maximum file size for OpenCms, 
 you have to adjust this setting for MySQL.<br>&nbsp;<br>
 Locate the file <code>mysql.ini</code> (Windows systems) respectively <code>mysql.conf</code> (Unix systems) and add the line<br>
-<code>set-variable=<br>max_allowed_packet=8M</code><br>
-to increase the size e.g. to 8 MB.<br><br>
-MySQL <b>3.2.x</b> versions support packets up to 16 MB,
-MySQL versions <b>4.0.x</b> are only limited by the amount of available memory on the server.
+<code>set-variable=<br>max_allowed_packet=16M</code><br>
+to increase the size e.g. to 16 MB.<br><br>
+This driver uses the <code>MYISAM</code> engine for all tables since 
+all transactions are autocommit anyway.<br><br>
+All tables are created using the <code>utf8</code> charset.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <% } else	{ %>

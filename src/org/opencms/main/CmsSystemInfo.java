@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/10/22 14:37:40 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/10/24 08:48:46 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -425,12 +425,13 @@ public class CmsSystemInfo {
     
     /** 
      * Sets the OpenCms web application "WEB-INF" directory path (in the "real" file system).<p>
-     *
+     * 
      * @param webInfRfsPath the OpenCms web application "WEB-INF" path in the "real" file system) to set
      * @param servletMapping the OpenCms servlet mapping  (e.g. "/opencms/*")
+     * @param webApplicationContext the name/path of the OpenCms web application context (optional, will be calculated form the path if null)
      * @param defaultWebApplication the default web application name (usually "ROOT")
      */
-    protected void init(String webInfRfsPath, String servletMapping, String defaultWebApplication) {
+    protected void init(String webInfRfsPath, String servletMapping, String webApplicationContext, String defaultWebApplication) {
         // init base path
         webInfRfsPath = webInfRfsPath.replace('\\', '/');
         if (!webInfRfsPath.endsWith("/")) {
@@ -461,11 +462,21 @@ public class CmsSystemInfo {
         File path = new File(m_webInfRfsPath);
         m_webApplicationName = path.getParentFile().getName();
         
+        String contextPath;
+        if (webApplicationContext == null) {
+            // default: use web application context calculated form RFS path (fine with Tomcat)
+            contextPath = m_webApplicationName;
+        } else {
+            // optional: web application context was set in web.xml, required for certain 
+            // runtime environments (e.g. Jboss) that do not use the same RFS and context path
+            contextPath = webApplicationContext;
+        }
+        
         // set the context path
-        if (m_webApplicationName.equals(getDefaultWebApplicationName())) {
+        if (contextPath.equals(getDefaultWebApplicationName())) {
             m_contextPath = "";
         } else {
-            m_contextPath = "/" + m_webApplicationName;
+            m_contextPath = "/" + contextPath;
         }
         
         // this fixes an issue with context names in Jboss
