@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/mysql/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/05/23 16:26:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/03 17:45:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * MySQL implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/05/23 16:26:46 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/03 17:45:46 $
  * @since 5.1.2
  */
 public class CmsUserDriver extends com.opencms.db.generic.CmsUserDriver {
@@ -110,9 +110,9 @@ public class CmsUserDriver extends com.opencms.db.generic.CmsUserDriver {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -164,7 +164,7 @@ public class CmsUserDriver extends com.opencms.db.generic.CmsUserDriver {
             // database.
             newGroup = readGroup(name);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -209,9 +209,9 @@ public class CmsUserDriver extends com.opencms.db.generic.CmsUserDriver {
             stmt.setString(13, user.getId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }

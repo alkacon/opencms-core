@@ -85,7 +85,7 @@ create table CMS_BACKUP_PROJECTRESOURCES (VERSION_ID int NOT NULL,
                                           PRIMARY KEY (VERSION_ID, PROJECT_ID, RESOURCE_NAME));
 
 
-create table CMS_PROPERTYDEF            (PROPERTYDEF_ID int not null, 
+create table CMS_OFFLINE_PROPERTYDEF     (PROPERTYDEF_ID int not null, 
                                          PROPERTYDEF_NAME VARCHAR(64) not null,
                                          RESOURCE_TYPE int not null,
                                          primary key(PROPERTYDEF_ID), 
@@ -103,7 +103,7 @@ create table CMS_BACKUP_PROPERTYDEF      (PROPERTYDEF_ID int not null,
                                          primary key(PROPERTYDEF_ID), 
                                          unique(PROPERTYDEF_NAME, RESOURCE_TYPE));
 
-create table CMS_PROPERTIES             (PROPERTY_ID int not null,
+create table CMS_OFFLINE_PROPERTIES     (PROPERTY_ID int not null,
                                          PROPERTYDEF_ID int not null,
                                          RESOURCE_ID VARCHAR(36) NOT NULL,
                                          PROPERTY_VALUE TEXT not null,
@@ -125,7 +125,7 @@ create table CMS_BACKUP_PROPERTIES      (PROPERTY_ID int not null,
                                          primary key(PROPERTY_ID), 
                                          unique(PROPERTYDEF_ID, RESOURCE_ID));
                                          
-create table CMS_RESOURCES              (RESOURCE_ID VARCHAR(36) NOT NULL,
+create table CMS_OFFLINE_RESOURCES      (RESOURCE_ID VARCHAR(36) NOT NULL,
                                          PARENT_ID VARCHAR(36) NOT NULL,
                                          RESOURCE_NAME VARCHAR(248) not null,
                                          RESOURCE_TYPE int not null,
@@ -225,7 +225,7 @@ create table CMS_BACKUP_RESOURCES       (RESOURCE_ID VARCHAR(36) NOT NULL,
                                          index resources_resourceid_project (RESOURCE_ID, PROJECT_ID),
                                          unique(RESOURCE_NAME,VERSION_ID));
                                          
-create table CMS_FILES                  (FILE_ID VARCHAR(36) NOT NULL,
+create table CMS_OFFLINE_FILES          (FILE_ID VARCHAR(36) NOT NULL,
                                          FILE_CONTENT mediumblob not null,
                                          primary key(FILE_ID));
 
@@ -255,7 +255,7 @@ create table CMS_EXPORT_DEPENDENCIES    (LINK_ID int not null,
                                          key (LINK_ID),
                                          unique(LINK_ID, RESOURCENAME));
 
-create table CMS_LINKS                  (PAGE_ID VARCHAR(36) NOT NULL,
+create table CMS_OFFLINE_LINKS          (PAGE_ID VARCHAR(36) NOT NULL,
                                          LINK_DEST varchar(255) not null,
                                          key (PAGE_ID),
                                          unique (PAGE_ID, LINK_DEST));
@@ -751,7 +751,7 @@ create table CMS_WEBUSERS
    USER_EXTRAINFO_18        VARCHAR(255),
    USER_EXTRAINFO_19        TEXT,
    USER_EXTRAINFO_20        TEXT,
-   USER_PICTURE		    MEDIUMBLOB,
+   USER_PICTURE		    	MEDIUMBLOB,
    USER_PICTURE_NAME	    VARCHAR(255),         
    USER_CREATE_DATE         DATETIME,
    USER_LASTCHANGE_BY       VARCHAR(255),
@@ -767,4 +767,44 @@ create table CMS_ACCESSCONTROL
 	ACCESS_DENIED			int,
 	ACCESS_FLAGS			int,
 	primary key				(RESOURCE_ID, PRINCIPAL_ID)
+);
+
+CREATE TABLE CMS_OFFLINE_STRUCTURE (
+	ID						VARCHAR(36) NOT NULL,
+	NAME					VARCHAR(128) NOT NULL,
+	LINK_TYPE				SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+	PARENT_ID				VARCHAR(36) NOT NULL,
+	RESOURCE_ID				VARCHAR(36) NOT NULL,
+	PRIMARY KEY				(ID),
+	INDEX IDX1 				(ID, NAME),
+	INDEX IDX2 				(NAME, RESOURCE_ID),
+	INDEX IDX3 				(ID, PARENT_ID),
+	INDEX IDX4 				(ID, RESOURCE_ID)
+);
+
+CREATE TABLE CMS_ONLINE_STRUCTURE (
+	ID						VARCHAR(36) NOT NULL,
+	NAME					VARCHAR(128) NOT NULL,
+	LINK_TYPE				SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+	PARENT_ID				VARCHAR(36) NOT NULL,
+	RESOURCE_ID				VARCHAR(36) NOT NULL,
+	PRIMARY KEY				(ID),
+	INDEX IDX1 				(ID, NAME),
+	INDEX IDX2 				(NAME, RESOURCE_ID),
+	INDEX IDX3 				(ID, PARENT_ID),
+	INDEX IDX4 				(ID, RESOURCE_ID)
+);
+
+CREATE TABLE CMS_BACKUP_STRUCTURE (
+	ID						VARCHAR(36) NOT NULL,
+	NAME					VARCHAR(128) NOT NULL,
+	LINK_TYPE				SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+	PARENT_ID				VARCHAR(36) NOT NULL,
+	RESOURCE_ID				VARCHAR(36) NOT NULL,
+	VERSION_ID 				SMALLINT NOT NULL,
+	PRIMARY KEY				(ID),
+	INDEX IDX1 				(ID, NAME),
+	INDEX IDX2 				(NAME, RESOURCE_ID),
+	INDEX IDX3 				(ID, PARENT_ID),
+	INDEX IDX4 				(ID, RESOURCE_ID)
 );

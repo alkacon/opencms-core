@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/03 16:05:59 $
-* Version: $Revision: 1.273 $
+* Date   : $Date: 2003/06/03 17:45:46 $
+* Version: $Revision: 1.274 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.273 $
+ * @version $Revision: 1.274 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -2745,25 +2745,6 @@ public void createLinkEntrys(CmsUUID pageId, Vector linkTargets)throws CmsExcept
  */
 public Vector readLinkEntrys(CmsUUID pageId)throws CmsException{
     return m_driverManager.readLinkEntrys(pageId);
-}
-
-/**
- * deletes all entrys in the online link table that belong to the pageId
- *
- * @param pageId The resourceId (online) of the page whose links should be deleted
- */
-public void deleteOnlineLinkEntrys(CmsUUID pageId)throws CmsException{
-    m_driverManager.deleteOnlineLinkEntrys(pageId);
-}
-
-/**
- * creates a link entry for each of the link targets in the online linktable.
- *
- * @param pageId The resourceId (online) of the page whose liks should be traced.
- * @param linkTarget A vector of strings (the linkdestinations).
- */
-public void createOnlineLinkEntrys(CmsUUID pageId, Vector linkTargets)throws CmsException{
-    m_driverManager.createOnlineLinkEntrys(pageId, linkTargets);
 }
 
 /**

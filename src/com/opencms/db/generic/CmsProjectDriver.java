@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/06/02 16:03:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/06/03 17:45:46 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import source.org.apache.java.util.Configurations;
  * This is the generic project driver to execute operations requested by the Cms
  * using the underlying drivers. This code is still messy like a living space.
  *
- * @version $Revision: 1.7 $ $Date: 2003/06/02 16:03:20 $
+ * @version $Revision: 1.8 $ $Date: 2003/06/03 17:45:46 $
  * @since 5.1.2
  */
 public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
@@ -161,9 +161,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             m_sqlManager.setBytes(stmt, 3, value);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
@@ -207,7 +207,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_DELETE_LOST_ID");
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -229,8 +229,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_LM_WRITE_ENTRY");
+            // TODO all the link management methods should be carefully turned into project dependent code!
+            int dummyProjectId = Integer.MAX_VALUE;
+            conn = m_sqlManager.getConnection(dummyProjectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_WRITE_ENTRY");
             stmt.setString(1, pageId.toString());
             for (int i = 0; i < linkTargets.size(); i++) {
                 try {
@@ -240,7 +242,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 }
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "createLinkEntrys(CmsUUID, Vector)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "createLinkEntrys(CmsUUID, Vector)", CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -262,8 +264,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_LM_WRITE_ENTRY_ONLINE");
+            // TODO all the link management methods should be carefully turned into project dependent code!          
+            int dummyProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
+            conn = m_sqlManager.getConnection(dummyProjectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_WRITE_ENTRY");
             stmt.setString(1, pageId.toString());
             for (int i = 0; i < linkTargets.size(); i++) {
                 try {
@@ -273,7 +277,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 }
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "createOnlineLinkEntrys(CmsUUID, Vector)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "createOnlineLinkEntrys(CmsUUID, Vector)", CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -322,7 +326,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setInt(10, type);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -359,7 +363,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setString(2, resourceName);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -388,9 +392,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             m_sqlManager.setBytes(stmt, 3, value);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -414,7 +418,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setInt(1, projectId);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -454,7 +458,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setInt(1, deleteId);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "deleteExportLink(CmsExportLink)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "deleteExportLink(CmsExportLink)", CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -484,13 +488,14 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_LM_DELETE_ENTRYS");
-            // delete all project-resources.
+            // TODO all the link management methods should be carefully turned into project dependent code!       
+            int dummyProjectId = Integer.MAX_VALUE;            
+            conn = m_sqlManager.getConnection(dummyProjectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_DELETE_ENTRYS");
             stmt.setString(1, pageId.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "deleteLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "deleteLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -505,14 +510,15 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            // CHECK: use online or offline pool here? (was offline before (AZ, 19.05.2003)...)
-            conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_LM_DELETE_ENTRYS_ONLINE");
+            // TODO all the link management methods should be carefully turned into project dependent code!      
+            int dummyProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;  
+            conn = m_sqlManager.getConnection(dummyProjectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_DELETE_ENTRYS");
             // delete all project-resources.
             stmt.setString(1, pageId.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "deleteOnlineLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "deleteOnlineLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -544,7 +550,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setInt(1, project.getId());
             stmt.executeUpdate();
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -569,7 +575,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setInt(1, project.getId());
             stmt.executeQuery();
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -596,7 +602,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setString(2, resourceName);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -618,7 +624,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setInt(1, project.getId());
             stmt.executeQuery();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -661,7 +667,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setString(1, name);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -694,7 +700,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.executeUpdate();
 
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -850,7 +856,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setInt(3, taskId);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -882,7 +888,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 projects.addElement(new CmsProject(res, m_sqlManager));
             }
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -914,7 +920,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 projects.addElement(new CmsProject(res, m_sqlManager));
             }
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -946,7 +952,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 projects.addElement(new CmsProject(res, m_sqlManager));
             }
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -972,9 +978,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             }
             return retValue;
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "getAllExportLinks()", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "getAllExportLinks()", CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "getAllExportLinks()", CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, "getAllExportLinks()", CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1017,7 +1023,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_TYPE"))));
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, "getAllProjects(int)", CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, "getAllProjects(int)", CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1068,9 +1074,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             }
             return retValue;
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "getDependingExportlinks(Vector)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "getDependingExportlinks(Vector)", CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "getDependingExportLinks(Vector)", CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, "getDependingExportLinks(Vector)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1118,9 +1124,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             }
             return result;
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "getOnlineBrokenLinks()", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "getOnlineBrokenLinks()", CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "getOnlineBrokenLinks()", CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, "getOnlineBrokenLinks()", CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
@@ -1236,7 +1242,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         Connection conn = null;
                         try {
                             conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-                            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_UPDATE_ONLINE");
+                            stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE");
                             // update the onlineFolder with data from offlineFolder
                             stmt.setInt(1, currentFolder.getType());
                             stmt.setInt(2, currentFolder.getFlags());
@@ -1256,7 +1262,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                             stmt.executeUpdate();
                             newFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), currentFolder.getResourceName());
                         } catch (SQLException exc) {
-                            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+                            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
                         } finally {
                             m_sqlManager.closeAll(conn, stmt, null);
                         }
@@ -1318,7 +1324,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 PreparedStatement stmt = null;
                 try {
                     conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-                    stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_UPDATE_ONLINE");
+                    stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE");
                     // update the onlineFolder with data from offlineFolder
                     stmt.setInt(1, currentFolder.getType());
                     stmt.setInt(2, currentFolder.getFlags());
@@ -1337,7 +1343,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     stmt.setString(15, onlineFolder.getResourceId().toString());
                     stmt.executeUpdate();
                 } catch (SQLException e) {
-                    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+                    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
                 } finally {
                     m_sqlManager.closeAll(conn, stmt, null);
                 }
@@ -1455,7 +1461,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 PreparedStatement stmt = null;
                 try {
                     conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-                    stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_UPDATE_ONLINE");
+                    stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE");
                     // update the onlineFile with data from offlineFile
                     stmt.setInt(1, currentFile.getType());
                     stmt.setInt(2, currentFile.getFlags());
@@ -1476,7 +1482,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     stmt.close();
                     m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
                 } catch (SQLException e) {
-                    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+                    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
                 } finally {
                     m_sqlManager.closeAll(conn, stmt, null);
                 }
@@ -1542,7 +1548,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         PreparedStatement stmt = null;
                         try {
                             conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-                            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_UPDATE_ONLINE");
+                            stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE");
                             // update the onlineFile with data from offlineFile
                             stmt.setInt(1, currentFile.getType());
                             stmt.setInt(2, currentFile.getFlags());
@@ -1563,7 +1569,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                             m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
                             newFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), currentFile.getResourceName());
                         } catch (SQLException exc) {
-                            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+                            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
                         } finally {
                             m_sqlManager.closeAll(conn, stmt, null);
                         }
@@ -1643,7 +1649,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             }
             res.close();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -1687,9 +1693,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             }
             return link;
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readExportLink(String)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "readExportLink(String)", CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "readExportLink(String)", CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, "readExportLink(String)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1721,9 +1727,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             }
             return link;
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readExportLinkHeader(String)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "readExportLinkHeader(String)", CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "readExportLinkHeader(String)", CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, "readExportLinkHeader(String)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1742,8 +1748,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_LM_READ_ENTRYS");
+            // TODO all the link management methods should be carefully turned into project dependent code!    
+            int dummyProjectId = Integer.MAX_VALUE;              
+            conn = m_sqlManager.getConnection(dummyProjectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_READ_ENTRYS");
             stmt.setString(1, pageId.toString());
             res = stmt.executeQuery();
             while (res.next()) {
@@ -1751,9 +1759,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             }
             return result;
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "readLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "readLinkEntrys(CmsUUID)", CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, "readLinkEntrys(CmsUUID)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1785,9 +1793,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 }
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readOnlineId(String)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "readOnlineId(String)", CmsException.C_SQL_ERROR, e, false);
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, "readOnlineId(String)", CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, "readOnlineId(String)", CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1806,8 +1814,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_LM_READ_ENTRYS_ONLINE");
+            // TODO all the link management methods should be carefully turned into project dependent code!        
+            int dummyProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;               
+            conn = m_sqlManager.getConnection(dummyProjectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_READ_ENTRYS");
             stmt.setString(1, pageId.toString());
             res = stmt.executeQuery();
             while (res.next()) {
@@ -1815,9 +1825,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             }
             return result;
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readOnlineLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "readOnlineLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "readOnlineLinkEntrys(CmsUUID)", CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, "readOnlineLinkEntrys(CmsUUID)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1849,7 +1859,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 // project not found!
                 throw new CmsException("[" + this.getClass().getName() + "] " + task, CmsException.C_NOT_FOUND);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readProject(CmsTask)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "readProject(CmsTask)", CmsException.C_SQL_ERROR, e, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1891,10 +1901,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_TYPE")));
             } else {
                 // project not found!
-                throw m_sqlManager.getCmsException(this, "project with ID " + id + " not found", CmsException.C_NOT_FOUND, null);
+                throw m_sqlManager.getCmsException(this, "project with ID " + id + " not found", CmsException.C_NOT_FOUND, null, true);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readProject(int)/1 ", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "readProject(int)/1 ", CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1939,9 +1949,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 logs.addElement(tasklog);
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1969,8 +1979,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
         try {
             conn = m_sqlManager.getConnection();
-            //stmt = conn.prepareStatement(m_sqlManager.get("C_RESOURCES_PROJECTVIEW") + addStatement);
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_RESOURCES_PROJECTVIEW") + addStatement);
+            String query = m_sqlManager.get("C_RESOURCES_PROJECTVIEW") + addStatement;
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
 
             stmt.setInt(1, project);
             res = stmt.executeQuery();
@@ -1981,9 +1991,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 resources.addElement(file);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readProjectView(int, int, String)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "readProjectView(int, int, String)", CmsException.C_SQL_ERROR, e, false);
         } catch (Exception ex) {
-            throw m_sqlManager.getCmsException(this, "readProjectView(int,int, String)", CmsException.C_UNKNOWN_EXCEPTION, ex);
+            throw m_sqlManager.getCmsException(this, "readProjectView(int,int, String)", CmsException.C_UNKNOWN_EXCEPTION, ex, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2035,9 +2045,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 deleteSessions();
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -2074,11 +2084,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 property = (Serializable) oin.readObject();
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } catch (ClassNotFoundException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_CLASSLOADER_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_CLASSLOADER_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2125,7 +2135,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setString(1, tempFilename);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             // close all db-resources          
             if (statementProp != null) {
@@ -2233,7 +2243,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setInt(2, project.getId());
             stmt.executeUpdate();
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
@@ -2307,9 +2317,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setString(3, sessionId);
             retValue = stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -2360,7 +2370,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 }
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "writeExportLink(CmsExportLink)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "writeExportLink(CmsExportLink)", CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -2393,7 +2403,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setInt(2, linkId);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "writeExportLinkProcessedState(CmsExportLink)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "writeExportLinkProcessedState(CmsExportLink)", CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -2422,7 +2432,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setInt(7, project.getId());
             stmt.executeUpdate();
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
@@ -2458,9 +2468,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setString(2, name);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }

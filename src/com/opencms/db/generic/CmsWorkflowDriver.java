@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/05/23 16:26:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/03 17:45:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the workflow driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/23 16:26:47 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/03 17:45:46 $
  * @since 5.1.2
  */
 public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
@@ -118,7 +118,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
             stmt.executeUpdate();
 
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -183,9 +183,9 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
                 result = new CmsUUID(res.getString(1));
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -216,7 +216,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
                 result = res.getString(m_sqlManager.get("C_PAR_VALUE"));
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -249,7 +249,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
                 result = res.getInt("id");
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -343,7 +343,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
             stmt.setString(4, m_sqlManager.validateNull(parvalue));
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
@@ -371,7 +371,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
             stmt.setInt(8, roleref);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
@@ -403,9 +403,9 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
                 task = createTaskFromResultSet(res);
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -441,9 +441,9 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
                 tasklog = new CmsTaskLog(id, comment, task, user, starttime, type);
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -488,9 +488,9 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
                 logs.addElement(tasklog);
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -585,9 +585,9 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
             }
 
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
@@ -631,7 +631,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
 
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -650,7 +650,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
             stmt.setInt(2, parid);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -672,7 +672,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
             stmt.setInt(8, taskId);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -721,7 +721,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
             stmt.executeUpdate();
 
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -763,7 +763,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
 
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -798,7 +798,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
 
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);

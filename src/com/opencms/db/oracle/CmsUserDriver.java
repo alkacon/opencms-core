@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/oracle/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/05/23 16:26:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/06/03 17:45:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import oracle.jdbc.driver.OracleResultSet;
  * Oracle/OCI implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/05/23 16:26:46 $
+ * @version $Revision: 1.6 $ $Date: 2003/06/03 17:45:46 $
  * @since 5.1.2
  */
 public class CmsUserDriver extends com.opencms.db.generic.CmsUserDriver {
@@ -148,9 +148,9 @@ public class CmsUserDriver extends com.opencms.db.generic.CmsUserDriver {
             nextStmt.close();
             conn.setAutoCommit(true);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e, false);
         } finally {
             if (stmt2 != null) {
                 try {
@@ -258,9 +258,9 @@ public class CmsUserDriver extends com.opencms.db.generic.CmsUserDriver {
             nextStmt.close();
             conn.setAutoCommit(true);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e, false);
         } finally {
             if (stmt2 != null) {
                 try {
@@ -352,14 +352,14 @@ public class CmsUserDriver extends com.opencms.db.generic.CmsUserDriver {
                 nextStmt.close();
                 conn.setAutoCommit(true);
             } catch (IOException e) {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+                throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
             }
             stmt2.close();
             res.close();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e, false);
         } finally {            
             if (stmt2 != null) {
                 try {

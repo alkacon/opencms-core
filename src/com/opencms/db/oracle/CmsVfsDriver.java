@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/oracle/Attic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/05/23 16:26:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/03 17:45:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import oracle.jdbc.driver.OracleResultSet;
  * Oracle/OCI implementation of the VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/05/23 16:26:46 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/03 17:45:46 $
  * @since 5.1.2
  */
 public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
@@ -83,7 +83,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
             }
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -121,7 +121,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + ".readFileContent/1]" + fileId, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -185,10 +185,10 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
                 nextStatement.close();
                 conn.setAutoCommit(true);
             } catch (IOException e) {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+                throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
             m_sqlManager.closeAll(null, nextStatement, null);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/05/23 16:26:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/03 17:45:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/23 16:26:47 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/03 17:45:46 $
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
 
@@ -139,7 +139,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 stmt.close();
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -229,7 +229,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             String key;
             while (keys.hasNext()) {
                 key = (String) keys.next();
-                CmsPropertydefinition propdef = m_driverManager.getVfsDriver().readPropertydefinition(key, resource.getType());
+                CmsPropertydefinition propdef = m_driverManager.getVfsDriver().readPropertydefinition(key, projectId, resource.getType());
                 String value = (String) properties.get(key);
                 if (propdef == null) {
                     // there is no propertydefinition for with the overgiven name for the resource
@@ -247,7 +247,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 }
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -321,9 +321,9 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 }
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception ex) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -391,7 +391,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 i++;
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, "getAllBackupProjects()", CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, "getAllBackupProjects()", CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -476,7 +476,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 allHeaders.addElement(createCmsBackupResourceFromResultSet(res));
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception exc) {
             throw new CmsException("readAllFileHeaders " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
@@ -530,9 +530,9 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] version " + versionId, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readBackupProjectId(int)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "readBackupProjectId(int)", CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "readBackupProjectId(int)", CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, "readBackupProjectId(int)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -563,7 +563,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             }
             res.close();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -600,11 +600,11 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -645,11 +645,11 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }

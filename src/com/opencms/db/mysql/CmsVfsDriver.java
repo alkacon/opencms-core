@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/mysql/Attic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/06/02 16:03:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/03 17:45:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Iterator;
  * MySQL implementation of the VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/06/02 16:03:20 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/03 17:45:46 $
  * @since 5.1.2
  */
 public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
@@ -78,7 +78,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
                 stmtDestroy.clearParameters();
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(null, stmtDestroy, null);
             m_sqlManager.closeAll(conn, stmtSearch, res);           
@@ -159,7 +159,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
             stmtFileWrite.setBytes(2, contents);
             stmtFileWrite.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
             m_sqlManager.closeAll(null, stmtFileWrite, null);
@@ -206,11 +206,11 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -250,11 +250,11 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }

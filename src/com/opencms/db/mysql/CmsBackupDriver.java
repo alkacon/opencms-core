@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/mysql/Attic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/05/23 16:26:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/03 17:45:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * MySQL implementation of the backup driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/23 16:26:46 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/03 17:45:46 $
  */
 public class CmsBackupDriver extends com.opencms.db.generic.CmsBackupDriver {
     
@@ -88,7 +88,7 @@ public class CmsBackupDriver extends com.opencms.db.generic.CmsBackupDriver {
                                                     resources));
              }
          } catch( SQLException exc ) {
-             throw m_sqlManager.getCmsException(this, "getAllBackupProjects()", CmsException.C_SQL_ERROR, exc);
+             throw m_sqlManager.getCmsException(this, "getAllBackupProjects()", CmsException.C_SQL_ERROR, exc, false);
          } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);

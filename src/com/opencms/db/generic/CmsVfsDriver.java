@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/06/02 16:03:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/03 17:45:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/06/02 16:03:20 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/03 17:45:46 $
  * @since 5.1.2
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -96,7 +96,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(2, resourcename);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -115,7 +115,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -168,7 +168,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 retValue = 0;
             }
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -203,7 +203,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + metadef.getName(), CmsException.C_UNKNOWN_EXCEPTION);
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -476,7 +476,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.executeUpdate();
             stmt.close();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -583,7 +583,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.executeUpdate();
             stmt.close();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -670,7 +670,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -792,7 +792,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -808,25 +808,25 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsPropertydefinition createPropertydefinition(String name, int resourcetype) throws CmsException {
+    public CmsPropertydefinition createPropertydefinition(String name, int projectId, int resourcetype) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {           
             for (int i=0; i<3; i++) {
-                // create the propertydefinition in the offline db
+                // create the offline property definition
                 if (i == 0) {
                     conn = m_sqlManager.getConnection();
-                    stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_CREATE");
+                    stmt = m_sqlManager.getPreparedStatement(conn, Integer.MAX_VALUE, "C_PROPERTYDEF_CREATE");
                     stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.get("C_TABLE_PROPERTYDEF")));
                 }
-                // create the propertydefinition in the online db
+                // create the online property definition
                 else if (i == 1) {
                     conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
                     stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_PROPERTYDEF_CREATE");
                     stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.get("C_TABLE_PROPERTYDEF_ONLINE")));
                 }
-                // create the propertydefinition in the backup db
+                // create the backup property definition
                 else {
                     conn = m_sqlManager.getConnectionForBackup();
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_CREATE_BACKUP");
@@ -835,15 +835,15 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt.setString(2, name);
                 stmt.setInt(3, resourcetype);
                 stmt.executeUpdate();
-                stmt.close();
-                conn.close();
+                m_sqlManager.closeAll(conn, stmt, null);
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
-        return (readPropertydefinition(name, resourcetype));
+        
+        return readPropertydefinition(name, projectId, resourcetype);
     }
 
     /**
@@ -945,7 +945,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.executeUpdate();
             stmt.close();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -971,7 +971,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(1, projectId);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -993,7 +993,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(1, resource.getResourceId().toString());
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -1016,7 +1016,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(1, resourceId.toString());
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -1044,7 +1044,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             //statement.setInt(4,project.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -1082,7 +1082,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                     stmt.setString(3, orgFolder.getResourceName());
                     stmt.executeUpdate();
                 } catch (SQLException e) {
-                    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+                    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
                 } finally {
                     m_sqlManager.closeAll(conn, stmt, null);
                 }
@@ -1114,7 +1114,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(2, resourceName);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -1138,7 +1138,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             // delete all project-files.
             //clearFilesTable();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -1153,7 +1153,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void deleteProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException {
-        CmsPropertydefinition propdef = readPropertydefinition(meta, resourceType);
+        CmsPropertydefinition propdef = readPropertydefinition(meta, 0, resourceType);
         if (propdef == null) {
             // there is no propdefinition with the overgiven name for the resource
             throw new CmsException("[" + this.getClass().getName() + "] " + meta, CmsException.C_NOT_FOUND);
@@ -1169,7 +1169,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt.setString(2, resource.getResourceId().toString());
                 stmt.executeUpdate();
             } catch (SQLException exc) {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
             } finally {
                 m_sqlManager.closeAll(conn, stmt, null);
             }
@@ -1213,7 +1213,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 conn.close();
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -1242,7 +1242,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(1, resource.getFileId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -1286,7 +1286,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             }
         } catch (SQLException e) {
             rowCount = 0;
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1316,7 +1316,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         } catch (SQLException e) {
             //System.err.println( "\n[" + this.getClass().getName() + ".fetchDateFromResource()] " + e.toString() );
             date_lastModified = theDefaultDate;
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1353,7 +1353,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             }
         } catch (SQLException e) {
             resourceFlags = 0;
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1395,7 +1395,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             }
         } catch (SQLException e) {
             resourceID = 0;
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1435,7 +1435,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 }
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1475,9 +1475,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 }
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "getAllOnlineReferencesForLink(String, Vector)", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "getAllOnlineReferencesForLink(String, Vector)", CmsException.C_SQL_ERROR, e, false);
         } catch (Exception ex) {
-            throw m_sqlManager.getCmsException(this, "getAllOnlineReferencesForLink(String, Vector)", CmsException.C_UNKNOWN_EXCEPTION, ex);
+            throw m_sqlManager.getCmsException(this, "getAllOnlineReferencesForLink(String, Vector)", CmsException.C_UNKNOWN_EXCEPTION, ex, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1592,7 +1592,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 files.addElement(createCmsFileFromResultSet(res, false, false));
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1628,9 +1628,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 names.addElement(result);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, "getFilesWithProperty(int, String, String)", CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, "getFilesWithProperty(int, String, String)", CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1650,19 +1650,18 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      */
     public Vector getFolderTree(int projectId, String rootName) throws CmsException {
         Vector folders = new Vector();
-        //CmsFolder folder;
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-        String usedStatement = "";
-        if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) usedStatement = "_ONLINE";
-        String add1 = " " + m_sqlManager.get("C_RESOURCES_GET_FOLDERTREE" + usedStatement + "_ADD1") + rootName;
-        String add2 = m_sqlManager.get("C_RESOURCES_GET_FOLDERTREE" + usedStatement + "_ADD2");
+
+        String add1 = " " + m_sqlManager.get(projectId, "C_RESOURCES_GET_FOLDERTREE_ADD1") + rootName;
+        String add2 = m_sqlManager.get(projectId, "C_RESOURCES_GET_FOLDERTREE_ADD2");
+        
         try {
             // read file data from database
             conn = m_sqlManager.getConnection(projectId);
-            //stmt = conn.prepareStatement(m_sqlManager.get("C_RESOURCES_GET_FOLDERTREE" + usedStatement) + add1 + add2);
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_RESOURCES_GET_FOLDERTREE" + usedStatement) + add1 + add2);
+            String query = m_sqlManager.get(projectId, "C_RESOURCES_GET_FOLDERTREE") + add1 + add2;
+            stmt = m_sqlManager.getPreparedStatementForSql(conn,query);
             stmt.setInt(1, projectId);
             res = stmt.executeQuery();
             // create new file
@@ -1670,7 +1669,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 folders.addElement(createCmsFolderFromResultSet(res, true));
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception ex) {
             throw new CmsException("[" + this.getClass().getName() + "]", ex);
         } finally {
@@ -1699,9 +1698,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 resources.add(resName);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "getOnlineResourceNames()", CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, "getOnlineResourceNames()", CmsException.C_SQL_ERROR, e, false);
         } catch (Exception ex) {
-            throw m_sqlManager.getCmsException(this, "getOnlineResourceNames()", CmsException.C_UNKNOWN_EXCEPTION, ex);
+            throw m_sqlManager.getCmsException(this, "getOnlineResourceNames()", CmsException.C_UNKNOWN_EXCEPTION, ex, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1743,7 +1742,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             }
 
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception ex) {
             throw new CmsException("[" + this.getClass().getName() + "]", ex);
         } finally {
@@ -1767,7 +1766,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             }
 
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception ex) {
             throw new CmsException("[" + this.getClass().getName() + "]", ex);
         } finally {
@@ -1810,7 +1809,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 lastResourcename = resource.getName();
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception exc) {
             throw new CmsException("getResourcesWithProperty" + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
@@ -1855,7 +1854,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 lastResourcename = resource.getName();
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception exc) {
             throw new CmsException("getResourcesWithProperty" + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
@@ -1894,7 +1893,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 folders.addElement(folder);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception exc) {
             throw new CmsException("getSubFolders " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
@@ -1960,7 +1959,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 allHeaders.addElement(file);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception exc) {
             throw new CmsException("readAllFileHeaders " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
@@ -2010,7 +2009,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 metadefs.addElement(new CmsPropertydefinition(res.getInt(m_sqlManager.get("C_PROPERTYDEF_ID")), res.getString(m_sqlManager.get("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.get("C_PROPERTYDEF_RESOURCE_TYPE"))));
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2042,7 +2041,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             }
             res.close();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2087,7 +2086,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
@@ -2133,7 +2132,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
@@ -2168,7 +2167,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "]" + fileId, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2212,11 +2211,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + resource.getResourceId(), CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2260,11 +2259,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + resourceId, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2309,11 +2308,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2359,11 +2358,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2404,11 +2403,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2447,7 +2446,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         String inProject = new String();
 
         if (projectId != I_CmsConstants.C_PROJECT_ONLINE_ID && onlyProject) {
-            inProject = " AND CMS_RESOURCES.PROJECT_ID = CMS_PROJECTRESOURCES.PROJECT_ID";
+            inProject = " AND CMS_OFFLINE_RESOURCES.PROJECT_ID = CMS_PROJECTRESOURCES.PROJECT_ID";
         }
         if (!includeUnchanged) {
             onlyChanged = " AND STATE != " + com.opencms.core.I_CmsConstants.C_STATE_UNCHANGED;
@@ -2464,9 +2463,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 files.addElement(file);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception ex) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2503,9 +2502,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception ex) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2542,12 +2541,12 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + folderId, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException exc) {
             // just throw this exception
             throw exc;
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2588,12 +2587,12 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + foldername, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException exc) {
             // just throw this exception
             throw exc;
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2631,12 +2630,12 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + foldername, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException exc) {
             // just throw this exception
             throw exc;
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2672,27 +2671,25 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-        String usedStatement;
+        //String usedStatement;
         String onlyChanged = new String();
         String inProject = new String();
-        if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            usedStatement = "_ONLINE";
-        } else {
-            usedStatement = "";
-            if (onlyProject) {
-                inProject = " AND CMS_RESOURCES.PROJECT_ID = CMS_PROJECTRESOURCES.PROJECT_ID";
-            }
+        
+        if (projectId != I_CmsConstants.C_PROJECT_ONLINE_ID && onlyProject) {
+            inProject = " AND CMS_OFFLINE_RESOURCES.PROJECT_ID = CMS_PROJECTRESOURCES.PROJECT_ID";
         }
+        
         if (!includeUnchanged) {
-            onlyChanged = " AND CMS_RESOURCES.STATE != " + com.opencms.core.I_CmsConstants.C_STATE_UNCHANGED + " ORDER BY CMS_RESOURCES.RESOURCE_NAME";
+            onlyChanged = " AND CMS_OFFLINE_RESOURCES.STATE != " + com.opencms.core.I_CmsConstants.C_STATE_UNCHANGED + " ORDER BY CMS_OFFLINE_RESOURCES.RESOURCE_NAME";
         } else {
-            onlyChanged = " ORDER BY CMS_RESOURCES.RESOURCE_NAME";
+            onlyChanged = " ORDER BY CMS_OFFLINE_RESOURCES.RESOURCE_NAME";
         }
+        
         try {
             conn = m_sqlManager.getConnection(projectId);
             // read folder data from database
             //stmt = conn.prepareStatement(m_sqlManager.get("C_RESOURCES_READFOLDERSBYPROJECT" + usedStatement) + inProject + onlyChanged);
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_RESOURCES_READFOLDERSBYPROJECT" + usedStatement) + inProject + onlyChanged);
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get(projectId, "C_RESOURCES_READFOLDERSBYPROJECT") + inProject + onlyChanged);
             stmt.setInt(1, projectId);
             res = stmt.executeQuery();
             // create new folder
@@ -2701,12 +2698,13 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 folders.addElement(folder);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception ex) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
+        
         return folders;
     }
 
@@ -2740,7 +2738,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -2776,7 +2774,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 returnValue.put(result.getString(m_sqlManager.get("C_PROPERTYDEF_NAME")), result.getString(m_sqlManager.get("C_PROPERTY_VALUE")));
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, result);
         }
@@ -2811,7 +2809,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 returnValue = result.getString(m_sqlManager.get("C_PROPERTY_VALUE"));
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, result);
         }
@@ -2829,8 +2827,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsPropertydefinition readPropertydefinition(String name, I_CmsResourceType type) throws CmsException {
-        return (readPropertydefinition(name, type.getResourceType()));
+    public CmsPropertydefinition readPropertydefinition(String name, int projectId, I_CmsResourceType type) throws CmsException {
+        return (readPropertydefinition(name, projectId, type.getResourceType()));
     }
 
     /**
@@ -2844,15 +2842,15 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsPropertydefinition readPropertydefinition(String name, int type) throws CmsException {
+    public CmsPropertydefinition readPropertydefinition(String name, int projectId, int type) throws CmsException {
         CmsPropertydefinition propDef = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_READ");
+            conn = m_sqlManager.getConnection(projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTYDEF_READ");
 
             stmt.setString(1, name);
             stmt.setInt(2, type);
@@ -2868,10 +2866,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
+        
         return propDef;
     }
 
@@ -2912,7 +2911,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception exc) {
             throw new CmsException("readResource " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
@@ -2951,7 +2950,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 resources.addElement(file);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception ex) {
             throw new CmsException("[" + this.getClass().getName() + "]", ex);
         } finally {
@@ -2998,7 +2997,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 resources.addElement(file);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception ex) {
             throw new CmsException("[" + this.getClass().getName() + "]", ex);
         } finally {
@@ -3030,7 +3029,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(1, resource.getFileId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -3063,7 +3062,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                     stmt.setString(1, folder.getResourceId().toString());
                     stmt.executeUpdate();
                 } catch (SQLException e) {
-                    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+                    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
                 } finally {
                     m_sqlManager.closeAll(conn, stmt, null);
                 }
@@ -3094,7 +3093,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(1, foldername);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
@@ -3144,7 +3143,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
             m_sqlManager.closeAll(null, stmtProp, null);
@@ -3176,7 +3175,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -3202,7 +3201,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(3, filename);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -3227,7 +3226,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             rowCount = stmt.executeUpdate();
         } catch (SQLException e) {
             rowCount = 0;
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -3251,7 +3250,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(3, res.getResourceId().toString());
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
@@ -3279,7 +3278,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             rowCount = stmt.executeUpdate();
         } catch (SQLException e) {
             rowCount = 0;
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -3302,7 +3301,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(2, res.getResourceId().toString());
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
@@ -3370,7 +3369,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -3438,7 +3437,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(15, file.getResourceId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -3502,7 +3501,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(15, folder.getResourceId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -3560,7 +3559,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     public void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException {
         CmsPropertydefinition propdef = null;
         try {
-            propdef = readPropertydefinition(meta, resourceType);
+            propdef = readPropertydefinition(meta, 0, resourceType);
         } catch (CmsException ex) {
             // do nothing
         }
@@ -3568,7 +3567,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             // there is no propertydefinition for with the overgiven name for the resource
             // add this definition or throw an exception
             if (addDefinition) {
-                createPropertydefinition(meta, resourceType);
+                createPropertydefinition(meta, projectId, resourceType);
             } else {
                 throw new CmsException("[" + this.getClass().getName() + ".writeProperty/1] " + meta, CmsException.C_NOT_FOUND);
             }
@@ -3597,7 +3596,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                     stmt.executeUpdate();
                 }
             } catch (SQLException exc) {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
             } finally {
                 m_sqlManager.closeAll(conn, stmt, null);
             }
@@ -3641,9 +3640,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 conn.close();
             }
             // read the propertydefinition
-            returnValue = readPropertydefinition(metadef.getName(), metadef.getType());
+            returnValue = readPropertydefinition(metadef.getName(), 0, metadef.getType());
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -3707,7 +3706,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(15, resource.getResourceId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }

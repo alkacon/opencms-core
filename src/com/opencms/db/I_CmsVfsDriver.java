@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/06/02 16:03:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/03 17:45:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/06/02 16:03:20 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/03 17:45:46 $
  * @since 5.1.2
  */
 public interface I_CmsVfsDriver {
@@ -70,7 +70,7 @@ public interface I_CmsVfsDriver {
     CmsFolder createFolder(CmsUser user, CmsProject project, CmsFolder folder, CmsUUID parentId, String foldername) throws CmsException;
     CmsFolder createFolder(CmsUser user, CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags) throws CmsException;
     void createProjectResource(int projectId, String resourceName) throws CmsException;
-    CmsPropertydefinition createPropertydefinition(String name, int resourcetype) throws CmsException;
+    CmsPropertydefinition createPropertydefinition(String name, int projectId, int resourcetype) throws CmsException;
     CmsResource createResource(CmsProject project, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException;
     void deleteAllProjectResources(int projectId) throws CmsException;
     void deleteAllProperties(int projectId, CmsResource resource) throws CmsException;
@@ -123,8 +123,8 @@ public interface I_CmsVfsDriver {
     String readProjectResource(int projectId, String resourcename) throws CmsException;
     HashMap readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException;
     String readProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException;
-    CmsPropertydefinition readPropertydefinition(String name, I_CmsResourceType type) throws CmsException;
-    CmsPropertydefinition readPropertydefinition(String name, int type) throws CmsException;
+    CmsPropertydefinition readPropertydefinition(String name, int projectId, I_CmsResourceType type) throws CmsException;
+    CmsPropertydefinition readPropertydefinition(String name, int projectId, int type) throws CmsException;
     CmsResource readResource(CmsProject project, String filename) throws CmsException;
     Vector readResources(CmsProject project) throws CmsException;
     Vector readResourcesLikeName(CmsProject project, String resourcename) throws CmsException;

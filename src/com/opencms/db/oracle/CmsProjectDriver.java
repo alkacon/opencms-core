@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/oracle/Attic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/05/23 16:26:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/03 17:45:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import oracle.jdbc.driver.OracleResultSet;
  * This is the generic access module to load and store resources from and into
  * the database.
  *
- * @version $Revision: 1.3 $ $Date: 2003/05/23 16:26:46 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/03 17:45:46 $
  * @since 5.1.2
  */
 public class CmsProjectDriver extends com.opencms.db.generic.CmsProjectDriver {
@@ -117,9 +117,9 @@ public class CmsProjectDriver extends com.opencms.db.generic.CmsProjectDriver {
             nextStmt.close();
             conn.setAutoCommit(true);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {           
             if (stmt2 != null) {
                 try {
@@ -197,9 +197,9 @@ public class CmsProjectDriver extends com.opencms.db.generic.CmsProjectDriver {
             nextStmt.close();
             conn.setAutoCommit(true);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
             if (stmt2 != null) {
                 try {
@@ -293,9 +293,9 @@ public class CmsProjectDriver extends com.opencms.db.generic.CmsProjectDriver {
             nextStmt.close();
             conn.setAutoCommit(true);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
             if (stmt2 != null) {
                 try {
@@ -374,9 +374,9 @@ public class CmsProjectDriver extends com.opencms.db.generic.CmsProjectDriver {
             nextStmt.close();
             conn.setAutoCommit(true);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {           
             if (stmt != null) {
                 try {
