@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/04/09 16:17:32 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/04/10 15:54:19 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.0 beta 2
  */
@@ -191,6 +191,36 @@ public class CmsJspActionElement {
     public void setHandleExceptions(boolean value) {
         m_handleExceptions = value;
     }    
+    
+    /**
+     * Returns the request wrapped by the element.<p>
+     * 
+     * @return the request wrapped by the element
+     */
+    public HttpServletRequest getRequest() {
+        if (m_notInitialized) return null;
+        return m_request;        
+    }
+    
+    /**
+     * Returns the reponse wrapped by this element.<p>
+     * 
+     * @return the reponse wrapped by this element
+     */
+    public HttpServletResponse getResponse() {
+        if (m_notInitialized) return null;
+        return m_response;        
+    }    
+    
+    /**
+     * Returns the JSP page context wrapped by this element.<p>
+     * 
+     * @return the JSP page context wrapped by this element
+     */    
+    public PageContext getPageContext() {
+        if (m_notInitialized) return null;
+        return m_context;           
+    }
 
     /**
      * Returns the CmsObject from the wrapped request.<p>
