@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/25 14:24:11 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2000/08/25 15:58:33 $
+ * Version: $Revision: 1.111 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.template.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.110 $ $Date: 2000/08/25 14:24:11 $
+ * @version $Revision: 1.111 $ $Date: 2000/08/25 15:58:33 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4234,10 +4234,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				m_resourceCache.put(C_FILE+currentProject.getId()+filename,cmsFile);
 			 }
 		 } catch(CmsException exc) {
-			 // the resource was not readable
-			 if (exc.getType()==CmsException.C_RESOURCE_DELETED) {
-				throw exc;
-			 } else if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+			 // the resource was not readable 
+			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
 				 // this IS the onlineproject - throw the exception
 				 throw exc;
 			 } else {
