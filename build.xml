@@ -2,11 +2,12 @@
 
     <property name="env"                        environment="env"/>
 
-    <!-- Sets the version-number to the current date and time -->
-    <!-- For official builds this should be set to a proper value at the commandline -->
-    <!-- Set it like this: ant all -Dversion.number=4.3.28 -->
-    <property name="version.name"               value="Bela Tegeuse"/>
+    <!-- The version-number ${version.number} is automatically set to the
+    current date and time. For official builds this should be set to a proper
+    value at the commandline.
+    Set it like this: ant all -Dversion.number=4.3.28 -->
 
+    <property name="version.name"               value="Bela Tegeuse"/>
     <property name="app.name"                   value="opencms"/>
     <property name="build.home"                 value="../build"/>
     <property name="zip.home"                   value="../zip"/>
@@ -25,6 +26,9 @@
     <property name="build.lib"                  value="${build.webinf}/lib"/>
     <property name="build.oclib"                value="${build.webinf}/oclib"/>
 
+    <property name="build.version.propertyfile" value="${build.classes}/com/opencms/core/version.properties"/>
+    <property name="build.version.jsfile"       value="${build.webinf}/ocsetup/vfs/system/workplace/templates/js/version.js"/>
+
     <property name="db.url"                     value="jdbc:mysql://localhost:3306/opencms"/>
     <property name="db.setupurl"                value="jdbc:mysql://localhost:3306/mysql"/>
     <property name="db.user"                    value="root"/>
@@ -40,11 +44,9 @@
         <mkdir dir="${zip.home}"/>
     </target>
 
-
     <target name="clean">
         <delete dir="${build.home}"/>
     </target>
-
 
     <target name="compileclasses" depends="prepare">
        <javac
@@ -65,6 +67,14 @@
        <copy todir="${build.classes}">
             <fileset dir="src" includes="**/*.properties,**/*.txt"/>
        </copy>
+       <!-- generate version infos-->
+        <tstamp>
+            <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
+        </tstamp>
+        <property name="version.number" value="${env.USERNAME} ${timestamp}"/>
+        <echo file="${build.version.propertyfile}">version.number=${version.number}
+</echo>
+        <echo file="${build.version.propertyfile}" append="on">version.name=${version.name}</echo>
     </target>
 
     <target name="jar" depends="compileclasses">
@@ -104,6 +114,8 @@
             <fileset dir="web" excludes="*/CVS/*"/>
        </copy>
 
+       <!-- create version-info for the workplace-->
+       <echo file="${build.version.jsfile}">var version = '${version.number} ${version.name}';</echo>
     </target>
 
     <target name="war" depends="copy">
@@ -176,10 +188,6 @@
 
     <target name="cvs.update">
         <cvs command="update"/>
-    </target>
-
-    <target name="echo">
-        <echo message="${version.number} ${version.name}"/>
     </target>
 
 </project>

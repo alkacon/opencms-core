@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2001/07/10 15:44:15 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2001/07/18 13:37:23 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.22 $ $Date: 2001/07/10 15:44:15 $
+ * @version $Revision: 1.23 $ $Date: 2001/07/18 13:37:23 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -481,7 +481,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 			Element info = m_docXml.createElement(C_EXPORT_TAG_INFO);
 			m_docXml.getDocumentElement().appendChild(info);
             addElement(info, C_EXPORT_TAG_CREATOR, m_cms.getRequestContext().currentUser().getName());
-            addElement(info, C_EXPORT_TAG_OC_VERSION, C_VERSION);
+            addElement(info, C_EXPORT_TAG_OC_VERSION, m_cms.version());
             addElement(info, C_EXPORT_TAG_DATE, Utils.getNiceDate(new Date().getTime()));
             addElement(info, C_EXPORT_TAG_PROJECT, m_cms.getRequestContext().currentProject().getName());
             addElement(info, C_EXPORT_TAG_VERSION, C_EXPORT_VERSION);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/07/18 13:37:23 $
+* Version: $Revision: 1.11 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.11 $ $Date: 2001/07/18 13:37:23 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -297,7 +297,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         output.append("</script>\n");
         output.append("<head>\n");
         output.append("<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\">\n");
-        output.append("<title>OpenCms-Systemfehler - " + C_VERSION + "</title>\n");
+        output.append("<title>OpenCms-Systemfehler</title>\n");
         output.append("<style type=\"text/css\">\n");
         output.append("TD.dialogtxt\n");
         output.append("{\n");

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/18 13:33:06 $
- * Version: $Revision: 1.170 $
+ * Date   : $Date: 2001/07/18 13:37:23 $
+ * Version: $Revision: 1.171 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,10 +49,15 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.170 $ $Date: 2001/07/18 13:33:06 $
+ * @version $Revision: 1.171 $ $Date: 2001/07/18 13:37:23 $
  *
  */
 public class CmsObject implements I_CmsConstants {
+
+    /**
+     * The current version-number of OpenCms
+     */
+    private static String c_versionNumber = null;
 
     /**
      * The resource broker to access the cms.
@@ -3278,7 +3283,19 @@ public boolean userInGroup(String username, String groupname) throws CmsExceptio
  * @return version a String containnig the version of OpenCms.
  */
 public String version() {
-    return (C_VERSION);
+    // read the version-informations from properties, if not done
+    if( c_versionNumber == null) {
+        Properties props = new Properties();
+        try {
+            props.load(getClass().getClassLoader().getResourceAsStream("com/opencms/core/version.properties"));
+        } catch(java.io.IOException exc) {
+            // ignore this exception - no properties found
+        }
+        c_versionNumber =
+            props.getProperty("version.number", "??") + " " +
+            props.getProperty("version.name", "??");
+    }
+    return c_versionNumber;
 }
 /**
  * Writes the export-path for the system.

@@ -1,3 +1,3 @@
-# Start script for the OpenCms Shell
+rem Start script for the OpenCms Shell
 
 java -jar lib/opencmsboot.jar

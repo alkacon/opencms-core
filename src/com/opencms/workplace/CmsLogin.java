@@ -1,11 +1,11 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2001/07/18 13:37:23 $
+* Version: $Revision: 1.42 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -39,13 +39,13 @@ import java.util.*;
 /**
  * Template class for displaying the login screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
- * 
+ *
  * @author Waruschan Babachan
- * @version $Revision: 1.41 $ $Date: 2001/05/17 14:10:32 $
+ * @version $Revision: 1.42 $ $Date: 2001/07/18 13:37:23 $
  */
 
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
-    
+
     /**
      * Overwrtied the getContent method of the CmsWorkplaceDefault.<br>
      * Gets the content of the longin templated and processed the data input.
@@ -61,8 +61,8 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
      * @return Bytearre containgine the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
+
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
         String username = null;
         I_CmsSession session = null;
@@ -81,14 +81,14 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
             session = cms.getRequestContext().getSession(true);
             session.putValue(C_PARA_STARTPROJECTID, startProjectId);
         }
-        
+
         // check if this is a link of a task
         if(!startTaskId.equals("")) {
             session = cms.getRequestContext().getSession(true);
             session.putValue(C_PARA_STARTTASKID, startTaskId);
             Vector viewNames = new Vector();
             Vector viewLinks = new Vector();
-            
+
             //configFile.getWorkplaceIniData(viewNames, viewLinks,"WORKPLACEVIEWS","VIEW");
             (cms.getRegistry()).getViews(viewNames, viewLinks);
             String link = "";
@@ -100,11 +100,11 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
             }
             session.putValue(C_PARA_VIEW, link);
         }
-        
-        // Indicates, if this is a request of a guest user.			
-        if(!cms.anonymousUser().equals(cms.getRequestContext().currentUser()) 
+
+        // Indicates, if this is a request of a guest user.
+        if(!cms.anonymousUser().equals(cms.getRequestContext().currentUser())
                 && (!startTaskId.equals(""))) {
-            
+
             // set current project to a default or to a specified project
             Integer currentProject = null;
             session.removeValue(C_PARA_STARTPROJECTID);
@@ -118,7 +118,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                     access = false;
                 }
                 if(!access) {
-                    
+
                     // check out the user information if a default project is stored there.
                     Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
                     if(startSettings != null) {
@@ -127,7 +127,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                 }
             }
             else {
-                
+
                 // check out the user information if a default project is stored there.
                 Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
                 if(startSettings != null) {
@@ -140,12 +140,12 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                 }
             }
             catch(Exception e) {
-                
+
             }
             try {
-                cms.getRequestContext().getResponse().sendCmsRedirect(actionPath 
+                cms.getRequestContext().getResponse().sendCmsRedirect(actionPath
                         + "index.html");
-                
+
                 // return "".getBytes();
                 return null;
             }
@@ -153,27 +153,27 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                 throw new CmsException(e.getMessage());
             }
         }
-        
-        // the template to be displayed		
+
+        // the template to be displayed
         String template = templateSelector;
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, 
+        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,
                 templateFile);
         Hashtable preferences = new Hashtable();
-        
+
         // get user name and password
         String name = (String)parameters.get("NAME");
         String password = (String)parameters.get("PASSWORD");
-        
+
         // try to read this user
         if((name != null) && (password != null)) {
             try {
                 username = cms.loginUser(name, password);
             }
             catch(CmsException e) {
-                if((e.getType() == CmsException.C_NO_USER) || (e.getType() 
+                if((e.getType() == CmsException.C_NO_USER) || (e.getType()
                         == CmsException.C_NO_ACCESS)) {
-                    
-                    // there was an authentification error during login                    
+
+                    // there was an authentification error during login
                     // set user to null and switch to error template
                     username = null;
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
@@ -183,27 +183,27 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                     throw e;
                 }
             }
-            
+
             // please no GuestUsers in Workplace
             if((username != null) && (username.equals(cms.C_USER_GUEST))) {
                 username = null;
                 xmlTemplateDocument.setData("details", "please no guest users here");
                 template = "error";
             }
-            
+
             // check if a user was found.
             if(username != null) {
-                
-                // get a session for this user so that he is authentificated at the                
+
+                // get a session for this user so that he is authentificated at the
                 // end of this request
                 session = cms.getRequestContext().getSession(true);
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_INFO, "[CmsLogin] Login user " + username);
                 }
-                
+
                 // now get the users preferences
                 user = cms.readUser(username);
-                
+
                 // set current project to a default or to a specified project
                 Integer currentProject = null;
                 startProjectId = (String)session.getValue(C_PARA_STARTPROJECTID);
@@ -218,7 +218,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                         access = false;
                     }
                     if(!access) {
-                        
+
                         // check out the user information if a default project is stored there.
                         Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
                         if(startSettings != null) {
@@ -227,7 +227,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                     }
                 }
                 else {
-                    
+
                     // check out the user information if a default project is stored there.
                     Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
                     if(startSettings != null) {
@@ -240,10 +240,10 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                     }
                 }
                 catch(Exception e) {
-                    
+
                 }
                 preferences = (Hashtable)user.getAdditionalInfo(C_ADDITIONAL_INFO_PREFERENCES);
-                
+
                 // check if preferences are existing, otherwiese use defaults
                 if(preferences == null) {
                     preferences = getDefaultPreferences();
@@ -252,8 +252,8 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
             }
         }
         else {
-            
-            // This is a new login!            
+
+            // This is a new login!
             // If there is an old session, remove all user variables from this session
             session = cms.getRequestContext().getSession(true);
             if(session != null) {
@@ -267,7 +267,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                     taskid = "";
                     view = "";
                 }
-                
+
                 //session.invalidate();
                 session = cms.getRequestContext().getSession(true);
                 if(!projectid.equals("")) {
@@ -279,7 +279,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                 }
             }
         }
-        
+
         // this is the first time the dockument is selected, so reade the page forwarding
         if(username == null) {
             xmlTemplateDocument.clearStartup();
@@ -288,65 +288,80 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
             long id = System.currentTimeMillis();
             xmlTemplateDocument.setData("ID", new Long(id).toString());
         }
-        
+
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
     }
-    
+
     /**
      * Sets the default preferences for the current user if those values are not available.
      * @return Hashtable with default preferences.
      */
-    
+
     private Hashtable getDefaultPreferences() {
         Hashtable pref = new Hashtable();
-        
+
         // set the default columns in the filelist
         int filelist = C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_CHANGED;
-        
+
         // HACK
         filelist = 4095 + 512;
         pref.put(C_USERPREF_FILELIST, new Integer(filelist));
         return pref;
     }
-    
+
     /**
      * Inserts the correct document title into the template.
      * This is a customized method for adding the recent version number to the title of the login screen.
      * <P>
      * This method can be called using <code>&lt;METHOD name="getTitle"&gt;</code>
      * in the template file.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    
-    public Object getTitle(CmsObject cms, String tagcontent, A_CmsXmlContent doc, 
+
+    public Object getTitle(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
             Object userObject) throws CmsException {
         String title = (String)super.getTitle(cms, tagcontent, doc, userObject);
         if(title == null) {
             title = "";
         }
-        title = title + " - " + C_VERSION;
+        title = title + " - " + cms.version();
         return title;
     }
-    
+
+    /**
+     * Inserts the correct version-number og OpenCms into the template.
+     *
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+
+    public Object version(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+        return cms.version();
+    }
+
     /**
      * Indicates if the results of this class are cacheable.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
+     * @param templateFile Filename of the template file
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, 
+
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) {
         return false;
     }

@@ -12,12 +12,20 @@
 <!-- Begin Styles and Scripts -->
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/version.js">
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+    if(version != "]]><METHOD name="version"/><![CDATA[") {
+        alert("]]><LABEL value="message.login3" /><![CDATA[");
+    }
+</SCRIPT>
 
 <SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
     if(navigator.appName.substring(0,9) == "Microsoft")
         document.LOGIN.NAME.focus();
     
     ]]><PROCESS>STARTUP</PROCESS><![CDATA[
+
 </SCRIPT>
 
 <!-- End Styles and Scripts -->
