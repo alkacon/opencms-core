@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.3.20 Bela Tegeuse -
+OpenCms 4.3.20 Bela Tegeuse - 25 June 2001
 ! Advanced Projectmechanism
   Now the resources for online, offline and backup are stored in several tables. 
   The offline resources exist only once. Each project that is created is only a view
