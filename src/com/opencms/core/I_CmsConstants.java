@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/01/04 15:01:50 $
+ * @version $Revision: 1.14 $ $Date: 2000/01/04 15:32:54 $
  */
 public interface I_CmsConstants
 {
@@ -324,8 +324,12 @@ public interface I_CmsConstants
       * The name of the rood folder
       */
      static final String C_ROOT="/";
+	 
+	 /**
+	  * The name of the mountpoint-property.
+	  */
+	 static final String C_PROPERTY_MOUNTPOINT = "MOUNTPOINT";
      
-        
     /**
      * The key for the username in the user information hashtable.
      */

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/01/04 12:38:45 $ 
+ * @version $Revision: 1.14 $ $Date: 2000/01/04 15:32:54 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1067,4 +1067,45 @@ public abstract class A_CmsObject {
 	abstract public Vector readAllScheduleTasks()
 		throws CmsException;
 	
+    /**
+	 * Adds a new CmsMountPoint. 
+	 * A new mountpoint for a mysql filesystem is added.
+	 * 
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * @param driver The driver for the db-system. 
+	 * @param connect The connectstring to access the db-system.
+	 * @param name A name to describe the mountpoint.
+	 */
+	abstract public void addMountPoint(String mountpoint, String driver, 
+									   String connect, String name)
+		throws CmsException;
+
+    /**
+	 * Gets a CmsMountPoint. 
+	 * A mountpoint will be returned.
+	 * 
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * 
+	 * @return the mountpoint - or null if it doesen't exists.
+	 */
+	abstract public A_CmsMountPoint readMountPoint(String mountpoint )
+		throws CmsException;
+
+    /**
+	 * Deletes a CmsMountPoint. 
+	 * A mountpoint will be deleted.
+	 * 
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 */
+	abstract public void deleteMountPoint(String mountpoint )
+		throws CmsException;
+
+	/**
+	 * Gets all CmsMountPoints. 
+	 * All mountpoints will be returned.
+	 * 
+	 * @return the mountpoints - or null if they doesen't exists.
+	 */
+	abstract public Hashtable getAllMountPoints()
+		throws CmsException;
 }

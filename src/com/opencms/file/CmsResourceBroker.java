@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/01/04 15:01:51 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/04 15:32:54 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -954,5 +954,153 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
 				CmsException.C_NO_ACCESS);
 		}
+	}
+
+    /**
+	 * Adds a new CmsMountPoint. 
+	 * A new mountpoint for a mysql filesystem is added.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * @param driver The driver for the db-system. 
+	 * @param connect The connectstring to access the db-system.
+	 * @param name A name to describe the mountpoint.
+	 */
+	synchronized public void addMountPoint(A_CmsUser currentUser, 
+										   A_CmsProject currentProject,
+										   String mountpoint, String driver, 
+										   String connect, String name)
+		throws CmsException {
+		
+		if( isAdmin(currentUser, currentProject) ) {
+			
+			// TODO: check, if the mountpoint is valid (exists the folder?)
+			
+			// create the new mountpoint			
+			A_CmsMountPoint newMountPoint = new CmsMountPoint(mountpoint, driver,
+															  connect, name);
+			
+			// read all mountpoints from propertys
+			Hashtable mountpoints = (Hashtable) 
+									 m_propertyRb.readProperty(C_PROPERTY_MOUNTPOINT);
+			
+			// if mountpoints dosen't exists - create them.
+			if(mountpoints == null) {
+				mountpoints = new Hashtable();
+				m_propertyRb.addProperty(C_PROPERTY_MOUNTPOINT, mountpoints);
+			}
+			
+			// add the new mountpoint
+			mountpoints.put(newMountPoint.getMountpoint(), newMountPoint);
+			
+			// write the mountpoints back to the properties
+			m_propertyRb.writeProperty(C_PROPERTY_MOUNTPOINT, mountpoints);			
+			
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}		
+	}
+
+    /**
+	 * Gets a CmsMountPoint. 
+	 * A mountpoint will be returned.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * 
+	 * @return the mountpoint - or null if it doesen't exists.
+	 */
+	public A_CmsMountPoint readMountPoint(A_CmsUser currentUser, 
+										  A_CmsProject currentProject, 
+										  String mountpoint )
+		throws CmsException {
+		
+		if( isAdmin(currentUser, currentProject) ) {
+			
+			// read all mountpoints from propertys
+			Hashtable mountpoints = (Hashtable) 
+									 m_propertyRb.readProperty(C_PROPERTY_MOUNTPOINT);
+			
+			// no mountpoints available?
+			if(mountpoint == null) {
+				return(null);
+			}
+			// return the mountpoint
+			return( (A_CmsMountPoint) mountpoints.get(mountpoint));
+			
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}		
+	}
+
+    /**
+	 * Deletes a CmsMountPoint. 
+	 * A mountpoint will be deleted.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 */
+	synchronized public void deleteMountPoint(A_CmsUser currentUser, 
+											  A_CmsProject currentProject, 
+											  String mountpoint )
+		throws CmsException {
+		
+		if( isAdmin(currentUser, currentProject) ) {
+			
+			// read all mountpoints from propertys
+			Hashtable mountpoints = (Hashtable) 
+									 m_propertyRb.readProperty(C_PROPERTY_MOUNTPOINT);
+			
+			if(mountpoint != null) {
+				// remove the mountpoint
+				mountpoints.remove(mountpoint);
+				// write the mountpoints back to the properties
+				m_propertyRb.writeProperty(C_PROPERTY_MOUNTPOINT, mountpoints);			
+			}
+			
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}		
+	}
+	
+	/**
+	 * Gets all CmsMountPoints. 
+	 * All mountpoints will be returned.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the mountpoints - or null if they doesen't exists.
+	 */
+	public Hashtable getAllMountPoints(A_CmsUser currentUser, A_CmsProject currentProject)
+		throws CmsException {
+		
+		if( isAdmin(currentUser, currentProject) ) {
+			
+			// read all mountpoints from propertys
+			return( (Hashtable) m_propertyRb.readProperty(C_PROPERTY_MOUNTPOINT));
+			
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}		
 	}
 }

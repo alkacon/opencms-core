@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/01/04 15:01:50 $ 
+ * @version $Revision: 1.9 $ $Date: 2000/01/04 15:32:54 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -1261,4 +1261,58 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		return null; // TODO: implement this! 
 	}
 	
+    /**
+	 * Adds a new CmsMountPoint. 
+	 * A new mountpoint for a mysql filesystem is added.
+	 * 
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * @param driver The driver for the db-system. 
+	 * @param connect The connectstring to access the db-system.
+	 * @param name A name to describe the mountpoint.
+	 */
+	public void addMountPoint(String mountpoint, String driver, String connect,
+							  String name)
+		throws CmsException {
+		c_rb.addMountPoint(m_context.currentUser(), m_context.getCurrentProject(),
+						   mountpoint, driver, connect, name);
+	}
+
+	/**
+	 * Gets a CmsMountPoint. 
+	 * A mountpoint will be returned.
+	 * 
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * 
+	 * @return the mountpoint - or null if it doesen't exists.
+	 */
+	public A_CmsMountPoint readMountPoint(String mountpoint )
+		throws CmsException {
+		return( c_rb.readMountPoint(m_context.currentUser(), 
+									m_context.getCurrentProject(),
+									mountpoint) );
+	}
+	
+    /**
+	 * Deletes a CmsMountPoint. 
+	 * A mountpoint will be deleted.
+	 * 
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 */
+	public void deleteMountPoint(String mountpoint )
+		throws CmsException {
+		c_rb.deleteMountPoint(m_context.currentUser(), m_context.getCurrentProject(),
+							  mountpoint);
+	}
+
+	/**
+	 * Gets all CmsMountPoints. 
+	 * All mountpoints will be returned.
+	 * 
+	 * @return the mountpoints - or null if they doesen't exists.
+	 */
+	public Hashtable getAllMountPoints()
+		throws CmsException {
+		return( c_rb.getAllMountPoints(m_context.currentUser(), 
+									   m_context.getCurrentProject()) );
+	}
 }

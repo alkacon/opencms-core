@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/01/04 11:56:59 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/04 15:32:54 $
  */
 interface I_CmsResourceBroker {
 
@@ -713,4 +713,70 @@ interface I_CmsResourceBroker {
 							String username, String newPassword)
 		throws CmsException;
 	
+    /**
+	 * Adds a new CmsMountPoint. 
+	 * A new mountpoint for a mysql filesystem is added.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * @param driver The driver for the db-system. 
+	 * @param connect The connectstring to access the db-system.
+	 * @param name A name to describe the mountpoint.
+	 */
+	public void addMountPoint(A_CmsUser currentUser, A_CmsProject currentProject, 
+							  String mountpoint, String driver, String connect,
+							  String name)
+		throws CmsException ;
+
+	/**
+	 * Gets a CmsMountPoint. 
+	 * A mountpoint will be returned.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * 
+	 * @return the mountpoint - or null if it doesen't exists.
+	 */
+	public A_CmsMountPoint readMountPoint(A_CmsUser currentUser, 
+										  A_CmsProject currentProject, 
+										  String mountpoint )
+		throws CmsException;
+	
+    /**
+	 * Deletes a CmsMountPoint. 
+	 * A mountpoint will be deleted.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 */
+	public void deleteMountPoint(A_CmsUser currentUser, A_CmsProject currentProject, 
+								 String mountpoint )
+		throws CmsException;
+
+	/**
+	 * Gets all CmsMountPoints. 
+	 * All mountpoints will be returned.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the mountpoints - or null if they doesen't exists.
+	 */
+	public Hashtable getAllMountPoints(A_CmsUser currentUser, A_CmsProject currentProject)
+		throws CmsException ;
 }
