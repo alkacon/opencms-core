@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2004/10/02 10:54:16 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/11/09 14:25:45 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -156,9 +156,13 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
      * @return String the modified filecontent
      */
     private String convertPageBody(String content, String fileName) {
+        
+        String nodeName = null;
+        
         // variables needed for the creation of <template> elements
         boolean createTemplateTags = false;
         Hashtable templateElements = new Hashtable();
+        
         // first check if any contextpaths are in the content String
         boolean found = false;
         for (int i = 0; i < m_webAppNames.size(); i++) {
@@ -167,9 +171,10 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
             }
         }
         // check if edittemplates are in the content string
-        if (content.indexOf("<edittemplate>") != -1) {
+        if (content.indexOf("<edittemplate>") != -1 || content.indexOf("<EDITTEMPLATE>") != -1) {
             found = true;
         }
+        
         // only build document when some paths were found or <edittemplate> is missing!
         if (found) {
             InputStream in = new ByteArrayInputStream(content.getBytes());
@@ -177,34 +182,56 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
             try {
                 // create DOM document
                 Document contentXml = A_CmsXmlContent.getXmlParser().parse(in);
+                
                 // get all <edittemplate> nodes to check their content
-                NodeList editNodes = contentXml.getElementsByTagName("edittemplate");
+                nodeName = "edittemplate";
+                NodeList editNodes = contentXml.getElementsByTagName(nodeName.toLowerCase());
+                if (editNodes == null || editNodes.getLength() == 0) {
+                    editNodes = contentXml.getElementsByTagName(nodeName.toUpperCase());
+                }
+                
                 // no <edittemplate> tags present, create them!
                 if (editNodes.getLength() < 1) {
                     if (DEBUG > 0) {
                         System.err.println("[" + this.getClass().getName() + ".convertPageBody()]: No <edittemplate> found, creating it.");
                     }
+                    
                     createTemplateTags = true;
-                    NodeList templateNodes = contentXml.getElementsByTagName("TEMPLATE");
+                    
+                    nodeName = "TEMPLATE";
+                    NodeList templateNodes = contentXml.getElementsByTagName(nodeName.toLowerCase());
+                    if (templateNodes == null || templateNodes.getLength() == 0) {
+                        templateNodes = contentXml.getElementsByTagName(nodeName.toUpperCase());
+                    }
+                    
                     // create an <edittemplate> tag for each <template> tag
                     for (int i = 0; i < templateNodes.getLength(); i++) {
+                        
                         // get the CDATA content of the <template> tags
                         editString = templateNodes.item(i).getFirstChild().getNodeValue();
                         templateString = editString;
+                        
                         // substitute the links in the <template> tag String
                         try {
                             templateString = CmsXmlTemplateLinkConverter.convertFromImport(templateString, m_webappUrl, fileName);
                         } catch (CmsException e) {
                             throw new CmsException("[" + this.getClass().getName() + ".convertPageBody()] can't parse the content: ", e);
                         }
+                        
                         // look for the "name" attribute of the <template> tag
                         NamedNodeMap attrs = templateNodes.item(i).getAttributes();
                         String templateName = "";
                         if (attrs.getLength() > 0) {
                             templateName = attrs.item(0).getNodeValue();
                         }
-                        // create the new <edittemplate> node                       
-                        Element newNode = contentXml.createElement("edittemplate");
+                        
+                        // create the new <edittemplate> node
+                        nodeName = "edittemplate";
+                        Element newNode = contentXml.createElement(nodeName.toLowerCase());
+                        if (newNode == null) {
+                            newNode = contentXml.createElement(nodeName.toUpperCase());
+                        }
+                        
                         CDATASection newText = contentXml.createCDATASection(editString);
                         newNode.appendChild(newText);
                         // set the "name" attribute, if necessary

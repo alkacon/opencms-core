@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/11/09 14:26:49 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -214,10 +214,10 @@ public abstract class A_CmsImport implements I_CmsImport {
                     System.err.println("Import: Immutable flag set for resource");
                 }
             } catch (CmsException e) {
-                // resourceNotImmutable will be true
+                // resourceNotImmutable will be true 
                 if (DEBUG > 0) {
                     System.err.println("Import: Immutable test caused exception " + e);
-                }
+                }                              
             } finally {
                 m_cms.getRequestContext().restoreSiteRoot();
             }
@@ -234,6 +234,8 @@ public abstract class A_CmsImport implements I_CmsImport {
         Iterator keys = m_linkStorage.keySet().iterator();
         int linksSize = m_linkStorage.size();
         int i = 0;
+        CmsResource resource = null;
+        
         // loop through all links to convert
         while (keys.hasNext()) {
             String key = (String)keys.next();
@@ -251,7 +253,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     CmsResource target = m_cms.readResource(link);
 
                     // create a new sibling as CmsResource                         
-                    CmsResource resource = new CmsResource(
+                    resource = new CmsResource(
                         new CmsUUID(), // structure ID is always a new UUID
                         target.getResourceId(), 
                         key,
@@ -276,8 +278,8 @@ public abstract class A_CmsImport implements I_CmsImport {
                     m_report.println();
                     m_report.print(m_report.key("report.convert_link_notfound") + " " + link, I_CmsReport.C_FORMAT_WARNING);
                     
-                    if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug("Link conversion failed: " + key + " -> " + link, ex);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Link conversion of " + resource.getRootPath() + " failed: " + key + " -> " + link, ex);
                     }
                 }
 
@@ -371,8 +373,14 @@ public abstract class A_CmsImport implements I_CmsImport {
                 return buffer;
             }
         } catch (FileNotFoundException fnfe) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("File not found: " + filename, fnfe);
+            }             
             m_report.println(fnfe);
         } catch (IOException ioe) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error reading file " + filename, ioe);
+            }             
             m_report.println(ioe);
         }
         // this will only be returned in case there was an exception
@@ -483,9 +491,12 @@ public abstract class A_CmsImport implements I_CmsImport {
             try {
                 m_cms.importAccessControlEntries(resource, m_acEntriesToCreate);
             } catch (CmsException exc) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error importing ACE of " + resource.getRootPath(), exc);
+                }                 
                 m_report.println(m_report.key("report.import_accesscontroldata_failed"), I_CmsReport.C_FORMAT_WARNING);
             }
-        } catch (Exception exc) {
+        } catch (Exception exc) {            
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_acEntriesToCreate = new Vector();
@@ -533,12 +544,12 @@ public abstract class A_CmsImport implements I_CmsImport {
                     m_report.print(m_report.key("report.dots"));
                     m_cms.createGroup(name, description, Integer.parseInt(flags), parentgroupName);
                     m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                } catch (CmsException exc) {
+                } catch (CmsException exc) {                     
                     m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
                 }
             }
 
-        } catch (Exception exc) {
+        } catch (Exception exc) {            
             m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
