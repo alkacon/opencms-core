@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/03/02 21:51:02 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/03/04 11:33:54 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -103,10 +103,13 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     private boolean m_errorPagesAreNotCommited = false; // should work for Tomcat 4.1
     
     /** The directory to store the generated JSP pages in (absolute path) */
-    private static String m_jspRepository = null;
+    private static String m_jspRepository;
     
     /** The directory to store the generated JSP pages in (relative path in web application */
-    private static String m_jspWebAppRepository = null;
+    private static String m_jspWebAppRepository;
+    
+    /** The resource loader configuration */
+    private ExtendedProperties m_configuration;
         
     /**
      * The constructor of the class is empty, the initial instance will be 
@@ -115,7 +118,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @see org.opencms.loader.CmsLoaderManager
      */
     public CmsJspLoader() {
-        // NOOP
+        m_configuration = new ExtendedProperties();
     }
     
     /**
@@ -162,7 +165,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @param online Flag to check if this is request is online or not
      * @return The full uri to the JSP
      */
-    public static String getJspUri(String name, boolean online) {
+    private String getJspUri(String name, boolean online) {
         StringBuffer result = new StringBuffer(64);
         result.append(m_jspWebAppRepository);
         result.append(online?"/online":"/offline");
@@ -300,17 +303,18 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     
     /** 
      * Initialize the ResourceLoader,
-     * here the configuration for the JSP repository (directories used) is set.
-     *
-     * @param configuration the OpenCms configuration 
+     * here the configuration for the JSP repository and the FlexCache is initialized.<p>
      */
-    public void init(ExtendedProperties configuration) {
-        m_jspRepository = OpenCms.getSystemInfo().getWebInfRfsPath();
+    public void initialize() {
+        m_jspRepository = m_configuration.getString("jsp.repository");
+        if (m_jspRepository == null) {
+            m_jspRepository = OpenCms.getSystemInfo().getWebInfRfsPath();
+        }
         if (m_jspRepository.indexOf("WEB-INF") >= 0) {
             // Should always be true, just make sure we don't generate an exception in untested environments
             m_jspRepository = m_jspRepository.substring(0, m_jspRepository.indexOf("WEB-INF")-1);
         }
-        m_jspWebAppRepository = configuration.getString("flex.jsp.repository", "/WEB-INF/jsp");
+        m_jspWebAppRepository = m_configuration.getString("jsp.folder", "/WEB-INF/jsp");
         m_jspRepository += m_jspWebAppRepository.replace('/', File.separatorChar);
         if (!m_jspRepository.endsWith(File.separator)) {
             m_jspRepository += File.separator;
@@ -322,8 +326,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         m_cache = (CmsFlexCache)OpenCms.getRuntimeProperty(CmsFlexCache.C_LOADER_CACHENAME);
         // Get the export URL from the runtime properties
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". JSP Loader           : JSP repository (absolute path): " + m_jspRepository);        
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". JSP Loader           : JSP repository (web application path): " + m_jspWebAppRepository);              
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : JSP repository (absolute path): " + m_jspRepository);        
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : JSP repository (web application path): " + m_jspWebAppRepository);              
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : " + this.getClass().getName() + " initialized");   
         }
         // Get the "error pages are commited or not" flag from the runtime properties
@@ -693,5 +697,22 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      */
     public boolean isUsingUriWhenLoadingTemplate() {
         return false;
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#addParameter(java.lang.String, java.lang.String)
+     */
+    public void addParameter(String paramName, String paramValue) {
+        m_configuration.addProperty(paramName, paramValue);
     }      
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#getConfiguration()
+     */
+    public ExtendedProperties getConfiguration() {
+        // return only a copy of the configuration
+        ExtendedProperties copy = new ExtendedProperties();
+        copy.combine(m_configuration);
+        return copy; 
+    }
 }

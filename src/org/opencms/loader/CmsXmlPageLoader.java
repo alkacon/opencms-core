@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/03/04 11:33:54 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,13 @@
 
 package org.opencms.loader;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
-
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -58,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -70,10 +69,30 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     public static final String C_TEMPLATE_ELEMENT = "__element";
 
     /**
+     * @see org.opencms.loader.I_CmsResourceLoader#addParameter(java.lang.String, java.lang.String)
+     */
+    public void addParameter(String paramName, String paramValue) {
+        // this resource loader requires no parameters     
+    }
+
+    /**
      * @see org.opencms.loader.I_CmsResourceLoader#destroy()
      */
     public void destroy() {
         // NOOP
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public byte[] dump(CmsObject cms, CmsResource resource, String element, Locale locale, HttpServletRequest req, HttpServletResponse res)
+    throws CmsException {
+        
+        // get the requested page
+        CmsXmlPage page = CmsXmlPage.read(cms, CmsFile.upgrade(resource, cms));
+
+        // get the appropriate content and convert it to bytes
+        return page.getContent(cms, element, locale).getBytes();
     }
 
     /**
@@ -91,6 +110,16 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
         CmsTemplateLoaderFacade loaderFacade = OpenCms.getLoaderManager().getTemplateLoaderFacade(cms, file);        
         loaderFacade.getLoader().export(cms, loaderFacade.getLoaderStartResource(), exportStream, req, res);
     }    
+
+    /**
+     * Will always return <code>null</code> since this loader does not 
+     * need to be cnofigured.<p>
+     * 
+     * @see org.opencms.loader.I_CmsResourceLoader#getConfiguration()
+     */
+    public ExtendedProperties getConfiguration() {
+        return null;
+    }
                
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#getLoaderId()
@@ -110,12 +139,33 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#init(ExtendedProperties)
+     * @see org.opencms.loader.I_CmsResourceLoader#initialize()
      */
-    public void init(ExtendedProperties configuration) {
+    public void initialize() {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : " + this.getClass().getName() + " initialized");
         }  
+    }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportEnabled()
+     */
+    public boolean isStaticExportEnabled() {
+        return true;
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isUsableForTemplates()
+     */
+    public boolean isUsableForTemplates() {
+        return false;
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isUsingUriWhenLoadingTemplate()
+     */
+    public boolean isUsingUriWhenLoadingTemplate() {
+        return false;
     }
     
     /**
@@ -161,39 +211,5 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
         if (result != null) {
             res.getOutputStream().write(result);
         }        
-    }
-
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    public byte[] dump(CmsObject cms, CmsResource resource, String element, Locale locale, HttpServletRequest req, HttpServletResponse res)
-    throws CmsException {
-        
-        // get the requested page
-        CmsXmlPage page = CmsXmlPage.read(cms, CmsFile.upgrade(resource, cms));
-
-        // get the appropriate content and convert it to bytes
-        return page.getContent(cms, element, locale).getBytes();
-    }
-    
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportEnabled()
-     */
-    public boolean isStaticExportEnabled() {
-        return true;
-    }
-
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#isUsableForTemplates()
-     */
-    public boolean isUsableForTemplates() {
-        return false;
-    }
-
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#isUsingUriWhenLoadingTemplate()
-     */
-    public boolean isUsingUriWhenLoadingTemplate() {
-        return false;
     }
 }

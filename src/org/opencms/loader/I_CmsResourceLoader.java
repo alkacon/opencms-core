@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/03/04 11:33:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since FLEX alpha 1
  * 
  * @see org.opencms.flex.CmsFlexRequest
@@ -78,88 +78,19 @@ public interface I_CmsResourceLoader {
     
     /** The name of the VFS property that steers the streaming */
     String C_LOADER_STREAMPROPERTY = "stream";
+        
+    /**
+     * Adds an initialize parameter to this resource loder.<p>
+     * 
+     * @param paramName the name of the parameter 
+     * @param paramValue the value for the parameter
+     */
+    void addParameter(String paramName, String paramValue);
     
     /** 
-     * Initialize the ResourceLoader.<p>
-     *
-     * @param configuration the OpenCms configuration 
+     * Destroys this ResourceLoder 
      */
-    void init(ExtendedProperties configuration);
-    
-    /** Destroy this ResourceLoder */
     void destroy();
-        
-    /** 
-     * Returns a String describing the ResourceLoader.<p>
-     * 
-     * @return a String describing the ResourceLoader
-     */
-    String getResourceLoaderInfo();
-    
-    /**
-     * Returns the id of the ResourceLoader.<p>
-     * 
-     * @return the id of the ResourceLoader
-     */
-    int getLoaderId();
-      
-    /**
-     * Basic top-page processing method for a I_CmsResourceLoader,
-     * this method is called if the page is called as a sub-element 
-     * on a page not already loded with a I_CmsResourceLoader.<p>
-     *
-     * @param cms the initialized CmsObject which provides user permissions
-     * @param resource the requested OpenCms VFS resource
-     * @param req the servlet request
-     * @param res the servlet response
-     * 
-     * @throws ServletException might be thrown by the servlet environment
-     * @throws IOException might be thrown by the servlet environment
-     * @throws CmsException in case of errors acessing OpenCms functions
-     * 
-     * @see #service(CmsObject, CmsResource, ServletRequest, ServletResponse)
-     */
-    void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
-    throws ServletException, IOException, CmsException;
-    
-    /**
-     * Static exports the contents of the requested file and it's sub-elements.<p>
-     *
-     * During static export, the resource content is written to 2 streams: 
-     * The export stream, and the http response output stream.
-     * This is required for "on demand" exporting of resources.<p> 
-     *
-     * @param cms the initialized CmsObject which provides user permissions
-     * @param resource the requested OpenCms VFS resource
-     * @param exportStream the stream to write the exported content to
-     * @param req the servlet request
-     * @param res the servlet response
-     * 
-     * @throws ServletException might be thrown in the process of including the sub element
-     * @throws IOException might be thrown in the process of including the sub element
-     * @throws CmsException in case something goes wrong
-     */    
-    void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
-    throws ServletException, IOException, CmsException;
-        
-    /**
-     * Does the job of including the requested resource, 
-     * this method is called directly if the element is 
-     * called as a sub-element from another I_CmsResourceLoader.<p>
-     * 
-     * @param cms used to access the OpenCms VFS
-     * @param resource the reqested resource in the VFS
-     * @param req the servlet request
-     * @param res the servlet response
-     * 
-     * @throws ServletException might be thrown by the servlet environment
-     * @throws IOException might be thrown by the servlet environment
-     * @throws CmsException in case of errors acessing OpenCms functions
-     * 
-     * @see org.opencms.flex.CmsFlexRequestDispatcher
-     */   
-    void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res) 
-    throws ServletException, IOException, CmsException;
      
     /**
      * Dumps the processed content of the the requested file (and it's sub-elements) to a String.<p>
@@ -186,6 +117,64 @@ public interface I_CmsResourceLoader {
     throws  ServletException, IOException, CmsException;
     
     /**
+     * Static exports the contents of the requested file and it's sub-elements.<p>
+     *
+     * During static export, the resource content is written to 2 streams: 
+     * The export stream, and the http response output stream.
+     * This is required for "on demand" exporting of resources.<p> 
+     *
+     * @param cms the initialized CmsObject which provides user permissions
+     * @param resource the requested OpenCms VFS resource
+     * @param exportStream the stream to write the exported content to
+     * @param req the servlet request
+     * @param res the servlet response
+     * 
+     * @throws ServletException might be thrown in the process of including the sub element
+     * @throws IOException might be thrown in the process of including the sub element
+     * @throws CmsException in case something goes wrong
+     */    
+    void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException, CmsException;
+
+    /**
+     * Returns the configuration of this resource loader,
+     * or <code>null</code> if the loader does not need to be configured.<p>
+     * 
+     * All elements in the configuration are key, value String pairs,
+     * set using the {@link I_CmsResourceLoader#addParameter(String, String)} method
+     * during initialization of the loader.<p>
+     * 
+     * Implementations will (should) not to return a direct reference to
+     * the internal configuration but just a copy of it, to avoid 
+     * unwanted external manipulation.<p>
+     * 
+     * @return the configuration of this resource loader, or <code>null</code>
+     */
+    ExtendedProperties getConfiguration();
+    
+    /**
+     * Returns the id of the ResourceLoader.<p>
+     * 
+     * @return the id of the ResourceLoader
+     */
+    int getLoaderId();
+        
+    /** 
+     * Returns a String describing the ResourceLoader.<p>
+     * 
+     * @return a String describing the ResourceLoader
+     */
+    String getResourceLoaderInfo();
+    
+    /** 
+     * Initialize this ResourceLoader.<p>
+     * 
+     * Before calling this method, use {@link #addParameter(String, String)} to 
+     * add initialization parameters.<p>
+     */
+    void initialize();
+    
+    /**
      * Signals if the loader implementation supports static export of resources.<p>
      * 
      * @return true if static export is supported, false otherwise
@@ -206,4 +195,42 @@ public interface I_CmsResourceLoader {
      * @return true if the resource URI is to be used, false if the template URI is to be used
      */
     boolean isUsingUriWhenLoadingTemplate();
+      
+    /**
+     * Basic top-page processing method for a I_CmsResourceLoader,
+     * this method is called if the page is called as a sub-element 
+     * on a page not already loded with a I_CmsResourceLoader.<p>
+     *
+     * @param cms the initialized CmsObject which provides user permissions
+     * @param resource the requested OpenCms VFS resource
+     * @param req the servlet request
+     * @param res the servlet response
+     * 
+     * @throws ServletException might be thrown by the servlet environment
+     * @throws IOException might be thrown by the servlet environment
+     * @throws CmsException in case of errors acessing OpenCms functions
+     * 
+     * @see #service(CmsObject, CmsResource, ServletRequest, ServletResponse)
+     */
+    void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException, CmsException;
+        
+    /**
+     * Does the job of including the requested resource, 
+     * this method is called directly if the element is 
+     * called as a sub-element from another I_CmsResourceLoader.<p>
+     * 
+     * @param cms used to access the OpenCms VFS
+     * @param resource the reqested resource in the VFS
+     * @param req the servlet request
+     * @param res the servlet response
+     * 
+     * @throws ServletException might be thrown by the servlet environment
+     * @throws IOException might be thrown by the servlet environment
+     * @throws CmsException in case of errors acessing OpenCms functions
+     * 
+     * @see org.opencms.flex.CmsFlexRequestDispatcher
+     */   
+    void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res) 
+    throws ServletException, IOException, CmsException;
 }

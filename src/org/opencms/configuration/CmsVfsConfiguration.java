@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/03/02 21:51:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/04 11:33:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.configuration;
 
 import org.opencms.file.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderManager;
+import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.digester.Digester;
 
 import org.dom4j.Element;
@@ -63,6 +65,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The node name of an individual resource type */
     protected static final String N_TYPE = "type";    
+    
+    /** The node name for parameters */
+    protected static final String N_PARAM = "param";     
     
     /** The man configuration node name */
     protected static final String N_VFS = "vfs";
@@ -96,11 +101,17 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         // add factory create method for "real" instance creation
         digester.addFactoryCreate("*/" + N_VFS, CmsVfsConfiguration.class);
         digester.addCallMethod("*/" + N_VFS, "initializeFinished");    
-        
-        // add rules for resource loaders
+
+        // creation of the loader manager
         digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCELOADERS, CmsLoaderManager.class);
-        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER, "addLoader", 1);
-        digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER, 0, A_CLASS);        
+        // add rules for resource loaders
+        digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER, A_CLASS, CmsConfigurationException.class);
+        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER + "/" + N_PARAM, "addParameter", 2);
+        digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER + "/" + N_PARAM, 0, A_NAME);
+        digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER + "/" + N_PARAM, 1);
+        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER, "initialize");
+        digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER, "addLoader");  
+        // loader manager finished
         digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCELOADERS, "setLoaderManager");
         
         // add rules for resource types
@@ -125,9 +136,21 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                 // not all positions might be occupied
                 continue;
             }
+            I_CmsResourceLoader loader = (I_CmsResourceLoader)loaders[i];            
             // add the loader node
-            Element loader = resourceloadersElement.addElement(N_LOADER);
-            loader.addAttribute(A_CLASS, loaders[i].getClass().getName());
+            Element loaderNode = resourceloadersElement.addElement(N_LOADER);
+            loaderNode.addAttribute(A_CLASS, loader.getClass().getName());
+            ExtendedProperties loaderConfiguratrion = loader.getConfiguration();
+            if (loaderConfiguratrion != null) {
+                Iterator it = loaderConfiguratrion.getKeys();
+                while (it.hasNext()) {
+                    String name = (String)it.next();
+                    String value = loaderConfiguratrion.getString(name);
+                    Element paramNode = loaderNode.addElement(N_PARAM);
+                    paramNode.addAttribute(A_NAME, name);
+                    paramNode.addText(value);
+                }
+            }
         }
         
         Element resourcetypesElement = vfs.addElement(N_RESOURCETYPES);
@@ -186,7 +209,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     public void setLoaderManager(CmsLoaderManager manager) {
         m_loaderManager = manager;
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". ResourceLoader init  : finished");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : finished");
         }
     }
 }

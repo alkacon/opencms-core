@@ -14,7 +14,10 @@
             <loader class="com.opencms.legacy.CmsXmlTemplateLoader" />            
             <loader class="org.opencms.loader.CmsDumpLoader" />
             <loader class="org.opencms.loader.CmsPointerLoader" />
-            <loader class="org.opencms.loader.CmsJspLoader" />
+            <loader class="org.opencms.loader.CmsJspLoader">
+            	<param name="jsp.repository">C:\TEMP</param>
+            	<param name="jsp.folder">/WEB-INF/export/</param>
+            </loader>
             <loader class="org.opencms.loader.CmsXmlPageLoader" />
         </resourceloaders>    
         <resourcetypes>

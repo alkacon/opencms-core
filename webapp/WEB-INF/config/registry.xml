@@ -1,23 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <registry>
 	<system>
-		<resourcetype>
-            <class>org.opencms.file.CmsResourceTypeXMLTemplate</class>
-			<class>org.opencms.file.CmsResourceTypeFolder</class>
-            <class>org.opencms.file.CmsResourceTypePlain</class>
-			<class>org.opencms.file.CmsResourceTypePointer</class>
-			<class>org.opencms.file.CmsResourceTypeBinary</class>
-			<class>org.opencms.file.CmsResourceTypeImage</class>
-			<class>org.opencms.file.CmsResourceTypeJsp</class>
-			<class>org.opencms.file.CmsResourceTypeXmlPage</class>
-		</resourcetype>
-		<resourceloader>
-            <class>com.opencms.legacy.CmsXmlTemplateLoader</class>
-			<class>org.opencms.loader.CmsDumpLoader</class>
-			<class>org.opencms.loader.CmsPointerLoader</class>
-			<class>org.opencms.loader.CmsJspLoader</class>
-			<class>org.opencms.loader.CmsXmlPageLoader</class>
-		</resourceloader>
 		<importexport>
             <handler>com.opencms.legacy.CmsCosImportExportHandler</handler>
             <handler>org.opencms.importexport.CmsVfsImportExportHandler</handler>

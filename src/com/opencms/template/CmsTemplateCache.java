@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2004/03/02 21:51:02 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2004/03/04 11:33:54 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
         }
             
         if(OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled() ) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Template cache       : Initialized successfully");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : XMLTemplate template cache initialized successfully");
         }
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2004/03/02 21:51:02 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/03/04 11:33:54 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.main.OpenCmsCore;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -54,7 +53,7 @@ import javax.servlet.ServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.1
  */
 public class CmsLoaderManager {
@@ -72,33 +71,33 @@ public class CmsLoaderManager {
      */
     public CmsLoaderManager() {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". ResourceLoader init  : starting");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : starting");
         }
         m_loaders = new I_CmsResourceLoader[16];
     }
     
-    /**
-     * Adds a resource loader from the XML configuration.<p>
-     * 
-     * @param clazz the class name of the resource loader to add
-     */
-    public void addLoader(String clazz) {
-        try {
-            I_CmsResourceLoader loaderInstance = (I_CmsResourceLoader)Class.forName(clazz).newInstance();
-            // HACK: I need this for loader init as long as loaders still need properties
-            loaderInstance.init(OpenCmsCore.getInstance().getConfiguration());                
-            addLoader(loaderInstance);
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". ResourceLoader loaded: " + clazz + " with id " + loaderInstance.getLoaderId());
-            }                
-        } catch (Throwable e) {
-            // loader class not found, ignore class
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                String errorMessage = "Error while initializing loader \"" + clazz + "\". Ignoring.";
-                OpenCms.getLog(this).error(errorMessage, e);
-            }
-        }        
-    }
+//    /**
+//     * Adds a resource loader from the XML configuration.<p>
+//     * 
+//     * @param clazz the class name of the resource loader to add
+//     */
+//    public void addLoader(I_CmsResourceLoader loader) {
+//        try {
+//            I_CmsResourceLoader loaderInstance = (I_CmsResourceLoader)Class.forName(clazz).newInstance();
+//            // HACK: I need this for loader init as long as loaders still need properties
+//            //  loaderInstance.init(OpenCmsCore.getInstance().getConfiguration());                
+//            addLoader(loaderInstance);
+//            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+//                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". ResourceLoader loaded: " + clazz + " with id " + loaderInstance.getLoaderId());
+//            }                
+//        } catch (Throwable e) {
+//            // loader class not found, ignore class
+//            if (OpenCms.getLog(this).isErrorEnabled()) {
+//                String errorMessage = "Error while initializing loader \"" + clazz + "\". Ignoring.";
+//                OpenCms.getLog(this).error(errorMessage, e);
+//            }
+//        }        
+//    }
 
 //    /**
 //     * Collects all available resource loaders from the registry at startup.<p>
@@ -209,7 +208,7 @@ public class CmsLoaderManager {
      *
      * @param loader the loader to add
      */
-    private void addLoader(I_CmsResourceLoader loader) {
+    public void addLoader(I_CmsResourceLoader loader) {
         // add the loader to the internal list of loaders
         int pos = loader.getLoaderId();
         if (pos > m_loaders.length) {
@@ -225,5 +224,8 @@ public class CmsLoaderManager {
             }
             m_includeExtensions.add(loader);
         }
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : Adding " + loader.getClass().getName() + " with id " + loader.getLoaderId());
+        }    
     }
 }

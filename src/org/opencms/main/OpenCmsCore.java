@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/03/02 21:53:45 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2004/03/04 11:34:18 $
+ * Version: $Revision: 1.98 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.97 $
+ * @version $Revision: 1.98 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -131,9 +131,6 @@ public final class OpenCmsCore {
 
     /** Member variable to store instances to modify resources */
     private List m_checkFile;
-
-    /** The OpenCms configuration read from <code>opencms.properties</code> */
-    private ExtendedProperties m_configuration;
 
     /** The cron table to use with the scheduler */
     private CmsCronTable m_cronTable;
@@ -545,17 +542,6 @@ public final class OpenCmsCore {
      */
     protected void fireCmsEvent(CmsObject cms, int type, java.util.Map data) {
         fireCmsEvent(new CmsEvent(cms, type, data));
-    }
-
-    /**
-     * This method returns the runtime configuration.
-     * 
-     * HACK: I need this for loader init as long as loaders still need properties
-     * 
-     * @return The runtime configuration.
-     */
-    public ExtendedProperties getConfiguration() {
-        return m_configuration;
     }
 
     /**
@@ -1099,10 +1085,6 @@ public final class OpenCmsCore {
         // read the default user configuration
         m_defaultUsers = CmsDefaultUsers.initialize(configuration);
 
-        // save the configuration
-        // HACK: I need this for loader init as long as loaders still need properties
-        m_configuration = configuration;        
-        
         // try to initialize the flex cache
         try {
             if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/02/27 14:35:36 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/03/04 11:33:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
@@ -111,16 +111,20 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     private static CmsElementCache m_elementCache;
 
     /** The template cache that holds all cached templates */
-    protected static I_CmsTemplateCache m_templateCache = new CmsTemplateCache();
+    private static I_CmsTemplateCache m_templateCache;
     
     /** The variant dependencies for the element cache */
     private static Hashtable m_variantDeps;
+    
+    /** The resource loader configuration */
+    private ExtendedProperties m_configuration;
         
     /**
      * The constructor of the class is empty and does nothing.
      */
     public CmsXmlTemplateLoader() {
-        // NOOP
+        m_templateCache = new CmsTemplateCache();
+        m_configuration = new ExtendedProperties();
     }
     
     /**
@@ -592,22 +596,20 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     }
     
     /** 
-     * Initialize the ResourceLoader.<p>
-     * 
-     * @param configuration the OpenCms configuration 
+     * Initialize the ResourceLoader.<p> 
      */
-    public void init(ExtendedProperties configuration) {
+    public void initialize() {
         // Check, if the element cache should be enabled
-        boolean enableElementCache = configuration.getBoolean("elementcache.enabled", false);
+        boolean elementCacheEnabled = m_configuration.getBoolean("elementcache.enabled", false);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Element cache        : " + (enableElementCache ? "enabled" : "disabled"));
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : XMLTemplate element cache " + (elementCacheEnabled ? "enabled" : "disabled"));
         }
-        if (enableElementCache) {
+        if (elementCacheEnabled) {
             try {
-                m_elementCache = new CmsElementCache(configuration.getInteger("elementcache.uri", 10000), configuration.getInteger("elementcache.elements", 50000), configuration.getInteger("elementcache.variants", 100));
+                m_elementCache = new CmsElementCache(m_configuration.getInteger("elementcache.uri", 10000), m_configuration.getInteger("elementcache.elements", 50000), m_configuration.getInteger("elementcache.variants", 100));
             } catch (Exception e) {
                 if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Element cache        : non-critical error " + e.toString());
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Loader init          : XMLTemplate element cache non-critical error " + e.toString());
                 }
             }
             m_variantDeps = new Hashtable();
@@ -946,5 +948,22 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         } else {
             return null;
         }
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#addParameter(java.lang.String, java.lang.String)
+     */
+    public void addParameter(String paramName, String paramValue) {
+        m_configuration.addProperty(paramName, paramValue);        
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#getConfiguration()
+     */
+    public ExtendedProperties getConfiguration() {
+        // return only a copy of the configuration
+        ExtendedProperties copy = new ExtendedProperties();
+        copy.combine(m_configuration);
+        return copy; 
     }
 }
