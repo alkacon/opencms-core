@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/08/22 14:04:11 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.49 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.50 $ $Date: 2003/08/22 14:04:11 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault {
     
@@ -177,6 +177,16 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
 
         // get the cancel parameter
         boolean cancelUpload = "yes".equals(parameters.get(CmsNewResourceUpload.C_PARAM_CANCEL));
+        
+        // display upload form with limitation of file size
+        if (maxFileSize > 0) {
+            xmlTemplateDocument.setData("maxfilesize", "" + maxFileSize);
+            String limitation = xmlTemplateDocument.getProcessedDataValue("filesize_limited");
+            xmlTemplateDocument.setData("limitation", limitation);
+        }
+        else {
+            xmlTemplateDocument.setData("limitation", "");
+        }
 
         if (cancelUpload) {
             // the resource to upload exists, the user choosed
@@ -383,17 +393,6 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
                         return null;
                     }
                 }
-            }
-        }
-        // display upload form with limitation of file size
-        else {
-            if (maxFileSize > 0) {
-                xmlTemplateDocument.setData("maxfilesize", "" + maxFileSize);
-                String limitation = xmlTemplateDocument.getProcessedDataValue("filesize_limited");
-                xmlTemplateDocument.setData("limitation", limitation);
-            }
-            else {
-                xmlTemplateDocument.setData("limitation", "");
             }
         }
         if(filename != null) {
