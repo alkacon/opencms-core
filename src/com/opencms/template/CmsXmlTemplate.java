@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/08/08 14:08:29 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2000/12/19 09:42:09 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.42 $ $Date: 2000/08/08 14:08:29 $
+ * @version $Revision: 1.43 $ $Date: 2000/12/19 09:42:09 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
 	
@@ -516,13 +516,16 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 		String servletPath = orgReq.getServletPath() + "/";
 
 		// Get the user's browser
-		String browser = orgReq.getHeader("user-agent");                
+		String browser = orgReq.getHeader("user-agent");
+		if(browser == null) {
+			// the browser is unknown - return the ns-style
+			return styleNS;
+		}
 		if(browser.indexOf("MSIE") >-1) {
 			return servletPath + styleIE;
 		} else {
 			return servletPath + styleNS;
 		}
-			
 	}
 	/**
 	 * Find the corresponding template class to be loaded.
