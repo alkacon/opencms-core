@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/11/13 10:29:26 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.28 $ $Date: 2003/11/08 10:32:44 $
+ * @version $Revision: 1.29 $ $Date: 2003/11/13 10:29:26 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -290,27 +290,30 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        if (c_queries != null) {
-            c_queries.clear();
+        try {
+            if (c_queries != null) {
+                c_queries.clear();
+            }
+            
+            if (m_cachedQueries != null) {
+                m_cachedQueries.clear();
+            }
+            
+            if (m_poolUrls != null) {
+                m_poolUrls.clear();
+            }
+            
+            if (m_reservedPoolUrls != null) {
+                m_reservedPoolUrls.clear();
+            }
+            
+            c_queries = null;
+            m_cachedQueries = null;
+            m_poolUrls = null;
+            m_reservedPoolUrls = null;
+        } catch (Throwable t) {
+            // ignore
         }
-
-        if (m_cachedQueries != null) {
-            m_cachedQueries.clear();
-        }
-
-        if (m_poolUrls != null) {
-            m_poolUrls.clear();
-        }
-
-        if (m_reservedPoolUrls != null) {
-            m_reservedPoolUrls.clear();
-        }
-
-        c_queries = null;
-        m_cachedQueries = null;
-        m_poolUrls = null;
-        m_reservedPoolUrls = null;
-
         super.finalize();
     }
 

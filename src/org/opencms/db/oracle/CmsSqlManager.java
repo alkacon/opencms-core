@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/22 09:27:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/11/13 10:29:27 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the Oracle/OCI package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2003/09/22 09:27:12 $ 
+ * @version $Revision: 1.11 $ $Date: 2003/11/13 10:29:27 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
@@ -66,11 +66,14 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        if (c_queries != null) {
-            c_queries.clear();
+        try {
+            if (c_queries != null) {
+                c_queries.clear();
+            }
+            c_queries = null;
+        } catch (Throwable t) {
+            // ignore
         }
-        c_queries = null;
-        
         super.finalize();
     }    
 

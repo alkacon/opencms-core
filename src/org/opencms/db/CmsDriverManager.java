@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/12 17:36:04 $
- * Version: $Revision: 1.295 $
+ * Date   : $Date: 2003/11/13 10:29:26 $
+ * Version: $Revision: 1.296 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.295 $ $Date: 2003/11/12 17:36:04 $
+ * @version $Revision: 1.296 $ $Date: 2003/11/13 10:29:26 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2841,30 +2841,35 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        clearcache();
-
-        m_projectDriver.destroy();
-        m_userDriver.destroy();
-        m_vfsDriver.destroy();
-        m_workflowDriver.destroy();
-        m_backupDriver.destroy();
-
-        m_userCache = null;
-        m_groupCache = null;
-        m_userGroupsCache = null;
-        m_projectCache = null;
-        m_propertyCache = null;
-        m_propertyDefCache = null;
-        m_propertyDefVectorCache = null;
-        m_resourceCache = null;
-        m_resourceListCache = null;
-        m_accessControlListCache = null;
-
-        m_projectDriver = null;
-        m_userDriver = null;
-        m_vfsDriver = null;
-        m_workflowDriver = null;
-        m_backupDriver = null;
+        try {
+            clearcache();
+            
+            m_projectDriver.destroy();
+            m_userDriver.destroy();
+            m_vfsDriver.destroy();
+            m_workflowDriver.destroy();
+            m_backupDriver.destroy();
+            
+            m_userCache = null;
+            m_groupCache = null;
+            m_userGroupsCache = null;
+            m_projectCache = null;
+            m_propertyCache = null;
+            m_propertyDefCache = null;
+            m_propertyDefVectorCache = null;
+            m_resourceCache = null;
+            m_resourceListCache = null;
+            m_accessControlListCache = null;
+            
+            m_projectDriver = null;
+            m_userDriver = null;
+            m_vfsDriver = null;
+            m_workflowDriver = null;
+            m_backupDriver = null;
+        } catch (Throwable t) {
+            // ignore
+        }
+        super.finalize();
     }
 
     /**

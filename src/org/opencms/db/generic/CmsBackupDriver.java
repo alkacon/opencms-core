@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/11/10 08:12:57 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2003/11/13 10:29:26 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.73 $ $Date: 2003/11/10 08:12:57 $
+ * @version $Revision: 1.74 $ $Date: 2003/11/13 10:29:26 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -270,12 +270,13 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        if (m_sqlManager != null) {
-            m_sqlManager.finalize();
+        try {
+            m_sqlManager = null;
+            m_driverManager = null;
+        } catch (Throwable t) {
+            // ignore
         }
-
-        m_sqlManager = null;
-        m_driverManager = null;
+        super.finalize();
     }
 
     /**

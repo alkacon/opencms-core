@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronTable.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/11/13 10:29:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.dom4j.Element;
  * Describes a complete crontable with cronentries.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.3 $ $Date: 2003/11/03 09:05:53 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/13 10:29:27 $
  * @since 5.1.12
  */
 public class CmsCronTable extends Object {
@@ -74,9 +74,14 @@ public class CmsCronTable extends Object {
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        if (m_cronEntries != null) {
-            m_cronEntries.clear();
+        try {
+            if (m_cronEntries != null) {
+                m_cronEntries.clear();
+            }
+        } catch (Throwable t) {
+            // ignore
         }
+        super.finalize();
     }
 
     /**

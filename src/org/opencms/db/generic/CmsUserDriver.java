@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/11/10 08:12:57 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2003/11/13 10:29:26 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.45 $ $Date: 2003/11/10 08:12:57 $
+ * @version $Revision: 1.46 $ $Date: 2003/11/13 10:29:26 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -385,12 +385,13 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        if (m_sqlManager != null) {
-            m_sqlManager.finalize();
+        try {
+            m_sqlManager = null;
+            m_driverManager = null;
+        } catch (Throwable t) {
+            // ignore
         }
-
-        m_sqlManager = null;
-        m_driverManager = null;
+        super.finalize();
     }
 
     /** (non-Javadoc)

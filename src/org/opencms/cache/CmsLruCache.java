@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/11/13 10:29:27 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.opencms.main.OpenCms;
  *
  * @see org.opencms.cache.I_CmsLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsLruCache extends java.lang.Object {
     
@@ -456,7 +456,11 @@ public class CmsLruCache extends java.lang.Object {
      * @throws Throwable if something goes wring
      */
     protected void finalize() throws Throwable {
-        this.clear();
+        try {
+            this.clear();
+        } catch (Throwable t) {
+            // ignore
+        }
         super.finalize();
     }
     

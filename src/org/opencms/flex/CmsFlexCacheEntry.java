@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/11/13 10:29:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.ServletException;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
     
@@ -451,11 +451,14 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws java.lang.Throwable {
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Finalizing FlexCache entry with id: " + m_id);
+        try {
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Finalizing FlexCache entry with id: " + m_id);
+            }        
+            clear();
+        } catch (Throwable t) {
+            // ignore
         }
-        
-        clear();
         super.finalize();      
     }
     

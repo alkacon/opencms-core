@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/18 16:24:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/11/13 10:29:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the MySQL driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/09/18 16:24:55 $ 
+ * @version $Revision: 1.8 $ $Date: 2003/11/13 10:29:27 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
@@ -68,11 +68,14 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        if (c_queries != null) {
-            c_queries.clear();
+        try {
+            if (c_queries != null) {
+                c_queries.clear();
+            }
+            c_queries = null;
+        } catch (Throwable t) {
+            // ignore
         }
-        c_queries = null;
-        
         super.finalize();
     }    
 
