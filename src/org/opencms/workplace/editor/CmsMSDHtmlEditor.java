@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/12/10 10:35:01 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/12/10 14:22:56 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1.12
  */
@@ -162,21 +162,25 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
      */
     protected String prepareContent(boolean save) {
         String content = getParamContent();
+        String contentLowerCase = content.toLowerCase();
+        int indexBodyStart = contentLowerCase.indexOf("<body>");
         boolean isBrowserNS = BROWSER_NS.equals(getBrowserType());
         if ("edit".equals(getParamEditormode()) || isBrowserNS || save) {
             // editor is in text mode or content should be saved
-            if (content.indexOf("<body>") != -1) {
+            if (indexBodyStart != -1) {
                 // cut tags which are unwanted for text editor
-                content = content.substring(content.indexOf("<body>") + 6);
-                content = content.substring(0, content.indexOf("</body>"));
+                content = content.substring(indexBodyStart + 6);
+                contentLowerCase = contentLowerCase.substring(indexBodyStart + 6);
+                content = content.substring(0, contentLowerCase.indexOf("</body>"));
             }           
         } else {
             // editor is in html mode, add tags for stylesheet
             String stylesheet = getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamPagetemplate(), "");
-            if (content.indexOf("<body>") != -1) {
+            if (indexBodyStart != -1) {
                 // first delete the old tags
-                content = content.substring(content.indexOf("<body>") + 6);
-                content = content.substring(0, content.indexOf("</body>"));
+                content = content.substring(indexBodyStart + 6);
+                contentLowerCase = contentLowerCase.substring(indexBodyStart + 6);
+                content = content.substring(0, contentLowerCase.indexOf("</body>"));
             }      
             if (!"".equals(stylesheet)) {
                 // create a head with stylesheet for template and base URL to display images correctly
