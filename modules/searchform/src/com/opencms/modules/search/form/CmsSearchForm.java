@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/modules/searchform/src/com/opencms/modules/search/form/Attic/CmsSearchForm.java,v $
-* Date   : $Date: 2002/02/19 13:23:46 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/05/10 09:02:20 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -32,6 +32,7 @@ import java.io.*;
 import com.opencms.template.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
+import com.opencms.util.*;
 
 import java.net.*;
 import java.util.*;
@@ -44,7 +45,7 @@ import java.lang.reflect.*;
  * of the Module.
  *
  * @author    Markus Fabritius
- * @version $Revision: 1.4 $ $Date: 2002/02/19 13:23:46 $
+ * @version $Revision: 1.5 $ $Date: 2002/05/10 09:02:20 $
  */
 public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate implements I_CmsSearchConstant {
 
@@ -77,7 +78,7 @@ public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate imple
 	 * @param elementName       Element name of this template in our parent template
 	 * @param parameters        Hashtable with all template class parameters
 	 * @param templateSelector  template section that should be processed
-     *
+         *
 	 * @return                  The content value
 	 * @exception CmsException  Throws Cms Exception
 	 * @see                     getContent(CmsObject cms, String templateFile, String
@@ -153,155 +154,150 @@ public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate imple
 			c_areaSection = OpenCms.getRegistry().getModuleParameterString(
 				C_PARAM_MODULE_NAME, C_PARAM_AREA_SECTION);
 		}
-		/*
-		 *  System.out.println("Init Parameter:\n----------------\nc_contentDefinition: "+c_contentDefinition+
-		 *  "\nc_configFile: "+c_configFile+"\nc_areaField: "+c_areaField+"\nc_match: "+c_match+
-		 *  "\nc_navigationRange: "+String.valueOf(c_navigationRange)+"\nc_areaSection: "+c_areaSection+
-		 *  "\nc_parsingUrl: "+c_parsingUrl);
-		 */
 	}
 
 
-	/**
+    /**
      * Set selectboxes for match per page and restrict if the variable set in the
      * administration of the module. For processing the correspond datablock set in the
      * template.
      *
-	 * @param cms       CmsObject Object for accessing system resources
-	 * @param template  the current used template
-	 */
-	private void setSeparateSelectbox(CmsObject cms, CmsXmlTemplateFile template) {
-		try {
-			if (c_match.indexOf(C_PARAM_SEARCHENGINE_TOKEN) != -1) {
-				template.setData("setMatchPerPage", template.getData("selectMatch"));
-			}
-			if (c_areaField) {
-				template.setData("setSelectForRestrict", template.getData("selectRestrict"));
-			}
-		} catch (Exception e) {
-			System.out.println("setSeparateSelectbox::set tempalte data failed, print Stack Trace ...");
-			e.printStackTrace();
-		}
+     * @param cms       CmsObject Object for accessing system resources
+     * @param template  the current used template
+     */
+     private void setSeparateSelectbox(CmsObject cms, CmsXmlTemplateFile template) {
+        try {
+            if (c_match.indexOf(C_PARAM_SEARCHENGINE_TOKEN) != -1) {
+	      template.setData("setMatchPerPage", template.getData("selectMatch"));
+            }
+	    if (c_areaField) {
+	      template.setData("setSelectForRestrict", template.getData("selectRestrict"));
+            }
+         } catch (Exception e) {
+	      System.out.println("setSeparateSelectbox::set tempalte data failed, print Stack Trace ...");
+              e.printStackTrace();
+         }
+     }
 
-	}
-
-	/**
+    /**
      * Set the head of the search result into the template.
      *
-	 * @param cms          CmsObject Object for accessing system resources
-	 * @param cd           Content definition object
-	 * @param searchModul  class name of the searchengine class
-	 * @param getResult    vector of the result set
-	 * @param template     the current used template
-	 */
-	public void setSearchResultHead(CmsObject cms, Object cd, Class searchModul, Vector getResult, CmsXmlTemplateFile template) {
-		try {
-			cd = searchModul.newInstance();
-			cd = (I_CmsSearchEngine) getResult.elementAt(0);
-		} catch (Exception e) {
-			logView("setSearchResultBody:: Fatal Error to create new Instance, print stack trace now...");
-			e.printStackTrace();
-		}
-		template.setData("searchword", ((I_CmsSearchEngine) cd).getSearchWord());
-		template.setData("lastword", ((I_CmsSearchEngine) cd).getSearchWord());
-		template.setData("first", String.valueOf(((I_CmsSearchEngine) cd).getFirstDisplay()));
-		template.setData("last", String.valueOf(((I_CmsSearchEngine) cd).getLastDisplay()));
-		template.setData("match", String.valueOf(((I_CmsSearchEngine) cd).getMatch()));
-		template.setData("pages", String.valueOf(((I_CmsSearchEngine) cd).getPages()));
+     * @param cms          CmsObject Object for accessing system resources
+     * @param cd           Content definition object
+     * @param searchModul  class name of the searchengine class
+     * @param getResult    vector of the result set
+     * @param template     the current used template
+     */
+     public void setSearchResultHead(CmsObject cms, Object cd, Class searchModul, Vector getResult, CmsXmlTemplateFile template) {
+        try {
+	    cd = searchModul.newInstance();
+            cd = (I_CmsSearchEngine) getResult.elementAt(0);
+        } catch (Exception e) {
+            System.out.println("setSearchResultBody:: Fatal Error to create new Instance, print stack trace now...");
+	    e.printStackTrace();
 	}
+        template.setData("searchword", ((I_CmsSearchEngine) cd).getSearchWord());
+        template.setData("lastword", ((I_CmsSearchEngine) cd).getSearchWord());
+	template.setData("first", String.valueOf(((I_CmsSearchEngine) cd).getFirstDisplay()));
+	template.setData("last", String.valueOf(((I_CmsSearchEngine) cd).getLastDisplay()));
+	template.setData("match", String.valueOf(((I_CmsSearchEngine) cd).getMatch()));
+	template.setData("pages", String.valueOf(((I_CmsSearchEngine) cd).getPages()));
+    }
 
-	/**
+    /**
      * Set the body of the search result into the template.
      *
-	 * @param cms          CmsObject Object for accessing system resources
-	 * @param cd           Content definition object
-	 * @param searchModul  class name of the searchengine class
-	 * @param getResult    vector of the result set
-	 * @param template     the current used template
-	 * @param parameters   Hashtable with all template class parameters
-	 * @param page         the current page of the search result
-	 */
-	public void setSearchResultBody(CmsObject cms, Object cd, Class searchModul, Vector getResult, CmsXmlTemplateFile template, Hashtable parameters, String page) {
-		String list = "";
-		String parsingUrl = "";
-		String tempParsing = "";
-		String format = (String) parameters.get(C_PARAM_SEARCHFORM_FORMAT);
-		String match = (String) parameters.get(C_PARAM_SEARCHFORM_MATCH_PER_PAGE);
-		int matchPerPage = 0;
-		int counter = 1;
-		int compare = 0;
-		int pageset = 0;
+     * @param cms          CmsObject Object for accessing system resources
+     * @param cd           Content definition object
+     * @param searchModul  class name of the searchengine class
+     * @param getResult    vector of the result set
+     * @param template     the current used template
+     * @param parameters   Hashtable with all template class parameters
+     * @param page         the current page of the search result
+     */
+     public void setSearchResultBody(CmsObject cms, Object cd, Class searchModul, Vector getResult, CmsXmlTemplateFile template, Hashtable parameters, String page) {
+     	String list = "";
+      	String parsingUrl = "";
+      	String tempParsing = "";
+      	String format = (String) parameters.get(C_PARAM_SEARCHFORM_FORMAT);
+      	String match = (String) parameters.get(C_PARAM_SEARCHFORM_MATCH_PER_PAGE);
+      	int matchPerPage = 0;
+      	int counter = 1;
+      	int compare = 0;
+      	int pageset = 0;
+        int startIndex = 0;
 
-		if (match == null) {
-			matchPerPage = (c_match.indexOf(C_PARAM_SEARCHENGINE_TOKEN) == -1) ? Integer.parseInt(c_match) : Integer.parseInt(c_match.substring(0, c_match.indexOf(C_PARAM_SEARCHENGINE_TOKEN)));
-		} else {
-			matchPerPage = Integer.parseInt(match);
-		}
-
-		try {
-			cd = searchModul.newInstance();
-			cd = (I_CmsSearchEngine) getResult.elementAt(0);
-			pageset = ((I_CmsSearchEngine) cd).getPages();
-		} catch (Exception e) {
-			System.out.println("setSearchResultBody:: Fatal Error to create new Instance , print stack trace now...");
-			e.printStackTrace();
-		}
-		if (page != null) {
-			compare = Integer.parseInt(page);
-			for (int i = 1; i <= pageset; i++) {
-				if (compare == i) {
-					counter = ((i * matchPerPage) - (matchPerPage - 1));
-				}
-			}
-		}
-
-		try {
-			for (int i = 1; i < getResult.size(); i++) {
-				cd = searchModul.newInstance();
-				cd = (I_CmsSearchEngine) getResult.elementAt(i);
-				parsingUrl = ((I_CmsSearchEngine) cd).getUrl();
-				try {
-					if ((c_parsingUrl != null) && (!c_parsingUrl.equals(""))) {
-						tempParsing = parsingUrl.substring(0, c_parsingUrl.length());
-						if (tempParsing.equalsIgnoreCase(c_parsingUrl)) {
-							parsingUrl = parsingUrl.substring(c_parsingUrl.length());
-						}
-					}
-				} catch (Exception e) {
-					System.out.println("Error in setSearchResultBody, parsing Excerpt Url print Stack Trace ...");
-					e.printStackTrace();
-				}
-				// check for format ( long ) fill template body
-				if ((format == null) || format.equals("long")) {
-					template.setData("number", counter + "");
-					template.setData("url", ((I_CmsSearchEngine) cd).getUrl());
-					template.setData("url_description", parsingUrl);
-					template.setData("title", ((I_CmsSearchEngine) cd).getTitle());
-					template.setData("percent", String.valueOf(((I_CmsSearchEngine) cd).getPercentMatch()));
-					template.setData("excerpt", ((I_CmsSearchEngine) cd).getExcerpt());
-					template.setData("size", String.valueOf(((I_CmsSearchEngine) cd).getSize()));
-					template.setData("modified", ((I_CmsSearchEngine) cd).getModified());
-					String longrow = template.getProcessedDataValue("longrow");
-					list += longrow;
-					// check for format ( short ) fill template body
-				} else {
-					template.setData("number", counter + "");
-					template.setData("url", ((I_CmsSearchEngine) cd).getUrl());
-					template.setData("url_description", parsingUrl);
-					template.setData("title", ((I_CmsSearchEngine) cd).getTitle());
-					template.setData("percent", String.valueOf(((I_CmsSearchEngine) cd).getPercentMatch()));
-					String shortrow = template.getProcessedDataValue("shortrow");
-					list += shortrow;
-				}
-				counter++;
-			}
-		} catch (Exception e) {
-			System.out.println("setSearchResultBody:: Fatal Error , for seting result. Print stack trace now...");
-			e.printStackTrace();
-		}
-		template.setData("resultlist", list);
+        if (match == null) {
+	  matchPerPage = (c_match.indexOf(C_PARAM_SEARCHENGINE_TOKEN) == -1) ? Integer.parseInt(c_match) : Integer.parseInt(c_match.substring(0, c_match.indexOf(C_PARAM_SEARCHENGINE_TOKEN)));
+	} else {
+	  matchPerPage = Integer.parseInt(match);
 	}
 
+        try {
+	  cd = searchModul.newInstance();
+	  cd = (I_CmsSearchEngine) getResult.elementAt(0);
+	  pageset = ((I_CmsSearchEngine) cd).getPages();
+	} catch (Exception e) {
+	  System.out.println("setSearchResultBody:: Fatal Error to create new Instance , print stack trace now...");
+	  e.printStackTrace();
+	}
+
+        if (page != null) {
+	  compare = Integer.parseInt(page);
+	  for (int i = 1; i <= pageset; i++) {
+	    if (compare == i) {
+	      counter = ((i * matchPerPage) - (matchPerPage - 1));
+            }
+          }
+	}
+	try {
+	  for (int i = 1; i < getResult.size(); i++) {
+	    cd = searchModul.newInstance();
+	    cd = (I_CmsSearchEngine) getResult.elementAt(i);
+	    parsingUrl = ((I_CmsSearchEngine) cd).getUrl();
+            try {
+	      if ((c_parsingUrl != null) && (!c_parsingUrl.equals("")) && (!c_parsingUrl.equals("none"))) {
+		startIndex = parsingUrl.indexOf(c_parsingUrl);
+                if(startIndex!=-1){
+                  StringBuffer tempWord = new StringBuffer(parsingUrl);
+                  tempWord.delete(startIndex,startIndex+(c_parsingUrl.length()));
+                  parsingUrl = tempWord.toString();
+                }
+              }
+            } catch (Exception e) {
+              System.out.println("Error in setSearchResultBody, parsing Excerpt Url print Stack Trace ...");
+              e.printStackTrace();
+	    }
+	    // check for format ( long ) fill template body
+	    if ((format == null) || format.equals("long")) {
+	      template.setData("number", counter + "");
+	      template.setData("url", ((I_CmsSearchEngine) cd).getUrl());
+	      template.setData("url_description", parsingUrl);
+	      template.setData("title", ((I_CmsSearchEngine) cd).getTitle());
+              template.setData("percent", String.valueOf(((I_CmsSearchEngine) cd).getPercentMatch()));
+              template.setData("excerpt", ((I_CmsSearchEngine) cd).getExcerpt());
+              template.setData("size", String.valueOf(((I_CmsSearchEngine) cd).getSize()));
+              template.setData("modified", ((I_CmsSearchEngine) cd).getModified());
+              String longrow = template.getProcessedDataValue("longrow");
+              list += longrow;
+            // check for format ( short ) fill template body
+            } else {
+	      template.setData("number", counter + "");
+              template.setData("url", ((I_CmsSearchEngine) cd).getUrl());
+              template.setData("url_description", parsingUrl);
+              template.setData("title", ((I_CmsSearchEngine) cd).getTitle());
+              template.setData("percent", String.valueOf(((I_CmsSearchEngine) cd).getPercentMatch()));
+              String shortrow = template.getProcessedDataValue("shortrow");
+              list += shortrow;
+            }
+            counter++;
+          }
+        } catch (Exception e) {
+	  System.out.println("setSearchResultBody:: Fatal Error , for seting result. Print stack trace now...");
+	  e.printStackTrace();
+	}
+	  template.setData("resultlist", list);
+      }
 
 	/**
 	 * Called while generating the template content from CmsXmlFormTemplateFile.
@@ -409,10 +405,10 @@ public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate imple
 	 * @param parameters       Hashtable with all template class parameters
 	 * @param match            total hit of search result
 	 *
-     * @return                 return the current query string for the searchengine
+         * @return                 return the current query string for the searchengine
 	 */
 	private String setQuery(CmsObject cms, Hashtable parameters, String match, String getPage) {
-		String word = (String) parameters.get(C_PARAM_SEARCHFORM_WORD);
+		String word = Encoder.escapeWBlanks((String) parameters.get(C_PARAM_SEARCHFORM_WORD));
 		String method = (String) parameters.get(C_PARAM_SEARCHFORM_METHOD);
 		String format = (String) parameters.get(C_PARAM_SEARCHFORM_FORMAT);
 		String sort = (String) parameters.get(C_PARAM_SEARCHFORM_SORT);
@@ -420,16 +416,16 @@ public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate imple
 
 		StringBuffer query = new StringBuffer();
 		if (restrict != null) {
-			query.append((C_PARAM_SEARCHFORM_RESTRICT + "=" + restrict + "&"));
+			query.append((C_PARAM_SEARCHFORM_RESTRICT + "=" + Encoder.escapeWBlanks(restrict) + "&"));
 		}
 		if (method != null) {
-			query.append((C_PARAM_SEARCHFORM_METHOD + "=" + method + "&"));
+			query.append((C_PARAM_SEARCHFORM_METHOD + "=" + Encoder.escapeWBlanks(method) + "&"));
 		}
 		if (format != null) {
-			query.append((C_PARAM_SEARCHFORM_FORMAT + "=" + format + "&"));
+			query.append((C_PARAM_SEARCHFORM_FORMAT + "=" + Encoder.escapeWBlanks(format) + "&"));
 		}
 		if (sort != null) {
-			query.append((C_PARAM_SEARCHFORM_SORT + "=" + sort + "&"));
+			query.append((C_PARAM_SEARCHFORM_SORT + "=" + Encoder.escapeWBlanks(sort) + "&"));
 		}
 		query.append((C_PARAM_SEARCHFORM_MATCH_PER_PAGE + "=" + match + "&"));
 		query.append((C_PARAM_SEARCHFORM_WORD + "=" + word + "&"));
@@ -438,16 +434,16 @@ public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate imple
 	}
 
 	/**
-     * Calling the respective searchengine class which is define in the administration
-     * property of the module. It used the reflection method for calling.
-     * The result is a vector with content definition elements.
-     *
+         * Calling the respective searchengine class which is define in the administration
+         * property of the module. It used the reflection method for calling.
+         * The result is a vector with content definition elements.
+         *
 	 * @param cms               CmsObject Object for accessing system resources
 	 * @param templateSelector  template section that should be processed
 	 * @param page              the current page of the search result
 	 * @param template          the current used template
 	 * @param parameters        Hashtable with all template class parameters
-     *
+         *
 	 * @return                  the result from the calling Searchengine class
 	 */
 	private Vector getResultFromSearchengine(CmsObject cms, String templateSelector, String page, CmsXmlTemplateFile template, Hashtable parameters) {
@@ -539,7 +535,7 @@ public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate imple
 	 * @param templateSelector  template section that should be processed
 	 * @param template          the current used template
 	 * @param words             value of the searchword
-     *
+         *
 	 * @return                  <EM>true</EM> if any result is given, <EM>false</EM> otherwise.
 	 */
 	public boolean validateResultFromSearchengine(CmsObject cms, Vector result, String templateSelector, CmsXmlTemplateFile template, String words) {
