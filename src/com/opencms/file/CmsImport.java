@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/09/14 08:44:27 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/09/14 15:58:26 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.22 $ $Date: 2000/09/14 08:44:27 $
+ * @version $Revision: 1.23 $ $Date: 2000/09/14 15:58:26 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -335,6 +335,7 @@ private void importFile(String source, String destination, String type, String u
 			// this is a file
 			// first delete the file, so it can be overwritten
 			try {
+				m_cms.lockResource(path + name, true);
 				m_cms.deleteFile(path + name);
 				state = C_STATE_CHANGED;
 			} catch (CmsException exc) {
@@ -402,7 +403,7 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
 	Vector types = new Vector(); // stores the file types for which the property already exists
 
 	// first lock the resource to import
-	m_cms.lockResource(m_importPath);
+	// m_cms.lockResource(m_importPath);
 	try {
 		// get all file-nodes
 		fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
@@ -456,7 +457,7 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
 		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 	}
 	// all is done, unlock the resource 
-	m_cms.unlockResource(m_importPath);
+	// m_cms.unlockResource(m_importPath);
 }
 /**
  * Checks whether the path is on the list of files which are excluded from the import
