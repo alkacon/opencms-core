@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/26 15:11:51 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/09/26 15:12:48 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,6 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 
 import java.io.Serializable;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
@@ -56,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.29 $ $Date: 2003/09/26 15:11:51 $
+ * @version $Revision: 1.30 $ $Date: 2003/09/26 15:12:48 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
