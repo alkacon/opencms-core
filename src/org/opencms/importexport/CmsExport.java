@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/10/06 10:01:07 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/10/06 13:50:50 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.importexport;
 
+import org.opencms.main.CmsEvent;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
@@ -55,6 +57,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -80,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.20 $ $Date: 2003/10/06 10:01:07 $
+ * @version $Revision: 1.21 $ $Date: 2003/10/06 13:50:50 $
  */
 public class CmsExport implements Serializable {
 
@@ -189,6 +192,10 @@ public class CmsExport implements Serializable {
         m_contentAge = contentAge;
         m_exportCount = 0;
 
+        // clear all caches
+        report.println(report.key("report.clearcache"), I_CmsReport.C_FORMAT_NOTE);
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
+        
         try {
             Element exportNode = openExportFile();
 

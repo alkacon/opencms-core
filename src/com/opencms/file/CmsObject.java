@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/10/06 11:12:27 $
-* Version: $Revision: 1.424 $
+* Date   : $Date: 2003/10/06 13:47:58 $
+* Version: $Revision: 1.425 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.424 $
+ * @version $Revision: 1.425 $
  */
 public class CmsObject {
 
@@ -512,11 +512,13 @@ public class CmsObject {
     /**
      * Clears all internal DB-Caches.
      */
+    // TODO: should be deprecated, use event instead
     public void clearcache() {
-        // clear all caches
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
-        // clear all caches of driver manager
+        // clear all caches, now including driver manager
+        // OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
         m_driverManager.clearcache();
+        
+        // TODO: check if neccessary/useful
         System.gc();
     }
 
@@ -2375,9 +2377,14 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void importFolder(String importFile, String importPath) throws CmsException {
-        // import the resources
+        
+        // OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
         clearcache();
+        
+        // import the resources
         m_driverManager.importFolder(this, m_context, importFile, addSiteRoot(importPath));
+        
+        // OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
         clearcache();
     }
 
@@ -2417,12 +2424,14 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void importResources(String importFile, String importPath, I_CmsReport report) throws CmsException {
-        clearcache();
+        
+        report.println(report.key("report.clearcache"), I_CmsReport.C_FORMAT_NOTE);
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
 
         // import the resources
         m_driverManager.importResources(this, m_context, importFile, importPath, report);
 
-        clearcache();
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
     }
 
     /**
@@ -2658,8 +2667,11 @@ public class CmsObject {
         boolean success = false;
         CmsUUID publishHistoryId = new CmsUUID();
 
+        
+        // TODO: check if useful/neccessary
+        // OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
         clearcache();
-
+        
         synchronized (m_driverManager) {            
             try {
                 m_driverManager.publishProject(this, m_context, report, publishHistoryId, directPublishResource);
@@ -2668,7 +2680,10 @@ public class CmsObject {
                     CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
                 }
 
+                // TODO: check if useful/neccessary
+                // OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
                 clearcache();
+                
                 success = true;
             } catch (Exception e) {
                 String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
