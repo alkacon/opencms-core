@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2001/07/12 08:22:27 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2001/07/26 13:49:51 $
+* Version: $Revision: 1.32 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.31 $ $Date: 2001/07/12 08:22:27 $
+ * @version $Revision: 1.32 $ $Date: 2001/07/26 13:49:51 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -129,8 +129,8 @@ public class CmsXmlWpConfigFile {
             names.add("othertype"); values.add("explorer_files_new_othertype.html");
             names.add("upload");    values.add("explorer_files_new_upload.html");
         } else {
+            names.add("binary");    values.add("binary");
             names.add("plain");     values.add("plain");
-            names.add("script");    values.add("script");
         }
     }
 
