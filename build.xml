@@ -302,7 +302,7 @@ ${build.inputlib.tidy}
           <arg line="OpenCmsDoc"/>
         </exec>
         <tstamp>
-            <format property="timestamp" pattern="ddMMyy"/>
+            <format property="timestamp" pattern="yyyyMMdd"/>
         </tstamp>
         <move file="doc/documentation/OpenCmsDoc.pdf" tofile="${pdf.home}/OpenCmsDoc${timestamp}.pdf">        
         </move>

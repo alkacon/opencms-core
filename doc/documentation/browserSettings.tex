@@ -31,6 +31,11 @@ more than happy to use it in OpenCms.
 
 \subsection{Configuring MS Internet Explorer 5.x and 6.x Clients}
 
+If you like to use the ActiveX components for editing you have to set
+them up as described in the following steps. If the controls are not 
+installed OpenCms switches automatically to an html text area in which 
+the end user can edit the content as html source code.
+
 First step is the installation of the neccessary controls. There are
 two ActiveX controls needed by OpenCms:
 
@@ -68,33 +73,14 @@ disabled for all other web sites.
 \end{enumerate}
 
 This setup must be repeated for all clients / workstations that
-use the OpenCms workplace. Cookies must be enabled on this
-machines.
+use the OpenCms workplace. Cookies and JavaScript must be enabled 
+on this machines.
 
 
-\subsection{Configuring Netscape Navigator 4.x Clients}
+\subsection{Configuring Netscape Navigator 6.x Clients}
+In Netscape Navigator OpenCms switches automatically to an html 
+text area in which the end user can edit the content as html 
+source code. A WYSIWYG editor is currently not available vor
+Netscape Navigator Clients.
 
-Ok, honestly we try our best to keep the workplace compatible with
-Netscape versions 4.x. We so far do not support Netscape 6.0 or
-other browsers that use the new Mozilla HTML rendering engine.
-That's a pity since Mozilla is open source as well. If anyone of
-you feels compelled to help boosting Netscape compatibility for
-4.x or 6.0 (at last for the HTML parts of the workplace), please
-send an Email to
-\rqhttp{mailto://contributions@opencms.org}{contributions@opencms.org}.
-
-Settings for Netscape 4.x:
-\begin{enumerate}
-\item On the menu bar, click on the menu item "Edit" and select
-"Settings." Then do the following:
-\item On the tab "Settings" go
-to the section "Extended" and enable the options "Java" and "Java
-Script."
-\item On the tab "Settings" go to the section
-"Extended/Cache" and enable "Compare cache and network document:
-always."
-\end{enumerate}
-
-This setup must be repeated for all clients / workstations that
-use the OpenCms workplace. Cookies must be enabled on this
-machines.
+Cookies and JavaScript must be enabled to use the workplace.
