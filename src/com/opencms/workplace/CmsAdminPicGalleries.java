@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
- * Date   : $Date: 2000/05/30 18:11:37 $
+ * Date   : $Date: 2000/06/02 13:02:54 $
  * Version: $ $
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.4 $ $Date: 2000/05/30 18:11:37 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/02 13:02:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -260,8 +260,8 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
         throws CmsException {
 		CmsXmlWpConfigFile config=this.getConfigFile(cms);
 		filelistTemplate.fastSetXmlData(C_FILELIST_ICON_VALUE, config.getWpPictureUrl()+"ic_file_picgallery.gif");
-		filelistTemplate.setXmlData(C_FILELIST_NAME_VALUE, res.getName()); 
-		filelistTemplate.setXmlData(C_FILELIST_TITLE_VALUE, cms.readProperty(res.getAbsolutePath(), C_PROPERTY_TITLE)); 
+		filelistTemplate.setData(C_FILELIST_NAME_VALUE, res.getName()); 
+		filelistTemplate.setData(C_FILELIST_TITLE_VALUE, cms.readProperty(res.getAbsolutePath(), C_PROPERTY_TITLE)); 
 	}      
 
 	/**
