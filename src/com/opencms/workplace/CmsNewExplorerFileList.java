@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2002/12/15 14:21:19 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2002/12/20 10:45:28 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -55,7 +56,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.51 $ $Date: 2002/12/15 14:21:19 $
+ * @version $Revision: 1.52 $ $Date: 2002/12/20 10:45:28 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -79,8 +80,8 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
     // the session key for the current page
     private final static String C_SESSION_CURRENT_PAGE = "explorerFilelistCurrentPage";
 
-    /** Boolean for additional debug output control */
-    private static final boolean C_DEBUG = false;
+    /** Internal debugging flag */
+    public static final int DEBUG = 0;
 
     public CmsNewExplorerFileList() {
 
@@ -135,7 +136,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters) throws CmsException {
-        if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && C_DEBUG) {
+        if(A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG) && I_CmsLogChannels.C_LOGGING && (DEBUG > 0)) {
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file "
                     + templateFile);
         }
@@ -154,6 +155,19 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 currentFolder = cms.rootFolder().getAbsolutePath();
                 session.putValue(C_PARA_FILELIST, currentFolder);
             }
+        }
+
+        if (DEBUG > 2) {
+            // output parameters
+            System.err.println("[" + System.currentTimeMillis() + "] CmsNewExplorerFileList.getContent() called");
+            System.err.println("templateFile=" + templateFile);
+            System.err.println("elementName=" + elementName);
+            Iterator i = parameters.keySet().iterator();
+            while (i.hasNext()){
+                String key = (String)i.next();
+                System.err.println("parameters:  key=" + key + " value=" + parameters.get(key));
+            }
+            System.err.println();
         }
 
         String mode = (String)parameters.get("mode");
