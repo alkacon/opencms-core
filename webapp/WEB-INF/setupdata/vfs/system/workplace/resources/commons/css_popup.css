@@ -398,3 +398,16 @@ span.tabactive {
 	display: block;
 	padding: 4px;
 }
+
+.help { 
+	color: InfoText; 
+    position: absolute; 
+    top: 0px; 
+    left: 0px; 
+    padding: 5px; 
+    width: 200px; 
+    border: 1px solid WindowFrame; 
+    background-color: InfoBackground; 
+    visibility: hidden; 
+    font-size: 8pt; 
+} 

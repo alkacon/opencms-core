@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/08/19 11:26:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/18 12:44:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.xmlwidgets;
 import org.opencms.file.CmsObject;
 import org.opencms.workplace.editors.CmsXmlContentEditor;
 import org.opencms.xml.A_CmsXmlDocument;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -44,11 +45,38 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
 
+    /** Prefix for message locales. */
+    static final String C_MESSAGE_PREFIX = "editor.label.";
+        
+    /**
+     * Creates a message for message locale with the correct prefix.<p>
+     * 
+     * @param editor reference to an editor object
+     * @param contentDefintion the ContentDefinition or null
+     * @param value the value to create the for
+     * @return message key for message locales with the correct prefix
+     */
+    public String getMessage(CmsXmlContentEditor editor, CmsXmlContentDefinition contentDefintion, String value) {
+        String contentDefinitionName = new String();
+        // get the name of the content defintion if there is one
+        if (contentDefintion != null) {
+            contentDefinitionName = contentDefintion.getName();
+        }
+        // calculate the key
+        String locKey = C_MESSAGE_PREFIX + contentDefinitionName + "." + value;
+        String locValue = editor.key(locKey);
+        if (locValue.startsWith("???")) {
+            // there was no value found for this key, so use the unlocalised message key
+            locValue = value;
+        }
+        return locValue;
+    }    
+    
     /**
      * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getParameterName(org.opencms.xml.types.I_CmsXmlContentValue)
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/08/19 11:26:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/18 12:44:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.xmlwidgets;
 import org.opencms.file.CmsObject;
 import org.opencms.workplace.editors.CmsXmlContentEditor;
 import org.opencms.xml.A_CmsXmlDocument;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -44,7 +45,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public interface I_CmsXmlWidget {
@@ -55,6 +56,7 @@ public interface I_CmsXmlWidget {
      * @param cms an initialized instance of a CmsObject
      * @param document the XML document this value belongs to
      * @param editor the XML content editor
+     * @param contentDefintion the content defintion object
      * @param value the XML content value to generate the widget for
      * 
      * @return the HTML form for this content node
@@ -65,6 +67,7 @@ public interface I_CmsXmlWidget {
         CmsObject cms,
         A_CmsXmlDocument document,
         CmsXmlContentEditor editor,
+        CmsXmlContentDefinition contentDefintion,
         I_CmsXmlContentValue value) throws CmsXmlException;
 
     /**
