@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
-* Date   : $Date: 2001/10/16 09:06:59 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/10/18 07:03:04 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import source.org.apache.java.util.*;
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.10 $ $Date: 2001/10/16 09:06:59 $
+ * @version $Revision: 1.11 $ $Date: 2001/10/18 07:03:04 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 
@@ -253,7 +253,9 @@ public class CmsSynchronize implements I_CmsConstants{
                             e.getType() != CmsException.C_LOCKED){
                             if (e.getType() == CmsException.C_BAD_NAME) {
                                 notCreated = true;
-                                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO,"["+this.getClass().getName()+"] Bad name: "+currentFile.getName());
+                                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                                    A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO,"["+this.getClass().getName()+"] Bad name: "+currentFile.getName());
+                                }
                             }else{
                                 throw e;
                             }
