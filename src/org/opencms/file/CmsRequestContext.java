@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/08/10 15:46:18 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.file;
 
 import org.opencms.util.CmsResourceTranslator;
@@ -44,43 +44,43 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsRequestContext {
 
     /** Request context attribute for indicating that an editor is currently open. */
     public static final String ATTRIBUTE_EDITOR = "org.opencms.file.CmsRequestContext.ATTRIBUTE_EDITOR";
-    
+
     /** A map for storing (optional) request context attributes. */
-    private HashMap m_attributeMap; 
+    private HashMap m_attributeMap;
 
     /** The current project. */
     private CmsProject m_currentProject;
-    
+
     /** Directory name translator. */
     private CmsResourceTranslator m_directoryTranslator;
-    
+
     /** Current encoding. */
     private String m_encoding;
-
-    /** Flag to indicate that this request is event controlled. */
-    private boolean m_eventControlled;
 
     /** File name translator. */
     private CmsResourceTranslator m_fileTranslator;
 
     /** The locale for this request. */
     private Locale m_locale;
-    
+
     /** The remote ip address. */
     private String m_remoteAddr;
-    
+
+    /** The current request time. */
+    private long m_requestTime;
+
     /** Used to save / restore a site root .*/
     private String m_savedSiteRoot;
 
     /** The name of the root, e.g. /site_a/vfs. */
     private String m_siteRoot;
-    
+
     /** Flag to indicate that this context should not update the user session. */
     private boolean m_updateSession;
 
@@ -89,10 +89,7 @@ public class CmsRequestContext {
 
     /** The current user. */
     private CmsUser m_user;
-    
-    /** The current request time. */
-    private long m_requestTime;
-    
+
     /**
      * Constructs a new request context.<p>
      * 
@@ -107,16 +104,16 @@ public class CmsRequestContext {
      * @param fileTranslator the file translator
      */
     public CmsRequestContext(
-        CmsUser user, 
-        CmsProject project, 
-        String requestedUri, 
-        String siteRoot, 
-        Locale locale, 
-        String encoding, 
-        String remoteAddr, 
-        CmsResourceTranslator directoryTranslator, 
-        CmsResourceTranslator fileTranslator
-    ) {        
+        CmsUser user,
+        CmsProject project,
+        String requestedUri,
+        String siteRoot,
+        Locale locale,
+        String encoding,
+        String remoteAddr,
+        CmsResourceTranslator directoryTranslator,
+        CmsResourceTranslator fileTranslator) {
+
         m_updateSession = true;
         m_user = user;
         m_currentProject = project;
@@ -131,6 +128,19 @@ public class CmsRequestContext {
     }
 
     /**
+     * Adds the current site root of this context to the given resource name,
+     * and also translates the resource name with the configured the directory translator.<p>
+     * 
+     * @param resourcename the resource name
+     * @return the translated resource name including site root
+     * @see #addSiteRoot(String, String)
+     */
+    public String addSiteRoot(String resourcename) {
+
+        return addSiteRoot(m_siteRoot, resourcename);
+    }
+
+    /**
      * Adds the given site root of this context to the given resource name,
      * taking into account special folders like "/system" where no site root must be added,
      * and also translates the resource name with the configured the directory translator.<p>
@@ -140,10 +150,11 @@ public class CmsRequestContext {
      * @return the translated resource name including site root
      */
     public String addSiteRoot(String siteRoot, String resourcename) {
+
         if ((resourcename == null) || (siteRoot == null)) {
             return null;
         }
-        siteRoot = getAdjustedSiteRoot(siteRoot, resourcename);        
+        siteRoot = getAdjustedSiteRoot(siteRoot, resourcename);
         StringBuffer result = new StringBuffer(128);
         result.append(siteRoot);
         if (((siteRoot.length() == 0) || (siteRoot.charAt(siteRoot.length()-1) != '/'))
@@ -154,18 +165,6 @@ public class CmsRequestContext {
         result.append(resourcename);
         return m_directoryTranslator.translateResource(result.toString());
     }
-    
-    /**
-     * Adds the current site root of this context to the given resource name,
-     * and also translates the resource name with the configured the directory translator.<p>
-     * 
-     * @param resourcename the resource name
-     * @return the translated resource name including site root
-     * @see #addSiteRoot(String, String)
-     */
-    public String addSiteRoot(String resourcename) {
-        return addSiteRoot(m_siteRoot, resourcename);
-    }    
 
     /**
      * Returns the current project of the current user.
@@ -173,17 +172,19 @@ public class CmsRequestContext {
      * @return the current project of the current user.
      */
     public CmsProject currentProject() {
+
         return m_currentProject;
     }
-    
+
     /**
      * Returns the current user object.<p>
      *
      * @return the current user object
      */
     public CmsUser currentUser() {
+
         return m_user;
-    } 
+    }
 
     /**
      * Returns the adjusted site root for a resoure this context current site root.<p>
@@ -193,6 +194,7 @@ public class CmsRequestContext {
      * @see #getAdjustedSiteRoot(String, String)
      */
     public String getAdjustedSiteRoot(String resourcename) {
+
         return getAdjustedSiteRoot(m_siteRoot, resourcename);
     }
 
@@ -208,13 +210,14 @@ public class CmsRequestContext {
      * @return the adjusted site root for the resoure
      */
     public String getAdjustedSiteRoot(String siteRoot, String resourcename) {
+
         if (resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
             return "";
         } else {
             return siteRoot;
-        }  
+        }
     }
-    
+
     /**
      * Gets the value of an attribute from the OpenCms request context attribute list.<p>
      * 
@@ -222,12 +225,13 @@ public class CmsRequestContext {
      * @return Object the attribute value, or <code>null</code> if the attribute was not found
      */
     public synchronized Object getAttribute(String attributeName) {
+
         if (m_attributeMap == null) {
             return null;
         }
         return m_attributeMap.get(attributeName);
     }
-        
+
     /**
      * Returns the directory name translator this context was initialized with.<p>
      * 
@@ -237,6 +241,7 @@ public class CmsRequestContext {
      * @return the directory name translator this context was initialized with
      */
     public CmsResourceTranslator getDirectoryTranslator() {
+
         return m_directoryTranslator;
     }
 
@@ -246,9 +251,10 @@ public class CmsRequestContext {
      * @return the encoding
      */
     public String getEncoding() {
+
         return m_encoding;
     }
-        
+
     /**
      * Returns the file name translator this context was initialized with.<p>
      * 
@@ -258,102 +264,50 @@ public class CmsRequestContext {
      * @return the file name translator this context was initialized with
      */
     public CmsResourceTranslator getFileTranslator() {
+
         return m_fileTranslator;
-    }    
-        
-   /**
-    * Gets the name of the parent folder of the requested file.<p>
-    *
-    * @return the name of the parent folder of the requested file
-    */
+    }
+
+    /**
+     * Gets the name of the parent folder of the requested file.<p>
+     *
+     * @return the name of the parent folder of the requested file
+     */
     public String getFolderUri() {
+
         return getUri().substring(0, getUri().lastIndexOf("/") + 1);
     }
-    
+
     /**
      * Returns the name of the requested locale within this context.<p>
      * 
      * @return the name of the locale
      */
     public Locale getLocale() {
+
         return m_locale;
     }
-    
+
     /**
      * Returns the remote ip address.<p>
      * 
      * @return the renote ip addresss as string
      */
     public String getRemoteAddress() {
+
         return m_remoteAddr;
     }
-    
+
     /**
      * Returns the current request time.<p>
      * 
      * @return the current request time
      */
     public long getRequestTime() {
+
         return m_requestTime;
     }
 
-    /**
-     * Returns the current root directory in the virtual file system.<p>
-     * 
-     * @return the current root directory in the virtual file system
-     */
-    public String getSiteRoot() {
-        return m_siteRoot;
-    }
-    
-    /**
-     * Returns the OpenCms VFS URI of the requested resource.<p>
-     *
-     * @return the OpenCms VFS URI of the requested resource
-     */
-    public String getUri() {
-        return m_uri;
-    }
-
-    /**
-     * Check if this request context is event controlled.<p>
-     * 
-     * @return true if the request context is event controlled, false otherwise
-     */
-    public boolean isEventControlled() {
-        return m_eventControlled;
-    }
-
-    /**
-     * Check if this request context will update the session.<p>
-     * 
-     * This is used mainly for CmsReports that continue to use the 
-     * users context, even after the http request is already finished.<p>
-     *
-     * @return true if this request context will update the session, false otherwise
-     */
-    public boolean isUpdateSessionEnabled() {
-        return m_updateSession;
-    }   
-    
-    /**
-     * Removes the current site root prefix from the absolute path in the resource name,
-     * that is adjusts the resource name for the current site root.<p> 
-     * 
-     * @param resourcename the resource name
-     * 
-     * @return the resource name adjusted for the current site root
-     * 
-     * @see #getSitePath(CmsResource)
-     */   
-    public String removeSiteRoot(String resourcename) {
-        String siteRoot = getAdjustedSiteRoot(resourcename);
-        if ((siteRoot.length() > 0) && resourcename.startsWith(siteRoot)) {
-            resourcename = resourcename.substring(siteRoot.length());
-        }
-        return resourcename;
-    }
-    
     /**
      * Adjusts the absolute resource root path for the current site.<p> 
      * 
@@ -371,35 +325,89 @@ public class CmsRequestContext {
      * @see CmsObject#getSitePath(CmsResource)
      */
     public String getSitePath(CmsResource resource) {
-        
+
         return removeSiteRoot(resource.getRootPath());
     }
-    
+
+    /**
+     * Returns the current root directory in the virtual file system.<p>
+     * 
+     * @return the current root directory in the virtual file system
+     */
+    public String getSiteRoot() {
+
+        return m_siteRoot;
+    }
+
+    /**
+     * Returns the OpenCms VFS URI of the requested resource.<p>
+     *
+     * @return the OpenCms VFS URI of the requested resource
+     */
+    public String getUri() {
+
+        return m_uri;
+    }
+
+    /**
+     * Check if this request context will update the session.<p>
+     * 
+     * This is used mainly for CmsReports that continue to use the 
+     * users context, even after the http request is already finished.<p>
+     *
+     * @return true if this request context will update the session, false otherwise
+     */
+    public boolean isUpdateSessionEnabled() {
+
+        return m_updateSession;
+    }
+
+    /**
+     * Removes the current site root prefix from the absolute path in the resource name,
+     * that is adjusts the resource name for the current site root.<p> 
+     * 
+     * @param resourcename the resource name
+     * 
+     * @return the resource name adjusted for the current site root
+     * 
+     * @see #getSitePath(CmsResource)
+     */
+    public String removeSiteRoot(String resourcename) {
+
+        String siteRoot = getAdjustedSiteRoot(resourcename);
+        if ((siteRoot.length() > 0) && resourcename.startsWith(siteRoot)) {
+            resourcename = resourcename.substring(siteRoot.length());
+        }
+        return resourcename;
+    }
+
     /**
      * Restores the saved site root.<p>
      *
      * @throws RuntimeException in case there is no site root saved
      */
     public synchronized void restoreSiteRoot() throws RuntimeException {
+
         if (m_savedSiteRoot == null) {
             throw new RuntimeException("Saved siteroot empty!");
         }
         m_siteRoot = m_savedSiteRoot;
         m_savedSiteRoot = null;
     }
-    
+
     /**
      * Saves the current site root.<p>
      *
      * @throws RuntimeException in case there is already a site root saved
      */
     public synchronized void saveSiteRoot() throws RuntimeException {
+
         if (m_savedSiteRoot != null) {
             throw new RuntimeException("Saved siteroot not empty: " + m_savedSiteRoot);
         }
         m_savedSiteRoot = m_siteRoot;
     }
-    
+
     /**
      * Sets an attribute in the request context.<p>
      * 
@@ -407,12 +415,13 @@ public class CmsRequestContext {
      * @param value the attribute value
      */
     public synchronized void setAttribute(String key, Object value) {
+
         if (m_attributeMap == null) {
             m_attributeMap = new HashMap();
         }
         m_attributeMap.put(key, value);
     }
-    
+
     /**
      * Sets the current project for the user.<p>
      *
@@ -420,11 +429,12 @@ public class CmsRequestContext {
      * @return the CmsProject instance
      */
     public CmsProject setCurrentProject(CmsProject project) {
+
         if (project != null) {
             m_currentProject = project;
         }
         return m_currentProject;
-    }    
+    }
 
     /**
      * Sets the current content encoding to be used in HTTP response.<p>
@@ -432,16 +442,8 @@ public class CmsRequestContext {
      * @param encoding the encoding
      */
     public void setEncoding(String encoding) {
+
         m_encoding = encoding;
-    }
-    
-    /**
-     * Mark this request context as event controlled.<p>
-     * 
-     * @param value true if the request is event controlled, false otherwise
-     */
-    public void setEventControlled(boolean value) {
-        m_eventControlled = value;
     }
 
     /**
@@ -450,29 +452,32 @@ public class CmsRequestContext {
      * @param time the request time
      */
     public void setRequestTime(long time) {
+
         m_requestTime = time;
     }
-        
+
     /**
      * Sets the current root directory in the virtual file system.<p>
      * 
      * @param root the name of the new root directory
      */
     public void setSiteRoot(String root) {
+
         // site roots must never end with a "/"
         if (root.endsWith("/")) {
-            m_siteRoot = root.substring(0, root.length()-1);
-        } else {        
+            m_siteRoot = root.substring(0, root.length() - 1);
+        } else {
             m_siteRoot = root;
         }
     }
-    
+
     /**
      * Mark this request context to update the session or not.<p>
      *
      * @param value true if this request context will update the session, false otherwise
      */
     public void setUpdateSessionEnabled(boolean value) {
+
         m_updateSession = value;
     }
 
@@ -487,20 +492,19 @@ public class CmsRequestContext {
      * @since 5.0 beta 1
      */
     public void setUri(String value) {
+
         m_uri = value;
     }
-    
+
     /**
      * Switches the user in the context, required after a login.<p>
      * 
      * @param user the new user to use
      * @param project the new users current project
      */
-    protected void switchUser(
-        CmsUser user, 
-        CmsProject project
-    ) {
+    protected void switchUser(CmsUser user, CmsProject project) {
+
         m_user = user;
-        m_currentProject = project;        
+        m_currentProject = project;
     }
 }

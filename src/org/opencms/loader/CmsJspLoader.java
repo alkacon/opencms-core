@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/08/04 13:47:55 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2004/08/10 15:46:18 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -477,7 +477,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         res.setContentLength(result.length);
                         if (isWorkplaceUser) {
                             res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
-                            res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
+                            res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MAX_AGE + "0");
+                            res.addHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
                         } else {
                             // set date last modified header                        
                             CmsFlexController.setDateLastModifiedHeader(res, controller.getDateLastModified());

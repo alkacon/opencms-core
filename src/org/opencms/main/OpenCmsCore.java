@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.137 $
+ * Date   : $Date: 2004/08/10 15:46:17 $
+ * Version: $Revision: 1.138 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.137 $
+ * @version $Revision: 1.138 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -471,11 +471,7 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Notify all container event listeners that a particular event has
-     * occurred for this Container.<p>  
-     * 
-     * The default implementation performs
-     * this notification synchronously using the calling thread.<p>
+     * Notify all event listeners that a particular event has occurred.<p>
      *
      * @param event a CmsEvent
      */
@@ -485,18 +481,13 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Notify all container event listeners that a particular event has
-     * occurred for this Container.<p>  
+     * Notify all event listeners that a particular event has occurred.<p>
      * 
-     * The default implementation performs
-     * this notification synchronously using the calling thread.<p>
-     *
-     * @param cms an initialized CmsObject
      * @param type event type
      * @param data event data
      */
-    protected void fireCmsEvent(CmsObject cms, int type, java.util.Map data) {
-        fireCmsEvent(new CmsEvent(cms, type, data));
+    protected void fireCmsEvent(int type, Map data) {
+        fireCmsEvent(new CmsEvent(type, data));
     }
 
     /**
@@ -1724,8 +1715,7 @@ public final class OpenCmsCore {
                 m_fileTranslator);
 
         // now initialize and return the CmsObject
-        CmsObject cms = new CmsObject();
-        cms.init(m_driverManager, context, sessionStorage);
+        CmsObject cms = new CmsObject(m_driverManager, context, sessionStorage);
         return cms;
     }
 

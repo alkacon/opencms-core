@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/07/18 16:33:00 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/08/10 15:46:17 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -58,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  */
 public final class OpenCms {
 
@@ -92,11 +93,7 @@ public final class OpenCms {
     }
 
     /**
-     * Notify all container event listeners that a particular event has
-     * occurred for this Container.<p>  
-     * 
-     * The default implementation performs
-     * this notification synchronously using the calling thread.<p>
+     * Notify all event listeners that a particular event has occurred.<p>
      *
      * @param event a CmsEvent
      */
@@ -106,19 +103,14 @@ public final class OpenCms {
     }
 
     /**
-     * Notify all container event listeners that a particular event has
-     * occurred for this Container.<p>  
+     * Notify all event listeners that a particular event has occurred.<p>
      * 
-     * The default implementation performs
-     * this notification synchronously using the calling thread.<p>
-     *
-     * @param cms an initialized CmsObject
      * @param type event type
      * @param data event data
      */
-    public static void fireCmsEvent(CmsObject cms, int type, java.util.Map data) {
+    public static void fireCmsEvent(int type, Map data) {
 
-        OpenCms.fireCmsEvent(new CmsEvent(cms, type, data));
+        OpenCms.fireCmsEvent(new CmsEvent(type, data));
     }
 
     /**

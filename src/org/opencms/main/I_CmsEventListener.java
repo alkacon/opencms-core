@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2004/05/26 09:37:58 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/08/10 15:46:17 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -68,6 +68,15 @@ package org.opencms.main;
  * @see org.opencms.main.OpenCms#addCmsEventListener(I_CmsEventListener, int[])
  */
 public interface I_CmsEventListener {
+    
+    /** Key name for passing a CmsObject in the data map. */
+    String KEY_CMSOBJECT = "cmsObject";
+    
+    /** Key name for passing a report in the data map. */
+    String KEY_REPORT = "report";
+    
+    /** Key name for passing a publish history id in the date map. */
+    String KEY_PUBLISHID = "publishHistoryId";
     
     /**
      * Marker for "all events".<p>
@@ -92,18 +101,6 @@ public interface I_CmsEventListener {
      * @see org.opencms.file.CmsObject#publishProject()
      */    
     int EVENT_PUBLISH_PROJECT = 2;
-    
-    /** 
-     * Event "a resource was published".<p>
-     * 
-     * Event data:
-     * <ul>
-     * <li>key "resource": the published CmsResource</li>
-     * </ul>
-     * 
-     * @see org.opencms.file.CmsObject#publishResource(String, boolean, org.opencms.report.I_CmsReport)
-     */    
-    int EVENT_PUBLISH_RESOURCE = 3; 
         
     /** 
      * Event "all caches must be cleared".<p>
@@ -111,16 +108,6 @@ public interface I_CmsEventListener {
      * Not thrown by the core classes, but might be used in modules.
      */
     int EVENT_CLEAR_CACHES = 5;
-
-    /** 
-     * Event used to identify servers in the cluster.<p>
-     */ 
-    int EVENT_FLEX_CLUSTER_CHECK_SOURCE = 6;
-
-    /** 
-     * Event "an event has been forwarded to all servers in the cluster".<p>
-     */      
-    int EVENT_FLEX_CLUSTER_HOOK = 7;
 
     /** 
      * Event "delete all JSP pages in the "real" file system 
@@ -140,11 +127,6 @@ public interface I_CmsEventListener {
      * request parameter.
      */
     int EVENT_FLEX_CACHE_CLEAR = 9;
-    
-    /** 
-     * Event "static export has just happened".
-     */
-    int EVENT_STATIC_EXPORT = 10;
     
     /** 
      * Event "a single resource has been modified".<p>
@@ -231,47 +213,7 @@ public interface I_CmsEventListener {
      * 
      * This event is for internal use.<p>
      */     
-    int EVENT_UPDATE_EXPORTS = 19;
-    
-    /**
-     * Event "a project was published".<p>
-     * 
-     * Event data:
-     * <ul>
-     * <li>key "publishHistoryId" (mandatory): the ID of the publish task in the publish history</li>
-     * <li>key "report" (optional): an I_CmsReport instance to print output messages</li>
-     * </ul>
-     * @see org.opencms.file.CmsObject#publishProject()
-     */    
-    int EVENT_CLUSTER_PUBLISH_PROJECT = 20;    
-    
-    /** 
-     * Event "validate the registry.xml".<p>
-     * 
-     * This event is forwarded to all servers in the cluster so that they
-     * validate their registry.xml and sending in the response whether the
-     * validation failed or not.<p>
-     */ 
-    int EVENT_FLEX_CLUSTER_CHECK_REGISTRY = 21;  
-    
-    /**
-     * Event "update exported resources".<p>
-     * 
-     * This event updates all export points, deletes the content
-     * of the "export" folder, purges the JSP repository, and clears
-     * all caches.<p>
-     * 
-     * This event is forwarded to all servers in the cluster.<p>
-     */    
-    int EVENT_FLEX_CLUSTER_UPDATE_EXPORTS = 22;
-   
-    /**
-     * Acknowledge the occurrence of the specified event, implement this 
-     * method to check for CmsEvents in your class.
-     *
-     * @param event CmsEvent that has occurred
-     */
-    void cmsEvent(CmsEvent event);
+    int EVENT_UPDATE_EXPORTS = 19;  
     
     /**
      * @see #EVENT_RESOURCE_AND_PROPERTIES_MODIFIED
@@ -319,5 +261,12 @@ public interface I_CmsEventListener {
      */    
     int EVENT_RESOURCES_AND_PROPERTIES_MODIFIED = 28;
     
+    /**
+     * Acknowledge the occurrence of the specified event, implement this 
+     * method to check for CmsEvents in your class.
+     *
+     * @param event CmsEvent that has occurred
+     */
+    void cmsEvent(CmsEvent event);    
 }
 

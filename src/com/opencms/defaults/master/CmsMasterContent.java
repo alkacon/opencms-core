@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/08/03 14:20:04 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2004/08/10 15:46:18 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,8 +58,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.61 $
- * $Date: 2004/08/03 14:20:04 $
+ * $Revision: 1.62 $
+ * $Date: 2004/08/10 15:46:18 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -659,9 +659,10 @@ public abstract class CmsMasterContent
             CmsUUID publishId = new CmsUUID();
             cms.postPublishBoResource(new CmsPublishedResource(this.getClass().getName(), m_dataSet.m_masterId, getSubId(), m_dataSet.m_state), publishId, versionId);
             Map eventData = new HashMap();
-            eventData.put("publishHistoryId", publishId.toString());            
+            eventData.put(I_CmsEventListener.KEY_CMSOBJECT, cms);
+            eventData.put(I_CmsEventListener.KEY_PUBLISHID, publishId.toString());            
             // a "directly" published COS resource can be handled totally equal to a published project            
-            OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData));
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData));
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2004/08/10 15:46:18 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -243,7 +243,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 break;
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
                 // event data contains a list of the published resources
-                CmsUUID publishHistoryId = new CmsUUID((String)event.getData().get("publishHistoryId"));
+                CmsUUID publishHistoryId = new CmsUUID((String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("Static export manager catched event EVENT_PUBLISH_PROJECT for project ID " + publishHistoryId);
                 }
@@ -253,10 +253,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     // static export "on demand" enabled, so scrub the export folders only                   
                     scrubExportFolders(publishHistoryId, false);
                 } else {
-                    I_CmsReport report = (I_CmsReport)event.getData().get("report");
+                    I_CmsReport report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
                     // static export "after publish" is enabled, so start to write the exported resources
                     try {
-                        exportAfterPublish(event.getCmsObject(), publishHistoryId, report);
+                        exportAfterPublish(publishHistoryId, report);
                     } catch (Throwable t) {
                         if (OpenCms.getLog(this).isErrorEnabled()) {
                             OpenCms.getLog(this).error("Error during static export:", t);
@@ -451,21 +451,21 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * Starts the static export on publish.<p>
      * 
      * Exports all modified resources after a publish process into the real FS.<p>
-     *  
-     * @param cms the current cms object
+     * 
      * @param publishHistoryId the publichHistoryId of the published project
      * @param report an I_CmsReport instance to print output message, or null to write messages to the log file   
+     *  
      * @throws CmsException in case of errors accessing the VFS
      * @throws IOException in case of erros writing to the export output stream
      * @throws ServletException in case of errors accessing the servlet 
      */
-    public synchronized void exportAfterPublish(CmsObject cms, CmsUUID publishHistoryId, I_CmsReport report)
+    public synchronized void exportAfterPublish(CmsUUID publishHistoryId, I_CmsReport report)
     throws CmsException, IOException, ServletException {
 
         // first check if the test resource was published already
         // if not, we must do a complete export of all static resources
         String rfsName = CmsFileUtil.normalizePath(getExportPath() + getTestResource());
-
+        
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Static export, checking test resource " + rfsName);
         }
@@ -475,8 +475,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             if (OpenCms.getLog(this).isDebugEnabled()) {
                 OpenCms.getLog(this).debug("Test resource does not exist -> do export 'full static render'");
             }
-            // the file is not there, so expert everything
-            exportFullStaticRender(cms, true, report);
+            // the file is not there, so export everything
+            exportFullStaticRender(true, report);
         } else {
             if (OpenCms.getLog(this).isDebugEnabled()) {
                 OpenCms.getLog(this).debug("Test resource exists -> do static export 'after publish'");
@@ -486,6 +486,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             scrubExportFolders(publishHistoryId, true);
 
             // get the list of published resources from the publish history table
+            CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             List publishedResources = cms.readPublishedResources(publishHistoryId);
 
             // do the export
@@ -496,25 +497,26 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Starts a complete static export of all resources.<p>
      * 
-     * @param cms the current cms object
      * @param purgeFirst flag to delete all resources in the export folder of the rfs
      * @param report an I_CmsReport instance to print output message, or null to write messages to the log file   
+     * 
      * @throws CmsException in case of errors accessing the VFS
      * @throws IOException in case of erros writing to the export output stream
      * @throws ServletException in case of errors accessing the servlet 
      */
-    public synchronized void exportFullStaticRender(CmsObject cms, boolean purgeFirst, I_CmsReport report)
+    public synchronized void exportFullStaticRender(boolean purgeFirst, I_CmsReport report)
     throws CmsException, IOException, ServletException {
 
         // delete all old exports if the purgeFirst flag is set
         if (purgeFirst) {
 
             Map eventData = new HashMap();
-            eventData.put("report", report);
-            CmsEvent clearCacheEvent = new CmsEvent(cms, I_CmsEventListener.EVENT_CLEAR_CACHES, eventData);
+            eventData.put(I_CmsEventListener.KEY_REPORT, report);
+            CmsEvent clearCacheEvent = new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, eventData);
             OpenCms.fireCmsEvent(clearCacheEvent);
-
+            
             scrubExportFolder();
+            CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());            
             cms.deleteAllStaticExportPublishedResources(C_EXPORT_LINK_WITHOUT_PARAMETER);
             cms.deleteAllStaticExportPublishedResources(C_EXPORT_LINK_WITH_PARAMETER);
         }

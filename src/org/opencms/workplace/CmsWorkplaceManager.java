@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/08/10 15:46:18 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.3.1
  */
@@ -257,10 +257,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         switch (event.getType()) {       
             case I_CmsEventListener.EVENT_WORKPLACE_UPDATE:
+                CmsObject cms = (CmsObject)event.getData().get(I_CmsEventListener.KEY_CMSOBJECT); 
                 // re-initialize the locale handler
-                initHandler(event.getCmsObject()); 
+                initHandler(cms); 
                 // re-initilize the editor manager           
-                m_editorManager = new CmsWorkplaceEditorManager(event.getCmsObject());
+                m_editorManager = new CmsWorkplaceEditorManager(cms);
                 break;
             default:
                 // no operation

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/10 15:46:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ public final class CmsFileUtil {
     public static void purgeDirectory(File directory) {
 
         if (directory.canRead() && directory.isDirectory()) {
-            java.io.File[] files = directory.listFiles();
+            File[] files = directory.listFiles();
             for (int i = 0; i < files.length; i++) {
                 File f = files[i];
                 if (f.isDirectory()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2004/07/05 16:32:42 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/08/10 15:46:18 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsImportFolder {
 
@@ -343,7 +343,7 @@ public class CmsImportFolder {
                     //m_cms.replaceResource(filename, type, Collections.EMPTY_MAP, buffer);
                     m_cms.replaceResource(filename, res.getTypeId(), buffer, Collections.EMPTY_LIST);
                     
-                    OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
+                    OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
                 } else {
                     m_cms.createResource(actImportPath + path[path.length - 1], type, buffer, Collections.EMPTY_LIST);
                 }

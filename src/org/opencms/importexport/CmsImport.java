@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/08/03 07:19:03 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2004/08/10 15:46:17 $
+* Version: $Revision: 1.24 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.dom4j.io.SAXReader;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.23 $ $Date: 2004/08/03 07:19:03 $
+ * @version $Revision: 1.24 $ $Date: 2004/08/10 15:46:17 $
  */
 public class CmsImport implements Serializable {
     
@@ -198,7 +198,7 @@ public class CmsImport implements Serializable {
         } finally {
             // close the import file
             closeImportFile();
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES, Collections.EMPTY_MAP));
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES, Collections.EMPTY_MAP));
         }
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2004/07/08 15:21:14 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2004/08/10 15:46:18 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,6 @@ public class CmsElementCache extends Object implements I_CmsEventListener {
         // add this class as an event handler to the Cms event listener
         OpenCms.addCmsEventListener(this, new int[] { 
                 I_CmsEventListener.EVENT_PUBLISH_PROJECT, 
-                I_CmsEventListener.EVENT_PUBLISH_RESOURCE, 
                 I_CmsEventListener.EVENT_CLEAR_CACHES, 
                 I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
                 I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES
@@ -179,7 +178,6 @@ public class CmsElementCache extends Object implements I_CmsEventListener {
     public void cmsEvent(CmsEvent event) {
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT :
-            case I_CmsEventListener.EVENT_PUBLISH_RESOURCE :
             case I_CmsEventListener.EVENT_CLEAR_CACHES :
             case I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES:
             case I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES:                

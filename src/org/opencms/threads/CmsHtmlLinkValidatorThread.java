@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsHtmlLinkValidatorThread.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/08/10 15:46:18 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.file.CmsResource;
  * A report thread for the HTML link validator.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2004/02/13 13:41:45 $
+ * @version $Revision: 1.8 $ $Date: 2004/08/10 15:46:18 $
  */
 public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
     
@@ -105,7 +105,7 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
      * @see org.opencms.file.CmsObject#getPublishList(CmsResource, boolean, org.opencms.report.I_CmsReport)
      */
     public CmsHtmlLinkValidatorThread(CmsObject cms, CmsResource directPublishResource, boolean directPublishSiblings, CmsWorkplaceSettings settings) {
-        super(cms, "OpenCms: validating HTML links in unpublishe resource of project " + cms.getRequestContext().currentProject().getName());
+        super(cms, "OpenCms: validating HTML links in unpublished resources of project " + cms.getRequestContext().currentProject().getName());
         
         m_directPublishResource = directPublishResource;
         m_directPublishSiblings = directPublishSiblings;

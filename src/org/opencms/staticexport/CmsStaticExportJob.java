@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportJob.java,v $
- * Date   : $Date: 2004/07/08 15:24:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/10 15:46:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * </pre>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsStaticExportJob implements I_CmsScheduledJob {
     
@@ -68,7 +68,7 @@ public class CmsStaticExportJob implements I_CmsScheduledJob {
         
         try {
             report = new CmsLogReport(CmsStaticExportJob.class);
-            OpenCms.getStaticExportManager().exportFullStaticRender(cms, true, report);
+            OpenCms.getStaticExportManager().exportFullStaticRender(true, report);
         } catch (CmsException e) {
             report.println(e);
         } catch (IOException e) {

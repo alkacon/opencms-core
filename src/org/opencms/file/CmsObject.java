@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2004/08/10 15:46:18 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  */
 public class CmsObject {
 
@@ -95,10 +95,18 @@ public class CmsObject {
     private CmsSessionInfoManager m_sessionStorage;
 
     /**
-     * The default constructor.
+     * Connectes an OpenCms user context to a running database.<p>
+     * 
+     * @param driverManager the driver manager to access the database
+     * @param context the request context that contains the user authentification
+     * @param sessionStorage the core session
      */
-    public CmsObject() {
-        // noop
+    public CmsObject (
+        CmsDriverManager driverManager,
+        CmsRequestContext context,
+        CmsSessionInfoManager sessionStorage
+    ) {
+       init(driverManager, context, sessionStorage);
     }
     
     /**
@@ -843,20 +851,12 @@ public class CmsObject {
 
     /**
      * Initializes this CmsObject with the provided user context and database connection.<p>
-     * 
-     * This initializing procedure is a system interal task. 
-     * It's not considered to be used as API method and should never be directly 
-     * called. Reason is that otherwise OpenCms security can potentially be 
-     * circumvented.<p>
-     * 
-     * In case you need to create an instance of this Object programatically,
-     * use {@link OpenCms#initCmsObject(String)}.<p>
      *
      * @param driverManager the driver manager to access the database
      * @param context the request context that contains the user authentification
      * @param sessionStorage the core session
      */
-    public void init(
+    private void init(
             CmsDriverManager driverManager,
             CmsRequestContext context,
             CmsSessionInfoManager sessionStorage
@@ -1976,7 +1976,7 @@ public class CmsObject {
      */
     private void fireEvent(int type, Object data) {
         
-        OpenCms.fireCmsEvent(this, type, Collections.singletonMap("data", data));
+        OpenCms.fireCmsEvent(type, Collections.singletonMap("data", data));
     }       
     
     /**
@@ -2916,10 +2916,10 @@ public class CmsObject {
 
                 // fire an event that a project has been published
                 Map eventData = new HashMap();
-                eventData.put("report", report);
-                eventData.put("publishHistoryId", publishList.getPublishHistoryId().toString());
-                eventData.put("context", m_context);
-                CmsEvent exportPointEvent = new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
+                eventData.put(I_CmsEventListener.KEY_CMSOBJECT, this);
+                eventData.put(I_CmsEventListener.KEY_REPORT, report);
+                eventData.put(I_CmsEventListener.KEY_PUBLISHID, publishList.getPublishHistoryId().toString());
+                CmsEvent exportPointEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
                 OpenCms.fireCmsEvent(exportPointEvent);                 
             }
         }
@@ -2959,16 +2959,8 @@ public class CmsObject {
      * @throws Exception if something goes wrong
      */
     public void publishResource(String resourcename, boolean directPublishSiblings, I_CmsReport report) throws Exception {
-        CmsResource resource = null;
-        
-        try {
-            resource = readResource(resourcename, CmsResourceFilter.ALL);
-            publishProject(report, resource, directPublishSiblings);
-        } catch (CmsException e) {
-            throw e;
-        } finally {
-            OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_RESOURCE, Collections.singletonMap("resource", resource)));
-        }
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        publishProject(report, resource, directPublishSiblings);
     }
     
     /**

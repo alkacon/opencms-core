@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.177 $
+ * Date   : $Date: 2004/08/10 15:46:18 $
+ * Version: $Revision: 1.178 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.177 $ $Date: 2004/08/03 07:19:03 $
+ * @version $Revision: 1.178 $ $Date: 2004/08/10 15:46:18 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -101,14 +101,15 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_UPDATE_EXPORTS :
-                report = (I_CmsReport) event.getData().get("report");
-                m_driverManager.updateExportPoints(event.getCmsObject().getRequestContext(), report);
+                report = (I_CmsReport) event.getData().get(I_CmsEventListener.KEY_REPORT);
+                m_driverManager.updateExportPoints(report);
                 break;
 
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT :
-                CmsUUID publishHistoryId = new CmsUUID((String) event.getData().get("publishHistoryId"));
-                report = (I_CmsReport) event.getData().get("report");
-                m_driverManager.writeExportPoints(event.getCmsObject().getRequestContext(), report, publishHistoryId);
+                CmsUUID publishHistoryId = new CmsUUID((String) event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
+                report = (I_CmsReport) event.getData().get(I_CmsEventListener.KEY_REPORT);
+                CmsObject cms = (CmsObject)event.getData().get(I_CmsEventListener.KEY_CMSOBJECT);
+                m_driverManager.writeExportPoints(cms.getRequestContext(), report, publishHistoryId);
                 break;
 
             default :
@@ -658,7 +659,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             throw e;
         } finally {
             // notify the app. that the published folder and it's properties have been modified offline
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", currentFolder)));
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", currentFolder)));
         }
     }
 
@@ -993,7 +994,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             throw e;
         } finally {
             // notify the app. that the published file and it's properties have been modified offline
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", offlineFileHeader)));
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", offlineFileHeader)));
         }
     }
     
@@ -1182,7 +1183,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             throw e;
         } finally {
             // notify the app. that the published folder and it's properties have been modified offline
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", offlineFolder)));
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", offlineFolder)));
         }
     }
 
@@ -1314,7 +1315,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
 
             // clear all caches to reclaim memory
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
 
             // force a complete object finalization and garbage collection 
             System.runFinalization();
