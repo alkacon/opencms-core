@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/Attic/CmsResourceTranslatorTest.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/29 08:31:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */
@@ -53,7 +53,9 @@ public class CmsResourceTranslatorTest extends TestCase {
         "s#/default/vfs/moduledemos/(.*)#/default/vfs/system/moduledemos/$1#", 
         "s#/default/vfs/system/workplace/config/language/(.*)#/default/vfs/system/workplace/locales/$1#", 
         "s#/default/vfs/system/workplace/css/(.*)#/default/vfs/system/workplace/resources/$1#",
-        "s#/default/vfs/system/workplace/templates/js/(.*)#/default/vfs/system/workplace/scripts/$1#" 
+        "s#/default/vfs/system/workplace/templates/js/(.*)#/default/vfs/system/workplace/scripts/$1#",
+        "s#[^0-9a-zA-Z_\\.\\-\\/]#!#g",
+        "s#!+#x#g"        
     };
      
     /**
@@ -77,7 +79,7 @@ public class CmsResourceTranslatorTest extends TestCase {
         assertEquals(test, "/default/vfs/system/bodies/test/index.html");
         
         test = translator.translateResource("/default/vfs/system/workplace/templates/js/test.js");
-        assertEquals(test, "/default/vfs/system/workplace/scripts/test.js");        
+        assertEquals(test, "/default/vfs/system/workplace/scripts/test.js");   
     }
 
 }
