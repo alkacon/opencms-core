@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/Attic/CmsEncoderTest.java,v $
- * Date   : $Date: 2004/05/08 03:11:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/25 10:12:10 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,17 +35,17 @@ import junit.framework.TestCase;
 /**
  * Tests for the CmsEncoder.<p>
  * 
- * IMPORTANT: This file is encoded in UTF-8 Unicode!<p>
- * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.3
  */
 public class CmsEncoderTest extends TestCase {
 
-    private static final String C_STRING_1 = "Test: äöüÄÖÜß€";     
-    private static final String C_STRING_2 = "Test: äöüÄÖÜß&#8364;";
+    // working around encoding issues (e.g. of CVS) by using unicode values 
+    // the values of C_STRING_1 are: ae oe ue Ae Oe Ue scharfes-s euro-symbol
+    private static final String C_STRING_1 = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac";     
+    private static final String C_STRING_2 = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df&#8364;";
     private static final String C_STRING_3 = "Test: &#228;&#246;&#252;&#196;&#214;&#220;&#223;&#8364;";
-    private static final String C_STRING_4 = "äöü€#|#12|&#12|&#;ÄÖÜtest";
+    private static final String C_STRING_4 = "\u00e4\u00f6\u00fc\u20ac#|#12|&#12|&#;\u00c4\u00d6\u00dctest";
     private static final String C_STRING_5 = "&#228;&#246;&#252;&#8364;#|#12|&#12|&#;&#196;&#214;&#220;test";
     
     private static final String C_ENC_ISO_8859_1 = "ISO-8859-1";
