@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/I_CmsLogChannels.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/05/10 20:54:10 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.boot;
  *
  * @author Alexander Lucas
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2001/11/15 16:41:21 $
+ * @version $Revision: 1.9 $ $Date: 2002/05/10 20:54:10 $
  */
 public interface I_CmsLogChannels {
 
@@ -44,8 +44,8 @@ public interface I_CmsLogChannels {
      * true - all logging-code is enabled and will be compiled into the classes.
      * If it is set to false the logging-code will not be compiled into the
      * classes. All resulting classes will shrink in size and OpenCms will
-     * perform much better. For live-systems you should set this to false, for
-     * development systems you should set it to true.
+     * perform much better. For live-systems you could set this to false, 
+     * in case you really have performance issues.
      *
      * If logging is disabled here, you can't switch it on again via the
      * opencms.properties!
@@ -93,4 +93,14 @@ public interface I_CmsLogChannels {
 
     /** Critical messages that stop further processing */
     public static final String C_MODULE_CRITICAL = "module_critical";
+    
+    
+    /** Flex cache messages */
+    public static final String C_FLEX_CACHE = "flex_cache";
+    
+    /** Flex loader messages */
+    public static final String C_FLEX_LOADER = "flex_loader";
+    
+    /** Flex ClassLoader messages */
+    public static final String C_FLEX_CLASSLOADER = "flex_classloader";    
 }
