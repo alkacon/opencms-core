@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/11/23 13:22:49 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2001/11/15 16:41:21 $
+ * @version $Revision: 1.20 $ $Date: 2001/11/23 13:22:49 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -646,7 +646,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
             m_opencms = new OpenCms(m_configurations);
         }
         catch(Exception exc) {
-            throw new ServletException(exc.getMessage());
+            throw new ServletException(Utils.getStackTrace(exc));
         }
 
         //initalize the session storage
