@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/07/11 10:49:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/11 12:15:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -208,6 +208,9 @@ public class CmsProperty extends CmsDialog {
         // close table if properties are present
         if (setProperties) {
             retValue.append("</table>");
+        } else {
+            // no propertis present, show error message
+            retValue.append(key("error.message.noprop"));
         }
         
         return retValue.toString();
