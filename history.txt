@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.31 Bela Tegeuse - 23 July 2001
+* Fixed bug in rename dialog
+* Fixed bug in htmleditor not deleting the ~files
+
 OpenCms 4.3.30 Bela Tegeuse - 20 July 2001
 ! new feature in history: a version of a file can be restored from the history
 * elementdefinition parameter now work with the element cache
