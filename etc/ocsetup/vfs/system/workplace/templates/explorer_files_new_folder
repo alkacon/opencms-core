@@ -13,6 +13,27 @@ function show_help()
 }
 
 
+function checkforchars(){
+var okay=true;
+
+	for(i=0;i<LINK.NEUNAME.value.length;i++){
+	    if(LINK.NEUNAME.charAt(i)=="%"){
+	    	alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+LINK.NEUNAME.value.charAt(i));
+	    	okay=false;
+	    }
+	    if(LINK.NEUNAME.charAt(i)=="#"){
+	    	alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+LINK.NEUNAME.value.charAt(i));
+	       	okay=false;
+	    }
+	    if(LINK.NEUNAME.charAt(i)=="&"){
+		    alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+LINK.NEUNAME.value.charAt(i));
+			okay=false;
+		}
+	}
+
+if(okay==true)location='explorer_files_new_folder.html?step=1&newfolder='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value;
+
+}
 
 function checkForName(){
 
@@ -66,7 +87,7 @@ function checkForName(){
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
 				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-				<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="location='explorer_files_new_folder.html?step=1&newfolder='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value;"></td>
+				<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="javascript:checkforchars()"></td>
 				<td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
 			</tr>
 			</table>
