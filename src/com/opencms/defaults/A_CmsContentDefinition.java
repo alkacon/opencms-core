@@ -30,6 +30,7 @@ import com.opencms.file.*;
 import java.util.*;
 import java.lang.reflect.*;
 import com.opencms.core.*;
+import com.opencms.core.exceptions.*;
 
 /**
  * Abstract class for the content definition
@@ -91,6 +92,12 @@ public static Vector applyFilter(CmsObject cms, CmsFilterMethod filterMethod, St
 
 	return (Vector) method.invoke(null, allParametersArray);
 }
+
+
+  public void check(boolean finalcheck) throws CmsPlausibilizationException {
+    // do nothing here, just an empty method for compatibility reasons.
+  }
+
 
 /**
  * abstract delete method

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/07/23 13:07:04 $
-* Version: $Revision: 1.180 $
+* Date   : $Date: 2001/07/31 07:08:30 $
+* Version: $Revision: 1.181 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.180 $ $Date: 2001/07/23 13:07:04 $
+ * @version $Revision: 1.181 $ $Date: 2001/07/31 07:08:30 $
  */
 public interface I_CmsConstants {
 
@@ -1104,6 +1104,16 @@ public interface I_CmsConstants {
 	 * The name of the launcher tag in registry.
 	 */
 	static final String C_REGISTRY_LAUNCHER = "launcher";
+
+    /**
+     * The name of the error tag seperator in backoffice templates
+     */
+    static final String C_ERRSPERATOR="_";
+
+    /**
+    * The name of the error tag prefix in backoffice templates
+    */
+    static final String C_ERRPREFIX="err";
 
 }
 
