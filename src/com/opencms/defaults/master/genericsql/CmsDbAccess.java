@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/21 14:36:06 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/05/21 16:10:09 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,6 +57,7 @@ import java.util.Vector;
  */
 public class CmsDbAccess {
 
+    /** Prefix for the content object store */
     public static final String C_COS_PREFIX = "/" + I_CmsConstants.C_ROOTNAME_COS;
 
     /** The root channel of the module */
@@ -65,65 +66,64 @@ public class CmsDbAccess {
     /** TODO: delete this after successful change of dbpool */
     private String m_poolUrl;
     
-    /**
-     * 'Constants' file.
-     */
-   protected com.opencms.defaults.master.genericsql.CmsQueries m_SqlQueries;
+    /** 'Constants' file. */
+   protected com.opencms.defaults.master.genericsql.CmsSqlManager m_sqlManager;
 
     /**
-     * Public empty constructor, call "init()" on this class afterwards.
-     * This allows more flexible custom module development.
+     * Public empty constructor, call "init(String)" on this class afterwards.
+     * This allows more flexible custom module development.<p>
      */
     public CmsDbAccess() {
     }
 
     /**
-     * Constructs a new DbAccessObject.
-     * @param poolName the pool to access offline ressources.
-     * @param onlinePoolName the pool to access the online ressources.
-     * @param backupPoolName the pool to access the backup ressources.
+     * Constructs a new DbAccessObject and calls init(String) with the given String.<p>
+     * @param dbPool the pool to access resources.
      */
     public CmsDbAccess(String dbPool) {
         init(dbPool);
     }
     
     /**
-     * Initializes the DBAccessObject.
+     * Initializes the SqlManager with the used pool.<p>
      */
     public void init(String dbPool) {      
-        m_SqlQueries = initQueries(dbPool, getClass());
+        m_sqlManager = initQueries(dbPool, getClass());
         m_poolUrl = dbPool;
     }
     
     /**
-     * retrieve the correct instance of the queries holder.
-     * This method should be overloaded if other query strings should be used.
+     * Retrieve the correct instance of the queries holder.
+     * This method should be overloaded if other query strings should be used.<p>
      */
-    public com.opencms.defaults.master.genericsql.CmsQueries initQueries(String dbPoolUrl, Class currentClass) {           
-        return new com.opencms.defaults.master.genericsql.CmsQueries(dbPoolUrl, currentClass);
+    public com.opencms.defaults.master.genericsql.CmsSqlManager initQueries(String dbPoolUrl, Class currentClass) {           
+        return new com.opencms.defaults.master.genericsql.CmsSqlManager(dbPoolUrl, currentClass);
     }
 
     /**
-     * Set the root channel
-     * @param newRootChannel the new value for the rootChannel
+     * Set the root channel of the content.<p>
+     * 
+     * @param newRootChannel the new value for the rootChannel.
      */
     public void setRootChannel(String newRootChannel) {
         m_rootChannel = newRootChannel;
     }
 
     /**
-     * Get the root channel
+     * Get the root channel of the content.<p>
+     * 
+     * @return String the root channel.
      */
     public String getRootChannel() {
         return m_rootChannel;
     }
 
     /**
-     * Inserts a new row in the database with the dataset.
-     * @param cms the CmsObject to get access to cms-ressources.
+     * Inserts a new single row in the database with the dataset.<p>
+     * 
+     * @param cms the CmsObject to get access to cms resources.
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
-     * @param mediaToAdd a Vector of media to add.
      */
     public void insert(CmsObject cms, CmsMasterContent content,
                        CmsMasterDataSet dataset)
@@ -152,8 +152,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "insert_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "insert_offline");
             sqlFillValues(stmt, content.getSubId(), dataset);
             stmt.executeUpdate();
             // after inserting the row, we have to update media and channel tables
@@ -162,18 +162,19 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
     }
 
     /**
-     * Inserts a new row in the database with the copied dataset.
-     * @param cms the CmsObject to get access to cms-ressources.
+     * Inserts a new row in the database with the copied dataset.<p>
+     * 
+     * @param cms the CmsObject to get access to cms resources.
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
      * @param mediaToAdd a Vector of media to add.
      * @param channelToAdd a Vector of channels to add.
-     * @return int The id of the new content definition
+     * @return CmsUUID The uuid of the new content definition
      */
     public CmsUUID copy(CmsObject cms, CmsMasterContent content,
                        CmsMasterDataSet dataset, Vector mediaToAdd, Vector channelToAdd)
@@ -208,8 +209,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "insert_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "insert_offline");
             sqlFillValues(stmt, content.getSubId(), dataset);
             stmt.executeUpdate();
             // after inserting the row, we have to update media and channel tables
@@ -218,14 +219,15 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
         return newMasterId;
     }
 
     /**
-     * Updates the lockstate in the database.
-     * @param cms the CmsObject to get access to cms-ressources.
+     * Updates the lockstate in the database.<p>
+     * 
+     * @param cms the CmsObject to get access to cms resources.
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
      */
@@ -239,12 +241,6 @@ public class CmsDbAccess {
             // no write access
             throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
         }
-        /*
-        if(dataset.m_lockedBy <= -1) {
-            // unlock the cd
-            dataset.m_lockedBy = -1;
-        } else {
-        */
         if (!dataset.m_lockedBy.isNullUUID()) {
             // lock the resource into the current project
             dataset.m_lockedInProject = cms.getRequestContext().currentProject().getId();
@@ -253,8 +249,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "update_lockstate_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "update_lockstate_offline");
             stmt.setString(1, dataset.m_lockedBy.toString());
             stmt.setInt(2, dataset.m_lockedInProject);
             stmt.setString(3, dataset.m_masterId.toString());
@@ -263,12 +259,14 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
     }
 
-    /**
-     * @param cms the CmsObject to get access to cms-ressources.
+    /** 
+     * Write the dataset to the database.<p>
+     * 
+     * @param cms the CmsObject to get access to cms resources.
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
      */
@@ -311,8 +309,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "update_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "update_offline");
             int rowcounter = sqlFillValues(stmt, content.getSubId(), dataset);
             stmt.setString(rowcounter++, dataset.m_masterId.toString());
             stmt.setInt(rowcounter++, content.getSubId());
@@ -323,14 +321,17 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
     }
 
     /**
+     * Read the dataset with the given UUID from the database.<p>
+     * 
      * @param cms the CmsObject to get access to cms-ressources.
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
+     * @param contentId the UUID of the contentdefinition.
      */
     public void read(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset, CmsUUID contentId)
         throws CmsException {
@@ -347,8 +348,8 @@ public class CmsDbAccess {
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
             stmt.setString(1, contentId.toString());
             stmt.setInt(2, content.getSubId());
             res = stmt.executeQuery();
@@ -363,13 +364,14 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
     }
 
     /**
      * Read the lockstate from the database.
-     * We nned this, because of someone has maybe stolen the lock.
+     * We need this because of someone has maybe stolen the lock.<p>
+     * 
      * @param dataset the dataset to read the lockstate into.
      * @param subId the subId of this cd
      */
@@ -378,8 +380,8 @@ public class CmsDbAccess {
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "read_lockstate_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "read_lockstate_offline");
             stmt.setString(1, dataset.m_masterId.toString());
             stmt.setInt(2, subId);
             res = stmt.executeQuery();
@@ -393,13 +395,14 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
     }
 
     /**
-     * Reads all media from the database.
-     * @param cms the CmsObject to get access to cms-ressources.
+     * Reads all media contents from the database.<p>
+     * 
+     * @param cms the CmsObject to get access to cms resources.
      * @param content the CmsMasterContent to write to the database.
      * @return a Vector of media objects.
      */
@@ -419,8 +422,8 @@ public class CmsDbAccess {
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
             stmt.setString(1, content.getId().toString());
             res = stmt.executeQuery();
             while(res.next()) {
@@ -443,14 +446,15 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
         return retValue;
     }
 
     /**
-     * Reads all channels from the database.
-     * @param cms the CmsObject to get access to cms-ressources.
+     * Reads all channels from the database.<p>
+     * 
+     * @param cms the CmsObject to get access to cms resources.
      * @param content the CmsMasterContent to write to the database.
      * @return a Vector of channel names.
      */
@@ -470,8 +474,8 @@ public class CmsDbAccess {
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
             stmt.setString(1, content.getId().toString());
             res = stmt.executeQuery();
             while(res.next()) {
@@ -497,16 +501,18 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
         return retValue;
     }
 
     /**
-     * Reads all content definitions of a given channel
-     * @param cms the CmsObject to get access to cms-ressources.
+     * Reads all content definitions of a given channel.<p>
+     * 
+     * @param cms the CmsObject to get access to cms resources.
      * @param channelId the id of the channel.
-     * @return Vector The datasets of the contentdefinitions in the channel
+     * @param suId the sub ID of the contentdefinition.
+     * @return Vector the datasets of the contentdefinitions in the channel.
      */
     public Vector readAllByChannel(CmsObject cms, int channelId, int subId)
         throws CmsException {
@@ -520,8 +526,8 @@ public class CmsDbAccess {
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
             stmt.setInt(1, subId);
             stmt.setInt(2, channelId);
             res = stmt.executeQuery();
@@ -533,12 +539,14 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
         return theDataSets;
     }
 
     /**
+     * Delete a dataset from the offline table.<p>
+     * 
      * @param cms the CmsObject to get access to cms-ressources.
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
@@ -575,8 +583,8 @@ public class CmsDbAccess {
             PreparedStatement stmt = null;
             Connection conn = null;
             try {
-                conn = m_SqlQueries.getConnection();
-                stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
+                conn = m_sqlManager.getConnection();
+                stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
                 stmt.setString(1, dataset.m_masterId.toString());
                 stmt.setInt(2, content.getSubId());
                 if(stmt.executeUpdate() != 1) {
@@ -589,7 +597,7 @@ public class CmsDbAccess {
             } catch(SQLException exc) {
                 throw new CmsException(CmsException.C_SQL_ERROR, exc);
             } finally {
-                m_SqlQueries.closeAll(conn, stmt, null);
+                m_sqlManager.closeAll(conn, stmt, null);
             }
         } else {
             // set state to deleted and update the line
@@ -598,8 +606,8 @@ public class CmsDbAccess {
             PreparedStatement stmt = null;
             Connection conn = null;
             try {
-                conn = m_SqlQueries.getConnection();
-                stmt = m_SqlQueries.getPreparedStatement(conn, "update_offline");
+                conn = m_sqlManager.getConnection();
+                stmt = m_sqlManager.getPreparedStatement(conn, "update_offline");
                 int rowcounter = sqlFillValues(stmt, content.getSubId(), dataset);
                 stmt.setString(rowcounter++, dataset.m_masterId.toString());
                 stmt.setInt(rowcounter++, content.getSubId());
@@ -607,13 +615,15 @@ public class CmsDbAccess {
             } catch(SQLException exc) {
                 throw new CmsException(CmsException.C_SQL_ERROR, exc);
             } finally {
-                m_SqlQueries.closeAll(conn, stmt, null);
+                m_sqlManager.closeAll(conn, stmt, null);
             }
         }
     }
 
     /**
-     * @param cms the CmsObject to get access to cms-ressources.
+     * Undelete a prevoiusly deleted contentdefinition.<p>
+     * 
+     * @param cms the CmsObject to get access to cms resources.
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
      */
@@ -639,8 +649,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "update_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "update_offline");
             int rowcounter = sqlFillValues(stmt, content.getSubId(), dataset);
             stmt.setString(rowcounter++, dataset.m_masterId.toString());
             stmt.setInt(rowcounter++, content.getSubId());
@@ -648,14 +658,14 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
     }
 
     /**
-     * Changes the perrmissions of the Master
+     * Changes the permissions of the content.<p>
      *
-     * @param cms the CmsObject to get access to cms-ressources.
+     * @param cms the CmsObject to get access to cms resources.
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
      */
@@ -692,8 +702,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "update_permissions_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "update_permissions_offline");
             stmt.setString(1, dataset.m_userId.toString());
             stmt.setString(2, dataset.m_groupId.toString());
             stmt.setInt(3, dataset.m_accessFlags);
@@ -706,29 +716,31 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
     }
 
     /**
      * Returns a string representation of this instance.
-     * This can be used for debugging.
+     * This can be used for debugging.<p>
+     * 
      * @return the string representation of this instance.
      */
     public String toString() {
         StringBuffer returnValue = new StringBuffer();
         returnValue.append(this.getClass().getName() + "{");
-        returnValue.append("poolName="+m_poolUrl+";");
+        returnValue.append("Used db pool="+m_poolUrl+";");
+        returnValue.append("}");
         return returnValue.toString();
     }
 
     /**
-     * Inserts all values to the statement for insert and update.
+     * Inserts all values to the statement for insertion and update.<p>
+     * 
      * @param stmt the Statement to fill the values to.
-     * @param cms the CmsObject to get access to cms-ressources.
      * @param subId the subid of this module.
      * @param dataset the set of data for this contentdefinition.
-     * @return the actual rowcounter.
+     * @return the current rowcounter.
      */
     protected int sqlFillValues(PreparedStatement stmt, int subId, CmsMasterDataSet dataset)
         throws SQLException {
@@ -773,12 +785,12 @@ public class CmsDbAccess {
     }
 
     /**
-     * Inserts all values to the statement for insert and update.
+     * Inserts all values to the statement for insert and update.<p>
+     * 
      * @param res the Resultset read the values from.
-     * @param cms the CmsObject to get access to cms-ressources.
-     * @param content the CmsMasterContent to write to the database.
+     * @param cms the CmsObject to get access to cms resources.
      * @param dataset the set of data for this contentdefinition.
-     * @return the actual rowcounter.
+     * @return the current rowcounter.
      */
     protected int sqlFillValues(ResultSet res, CmsObject cms, CmsMasterDataSet dataset)
         throws SQLException {
@@ -817,7 +829,12 @@ public class CmsDbAccess {
     }
 
     /**
-     * Computes the correct project id based on the channels.
+     * Computes the correct project id based on the current user and the channels.<p>
+     * 
+     * @param cms the CmsObject
+     * @param dataset the dataSet
+     * @return int the project id
+     * @throws SQLException
      */
     protected int computeProjectId(CmsObject cms, CmsMasterDataSet dataset) throws SQLException  {
         int onlineProjectId = I_CmsConstants.C_UNKNOWN_ID;
@@ -831,7 +848,7 @@ public class CmsDbAccess {
         }
 
         if(!isOnlineProject(cms)) {
-            // this is a offline project -> compute if we have to return the
+            // this is an offline project -> compute if we have to return the
             // online project id or the offline project id
 
             // the owner and the administrtor has always access
@@ -851,8 +868,8 @@ public class CmsDbAccess {
             Connection conn = null;
             try {
                 cms.setContextToCos();
-                conn = m_SqlQueries.getConnection();
-                stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
+                conn = m_sqlManager.getConnection();
+                stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
                 stmt.setString(1, dataset.m_masterId.toString());
                 res = stmt.executeQuery();
                 while(res.next()) {
@@ -877,19 +894,20 @@ public class CmsDbAccess {
                 }
             } finally {
                 cms.setContextToVfs();
-                m_SqlQueries.closeAll(conn, stmt, res);
+                m_sqlManager.closeAll(conn, stmt, res);
             }
         }
-        // no channel found, that belongs to the offlineproject ->
+        // no channel found that belongs to the offlineproject ->
         // return the online project id.
         return onlineProjectId;
     }
 
     /**
-     * Sets an array of strings into the stmnt.
+     * Sets an array of strings into the statement.<p>
+     * 
      * @param stmt the PreparedStatement to set the values into.
      * @param array the array of strings to set.
-     * @param the columnscounter for the stmnt.
+     * @param the columnscounter for the statement.
      * @return the increased columnscounter;
      */
     protected int sqlSetTextArray(PreparedStatement stmt, String[] array, int columnscounter)
@@ -905,7 +923,8 @@ public class CmsDbAccess {
     }
 
     /**
-     * Sets an array of strings from the resultset.
+     * Sets an array of strings from the resultset.<p>
+     * 
      * @param res the ResultSet to get the values from.
      * @param array the array of strings to set.
      * @param the columnscounter for the res.
@@ -920,7 +939,8 @@ public class CmsDbAccess {
     }
 
     /**
-     * Sets an array of ints into the stmnt.
+     * Sets an array of ints into the statement.<p>
+     * 
      * @param stmt the PreparedStatement to set the values into.
      * @param array the array of ints to set.
      * @param the columnscounter for the stmnt.
@@ -935,7 +955,8 @@ public class CmsDbAccess {
     }
 
     /**
-     * Sets an array of ints from the resultset.
+     * Sets an array of ints from the resultset.<p>
+     * 
      * @param res the ResultSet to get the values from.
      * @param array the array of ints to set.
      * @param the columnscounter for the res.
@@ -950,7 +971,8 @@ public class CmsDbAccess {
     }
 
     /**
-     * Sets an array of ints into the stmnt.
+     * Sets an array of longs (dates) into the statement.<p>
+     * 
      * @param stmt the PreparedStatement to set the values into.
      * @param array the array of longs to set.
      * @param the columnscounter for the stmnt.
@@ -965,7 +987,8 @@ public class CmsDbAccess {
     }
 
     /**
-     * Sets an array of ints from the resultset.
+     * Sets an array of longs (dates) from the resultset.<p>
+     * 
      * @param res the ResultSet to get the values from.
      * @param array the array of longs to set.
      * @param the columnscounter for the res.
@@ -981,10 +1004,11 @@ public class CmsDbAccess {
 
     /**
      * Returns a vector of contentdefinitions based on the sql resultset.
-     * Never mind about the visible flag.
-     * @param res - the ResultSet to get data-lines from.
-     * @param contentDefinitionClass - the class of the cd to create new instances.
-     * @param cms - the CmsObject to get access to cms-ressources.
+     * Never mind about the visible flag.<p>
+     * 
+     * @param res the ResultSet to get data lines from.
+     * @param contentDefinitionClass the class of the cd to create new instances.
+     * @param cms the CmsObject to get access to cms resources.
      * @throws SqlException if nothing could be read from the resultset.
      */
     protected Vector createVectorOfCd(ResultSet res, Class contentDefinitionClass, CmsObject cms)
@@ -993,11 +1017,12 @@ public class CmsDbAccess {
     }
 
     /**
-     * Returns a vector of contentdefinitions based on the sql resultset.
-     * @param res - the ResultSet to get data-lines from.
-     * @param contentDefinitionClass - the class of the cd to create new instances.
-     * @param cms - the CmsObject to get access to cms-ressources.
-     * @param viewonly - decides, if only the ones that are visible should be returned
+     * Returns a vector of contentdefinitions based on the sql resultset.<p>
+     * 
+     * @param res the ResultSet to get data-lines from.
+     * @param contentDefinitionClass the class of the cd to create new instances.
+     * @param cms the CmsObject to get access to cms resources.
+     * @param viewonly  decides, if only the ones that are visible should be returned
      * @throws SqlException if nothing could be read from the resultset.
      */
     protected Vector createVectorOfCd(ResultSet res, Class contentDefinitionClass, CmsObject cms, boolean viewonly)
@@ -1034,10 +1059,11 @@ public class CmsDbAccess {
     }
 
     /**
-     * Returns a vector of contentdefinitions based on the sql resultset.
-     * @param datasets - the vector with the datasets.
-     * @param contentDefinitionClass - the class of the cd to create new instances.
-     * @param cms - the CmsObject to get access to cms-ressources.
+     * Returns a vector of contentdefinitions based on the sql resultset.<p>
+     * 
+     * @param datasets the vector with the datasets.
+     * @param contentDefinitionClass the class of the cd to create new instances.
+     * @param cms the CmsObject to get access to cms-ressources.
      * @throws SqlException if nothing could be read from the resultset.
      */
     protected Vector createVectorOfCd(Vector datasets, Class contentDefinitionClass, CmsObject cms)
@@ -1070,11 +1096,11 @@ public class CmsDbAccess {
 
     /**
      * Checks if read (and visible) permissions are granted.
-     * the visible-permissens will be checked, if viewonly is set to true
-     * viewonly=true is needed for the backoffice
-     * @param cms - the CmsObject to get access to cms-ressources.
-     * @param content - the cd to check.
-     * @param viewonly - if set to true the v-Flag will be checked, too
+     * the visible permissions will be checked, if viewonly is set to true
+     * viewonly=true is needed for the backoffice.<p>
+     * 
+     * @param content the cd to check.
+     * @param viewonly if set to true the v-Flag will be checked, too.
      */
     protected boolean checkAccess(CmsMasterContent content, boolean viewonly) {
         if(!content.isReadable()) {
@@ -1090,8 +1116,9 @@ public class CmsDbAccess {
     }
 
     /**
-     * Returns true, if this is the onlineproject
-     * @param cms - the CmsObject to get access to cms-ressources.
+     * Returns true, if the current project is the online project.<p>
+     * 
+     * @param cms the CmsObject to get access to cms resources.
      * @return true, if this is the onlineproject, else returns false
      */
     protected boolean isOnlineProject(CmsObject cms) {
@@ -1099,52 +1126,54 @@ public class CmsDbAccess {
     }
 
     /**
-     * Deletes all media lines for one master.
-     * @param masterId - the masterId to delete the media for
-     * @throws SQLException if an sql-error occur
+     * Deletes all media lines for a master content definition.<p>
+     * 
+     * @param masterId - the masterId to delete the media for.
+     * @throws SQLException if an sql error occurs.
      */
     protected void deleteAllMedia(CmsUUID masterId) throws SQLException {
         String statement_key = "delete_all_media_offline";
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
             stmt.setString(1, masterId.toString());
             stmt.executeUpdate();
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
     }
 
     /**
-     * Deletes all channel lines for one master.
-     * @param masterId - the masterId to delete the media for
-     * @throws SQLException if an sql-error occur
+     * Deletes all channel lines for one master.<p>
+     * 
+     * @param masterId - the masterId to delete the channels for.
+     * @throws SQLException if an sql error occurs.
      */
     protected void deleteAllChannels(CmsUUID masterId) throws SQLException {
         String statement_key = "delete_all_channel_offline";
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
             stmt.setString(1, masterId.toString());
             stmt.executeUpdate();
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
     }
 
     /**
-     * Updates the media object of a content definition.
+     * Updates the media object of a content definition.<p>
      * 
-     * @param masterId the content definition master id
-     * @param mediaToAdd vector of media objects to add
-     * @param mediaToUpdate vector of media objects to update 
-     * @param mediaToDelete vector of media objects to delete
-     * @throws SQLException
-     * @throws CmsException
+     * @param masterId the content definition master id.
+     * @param mediaToAdd vector of media objects to add.
+     * @param mediaToUpdate vector of media objects to update.
+     * @param mediaToDelete vector of media objects to delete.
+     * @throws SQLException if an sql error occurs.
+     * @throws CmsException if an error occurs.
      */
     protected void updateMedia(CmsUUID masterId, Vector mediaToAdd,
                                Vector mediaToUpdate, Vector mediaToDelete)
@@ -1153,8 +1182,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "insert_media_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "insert_media_offline");
             for(int i = 0; i < mediaToAdd.size(); i++) {
                 CmsMasterMedia media = (CmsMasterMedia) mediaToAdd.get(i);
                 media.setId(CmsIdGenerator.nextId(m_poolUrl, "CMS_MODULE_MEDIA"));
@@ -1163,15 +1192,15 @@ public class CmsDbAccess {
                 stmt.executeUpdate();
             }
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
 
         // update existing media
         stmt = null;
         conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "update_media_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "update_media_offline");
             for(int i = 0; i < mediaToUpdate.size(); i++) {
                 CmsMasterMedia media = (CmsMasterMedia) mediaToUpdate.get(i);
                 media.setMasterId(masterId);
@@ -1181,14 +1210,14 @@ public class CmsDbAccess {
                 stmt.executeUpdate();
             }
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
         // delete unneeded media
         stmt = null;
         conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "delete_media_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "delete_media_offline");
             for(int i = 0; i < mediaToDelete.size(); i++) {
                 CmsMasterMedia media = (CmsMasterMedia) mediaToDelete.get(i);
                 stmt.setInt(1, media.getId());
@@ -1196,18 +1225,18 @@ public class CmsDbAccess {
                 stmt.executeUpdate();
             }
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
     }
 
     /**
-     * Updates the channels of a content definition.
+     * Updates the channels of a content definition.<p>
      * 
-     * @param cms the current context object
-     * @param masterId the content definition master id
-     * @param channelToAdd vector of channels to add 
-     * @param channelToDelete vector of channels to delete
-     * @throws SQLException
+     * @param cms the current context object.
+     * @param masterId the content definition master id.
+     * @param channelToAdd vector of channels to add. 
+     * @param channelToDelete vector of channels to delete.
+     * @throws SQLException if an sql error occurs.
      */
     protected void updateChannels(CmsObject cms, CmsUUID masterId, Vector channelToAdd,
         Vector channelToDelete) throws SQLException {
@@ -1215,8 +1244,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "insert_channel_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "insert_channel_offline");
             for(int i = 0; i < channelToAdd.size(); i++) {
                 try {
                     stmt.setString(1, masterId.toString());
@@ -1235,15 +1264,15 @@ public class CmsDbAccess {
                 }
             }
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
 
         // delete unneeded channel
         stmt = null;
         conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "delete_channel_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "delete_channel_offline");
             for(int i = 0; i < channelToDelete.size(); i++) {
                 try {
                     stmt.setString(1, masterId.toString());
@@ -1262,17 +1291,17 @@ public class CmsDbAccess {
                 }
             }
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
     }
 
     /**
-     * Fills a prepared statement with media values.
+     * Fills a prepared statement with media values.<p>
      * 
-     * @param stmt the statement to fill
-     * @param media the data to fill the statement with
-     * @return int the number of values set in the statement
-     * @throws SQLException if data could not be set in statement
+     * @param stmt the statement to fill.
+     * @param media the data to fill the statement with.
+     * @return int the number of values set in the statement.
+     * @throws SQLException if data could not be set in statement.
      */
     protected int sqlFillValues(PreparedStatement stmt, CmsMasterMedia media)
         throws SQLException {
@@ -1294,12 +1323,13 @@ public class CmsDbAccess {
     }
 
     /**
-     * Returns a vector with all version of a master in the backup
+     * Returns a vector with all version of a master in the backup table.<p>
      *
-     * @param cms The CmsObject
-     * @param masterId The id of the master
-     * @param subId The sub_id
-     * @return Vector A vector with all versions of the master
+     * @param cms the CmsObject.
+     * @param contentDefinitinClass the Class of the current master.
+     * @param masterId the id of the master.
+     * @param subId the sub id of the master.
+     * @return Vector a vector with all versions of the master.
      */
     public Vector getHistory(CmsObject cms, Class contentDefinitionClass, CmsUUID masterId, int subId) throws CmsException{
         Vector retVector = new Vector();
@@ -1308,8 +1338,8 @@ public class CmsDbAccess {
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "read_all_backup");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "read_all_backup");
             stmt.setString(1, masterId.toString());
             stmt.setInt(2, subId);
             // gets all versions of the master in the backup table
@@ -1327,20 +1357,20 @@ public class CmsDbAccess {
         } catch (SQLException e){
             throw new CmsException(CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
         return retVector;
     }
 
     /**
-     * Returns the version of a master in the backup
+     * Returns the version of a master in the backup.<p>
      *
-     * @param cms The CmsObject
-     * @param contentDefinitionClass The class of the content definition
-     * @param masterId The id of the master
-     * @param subId The sub_id
-     * @param versionId The version id
-     * @return CmsMasterContent A content definition of the version
+     * @param cms The CmsObject.
+     * @param contentDefinitionClass The class of the content definition.
+     * @param masterId the id of the master.
+     * @param subId the sub id.
+     * @param versionId the version id.
+     * @return CmsMasterContent a content definition of the version.
      */
     public CmsMasterContent getVersionFromHistory(CmsObject cms, Class contentDefinitionClass,
                                                   CmsUUID masterId, int subId, int versionId) throws CmsException{
@@ -1370,12 +1400,12 @@ public class CmsDbAccess {
     }
 
     /**
-     * Returns the version of a master in the backup
+     * Returns the version of a master from the backup.<p>
      *
-     * @param cms The CmsObject
-     * @param masterId The id of the master
-     * @param subId The sub_id
-     * @param versionId The version id
+     * @param cms the CmsObject.
+     * @param masterId the id of the master.
+     * @param subId the sub id.
+     * @param versionId the version id.
      * @return Vector A vector with all versions of the master
      */
     public CmsMasterDataSet getVersionFromHistory(CmsObject cms, CmsUUID masterId, int subId, int versionId) throws CmsException{
@@ -1384,8 +1414,8 @@ public class CmsDbAccess {
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "read_backup");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "read_backup");
             stmt.setString(1, masterId.toString());
             stmt.setInt(2, subId);
             stmt.setInt(3, versionId);
@@ -1403,18 +1433,18 @@ public class CmsDbAccess {
         } catch (SQLException e){
             throw new CmsException(CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
         return dataset;
     }
 
     /**
-     * Restores a version of the master and media from backup
+     * Restores a version of the master and media from backup.<p>
      *
-     * @param cms The CmsObject
-     * @param content The master content
-     * @param dataset The dataset of the master
-     * @param versionId The version id of the master and media to restore
+     * @param cms the CmsObject.
+     * @param content the master content.
+     * @param dataset the dataset of the master.
+     * @param versionId the version id of the master and media to restore.
      */
      public void restore(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset, int versionId) throws CmsException{
         Connection conn = null;
@@ -1476,8 +1506,8 @@ public class CmsDbAccess {
         }
         // copy the media from backup
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "read_media_backup");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "read_media_backup");
             stmt.setString(1, dataset.m_masterId.toString());
             stmt.setInt(2, versionId);
             res = stmt.executeQuery();
@@ -1500,25 +1530,25 @@ public class CmsDbAccess {
                 try {
                     stmt2 = null;
                     conn2 = null;
-                    conn2 = m_SqlQueries.getConnection();
-                    stmt2 = m_SqlQueries.getPreparedStatement(conn2, "insert_media_offline");
+                    conn2 = m_sqlManager.getConnection();
+                    stmt2 = m_sqlManager.getPreparedStatement(conn2, "insert_media_offline");
                     sqlFillValues(stmt2, media);
                     stmt2.executeUpdate();
                 } catch (SQLException ex){
                     throw new CmsException(CmsException.C_SQL_ERROR, ex);
                 } finally {
-                    m_SqlQueries.closeAll(conn2, stmt2, null);
+                    m_sqlManager.closeAll(conn2, stmt2, null);
                 }
             }
         } catch (SQLException e){
             throw new CmsException(CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
      }
 
     /**
-     * Publishes a single content definition
+     * Publishes a single content definition.<p>
      *
      * @param cms The CmsObject
      * @param dataset the dataset to publish.
@@ -1527,6 +1557,8 @@ public class CmsDbAccess {
      * @param enableHistory set to true if backup tables should be filled.
      * @param versionId the versionId to save in the backup tables.
      * @param publishingDate the date and time of this publishing process.
+     * @param changedResources a Vector of changed resources.
+     * @param changedModuleData a Vector of changed moduledata.
      */
     public void publishResource(CmsObject cms, CmsMasterDataSet dataset, int subId, String contentDefinitionName,
                                 boolean enableHistory, int versionId, long publishingDate, Vector changedResources,
@@ -1535,8 +1567,9 @@ public class CmsDbAccess {
         publishingDate, changedResources,changedModuleData);
     }
     /**
-     * Publishes all ressources for this project
-     * Publishes all modified content definitions for this project.
+     * Publishes all resources for this project.
+     * Publishes all modified content definitions for this project.<p>
+     * 
      * @param cms The CmsObject
      * @param enableHistory set to true if backup tables should be filled.
      * @param projectId the Project that should be published.
@@ -1544,11 +1577,9 @@ public class CmsDbAccess {
      * @param publishingDate the date and time of this publishing process.
      * @param subId the subId to publish cd's for.
      * @param contentDefinitionName the name of the contentdefinition.
-     * @param changedRessources a Vector of Ressources that were changed by this
-     * publishing process.
-     * @param changedModuleData a Vector of Ressource that were changed by this
-     * publishing process. New published data will be add to this Vector to
-     * return it.
+     * @param changedRessources a Vector of Resources that were changed by this publishing process.
+     * @param changedModuleData a Vector of Resources that were changed by this publishing process. 
+     * New published data will be added to this Vector to return it.
      */
     public void publishProject(CmsObject cms, boolean enableHistory,
         int projectId, int versionId, long publishingDate, int subId,
@@ -1561,8 +1592,8 @@ public class CmsDbAccess {
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
             stmt.setInt(1, subId);
             stmt.setInt(2, projectId);
             stmt.setInt(3, I_CmsConstants.C_STATE_UNCHANGED);
@@ -1581,11 +1612,13 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
     }
 
     /**
+     * Publish one content definition.<p>
+     * 
      * @param cms The CmsObject
      * @param dataset the dataset to publish.
      * @param subId the subId to publish cd's for.
@@ -1593,11 +1626,9 @@ public class CmsDbAccess {
      * @param enableHistory set to true if backup tables should be filled.
      * @param versionId the versionId to save in the backup tables.
      * @param publishingDate the date and time of this publishing process.
-     * @param changedRessources a Vector of Ressources that were changed by this
-     * publishing process.
-     * @param changedModuleData a Vector of Ressource that were changed by this
-     * publishing process. New published data will be add to this Vector to
-     * return it.
+     * @param changedRessources a Vector of Resources that were changed by this publishing process.
+     * @param changedModuleData a Vector of Ressource that were changed by this publishing process. 
+     * New published data will be add to this Vector to return it.
      */
     protected void publishOneLine(CmsObject cms, CmsMasterDataSet dataset,
         int subId, String contentDefinitionName, boolean enableHistory,
@@ -1617,7 +1648,7 @@ public class CmsDbAccess {
 
         // backup the data
         if(enableHistory) {
-            // stroe the creationdate, because it will be set to publishingdate
+            // store the creationdate, because it will be set to publishingdate
             // with this method.
             long backupCreationDate = dataset.m_dateCreated;
             publishBackupData(cms, dataset, subId, versionId, publishingDate);
@@ -1642,8 +1673,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "update_state_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "update_state_offline");
             stmt.setInt(1, I_CmsConstants.C_STATE_UNCHANGED);
             stmt.setString(2, CmsUUID.getNullUUID().toString());
             stmt.setString(3, dataset.m_masterId.toString());
@@ -1652,7 +1683,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
 
         // update changedModuleData Vector
@@ -1661,7 +1692,11 @@ public class CmsDbAccess {
     }
 
     /**
-     * @todo: add description here
+     * Publish all deletions.<p>
+     * @param masterId the id of the content definition.
+     * @param subId the sub id of the cd.
+     * @param table the used table.
+     * @throws CmsException if sql or other errors occur.
      */
     protected void publishDeleteData(CmsUUID masterId, int subId, String table) throws CmsException {
         PreparedStatement stmt = null;
@@ -1669,48 +1704,52 @@ public class CmsDbAccess {
         String deleteChannel = "delete_all_channel_" + table;
         // delete channel relation
         try {
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, deleteChannel);
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, deleteChannel);
             stmt.setString(1, masterId.toString());
             stmt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
         // delete media
         try {
             conn = null;
             stmt = null;
             String deleteMedia = "delete_all_media_" + table;
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, deleteMedia);
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, deleteMedia);
             stmt.setString(1, masterId.toString());
             stmt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
         // delete the row
         try {
             stmt = null;
             conn = null;
             String delete = "delete_" + table;
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, delete);
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, delete);
             stmt.setString(1, masterId.toString());
             stmt.setInt(2, subId);
             stmt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
    }
 
     /**
-     * @todo: add description here
+     * Publishes a copied row of a content definition.<p>
+     * 
+     * @param dataset the dataset.
+     * @param subId the used sub id.
+     * @throws CmsException if sql or other errors occur.
      */
     protected void publishCopyData(CmsMasterDataSet dataset, int subId ) throws CmsException {
         PreparedStatement stmt = null;
@@ -1723,8 +1762,8 @@ public class CmsDbAccess {
         // copy the row
         try {
             stmt = null;
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "insert_online");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "insert_online");
             // correct the data in the dataset
             dataset.m_projectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
             dataset.m_lockedInProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
@@ -1735,7 +1774,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
         // copy media
         try {
@@ -1743,8 +1782,8 @@ public class CmsDbAccess {
             stmt = null;
             res = null;
             conn = null;
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "read_media_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "read_media_offline");
             stmt.setString(1, masterId.toString());
             res = stmt.executeQuery();
             while(res.next()) {
@@ -1767,20 +1806,20 @@ public class CmsDbAccess {
                 try {
                     stmt2 = null;
                     conn2 = null;
-                    conn2 = m_SqlQueries.getConnection();
-                    stmt2 = m_SqlQueries.getPreparedStatement(conn2, "insert_media_online");
+                    conn2 = m_sqlManager.getConnection();
+                    stmt2 = m_sqlManager.getPreparedStatement(conn2, "insert_media_online");
                     sqlFillValues(stmt2, mediaset);
                     stmt2.executeUpdate();
                 } catch(SQLException ex){
                     throw ex;
                 } finally {
-                    m_SqlQueries.closeAll(conn2, stmt2, null);
+                    m_sqlManager.closeAll(conn2, stmt2, null);
                 }
             }
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
 
         // copy channel relation
@@ -1788,9 +1827,9 @@ public class CmsDbAccess {
             stmt = null;
             res = null;
             conn = null;
-            conn = m_SqlQueries.getConnection();
+            conn = m_sqlManager.getConnection();
             // read all channel relations for master from offline
-            stmt = m_SqlQueries.getPreparedStatement(conn, "read_channel_offline");
+            stmt = m_sqlManager.getPreparedStatement(conn, "read_channel_offline");
             stmt.setString(1, masterId.toString());
             res = stmt.executeQuery();
             while (res.next()){
@@ -1798,26 +1837,32 @@ public class CmsDbAccess {
                 try {
                     stmt2 = null;
                     conn2 = null;
-                    conn2 = m_SqlQueries.getConnection();
-                    stmt2 = m_SqlQueries.getPreparedStatement(conn2, "insert_channel_online");
+                    conn2 = m_sqlManager.getConnection();
+                    stmt2 = m_sqlManager.getPreparedStatement(conn2, "insert_channel_online");
                     stmt2.setString(1, masterId.toString());
                     stmt2.setInt(2, res.getInt(1));
                     stmt2.executeUpdate();
                 } catch (SQLException ex){
                     throw ex;
                 } finally {
-                    m_SqlQueries.closeAll(conn2, stmt2, null);
+                    m_sqlManager.closeAll(conn2, stmt2, null);
                 }
             }
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
     }
 
     /**
-     * @todo: add description here
+     * Insert content definitions in backup table<p>
+     * @param cms the CmsObject.
+     * @param dataset the current data set.
+     * @param subId the used sub id.
+     * @param versionId the version of the backup.
+     * @param publishDate the publishing date.
+     * @throws CmsException if sql or other errors occur.
      */
     protected void publishBackupData(CmsObject cms, CmsMasterDataSet dataset, int subId,
                                      int versionId, long publishDate ) throws CmsException {
@@ -1832,8 +1877,8 @@ public class CmsDbAccess {
         try {
             stmt = null;
             conn = null;
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "insert_backup");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "insert_backup");
             // correct the data in the dataset
             dataset.m_lockedBy = CmsUUID.getNullUUID();
             dataset.m_dateCreated = publishDate;
@@ -1871,7 +1916,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
         // copy media
         try {
@@ -1879,8 +1924,8 @@ public class CmsDbAccess {
             stmt = null;
             res = null;
             conn = null;
-            conn = m_SqlQueries.getConnection();
-            stmt = m_SqlQueries.getPreparedStatement(conn, "read_media_offline");
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "read_media_offline");
             stmt.setString(1, masterId.toString());
             res = stmt.executeQuery();
             while(res.next()) {
@@ -1903,21 +1948,21 @@ public class CmsDbAccess {
                 try {
                     conn2 = null;
                     stmt2 = null;
-                    conn2 = m_SqlQueries.getConnection();
-                    stmt2 = m_SqlQueries.getPreparedStatement(conn2, "insert_media_backup");
+                    conn2 = m_sqlManager.getConnection();
+                    stmt2 = m_sqlManager.getPreparedStatement(conn2, "insert_media_backup");
                     int lastId = sqlFillValues(stmt2, mediaset);
                     stmt2.setInt(lastId, versionId);
                     stmt2.executeUpdate();
                 } catch(SQLException ex){
                     throw ex;
                 } finally {
-                    m_SqlQueries.closeAll(conn2, stmt2, null);
+                    m_sqlManager.closeAll(conn2, stmt2, null);
                 }
             }
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
     }
 

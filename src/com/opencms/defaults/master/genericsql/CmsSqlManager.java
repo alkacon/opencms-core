@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2003/05/21 14:36:06 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
+ * Date   : $Date: 2003/05/21 16:10:09 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,19 +45,30 @@ import java.util.Iterator;
 import java.util.Properties;
 
 /**
+ * A helper object to manage SQL queries. First, it loads key/value encoded SQL queries from a Java
+ * properties hash. Second, it has a set of methods to return JDBC connections and statements
+ * from different connection pools in the Cms dependent on the CmsProject/project-ID.
+ * 
+ * <p>
+ * 
+ * Things to know:
+ * <ul>
+ * <li>"name" parameters (e.g. "attributeName") identify an attribute in a table</li>
+ * <li>"key" parameters (e.g. "queryKey") identify a key in query.properties to receive a SQL or attribute name</li>
+ * </ul>
+ * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/21 14:36:06 $
+ * @version $Revision: 1.1 $ $Date: 2003/05/21 16:10:09 $
  */
-public class CmsQueries extends com.opencms.db.generic.CmsSqlManager {
+public class CmsSqlManager extends com.opencms.db.generic.CmsSqlManager {
     
+    /** the query properties for the cos */
     private static Properties m_queries;
     
-    // private static final String C_PROPERTY_FILENAME = "com/opencms/defaults/master/genericsql/query.properties";    
-
     /**
-     * @param dbPoolUrl
+     * CmsSqlManager constructor
      */
-    public CmsQueries(String dbPoolUrl, Class currentClass) {
+    public CmsSqlManager(String dbPoolUrl, Class currentClass) {
         super(dbPoolUrl, false);
         
         // collect all query.properties in all packages of superclasses
@@ -69,7 +80,7 @@ public class CmsQueries extends com.opencms.db.generic.CmsSqlManager {
     /**
      * Loads recursively all query.properties from all packages of the
      * superclasses. This method calls recursively itself with the superclass
-     * (if exists) as parameter.
+     * (if exists) as parameter.<p>
      *
      * @param the current Class of the dbaccess module.
      */
@@ -100,7 +111,7 @@ public class CmsQueries extends com.opencms.db.generic.CmsSqlManager {
      * Combines the queries in the properties to complete queries. Therefore a
      * replacement is needed: The following Strings will be replaced
      * automatically by the corresponding property-entrys:
-     * ${property_key}
+     * ${property_key}<p>
      */
     private void combineQueries() {
         Enumeration keys = m_queries.keys();
@@ -113,9 +124,9 @@ public class CmsQueries extends com.opencms.db.generic.CmsSqlManager {
 
     /**
      * Computes one run of the replacement for one query.
-     * Stores the new value into m_queries.
+     * Stores the new value into m_queries.<p>
      * @param key the key for the query to compute.
-     * @return if in this run replacements are done.
+     * @return true if in this run replacements are done.
      */
     private boolean replace(String key) {
         boolean retValue = false;
@@ -156,18 +167,18 @@ public class CmsQueries extends com.opencms.db.generic.CmsSqlManager {
     }
     
     /**
-     * Creates a new connection and prepares a statement.
-     * @param cms the CmsObject to get access to cms-ressources.
-     * @param con the Connection to use.
-     * @param queryKey the key for the query to use. The query will be get
-     * by m_queries.getParameter(key)
+     * Creates a new connection and prepares a statement.<p>
+     * 
+     * @param cms the CmsObject to get access to cms resources.
+     * @param conn the Connection to use.
+     * @param queryKey the key for the query to use.
      */
-    public PreparedStatement sqlPrepare(CmsObject cms, Connection con, String queryKey) throws SQLException {
-        return this.sqlPrepare(cms, con, queryKey, null);
+    public PreparedStatement sqlPrepare(CmsObject cms, Connection conn, String queryKey) throws SQLException {
+        return this.sqlPrepare(cms, conn, queryKey, null);
     }
 
     /**
-     * Replaces in a SQL statement $XXX tokens by strings and returns a prepared statement.
+     * Replaces in a SQL statement $XXX tokens by strings and returns a prepared statement.<p>
      * 
      * @param cms the current user's CmsObject instance
      * @param conn the JDBC connection
@@ -178,22 +189,18 @@ public class CmsQueries extends com.opencms.db.generic.CmsSqlManager {
      */
     public PreparedStatement sqlPrepare(CmsObject cms, Connection conn, String queryKey, HashMap optionalSqlTokens) throws SQLException {
         String statement = null;
-        String moduleMaster = null;
-        String channelRel = null;
-        String media = null;
+        String moduleMaster = "CMS_MODULE_MASTER";
+        String channelRel = "CMS_MODULE_CHANNEL_REL";
+        String media = "CMS_MODULE_MEDIA";
 
         // get the string of the SQL statement
         statement = m_queries.getProperty(queryKey, "");
 
         // choose the right tables depending on the online/offline project
-        if (isOnlineProject(cms)) {
+        if (cms.getRequestContext().currentProject().isOnlineProject()) {
             moduleMaster = "CMS_MODULE_ONLINE_MASTER";
             channelRel = "CMS_MODULE_ONLINE_CHANNEL_REL";
             media = "CMS_MODULE_ONLINE_MEDIA";
-        } else {
-            moduleMaster = "CMS_MODULE_MASTER";
-            channelRel = "CMS_MODULE_CHANNEL_REL";
-            media = "CMS_MODULE_MEDIA";
         }
 
         // replace in the SQL statement the table names
@@ -215,19 +222,10 @@ public class CmsQueries extends com.opencms.db.generic.CmsSqlManager {
     }
     
     /**
-     * Returns true, if this is the onlineproject
-     * @param cms - the CmsObject to get access to cms-ressources.
-     * @return true, if this is the onlineproject, else returns false
-     */
-    protected boolean isOnlineProject(CmsObject cms) {
-        return cms.getRequestContext().currentProject().isOnlineProject();
-    }
-    
-    /**
      * Searches for the SQL query with the specified key.
      * 
      * @param queryKey the SQL query key
-     * @return the the SQL query in this property list with the specified key
+     * @return String the SQL query in this property list with the specified key
      */
     public String get(String queryKey) {              
         String value = null;
@@ -236,7 +234,6 @@ public class CmsQueries extends com.opencms.db.generic.CmsSqlManager {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + getClass().getName() + "] query '" + queryKey + "' not found!");
             }
         }
-
         return value;
     }
     

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/05/16 14:49:01 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/05/21 16:10:09 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,8 +51,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.30 $
- * $Date: 2003/05/16 14:49:01 $
+ * $Revision: 1.31 $
+ * $Date: 2003/05/21 16:10:09 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -884,7 +884,13 @@ public abstract class CmsMasterContent
     public static Vector getAllSubChannelsOf (CmsObject cms, String channel)
             throws CmsException {
         Vector allChannels = new Vector();
-        Vector subChannels = cms.getResourcesInFolder("//cos" + channel);
+        Vector subChannels = new Vector();
+        try {
+            subChannels = cms.getResourcesInFolder("//cos" + channel);
+        } catch (CmsException e) {
+            // the channel is not present, so return empty Vector.
+            return allChannels;
+        }
         for (int i=0; i < subChannels.size(); i++) {
             CmsResource resource = (CmsResource)subChannels.get(i);
             if (resource.getState() != CmsResource.C_STATE_DELETED) {            
