@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/07/04 08:55:26 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/07/06 13:35:45 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -118,7 +118,7 @@ public class CmsPreparedStatementPool {
 		// init the hashtables and vector(s)
 		m_prepStatements = new Hashtable();
 		m_prepStatementsCache  = new Hashtable();
-		m_connections = new Vector(m_maxConn);
+		m_connections = new Vector(m_maxConn+1);
 		
 		// init connections
 		for (int i = 0; i < m_maxConn; i++) {
@@ -135,6 +135,7 @@ public class CmsPreparedStatementPool {
 		// init IdConnection
 		try {
 			m_idConnection = DriverManager.getConnection(m_url, m_user, m_passwd);
+            m_connections.addElement(m_idConnection);
 		}catch (SQLException e) {	
 			throw new CmsException(CmsException.C_SQL_ERROR, e);
 		}

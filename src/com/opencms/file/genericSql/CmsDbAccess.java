@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/04 08:55:25 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2000/07/06 13:35:45 $
+ * Version: $Revision: 1.88 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.87 $ $Date: 2000/07/04 08:55:25 $ * 
+ * @version $Revision: 1.88 $ $Date: 2000/07/06 13:35:45 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2785,7 +2785,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			removeFolderForPublish(onlineProject, currentFolder.getAbsolutePath());
             
 		}// end of for
-        clearFilesTable();
+        //clearFilesTable();
     }
 	
 	/**
@@ -3191,7 +3191,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			statement.setInt(1,project.getId());       
 			statement.executeQuery();           
             // delete all project-files.
-            clearFilesTable();
+            //clearFilesTable();
          } catch (SQLException e){
            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}finally {

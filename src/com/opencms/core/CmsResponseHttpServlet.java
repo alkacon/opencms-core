@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
- * Date   : $Date: 2000/05/12 08:51:10 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/07/06 13:35:45 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/05/12 08:51:10 $  
+ * @version $Revision: 1.6 $ $Date: 2000/07/06 13:35:45 $  
  */
 public class CmsResponseHttpServlet implements I_CmsConstants,  
                                                I_CmsResponse{ 
@@ -82,6 +82,7 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
      */
     public OutputStream getOutputStream()
         throws IOException {
+   
         return m_res.getOutputStream();
     }
     
