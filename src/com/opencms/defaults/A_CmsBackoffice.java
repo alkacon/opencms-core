@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/09/30 08:26:53 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2003/11/12 16:22:19 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
@@ -745,8 +745,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
 
                 //get the dialog from the language file and set it in the template
-                template.setData("deletetitle", lang.getLanguageValue("messagebox.title.delete"));
-                template.setData("deletedialog", lang.getLanguageValue("messagebox.message1.delete"));
+                template.setData("deletetitle", lang.getLanguageValue("title.delete"));
+                template.setData("deletedialog", lang.getLanguageValue("messagebox.delete"));
                 template.setData("newsentry", id);
                 template.setData("setaction", "default");
             }
