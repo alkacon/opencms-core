@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/10/26 12:43:45 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2001/10/26 14:06:09 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.80 $ $Date: 2001/10/26 12:43:45 $
+ * @version $Revision: 1.81 $ $Date: 2001/10/26 14:06:09 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -955,7 +955,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             if(cosDeps != null){
                 for (int i = 0; i < cosDeps.size(); i++){
                     A_CmsContentDefinition contentDef = (A_CmsContentDefinition)cosDeps.elementAt(i);
-                    String key = "cos/"+contentDef.getClass().getName() +"/"+contentDef.getUniqueId(cms);
+                    String key = cms.getSiteName() + "/cos/"+contentDef.getClass().getName() +"/"+contentDef.getUniqueId(cms);
                     allDeps.add(key);
                     if(contentDef.isTimedContent()){
                         long time = ((I_CmsTimedContentDefinition)cosDeps.elementAt(i)).getPublicationDate();
@@ -972,7 +972,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             // now for the Classes
             if(cosClassDeps != null){
                 for(int i=0; i<cosClassDeps.size(); i++){
-                    String key = "cos/" + ((Class)cosClassDeps.elementAt(i)).getName() +"/";
+                    String key = cms.getSiteName() + "/cos/" + ((Class)cosClassDeps.elementAt(i)).getName() +"/";
                     allDeps.add(key);
                 }
             }

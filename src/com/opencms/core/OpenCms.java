@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/10/24 14:21:46 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2001/10/26 14:06:09 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.64 $ $Date: 2001/10/24 14:21:46 $
+ * @version $Revision: 1.65 $ $Date: 2001/10/26 14:06:09 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -108,7 +108,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
 
     /**
      * In this hashtable the dependencies for all variants in the elementcache
-     * are stored. The keys are Strings with resourceNames like "cos/ContentClass/news4"
+     * are stored. The keys are Strings with resourceNames like "/siteX/cos/ContentClass/news4"
      * and the value is a Vector with strings (The elementvariants that depend on the keys)
      * like "ElementClass|ElementTemplate|VariantCacheKey"
      */
