@@ -3,8 +3,8 @@ package com.opencms.file.genericSql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/09/06 15:50:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/09/18 12:52:21 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ public class CmsDbPool implements I_CmsDbPool {
 	/*
 	 * maximum of connections to the database
 	 */
-	private int m_maxConn = 10;
+	protected int m_maxConn = 10;
 
 	/*
 	 * the driver for the database
@@ -80,7 +80,7 @@ public class CmsDbPool implements I_CmsDbPool {
 	/*
 	 * store the PreparedStatements with an connection
 	 */
-	private Stack m_prepStatements = null;
+	protected Stack m_prepStatements = null;
 	
 	/*
 	 * store the used-sql statements
@@ -90,7 +90,7 @@ public class CmsDbPool implements I_CmsDbPool {
 	/*
 	 * store the connections
 	 */
-	private Vector m_connections;
+	protected Vector m_connections;
 	
 	/**
 	 * Init the pool with a specified number of connections.
