@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/03 09:54:34 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/05 18:15:22 $
  */
 class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
      
@@ -148,7 +148,7 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
       
          A_CmsUser user=null;
          ResultSet res = null;
-   
+
          try{
              // read the user from the database
              synchronized (m_statementUserRead) {

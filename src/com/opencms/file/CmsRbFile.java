@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/22 17:56:21 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/05 18:15:22 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -81,6 +81,8 @@ import com.opencms.core.*;
 	 * */
 	 public CmsFile readFile(A_CmsProject project, String filename)
 		throws CmsException{
+         System.err.println("[CmsRbFile]"+filename);
+         System.err.println("[CmsRbFile]"+project.toString());
         return m_accessFile.readFile(project,filename);
      }
 	

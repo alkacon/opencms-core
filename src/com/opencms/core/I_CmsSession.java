@@ -13,8 +13,10 @@ import javax.servlet.http.*;
  * 
  * When the session gets destroyed, the user will remived from the storage.
  * 
+ * ToDo: Removal of unused sessions!
+ * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/01/04 15:01:50 $  
+ * @version $Revision: 1.3 $ $Date: 2000/01/05 18:15:22 $  
  */
 
 public interface I_CmsSession
@@ -26,55 +28,51 @@ public interface I_CmsSession
      * This method stores a complete hashtable with additional user information in the 
      * session storage.
      * 
-     * When a new user is stored, the intrnal session storage is tested for expired sessions
-     * which will be removed.
      * 
-     * @param session  The actual user session.
+     * @param session  The actual user session Id.
      * @param userinfo A Hashtable containing informaion (including the name) about the user.
      */
-    public void putUser(HttpSession session,Hashtable userinfo) ;
+    public void putUser(String sessionId,Hashtable userinfo) ;
  
      /**
      * Puts a new user into the sesstion storage. A user is stored with its actual 
      * session Id after a positive authentification.
      *
-     * When a new user is stored, the intrnal session storage is tested for expired sessions
-     * which will be removed.
      * 
-     * @param session  The actual user session.
+     * @param session  The actual user session Id.
      * @param username The name of the user to be stored.
      */
-    public void putUser(HttpSession session,String username);
+    public void putUser(String sessionId,String username);
     /**
      * Gets the complete userinformation of a user from the session storage.
      * 
-     * @param sessionID The actual session.
+     * @param sessionID The actual session Id.
      * @return Hashtable with userinformation or null;
      */
-    public Hashtable getUser(HttpSession session) ;
+    public Hashtable getUser(String sessionId) ;
     
 
       /**
      * Gets the  username of a user from the session storage.
      * 
-     * @param sessionID The actual session.
+     * @param sessionID The actual session Id.
      * @return The name of the requested user or null;
      */
-    public String getUserName(HttpSession session) ;
+    public String getUserName(String sessionId) ;
     
      /**
      * Gets the current usergroup of a user from the session storage.
      * 
-     * @param sessionID The actual session.
+     * @param sessionID The actual session Id.
      * @return The name of the current group of the user or the default guest group;
      */
-    public String getCurrentGroup(HttpSession session) ;
+    public String getCurrentGroup(String sessionId) ;
     
      /**
      * Gets the current project of a user from the session storage.
      * 
-     * @param sessionID The actual session.
+     * @param sessionID The actual session Id.
      * @return The name of the project of the user or the default project;
      */
-    public String getCurrentProject(HttpSession session) ;
+    public String getCurrentProject(String sessionId) ;
 }

@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/01/04 11:56:59 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/05 18:15:22 $
  * 
  */
 public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
@@ -81,7 +81,7 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 */
 	public String getUri() {
 		if( m_req != null ) {
-			return( translatePath(m_req.getRequestURI()) );
+			return( translatePath(m_req.getPathInfo()) );
 		} else {
 			return( this.C_ROOT );
 		}

@@ -12,6 +12,35 @@ import source.org.apache.java.util.*;
 
 import com.opencms.file.*;
 
+
+/**
+* This class is the main servlet of the OpenCms system. 
+* <p>
+* From here, all other operations are invoked.
+* It initializes the Servlet and processes all requests send to the OpenCms.
+* Any incoming request is handled in multiple steps:
+* <ul>
+* <li>The requesting user is authenticated and a CmsObject with the user information
+* is created. The CmsObject is needed to access all functions of the OpenCms, limited by
+* the actual user rights. If the user is not identified, it is set to the default (guest)
+* user. </li>
+* <li>The requested document is loaded into the OpenCms and depending on its type and the
+* users rights to display or modify it, it is send to one of the OpenCms launchers do
+* display it. </li>
+* <li>
+* The document is forwared to a template class which is selected by the launcher and the
+* output is generated.
+* </li>
+* </ul>
+* <p>
+* The class overloades the standard Servlet methods doGet and doPost to process 
+* Http requests.
+* 
+* @author Michael Emmerich
+* @version $Revision: 1.3 $ $Date: 2000/01/05 18:15:22 $  
+* 
+*/
+
 public class OpenCms extends HttpServlet implements I_CmsConstants 
 {
     /**
@@ -104,7 +133,8 @@ public class OpenCms extends HttpServlet implements I_CmsConstants
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {	
-             
+        
+        // this method still contains debug information
         res.setContentType("text/html");
         PrintWriter out=res.getWriter();
         
@@ -112,10 +142,20 @@ public class OpenCms extends HttpServlet implements I_CmsConstants
         out.println("<head><title>Der Erdrotationshamster</title></head>");
         out.println("<body><h1>Hallo Mindfact</h1>");
         out.println("<br>"+req.getRequestURI());
-              
-  
-        initUser(req,res);
-	}
+        out.println("<br>"+req.getServletPath());
+        out.println("<br>"+req.getPathInfo());
+
+        try {
+            CmsObject cms=initUser(req,res);
+            out.println("<br>"+cms.getRequestContext().currentUser());
+            CmsFile file=initResource(cms);
+            out.println("<br><br><h2>"+new String(file.getContents())+"</h2>");
+        } catch (CmsException e) {
+            out.println("<br>"+e.toString());
+            errorHandling(req,res,e);
+        }
+        
+    }
 	
 	/**
 	* Method invoked on each HTML POST request. 
@@ -135,14 +175,33 @@ public class OpenCms extends HttpServlet implements I_CmsConstants
 		 String type = req.getHeader("content-type");
 
 	     if ((type != null) && type.startsWith("multipart/form-data")){
-	
-		 }
-         
-        initUser(req,res);
+		    req = new CmsMultipartRequest(req);
+		 } 
+         CmsObject cms=initUser(req,res);
 	}
     
-    
-    private void initUser(HttpServletRequest req, HttpServletResponse res)
+    /**
+     * This method handled the user authentification for each request sent to the
+     * OpenCms. <p>
+     * 
+     * User authentification is done in three steps:
+     * <ul>
+     * <li> Session Authentification: OpenCms stores all active sessions of authentificated
+     * users in an internal storage. During the session authetification phase, it is checked
+     * if the session of the active user is stored there. </li>
+     * <li> HTTP Autheification: If session authentification fails, it is checked if the current
+     * user has loged in using HTTP authentification. If this check is positive, the user account is
+     * checked. </li>
+     * <li> Default user: When both authentification methods fail, the current user is
+     * set to the default (guest) user. </li>
+     * </ul>
+     * 
+     * @param req   The clints request.
+	 * @param res   The servlets response.
+	 * @return The CmsObject
+	 * @exception IOException Thrown if user autherization fails.
+     */
+    private CmsObject initUser(HttpServletRequest req, HttpServletResponse res)
       throws IOException{    
         
         HttpSession session;
@@ -160,7 +219,7 @@ public class OpenCms extends HttpServlet implements I_CmsConstants
                 // hack
                 session=req.getSession(true);
                 String u=req.getParameter("LOGIN");      
-                m_sessionStorage.putUser(session,u);           
+                m_sessionStorage.putUser(session.getId(),u);           
             }
 
             // get the actual session
@@ -168,11 +227,11 @@ public class OpenCms extends HttpServlet implements I_CmsConstants
             // there was a session returned, now check if this user is already authorized
             if (session !=null) {
                 // get the username
-                user=m_sessionStorage.getUserName(session);
+                user=m_sessionStorage.getUserName(session.getId());
                 //check if a user was returned, i.e. the user is authenticated
                 if (user != null) {
-                    group=m_sessionStorage.getCurrentGroup(session);
-                    project=m_sessionStorage.getCurrentProject(session);
+                    group=m_sessionStorage.getCurrentGroup(session.getId());
+                    project=m_sessionStorage.getCurrentProject(session.getId());
                     cms.init(req,res,user,group,project);
                 } else {
                             
@@ -213,13 +272,38 @@ public class OpenCms extends HttpServlet implements I_CmsConstants
             }
            // user was not loged in, so set it to the default user
            if (user==null) {
-              
+               // do nothing, the Cms Object is already initalized with the default
+               // user and group
             }
+     
        } catch (CmsException e) {
             errorHandling(req,res,e);
        }
+        return cms;
     }
 
+    /**
+     * This method gets the requested document from the OpenCms and forwards it to the
+     * correct launcher.
+     * 
+     * @param cms The CmsObject containing all information about the requested document
+     * and the requesting user.
+     * @return CmsFile object.
+     */
+    private CmsFile initResource(CmsObject cms) 
+        throws CmsException, IOException {
+        // this method still contains debug information
+        
+        CmsFile file=null;
+         
+        //read the requested file
+        file =cms.readFile(cms.getRequestContext().currentUser(),
+                           cms.getRequestContext().getCurrentProject(),
+                           cms.getRequestContext().getUri());
+        return file;
+    }
+    
+    
     /**
      * This method sends a request to the client to display a login form.
      * It is needed for HTTP-Authentification.
@@ -227,7 +311,7 @@ public class OpenCms extends HttpServlet implements I_CmsConstants
      * @param req   The clints request.
 	 * @param res   The servlets response.
      */
- 	public void requestAuthorization(HttpServletRequest req, HttpServletResponse res) 
+ 	private void requestAuthorization(HttpServletRequest req, HttpServletResponse res) 
 		throws IOException	{
 		res.setHeader("WWW-Authenticate", "BASIC realm=\"OpenCmst\"");
 		res.setStatus(401);
@@ -245,6 +329,8 @@ public class OpenCms extends HttpServlet implements I_CmsConstants
     private void errorHandling(HttpServletRequest req, HttpServletResponse res, CmsException e){
      // to do
     }
-            
+           
+
+    
           
 }

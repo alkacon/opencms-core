@@ -8,9 +8,9 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/01/04 12:23:27 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/05 18:15:22 $
  */
- class CmsResource extends A_CmsResource implements I_CmsConstants {
+ public class CmsResource extends A_CmsResource implements I_CmsConstants {
      
      /**
       * The name of this resource.

@@ -11,10 +11,12 @@ import javax.servlet.http.*;
  * For each active user, its name and other additional information (like the current user
  * group) are stored in a hashtable, useing the session Id as key to them.
  * 
- * When the session gets destroyed, the user will remived from the storage.
+ * When the session gets destroyed, the user will removed from the storage.
+ * 
+ * ToDo: Removal of unused sessions!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/01/04 15:01:50 $  
+ * @version $Revision: 1.3 $ $Date: 2000/01/05 18:15:22 $  
  */
 
 public class CmsSession implements I_CmsConstants,I_CmsSession    
@@ -40,37 +42,14 @@ public class CmsSession implements I_CmsConstants,I_CmsSession
      * This method stores a complete hashtable with additional user information in the 
      * session storage.
      * 
-     * When a new user is stored, the intrnal session storage is tested for expired sessions
-     * which will be removed.
      * 
-     * @param session  The actual user session.
+     * @param session  The actual user session Id.
      * @param userinfo A Hashtable containing informaion (including the name) about the user.
      */
-    public void putUser(HttpSession session,Hashtable userinfo){
-        
-        // get the session context. This is requitred for checking for expired sessions.
-        HttpSessionContext sessionContext=session.getSessionContext();
-        boolean activeSession;
-        
+    public void putUser(String sessionId,Hashtable userinfo){
+
         // store the userinfo
-        m_sessions.put(session.getId(),userinfo);
-        
-        //now check for expired sessions
-        Enumeration enu = m_sessions.keys();
-        while (enu.hasMoreElements()) {
-            String key=(String)enu.nextElement();
-            activeSession=false;
-            Enumeration enus=sessionContext.getIds();
-            while (enus.hasMoreElements()){
-                if (((String)enus.nextElement()).equals(key)) {
-                    activeSession=true;
-                }
-            }
-            // this session is not active anymore, so delete it from the storage
-            if (activeSession == false) {
-                m_sessions.remove(key);
-            }
-        }
+        m_sessions.put(sessionId,userinfo);
         
     }
  
@@ -78,27 +57,25 @@ public class CmsSession implements I_CmsConstants,I_CmsSession
      * Puts a new user into the sesstion storage. A user is stored with its actual 
      * session Id after a positive authentification.
      *
-     * When a new user is stored, the intrnal session storage is tested for expired sessions
-     * which will be removed.
      * 
-     * @param session  The actual user session.
+     * @param session  The actual user session Id.
      * @param username The name of the user to be stored.
      */
-    public void putUser(HttpSession session,String username){
+    public void putUser(String sessionId,String username){
         Hashtable userinfo=new Hashtable();
         userinfo.put(C_SESSION_USERNAME,username);
-        putUser(session,userinfo);
+        putUser(sessionId,userinfo);
     }
     
     /**
      * Gets the complete userinformation of a user from the session storage.
      * 
-     * @param sessionID The actual session.
+     * @param sessionID The actual session Id.
      * @return Hashtable with userinformation or null;
      */
-    public Hashtable getUser(HttpSession session) {
+    public Hashtable getUser(String sessionId) {
         Hashtable userinfo=null;
-        userinfo=(Hashtable)m_sessions.get(session.getId());
+        userinfo=(Hashtable)m_sessions.get(sessionId);
         return userinfo;       
     }
     
@@ -106,13 +83,13 @@ public class CmsSession implements I_CmsConstants,I_CmsSession
      /**
      * Gets the  username of a user from the session storage.
      * 
-     * @param sessionID The actual session.
+     * @param sessionID The actual session Id.
      * @return The name of the requested user or null;
      */
-    public String getUserName(HttpSession session) {
+    public String getUserName(String sessionId) {
         Hashtable userinfo=null;
         String username=null;
-        userinfo=getUser(session);
+        userinfo=getUser(sessionId);
         // this user does exist, so get his name.
         if (userinfo != null) {
             username=(String)userinfo.get(C_SESSION_USERNAME);
@@ -123,14 +100,14 @@ public class CmsSession implements I_CmsConstants,I_CmsSession
      /**
      * Gets the current usergroup of a user from the session storage.
      * 
-     * @param sessionID The actual session.
+     * @param sessionID The actual session Id.
      * @return The name of the current group of the user or the default guest group;
      */
-    public String getCurrentGroup(HttpSession session) {
+    public String getCurrentGroup(String sessionId) {
         Hashtable userinfo=null;
         String currentGroup=C_GROUP_GUEST;
         
-        userinfo=getUser(session);
+        userinfo=getUser(sessionId);
         // this user does exist, so get his current Group.
         if (userinfo != null) {
             currentGroup=(String)userinfo.get(C_SESSION_CURRENTGROUP);
@@ -144,14 +121,14 @@ public class CmsSession implements I_CmsConstants,I_CmsSession
      /**
      * Gets the current project of a user from the session storage.
      * 
-     * @param sessionID The actual session.
+     * @param sessionID The actual session Id.
      * @return The name of the project of the user or the default project;
      */
-    public String getCurrentProject(HttpSession session) {
+    public String getCurrentProject(String sessionId) {
         Hashtable userinfo=null;
         String currentProject=C_PROJECT_ONLINE;
         
-        userinfo=getUser(session);
+        userinfo=getUser(sessionId);
         // this user does exist, so get his current Project.
         if (userinfo != null) {
             currentProject=(String)userinfo.get(C_SESSION_PROJECT);

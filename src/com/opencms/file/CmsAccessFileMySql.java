@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/04 16:52:44 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/05 18:15:22 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -437,7 +437,9 @@ import com.opencms.core.*;
 	 */
 	 public CmsFile readFile(A_CmsProject project, String filename)
          throws CmsException {
-              
+          
+         System.err.println("[CmsAccessFileMySql]"+filename);
+         System.err.println("[CmsAccessFileMySql]"+project.toString());
          CmsFile file=null;
          ResultSet res =null;
               
