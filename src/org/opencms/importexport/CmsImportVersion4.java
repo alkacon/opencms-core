@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2003/08/08 12:50:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/08/08 14:16:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -348,11 +348,22 @@ public class CmsImportVersion4 extends A_CmsImport {
                            currentEntry = (Element)acentryNodes.item(j);
                            // get the data of the access control entry
                            String id = getTextNodeValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL);
+                           String principalId=new CmsUUID().toString();
+
+                           String principal=id.substring(id.indexOf(".")+1, id.length());
+
+                           if (id.startsWith(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_GROUP)) {
+                               principal = A_OpenCms.getDefaultUsers().translateGroup(principal);  
+                               principalId=m_cms.readGroup(principal).getId().toString();
+                           } else {
+                               principal = A_OpenCms.getDefaultUsers().translateUser(principal);  
+                               principalId=m_cms.readUser(principal).getId().toString();
+                           }                                                    
                            String acflags = getTextNodeValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_FLAGS);
                            String allowed = getTextNodeValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
                            String denied = getTextNodeValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
                            // add the entry to the list
-                           addImportAccessControlEntry(res, id, allowed, denied, acflags);
+                           addImportAccessControlEntry(res, principalId, allowed, denied, acflags);
                        }
                        importAccessControlEntries(res);
                    } else {
