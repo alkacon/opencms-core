@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<WP_ERRORS>	
+	<errorbox><![CDATA[
+	<form id=ERROR name=ERROR action="]]><PROCESS>ref</PROCESS><![CDATA[" method=post>
+	<table cellspacing=0 cellpadding=0 border=2 width=300>
+		<tr><td>
+			<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+				
+				<!-- Begin tableheader blue-->
+				<tr> 
+	           		<td colspan=2 class="head">]]><PROCESS>title</PROCESS><![CDATA[</td>
+				</tr>
+				<!-- End tableheader blue-->
+				
+				<!-- Begin empty row-->
+				<tr> 
+	           		<td colspan=2 class="leerzeile">&nbsp;</td>
+				</tr>
+				<!-- End empty row-->
+				<tr><td class=dialogtxt rowspan=3 valign=top><img src="../pics/ic_caution.gif" border=0 width=32 height=32></td>
+					<td class=dialogtxt>]]><PROCESS>message</PROCESS><![CDATA[</td>
+				</tr>
+				<tr><td class=dialogtxt>Grund:<br>
+					]]><PROCESS>reason</PROCESS><![CDATA[
+				</td></tr>
+				<tr><td class=dialogtxt>]]><PROCESS>suggestion</PROCESS><![CDATA[</td></tr>
+				<!-- Begin empty row-->
+				<tr> 
+	           		<td colspan=2 class="leerzeile">&nbsp;</td>
+				</tr>
+				<!-- End empty row-->
+				
+				<!-- Begin button-->
+				<tr><td class=dialogtxt colspan=2>
+					<table cellspacing=0 cellpadding=5 width=100%>
+					<tr>
+						<td class=formular align=middle><INPUT class=button width=100 type="submit" value="OK" id=ERROR name=ERROR onClick=""></td>
+					</tr>
+					</table>
+				</td>
+				</tr>
+				<!-- End button-->
+				
+				</table>
+		</td></tr>
+	</table>
+	</form>
+	]]></errorbox>
+</WP_ERRORS>

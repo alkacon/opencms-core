@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/26 18:26:54 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/26 19:22:42 $
  */
 public interface I_CmsWpConstants {
 
@@ -24,9 +24,9 @@ public interface I_CmsWpConstants {
     public static final String C_INPUTTEMPLATE = "inputTemplate";
     
      /**
-     *  Name of the template containing input field definitions
+     *  Name of the template containing error field definitions
      */
-    public static final String C_STARTUPTEMPLATE = "startupTemplate";    
+    public static final String C_ERRORTEMPLATE = "errorTemplate";    
     
     
     // tag defnitions
@@ -50,12 +50,16 @@ public interface I_CmsWpConstants {
     * Name if the startup tag in the input definiton template
     */
    public static final String C_TAG_STARTUP="STARTUP";
-    
-   
+      
     /**
     * Name if the submitbutton tag in the button definiton template
     */
    public static final String C_TAG_SUBMITBUTTON="submitbutton";
+
+    /**
+    * Name if the errorbox tag in the button definiton template
+    */
+   public static final String C_TAG_ERRORBOX="errorbox";
    
     // Parameters for buttons
     
@@ -86,14 +90,7 @@ public interface I_CmsWpConstants {
     /** Name of the value */
     public static final String C_LABEL_VALUE = "value";
     
-    
-    // Parameters for startup
-    
-    /** Value of the startup */
-    public static final String C_STARTUP_VALUE = "value";
-    
-        
-    
+
     // Parameters for input fields
     
     /** Name of the input field */
@@ -108,6 +105,25 @@ public interface I_CmsWpConstants {
     /**  Length of the input field  */
     public static final String C_INPUT_LENGTH = "length";    
 
+    
+    
+    // Parameters for error boxes and error pages
+    
+    /** Title of the error box */
+    public static final String C_ERROR_TITLE = "title";
+    
+    /** Message of the error box */
+    public static final String C_ERROR_MESSAGE = "message";
+
+     /** Reason of the error box */
+    public static final String C_ERROR_REASON = "reason";
+    
+     /** Suggestion of the error box */
+    public static final String C_ERROR_SUGGESTION = "suggestion";    
+
+    /** Link of the error box */
+    public static final String C_ERROR_LINK = "ref";    
+    
     // Constants for language file control
             
     /** Prefix for button texts in the language file */

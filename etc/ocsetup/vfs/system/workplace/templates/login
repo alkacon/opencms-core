@@ -62,9 +62,13 @@
 </td></tr>
 </table>
 <!-- End login -->
-
 </CENTER>
 </form>
+
+<br>
+<br>
+]]><ERRORBOX title="Fehler" message="Das ist eine Errormessage" reason="Das ist der Grund für diesen Fehler" suggestion="Fragen Sie Ihren Arzt oder Apotheker" ref="login.html" /><![CDATA[
+
 </body>
 <!-- End content login -->
 </html>
