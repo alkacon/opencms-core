@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
- * Date   : $Date: 2001/03/13 16:38:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2001/03/28 15:06:40 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2001/03/13 16:38:10 $
+ * @version $Revision: 1.4 $ $Date: 2001/03/28 15:06:40 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -121,16 +121,19 @@ public class CmsImportFolder implements I_CmsConstants {
 	public CmsImportFolder(byte[] content, String importPath, CmsObject cms,
                             boolean noSubFolder) throws CmsException {
 
-		try {
-			m_importPath = importPath;
+            m_importPath = importPath;
 			m_cms = cms;
 
+        try {
 			// open the import resource
             m_zipStreamIn = new ZipInputStream(new ByteArrayInputStream(
                                                         content) );
-			// frist lock the path to import into.
-			m_cms.lockResource(m_importPath);
 
+            CmsFolder impFold = m_cms.readFolder(importPath);
+            if( !impFold.isLocked() ) {
+                // frist lock the path to import into.
+    			m_cms.lockResource(m_importPath);
+            }
 			// import the resources
             importZipResource(m_zipStreamIn, m_importPath, noSubFolder);
 
@@ -232,24 +235,35 @@ public class CmsImportFolder implements I_CmsConstants {
 	}
 
     /**
+     * imports the zip File to the import path
      *
+     * @param zipStreamIn the input Stream
+     * @param importPath the path in the vfs
+     * @param noSubFolder create subFolders or not
      */
      private void importZipResource(ZipInputStream zipStreamIn,
-                                    String importPath, boolean noSubFolder) throws Exception {
-        System.err.println("importZipR: noSubFolder: " + noSubFolder);
+                                    String importPath, boolean noSubFolder)
+            throws Exception {
         boolean isFolder = false;
+        boolean exit = false;
+        int j, r, stop, charsRead, size;
         int entries = 0;
+        int totalBytes = 0;
+        int offset = 0;
         CmsFile file = null;
+        byte[] buffer = null;
         while (true) {
-            int j = 0;
-            int stop = 0;
+            // handle the single entries ...
+            j = 0;
+            stop = 0;
+            charsRead = 0;
+            totalBytes = 0;
             // open the entry ...
             ZipEntry entry = zipStreamIn.getNextEntry();
             if (entry == null) {
                 break;
             }
             entries++; // count number of entries in zip
-
             String actImportPath = importPath;
             // separete path in direcotries an file name ...
             StringTokenizer st = new StringTokenizer(entry.getName(), "/\\");
@@ -266,14 +280,11 @@ public class CmsImportFolder implements I_CmsConstants {
                 path[j] = st.nextToken();
                 j++;
             }
-            if( isFolder == true) {
-                stop = path.length;
-            } else {
-                stop = path.length-1;
-            }
+            stop = isFolder==true ? path.length : path.length-1;
+
             if(noSubFolder == true) {stop = 0;}
             // now write the folders ...
-            for(int r=0; r < stop; r++) {
+            for(r=0; r < stop; r++) {
                 try {
                     m_cms.createFolder(actImportPath, path[r] );
                 } catch(CmsException e) {
@@ -285,14 +296,59 @@ public class CmsImportFolder implements I_CmsConstants {
             if(isFolder == false) {
                 // import file into cms
                 String type = getFileType( path[path.length-1] );
-                int charsRead = 0;
-                int size = new Long(entry.getSize()).intValue();
-                byte[] buffer = new byte[size];
-                while(charsRead < size) {
-                    charsRead += zipStreamIn.read(buffer, charsRead, size - charsRead);
+
+                size = new Long(entry.getSize()).intValue();
+                System.err.println("size: " + size);
+
+                if(size == -1) {
+                    Vector v = new Vector();
+                    while(true) {
+                        buffer = new byte[512];
+                        offset = 0;
+                        while(offset < buffer.length) {
+                            charsRead = zipStreamIn.read(buffer, offset, buffer.length - offset);
+                            if(charsRead == -1) {
+                                exit = true;
+                                break; // end of stream
+                            }
+                            offset += charsRead;
+                            totalBytes += charsRead;
+                        }
+                        if(offset > 0) {
+                            v.addElement(buffer);
+                        }
+                        if(exit == true) {
+                            exit = false;
+                            break;
+                        }
+                    }
+                    buffer = new byte[totalBytes];
+                    offset = 0;
+                    byte[] act = null;
+                    for(int z = 0; z < v.size()-1; z++) {
+                        act = (byte[]) v.elementAt(z);
+                        System.arraycopy(act, 0, buffer, offset, act.length);
+                        offset += act.length;
+                    }
+                    act = (byte[]) v.lastElement();
+                    if((totalBytes > act.length) && (totalBytes % act.length != 0)) {
+                        totalBytes = totalBytes%act.length;
+                    } else if ((totalBytes > act.length) && (totalBytes % act.length == 0)) {
+                        totalBytes = act.length;
+                    }
+                    System.arraycopy(act, 0, buffer, offset, totalBytes);
+                    // handle empty files ...
+                    if(totalBytes ==0) { buffer = " ".getBytes(); }
+                } else {
+                    // size was read clearly ...
+                    buffer = new byte[size];
+                    while(charsRead < size) {
+                        charsRead += zipStreamIn.read(buffer, charsRead,
+                                                        size - charsRead);
+                    }
+                    // handle empty files ...
+                    if(size == 0) { buffer = " ".getBytes(); }
                 }
-                // handle empty files ...
-                if(size == 0) { buffer = " ".getBytes(); }
                 file = null; // reset file
                 // create the file
                 try { // check if file exists ...
@@ -303,7 +359,8 @@ public class CmsImportFolder implements I_CmsConstants {
                 try {
                     if(file == null) {
                         // new file ...
-                        m_cms.createFile(actImportPath, path[path.length-1], buffer, type);
+                        m_cms.createFile(actImportPath, path[path.length-1],
+                                                            buffer, type);
                     } else {
                         // overwrite existing file without warning ...
                         file.setContents(buffer);
