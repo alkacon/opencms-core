@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/03/07 15:16:36 $
- * Version: $Revision: 1.466 $
+ * Date   : $Date: 2003/03/19 09:43:33 $
+ * Version: $Revision: 1.467 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
+! OpenCms now sets a "Server" response header "OpenCms/{version_number}"
 ! The file last modified date is now saved when exporting and importing data from the VFS
 ! Added links management for VFS links, it's mow possible to find all VFS links that point to a specific file
 ! Added feature to convert content from old export format (4.x) to 5.0 version,
@@ -39,6 +40,7 @@ OpenCms 5.0 (next version)
 * Fixed issue #55 from Bugzilla (compatibility.support.oldlocales not working if no new modules installed)
 * Fixed issue where an absolute link to the local machine with an URI outside of OpenCms
   was incorrectly treated as an OpenCms internal link by the link replacement engine
+- Improved handling of cached properties in the CmsResourceBroker
 - Deleted CmsCache and CmsResourceCache and replaced them with CmsLruHashMap, 
   also replaced a lot of Hashtable uses with Map
 - Added automatic forced exclusion of system folders for module import

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/18 17:48:22 $
-* Version: $Revision: 1.367 $
+* Date   : $Date: 2003/03/19 09:43:33 $
+* Version: $Revision: 1.368 $
 
 *
 * This library is part of OpenCms -
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.367 $ $Date: 2003/03/18 17:48:22 $
+ * @version $Revision: 1.368 $ $Date: 2003/03/19 09:43:33 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4188,9 +4188,9 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         m_groupCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".group", 50)));
         m_userGroupsCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".usergroups", 50)));
         m_projectCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".project", 50)));
-        m_resourceCache= Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".resource", 1000)));
+        m_resourceCache= Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".resource", 2500)));
         m_resourceListCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".subres", 100)));
-        m_propertyCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".property", 1000)));
+        m_propertyCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".property", 5000)));
         m_propertyDefCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".propertydef", 100)));
         m_propertyDefVectorCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".propertyvectordef", 100)));
         m_accessCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".access", 1000)));
