@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2003/08/11 18:30:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/12 19:41:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,13 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.security.CmsSecurityException;
+
 import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
 import com.opencms.util.Utils;
 
 /**
@@ -44,7 +48,7 @@ import com.opencms.util.Utils;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsLinkManager {
 
@@ -98,6 +102,40 @@ public class CmsLinkManager {
         String result;
         
         if ("true".equalsIgnoreCase(exportProperty)) {
+            // resolve "exportname" property
+            try {
+                String exportname = cms.readProperty(uri, I_CmsConstants.C_PROPERTY_EXPORTNAME, true);
+                if (exportname != null) {
+                    if (! exportname.endsWith("/")) {
+                        exportname = exportname + "/";
+                    }
+                    if (! exportname.startsWith("/")) {
+                        exportname = "/" + exportname;
+                    }                                        
+                    String value;
+                    boolean cont;
+                    String resource = uri;
+                    do {
+                        try {
+                        value = cms.readProperty(resource, I_CmsConstants.C_PROPERTY_EXPORTNAME, false);
+                        cont = ((value == null) && (! "/".equals(resource)));
+                        } catch (CmsSecurityException se) {
+                            // a security exception (probably no read permission) we return the current result                      
+                            cont = false;
+                        }
+                        if (cont) resource = CmsResource.getParent(resource);
+                    } while (cont);                    
+                    uri = exportname + uri.substring(resource.length());
+                    if (pos >= 0) {
+                        absoluteLink = uri + absoluteLink.substring(pos);
+                    } else {
+                        absoluteLink = uri;
+                    }
+                }
+            } catch (CmsException e) {
+                // ignore exception, leave absoluteLink unmodified
+            }
+            
             result = A_OpenCms.getStaticExportProperties().getRfsPrefix() + absoluteLink;
         } else {
             result = A_OpenCms.getStaticExportProperties().getVfsPrefix() + absoluteLink;

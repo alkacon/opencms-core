@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportProperties.java,v $
- * Date   : $Date: 2003/08/11 18:30:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/12 19:41:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,17 @@
 
 package org.opencms.staticexport;
 
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Vector;
+
 
 /**
  * Provides a data structure to access the static 
@@ -38,9 +49,12 @@ package org.opencms.staticexport;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsStaticExportProperties {
+    
+    /** List of all resources that have the "exportname" property set */
+    private Map m_exportnameResources;
 
     /** Indicates if <code>true</code> is the default value for the property "export" */
     private boolean m_exportPropertyDefault;
@@ -67,6 +81,15 @@ public class CmsStaticExportProperties {
         m_exportRelativeLinks = false;
         m_staticExportEnabled = false;
         m_exportPropertyDefault = true;
+    }
+    
+    /**
+     * Returns the list of all resources that have the "exportname" property set.<p>
+     * 
+     * @return the list of all resources that have the "exportname" property set
+     */    
+    public Map getExportnames() {
+        return m_exportnameResources;
     }
 
     /**
@@ -121,6 +144,33 @@ public class CmsStaticExportProperties {
      */
     public boolean relativLinksInExport() {
         return m_exportRelativeLinks;
+    }
+    
+    /**
+     * Set the list of all resources that have the "exportname" property set.<p>
+     * 
+     * @param resources the list of all resources that have the "exportname" property set
+     */
+    public void setExportnames(CmsObject cms, Vector resources) {    
+        m_exportnameResources = new HashMap(resources.size());
+        Iterator i = resources.iterator();
+        while (i.hasNext()) {
+            CmsResource res = (CmsResource)i.next();
+            try {
+                String foldername = cms.readAbsolutePath(res);
+                String exportname = cms.readProperty(foldername, I_CmsConstants.C_PROPERTY_EXPORTNAME);
+                if (! exportname.endsWith("/")) {
+                    exportname = exportname + "/";
+                }
+                if (! exportname.startsWith("/")) {
+                    exportname = "/" + exportname;
+                }
+                m_exportnameResources.put(exportname, foldername);
+            } catch (CmsException e) {
+                // ignore exception, folder will no be added
+            }
+        }
+        m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/08/11 18:30:52 $
- * Version: $Revision: 1.163 $
+ * Date   : $Date: 2003/08/12 19:41:02 $
+ * Version: $Revision: 1.164 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,6 +60,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -92,7 +93,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.163 $
+ * @version $Revision: 1.164 $
  */
 public final class OpenCms extends A_OpenCms {
 
@@ -478,6 +479,12 @@ public final class OpenCms extends A_OpenCms {
                 
         // set if links in the export should be relative or not
         exportProperties.setExportRelativeLinks(conf.getBoolean("staticexport.relative_links", false)); 
+        
+        // initialize "exportname" folders
+        CmsObject exCms = new CmsObject();
+        initUser(exCms, null, null, getDefaultUsers().getUserGuest(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+        Vector exRes = exCms.getResourcesWithPropertyDefinition(I_CmsConstants.C_PROPERTY_EXPORTNAME);
+        exportProperties.setExportnames(exCms, exRes);                
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/08/11 18:30:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/12 19:41:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import com.opencms.file.CmsResource;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,7 +58,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsStaticExportManager {
     
@@ -70,8 +71,11 @@ public class CmsStaticExportManager {
     /** The initialized cms context */
     private CmsObject m_cms;
     
-    /** The uri to export */
-    private String m_exportUri;
+    /** The uri to export in the rfs */
+    private String m_rfsName;      
+    
+    /** The uri in the vfs */
+    private String m_vfsName;
     
     /** The resource to export */
     private CmsResource m_resource;
@@ -87,25 +91,58 @@ public class CmsStaticExportManager {
             return;
         }
         
-        m_exportUri = request.getParameter(C_EXPORT_MARKER);
-        if ((m_exportUri == null) || !m_exportUri.startsWith(A_OpenCms.getStaticExportProperties().getRfsPrefix())) {
+        m_rfsName = request.getParameter(C_EXPORT_MARKER);
+        if ((m_rfsName == null) || !m_rfsName.startsWith(A_OpenCms.getStaticExportProperties().getRfsPrefix())) {
             // this is not an export request, no further processing is required
             return;
         }
         
         // check if export uri exists in the OpenCms VFS
-        m_exportUri = m_exportUri.substring(A_OpenCms.getStaticExportProperties().getRfsPrefix().length());
+        m_rfsName = m_rfsName.substring(A_OpenCms.getStaticExportProperties().getRfsPrefix().length());
         
         try {
-            m_resource = cms.readFileHeader(m_exportUri);
-            if (m_resource.isFolder() && !m_exportUri.endsWith("/")) {
-                m_exportUri += "/";
+            m_resource = cms.readFileHeader(m_rfsName);
+            if (m_resource.isFolder() && !m_rfsName.endsWith("/")) {
+                m_rfsName += "/";
             }
+            m_vfsName = m_rfsName;
         } catch (Throwable t) {
             // resource not found, no export possible
-            m_exportUri = null;
-            return;
+            m_resource = null;
         }          
+        
+        boolean match = false;
+        if (m_resource == null) {
+            // name of export resource could not be resolved by reading the resource directly,
+            // now try to find a match with the "exportname" folders            
+            Map exportnameFolders = A_OpenCms.getStaticExportProperties().getExportnames();
+            Iterator i = exportnameFolders.keySet().iterator();
+            while (i.hasNext()) {
+                String exportName = (String)i.next();
+                if (m_rfsName.startsWith(exportName)) {
+                    // prefix match
+                    match = true;       
+                    // TODO: handle multiple matches         
+                    m_vfsName = exportnameFolders.get(exportName) + m_rfsName.substring(exportName.length());
+                    try {
+                        m_resource = cms.readFileHeader(m_vfsName);
+                        if (m_resource.isFolder()) {
+                            if (! m_rfsName.endsWith("/")) m_rfsName += "/";
+                            if (! m_vfsName.endsWith("/")) m_vfsName += "/";
+                        }                        
+                    } catch (CmsException e) {
+                        m_rfsName = null;
+                    }
+                    break;
+                }
+            }    
+            
+            if (! match) {
+                // no match found, nothing to export
+                m_rfsName = null;
+            }   
+        }
+        
         m_cms = cms;            
     }
     
@@ -119,15 +156,13 @@ public class CmsStaticExportManager {
      */
     public synchronized void export(HttpServletRequest req, HttpServletResponse res) throws Exception {
         
-        String resourceName;
         CmsFile file;
         if (m_resource.isFile()) {
-            file = m_cms.readFile(m_exportUri);
-            resourceName = m_exportUri;
+            file = m_cms.readFile(m_vfsName);
         } else {
-            file = initResource(m_cms, m_exportUri);
-            resourceName = m_exportUri + file.getResourceName();
-            m_exportUri += C_EXPORT_DEFAULT_FILE;
+            file = initResource(m_cms, m_vfsName);
+            m_vfsName = m_vfsName + file.getResourceName();
+            m_rfsName += C_EXPORT_DEFAULT_FILE;
         } 
         
         int loaderId = file.getLoaderId();
@@ -138,31 +173,31 @@ public class CmsStaticExportManager {
                 && (loaderId != CmsPageLoader.C_RESOURCE_LOADER_ID)
                 )           
         ) {
-            throw new CmsException("Unable to export file " + m_exportUri + ", invalid loader id " + loaderId);
+            throw new CmsException("Unable to export VFS file " + m_vfsName + ", invalid loader id " + loaderId);
         }        
         
-        String exportFolderName = A_OpenCms.getStaticExportProperties().getExportPath() + CmsResource.getPath(m_exportUri).substring(1);
+        String exportFolderName = A_OpenCms.getStaticExportProperties().getExportPath() + CmsResource.getPath(m_rfsName).substring(1);
         File exportFolder = new File(exportFolderName);
         if (!exportFolder.exists()) {
             if (!exportFolder.mkdirs()) {
-                throw new CmsException("Creation of export folder failed for file " + m_exportUri);
+                throw new CmsException("Creation of export folder failed for RFS file " + m_rfsName);
             }
         }
         
-        String exportFileName = A_OpenCms.getStaticExportProperties().getExportPath() + m_exportUri.substring(1);
+        String exportFileName = A_OpenCms.getStaticExportProperties().getExportPath() + m_rfsName.substring(1);
         File exportFile = new File(exportFileName);
         FileOutputStream exportStream;
         try {
             exportStream = new FileOutputStream(exportFile);
         } catch (Throwable t) {
-            throw new CmsException("Creation of export output stream failed for file " + m_exportUri);
+            throw new CmsException("Creation of export output stream failed for RFS file " + m_rfsName);
         }
 
         String mimetype = A_OpenCms.getMimeType(file.getResourceName(), m_cms.getRequestContext().getEncoding());
         res.setContentType(mimetype);  
                 
         String oldUri = m_cms.getRequestContext().getUri();
-        m_cms.getRequestContext().setUri(resourceName);          
+        m_cms.getRequestContext().setUri(m_vfsName);          
         byte[] content = loader.export(m_cms, file, req, res);    
         m_cms.getRequestContext().setUri(oldUri);
                 
@@ -176,7 +211,7 @@ public class CmsStaticExportManager {
      * @return true if the uri is static exportable
      */
     public boolean isStaticExportable() {
-        return m_exportUri != null;
+        return m_rfsName != null;
     }
     
         
