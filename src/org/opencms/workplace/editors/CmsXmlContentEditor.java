@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/10/23 06:50:36 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/10/26 16:33:52 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -325,7 +325,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             String newFileName = collector.getCreateLink(getCms(), collectorName, param);            
             
             // now create the resource, fill it with the marshalled XML and write it back to the VFS
-            getCms().createResource(newFileName, 11);
+            getCms().createResource(newFileName, templateFile.getTypeId());
             CmsFile newFile = getCms().readFile(newFileName, CmsResourceFilter.IGNORE_EXPIRATION);
             newFile.setContents(newContent.marshal());
             getCms().writeFile(newFile);
