@@ -14398,12 +14398,38 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/xmlcontent/error.gif</source>
+			<destination>system/workplace/resources/editors/xmlcontent/error.gif</destination>
+			<type>image</type>
+			<uuidresource>85bf93ef-4508-11d9-a4ba-c7395cc0b5af</uuidresource>
+			<datelastmodified>Fri, 03 Dec 2004 11:59:06 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Dec 2004 09:51:29 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/editors/xmlcontent/help.js</destination>
 			<type>plain</type>
 			<uuidresource>b50b1e87-20e3-11d9-9b67-9f91734fb765</uuidresource>
 			<datelastmodified>Mon, 18 Oct 2004 11:53:27 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 18 Oct 2004 10:57:15 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/xmlcontent/warning.gif</source>
+			<destination>system/workplace/resources/editors/xmlcontent/warning.gif</destination>
+			<type>image</type>
+			<uuidresource>85d4f0b2-4508-11d9-a4ba-c7395cc0b5af</uuidresource>
+			<datelastmodified>Fri, 03 Dec 2004 11:59:12 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Dec 2004 09:51:29 GMT+01:00</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

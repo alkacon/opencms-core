@@ -34,54 +34,59 @@
 //------------------------------------------------------//
 
 // function action on button click
-function buttonAction(para) {
+function buttonAction(para) {	
 	var _form = document.EDITOR;
+	_form.target = "_self";
+	submit(_form);
 
 	switch (para) {
 	case 1: 
 		// exit editor without saving
 		_form.action.value = actionExit;
-		_form.target = "_top";
-		submit(_form);
+		_form.target = "_top";		
 		_form.submit();
 		break;
 	case 2:
 		// save and exit editor
 		_form.action.value = actionSaveExit;
-		_form.target = "_top";
-		submit(_form);
 		_form.submit();
 		break;
 	case 3:
 		// save content
 		_form.action.value = actionSave;
-		submit(_form);
 		_form.submit();
 		break;
 	case 4:
 		// change element (change locale)
 		_form.action.value = actionChangeElement;
-		_form.target = "_self";
-		submit(_form);
 		_form.submit();
 		break;
 	case 5:
 		// add optional element
 		_form.action.value = actionAddElement;
-		submit(_form);
 		_form.submit();
 		break;
 	case 6:
 		// remove optional element
 		_form.action.value = actionRemoveElement;
-		submit(_form);
+		_form.submit();
+		break;
+	case 7:
+		// preview	
+		_form.action.value = actionPreview;
+		_form.target = "PREVIEW";
+		openWindow = window.open("about:blank", "PREVIEW", "width=950,height=700,left=10,top=10,resizable=yes,scrollbars=yes,location=yes,menubar=yes,toolbar=yes,dependent=yes");
+		_form.submit();
+		break;	
+	case 8:
+		// check elements before performing customized action
+		_form.action.value = actionCheck;
 		_form.submit();
 		break;
 	case 9:
 		// save and perform customized action
 		_form.action.value = actionSaveAction;
 		_form.target = "_top";
-		submit(_form);
 		_form.submit();
 		break;
 	default:
@@ -108,6 +113,7 @@ function opensmallwin(url, name, w, h) {
 	return smallwindow;
 }
 
+// add an optional element to the currently edited content
 function addElement(elemName, insertAfter) {
 	var _form = document.EDITOR;
 	_form.elementname.value = elemName;
@@ -115,9 +121,35 @@ function addElement(elemName, insertAfter) {
 	buttonAction(5);
 }
 
+// remove an optional element from currently edited content
 function removeElement(elemName, index) {
 	var _form = document.EDITOR;
 	_form.elementname.value = elemName;
 	_form.elementindex.value = index;
 	buttonAction(6);
+}
+
+// checks and adjusts the language selector in case an error is found in the edited content
+function checkElementLanguage(newValue) {
+	try {
+		var langBox = parent.buttonbar.document.forms["buttons"].elements["elementlanguage"];
+		if (langBox.value != newValue) {
+			langBox.value = newValue;
+		}
+	} catch (e) {
+		// ignore
+	}
+}
+
+// submits the checked form for customized action button and considers delayed string insertion
+function submitSaveAction() {
+	if (stringsPresent == true) {
+		if (stringsInserted) {
+			buttonAction(9);
+		} else {
+			setTimeout('submitSaveAction()', 20);
+		}
+	} else {
+		buttonAction(9);
+	}
 }

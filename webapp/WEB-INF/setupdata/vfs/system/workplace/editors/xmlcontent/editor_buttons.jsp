@@ -54,7 +54,7 @@ function confirmExit() {
 <%= wp.buttonBarStartTab(0, 5) %>
 <%
 if (options.showElement("button.customized", displayOptions)) {%>
-	<td><%= wp.buttonActionDirectEdit("buttonAction(9);", buttonStyle) %></td><%
+	<td><%= wp.buttonActionDirectEdit("buttonAction(8);", buttonStyle) %></td><%
 }
 %>
 <%= wp.button("javascript:buttonAction(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
@@ -71,6 +71,15 @@ if (options.showElement("option.element.language", displayOptions) && wp.showEle
 
 %>
 	<td class="maxwidth">&nbsp;</td>
+<%
+
+if (wp.isPreviewEnabled()) {
+	// show preview button if enabled
+	out.println(wp.button("javascript:buttonAction(7);", null, "preview", "button.preview", buttonStyle));
+	out.println(wp.buttonBarSeparator(5, 5));
+}
+
+%>
 		
 <%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlStringWidget.java,v $
- * Date   : $Date: 2004/12/02 09:07:58 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/12/03 17:03:18 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.0
  */
 public class CmsXmlStringWidget extends A_CmsXmlWidget {
@@ -65,8 +65,11 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
      * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog)
      */
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
-
-        return "\twindow.setTimeout(\"initStringFields()\",50);\n";
+        
+        StringBuffer result = new StringBuffer(4);
+        result.append("\tstringsPresent = true;\n");
+        result.append("\twindow.setTimeout(\"initStringFields()\",50);\n");
+        return result.toString();
     }
 
     /**
@@ -119,8 +122,9 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
             }
 
         }
+        
+        result.append("\tstringsInserted = true;\n");
 
-        result.append("");
         result.append("}\n");
         return result.toString();
     }

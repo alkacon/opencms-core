@@ -477,6 +477,18 @@ span.tabactive {
 	border: 1px dotted ThreeDShadow;
 }
 
+.xmlTdError {
+	font-style: italic;
+	font-weight: bold;
+	color: #B40000;
+}
+
+.xmlTdWarning {
+	font-style: italic;
+	font-weight: bold;
+	color: #EE7700;
+}
+
 .xmlLabel { 
 	white-space: nowrap;
 }
