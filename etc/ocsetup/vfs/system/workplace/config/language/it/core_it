@@ -121,8 +121,8 @@
                 <upload>Importa Database da</upload>
                 <uploadlocal>Importa Database dal computer locale</uploadlocal>
                 <import>Importa Database</import>
-<importend>Import Database ready</importend>
-<exportend>Export Database ready.</exportend>
+                <importend>Importazione Database terminata</importend>
+                <exportend>Esportazione Database terminata.</exportend>
             </label>
         </database>
 
@@ -135,16 +135,16 @@
                 <testlink>Link:</testlink>
                 <testregexp>Espressione:</testregexp>
                 <testresult>Risultato:</testresult>
-<exportend>Static Export ready.</exportend>
+                <exportend>Esportazione Statica terminata.</exportend>
             </label>
         </staticexport>
 
         <linkmanagement>
             <label>
-<title>Link Check</title>
-<text1>Aktual project (</text1>
-<text2>) is checked for broken Links.</text2>
-<textende>Check ready.</textende>
+                <title>Controllo Link</title>
+                <text1>Il progetto attuale (</text1>
+                <text2>) viene ora controllato per link non validi.</text2>
+                <textende>Controllo terminato.</textende>
             </label>
         </linkmanagement>
         
@@ -191,10 +191,10 @@
                 <adduser>Spiacente, l'utente non ha potuto essere creato.</adduser>
                 <addgroup>Spiacente, il gruppo non ha potuto essere creato.</addgroup>
                 <database>Spiacente, il database non ha potuto essere importato / esportato.</database>
+                <linkcheckerror>L'URL non ha potuto essere contattato. Puoi ora conservare il link o modificarlo.</linkcheckerror>
+                <linkbrowser>Spiacente, non puoi ancora usare il visualizzatore dei link.</linkbrowser> 
+                <linkgallery>Non hai i permessi per creare una nuova galleria in questo progetto.</linkgallery> 
                 <htmlbrowser>Sorry, you can't use the HTML browser yet.</htmlbrowser>                                                                
-                <linkcheckerror>The url could not be connected. You can store the link now or you can change it.</linkcheckerror>
-                <linkbrowser>Sorry, you can't use the link browser yet.</linkbrowser>
-                <linkgallery>You don't have permission to create a new gallery in this project.</linkgallery>
                 <lock>Spiacente, il file non ha potuto essere bloccato.</lock>
                 <lockchange>Spiacente, il blocco sul file non ha potuto essere rubato.</lockchange>
                 <login>Spiacente, l'utente non ha potuto accedere al sistema.</login>
@@ -202,7 +202,7 @@
                 <newproject>Spiacente, il nuovo progetto non ha potuto essere creato.</newproject>
                 <newprop>Spiacente, la nuova definizione di proprietà non ha potuto essere creata.</newprop>
                 <newextension>Spiacente, la nuova estensione di file non ha potuto essere assegnata.</newextension>
-                <newlink>Sorry, the link could not be created.</newlink>
+                <newlink>Spiacente, il link non ha potuto essere creato.</newlink>
                 <newtask>Spiacente, il nuovo compito non ha potuto essere creato.</newtask>
                 <picbrowser>Spiacente, non puoi ancora usare la ricerca immagini.</picbrowser>
                 <picgallery>Non hai il permesso di creare una nuova galleria in questo progetto.</picgallery>
@@ -253,10 +253,10 @@
                 <extNav3>Il colore scelto non è nel formato da #000000 a #FFFFFF.</extNav3>
                 <foldercreate>Forse non hai i permessi necessari o questa cartella esiste già.</foldercreate>
                 <gallerynoright>Non hai i diritti per creare questa nuova galleria in questo progetto.</gallerynoright>
+                <linknogallery>Non c'è ancora alcuna galleria di link.</linknogallery> 
+                <linkbrowser>La cartella per le gallerie di link non esiste.</linkbrowser> 
                 <htmlnogallery>There is no HTML gallery yet.</htmlnogallery>
                 <htmlbrowser>The folder for the HTML galleries doesn't exist.</htmlbrowser>                                   
-                <linknogallery>There is no link gallery yet.</linknogallery>
-                <linkbrowser>The folder for the link galleries doesn't exist.</linkbrowser>
                 <lock>O non hai i permessi necessari, o i contenuti di questo file sono bloccati da qualcun'altro.</lock>
                 <lockchange>Il file è bloccato da un altro utente.</lockchange>
                 <login>I dati introdotti non sono corretti.</login>
@@ -269,7 +269,7 @@
                 <titlemissing>Il campo Titolo deve essere riempito.</titlemissing>
                 <newproject>I dati introdotti per il progetto non sono validi.</newproject>
                 <newextformat>I dati da te introdotti erano nel formato errato.</newextformat>
-                <newlink>Maybe you don't have the needed permissions or this link already exist.</newlink>
+                <newlink>Forse non hai i permessi necessari o questo link esiste già.</newlink>
                 <newprop>vedere dettagli</newprop>
                 <newprop1>Proprietà</newprop1>
                 <newprop2>di</newprop2>
@@ -317,8 +317,8 @@
                 <htmlbrowser>Create the folder for the HTML galleries or contact your system administrator.</htmlbrowser>
                 <htmlnogallery>Please first create a gallery with the menu item Administration/HTML Management.</htmlnogallery>                                                              
                 <editorsave>Salva il contenuto del file in un editor locale, chiudi il file e controlla lo stato di blocco.</editorsave>
-                <linkbrowser>Create the folder for the link galleries or contact your system administrator.</linkbrowser>
-                <linknogallery>Please first create a gallery with the menu item Administration/External Link Management.</linknogallery>
+                <linkbrowser>Crea la cartella per le gallerie di link o contatta il tuo amministratore di sistema.</linkbrowser>
+                <linknogallery>Per favore crea prima una galleria con la voce di menu Amministrazione/Gestione Link Esterni.</linknogallery>
                 <lock></lock>
                 <lockchange>Per favore riprova più tardi, o contatta il tuo amministratore di sistema.</lockchange>
                 <login>Per favore controlla i dati introdotti o contatta il tuo amministratore di sistema.</login>
@@ -328,7 +328,7 @@
                 <newprop>Per favore riprova più tardi, o contatta il tuo amministratore di sistema.</newprop>
                 <newextformat>Introduci per favore solo un'estensione di file alla volta. Non hai bisogno di introdurre l'asterisco e il punto.</newextformat>
                 <newextension>Per favore contatta il tuo amministratore di sistema.</newextension>
-                <newlink>Please check the entered data or contact your system administrator.</newlink>
+                <newlink>Per favore controlla i dati inseriti o contatta il tuo amministratore di sistema.</newlink>
                 <newtask>Per favore controlla i dati introdotti o contatta il tuo amministratore di sistema.</newtask>
                 <none></none>
                 <picbrowser>Crea la cartella per le gallerie di immagini o contatta il tuo amministratore di sistema.</picbrowser>
@@ -367,16 +367,16 @@
                 <downgallery>Creazione nuova Galleria di Download</downgallery>
                 <editorsave>Salva File</editorsave>
                 <foldercreate>Crea Cartella</foldercreate>
+                <linkbrowser>Visualizzatore Link</linkbrowser> 
+                <linkgallery>Creazione nuova Galleria di Link</linkgallery>
                 <htmlbrowser>Create new HTML-Galerie</htmlbrowser>                                        
-                <linkbrowser>Link Browser</linkbrowser>
-                <linkgallery>Creating new Link Gallery</linkgallery>
                 <lock>Blocca File</lock>
                 <lockchange>Ruba Blocco</lockchange>
                 <login>Errore di Accesso</login>
                 <projectlockchange>Rilasciare il blocco per il progetto</projectlockchange>
                 <newprop>Nuova proprietà per il tipo di risorsa</newprop>
                 <newextension>Associa nuova estensione di file</newextension>
-                <newlink>New Link</newlink>
+                <newlink>Nuovo Link</newlink>
                 <newproject>Nuovo Progetto</newproject>
                 <newtask>Nuovo Compito</newtask>
                 <picbrowser>Navigatore Immagini</picbrowser>
@@ -422,18 +422,18 @@
             <downloadgallery>Gestione Gallerie<![CDATA[<BR>]]>di Download</downloadgallery>
             <export>Esporta</export>
             <exportmoduledata>Esporta dati del Modulo</exportmoduledata>
-            <extlinkgallery>External links<![CDATA[<br>]]>management</extlinkgallery>
+            <extlinkgallery>Gestione<![CDATA[<br>]]>links esterni</extlinkgallery>
             <groups>Modifica Gruppi</groups>
             <htmlgallery>Gestione Gallerie<![CDATA[<BR>]]>di HTML</htmlgallery>                        
             <imagelist>lista immagini</imagelist>
             <import>Importa</import>
             <linkmanagement>Check Project</linkmanagement>
-            <linkcheckviewer>LinkCheck Viewer</linkcheckviewer>
+            <linkcheckviewer>Visualizzatore Controllo Link</linkcheckviewer>
             <logfileviewer>Visualizzatore<![CDATA[<BR>]]>file registro</logfileviewer>
             <module>Gestione Moduli</module>
             <mountpoint>Punti di Mount</mountpoint>
             <newgallery>nuova galleria</newgallery>
-            <newlink>New external link</newlink>
+            <newlink>Nuovo link esterno</newlink>
             <newproject>Nuovo Progetto</newproject>
             <picgallery>Gestione Gallerie<![CDATA[<BR>]]>di immagini</picgallery>
             <processmanagement>Pianificatore</processmanagement>
@@ -589,7 +589,7 @@
             <newpwd>Nuova Password</newpwd>
             <newpwdrepeat>Conferma Password</newpwdrepeat>
             <next>successivo</next>
-            <nochange>No change</nochange>
+            <nochange>Nessuna modifica</nochange>
             <nolinkvalue>Per favore inserisci il collegamento!</nolinkvalue>
             <none>-- nessuno --</none>
             <oldpwd>Password Attuale</oldpwd>
@@ -704,7 +704,7 @@
             <publishedat>Pubblicato</publishedat>
             <publishedby>Pubblicato da</publishedby>
             <readrights>permesso di lettura per altri</readrights>
-            <resourcetype>Tipo risorsa</resourcetype>
+            <resourcetype>Tipo Risorsa</resourcetype>
             <search>Cerca</search>
             <selectfolder>Seleziona cartella...</selectfolder>
             <size>Dimensione</size>
@@ -718,7 +718,7 @@
             <upload>Carica File</upload>
             <uploaddate>Attivo dal</uploaddate>
             <user>Utente</user>
-            <value>Value</value>
+            <value>Valore</value>
             <version>Versione</version>
             <view>Vista</view>
             <wptitle>Workplace OpenCms di</wptitle>
@@ -840,11 +840,11 @@
                 <message1>Sei certo di voler pubblicare il progetto '</message1>
                 <message2>' ora?</message2>
                 <title>Pubblica Progetto</title>
-<message_linkcheck>The Project is checked for broken Links.</message_linkcheck>
-<message_brokenlinks>On this pages broken links were found.</message_brokenlinks>
-<message_brokenlinks2>Will you publish the project anyway?</message_brokenlinks2>
-<message_publish>publishing...</message_publish>
-<message_publish2>publishing... The Project is published.</message_publish2>
+                <message_linkcheck>Il progetto viene controllato per link non validi.</message_linkcheck>
+                <message_brokenlinks>Su queste pagine sono stati trovati link non validi.</message_brokenlinks>
+                <message_brokenlinks2>Vuoi pubblicare il progetto comunque?</message_brokenlinks2>
+                <message_publish>pubblicazione in corso...</message_publish>
+                <message_publish2>Il progetto è stato pubblicato.</message_publish2>
             </publish>
             <lockchange>
                 <message1>Sei certo di voler rilasciare tutti i blocchi nel progetto</message1>
