@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/01/28 09:55:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/01/31 15:02:17 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -414,7 +414,7 @@ public final class CmsStringUtil {
     public static List splitAsList(String source, char delimiter) {
         return splitAsList(source, delimiter, false);
     }
-
+    
     /**
      * Splits a String into substrings along the provided char delimiter and returns
      * the result as a List of Substrings.<p>
@@ -440,7 +440,11 @@ public final class CmsStringUtil {
             index = next + 1;
             next = source.indexOf(delimiter, index);
         }
-        result.add(source.substring(index));
+        if (trim) {
+            result.add(source.substring(index).trim());
+        } else {
+            result.add(source.substring(index));    
+        }    
         return result;
     }
 
@@ -456,7 +460,7 @@ public final class CmsStringUtil {
     public static List splitAsList(String source, String delimiter) {
         return splitAsList(source, delimiter, false);
     }
-
+    
     /**
      * Splits a String into substrings along the provided String delimiter and returns
      * the result as List of Substrings.<p>
@@ -489,7 +493,11 @@ public final class CmsStringUtil {
             index = next + len;
             next = source.indexOf(delimiter, index);
         }
-        result.add(source.substring(index));
+        if (trim) {
+            result.add(source.substring(index).trim());
+        } else {
+            result.add(source.substring(index));    
+        } 
         return result;
     }
 
