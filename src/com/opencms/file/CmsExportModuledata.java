@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2002/07/24 07:41:35 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/09/03 11:57:01 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.defaults.master.*;
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.5 $ $Date: 2002/07/24 07:41:35 $
+ * @version $Revision: 1.6 $ $Date: 2002/09/03 11:57:01 $
  */
 public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
@@ -499,7 +499,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         try {
             ZipEntry entry = new ZipEntry(C_EXPORT_XMLFILENAME);
             m_exportZipStream.putNextEntry(entry);
-            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream);
+            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream, null);
             m_exportZipStream.closeEntry();
         } catch(Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
@@ -738,7 +738,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         try {
             ZipEntry entry = new ZipEntry(filename);
             m_exportZipStream.putNextEntry(entry);
-            A_CmsXmlContent.getXmlParser().getXmlText(xmlDoc, m_exportZipStream);
+            A_CmsXmlContent.getXmlParser().getXmlText(xmlDoc, m_exportZipStream, null);
             m_exportZipStream.closeEntry();
         } catch(Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
@@ -778,7 +778,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         try {
             ZipEntry entry = new ZipEntry(filename);
             m_exportZipStream.putNextEntry(entry);
-            A_CmsXmlContent.getXmlParser().getXmlText(xmlDoc, m_exportZipStream);
+            A_CmsXmlContent.getXmlParser().getXmlText(xmlDoc, m_exportZipStream, null);
             m_exportZipStream.closeEntry();
         } catch(Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);

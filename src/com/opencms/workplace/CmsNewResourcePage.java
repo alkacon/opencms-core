@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2002/08/26 13:00:41 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.48 $ $Date: 2002/08/26 13:00:41 $
+ * @version $Revision: 1.49 $ $Date: 2002/09/03 11:57:06 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -54,7 +54,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
     /** Definition of the class */
     private final static String C_CLASSNAME = "com.opencms.template.CmsXmlTemplate";
 
-    private static final String C_DEFAULTBODY = "<?xml version=\"1.0\"?>\n<XMLTEMPLATE>\n<TEMPLATE/>\n</XMLTEMPLATE>";
+    private static final String C_DEFAULTBODY = "<?xml version=\"1.0\" encoding=\"" + I_CmsXmlParser.C_XML_ENCODING + "\"?>\n<XMLTEMPLATE>\n<TEMPLATE/>\n</XMLTEMPLATE>";
 
     /**
      * Create the pagefile for this new page.

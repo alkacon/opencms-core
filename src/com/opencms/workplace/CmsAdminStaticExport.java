@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2002/05/24 12:51:09 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.oro.text.perl.*;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -151,9 +151,13 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
                     result = "error: "+ e.getMessage();
                 }
             }
-            xmlTemplateDocument.setData("link", Encoder.escape(link));
-            xmlTemplateDocument.setData("regExpr", Encoder.escape(regExpr));
-            xmlTemplateDocument.setData("result", Encoder.escape(result));
+            //Gridnine AB Aug 8, 2002
+            xmlTemplateDocument.setData("link", Encoder.escape(link,
+                cms.getRequestContext().getEncoding()));
+            xmlTemplateDocument.setData("regExpr", Encoder.escape(regExpr,
+                cms.getRequestContext().getEncoding()));
+            xmlTemplateDocument.setData("result", Encoder.escape(result,
+                cms.getRequestContext().getEncoding()));
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "regTest");
         }
 

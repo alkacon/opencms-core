@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
-* Date   : $Date: 2002/08/23 09:02:03 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2002/09/03 11:57:00 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -428,7 +428,7 @@ function doEditHTML(para)
 <!-- Includes the Document Source-Code into the HTML-Editor and sets up the contect menue-->
 function setText()
 {
-    document.EDITOR.EDIT_HTML.DocumentHTML = unescape(text);
+    document.EDITOR.EDIT_HTML.DocumentHTML = decodeURIComponent(text);
     GeneralContextMenu[0] = new ContextMenuItem(LANG_CUT, DECMD_CUT);
     GeneralContextMenu[1] = new ContextMenuItem(LANG_COPY, DECMD_COPY);
     GeneralContextMenu[2] = new ContextMenuItem(LANG_PASTE, DECMD_PASTE);
@@ -451,10 +451,12 @@ function doSubmit()
 {
     if(document.EDITOR.EDIT_HTML.DOM.documentElement) {
         // IE5
-        document.EDITOR.content.value = escape(getChars(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML)));
+        //Gridnine AB Aug 12, 2002
+        //document.EDITOR.content.value = encodeURIComponent(getChars(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML)));
+        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML));
     } else {
         // IE4
-        document.EDITOR.content.value = escape(document.EDITOR.EDIT_HTML.DocumentHTML);
+        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.EDIT_HTML.DocumentHTML);
     }
 }
 
@@ -827,6 +829,8 @@ function DECMD_HYPERLINK_NODIALOG_onclick()
   EDITOR.EDIT_HTML.focus();
 }
 
+//Gridnine AB Aug 12, 2002
+/* we don't need this function any more as Cms now supports Unicode
 function getChars(value) {
     ret = "";
     var num;
@@ -840,7 +844,7 @@ function getChars(value) {
     }
     return ret + "";
 }
-
+*/
 // sends URL string from seperate browser window to a hidden field within the opener document
 function sendURLString(destFormName,destFieldName,strURL){  
     var obj1='top.window.opener.self.document.'+ destFormName;

@@ -48,17 +48,17 @@ top.help_url='FunkButtonNeu/AnlegenNeuerVerknuepfung.html';
         if(okay && lengthOkay){
             if(whichone==2){
                 var re='explorer_files_new_link.html?step=1&file='+
-                    escape(document.getElementById("name"+whichone).value)+
-                    '&link='+escape(document.getElementById("neulink"+whichone).value);
+                    encodeURIComponent(document.getElementById("name"+whichone).value)+
+                    '&link='+encodeURIComponent(document.getElementById("neulink"+whichone).value);
                 //alert(re);
                 document.location.href=re;
             }
 
             if(whichone==1){
                 var re='explorer_files_new_link.html?step=1&file='+
-                        escape(document.getElementById("name"+whichone).value)+
-                       '&link='+escape(document.getElementById("neulink"+whichone).value)+
-                       '&navtitle='+escape(document.getElementById("navtext").value)+
+                        encodeURIComponent(document.getElementById("name"+whichone).value)+
+                       '&link='+encodeURIComponent(document.getElementById("neulink"+whichone).value)+
+                       '&navtitle='+encodeURIComponent(document.getElementById("navtext").value)+
                        '&navpos='+ document.getElementById("linkPos").value;
 
                 //alert(re);
@@ -124,7 +124,9 @@ top.help_url='FunkButtonNeu/AnlegenNeuerVerknuepfung.html';
 //-->
 </script>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsProcessedString.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.template;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * Special class for String results returned in template engine.
  * Template objects should use this class instead of <code>String</code>
@@ -39,7 +41,7 @@ package com.opencms.template;
  * make use of this class and return the original String.
  *
  * @author Alexander Lucas <alexander.lucas@framfab.de>
- * @version $Revision: 1.3 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.4 $ $Date: 2002/09/03 11:57:06 $
  */
 public class CmsProcessedString {
 
@@ -51,12 +53,17 @@ public class CmsProcessedString {
         m_orgString = s;
     }
 
+    // Gridnine AB Aug 5, 2002
     /** Constructor for a new CmsProcessedString object */
-    public CmsProcessedString(byte[] b) {
+    public CmsProcessedString(byte[] b, String encoding) {
         if(b == null) {
             m_orgString = null;
         } else {
-            m_orgString = new String(b);
+            try {
+                m_orgString = new String(b, encoding);
+            } catch (UnsupportedEncodingException uee) {
+                m_orgString = new String(b);
+            }
         }
     }
 

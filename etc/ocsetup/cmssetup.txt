@@ -45,6 +45,10 @@ createPropertydefinition exportname plain
 createPropertydefinition exportname page
 createPropertydefinition exportname image
 createPropertydefinition exportname link
+createPropertydefinition Content-encoding folder
+createPropertydefinition Content-encoding plain
+createPropertydefinition Content-encoding page
+createPropertydefinition Content-encoding link
 createPropertydefinition Title jsp
 createPropertydefinition Keywords jsp
 createPropertydefinition Description jsp

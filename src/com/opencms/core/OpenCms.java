@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/08/22 09:58:46 $
-* Version: $Revision: 1.89 $
+* Date   : $Date: 2002/09/03 11:57:00 $
+* Version: $Revision: 1.90 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.89 $ $Date: 2002/08/22 09:58:46 $
+ * @version $Revision: 1.90 $ $Date: 2002/09/03 11:57:00 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -140,6 +140,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     private static Hashtable c_variantDeps = null;
 
+    // Gridnine AB Aug 1, 2002
+    private static String c_encoding = "ISO-8859-1";
+
     /**
      * Constructor, creates a new OpenCms object.
      *
@@ -152,7 +155,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         CmsObject cms = null;
         // Save the configuration
         setConfiguration(conf);
-        
+
         // invoke the ResourceBroker via the initalizer
         try {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -183,7 +186,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             // and init the cms-object with the rb.
             c_rb = CmsRbManager.init(conf);
             printCopyrightInformation(cms);
-            
+
             // initalize the Hashtable with all available mimetypes
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] read mime types");
@@ -368,24 +371,35 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Exception initializing link rules: " + e.toString());
             }
-        }        
+        }
+        // Gridnine AB Aug 1, 2002
+        c_encoding = conf.getString("defaultContentEncoding", "ISO-8859-1");
+        /*
+        try {
+            if (!java.nio.charset.Charset.isSupported(c_encoding)) {
+                c_encoding = "ISO-8859-1";
+            }
+        } catch (Exception e) {
+                c_encoding = "ISO-8859-1";
+        }
+        */
     }
-    
+
     private boolean isInitialized = false;
-    
+
     /**
      * Initialize this OpenCms Object
      */
-    public void initStartupClasses() throws CmsException {     
+    public void initStartupClasses() throws CmsException {
         if (isInitialized) return;
-        
+
         // Set the initialized flag to true
-        isInitialized = true;    
+        isInitialized = true;
 
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] OpenCms init() starting.");
-        }                
-        
+        }
+
         // finally, initialize 1 instance per class listed in the startup node
         try{
             Hashtable startupNode = this.getRegistry().getSystemValues( "startup" );
@@ -394,7 +408,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                     String currentClass = (String)startupNode.get( "class" + i );
                     try {
                         Class.forName(currentClass).newInstance();
-                        
+
                         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] created instance of class " + currentClass );
                         }
@@ -402,20 +416,20 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Exception creating instance of startup class " +  currentClass + ": " + e1.toString());
                         }
-                    }                    
+                    }
                 }
-            }     
+            }
         } catch (Exception e2){
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Exception creating startup classes: " + e2.toString());
             }
-        }         
-        
+        }
+
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] OpenCms init() finished.");
-        }                  
+        }
     }
-    
+
     /**
      * Destructor, called when the the servlet is shut down.
      * @exception CmsException Throws CmsException if something goes wrong.
@@ -544,7 +558,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, String user,
             String group, int project, CmsCoreSession sessionStorage) throws CmsException {
-        
+
         if((!m_enableElementCache) || (project == C_PROJECT_ONLINE_ID)){
             cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache, sessionStorage);
         }else{
@@ -605,6 +619,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * @param file The requested document.
      *
      */
+    //Gridnine AB Aug 6, 2002
     void setResponse(CmsObject cms, CmsFile file) {
         String ext = null;
         String mimetype = null;
@@ -616,16 +631,17 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             mimetype = (String)m_mt.get(ext);
 
             // was there a mimetype fo this extension?
-            if(mimetype != null) {
-                cms.getRequestContext().getResponse().setContentType(mimetype);
+            if(mimetype == null) {
+                mimetype = C_DEFAULT_MIMETYPE;
             }
-            else {
-                cms.getRequestContext().getResponse().setContentType(C_DEFAULT_MIMETYPE);
-            }
+        } else {
+            mimetype = C_DEFAULT_MIMETYPE;
         }
-        else {
-            cms.getRequestContext().getResponse().setContentType(C_DEFAULT_MIMETYPE);
+        if (mimetype.toLowerCase().startsWith("text")
+            && (mimetype.toLowerCase().indexOf("charset") == -1)) {
+            mimetype += "; charset=" + cms.getRequestContext().getEncoding();
         }
+        cms.getRequestContext().getResponse().setContentType(mimetype);
     }
 
     /**
@@ -729,5 +745,10 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCms] crontable corrupt. Scheduler is now disabled!");
             }
         }
+    }
+
+    // Gridnine AB Aug 1, 2002
+    public static String getEncoding() {
+        return c_encoding;
     }
 }

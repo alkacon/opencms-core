@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <LANGUAGE>
         <name>Italiano</name>
+        <content-encoding>utf-8</content-encoding>
         <button>
             <all>tutti</all>
             <unzip>scompatta file</unzip>

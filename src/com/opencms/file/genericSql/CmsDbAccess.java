@@ -1,8 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/08/26 08:38:47 $
-* Version: $Revision: 1.255 $
-*
+* Date   : $Date: 2002/09/03 11:57:02 $
+* Version: $Revision: 1.256 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -55,7 +54,7 @@ import com.opencms.launcher.*;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.255 $ $Date: 2002/08/26 08:38:47 $ *
+ * @version $Revision: 1.256 $ $Date: 2002/09/03 11:57:02 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -12238,7 +12237,7 @@ public CmsTask readTask(int id) throws CmsException {
 
     /**
      * Deletes the versions from the backup tables that are older then the given date
-     * 
+     *
      * @param maxdate The date of the last version that should be remained after deleting
      * @return int The oldest remaining version
      */
@@ -12279,7 +12278,7 @@ public CmsTask readTask(int id) throws CmsException {
                 statement.setInt(1, maxVersion);
                 statement.executeUpdate();
                 statement.close();
-                // delete the elder backup properties by versionId     
+                // delete the elder backup properties by versionId
                 statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_PROPERTIES_BYVERSION"));
                 statement.setInt(1, maxVersion);
                 statement.executeUpdate();
@@ -12294,7 +12293,7 @@ public CmsTask readTask(int id) throws CmsException {
                 statement.setInt(1, maxVersion);
                 statement.executeUpdate();
                 statement.close();
-            }           
+            }
         } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
         } catch (Exception ex) {
@@ -12323,7 +12322,7 @@ public CmsTask readTask(int id) throws CmsException {
                 }
             }
         }
-        return maxVersion;            
+        return maxVersion;
     }
 
     /**
@@ -12333,28 +12332,28 @@ public CmsTask readTask(int id) throws CmsException {
     protected com.opencms.file.genericSql.CmsQueries getQueries() {
         return new com.opencms.file.genericSql.CmsQueries();
     }
-    
+
     /**
      * Returns the bytes from a result set
-     * 
+     *
      * @param res The ResultSet to read from
      * @param columnName The name of the column to read from
-     * 
+     *
      * @return The byte value from the column
      */
     protected byte[] getBytesFromResultset(ResultSet res, String columnName) throws SQLException{
         return res.getBytes(columnName);
     }
-    
+
     /**
      * Creates the content entry for a file
-     * 
+     *
      * @param fileId The ID of the new file
      * @param fileContent The content of the new file
      * @param versionId For the content of a backup file you need to insert the versionId of the backup
      * @param usedPool The name of the databasepool to use
      * @param usedStatement Specifies which tables must be used: offline, online or backup
-     * 
+     *
      */
     protected void createFileContent(int fileId, byte[] fileContent, int versionId,String usedPool, String usedStatement) throws CmsException{
         Connection con = null;
@@ -12394,10 +12393,10 @@ public CmsTask readTask(int id) throws CmsException {
             }
         }
     }
-    
+
         /**
      * Writes the file content of an existing file
-     * 
+     *
      * @param fileId The ID of the file to update
      * @param fileContent The new content of the file
      * @param usedPool The name of the database pool to use
@@ -12438,5 +12437,5 @@ public CmsTask readTask(int id) throws CmsException {
                 }
             }
         }
-    }  
+    }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/08/22 08:23:51 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2002/09/03 11:57:01 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2002/08/22 08:23:51 $
+ * @version $Revision: 1.30 $ $Date: 2002/09/03 11:57:01 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -111,7 +111,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * The object to report the log-messages.
      */
     private I_CmsReport m_report = null;
-    
+
     /** Minimum file change date for exporting */
     private long m_minFileChangeDate = Long.MIN_VALUE;
 
@@ -441,11 +441,11 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             try {
                 m_minFileChangeDate = dateFormat.parse("01.01.1990 00:00:00").getTime();
                 // m_minFileChangeDate = dateFormat.parse("25.07.2002 00:00:00").getTime();
-            } catch (Exception e) {                
+            } catch (Exception e) {
                 System.err.println("exportResources(): Date format error!");
                 m_minFileChangeDate = Long.MIN_VALUE;
             }
-            
+
             if(m_isOnlineProject || (!m_excludeUnchanged) || state == C_STATE_NEW || state == C_STATE_CHANGED) {
                 if((state != C_STATE_DELETED) && (!file.getName().startsWith("~")) && (age >= m_minFileChangeDate)) {
                     exportFile(m_cms.readFile(file.getAbsolutePath()));
@@ -561,7 +561,9 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         try {
             ZipEntry entry = new ZipEntry(C_EXPORT_XMLFILENAME);
             m_exportZipStream.putNextEntry(entry);
-            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream);
+            //A_CmsXmlContent.getXmlParser().getXmlText(m_docXml,m_exportZipStream, null);
+            //Gridnine AB Sep 2, 2002
+            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml,m_exportZipStream, I_CmsXmlParser.C_XML_ENCODING);
             m_exportZipStream.closeEntry();
         } catch(Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);

@@ -106,21 +106,21 @@ create table CMS_BACKUP_PROPERTYDEF      (PROPERTYDEF_ID int not null,
 create table CMS_PROPERTIES             (PROPERTY_ID int not null,
                                          PROPERTYDEF_ID int not null,
                                          RESOURCE_ID int not null,
-                                         PROPERTY_VALUE VARCHAR(255) not null,
+                                         PROPERTY_VALUE TEXT not null,
                                          primary key(PROPERTY_ID), 
                                          unique(PROPERTYDEF_ID, RESOURCE_ID));
 
 create table CMS_ONLINE_PROPERTIES      (PROPERTY_ID int not null,
                                          PROPERTYDEF_ID int not null,
                                          RESOURCE_ID int not null,
-                                         PROPERTY_VALUE VARCHAR(255) not null,
+                                         PROPERTY_VALUE TEXT not null,
                                          primary key(PROPERTY_ID), 
                                          unique(PROPERTYDEF_ID, RESOURCE_ID));
                                          
 create table CMS_BACKUP_PROPERTIES      (PROPERTY_ID int not null,
                                          PROPERTYDEF_ID int not null,
                                          RESOURCE_ID int not null,
-                                         PROPERTY_VALUE VARCHAR(255) not null,
+                                         PROPERTY_VALUE TEXT not null,
                                          VERSION_ID int,
                                          primary key(PROPERTY_ID), 
                                          unique(PROPERTYDEF_ID, RESOURCE_ID));

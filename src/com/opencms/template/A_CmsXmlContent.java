@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2002/09/02 07:43:28 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.58 $ $Date: 2002/09/02 07:43:28 $
+ * @version $Revision: 1.59 $ $Date: 2002/09/03 11:57:06 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -151,6 +151,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
 
     /** XML parser */
     private static I_CmsXmlParser parser = new CmsXmlXercesParser();
+    
+    private String m_newEncoding = null;
 
     // private static I_CmsXmlParser parser = new CmsXmlProjectXParser();
 
@@ -737,14 +739,14 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
 
     //[added by Gridnine AB, 2002-06-17]
     public void getXmlText(OutputStream out) {
-        parser.getXmlText(m_content, out);
+        parser.getXmlText(m_content, out, m_newEncoding);
     }
 
     //[added by Gridnine AB, 2002-06-17]
     public void getXmlText(OutputStream out, Node n) {
         Document tempDoc = (Document)m_content.cloneNode(false);
         tempDoc.appendChild(parser.importNode(tempDoc, n));
-        parser.getXmlText(tempDoc, out);
+        parser.getXmlText(tempDoc, out, m_newEncoding);
     }
 
     /**
@@ -1552,7 +1554,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                     }
                     if(streamResults != null) {
                         try {
-                            stream.write(streamResults.getBytes());
+                            stream.write(streamResults.getBytes(m_cms.getRequestContext().getEncoding()));
                         } catch (Exception e) {
                             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
                         }
@@ -1990,5 +1992,22 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         // update the internal parsed content cache with the new file data.
         String currentProject = m_cms.getRequestContext().currentProject().getName();
         m_filecache.put(currentProject + ":" + filename, m_content.cloneNode(true));
+    }
+    
+    /**
+     * Returns current XML document encoding.
+     * @return String encoding of XML document
+     */
+    //Gridnine AB Aug 9, 2002
+    public String getEncoding() {
+        return parser.getOriginalEncoding(m_content);
+    }
+    
+    /**
+     * Sets new encoding for XML document.
+     * @param encoding
+     */
+    public void setEncoding(String encoding) {
+        m_newEncoding = encoding;
     }
 }

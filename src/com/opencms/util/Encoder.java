@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2002/09/02 07:29:09 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,10 +39,16 @@ import javax.servlet.http.*;
  * The Encoder provies static methods to decode and encode data. <br>
  * The de- and encoding uses the same coding mechanism as JavaScript, special characters are
  * replaxed with <code>%hex</code> where hex is a two digit hex number.
+ * <br><br>
+ * On client side (browser) instead of using corresponding <code>escape</code>
+ * and <code>unescape</code> JavaScript functions, use <code>encodeURIComponent</code> and
+ * <code>decodeURIComponent</code> functions wich are proper work with unicode characters.
+ * These functions are supported in IE 5.5+ and NS 6+
  *
  * @author Michael Emmerich
  */
-
+//Gridnine AB Aug 9, 2002
+// see JavaDoc comments above
 public class Encoder {
 
     /**
@@ -58,14 +64,20 @@ public class Encoder {
      * @param Source The textstring to be encoded.
      * @return The JavaScript escaped string.
      */
-
-    public static String escape(String source) {
+    //Gridnine AB Aug 8, 2002
+    // added support for different encodings
+    public static String escape(String source, String encoding) {
         StringBuffer ret = new StringBuffer();
 
         // URLEncode the text string. This produces a very similar encoding to JavaSscript
 
         // encoding, except the blank which is not encoded into a %20.
-        String enc = encode(source);
+        String enc;
+        try {
+            enc = URLEncoder.encode(source, encoding);
+        } catch (UnsupportedEncodingException uee) {
+            enc = URLEncoder.encode(source);
+        }
         StringTokenizer t = new StringTokenizer(enc, "+");
         while(t.hasMoreTokens()) {
             ret.append(t.nextToken());
@@ -75,20 +87,6 @@ public class Encoder {
         }
         return ret.toString();
     }
-    
-    /**
-     * Method to call the (deprecated) encode function in 
-     * the java.net.URLEncoder class, which will 
-     * yield an annoying deprecation warning during compilation.
-     * 
-     * @param source The String to encode
-     * @return The encoded String
-     */
-    public static String encode(String source) {
-        // To prevent the deprecation warning, UTF-8 could be used here as default.
-        // TODO: Must check if this is backwards compatible with Java 1.3
-        return URLEncoder.encode(source);
-    }
 
     /**
      * Encodes a textstring that is compatible with the JavaScript escape function.
@@ -96,8 +94,9 @@ public class Encoder {
      * @param Source The textstring to be encoded.
      * @return The JavaScript escaped string.
      */
-
-    public static String escapeWBlanks(String source) {
+    //Gridnine AB Aug 8, 2002
+    // added support for different encodings
+    public static String escapeWBlanks(String source, String encoding) {
         if(source == null) {
             return null;
         }
@@ -105,7 +104,12 @@ public class Encoder {
 
         // URLEncode the text string. This produces a very similar encoding to JavaSscript
         // encoding, except the blank which is not encoded into a %20.
-        String enc = encode(source);
+        String enc;
+        try {
+            enc = URLEncoder.encode(source, encoding);
+        } catch (UnsupportedEncodingException e) {
+            enc = URLEncoder.encode(source);
+        }
         for(int z = 0;z < enc.length();z++) {
             if(enc.charAt(z) == '+') {
                 ret.append("%20");
@@ -177,8 +181,29 @@ public class Encoder {
      * @param Source The textstring to be decoded.
      * @return The JavaScript unescaped string.
      */
-
-    public static String unescape(String source) {
+    //Gridnine AB Aug 8, 2002
+    // changed to support different encodings
+    public static String unescape(String source, String encoding) {
+        if(source == null){
+            return null;
+        }
+        int len = source.length();
+        // to use standard decoder we need to replace '+' with "%20" (space)
+        StringBuffer preparedSource = new StringBuffer(len);
+        for (int i = 0; i < len; i++) {
+            char c = source.charAt(i);
+            if (c == '+') {
+                preparedSource.append("%20");
+            } else {
+                preparedSource.append(c);
+            }
+        }
+        try {
+            return URLDecoder.decode(preparedSource.toString(), encoding);
+        } catch (UnsupportedEncodingException e) {
+            return URLDecoder.decode(preparedSource.toString());
+        }
+        /*
         if(source == null){
             return null;
         }
@@ -212,8 +237,15 @@ public class Encoder {
                 // get the real character from the hex code and append it to the already converted
 
                 // result
-                hex = token.substring(0, 2);
-                token = token.substring(2);
+                if ((token.startsWith("u") || token.startsWith("U"))
+                    && (token.length() > 2)) {
+                    // skip leading Unicode mark
+                    hex = token.substring(1, 5);
+                    token = token.substring(5);
+                } else {
+                    hex = token.substring(0, 2);
+                    token = token.substring(2);
+                }
                 try {
                     code = Integer.parseInt(hex, 16);
                 }
@@ -223,7 +255,11 @@ public class Encoder {
                 }
                 bytecode = new Byte(new Integer(code).byteValue());
                 bytestorage[0] = bytecode.byteValue();
-                stringcode = new String(bytestorage);
+                try {
+                    stringcode = new String(bytestorage, encoding);
+                } catch (UnsupportedEncodingException e) {
+                    stringcode = new String(bytestorage);
+                }
                 unescaped.append(stringcode);
                 unescaped.append(token);
             }
@@ -235,5 +271,6 @@ public class Encoder {
             }
         }
         return unescaped.toString();
+        */
     }
 }

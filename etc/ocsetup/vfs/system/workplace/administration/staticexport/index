@@ -127,9 +127,9 @@ top.help_url='Administration/statischerExport.html';
 <script language=JavaScript>
 <!--
 function setValues() {
-    var thelink = unescape(']]><PROCESS>link</PROCESS><![CDATA[');
-    var theregexp = unescape(']]><PROCESS>regExpr</PROCESS><![CDATA[');
-    var theresult = unescape(']]><PROCESS>result</PROCESS><![CDATA[');
+    var thelink = decodeURIComponent(']]><PROCESS>link</PROCESS><![CDATA[');
+    var theregexp = decodeURIComponent(']]><PROCESS>regExpr</PROCESS><![CDATA[');
+    var theresult = decodeURIComponent(']]><PROCESS>result</PROCESS><![CDATA[');
     
     document.DBEXPORT.link.value=thelink;
     document.DBEXPORT.regExpr.value=theregexp;

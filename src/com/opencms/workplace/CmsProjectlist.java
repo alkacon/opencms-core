@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2002/09/03 11:57:07 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2001/07/31 15:50:19 $
+ * @version $Revision: 1.22 $ $Date: 2002/09/03 11:57:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -203,7 +203,9 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement,I_C
             state = C_PROJECTLIST_STATE_LOCKED;
         }
         xmlFile.setData(C_PROJECTLIST_NAME, project.getName());
-        xmlFile.setData(C_PROJECTLIST_NAME_ESCAPED, Encoder.escape(project.getName()));
+        //Gridnine AB Aug 8, 2002
+        xmlFile.setData(C_PROJECTLIST_NAME_ESCAPED, Encoder.escape(project.getName(),
+            cms.getRequestContext().getEncoding()));
         xmlFile.setData(C_PROJECTLIST_PROJECTID, project.getId() + "");
         xmlFile.setData(C_PROJECTLIST_DESCRIPTION, project.getDescription());
         xmlFile.setData(C_PROJECTLIST_STATE, lang.getLanguageValue(state));

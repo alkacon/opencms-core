@@ -32,8 +32,8 @@ top.help_url='Administration/datenbankverwaltung/exportieren.html';
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT> 
@@ -356,7 +356,9 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../../css/format.css">
@@ -428,7 +430,9 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
 
 <script language=JavaScript>
 <!--

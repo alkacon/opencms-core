@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterConfig.java,v $
-* Date   : $Date: 2002/09/02 07:50:40 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -468,7 +468,9 @@ final class CmsHtmlConverterConfig {
         /* builds ArrayList m_replaceStrings */
         buildObjectReplaceStrings();
         /* build ArrayList m_extendedChars */
-        String Chars = "ä,&auml;,Ä,&Auml;,ö,&ouml;,Ö,&Ouml;,ü,&uuml;,Ü,&Uuml;,ß,&szlig;,©,&copy;,\",&quot;,<,&lt;,>,&gt;,&lt;!--,<!--,--&gt;,-->,€,&euro;";
+        //Gridnine AB Sep 3, 2002
+        //String Chars = "ä,&auml;,Ä,&Auml;,ö,&ouml;,Ö,&Ouml;,ü,&uuml;,Ü,&Uuml;,ß,&szlig;,©,&copy;,\",&quot;,<,&lt;,>,&gt;,&lt;!--,<!--,--&gt;,-->,€,&euro;";
+        String Chars = "&lt;!--,<!--,--&gt;,-->";
         StringTokenizer T = new StringTokenizer(Chars,",");
         while (T.hasMoreTokens()) {
             added = m_replaceExtendedChars.add(new CmsHtmlConverterObjectReplaceExtendedChars(T.nextToken(),T.nextToken()));

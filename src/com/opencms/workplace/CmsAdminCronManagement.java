@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminCronManagement.java,v $
-* Date   : $Date: 2001/11/16 15:21:51 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,9 @@ public class CmsAdminCronManagement extends CmsWorkplaceDefault implements I_Cms
             cms.writeCronTable((String)parameters.get("table"));
             templateSelector = "done";
         } else {
-            templateDocument.setData("table", Encoder.escape(cms.readCronTable()));
+            //Gridnine AB Aug 8, 2002
+            templateDocument.setData("table", Encoder.escape(cms.readCronTable(),
+                cms.getRequestContext().getEncoding()));
         }
         // Now load the template file and start the processing
         return startProcessing(cms, templateDocument, elementName, parameters, templateSelector);

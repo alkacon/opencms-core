@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2002/09/02 07:47:51 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2002/09/03 11:57:08 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.67 $ $Date: 2002/09/02 07:47:51 $
+ * @version $Revision: 1.68 $ $Date: 2002/09/03 11:57:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -568,7 +568,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
             }
             // save file contents to our temporary file.
-            content = encoder.unescape(content);
+            //Gridnine AB Aug 8, 2002
+            content = encoder.unescape(content,
+                cms.getRequestContext().getEncoding());
             // TODO: Set correct error page here
             if((!exitRequested) || saveRequested) {
                 bodyTemplateFile.setEditedTemplateContent(cms, content, oldBody, oldEdit.equals(C_SELECTBOX_EDITORVIEWS[0]), file);
@@ -666,7 +668,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
         // Load the body!
         content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);
-        content = encoder.escapeWBlanks(content);
+        //Gridnine AB Aug 8, 2002
+        content = encoder.escapeWBlanks(content,
+            cms.getRequestContext().getEncoding());
         parameters.put(C_PARA_CONTENT, content);
 
         // put the body parameter so that the selectbox can set the correct current value
@@ -828,19 +832,20 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         return makeHtmlEntities(title);
     }
     
+    //Gridnine AB Aug 9, 2002
     public Object getCharset(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) {
         // Try to find property on file and all parent folders
         String prop = null;
         try {
             I_CmsSession session = cms.getRequestContext().getSession(true);
             String file = (String)session.getValue("te_file");
-            prop = cms.readProperty(file, "charset");
+            prop = cms.readProperty(file, C_PROPERTY_CONTENT_ENCODING);
             while ((prop == null) && (! "".equals(file))) {
                 file = file.substring(0, file.lastIndexOf("/"));
-                prop = cms.readProperty(file + "/", "charset");
+                prop = cms.readProperty(file + "/", C_PROPERTY_CONTENT_ENCODING);
             } 
         } catch (Exception e) {}
-        if (prop == null) prop = "ISO-8859-1";
+        if (prop == null) prop = OpenCms.getEncoding();
         return prop;
     }
     

@@ -53,7 +53,9 @@ return true;
 //-->
 </script>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
@@ -96,9 +98,9 @@ return true;
                 <td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
                 <td class=formular align=middle width=20%>
                     <INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="a=check_namefield(); if(a==true)location='explorer_files_new_othertype.html?step=1&file='+document.NEU.NEUNAME.value+
-                        '&title='+escape(document.NEU.NEUTITEL.value)+
-                        '&keywords='+escape(document.NEU.NEUKEYWORDS.value)+
-                        '&description='+escape(document.NEU.NEUDESCRIPTION.value);">
+                        '&title='+encodeURIComponent(document.NEU.NEUTITEL.value)+
+                        '&keywords='+encodeURIComponent(document.NEU.NEUKEYWORDS.value)+
+                        '&description='+encodeURIComponent(document.NEU.NEUDESCRIPTION.value);">
                 </td>
                 <td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
             </tr>

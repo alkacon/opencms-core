@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2002/07/23 08:59:07 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.33 $ $Date: 2002/07/23 08:59:07 $
+ * @version $Revision: 1.34 $ $Date: 2002/09/03 11:57:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -165,8 +165,15 @@ public class CmsEditor extends CmsWorkplaceDefault {
             // If there is no content set, this is the first request of the editor.
             // So load the file content and set the "content" parameter.
             if(content == null) {
-                content = new String(editFile.getContents());
-                content = enc.escapeWBlanks(content);
+                //Gridnine AB Aug 8, 2002
+                try {
+                    content = new String(editFile.getContents(),
+                        cms.getRequestContext().getEncoding());
+                } catch (UnsupportedEncodingException e) {
+                    content = new String(editFile.getContents());
+                }
+                content = enc.escapeWBlanks(content,
+                    cms.getRequestContext().getEncoding());
                 parameters.put(C_PARA_CONTENT, content);
             }
 
@@ -174,8 +181,15 @@ public class CmsEditor extends CmsWorkplaceDefault {
             // back to the database.
             if(saveRequested) {
                 try{
-                    String decodedContent = enc.unescape(content);
-                    editFile.setContents(decodedContent.getBytes());
+                    //Gridnine AB Aug 8, 2002
+                    String decodedContent = enc.unescape(content,
+                        cms.getRequestContext().getEncoding());
+                    try {
+                        editFile.setContents(decodedContent.getBytes(
+                            cms.getRequestContext().getEncoding()));
+                    } catch (UnsupportedEncodingException e) {
+                        editFile.setContents(decodedContent.getBytes());
+                    }
                     cms.writeFile(editFile);
                 } catch (CmsException e){
                     saveerror = e.getShortException();
@@ -314,13 +328,13 @@ public class CmsEditor extends CmsWorkplaceDefault {
         try {
             I_CmsSession session = cms.getRequestContext().getSession(true);
             String file = (String)session.getValue("te_file");
-            prop = cms.readProperty(file, "charset");
+            prop = cms.readProperty(file, C_PROPERTY_CONTENT_ENCODING);
             while ((prop == null) && (! "".equals(file))) {
                 file = file.substring(0, file.lastIndexOf("/"));
-                prop = cms.readProperty(file + "/", "charset");
+                prop = cms.readProperty(file + "/", C_PROPERTY_CONTENT_ENCODING);
             } 
         } catch (Exception e) {}
-        if (prop == null) prop = "ISO-8859-1";
+        if (prop == null) prop = OpenCms.getEncoding();
         return prop;
     }
 }

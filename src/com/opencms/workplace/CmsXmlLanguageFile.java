@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2002/09/02 07:48:52 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2002/09/03 11:57:07 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.io.*;
  * Content definition for language files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2002/09/02 07:48:52 $
+ * @version $Revision: 1.30 $ $Date: 2002/09/03 11:57:07 $
  */
 
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants,I_CmsConstants {
@@ -223,6 +223,23 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
         }
         if(result == null) {
             result = "?" + tag.substring(tag.lastIndexOf(".") + 1) + "?";
+        }
+        return result;
+    }
+    
+    /**
+     * Method returns content encoding attached to this language.
+     * @param cms
+     * @return String
+     */
+    //Gridnine AB Aug 8, 2002
+    public String getEncoding() {
+        String result = null;
+        try {
+            result = getLanguageValue("content-encoding");
+        } catch (CmsException e) {;}
+        if ((result != null) && result.startsWith("?") && result.endsWith("?")) {
+            return null;
         }
         return result;
     }

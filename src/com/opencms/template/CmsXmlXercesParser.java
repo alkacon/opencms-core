@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
-* Date   : $Date: 2002/08/02 12:12:58 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2002/08/02 12:12:58 $
+ * @version $Revision: 1.16 $ $Date: 2002/09/03 11:57:06 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser,I_CmsLogChannels {
     
@@ -74,12 +74,13 @@ public class CmsXmlXercesParser implements I_CmsXmlParser,I_CmsLogChannels {
      * @param out OutputStream to print to.
      */
     //[modified by Gridnine AB, 2002-06-17]
-    public void getXmlText(Document doc, OutputStream out) {
+    public void getXmlText(Document doc, OutputStream out, String encoding) {
         /* incorrectly used default system encoding to convert String to bytes
         OutputStreamWriter osw = new OutputStreamWriter(out);
         getXmlText(doc, osw);
         */
-        OutputFormat outf = new OutputFormat(doc, getOriginalEncoding(doc), true);
+        OutputFormat outf = new OutputFormat(doc,
+            (encoding == null) ? getOriginalEncoding(doc) : encoding, true);
         outf.setLineWidth(C_XML_LINE_WIDTH);
         outf.setPreserveSpace(false);
         XMLSerializer serializer = new XMLSerializer(out, outf);

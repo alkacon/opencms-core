@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2002/05/13 14:49:34 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.53 $ $Date: 2002/05/13 14:49:34 $
+ * @version $Revision: 1.54 $ $Date: 2002/09/03 11:57:06 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -543,6 +543,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             return "";
         }
 
+        A_OpenCms.log(C_OPENCMS_DEBUG, "DAO [" + getClassName() + "][getProcessedTemplateContent()] templateSelector=" + templateSelector);
         return getProcessedDataValue(datablockName, callingObject, parameters, os);
     }
 
@@ -580,7 +581,8 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 if(elName != null && !"".equalsIgnoreCase(elName)) {
                     // If there is something in the string buffer, store is now!
                     if(buf.length() > 0) {
-                        result.add(buf.toString().getBytes());
+                        //Gridnine AB Aug 5, 2002
+                        result.add(buf.toString());
                         buf = new StringBuffer();
 
                     }
@@ -596,7 +598,8 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 if(methodName != null && !"".equals(methodName)){
                     //if there is something in the buffer store it now
                     if(buf.length() > 0) {
-                        result.add(buf.toString().getBytes());
+                        //Gridnine AB Aug 5, 2002
+                        result.add(buf.toString());
                         buf = new StringBuffer();
                     }
                     // create the new methode link
@@ -614,7 +617,8 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
         // Store pending buffer content
         if(buf.length() > 0) {
-            result.add(buf.toString().getBytes());
+            //Gridnine AB Aug 5, 2002
+            result.add(buf.toString());
         }
         return result;
     }

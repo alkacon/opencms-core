@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHtmlBrowser.java,v $
-* Date   : $Date: 2002/06/10 15:30:16 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
+
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import javax.servlet.http.*;
 
@@ -42,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author magnus meurer
- * @version $Revision: 1.1 $ $Date: 2002/06/10 15:30:16 $
+ * @version $Revision: 1.2 $ $Date: 2002/09/03 11:57:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -129,7 +131,9 @@ public class CmsHtmlBrowser extends CmsWorkplaceDefault {
                 int maxpage = ((filteredLinks.size() - 1) / C_PICBROWSER_MAXIMAGES) + 1;
 
                 // Now set the appropriate datablocks
-                xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder));
+                //Gridnine AB Aug 8, 2002
+                xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder,
+                    cms.getRequestContext().getEncoding()));
                 xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
                 xmlTemplateDocument.setData(C_PARA_FILTER, filter);
                 xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);
@@ -323,7 +327,16 @@ public class CmsHtmlBrowser extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("linktext", filename);
             xmlTemplateDocument.setData("snippetid", "" + i);
             xmlTemplateDocument.setData("filecontent", new String(file.getContents()));
-            xmlTemplateDocument.setData("filecontent_escaped", Encoder.escape(new String(file.getContents())));
+            //Gridnine AB Aug 8, 2002
+            try {
+                xmlTemplateDocument.setData("filecontent_escaped", Encoder.escape(
+                    new String(file.getContents(), cms.getRequestContext().getEncoding()),
+                    cms.getRequestContext().getEncoding()));
+            } catch (UnsupportedEncodingException e) {
+                xmlTemplateDocument.setData("filecontent_escaped", Encoder.escape(
+                    new String(file.getContents()),
+                    cms.getRequestContext().getEncoding()));
+            }
 
             // look if the onclick event must be set
             String paraSetOnClick = (String)session.getValue("htmlBrowser_for_ext_nav");

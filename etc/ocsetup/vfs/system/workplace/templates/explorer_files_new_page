@@ -63,12 +63,12 @@
             if(whichone==2){
 
                 var re='explorer_files_new_page.html?step=1&newfile='+
-                    escape(document.getElementById("name"+whichone).value)+
-                    '&title='+escape(document.getElementById("newTitle"+whichone).value)+
-                    '&keywords='+escape(document.getElementById("newKeyWords"+whichone).value)+
-                    '&description='+escape(document.getElementById("newDescription"+whichone).value)+
+                    encodeURIComponent(document.getElementById("name"+whichone).value)+
+                    '&title='+encodeURIComponent(document.getElementById("newTitle"+whichone).value)+
+                    '&keywords='+encodeURIComponent(document.getElementById("newKeyWords"+whichone).value)+
+                    '&description='+encodeURIComponent(document.getElementById("newDescription"+whichone).value)+
                     '&template='+simpleEscape(document.getElementById("useTemplate"+whichone).value)+
-                    '&default_body='+escape(document.getElementById("defaultBody"+whichone).options[document.getElementById("defaultBody"+whichone).selectedIndex].value);
+                    '&default_body='+encodeURIComponent(document.getElementById("defaultBody"+whichone).options[document.getElementById("defaultBody"+whichone).selectedIndex].value);
 
                 //alert(re);
                 document.location.href=re;
@@ -76,13 +76,13 @@
 
             if(whichone==1){
                 var re='explorer_files_new_page.html?step=1&newfile='+
-                    escape(document.getElementById("name"+whichone).value)+
-                    '&title='+escape(document.getElementById("newTitle"+whichone).value)+
-                    '&keywords='+escape(document.getElementById("newKeyWords"+whichone).value)+
-                    '&description='+escape(document.getElementById("newDescription"+whichone).value)+
+                    encodeURIComponent(document.getElementById("name"+whichone).value)+
+                    '&title='+encodeURIComponent(document.getElementById("newTitle"+whichone).value)+
+                    '&keywords='+encodeURIComponent(document.getElementById("newKeyWords"+whichone).value)+
+                    '&description='+encodeURIComponent(document.getElementById("newDescription"+whichone).value)+
                     '&template='+simpleEscape(document.getElementById("useTemplate"+whichone).value)+
-                    '&default_body='+escape(document.getElementById("defaultBody"+whichone).options[document.getElementById("defaultBody"+whichone).selectedIndex].value)+
-                    '&navtitle='+escape(document.getElementById("navtext").value)+
+                    '&default_body='+encodeURIComponent(document.getElementById("defaultBody"+whichone).options[document.getElementById("defaultBody"+whichone).selectedIndex].value)+
+                    '&navtitle='+encodeURIComponent(document.getElementById("navtext").value)+
                     '&navpos='+ document.getElementById("linkPos").value;
 
                 //alert(re);
@@ -377,7 +377,9 @@
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">

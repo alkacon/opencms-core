@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/09/03 11:57:00 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.io.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.13 $ $Date: 2001/07/31 15:50:13 $  
+ * @version $Revision: 1.14 $ $Date: 2002/09/03 11:57:00 $  
  */
 public interface I_CmsResponse {
     
@@ -67,7 +67,7 @@ public interface I_CmsResponse {
      * @exception Throws IOException if an error occurs.
      */
     public OutputStream getOutputStream() throws IOException;
-
+    
     /**
      * Check if the output stream was requested previously.
      * @return <code>true</code> if getOutputStream() was called, <code>false</code> otherwise.

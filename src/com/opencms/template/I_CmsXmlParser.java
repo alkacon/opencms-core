@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlParser.java,v $
-* Date   : $Date: 2002/08/02 12:12:58 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.w3c.dom.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2002/08/02 12:12:58 $
+ * @version $Revision: 1.10 $ $Date: 2002/09/03 11:57:06 $
  */
 public interface I_CmsXmlParser {
     
@@ -61,8 +61,12 @@ public interface I_CmsXmlParser {
      * to a String.
      * @param doc Document to be printed.
      * @param out OutputStream to print to.
+     * @param encoding the character encoding to be used while serializing
+     * document, if null - original or default encoding will be used
      */
-    public void getXmlText(Document doc, OutputStream out);
+    //Gridnine AB Aug 9, 2002
+    // added encoding parameter
+    public void getXmlText(Document doc, OutputStream out, String encoding);
     
     /**
      * Calls a XML printer for converting a XML DOM document

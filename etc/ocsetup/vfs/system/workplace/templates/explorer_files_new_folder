@@ -44,8 +44,8 @@
         if(!lengthOkay)alert("]]><LABEL value="error.message.datamissing" /><![CDATA[");
 
         if(okay && lengthOkay){
-            if(whichone==2)document.location.href='explorer_files_new_folder.html?step=1&newfolder='+escape(document.getElementById("name"+whichone).value)+'&title='+escape(document.getElementById("title"+whichone).value);
-            if(whichone==1)document.location.href='explorer_files_new_folder.html?step=1&newfolder='+escape(document.getElementById("name"+whichone).value)+'&title='+escape(document.getElementById("title"+whichone).value)+'&navtitle='+escape(document.getElementById("navtext").value)+'&navpos='+document.getElementById("navpos").value;
+            if(whichone==2)document.location.href='explorer_files_new_folder.html?step=1&newfolder='+encodeURIComponent(document.getElementById("name"+whichone).value)+'&title='+encodeURIComponent(document.getElementById("title"+whichone).value);
+            if(whichone==1)document.location.href='explorer_files_new_folder.html?step=1&newfolder='+encodeURIComponent(document.getElementById("name"+whichone).value)+'&title='+encodeURIComponent(document.getElementById("title"+whichone).value)+'&navtitle='+encodeURIComponent(document.getElementById("navtext").value)+'&navpos='+document.getElementById("navpos").value;
         }
     }
 
@@ -251,7 +251,9 @@
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">

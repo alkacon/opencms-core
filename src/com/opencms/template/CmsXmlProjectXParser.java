@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlProjectXParser.java,v $
-* Date   : $Date: 2002/08/02 12:12:58 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2002/08/02 12:12:58 $
+ * @version $Revision: 1.9 $ $Date: 2002/09/03 11:57:06 $
  */
 public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
     
@@ -73,7 +73,7 @@ public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
      * @param doc Document to be printed.
      * @param out OutputStream to print to.
      */
-    public void getXmlText(Document doc, OutputStream out) {
+    public void getXmlText(Document doc, OutputStream out, String encoding) {
         OutputStreamWriter osw = new OutputStreamWriter(out);
         getXmlText(doc, osw);
     }

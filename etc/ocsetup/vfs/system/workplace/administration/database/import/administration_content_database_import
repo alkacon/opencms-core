@@ -19,7 +19,7 @@ top.help_url='Administration/datenbankverwaltung/import.html';
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../../css/format.css">
@@ -88,7 +88,9 @@ top.help_url='Administration/datenbankverwaltung/import.html';
 <!-- Include external JavaScripts-->
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
 <head>
-    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
     <title>OpenCms</title>
     <link rel=stylesheet type="text/css" href="../../../css/format.css">
 </HEAD>

@@ -5,7 +5,9 @@
 <![CDATA[
 <html>
 <head>
-    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
     <meta http-equiv="refresh" content="300;url=foot.html">
     <script language=javascript>
     ]]><process>message</process><![CDATA[

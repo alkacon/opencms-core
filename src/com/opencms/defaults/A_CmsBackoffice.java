@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/08/21 11:32:45 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2002/09/03 11:57:00 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -3074,7 +3074,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       templateSelector = getContentButtonsInternal(cms,cd,session,template,parameters,templateSelector, action,error);
 
       //now set all the data from the CD into the template
-      this.setDatablocks(template,cd,methods);
+      this.setDatablocks(cms, template,cd,methods);
 
       returnProcess = startProcessing(cms,template,"",parameters,templateSelector);
     }
@@ -3166,7 +3166,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       templateSelector = getContentButtonsInternal(cms,cd,session,template,parameters,templateSelector, action,error);
 
       //now set all the data from the CD into the template
-      this.setDatablocks(template,cd,getMethods);
+      this.setDatablocks(cms, template,cd,getMethods);
 
       returnProcess = startProcessing(cms,template,"",parameters,templateSelector);
     }
@@ -3458,7 +3458,9 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
    * @methods A vector with all "getXYZ" methods to be used.
    * @exception Throws CmsException if something goes wrong.
    */
-  private void setDatablocks(CmsXmlWpTemplateFile template,
+  //Gridnine AB Aug 8, 2002
+  // modified method declaration to getaccess to CmsObject for correct handling encodings
+  private void setDatablocks(CmsObject cms, CmsXmlWpTemplateFile template,
                              A_CmsContentDefinition contentDefinition,
                              Vector methods) throws CmsException {
     String methodName="";
@@ -3492,7 +3494,8 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         // set the escaped value into datablock for unescaping
         String escapedValue = value;
         if(!"".equals(escapedValue.trim())){
-            escapedValue = Encoder.escape(escapedValue);
+            escapedValue = Encoder.escape(escapedValue,
+                cms.getRequestContext().getEncoding());
         }
         template.setData(datablockName+"escaped",escapedValue);
       } catch (Exception e) {

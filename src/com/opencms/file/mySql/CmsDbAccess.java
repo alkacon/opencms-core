@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/08/26 08:38:15 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.71 $ $Date: 2002/08/26 08:38:15 $ *
+ * @version $Revision: 1.72 $ $Date: 2002/09/03 11:57:06 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -981,6 +981,8 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
      *
      * @exception CmsException Throws CmsException if operation was not succesful
      */
+    //Gridnine AB Aug 12, 2002
+    // added escaping of property value as MySQL doesn't support Unicode strings
     public void writeProperty(String meta, int projectId, String value, CmsResource resource,
                                       int resourceType)
         throws CmsException {
@@ -1011,7 +1013,15 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
                     // property exists already - use update.
                     // create statement
                     statement = con.prepareStatement(m_cq.get("C_PROPERTIES_UPDATE"+usedStatement));
-                    statement.setString(1, value);
+                    if (value != null) {
+                        try {
+                            statement.setString(1, java.net.URLEncoder.encode(value, "utf-8"));
+                        } catch (UnsupportedEncodingException e) {
+                            statement.setString(1, value);
+                        }
+                    } else {
+                        statement.setString(1, value);
+                    }
                     statement.setInt(2, resource.getResourceId());
                     statement.setInt(3, propdef.getId());
                     statement.executeUpdate();
@@ -1023,7 +1033,15 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
                     statement.setInt(1, nextId(m_cq.get("C_TABLE_PROPERTIES")));
                     statement.setInt(2, propdef.getId());
                     statement.setInt(3, resource.getResourceId());
-                    statement.setString(4, value);
+                    if (value != null) {
+                        try {
+                            statement.setString(4, java.net.URLEncoder.encode(value, "utf-8"));
+                        } catch (UnsupportedEncodingException e) {
+                            statement.setString(4, value);
+                        }
+                    } else {
+                        statement.setString(4, value);
+                    }
                     statement.executeUpdate();
                     newprop=true;
                 }
@@ -1112,4 +1130,44 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
             }
         }
     }
+    /**
+     * @see com.opencms.file.genericSql.CmsDbAccess#readProperty(String, int, CmsResource, int)
+     */
+    //Gridnine AB Aug 12, 2002
+    // unescaping stored value
+    public String readProperty(String meta, int projectId,
+        CmsResource resource, int resourceType) throws CmsException {
+        String result = super.readProperty(meta, projectId, resource, resourceType);
+        if (result == null) {
+            return null;
+        }
+        try {
+            return java.net.URLDecoder.decode(result, "utf-8");
+        } catch (Exception e) {
+            return result;
+        }
+    }
+
+    /**
+     * @see com.opencms.file.genericSql.CmsDbAccess#readAllProperties(int, CmsResource, int)
+     */
+    //Gridnine AB Aug 12, 2002
+    // unescaping collected values
+    public Hashtable readAllProperties(int projectId, CmsResource resource,
+        int resourceType) throws CmsException {
+        Hashtable result = super.readAllProperties(projectId, resource, resourceType);
+        Iterator keys = result.keySet().iterator();
+        while (keys.hasNext()) {
+            Object key = keys.next();
+            String value = (String)result.get(key);
+            if (value == null) {
+                continue;
+            }
+            try {
+                result.put(key, java.net.URLDecoder.decode(value, "utf-8"));
+            } catch (Exception e) {;}
+        }
+        return result;
+    }
+
 }

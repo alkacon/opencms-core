@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkCheckViewer.java,v $
-* Date   : $Date: 2002/06/04 15:02:23 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.io.*;
 /**
  * Template class for displaying OpenCms workplace administration synchronisation properties.
  *
- * @version $Revision: 1.2 $ $Date: 2002/06/04 15:02:23 $
+ * @version $Revision: 1.3 $ $Date: 2002/09/03 11:57:06 $
  * @author: Edna Falkenhan
  */
 public class CmsAdminLinkCheckViewer extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -84,7 +84,9 @@ public class CmsAdminLinkCheckViewer extends CmsWorkplaceDefault implements I_Cm
                 linkcheckcontent.append(Utils.getStackTrace(exc));
             }
             templateDocument.setData("logfiledate", linkcheckdate);
-            templateDocument.setData("logfile", Encoder.escape(linkcheckcontent.toString()));
+            //Gridnine AB Aug 8, 2002
+            templateDocument.setData("logfile", Encoder.escape(linkcheckcontent.toString(),
+                cms.getRequestContext().getEncoding()));
             templateDocument.setData("logfilesize", length + "");
         }
         // Now load the template file and start the processing

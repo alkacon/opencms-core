@@ -181,7 +181,7 @@
 	WIDTH: 250px;
 }
 </style>
- <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+ <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
     <title>Comments Backoffice</title>
     <link rel=stylesheet type="text/css" href="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/css/format.css">     
 	<script language="JavaScript">
@@ -241,7 +241,7 @@
 <script language=JavaScript>
 <!--
 function setValues() {
-    var theTitle = unescape(']]><PROCESS>title</PROCESS><![CDATA[');
+    var theTitle = decodeURIComponent(']]><PROCESS>title</PROCESS><![CDATA[');
         
     document.Editor.title.value=theTitle;
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2002/09/02 07:27:58 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2002/09/03 11:57:00 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -182,8 +182,8 @@ public class CmsSetupUtils {
      * URLEncodes a given string similar to JavaScript.
      * @param source string to be encoded
      */
-    public static String escape(String source) {
-        return Encoder.escapeWBlanks(source);
+        public static String escape(String source, String encoding) {
+        return Encoder.escapeWBlanks(source,encoding);
     }
 
 

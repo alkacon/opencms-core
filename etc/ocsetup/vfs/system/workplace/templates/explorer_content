@@ -13,7 +13,9 @@ function show_help()
 //-->
 </script>
 </head>
-<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
 <title>opencms</title>
 </head>
 

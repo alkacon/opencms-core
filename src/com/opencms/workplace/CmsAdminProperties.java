@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2002/09/02 07:46:27 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.13 $ $Date: 2002/09/02 07:46:27 $
+ * @version $Revision: 1.14 $ $Date: 2002/09/03 11:57:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -204,13 +204,17 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
         templateFile.setData(C_TAG_RESTYPE, resType.getResourceTypeName());
 
         // TODO: this escape function doesn't handle properly multiple blancs
+        //Gridnine AB Aug 8, 2002
         templateFile.setData(C_TAG_RESTYPE + "_esc",
-                Encoder.escapeWBlanks(resType.getResourceTypeName()));
+                Encoder.escapeWBlanks(resType.getResourceTypeName(),
+                cms.getRequestContext().getEncoding()));
         output.append(templateFile.getProcessedDataValue(C_TAG_RESTYPEENTRY, callingObject));
         for(int z = 0;z < properties.size();z++) {
             CmsPropertydefinition propdef = (CmsPropertydefinition)properties.elementAt(z);
             templateFile.setData("PROPERTY_NAME", propdef.getName());
-            templateFile.setData("PROPERTY_NAME_ESC", Encoder.escapeWBlanks(propdef.getName()));
+            //Gridnine AB Aug 8, 2002
+            templateFile.setData("PROPERTY_NAME_ESC", Encoder.escapeWBlanks(propdef.getName(),
+                cms.getRequestContext().getEncoding()));
             output.append(templateFile.getProcessedDataValue(C_TYPELISTENTRY, callingObject));
         }
         return output.toString();

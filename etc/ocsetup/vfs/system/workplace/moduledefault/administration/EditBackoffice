@@ -37,7 +37,7 @@ Enter your form here!
 
 <BOHEAD>
 <![CDATA[
- <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+ <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
     <title>Comments Backoffice</title>
     <link rel=stylesheet type="text/css" href="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/css/format.css">     
 	<script language="JavaScript">

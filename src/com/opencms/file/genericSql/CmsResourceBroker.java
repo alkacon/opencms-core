@@ -1,7 +1,8 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/08/22 09:58:46 $
-* Version: $Revision: 1.333 $
+* Date   : $Date: 2002/09/03 11:57:05 $
+* Version: $Revision: 1.334 $
+
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +56,8 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.333 $ $Date: 2002/08/22 09:58:46 $
+ * @version $Revision: 1.334 $ $Date: 2002/09/03 11:57:05 $
+
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4524,14 +4526,14 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
         CmsPublishedResources allChanged = new CmsPublishedResources();
         Vector changedResources = new Vector();
         Vector changedModuleMasters = new Vector();
-        
+
 
         // check the security
         if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) &&
             (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED) && (id != C_PROJECT_ONLINE_ID)) {
             try{
                 changedResources = m_dbAccess.publishProject(currentUser, id,
-                                    onlineProject(currentUser, currentProject), isHistoryEnabled(cms), 
+                                    onlineProject(currentUser, currentProject), isHistoryEnabled(cms),
                                     report, m_registry.getExportpoints());
                 // now publish the module masters
                 Vector publishModules = new Vector();
@@ -4559,7 +4561,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                     // the vector changedResources and the vector changedModuleMasters
                     try{
                         // The changed masters are added to the vector changedModuleMasters, so after the last module
-                        // was published the vector contains the changed masters of all published modules                        
+                        // was published the vector contains the changed masters of all published modules
                         Class.forName((String)publishModules.elementAt(i)).getMethod("publishProject",
                                                 new Class[] {CmsObject.class, Boolean.class, Integer.class, Integer.class,
                                                 Long.class, Vector.class, Vector.class}).invoke(null, new Object[] {cms,
@@ -4786,7 +4788,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
         }
         return returnValue;
     }
-    
+
     /**
      * Reads all propertydefinitions for the given resource type.
      *
@@ -7220,7 +7222,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 ((c < 'A') || (c > 'Z')) &&
                 (c != '-') && (c != '.') &&
                 (c != '_') && (c != '~') &&
-                (c != ' ') && (c != 'ß') && 
+                (c != ' ') && (c != 'ß') &&
                 (c != '/') && (c != '(') && (c != ')') && (c != '\'')
                 ) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + taskname,
@@ -7680,7 +7682,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 
     /**
      * Returns true if history is enabled
-     * 
+     *
      * @param cms The CmsObject
      * @return boolean If true the history is enabled
      */
@@ -7696,7 +7698,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "Could not get registry value for "+C_REGISTRY_HISTORY+"."+C_ENABLE_HISTORY);
             }
-            return false;            
+            return false;
         }
     }
 
@@ -8069,10 +8071,10 @@ protected void validName(String name, boolean blank) throws CmsException {
             return retValue;
         }
     }
-    
+
     /**
      * Deletes the versions from the backup tables that are older then the given weeks
-     * 
+     *
      * @param cms The CmsObject for reading the registry
      * @param currentUser The current user
      * @param currentProject The currently used project
@@ -8098,7 +8100,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         }
         return lastVersion;
     }
-    
+
     /**
      * Checks, if the user may read this resource and if it is visible to him.
      * NOTE: If the ressource is in the project you never have to fallback.
@@ -8111,8 +8113,8 @@ protected void validName(String name, boolean blank) throws CmsException {
      */
     public boolean accessReadVisible(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException{
         if ((resource == null) || !accessProject(currentUser, currentProject, resource.getProjectId()) ||
-            (!accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) && 
-             !accessOwner(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) && 
+            (!accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) &&
+             !accessOwner(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) &&
              !accessGroup(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE))) {
             return false;
         }
@@ -8128,8 +8130,8 @@ protected void validName(String name, boolean blank) throws CmsException {
                 }
                 throw new CmsException(this.getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
             }
-            if (!accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) && 
-                !accessOwner(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) && 
+            if (!accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) &&
+                !accessOwner(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) &&
                 !accessGroup(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE)) {
                 return false;
             }
@@ -8137,7 +8139,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         }
         return true;
     }
-    
+
     /**
      * Returns a Vector with all resources of the given type that have set the given property to the given value.
      *
@@ -8172,7 +8174,7 @@ protected void validName(String name, boolean blank) throws CmsException {
                 }
             }
         }
-        
+
         return visibleResources;
     }
 }

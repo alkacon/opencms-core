@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/09/02 07:44:15 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2002/09/03 11:57:01 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.49 $ $Date: 2002/09/02 07:44:15 $
+ * @version $Revision: 1.50 $ $Date: 2002/09/03 11:57:01 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -62,7 +62,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
      *  A hashtable with shortcuts into the dom-structure for each module.
      */
     private Hashtable m_modules = new Hashtable();
-    
+
     /**
      *  A hashtable with all exportpoints and paths.
      */
@@ -96,7 +96,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     private static final String[] C_EMPTY_MODULE = { "<module><name>", "</name><nicename>", "</nicename><version>", "</version><description>", "</description><author>", "</author><email/><creationdate>", "</creationdate>","<view/><publishclass/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>" };
 
     /**
-     * 
+     *
      */
     private static final String[] C_EXPORTPOINT = { "<exportpoint><source>", "</source><destination>", "</destination></exportpoint>"};
 
@@ -393,7 +393,22 @@ public void deleteGetConflictingFileNames(String modulename, Vector filesWithPro
             // was the file changed?
             if (file != null) {
                 // create the current digest-content for the file
-                String digestContent = com.opencms.util.Encoder.escape(new String(m_digest.digest(file.getContents())));
+                //Gridnine AB Aug 8, 2002
+                String digestContent;
+                try {
+                    digestContent =
+                        com.opencms.util.Encoder.escape(
+                            new String(
+                                m_digest.digest(file.getContents()),
+                                m_cms.getRequestContext().getEncoding()),
+                            m_cms.getRequestContext().getEncoding());
+                } catch (UnsupportedEncodingException e) {
+                    digestContent =
+                        com.opencms.util.Encoder.escape(
+                            new String(
+                                m_digest.digest(file.getContents())),
+                            m_cms.getRequestContext().getEncoding());
+                }
                 if (!currentChecksum.equals(digestContent)) {
                     // the file was changed, the checksums are different
                     wrongChecksum.addElement(currentFile);
@@ -1131,7 +1146,7 @@ public long getModuleUploadDate(String modulname) {
     try {
         //String value = getModuleData(modulname, "uploaddate");
         Element moduleElement = getModuleElement(modulname);
-        NodeList allUploadDates = moduleElement.getElementsByTagName("uploaddate"); 
+        NodeList allUploadDates = moduleElement.getElementsByTagName("uploaddate");
         String value = allUploadDates.item((allUploadDates.getLength()-1)).getFirstChild().getNodeValue();
 
         retValue = m_dateFormat.parse(value).getTime();
@@ -1150,7 +1165,7 @@ public String getModuleUploadedBy(String modulename) {
     String retValue = "";
     try{
         Element moduleElement = getModuleElement(modulename);
-        NodeList allUploadDates = moduleElement.getElementsByTagName("uploadedby"); 
+        NodeList allUploadDates = moduleElement.getElementsByTagName("uploadedby");
         retValue = allUploadDates.item((allUploadDates.getLength()-1)).getFirstChild().getNodeValue();
     } catch (Exception e){
     }
@@ -1339,9 +1354,9 @@ public Hashtable getExportpoints() {
         } catch (Exception exc) {
             exc.printStackTrace();
             // no return-values
-        } 
+        }
     }
-    
+
     return m_exportpoints;
 }
 
@@ -1443,7 +1458,7 @@ public Hashtable getSystemValues(String key) {
 }
 
 /**
- * Return the XML "system" node Element from the registry for further 
+ * Return the XML "system" node Element from the registry for further
  * processing in another class.
  * @return the system node.
  */
@@ -1601,7 +1616,10 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
         Node checksum = newModule.getOwnerDocument().createElement("checksum");
         file.appendChild(checksum);
         name.appendChild(newModule.getOwnerDocument().createTextNode((String) resourceNames.elementAt(i)));
-        checksum.appendChild(newModule.getOwnerDocument().createTextNode(com.opencms.util.Encoder.escape( (String) resourceCodes.elementAt(i))));
+        //Gridnine AB Aug 8, 2002
+        checksum.appendChild(newModule.getOwnerDocument().createTextNode(
+            com.opencms.util.Encoder.escape((String)resourceCodes.elementAt(i),
+            m_cms.getRequestContext().getEncoding())));
     }
 
     // append the files to the module-entry
@@ -1666,19 +1684,28 @@ private void saveRegistry() throws CmsException {
     try {
         // get the file
         File xmlFile = new File(m_regFileName);
-
+        /*
         // get a buffered writer
-        BufferedWriter xmlWriter = new BufferedWriter(new FileWriter(xmlFile));
+        BufferedWriter xmlWriter = new BufferedWriter(new
+FileWriter(xmlFile));
 
         // parse the registry-xmlfile and store it.
         A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, xmlWriter);
+        */
+        //Gridnine AB Sep 2, 2002
+        BufferedOutputStream os = new BufferedOutputStream(new
+FileOutputStream(xmlFile));
+        A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, os,
+I_CmsXmlParser.C_XML_ENCODING);
 
         // reinit the modules-hashtable
         init();
     } catch (Exception exc) {
-        throw new CmsException("couldn't save registry", CmsException.C_REGISTRY_ERROR, exc);
+        throw new CmsException("couldn't save registry",
+CmsException.C_REGISTRY_ERROR, exc);
     }
 }
+
 /**
  * This method sets the author of the module.
  *
@@ -1826,7 +1853,7 @@ public void setModulePublishClass(String modulname, String classname) throws Cms
         Element path = m_xmlReg.createElement("name");
         path.appendChild(m_xmlReg.createTextNode(classname));
         pubClass .appendChild(path);
-        
+
         // save the registry
         saveRegistry();
     } catch (Exception exc) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2002/09/02 07:49:39 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -175,7 +175,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     reg.createModule(packetname, getStringValue(modulename), getStringValue(description), getStringValue(author), createDateLong, v);
                     reg.setModuleAuthorEmail(packetname, getStringValue(email));
                     reg.setModuleMaintenanceEventClass(packetname, getStringValue(maintenance));
-                    
+
                     tryToCreateFolder(cms, "/", "moduledemos");
                     tryToCreateFolder(cms, "/moduledemos/", packetname);
 
@@ -194,10 +194,10 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                         tryToCreateFolder(cms, workString, (String)cFolders.elementAt(i));
                         workString = workString + (String)cFolders.elementAt(i) + "/";
                     }
-                    
-                    
+
                     tryToCreateFolder(cms, modulePath, "lib");
                     tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_TEMPLATEDIR);
+
                     tryToCreateFolder(cms, modulePath, "contenttemplates");
                     tryToCreateFolder(cms, modulePath, "frametemplates");
                     tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_DEFAULTBODIESDIR);

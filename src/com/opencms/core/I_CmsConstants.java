@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/08/26 13:00:41 $
-* Version: $Revision: 1.201 $
+* Date   : $Date: 2002/09/03 11:57:00 $
+* Version: $Revision: 1.202 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.201 $ $Date: 2002/08/26 13:00:41 $
+ * @version $Revision: 1.202 $ $Date: 2002/09/03 11:57:00 $
  */
 public interface I_CmsConstants {
 
@@ -201,6 +201,12 @@ public interface I_CmsConstants {
      * Property for the description
      */
     static final String C_PROPERTY_CHANNELID = "ChannelId";
+    
+    /**
+     * Property for content encoding
+     */
+    // Gridnine AB Aug 1, 2002
+    static final String C_PROPERTY_CONTENT_ENCODING = "Content-encoding";
 
     /**
      * This is the group for guests.
@@ -617,6 +623,13 @@ public interface I_CmsConstants {
      * Session key for storing the files Vector for moduleimport.
      */
     public static final String C_SESSION_MODULE_VECTOR = "modulevector";
+    
+    /**
+     * Session key for storing the current charcter encoding to be used in HTTP
+     * requests and responses.
+     */
+    //Gridnine AB Aug 6, 2002
+    public static final String C_SESSION_CONTENT_ENCODING = "contentencoding";
 
     /** Identifier for request type http */
     public static final int C_REQUEST_HTTP = 0;

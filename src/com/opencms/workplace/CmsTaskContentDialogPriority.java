@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2002/09/03 11:57:07 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.18 $ $Date: 2002/09/03 11:57:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -193,8 +193,11 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 
         // unexpected exception - ignoring
         }
-        xmlTemplateDocument.setData("task", Encoder.escape(taskName));
-        xmlTemplateDocument.setData("description", Encoder.escape(taskDescription));
+        //Gridnine AB Aug 8, 2002
+        xmlTemplateDocument.setData("task", Encoder.escape(taskName,
+            cms.getRequestContext().getEncoding()));
+        xmlTemplateDocument.setData("description", Encoder.escape(taskDescription,
+            cms.getRequestContext().getEncoding()));
         xmlTemplateDocument.setData("due", due);
         xmlTemplateDocument.setData(C_TASKPARA_ACCEPTATION, paraAcceptation);
         xmlTemplateDocument.setData(C_TASKPARA_ALL, paraAll);

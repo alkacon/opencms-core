@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2001/07/31 15:50:18 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/09/03 11:57:06 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.15 $ $Date: 2001/07/31 15:50:18 $
+ * @version $Revision: 1.16 $ $Date: 2002/09/03 11:57:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -136,7 +136,9 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
                 int maxpage = ((filteredFiles.size() - 1) / C_DOWNBROWSER_MAXENTRIES) + 1;
 
                 // Now set the appropriate datablocks
-                xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder));
+                //Gridnine AB Aug 8, 2002
+                xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder,
+                    cms.getRequestContext().getEncoding()));
                 xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
                 xmlTemplateDocument.setData(C_PARA_FILTER, filter);
                 xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);

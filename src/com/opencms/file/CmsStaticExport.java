@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/09/02 07:52:23 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2002/09/03 11:57:02 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.30 $ $Date: 2002/09/02 07:52:23 $
+ * @version $Revision: 1.31 $ $Date: 2002/09/03 11:57:02 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -698,6 +698,9 @@ public class CmsStaticExport implements I_CmsConstants{
             }
             ((CmsExportRequest)cmsForStaticExport.getRequestContext().getRequest()).setRequestedResource(link);
             cmsForStaticExport.getRequestContext().addDependency(file.getResourceName());
+            //Gridnine AB Aug 13, 2002
+            // make new detection of current encoding  because we have changed the requested resource
+            cmsForStaticExport.getRequestContext().detectEncoding();
             launcher.initlaunch(cmsForStaticExport, file, startTemplateClass, null);
 
             // we need the links on the page for the further export

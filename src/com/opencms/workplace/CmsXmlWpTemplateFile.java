@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
-* Date   : $Date: 2001/09/21 06:36:21 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2002/09/03 11:57:08 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.58 $ $Date: 2001/09/21 06:36:21 $
+ * @version $Revision: 1.59 $ $Date: 2002/09/03 11:57:08 $
  */
 
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,I_CmsWpConstants {
@@ -271,6 +271,11 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
             m_langFiles.put(currentLanguage, new CmsXmlLanguageFile(cms));
         }
         m_languageFile = (CmsXmlLanguageFile)m_langFiles.get(currentLanguage);
+        //Gridnine AB Aug 8, 2002
+        String encoding = m_languageFile.getEncoding();
+        if (encoding != null) {
+            cms.getRequestContext().setEncoding(encoding);
+        }
         super.init(cms, file);
     }
 
@@ -289,6 +294,11 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
             m_langFiles.put(currentLanguage, new CmsXmlLanguageFile(cms));
         }
         m_languageFile = (CmsXmlLanguageFile)m_langFiles.get(currentLanguage);
+        //Gridnine AB Aug 8, 2002
+        String encoding = m_languageFile.getEncoding();
+        if (encoding != null) {
+            cms.getRequestContext().setEncoding(encoding);
+        }
         super.init(cms, filename);
     }
 
