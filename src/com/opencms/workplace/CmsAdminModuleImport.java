@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/09/19 07:45:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/11/24 09:08:11 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -81,7 +81,8 @@ public CmsAdminModuleImport(CmsObject cms, I_CmsRegistry reg, String moduleZipNa
 			} 	
 			// now import the module
 			m_registry.importModule(m_moduleName, m_conflictFiles);
-			// now publish the project
+			// now unlock and publish the project
+			m_cms.unlockProject(project.getId());
 			m_cms.publishProject(project.getId());
 			
 		}catch (CmsException e) {			
