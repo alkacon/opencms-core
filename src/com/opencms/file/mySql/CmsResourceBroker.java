@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/15 13:28:23 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2000/09/15 13:44:16 $
+ * Version: $Revision: 1.41 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,50 +50,9 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.40 $ $Date: 2000/09/15 13:28:23 $
+ * @version $Revision: 1.41 $ $Date: 2000/09/15 13:44:16 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
-	
-	/**
-	 * Constant to count the file-system changes.
-	 */
-	private long m_fileSystemChanges = 0;
-	
-	/**
-	 * Hashtable with resource-types.
-	 */
-	private Hashtable m_resourceTypes = null;
-
-	
-	/**
-	 * The configuration of the property-file.
-	 */
-	private Configurations m_configuration = null;
-
-	/**
-	 * The access-module.
-	 */
-	private CmsDbAccess m_dbAccess = null;
-	
-	/**
-	* The registry
-	*/
-	private I_CmsRegistry m_registry=null;
-	
-	/**
-	 *  Define the caches
-	*/    
-	private CmsCache m_userCache=null;
-	private CmsCache m_groupCache=null;
-	private CmsCache m_usergroupsCache=null;
-	private CmsCache m_resourceCache=null;
-	private CmsCache m_subresCache = null;
-	private CmsCache m_projectCache=null;
-	private CmsCache m_propertyCache=null;
-	private CmsCache m_propertyDefCache=null;
-	private CmsCache m_propertyDefVectorCache=null;
-	private String m_refresh=null;
-
 /**
  * return the correct DbAccess class.
  * This method should be overloaded by all other Database Drivers 
