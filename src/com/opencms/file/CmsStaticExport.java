@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/01/28 14:38:39 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/01/28 17:20:45 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.12 $ $Date: 2002/01/28 14:38:39 $
+ * @version $Revision: 1.13 $ $Date: 2002/01/28 17:20:45 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -71,6 +71,12 @@ public class CmsStaticExport implements I_CmsConstants{
      * The export path.
      */
     private String m_exportPath;
+
+    /**
+     *
+     */
+    private String m_webAppUrl="";
+    private String m_servletUrl="";
 
     /**
      * Value for resources with property export = false
@@ -115,6 +121,8 @@ public class CmsStaticExport implements I_CmsConstants{
                      Vector projectResources, CmsPublishedResources changedResources)
                      throws CmsException{
         m_cms = cms;
+        m_servletUrl = cms.getRequestContext().getRequest().getServletUrl();
+        m_webAppUrl = cms.getRequestContext().getRequest().getWebAppUrl();
         m_startpoints = startpoints;
         m_exportPath = cms.getStaticExportPath();
         c_perlUtil = new Perl5Util();
@@ -346,8 +354,7 @@ public class CmsStaticExport implements I_CmsConstants{
 
         try{
             // first lets create our request and response objects for the export
-            CmsExportRequest dReq = new CmsExportRequest(m_cms.getRequestContext().getRequest().getWebAppUrl(),
-                                                    m_cms.getRequestContext().getRequest().getServletUrl());
+            CmsExportRequest dReq = new CmsExportRequest(m_webAppUrl, m_servletUrl);
             // test if there are parameters for the request
             int paraStart = link.indexOf("?");
 

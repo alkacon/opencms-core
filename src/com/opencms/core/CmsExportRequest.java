@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsExportRequest.java,v $
-* Date   : $Date: 2002/01/28 14:38:38 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/01/28 17:20:45 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ public class CmsExportRequest implements I_CmsRequest {
     private String m_webAppUrl="";
     private String m_servletUrl="";
 
-    public CmsExportRequest(HttpServletRequest req) {
+    public CmsExportRequest( HttpServletRequest req) {
         try {
             m_webAppUrl = req.getContextPath();
         } catch(NoSuchMethodError err) {
