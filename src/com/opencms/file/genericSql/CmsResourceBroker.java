@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/01/24 09:50:29 $
- * Version: $Revision: 1.225 $
+ * Date   : $Date: 2001/01/24 11:13:05 $
+ * Version: $Revision: 1.226 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.225 $ $Date: 2001/01/24 09:50:29 $
+ * @version $Revision: 1.226 $ $Date: 2001/01/24 11:13:05 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -681,7 +681,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
 		// Check the security
 		if( isAdmin(currentUser, currentProject) ) {
 			name = name.trim();
-			validName(name, false);
+			validFilename(name);
 			// check the lenght of the groupname
 			if(name.length() > 1) {
 				return( m_dbAccess.createGroup(name, description, flags, parent) );
@@ -781,7 +781,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
 			// no space before or after the name
 			name = name.trim();
 			// check the username
-			validName(name, false);
+			validFilename(name);
 			// check the password minimumsize
 			if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
 				CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
@@ -875,7 +875,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
 		// no space before or after the name
 		name = name.trim();
 		// check the username
-		validName(name, false);
+		validFilename(name);
 	     // check the password minimumsize
 		if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
 				CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
