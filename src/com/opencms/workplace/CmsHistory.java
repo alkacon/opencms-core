@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2001/02/05 11:14:36 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2001/02/12 10:47:43 $
+* Version: $Revision: 1.18 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2001/02/05 11:14:36 $
+ * @version $Revision: 1.18 $ $Date: 2001/02/12 10:47:43 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -85,11 +85,15 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // get the project
         String projectId = (String)parameters.get(C_PARA_PROJECT);
         Integer id = null;
+        CmsFile file = null;
         if(projectId != null) {
             id = new Integer(Integer.parseInt(projectId));
             session.putValue(C_PARA_PROJECT, id);
+            file = (CmsFile)cms.readFileHeaderForHist(filename, id.intValue());
         }
-        CmsFile file = (CmsFile)cms.readFileHeader(filename);
+        else {
+            file = (CmsFile)cms.readFileHeader(filename);
+        }
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
         // test if the prohject paremeter was included, display the detail dialog.
@@ -143,7 +147,6 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
             if(allFiles.size() > 0) {
                 allFiles = Utils.sort(cms, allFiles, Utils.C_SORT_PUBLISHED_DOWN);
             }
-
             // fill the names and values
             for(int i = 0;i < allFiles.size();i++) {
                 CmsFile file = ((CmsFile)allFiles.elementAt(i));
@@ -156,10 +159,11 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
                             projectName = project.getName();
                             projectId = project.getId() + "";
                         }
-
                         //long updated = file.getDateLastModified();
                         long updated = cms.readProject(file).getPublishingDate();
-                        String output = Utils.getNiceDate(updated) + ": " + projectName;
+                        String userName = cms.readUser(file.getResourceLastModifiedBy()).getName();
+                        long lastModified = file.getDateLastModified();
+                        String output = projectName + ": " +Utils.getNiceDate(updated) + ", " + userName + " (" +Utils.getNiceDate(lastModified)+")";
                         names.addElement(output);
                         values.addElement(projectId);
                     }
