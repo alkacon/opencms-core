@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsAdjacencyTree.java,v $
- * Date   : $Date: 2003/07/07 09:31:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/07 18:08:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.db;
 
 import com.opencms.file.CmsResource;
-import com.opencms.flex.util.CmsUUID;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ import java.util.Map;
  * ArrayLists of child CmsResources.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/07/07 09:31:53 $
+ * @version $Revision: 1.4 $ $Date: 2003/07/07 18:08:24 $
  * @since 5.1.3
  */
 public class CmsAdjacencyTree extends Object implements Serializable, Cloneable {
