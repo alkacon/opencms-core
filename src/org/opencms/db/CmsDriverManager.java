@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/15 16:09:41 $
- * Version: $Revision: 1.160 $
+ * Date   : $Date: 2003/08/15 17:03:10 $
+ * Version: $Revision: 1.161 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.160 $ $Date: 2003/08/15 16:09:41 $
+ * @version $Revision: 1.161 $ $Date: 2003/08/15 17:03:10 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -8478,6 +8478,14 @@ public class CmsDriverManager extends Object {
         return false;
     }
 
+    /**
+     * Recovers a resource from the online project back to the offline project as an unchanged resource.<p>
+     * 
+     * @param context the current request context
+     * @param resourcename the name of the resource which is recovered
+     * @return the recovered resource in the offline project
+     * @throws CmsException if somethong goes wrong
+     */
     public CmsResource recoverResource(CmsRequestContext context, String resourcename) throws CmsException {
         CmsFile onlineFile = null;
         byte[] contents = null;
@@ -8506,7 +8514,8 @@ public class CmsDriverManager extends Object {
                 onlineFolder = readFolder(context, resourcename);
                 contents = new byte[0];
                 properties = readProperties(context, resourcename, context.getAdjustedSiteRoot(resourcename), false);
-}
+            }
+            
             // switch back to the previous project
             context.setCurrentProject(oldProject.getId());
 
@@ -8551,14 +8560,19 @@ public class CmsDriverManager extends Object {
                 newResource = m_vfsDriver.createFolder(context.currentUser(), context.currentProject(), newFolder, parentFolder.getId(), CmsResource.getName(resourcename));
             }
 
+            // write the properties of the recovered resource
             writeProperties(context, resourcename, properties);
+
+            // set the resource state to unchanged coz the resource exists online
+            newResource.setState(I_CmsConstants.C_STATE_UNCHANGED);
+            m_vfsDriver.updateResourceState(context.currentProject(), newResource, C_UPDATE_ALL);
         } catch (CmsException e) {
-            // the exception is caught just to switch back to the previous project
-            // the exception should be handled in the upper app. layer
+            // the exception is caught just to have a finally clause to switch back to the 
+            // previous project. the exception should be handled in the upper app. layer.
             throw e;
         } finally {
             // switch back to the previous project
-            context.setCurrentProject(oldProject.getId());                        
+            context.setCurrentProject(oldProject.getId());
             clearResourceCache();
         }
 

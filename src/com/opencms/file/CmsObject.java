@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/15 12:44:25 $
-* Version: $Revision: 1.377 $
+* Date   : $Date: 2003/08/15 17:02:39 $
+* Version: $Revision: 1.378 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.377 $
+ * @version $Revision: 1.378 $
  */
 public class CmsObject {
 
@@ -4338,6 +4338,13 @@ public class CmsObject {
         return m_driverManager.isInsideCurrentProject(m_context, resource);
     }
     
+    /**
+     * Recovers a resource from the online project back to the offline project as an unchanged resource.<p>
+     * 
+     * @param resourcename the name of the resource which is recovered
+     * @return the recovered resource in the offline project
+     * @throws CmsException if somethong goes wrong
+     */
     public CmsResource recoverResource(String resourcename) throws CmsException {
         return m_driverManager.recoverResource(m_context, m_context.addSiteRoot(resourcename));        
     }
