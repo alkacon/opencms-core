@@ -180,6 +180,7 @@ PACKAGE BODY OpenCmsProject IS
           IF recPropValue != 'error' THEN
             --opencmsProperty.writeProperties(pUserId, pProjectId, recResource.resource_id, recResource.resource_type, curProperties);
             -- write Properties without checking accessWrite
+            curProperties := opencmsProperty.readAllProperties(pUserId, recOnlineProject.project_id, vParent);
 			opencmsProperty.writeProperties(curProperties, recResource.resource_id, recResource.resource_type);
           END IF;
           -- change state of the resource
