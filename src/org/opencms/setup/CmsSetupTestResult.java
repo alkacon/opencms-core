@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTestResult.java,v $
- * Date   : $Date: 2004/02/20 13:25:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/20 13:38:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import java.io.Serializable;
  * Contains info about the result of a setup test.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/02/20 13:25:20 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/20 13:38:50 $
  * @since 5.3
  */
 public class CmsSetupTestResult extends Object implements Serializable, Cloneable {
@@ -49,7 +49,7 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
     private String m_info;
     
     /** A string describing the result of the test.<p> */
-    private String result;
+    private String m_result;
     
     private boolean m_red;
     private boolean m_yellow;
@@ -91,7 +91,7 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
      * @return the result of the test
      */
     public String getResult() {
-        return result;
+        return m_result;
     }
 
     /**
@@ -118,7 +118,7 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
      * @param result the result of the test
      */
     public void setResult(String result) {
-        this.result = result;
+        this.m_result = result;
     }
 
     /**
