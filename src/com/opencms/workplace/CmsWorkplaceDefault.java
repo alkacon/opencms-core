@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/03/22 10:39:21 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/03/27 10:02:17 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2000/03/22 10:39:21 $
+ * @version $Revision: 1.19 $ $Date: 2000/03/27 10:02:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -117,6 +117,48 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
         result = result + templateSelector+currentLanguage;
         return result;        
     }    
+
+    /**
+     * Starts the processing of the given template file by calling the
+     * <code>getProcessedTemplateContent()</code> method of the content defintition
+     * of the corresponding content type.
+     * <P>
+     * Any exceptions thrown while processing the template will be caught,
+     * printed and and thrown again.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param xmlTemplateDocument XML parsed document of the content type "XML template file" or
+     * any derived content type.
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return Content of the template and all subtemplates.
+     * @exception CmsException 
+     */
+    protected byte[] startProcessing(A_CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {     
+        String lasturl = getLastUrl(cms, parameters);
+        ((CmsXmlWpTemplateFile)xmlTemplateDocument).setXmlData("lasturl", lasturl);        
+        return super.startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+    }    
+    
+    /**
+     * Get the currently valid <code>lasturl</code> parameter that can be 
+     * used for redirecting to the previous workplace screen.
+     * @param cms Cms object for accessing system resources.
+     * @param parameters User parameters.
+     * @return <code>lasturl</code> parameter.
+     */
+    protected String getLastUrl(A_CmsObject cms, Hashtable parameters) {
+        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();    
+        HttpSession session = orgReq.getSession(true);
+        String lasturl = (String)parameters.get("lasturl");
+        if(lasturl != null) {
+            session.putValue("lasturl", lasturl);                    
+        } else {
+            lasturl = (String)session.getValue("lasturl");
+        }
+        return lasturl;
+    }
     
     /**
      * Reads in the template file and starts the XML parser for the expected
