@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPublishProjectThread.java,v $
-* Date   : $Date: 2001/09/05 14:07:53 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/09/06 06:53:33 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,6 +61,9 @@ public class CmsAdminPublishProjectThread extends Thread implements I_CmsConstan
     }
 
     public void run() {
+         // Dont try to get the session this way in a thread!
+         // It will result in a NullPointerException sometimes.
+         // !I_CmsSession session = m_cms.getRequestContext().getSession(true);
         try {
             m_cms.publishProject(m_projectId);
         }

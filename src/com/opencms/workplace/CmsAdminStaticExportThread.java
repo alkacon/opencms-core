@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExportThread.java,v $
-* Date   : $Date: 2001/09/06 06:15:36 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/09/06 06:53:33 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,6 +61,9 @@ public class CmsAdminStaticExportThread extends Thread implements I_CmsConstants
     }
 
     public void run() {
+         // Dont try to get the session this way in a thread!
+         // It will result in a NullPointerException sometimes.
+         // !I_CmsSession session = m_cms.getRequestContext().getSession(true);
         boolean everythingOk  = true;
         String errormessage = "Error exporting resources:\n";
         Vector folderNames = new Vector();

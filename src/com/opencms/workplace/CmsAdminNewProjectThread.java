@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminNewProjectThread.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/09/06 06:53:33 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -61,6 +61,9 @@ public class CmsAdminNewProjectThread extends Thread implements I_CmsConstants {
     }
 
     public void run() {
+         // Dont try to get the session this way in a thread!
+         // It will result in a NullPointerException sometimes.
+         // !I_CmsSession session = m_cms.getRequestContext().getSession(true);
         try {
 
             // copy the resources to the actual project
