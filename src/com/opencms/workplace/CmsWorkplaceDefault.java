@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/04/05 13:04:48 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/04/17 14:35:22 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2000/04/05 13:04:48 $
+ * @version $Revision: 1.21 $ $Date: 2000/04/17 14:35:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -379,6 +379,44 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
             throws CmsException {           
         A_CmsRequestContext reqCont = cms.getRequestContext();
         return new Boolean(!reqCont.currentProject().equals(cms.onlineProject()));
+    }    
+	
+	 /**
+     * Checks if the current user is <strong>administrator</strong>.
+     * <P>
+     * This method is used by workplace icons to decide whether the icon should 
+     * be activated or not. Icons will use this method if the attribute <code>method="isAdministrator"</code>
+     * is defined in the <code>&lt;ICON&gt;</code> tag.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param lang reference to the currently valid language file <em>(not used here)</em>.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
+     * @exception CmsException if there were errors while accessing project data.
+     */
+    public Boolean isAdmin(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) 
+            throws CmsException {           
+        A_CmsRequestContext reqCont = cms.getRequestContext();
+        return new Boolean(reqCont.isAdmin());
+    }    
+	
+	 /**
+     * Checks if the current user is <STRONG>Project manager</STRONG>.
+     * <P>
+     * This method is used by workplace icons to decide whether the icon should 
+     * be activated or not. Icons will use this method if the attribute <code>method="isProjectManager"</code>
+     * is defined in the <code>&lt;ICON&gt;</code> tag.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param lang reference to the currently valid language file <em>(not used here)</em>.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
+     * @exception CmsException if there were errors while accessing project data.
+     */
+    public Boolean isProjectManager(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) 
+            throws CmsException {           
+        A_CmsRequestContext reqCont = cms.getRequestContext();
+        return new Boolean((reqCont.isAdmin() || reqCont.isProjectManager()));
     }    
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/04/13 19:02:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/17 14:35:22 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/04/13 19:02:24 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/17 14:35:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
@@ -565,7 +565,10 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		
 		// if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
 		if (cms.getTaskPar(task.getId(),C_TASKPARA_ALL)!=null) {
-			mail=new CmsMail(cms,cms.readOwner(task),cms.readGroup(task),subject,contentBuf.toString());
+			// the news deliver always "checked" or ""
+			if (cms.getTaskPar(task.getId(),C_TASKPARA_ALL).equals("checked")) {
+				mail=new CmsMail(cms,cms.readOwner(task),cms.readGroup(task),subject,contentBuf.toString());
+			}
 		}
 		
 		mail.start();
