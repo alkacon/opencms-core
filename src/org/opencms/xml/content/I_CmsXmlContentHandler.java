@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/01 13:39:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentHandler {
@@ -91,15 +91,12 @@ public interface I_CmsXmlContentHandler {
      * schema to define the mappings of elements to widgets.<p>
      * 
      * @param value the XML content value to get the widget for
-     * @param contentDefinition the XML content definition of the XML content
      * 
      * @return the editor widget that should be used for the given XML content value
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    I_CmsXmlWidget getEditorWidget(
-        I_CmsXmlContentValue value,
-        CmsXmlContentDefinition contentDefinition) throws CmsXmlException;
+    I_CmsXmlWidget getEditorWidget(I_CmsXmlContentValue value) throws CmsXmlException;
 
     /**
      * Resolves the "appinfo" schema node of the XML content definition according 
@@ -107,12 +104,10 @@ public interface I_CmsXmlContentHandler {
      * 
      * @param cms the current OpenCms user context
      * @param content the XML content to resolve the mappings for
-     * @param contentDefinition the XML content definition of the XML content
      * 
      * @throws CmsException if something goes wrong
      */
-    void resolveAppInfo(CmsObject cms, CmsXmlContent content, CmsXmlContentDefinition contentDefinition)
-    throws CmsException;
+    void resolveAppInfo(CmsObject cms, CmsXmlContent content) throws CmsException;
 
     // TODO: Method for content validation
     // TODO: Method for default values

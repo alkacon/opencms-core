@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/12/01 13:39:18 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -537,8 +537,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         // make sure the selected widgets are of the configured "non-standard" type
         I_CmsXmlWidget widget = definition.getContentHandler().getEditorWidget(
-            xmlcontent.getValue("Title", Locale.ENGLISH),
-            definition);
+            xmlcontent.getValue("Title", Locale.ENGLISH));
         assertNotNull(widget);
         assertEquals(CmsXmlBooleanWidget.class.getName(), widget.getClass().getName());
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlStringWidget.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/01 13:39:18 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public class CmsXmlStringWidget extends A_CmsXmlWidget {
@@ -94,8 +94,7 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
 
                 I_CmsXmlContentValue value2 = document.getValue(name, locale, j);
                 I_CmsXmlWidget widget = document.getContentDefinition().getContentHandler().getEditorWidget(
-                    value2,
-                    document.getContentDefinition());
+                    value2);
 
                 if (this.equals(widget)) {
                     // add init methods for all elements that use the String widget

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/12/01 13:39:18 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -324,7 +324,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     public void resolveAppInfo(CmsObject cms) throws CmsException {
 
         // call the appinfo resolver of the configured XML content handler
-        m_contentDefinition.getContentHandler().resolveAppInfo(cms, this, m_contentDefinition);
+        m_contentDefinition.getContentHandler().resolveAppInfo(cms, this);
     }
 
     /**
@@ -350,7 +350,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             }
         }
 
-        // language element was not found (should not happen since we throw a RuntimeException in this case
+        // language element was not found (should not happen since we throw a RuntimeException in this case)
         return null;
     }
 

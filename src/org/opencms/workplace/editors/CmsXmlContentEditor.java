@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/12/01 13:39:18 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -386,7 +386,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     m_contentDefinition.getContentHandler();
                     
                     I_CmsXmlWidget widget = 
-                        m_contentDefinition.getContentHandler().getEditorWidget(value, m_contentDefinition);
+                        m_contentDefinition.getContentHandler().getEditorWidget(value);
                     
                     widget.setEditorValue(getCms(), getJsp().getRequest().getParameterMap(), this, value);
                 }               
@@ -494,7 +494,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
                     I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
                     I_CmsXmlWidget widget = 
-                        m_contentDefinition.getContentHandler().getEditorWidget(value, m_contentDefinition);                    
+                        m_contentDefinition.getContentHandler().getEditorWidget(value);                    
                     result.append(widget.getDialogWidget(getCms(), this, value));
                 }               
             }
@@ -532,7 +532,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     
                     I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
                     I_CmsXmlWidget widget = 
-                        m_contentDefinition.getContentHandler().getEditorWidget(value, m_contentDefinition);
+                        m_contentDefinition.getContentHandler().getEditorWidget(value);
                     result.append(widget.getDialogHtmlEnd(getCms(), this, value));
                 }               
             }
@@ -638,7 +638,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             for (int i=0; i<values.size(); i++) {
                 I_CmsXmlContentValue value = (I_CmsXmlContentValue)values.get(i);
                 try {
-                    I_CmsXmlWidget widget = m_contentDefinition.getContentHandler().getEditorWidget(value, m_contentDefinition);
+                    I_CmsXmlWidget widget = m_contentDefinition.getContentHandler().getEditorWidget(value);
                     types.add(widget);
                 } catch (CmsXmlException e) {
                     // should usually not happen

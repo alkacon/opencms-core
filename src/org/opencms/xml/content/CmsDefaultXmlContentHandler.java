@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/01 13:39:18 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -171,11 +171,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getEditorWidget(org.opencms.xml.types.I_CmsXmlContentValue, org.opencms.xml.CmsXmlContentDefinition)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getEditorWidget(org.opencms.xml.types.I_CmsXmlContentValue)
      */
-    public I_CmsXmlWidget getEditorWidget(
-        I_CmsXmlContentValue value,
-        CmsXmlContentDefinition contentDefinition) {
+    public I_CmsXmlWidget getEditorWidget(I_CmsXmlContentValue value) {
 
         // try the specific widget settings first
         I_CmsXmlWidget result = (I_CmsXmlWidget)m_elementWidgets.get(value.getElementName());
@@ -199,9 +197,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#resolveAppInfo(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.xml.CmsXmlContentDefinition)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#resolveAppInfo(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent)
      */
-    public void resolveAppInfo(CmsObject cms, CmsXmlContent content, CmsXmlContentDefinition contentDefinition)
+    public void resolveAppInfo(CmsObject cms, CmsXmlContent content)
     throws CmsException {
 
         // get the original VFS file from the content
@@ -214,7 +212,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         String filename = cms.getSitePath(content.getFile());
         Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(cms, filename).get(0);
 
-        List typeSequence = contentDefinition.getTypeSequence();
+        List typeSequence = content.getContentDefinition().getTypeSequence();
         Iterator i = typeSequence.iterator();
         while (i.hasNext()) {
 
