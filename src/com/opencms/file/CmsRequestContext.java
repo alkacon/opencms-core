@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2002/09/03 11:57:01 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2002/09/03 19:41:09 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,44 +46,30 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.51 $ $Date: 2002/09/03 11:57:01 $
+ * @version $Revision: 1.52 $ $Date: 2002/09/03 19:41:09 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
 
-    /**
-     * The rb to get access to the OpenCms.
-     */
+    /** The rb to get access to the OpenCms */
     private I_CmsResourceBroker m_rb;
 
-    /**
-     * The current CmsRequest.
-     */
+    /** The current CmsRequest */
     private I_CmsRequest m_req;
 
-    /**
-     * The current CmsResponse.
-     */
+    /** The current CmsResponse */
     private I_CmsResponse m_resp;
 
-    /**
-     * The current user.
-     */
+    /** The current user */
     private CmsUser m_user;
 
-    /**
-     * The current group of the user.
-     */
+    /** The current group of the user */
     private CmsGroup m_currentGroup;
 
-    /**
-     * The current project.
-     */
+    /** The current project */
     private CmsProject m_currentProject;
 
-    /**
-     * Is this response streaming?
-     */
+    /** Flag to indicate if this response is streaming or not (legacy, not used by Element or Flex cache) */
     private boolean m_streaming = true;
 
     /**
@@ -92,9 +78,7 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     private Vector m_links;
 
-    /**
-     * Flag to indicate that this request is event controlled.
-     */
+    /** Flag to indicate that this request is event controlled */
     private boolean m_eventControlled = false;
 
     /**
@@ -110,187 +94,22 @@ public class CmsRequestContext implements I_CmsConstants {
     /** Current languages */
     private Vector m_language = new Vector();
 
-    /**
-     * The name of the root, e.g. /site_a/vfs
-     */
+    /** The name of the root, e.g. /site_a/vfs */
     private String m_siteRoot = C_DEFAULT_SITE + C_ROOTNAME_VFS;
 
-    // Gridnine AB Aug 1, 2002
+    /** Current encoding */
     private String m_encoding = null;
 
+    /** A faked URI for getUri(), this is required to enable a cascade of elements that use the XMLTemplate mechanism */
+    private String m_fakeUri = null;
+    
     /**
      * The default constructor.
-     *
      */
     public CmsRequestContext() {
         super();
     }
-
-    /**
-     * adds a link for the static export.
-     */
-    public void addLink(String link) {
-        m_links.add(link);
-    }
-
-    /**
-     * returns all links that the templatemechanism has registered.
-     */
-    public Vector getLinkVector() {
-        return m_links;
-    }
-
-    /**
-     * adds a dependency.
-     * @param dependency. The rootpath of the resource.
-     */
-    public void addDependency(String rootName) {
-        m_dependencies.add(rootName);
-    }
-
-    /**
-     * returns all dependencies the templatemechanism has registered.
-     */
-    public Vector getDependencies() {
-        return m_dependencies;
-    }
-
-    /**
-     * Returns the current folder object.
-     *
-     * @return the current folder object.
-     *
-     * @exception CmsException if operation was not successful.
-     */
-    public CmsFolder currentFolder() throws CmsException {
-        // truncate the filename from the pathinformation
-        String folderName =
-            getUri().substring(0, getUri().lastIndexOf("/") + 1);
-        return (
-            m_rb.readFolder(
-                currentUser(),
-                currentProject(),
-                getSiteRoot(folderName),
-                ""));
-    }
-    /**
-     * Returns the current group of the current user.
-     *
-     * @return the current group of the current user.
-     */
-    public CmsGroup currentGroup() {
-        return (m_currentGroup);
-    }
-    /**
-     * Returns the current project of the current user.
-     *
-     * @return the current project of the current user.
-     */
-    public CmsProject currentProject() {
-        return m_currentProject;
-    }
-    /**
-     * Returns the current user object.
-     *
-     * @return the current user object.
-     */
-    public CmsUser currentUser() {
-        return (m_user);
-    }
-    /**
-     * Gets the name of the requested file without any path-information.
-     *
-     * @return the requested filename.
-     */
-    public String getFileUri() {
-        String uri = m_req.getRequestedResource();
-        uri = uri.substring(uri.lastIndexOf("/") + 1);
-        return uri;
-    }
-   /**
-    * Gets the name of the parent folder of the requested file
-    *
-    * @return the requested filename.
-    */
-    public String getFolderUri() {
-        String folderName = getUri().substring(0, getUri().lastIndexOf("/") + 1);
-        return folderName;
-    }
-    /**
-     * Gets the current request, if availaible.
-     *
-     * @return the current request, if availaible.
-     */
-    public I_CmsRequest getRequest() {
-        return (m_req);
-    }
-    /**
-     * Gets the current response, if availaible.
-     *
-     * @return the current response, if availaible.
-     */
-    public I_CmsResponse getResponse() {
-        return (m_resp);
-    }
-    /**
-     * Gets the Session for this request.
-     * <br>
-     * This method should be used instead of the originalRequest.getSession() method.
-     * @param value indicates, if a session should be created when a session for the particular client does not already exist.
-     * @return the CmsSession, or <code>null</code> if no session already exists and value was set to <code>false</code>
-     *
-     */
-    public I_CmsSession getSession(boolean value) {
-        HttpSession session =
-            ((HttpServletRequest) m_req.getOriginalRequest()).getSession(value);
-        if (session != null) {
-            return (I_CmsSession) new CmsSession(session);
-        } else {
-            return null;
-        }
-    }
-    /**
-     * Gets the uri for the requested resource.
-     * <p>
-     * For a http request, the name of the resource is extracted as follows:<br>
-     * <CODE>http://{servername}/{servletpath}/{path to the cms resource}</CODE><br>
-     * In the following example:<br>
-     * <CODE>http://my.work.server/servlet/opencms/system/def/explorer</CODE><br>
-     * the requested resource is <CODE>/system/def/explorer</CODE>.
-     * </P>
-     *
-     * @return the path to the requested resource.
-     */
-    public String getUri() {
-
-        if (m_fakeUri != null) return m_fakeUri;
-        if( m_req != null ) {
-            return( m_req.getRequestedResource() );
-        } else {
-            return (C_ROOT);
-        }
-    }
-
-    /** A faked URI for getUri(), this is required to enable a cascade of elements that use the XMLTemplate mechanism */
-    private String m_fakeUri = null;
-
-    /**
-     * Set the value that is returned by getUri()
-     * to the provided String.
-     * <p>
-     * This is required in a context where
-     * a cascade of included XMLTemplates are combined with JSP or other
-     * Templates that use the ResourceLoader interface.
-     * You need to fake the URI because the ElementCache always
-     * uses cms.getRequestContext().getUri() even if you called
-     * CmsXmlLauncher.generateOutput() with a differnt file name.
-     *
-     * @param value The value to set the Uri to, must be a complete OpenCms path name like /system/workplace/stlye.css
-     * @since 5.0 beta 1
-     */
-    public void setUri(String value) {
-        m_fakeUri = value;
-    }
+    
     /**
      * Initializes this RequestContext.
      *
@@ -301,7 +120,6 @@ public class CmsRequestContext implements I_CmsConstants {
      * @param currentProjectId the id of the current project for this request.
      * @param streaming <code>true</code> if streaming should be enabled for this response, <code>false</code> otherwise.
      * @param elementCache Starting point for the element cache or <code>null</code> if the element cache should be disabled.
-     *
      * @exception CmsException if operation was not successful.
      */
     void init(
@@ -377,33 +195,201 @@ public class CmsRequestContext implements I_CmsConstants {
             detectEncoding();
         }
     }
+
+    /**
+     * Adds a link for the static export.
+     */
+    public void addLink(String link) {
+        m_links.add(link);
+    }
+
+    /**
+     * Returns all links that the template mechanism has registered.
+     */
+    public Vector getLinkVector() {
+        return m_links;
+    }
+
+    /**
+     * Adds a dependency.
+     * 
+     * @param dependency. The rootpath of the resource.
+     */
+    public void addDependency(String rootName) {
+        m_dependencies.add(rootName);
+    }
+
+    /**
+     * Returns all dependencies the templatemechanism has registered.
+     */
+    public Vector getDependencies() {
+        return m_dependencies;
+    }
+
+    /**
+     * Returns the current folder object.
+     *
+     * @return the current folder object.
+     * @exception CmsException if operation was not successful.
+     */
+    public CmsFolder currentFolder() throws CmsException {
+        return (
+            m_rb.readFolder(
+                currentUser(),
+                currentProject(),
+                getSiteRoot(getFolderUri()),
+                ""));
+    }
+    
+    /**
+     * Returns the current group of the current user.
+     *
+     * @return the current group of the current user.
+     */
+    public CmsGroup currentGroup() {
+        return (m_currentGroup);
+    }
+    
+    /**
+     * Returns the current project of the current user.
+     *
+     * @return the current project of the current user.
+     */
+    public CmsProject currentProject() {
+        return m_currentProject;
+    }
+    
+    /**
+     * Returns the current user object.
+     *
+     * @return the current user object.
+     */
+    public CmsUser currentUser() {
+        return (m_user);
+    }
+    
+    /**
+     * Gets the name of the requested file without any path-information.
+     *
+     * @return the requested filename.
+     */
+    public String getFileUri() {
+        String uri = m_req.getRequestedResource();
+        uri = uri.substring(uri.lastIndexOf("/") + 1);
+        return uri;
+    }
+    
+   /**
+    * Gets the name of the parent folder of the requested file
+    *
+    * @return the requested filename.
+    */
+    public String getFolderUri() {
+        return getUri().substring(0, getUri().lastIndexOf("/") + 1);
+    }
+    
+    /**
+     * Gets the current request, if availaible.
+     *
+     * @return the current request, if availaible.
+     */
+    public I_CmsRequest getRequest() {
+        return (m_req);
+    }
+    
+    /**
+     * Gets the current response, if availaible.
+     *
+     * @return the current response, if availaible.
+     */
+    public I_CmsResponse getResponse() {
+        return (m_resp);
+    }
+    
+    /**
+     * Gets the Session for this request.<p>
+     *
+     * This method should be used instead of the originalRequest.getSession() method.
+     * 
+     * @param value indicates, if a session should be created when a session for the particular client does not already exist.
+     * @return the CmsSession, or <code>null</code> if no session already exists and value was set to <code>false</code>
+     *
+     */
+    public I_CmsSession getSession(boolean value) {
+        HttpSession session =
+            ((HttpServletRequest) m_req.getOriginalRequest()).getSession(value);
+        if (session != null) {
+            return (I_CmsSession) new CmsSession(session);
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Gets the uri for the requested resource.<p>
+     * 
+     * For a http request, the name of the resource is extracted as follows:<br>
+     * <CODE>http://{servername}/{servletpath}/{path to the cms resource}</CODE><br>
+     * In the following example:<br>
+     * <CODE>http://my.work.server/servlet/opencms/system/def/explorer</CODE><br>
+     * the requested resource is <CODE>/system/def/explorer</CODE>.
+     *
+     * @return the path to the requested resource.
+     */
+    public String getUri() {
+
+        if (m_fakeUri != null) return m_fakeUri;
+        if( m_req != null ) {
+            return( m_req.getRequestedResource() );
+        } else {
+            return (C_ROOT);
+        }
+    }
+
+    /**
+     * Set the value that is returned by getUri()
+     * to the provided String.<p>
+     * 
+     * This is required in a context where
+     * a cascade of included XMLTemplates are combined with JSP or other
+     * Templates that use the ResourceLoader interface.
+     * You need to fake the URI because the ElementCache always
+     * uses cms.getRequestContext().getUri() even if you called
+     * CmsXmlLauncher.generateOutput() with a differnt file name.
+     *
+     * @param value The value to set the Uri to, must be a complete OpenCms path name like /system/workplace/stlye.css
+     * @since 5.0 beta 1
+     */
+    public void setUri(String value) {
+        m_fakeUri = value;
+    }
+
     /**
      * Determines if the users is in the admin-group.
      *
      * @return <code>true</code> if the users current group is the admin-group; <code>false</code> otherwise.
-     *
      * @exception CmsException if operation was not successful.
      */
     public boolean isAdmin() throws CmsException {
         return (m_rb.isAdmin(m_user, m_currentProject));
     }
+
     /**
-     * Determines if the users current group is the projectmanager-group.
-     * <BR>
+     * Determines if the users current group is the projectmanager-group.<p>
+     * 
      * All projectmanagers can create new projects, or close their own projects.
      *
      * @return <code>true</code> if the users current group is the projectleader-group; <code>false</code> otherwise.
-     *
      * @exception CmsException if operation was not successful.
      */
     public boolean isProjectManager() throws CmsException {
         return (m_rb.isProjectManager(m_user, m_currentProject));
     }
+
     /**
      * Sets the current group of the current user.
      *
      * @param groupname the name of the group to be set as current group.
-     *
      * @exception CmsException if operation was not successful.
      */
     public void setCurrentGroup(String groupname) throws CmsException {
@@ -425,6 +411,7 @@ public class CmsRequestContext implements I_CmsConstants {
                 CmsException.C_NO_ACCESS);
         }
     }
+
     /**
      * Sets the current project for the user.
      *
@@ -452,6 +439,7 @@ public class CmsRequestContext implements I_CmsConstants {
 
     /**
      * Set the current mode for HTTP streaming.<p>
+     * 
      * Calling this method is only allowed, if the response output stream was
      * not used before. Otherwise the streaming mode must not be changed.
      *
@@ -570,23 +558,7 @@ public class CmsRequestContext implements I_CmsConstants {
                         (String) session.getValue(
                             I_CmsConstants.C_SESSION_CONTENT_ENCODING);
                 }
-                /*
-                if ((m_encoding == null) || "".equals(m_encoding.trim())) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
-                        "no encoding stored in session, try to use default for current language");
-                    try {
-                        CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-                        m_encoding = lang.getEncoding();
-                    } catch (Throwable t) {;}
-                }
-                */
             }
-            /*
-            if (!java.nio.charset.Charset.isSupported(m_encoding)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "[" + getClass().getName() + "] resource=" + req.getRequestedResource() + ",  encoding " + m_encoding + " doesn't supported");
-                m_encoding = OpenCms.getEncoding();
-            }
-            */
             if (m_encoding == null) {
                 // no encoding found - use default one
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "no encoding found - use default one");
@@ -637,6 +609,7 @@ public class CmsRequestContext implements I_CmsConstants {
 
     /**
      * Mark this request context as event controlled.
+     * 
      * @param true if the request is event controlled, false otherwise.
      */
     public void setEventControlled(boolean value) {
@@ -645,6 +618,7 @@ public class CmsRequestContext implements I_CmsConstants {
 
     /**
      * Check if this request context is event controlled.
+     * 
      * @return true if the request context is event controlled, false otherwise.
      */
     public boolean isEventControlled() {
