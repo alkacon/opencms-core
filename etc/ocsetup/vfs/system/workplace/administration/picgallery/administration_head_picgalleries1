@@ -13,7 +13,7 @@
     var pfad="]]><METHOD name="picsUrl"/><![CDATA["; 
 </SCRIPT>
 </head>
-<body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed>
+<body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed  onload="]]><METHOD name="onLoad"/><![CDATA[">
 
 <table cellspacing=0 cellpadding=0 border=0>
     <tr valign=center>

@@ -1,7 +1,7 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2001/07/27 14:26:45 $
+* Date   : $Date: 2001/07/30 17:03:41 $
 * Version: $ $
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.21 $ $Date: 2001/07/27 14:26:45 $
+ * @version $Revision: 1.22 $ $Date: 2001/07/30 17:03:41 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -93,7 +93,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
                     foldername = "/pics/";
                 }
             } catch(CmsException exc) {
-                // couldn't read the folder - switch to /download/
+                // couldn't read the folder - switch to /pics/
                 foldername = "/pics/";
             }
 
@@ -101,6 +101,12 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
 
             // need the foldername in the session in case of an exception in the dialog
             session.putValue(C_PARA_FOLDER, foldername);
+
+            // maybe we have to redirect to head_1
+            if(foldername.equals("/pics/") && templateFile.endsWith("administration_head_picgalleries2")) {
+                // we are in the wrong head - use the first one
+                xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, "/system/workplace/administration/picgallery/administration_head_picgalleries1", elementName, parameters, templateSelector);
+            }
         }
         else {
             foldername = (String)session.getValue(C_PARA_FOLDER);
@@ -272,7 +278,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
                                         parameters, templateSelector);
                             }
                             try {
-                                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + lasturl);
+                                cms.getRequestContext().getResponse().sendRedirect(lasturl);
                             }
                             catch(Exception ex) {
                                 throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() +

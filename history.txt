@@ -8,8 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.3.36 Bela Tegeuse - xx July 2001
+OpenCms 4.3.36 Bela Tegeuse - 30 July 2001
 ! The currently used configuration is written into file version.txt when using the setup-wizard
+* Corrected some bugs about uploading files in the galleries.
 
 OpenCms 4.3.35 Bela Tegeuse - 30 July 2001
 * The calendar-window will now be closed after use.

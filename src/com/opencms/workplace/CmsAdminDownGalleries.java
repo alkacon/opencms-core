@@ -1,7 +1,7 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2001/07/27 14:26:45 $
+* Date   : $Date: 2001/07/30 17:03:41 $
 * Version: $ $
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.16 $ $Date: 2001/07/27 14:26:45 $
+ * @version $Revision: 1.17 $ $Date: 2001/07/30 17:03:41 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -97,6 +97,12 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
 
             // need the foldername in the session in case of an exception in the dialog
             session.putValue(C_PARA_FOLDER, foldername);
+
+            // maybe we have to redirect to head_1
+            if(foldername.equals("/download/") && templateFile.endsWith("administration_head_downgalleries2")) {
+                // we are in the wrong head - use the first one
+                xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, "/system/workplace/administration/downloadgallery/administration_head_downgalleries1", elementName, parameters, templateSelector);
+            }
         }
         else {
             foldername = (String)session.getValue(C_PARA_FOLDER);
