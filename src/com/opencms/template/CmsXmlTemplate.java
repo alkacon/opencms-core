@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/11/15 16:44:21 $
-* Version: $Revision: 1.86 $
+* Date   : $Date: 2001/12/06 14:44:32 $
+* Version: $Revision: 1.87 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.86 $ $Date: 2001/11/15 16:44:21 $
+ * @version $Revision: 1.87 $ $Date: 2001/12/06 14:44:32 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -674,6 +674,80 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             title = "";
         }
         return title;
+    }
+
+    /**
+     * Inserts the correct document description into the template.
+     * <P>
+     * This method can be called using <code>&lt;METHOD name="getDescription"&gt;</code>
+     * in the template file.
+     *
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getDescription(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+        String requestedUri = cms.getRequestContext().getUri();
+        String description = cms.readProperty(requestedUri, C_PROPERTY_DESCRIPTION);
+        if(description == null) {
+            description = "";
+        }
+        return description;
+    }
+
+    /**
+     * Inserts the value of the given property in the template.
+     * <P>
+     * This method can be called using <code>&lt;METHOD name="getProperty"&gt;</code>
+     * in the template file.
+     *
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent The name of the property.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getProperty(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+        String requestedUri = cms.getRequestContext().getUri();
+        String value = "";
+        try{
+            value = cms.readProperty(requestedUri, tagcontent);
+        }catch(Exception e){
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlTemplate] usermethod getProperty throwed an Exception getting "+
+                        tagcontent+": "+e.toString());
+            }
+        }
+        if(value == null) {
+            value = "";
+        }
+        return value;
+    }
+
+    /**
+     * Inserts the correct document keyword into the template.
+     * <P>
+     * This method can be called using <code>&lt;METHOD name="getKeywords"&gt;</code>
+     * in the template file.
+     *
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getKeywords(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+        String requestedUri = cms.getRequestContext().getUri();
+        String keywords = cms.readProperty(requestedUri, C_PROPERTY_KEYWORDS);
+        if(keywords == null) {
+            keywords = "";
+        }
+        return keywords;
     }
 
     /**
