@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/06/25 16:18:27 $
-* Version: $Revision: 1.99 $
+* Date   : $Date: 2003/07/02 09:29:02 $
+* Version: $Revision: 1.100 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.99 $ $Date: 2003/06/25 16:18:27 $
+ * @version $Revision: 1.100 $ $Date: 2003/07/02 09:29:02 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -802,23 +802,29 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     // import the specified file 
                     CmsResource res = importResource(source, destination, type, user, group, access, lastmodified, properties, launcherStartClass, writtenFilenames, fileCodes);
 
-					// write all imported access control entries for this file
-					acentryNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
-					// collect all access control entries
-					//String resid = getTextNodeValue(currentElement, C_EXPORT_TAG_ID);
-					for (int j = 0; j < acentryNodes.getLength(); j++) {
-						currentEntry = (Element) acentryNodes.item(j);
-						// get the data of the access control entry
-						String id = getTextNodeValue(currentEntry, C_EXPORT_TAG_ID);
-						String flags = getTextNodeValue(currentEntry, C_EXPORT_TAG_FLAGS);
-						String allowed = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
-						String denied = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
+					if (res != null) {
 
-						// add the entry to the list
-						addImportAccessControlEntry(res, id, allowed, denied, flags);
+						// write all imported access control entries for this file
+						acentryNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
+						// collect all access control entries
+						//String resid = getTextNodeValue(currentElement, C_EXPORT_TAG_ID);
+						for (int j = 0; j < acentryNodes.getLength(); j++) {
+							currentEntry = (Element) acentryNodes.item(j);
+							// get the data of the access control entry
+							String id = getTextNodeValue(currentEntry, C_EXPORT_TAG_ID);
+							String flags = getTextNodeValue(currentEntry, C_EXPORT_TAG_FLAGS);
+							String allowed = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
+							String denied = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
+	
+							// add the entry to the list
+							addImportAccessControlEntry(res, id, allowed, denied, flags);
+						}
+						importAccessControlEntries(res);
+					} else {
+						// resource import failed, since no CmsResource was created
+						m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
+						m_report.println(translatedName);
 					}
-					importAccessControlEntries(res);
-					
                 } else {
                     // skip the file import, just print out the information to the report
                     m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
