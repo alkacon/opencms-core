@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsSynchronizeThread.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/07 20:18:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,12 +45,11 @@ import java.util.Vector;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsSynchronizeThread extends A_CmsReportThread {
 
-    private CmsObject m_cms;
     private Throwable m_error;
     private Vector m_folders;
     private boolean m_newProject;
@@ -64,8 +63,7 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
      * @param session
      */
     public CmsSynchronizeThread(CmsObject cms, Vector folders, boolean newProject) {
-        super("OpenCms: Synchronizing foldes in project " + cms.getRequestContext().currentProject().getName());
-        m_cms = cms;
+        super(cms, "OpenCms: Synchronizing foldes in project " + cms.getRequestContext().currentProject().getName());
         m_folders = folders;
         m_newProject = newProject;
     }
@@ -93,9 +91,9 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
             for (int i = 0; i < m_folders.size(); i++) {
                 // if a new project was created for synchronisation, copy the resource to the project
                 if (m_newProject) {
-                    m_cms.copyResourceToProject((String)m_folders.elementAt(i));
+                    getCms().copyResourceToProject((String)m_folders.elementAt(i));
                 }
-                m_cms.syncFolder((String)m_folders.elementAt(i));
+                getCms().syncFolder((String)m_folders.elementAt(i));
             }
         } catch (CmsException e) {
             // m_session.putValue(I_CmsConstants.C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));

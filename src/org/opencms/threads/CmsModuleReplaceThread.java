@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleReplaceThread.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/07 20:18:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,13 +48,12 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsModuleReplaceThread extends A_CmsReportThread {
 
     private static final boolean DEBUG = false;
-    private CmsObject m_cms;
     private Vector m_conflictFiles;
     private A_CmsReportThread m_deleteThread;
     private A_CmsReportThread m_importThread;
@@ -81,9 +80,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
         String zipName, 
         Vector conflictFiles    
     ) {
-        super("OpenCms: Module replacement of " + moduleName);
-        m_cms = cms;
-        m_cms.getRequestContext().setUpdateSessionEnabled(false);
+        super(cms, "OpenCms: Module replacement of " + moduleName);
         m_moduleName = moduleName;
         m_zipName = zipName;
         m_registry = reg;
@@ -92,8 +89,8 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
         // add the module resources to the project files
         m_projectFiles = CmsModuleReplaceThread.getModuleResources(cms, reg, moduleName);
 
-        m_deleteThread = new CmsModuleDeleteThread(m_cms, m_registry, m_moduleName, m_conflictFiles, m_projectFiles, true);
-        m_importThread = new CmsModuleImportThread(m_cms, m_registry, m_moduleName, m_zipName, m_conflictFiles);
+        m_deleteThread = new CmsModuleDeleteThread(getCms(), m_registry, m_moduleName, m_conflictFiles, m_projectFiles, true);
+        m_importThread = new CmsModuleImportThread(getCms(), m_registry, m_moduleName, m_zipName, m_conflictFiles);
         if (DEBUG) {
             System.err.println("CmsAdminModuleReplaceThread() constructed");
         }

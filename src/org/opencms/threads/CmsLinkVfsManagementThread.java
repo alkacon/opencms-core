@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsLinkVfsManagementThread.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/07 20:18:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import com.opencms.file.CmsObject;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsLinkVfsManagementThread extends A_CmsReportThread {
@@ -51,7 +51,7 @@ public class CmsLinkVfsManagementThread extends A_CmsReportThread {
      * @param cms the current OpenCms context object
      */
     public CmsLinkVfsManagementThread(CmsObject cms) {
-        super("OpenCms: VFS link management");
+        super(cms, "OpenCms: VFS link management");
         // NYI
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2003/09/05 16:05:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/07 20:18:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,53 +33,62 @@ package org.opencms.report;
 
 import org.opencms.main.OpenCms;
 
+import com.opencms.file.CmsObject;
 import com.opencms.flex.util.CmsUUID;
+import com.opencms.workplace.CmsXmlLanguageFile;
 
 /** 
  * Provides a common Thread class for the reports.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.0
  */
 public abstract class A_CmsReportThread extends Thread {
+
+    /** The OpenCms request context to use */
+    private CmsObject m_cms; 
     
     /** Indicates if the Thread was already checked by the grim reaper */
-    public boolean m_doomed;
+    private boolean m_doomed;
     
     /** The id of this report */
     private CmsUUID m_id;
     
     /** The report that belongs to the thread */
-    public I_CmsReport m_report;
+    private I_CmsReport m_report;
 
     /**
-     * Constructs a new thread with the given name.<p>
-     * 
+     * Constructs a new report Thread with the given name.<p>
+     *
+     * @param cms the current OpenCms context object 
      * @param name the name of the Thread
      */
-    public A_CmsReportThread(String name) {
+    protected A_CmsReportThread(CmsObject cms, String name) {
         super(OpenCms.getThreadStore().getThreadGroup(), name);
+        // report Threads are never daemon Threads
         setDaemon(false);
+        // the session in the cms context must not be updated when it is used in a report
+        m_cms = cms;
+        m_cms.getRequestContext().setUpdateSessionEnabled(false);        
+        // generate the report Thread id
         m_id = new CmsUUID();
-        m_doomed = false;
         setName(name + " [" + m_id + "]");
+        // new Threads are not doomed
+        m_doomed = false;
+        // add this Thread to the main Thread store
         OpenCms.getThreadStore().addThread(this);
     }
     
     /**
-     * Flag to indicate if broken links where found during the Thread opertation.<p>
+     * Returns the OpenCms context object this Thread is initialized with.<p>
      * 
-     * Not all report Thread implementations need to check for broken links, 
-     * the default implementation is to return <code>false</code>,
-     * indicating that no broken links where found.<p> 
-     * 
-     * @return boolean true if broken links where found, false (default) otherwise 
+     * @return the OpenCms context object this Thread is initialized with
      */
-    public boolean brokenLinksFound() {
-        return false;
-    }
+    protected CmsObject getCms() {
+        return m_cms;
+    }           
     
     /**
      * Returns the error exception in case there was an error during the execution of
@@ -89,8 +98,8 @@ public abstract class A_CmsReportThread extends Thread {
      */
     public Throwable getError() {
         return null;
-    }           
-    
+    }
+        
     /**
      * Returns the id of this report thread.<p>
      * 
@@ -105,7 +114,7 @@ public abstract class A_CmsReportThread extends Thread {
      * 
      * @return the report where the output of this Thread is written to
      */
-    public I_CmsReport getReport() {
+    protected I_CmsReport getReport() {
         return m_report;
     }
     
@@ -115,6 +124,14 @@ public abstract class A_CmsReportThread extends Thread {
      * @return the part of the report that is ready for output
      */
     public abstract String getReportUpdate();
+        
+    /**
+     * Initialize a HTML report for this Thread.<p>
+     */
+    protected void initHtmlReport() {
+        String locale = CmsXmlLanguageFile.getCurrentUserLanguage(m_cms);
+        m_report = new CmsHtmlReport(locale);
+    }
     
     /**
      * Returns true if this thread is already "doomed" to be deleted.<p>
@@ -137,14 +154,5 @@ public abstract class A_CmsReportThread extends Thread {
         // condemn the Thread to be collected by the grim reaper next time  
         m_doomed = true;
         return false;
-    }
-
-    /**
-     * Sets the report where the output of this Thread is written to.<p>
-     * 
-     * @param report the report where the output of this Thread is written to
-     */
-    public void setReport(I_CmsReport report) {
-        m_report = report;
     }
 }

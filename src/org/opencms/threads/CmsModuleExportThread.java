@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleExportThread.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/07 20:18:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,27 +33,24 @@ package org.opencms.threads;
 
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
-import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.I_CmsReport;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
-import com.opencms.workplace.CmsXmlLanguageFile;
 
 /**
  * Exports a module.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsModuleExportThread extends A_CmsReportThread {
 
     private static final boolean DEBUG = false;
-    private CmsObject m_cms;
     private String m_filename;
     private String m_moduleName;
     private CmsRegistry m_registry;
@@ -75,15 +72,12 @@ public class CmsModuleExportThread extends A_CmsReportThread {
         String[] resources, 
         String filename
     ) {
-        super("OpenCms: Module export of " + moduleName);
-        m_cms = cms;
-        m_cms.getRequestContext().setUpdateSessionEnabled(false);
+        super(cms, "OpenCms: Module export of " + moduleName);
         m_moduleName = moduleName;
         m_registry = reg;
         m_resources = resources;
         m_filename = filename;
-        String locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-        m_report = new CmsHtmlReport(locale);
+        initHtmlReport();
         if (DEBUG) {
             System.err.println("CmsAdminModuleExportThread() constructed");
         }
@@ -93,7 +87,7 @@ public class CmsModuleExportThread extends A_CmsReportThread {
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
-        return m_report.getReportUpdate();
+        return getReport().getReportUpdate();
     }
 
     /**
@@ -106,19 +100,19 @@ public class CmsModuleExportThread extends A_CmsReportThread {
             }
             String moduleName = m_moduleName.replace('\\', '/');
 
-            m_report.print(m_report.key("report.export_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-            m_report.println(" <i>" + moduleName + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
+            getReport().print(getReport().key("report.export_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            getReport().println(" <i>" + moduleName + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
 
             // export the module
-            m_registry.exportModule(m_moduleName, m_resources, m_filename, m_report);
+            m_registry.exportModule(m_moduleName, m_resources, m_filename, getReport());
 
-            m_report.println(m_report.key("report.export_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
+            getReport().println(getReport().key("report.export_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
 
             if (DEBUG) {
                 System.err.println("CmsAdminModuleExportThread() finished");
             }
         } catch (CmsException e) {
-            m_report.println(e);
+            getReport().println(e);
             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                 OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
             }

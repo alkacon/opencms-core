@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsProjectDeleteThread.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/07 20:18:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,12 +43,11 @@ import com.opencms.file.CmsObject;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsProjectDeleteThread extends A_CmsReportThread {
 
-    private CmsObject m_cms;
     private Throwable m_error;
     private int m_projectId;
 
@@ -59,8 +58,7 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
      * @param projectId the project id to delete
      */
     public CmsProjectDeleteThread(CmsObject cms, int projectId) {
-        super("OpenCms: Project deletion of " + projectId);
-        m_cms = cms;
+        super(cms, "OpenCms: Project deletion of " + projectId);
         m_projectId = projectId;
     }
     
@@ -83,7 +81,7 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
      */
     public void run() {
         try {
-            m_cms.deleteProject(m_projectId);
+            getCms().deleteProject(m_projectId);
         } catch (CmsException e) {
             m_error = e;
             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {

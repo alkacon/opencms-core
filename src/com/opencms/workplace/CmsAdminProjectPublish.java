@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2003/09/05 16:05:23 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/09/07 20:18:12 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.35 $ $Date: 2003/09/05 16:05:23 $
+ * @version $Revision: 1.36 $ $Date: 2003/09/07 20:18:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -87,7 +87,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault {
         // here we show the report updates when the threads are allready running.
         if("showResult".equals(action)){
             // ok. Thread is started and we shoud show the report information.
-            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_PUBLISH_LINKCHECK_THREAD);
+            CmsLinkHrefManagementThread doTheWork = (CmsLinkHrefManagementThread)session.getValue(C_PUBLISH_LINKCHECK_THREAD);
             //still working?
             if(doTheWork.isAlive()){
                 xmlTemplateDocument.setData("endMethod", "");
