@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/11/02 10:31:51 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2002/11/03 10:47:58 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,9 +53,32 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.76 $ $Date: 2002/11/02 10:31:51 $ *
+ * @version $Revision: 1.77 $ $Date: 2002/11/03 10:47:58 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
+
+    /**
+     * Escaped a String with UTF-8 encoding, same style as
+     * http uses for form data since MySQL doesn't support Unicode strings.
+     * 
+     * @param value String to be escaped
+     * @return the escaped String
+     */
+    private String escape(String value) {
+        return Encoder.encode(value, "UTF-8", true);
+    }
+
+    /**
+     * Unescape a String with UTF-8 encoding, same style as
+     * http uses for form data since MySQL doesn't support Unicode strings.
+     * 
+     * @param value String to be unescaped
+     * @return the unescaped String
+     */
+    private String unescape(String value) {
+        return Encoder.decode(value, "UTF-8", true);
+    }
+    
     /**
      * Instanciates the access-module and sets up all required modules and connections.
      * @param config The OpenCms configuration.
@@ -771,207 +794,63 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename, boo
     return file;
 }
 
-/**
- * Reads a task from the Cms.
- *
- * @param id The id of the task to read.
- *
- * @return a task object or null if the task is not found.
- *
- * @exception CmsException Throws CmsException if something goes wrong.
- */
-public CmsTask readTask(int id) throws CmsException {
-    ResultSet res = null;
-    CmsTask task = null;
-    PreparedStatement statement = null;
-    Connection con = null;
-
-    try {
-        con = DriverManager.getConnection(m_poolName);
-        statement = con.prepareStatement(m_cq.get("C_TASK_READ"));
-        statement.setInt(1, id);
-        res = statement.executeQuery();
-        if (res.next()) {
-            id = res.getInt(m_cq.get("C_TASK_ID"));
-            String name = res.getString(m_cq.get("C_TASK_NAME"));
-            int autofinish = res.getInt(m_cq.get("C_TASK_AUTOFINISH"));
-            java.sql.Timestamp starttime = SqlHelper.getTimestamp(res, m_cq.get("C_TASK_STARTTIME"));
-            java.sql.Timestamp timeout = SqlHelper.getTimestamp(res, m_cq.get("C_TASK_TIMEOUT"));
-            java.sql.Timestamp endtime = SqlHelper.getTimestamp(res, m_cq.get("C_TASK_ENDTIME"));
-            java.sql.Timestamp wakeuptime = SqlHelper.getTimestamp(res, m_cq.get("C_TASK_WAKEUPTIME"));
-            int escalationtype = res.getInt(m_cq.get("C_TASK_ESCALATIONTYPE"));
-            int initiatoruser = res.getInt(m_cq.get("C_TASK_INITIATORUSER"));
-            int originaluser = res.getInt(m_cq.get("C_TASK_ORIGINALUSER"));
-            int agentuser = res.getInt(m_cq.get("C_TASK_AGENTUSER"));
-            int role = res.getInt(m_cq.get("C_TASK_ROLE"));
-            int root = res.getInt(m_cq.get("C_TASK_ROOT"));
-            int parent = res.getInt(m_cq.get("C_TASK_PARENT"));
-            int milestone = res.getInt(m_cq.get("C_TASK_MILESTONE"));
-            int percentage = res.getInt(m_cq.get("C_TASK_PERCENTAGE"));
-            String permission = res.getString(m_cq.get("C_TASK_PERMISSION"));
-            int priority = res.getInt(m_cq.get("C_TASK_PRIORITY"));
-            int state = res.getInt(m_cq.get("C_TASK_STATE"));
-            int tasktype = res.getInt(m_cq.get("C_TASK_TASKTYPE"));
-            String htmllink = res.getString(m_cq.get("C_TASK_HTMLLINK"));
-            task = new CmsTask(id, name, state, tasktype, root, parent, initiatoruser, role, agentuser,
-                                originaluser, starttime, wakeuptime, timeout, endtime, percentage,
-                                permission, priority, escalationtype, htmllink, milestone, autofinish);
-        }
-    } catch (SQLException exc) {
-        throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
-    } catch (Exception exc) {
-        throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-    } finally {
-        // close all db-resources
-        if(res != null) {
-             try {
-                 res.close();
-             } catch(SQLException exc) {
-                 // nothing to do here
-             }
-        }
-        if(statement != null) {
-             try {
-                 statement.close();
-             } catch(SQLException exc) {
-                 // nothing to do here
-             }
-        }
-        if(con != null) {
-             try {
-                 con.close();
-             } catch(SQLException exc) {
-                 // nothing to do here
-             }
-        }
-    }
-    return task;
-}
-/**
- * Reads all tasks of a user in a project.
- * @param project The Project in which the tasks are defined.
- * @param agent The task agent
- * @param owner The task owner .
- * @param group The group who has to process the task.
- * @tasktype C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
- * @param orderBy Chooses, how to order the tasks.
- * @param sort Sort Ascending or Descending (ASC or DESC)
- *
- * @return A vector with the tasks
- *
- * @exception CmsException Throws CmsException if something goes wrong.
- */
-public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGroup role, int tasktype, String orderBy, String sort) throws CmsException {
-    boolean first = true;
-    Vector tasks = new Vector(); // vector for the return result
-    CmsTask task = null; // tmp task for adding to vector
-    ResultSet recset = null;
-    Connection con = null;
-    Statement statement = null;
-
-    // create the sql string depending on parameters
-    // handle the project for the SQL String
-    String sqlstr = "SELECT * FROM " + m_cq.get("C_TABLENAME_TASK") + " WHERE ";
-    if (project != null) {
-        sqlstr = sqlstr + m_cq.get("C_TASK_ROOT") + "=" + project.getTaskId();
-        first = false;
-    } else {
-        sqlstr = sqlstr + m_cq.get("C_TASK_ROOT") + "<>0 AND " + m_cq.get("C_TASK_PARENT") + "<>0";
-        first = false;
+    /**
+     * Reads a task from the Cms with
+     * added escaping of Strings since MySQL dosen't support Unicode strings
+     *
+     * @param id the id of the task to read
+     * @return a task object or null if the task is not found
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsTask readTask(int id) throws CmsException {
+        CmsTask task = super.readTask(id);
+        task.setName(unescape(task.getName()));
+        return task;
     }
 
-    // handle the agent for the SQL String
-    if (agent != null) {
-        if (!first) {
-            sqlstr = sqlstr + " AND ";
-        }
-        sqlstr = sqlstr + m_cq.get("C_TASK_AGENTUSER") + "=" + agent.getId();
-        first = false;
+    /**
+     * Reads all tasks of a user in a project with
+     * added escaping of Strings since MySQL dosen't support Unicode strings.
+     * 
+     * @param project the Project in which the tasks are defined
+     * @param agent the task agent
+     * @param owner the task owner .
+     * @param group the group who has to process the task
+     * @param tasktype one of C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
+     * @param orderBy selects filter how to order the tasks
+     * @param sort select to sort ascending or descending ("ASC" or "DESC")
+     * @return a vector with the tasks read
+     *
+     * @throws CmsException Throws CmsException if something goes wrong.
+     */
+    public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGroup role, int tasktype, String orderBy, String sort) 
+    throws CmsException {
+        Vector v = super.readTasks(project, agent, owner, role, tasktype, orderBy, sort);
+        for (int i=0; i<v.size(); i++) {
+            CmsTask task = (CmsTask)v.elementAt(i);
+            task.setName(unescape(task.getName()));
+            v.set(i, task);
+        }    
+        return v;          
     }
 
-    // handle the owner for the SQL String
-    if (owner != null) {
-        if (!first) {
-            sqlstr = sqlstr + " AND ";
-        }
-        sqlstr = sqlstr + m_cq.get("C_TASK_INITIATORUSER") + "=" + owner.getId();
-        first = false;
+    /**
+     * Writes a task from the Cms with
+     * added escaping of Strings since MySQL dosen't support Unicode strings
+     *
+     * @param id the id of the task to write
+     * @return written task object
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsTask writeTask(CmsTask task) throws CmsException {
+        task.setName(escape(task.getName()));
+        task = super.writeTask(task);
+        task.setName(unescape(task.getName()));        
+        return task;
     }
 
-    // handle the role for the SQL String
-    if (role != null) {
-        if (!first) {
-            sqlstr = sqlstr + " AND ";
-        }
-        sqlstr = sqlstr + m_cq.get("C_TASK_ROLE") + "=" + role.getId();
-        first = false;
-    }
-    sqlstr = sqlstr + getTaskTypeConditon(first, tasktype);
-
-    // handel the order and sort parameter for the SQL String
-    if (orderBy != null) {
-        if (!orderBy.equals("")) {
-            sqlstr = sqlstr + " ORDER BY " + orderBy;
-            if (orderBy != null) {
-                if (!orderBy.equals("")) {
-                    sqlstr = sqlstr + " " + sort;
-                }
-            }
-        }
-    }
-    try {
-        con = DriverManager.getConnection(m_poolName);
-        statement = con.createStatement();
-        recset = statement.executeQuery(sqlstr);
-
-        // if resultset exists - return vector of tasks
-        while (recset.next()) {
-            task = new CmsTask(recset.getInt(m_cq.get("C_TASK_ID")),
-                                recset.getString(m_cq.get("C_TASK_NAME")),
-                                recset.getInt(m_cq.get("C_TASK_STATE")),
-                                recset.getInt(m_cq.get("C_TASK_TASKTYPE")),
-                                recset.getInt(m_cq.get("C_TASK_ROOT")),
-                                recset.getInt(m_cq.get("C_TASK_PARENT")),
-                                recset.getInt(m_cq.get("C_TASK_INITIATORUSER")),
-                                recset.getInt(m_cq.get("C_TASK_ROLE")),
-                                recset.getInt(m_cq.get("C_TASK_AGENTUSER")),
-                                recset.getInt(m_cq.get("C_TASK_ORIGINALUSER")),
-                                SqlHelper.getTimestamp(recset, m_cq.get("C_TASK_STARTTIME")),
-                                SqlHelper.getTimestamp(recset, m_cq.get("C_TASK_WAKEUPTIME")),
-                                SqlHelper.getTimestamp(recset, m_cq.get("C_TASK_TIMEOUT")),
-                                SqlHelper.getTimestamp(recset, m_cq.get("C_TASK_ENDTIME")),
-                                recset.getInt(m_cq.get("C_TASK_PERCENTAGE")),
-                                recset.getString(m_cq.get("C_TASK_PERMISSION")),
-                                recset.getInt(m_cq.get("C_TASK_PRIORITY")),
-                                recset.getInt(m_cq.get("C_TASK_ESCALATIONTYPE")),
-                                recset.getString(m_cq.get("C_TASK_HTMLLINK")),
-                                recset.getInt(m_cq.get("C_TASK_MILESTONE")),
-                                recset.getInt(m_cq.get("C_TASK_AUTOFINISH")));
-            tasks.addElement(task);
-        }
-    } catch (SQLException exc) {
-        throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
-    } catch (Exception exc) {
-        throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-    } finally {
-        // close all db-resources
-        if(statement != null) {
-             try {
-                 statement.close();
-             } catch(SQLException exc) {
-                 // nothing to do here
-             }
-        }
-        if(con != null) {
-             try {
-                 con.close();
-             } catch(SQLException exc) {
-                 // nothing to do here
-             }
-        }
-    }
-    return tasks;
-}
     /**
      * Writes a property for a file or folder with
      * added escaping of property values as MySQL doesn't support Unicode strings
@@ -986,9 +865,7 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
     public void writeProperty(String meta, int projectId, String value, CmsResource resource,
                                       int resourceType, boolean addDefinition)
         throws CmsException {            
-        // added escaping of property value as MySQL doesn't support Unicode strings
-        value =  Encoder.encode(value, "UTF-8", true);
-        super.writeProperty(meta, projectId, value, resource, resourceType, addDefinition);
+        super.writeProperty(meta, projectId, escape(value), resource, resourceType, addDefinition);
     }
 
     /**
@@ -998,8 +875,7 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
      */
     public String readProperty(String meta, int projectId,
         CmsResource resource, int resourceType) throws CmsException {
-        String result = super.readProperty(meta, projectId, resource, resourceType);
-        return Encoder.decode(result, "UTF-8", true);
+        return unescape(super.readProperty(meta, projectId, resource, resourceType));
     }
 
     /**
@@ -1014,7 +890,7 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
         while (keys.hasNext()) {
             Object key = keys.next();
             String value = (String)result.get(key);         
-            result.put(key, Encoder.decode(value, "UTF-8", true));
+            result.put(key, unescape(value));
         }
         return result;
     }
@@ -1034,11 +910,9 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
     public void writeTaskLog(int taskId, int userid,
                              java.sql.Timestamp starttime, String comment, int type)
         throws CmsException {
-        // added escaping of property value as MySQL doesn't support Unicode strings
-        comment =  Encoder.encode(comment, "UTF-8", true);
-        super.writeTaskLog(taskId, userid, starttime, comment, type);
+        super.writeTaskLog(taskId, userid, starttime, escape(comment), type);
     }
-    
+        
     /**
      * Reads a log for a task with
      * added unescaping of comment as as MySQL doesn't support Unicode strings.
@@ -1049,9 +923,8 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
      */
     public CmsTaskLog readTaskLog(int id)
         throws CmsException {
-        // added unescaping of property value as MySQL doesn't support Unicode strings
         CmsTaskLog log = super.readTaskLog(id);
-        log.setComment(Encoder.decode(log.getComment(), "UTF-8", true));
+        log.setComment(unescape(log.getComment()));
         return log;
     }    
 
@@ -1067,7 +940,7 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
         Vector v = super.readTaskLogs(taskId);
         for (int i=0; i<v.size(); i++) {
             CmsTaskLog log = (CmsTaskLog)v.elementAt(i);
-            log.setComment(Encoder.decode(log.getComment(), "UTF-8", true));
+            log.setComment(unescape(log.getComment()));
             v.set(i, log);
         }    
         return v;    
@@ -1085,12 +958,12 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
         Vector v = super.readProjectLogs(projectid);
         for (int i=0; i<v.size(); i++) {
             CmsTaskLog log = (CmsTaskLog)v.elementAt(i);
-            log.setComment(Encoder.decode(log.getComment(), "UTF-8", true));
+            log.setComment(unescape(log.getComment()));
             v.set(i, log);
         }
         return v;    
     }    
-        
+                                       
     /**
      * Writes a user to the database.
      *
