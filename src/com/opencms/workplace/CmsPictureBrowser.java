@@ -15,7 +15,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/02/03 09:38:38 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/07 10:42:11 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
@@ -76,7 +76,8 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         }
         
         // Compute the maximum page number
-        int maxpage = ((cms.getFilesInFolder(folder).size()-1)/C_PICBROWSER_MAXIMAGES)+1;
+        Vector filteredPics = getFilteredPicList(cms, folder, filter);
+        int maxpage = ((filteredPics.size()-1)/C_PICBROWSER_MAXIMAGES)+1;
                         
         // Now load the template file and set the appropriate datablocks
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
@@ -85,6 +86,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         xmlTemplateDocument.setXmlData(C_PARA_FILTER, filter);
         xmlTemplateDocument.setXmlData(C_PARA_MAXPAGE, "" + maxpage);
         
+        parameters.put("_PICLIST_", filteredPics);
         // Start the processing        
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }                    
@@ -118,9 +120,9 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         String pageText = (String)parameters.get(C_PARA_PAGE);
         String filter = (String)parameters.get(C_PARA_FILTER);
 
-        // Get all pictures in the given folder using the cms object
-        Vector allPics = cms.getFilesInFolder(folder);
-        int numPics = allPics.size();
+        // Filter the pics
+        Vector filteredPics = (Vector)parameters.get("_PICLIST_");
+        int numPics = filteredPics.size();
         
         // Get limits for the requested page
         int page = new Integer(pageText).intValue();
@@ -131,20 +133,36 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         
         // Generate the picture list
         for(int i=from; i<to; i++) {
-            CmsFile file = (CmsFile)allPics.elementAt(i);
+            CmsFile file = (CmsFile)filteredPics.elementAt(i);
             String filename = file.getName();
             if(inFilter(filename, filter) && isImage(filename)) {
                 result.append(xmlTemplateDocument.getProcessedXmlDataValue("picstartseq", this, userObj));
                 result.append(picsUrl + file.getName());
                 result.append(xmlTemplateDocument.getProcessedXmlDataValue("picendseq", this, userObj));
                 result.append(xmlTemplateDocument.getProcessedXmlDataValue("textstartseq", this, userObj));
-                result.append(file.getLength() + " Bytes\n");
+                result.append(file.getName() + " (" + file.getLength() + " Bytes)\n");
                 result.append(xmlTemplateDocument.getProcessedXmlDataValue("textendseq", this, userObj));
             }
         }
         return result.toString();
     }
 
+    private Vector getFilteredPicList(A_CmsObject cms, String folder, String filter)  throws CmsException {
+        // Get all pictures in the given folder using the cms object
+        Vector allPics = cms.getFilesInFolder(folder);
+        
+        // Filter the pics
+        Vector filteredPics = new Vector();
+        for(int i=0; i< allPics.size(); i++) {
+            CmsFile file = (CmsFile)allPics.elementAt(i);
+            String filename = file.getName();
+            if(inFilter(filename, filter) && isImage(filename)) {
+                filteredPics.addElement(file);
+            }
+        }
+        return filteredPics;
+    }
+    
     /**
      * Checks, if the given filename matches the filter.
      * @param filename filename to be checked.
