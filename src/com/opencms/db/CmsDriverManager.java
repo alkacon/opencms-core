@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/02 10:58:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/06/02 15:32:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,20 +31,6 @@
  
 package com.opencms.db;
 
-import com.opencms.boot.CmsBase;
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.db.generic.CmsUserDriver;
-import com.opencms.file.*;
-import com.opencms.flex.util.CmsLruHashMap;
-import com.opencms.flex.util.CmsUUID;
-import com.opencms.report.I_CmsReport;
-import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Utils;
-import com.opencms.workplace.CmsAdminVfsLinkManagement;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -53,7 +39,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -66,7 +62,6 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.db.generic.CmsProjectDriver;
 import com.opencms.db.generic.CmsUserDriver;
 import com.opencms.file.CmsBackupProject;
 import com.opencms.file.CmsBackupResource;
@@ -96,19 +91,20 @@ import com.opencms.flex.util.CmsLruHashMap;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.report.I_CmsReport;
 import com.opencms.security.CmsAccessControlEntry;
+import com.opencms.security.CmsAccessControlList;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Utils;
 import com.opencms.workplace.CmsAdminVfsLinkManagement;
 
 
 /**
- * @version $Revision: 1.7 $ $Date: 2003/06/02 10:58:55 $
+ * @version $Revision: 1.8 $ $Date: 2003/06/02 15:32:16 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.7 $ $Date: 2003/06/02 10:58:55 $
+ * @version $Revision: 1.8 $ $Date: 2003/06/02 15:32:16 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
@@ -9224,4 +9220,38 @@ protected void validName(String name, boolean blank) throws CmsException {
 		return m_userDriver.getAccessControlEntries(resource.getResourceId());
 	}
 	
+	// TODO: this is the neccessary method - check if it should be exposed in the interface
+	protected Vector getAccessControlEntries(CmsUUID resourceId) throws CmsException {
+		
+		return m_userDriver.getAccessControlEntries(resourceId);
+	}
+	
+	//
+	//	Access Control List
+	//
+	
+	public CmsAccessControlList getAccessControlList(CmsResource resource) throws CmsException {
+	
+		CmsResource res = resource;
+		CmsUUID resId = res.getResourceId();	
+		CmsAccessControlList acList = new CmsAccessControlList();
+		
+		// add the aces of the resource itself
+		ListIterator acEntries = getAccessControlEntries(resId).listIterator();
+		while (acEntries.hasNext()) {
+			acList.add((CmsAccessControlEntry)acEntries.next());
+		}
+		
+		// add the aces of each predecessor
+		while (!(resId = res.getParentId()).isNullUUID()) {
+			
+			res = m_vfsDriver.readFolder(res.getProjectId(), resId);
+			acEntries = getAccessControlEntries(resId).listIterator();
+			while (acEntries.hasNext()) {
+				acList.add((CmsAccessControlEntry)acEntries.next());
+			}
+		}
+		
+		return acList;
+	}
 }

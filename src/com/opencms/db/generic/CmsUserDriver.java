@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/02 10:58:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/06/02 15:31:19 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import com.opencms.util.SqlHelper;
  * Generic (ANSI-SQL) database server implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/06/02 10:58:21 $
+ * @version $Revision: 1.7 $ $Date: 2003/06/02 15:31:19 $
  * @since 5.1.2
  */
 public class CmsUserDriver extends Object implements I_CmsUserDriver {
@@ -1630,7 +1630,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_PRINCIPAL_ID"))),
 			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_ALLOWED")),
 			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_DENIED")),
-			res.getInt(m_sqlManager.get(""))
+			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_FLAGS"))
 		);
 	}
 

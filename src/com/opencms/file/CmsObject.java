@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/05/23 16:26:47 $
-* Version: $Revision: 1.271 $
+* Date   : $Date: 2003/06/02 15:32:47 $
+* Version: $Revision: 1.272 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,20 +29,6 @@
 package com.opencms.file;
 
 
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.*;
-import com.opencms.db.CmsDriverManager;
-import com.opencms.flex.util.CmsResourceTranslator;
-import com.opencms.flex.util.CmsUUID;
-import com.opencms.launcher.CmsLauncherManager;
-import com.opencms.linkmanagement.CmsPageLinks;
-import com.opencms.linkmanagement.LinkChecker;
-import com.opencms.report.CmsShellReport;
-import com.opencms.report.I_CmsReport;
-import com.opencms.template.cache.CmsElementCache;
-import com.opencms.util.LinkSubstitution;
-import com.opencms.util.Utils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -52,6 +38,30 @@ import java.util.Map;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
+
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsCoreSession;
+import com.opencms.core.CmsException;
+import com.opencms.core.CmsExportRequest;
+import com.opencms.core.CmsExportResponse;
+import com.opencms.core.CmsStaticExportProperties;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsRequest;
+import com.opencms.core.I_CmsResponse;
+import com.opencms.core.OpenCms;
+import com.opencms.db.CmsDriverManager;
+import com.opencms.flex.util.CmsResourceTranslator;
+import com.opencms.flex.util.CmsUUID;
+import com.opencms.launcher.CmsLauncherManager;
+import com.opencms.linkmanagement.CmsPageLinks;
+import com.opencms.linkmanagement.LinkChecker;
+import com.opencms.report.CmsShellReport;
+import com.opencms.report.I_CmsReport;
+import com.opencms.security.CmsAccessControlList;
+import com.opencms.template.cache.CmsElementCache;
+import com.opencms.util.LinkSubstitution;
+import com.opencms.util.Utils;
 
 /**
  * This class provides access to the OpenCms and its resources.
@@ -67,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.271 $
+ * @version $Revision: 1.272 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4477,4 +4487,10 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
         //m_driverManager.linkResourceToTarget( m_context.currentProject(), this.getSiteRoot(theLinkResourceName), this.getSiteRoot(theTargetResourceName) );
     }   
     
+    
+    // TODO: added for testing purposes - check later, if useful/neccessary
+    public CmsAccessControlList getAccessControlList(String resourceName) throws CmsException {
+		CmsResource res = readFileHeader(resourceName);
+		return m_driverManager.getAccessControlList(res); 
+    }
 }
