@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/28 13:56:37 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/28 15:04:52 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Map;
  * re-initialize itself while the app. with a clear cache event.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/07/28 13:56:37 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/28 15:04:52 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -140,65 +140,63 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      * @return the CmsLock if the specified resource is locked, or the shared Null lock if the resource is not locked
      */
     public CmsLock getLock(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
+        CmsLock parentFolderLock = null;
+        CmsLock siblingLock = null;
+        CmsResource sibling = null;
+        List siblings = null;
+
         if (context.currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            // resources are never locked in the online project
             return CmsLock.getNullLock();
-        } else {
-            // calculate the lock state of the resource...
-            int lockState = getLockState(driverManager, context, resourcename);
-            
-            if (lockState != CmsLock.C_TYPE_UNLOCKED) {
-                // ...and create a CmsLock object in case the resource is locked
-                return new CmsLock(resourcename, context.currentUser().getId(), context.currentProject().getId(), lockState);
-            }  
         }
 
-        return CmsLock.getNullLock();
-    }
-    
-    /**
-     * Gets the lock state for a specified resource name.<p>
-     * 
-     * @param driverManager the driver manager of the Cms
-     * @param context the current request context
-     * @param resourcename the name of the resource
-     * @return the lock state
-     * @throws CmsException if something goes wrong
-     */
-    protected int getLockState(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
-        List siblings = null;
-        
         if (m_exclusiveLocks.containsKey(resourcename)) {
-            return CmsLock.C_TYPE_EXCLUSIVE;
-        }         
-        
+            // the resource is exclusive locked
+            return (CmsLock) m_exclusiveLocks.get(resourcename);
+        }
+
+        // fetch all siblings of the resource to the same content record
         siblings = driverManager.getAllSiblings(context, resourcename);
 
-        if (!parentFolderIsLocked(resourcename)) {
+        if ((parentFolderLock = getParentFolderLock(resourcename)) == null) {
+            // all parent folders are unlocked
+            
             for (int i = 0; i < siblings.size(); i++) {
-                CmsResource sibling = (CmsResource) siblings.get(i);
-                if (m_exclusiveLocks.containsKey(sibling.getFullResourceName())) {
-                    return CmsLock.C_TYPE_SHARED_EXCLUSIVE;
+                sibling = (CmsResource) siblings.get(i);
+                siblingLock = (CmsLock) m_exclusiveLocks.get(sibling.getFullResourceName());
+                
+                if (siblingLock != null) {
+                    // a sibling is already exclusive locked
+                    return new CmsLock(resourcename, siblingLock.getUserId(), siblingLock.getProjectId(), CmsLock.C_TYPE_SHARED_EXCLUSIVE);
                 }
             }
-            return CmsLock.C_TYPE_UNLOCKED;
+
+            // no locked siblings found
+            return CmsLock.getNullLock();
         } else {
+            // a parent folder is locked
+            
             for (int i = 0; i < siblings.size(); i++) {
-                CmsResource sibling = (CmsResource) siblings.get(i);
+                sibling = (CmsResource) siblings.get(i);
+                
                 if (m_exclusiveLocks.containsKey(sibling.getFullResourceName())) {
-                    return CmsLock.C_TYPE_SHARED_INHERITED;
+                    // a sibling is already exclusive locked
+                    return new CmsLock(resourcename, parentFolderLock.getUserId(), parentFolderLock.getProjectId(), CmsLock.C_TYPE_SHARED_INHERITED);
                 }
             }
-            return CmsLock.C_TYPE_INHERITED;
+
+            // no locked siblings found
+            return new CmsLock(resourcename, parentFolderLock.getUserId(), parentFolderLock.getProjectId(), CmsLock.C_TYPE_INHERITED);
         }
     }
 
     /**
-     * Proves if a parent folder of a specified resource is locked.<p>
+     * Returns the lock of a parent folder, if any are locked.<p>
      * 
      * @param resourcename the name of the resource
-     * @return true, if a parent folder of the specified resource has an exclusive lock
+     * @return the lock of a parent folder, or null if no parent folders are locked
      */
-    protected boolean parentFolderIsLocked(String resourcename) {
+    protected CmsLock getParentFolderLock(String resourcename) {
         String lockedPath = null;
         Iterator i = m_exclusiveLocks.keySet().iterator();
 
@@ -206,11 +204,11 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
             lockedPath = (String) i.next();
 
             if (resourcename.startsWith(lockedPath) && lockedPath.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-                return true;
+                return (CmsLock) m_exclusiveLocks.get(lockedPath);
             }
         }
 
-        return false;
+        return null;
     }    
 
     /**

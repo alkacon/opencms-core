@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2003/07/28 13:56:37 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/28 15:04:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.io.Serializable;
  * CmsLock object that represents the current lock state of a resource.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/07/28 13:56:37 $
+ * @version $Revision: 1.6 $ $Date: 2003/07/28 15:04:52 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLockDispatcher
@@ -128,7 +128,9 @@ public class CmsLock extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * @return
+     * Returns the type about how the resource is locked.<p>
+     * 
+     * @return the type of the lock
      */
     public int getType() {
         return m_type;
@@ -169,5 +171,41 @@ public class CmsLock extends Object implements Serializable, Cloneable {
     public boolean isNullLock() {
         return this.equals(CmsLock.C_NULL_LOCK);
     }
+    
+    /**
+     * Builds a string representation of the current state.<p>
+     * 
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+
+        buf.append("resource: ");
+        buf.append(this.getResourceName());
+        buf.append(" type: ");
+        switch (this.getType()) {
+            case CmsLock.C_TYPE_EXCLUSIVE :
+                buf.append("exclusive");
+                break;
+            case CmsLock.C_TYPE_SHARED_EXCLUSIVE :
+                buf.append("shared exclusive");
+                break;
+            case CmsLock.C_TYPE_INHERITED :
+                buf.append("inherited");
+                break;
+            case CmsLock.C_TYPE_SHARED_INHERITED :
+                buf.append("shared inherited");
+                break;
+            default :
+                buf.append("unlocked");
+                break;
+        }
+        buf.append(" project: ");
+        buf.append(this.getProjectId());
+        buf.append(" user: ");
+        buf.append(this.getUserId());
+
+        return buf.toString();
+    }   
 
 }
