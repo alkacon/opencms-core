@@ -173,7 +173,7 @@ if ((n > 0) && (itemNo > -1)) {
 }
 
 function checkVal(item) {
-    var nums = "0123456789*";
+    var nums = "0123456789*.";
     var strLength=item.length;
     if(strLength<1){
         return false;
