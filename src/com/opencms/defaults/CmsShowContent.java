@@ -57,6 +57,9 @@ import java.lang.reflect.*;
  * For both methods the fully qualified classname of the contentdefinition
  * has to be stated in a datablock with the name &lt;contentdefinition_class&gt;.
  * @author Michael Dernen
+ *
+ * changed: the tagcontent parameter for getList may only use filterparameter0 to
+ *          filterparameter9.
  */
 public class CmsShowContent extends CmsXmlTemplate {
 
@@ -71,6 +74,11 @@ public class CmsShowContent extends CmsXmlTemplate {
      */
      protected static final String C_FILTERMETHOD_DATABLOCK =
         "filtermethod";
+
+    /**
+     * replaces the tagcontent for usermethod "getList"
+     */
+    protected static final String C_FILTER_PARAMETERS_START = "filterparameter";
 
     /**
      *  The name of the datablock to define which get-methods to invoke.
@@ -168,6 +176,11 @@ public class CmsShowContent extends CmsXmlTemplate {
             Constructor constructor = cdClass.getConstructor(new Class[] {CmsObject.class, Integer.class});
             // might throws InvocationTargetException, ClassCastException
             A_CmsContentDefinition cdObject = (A_CmsContentDefinition)constructor.newInstance(new Object[]{cms, id});
+            // register the CD for the variantdependencies
+            Vector cdVec = new Vector();
+            cdVec.add(cdObject);
+            registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
+                                (Hashtable)userObject, null, cdVec, null);
             if (template.hasData(C_METHODS_TO_USE_DATABLOCK)) {
                 // if the datablock methods is set inside the template
                 // only take the methods that are listed in this datablock
@@ -228,6 +241,10 @@ public class CmsShowContent extends CmsXmlTemplate {
         try {
             // get contentdefinition class might throws ClassNotFoundException
             Class cdClass = Class.forName(contentDefinitionName);
+            //register the class for the dependencies
+            Vector theClass = new Vector();
+            theClass.add(cdClass);
+            registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null, parameters, null, null,theClass);
             // get getFilterMethods method might throws NoSuchMethodException, IllegalAccessException
             String userParameter = getUserParameter(parameters, tagcontent);
             Vector cdObjects =  invokeFilterMethod(cms, cdClass, filterMethodName, userParameter);
@@ -275,7 +292,7 @@ public class CmsShowContent extends CmsXmlTemplate {
      * @param tagcontent String with the content of the method tag
      * @return String with the value of the userparameter
      */
-   protected String getUserParameter (Hashtable parameters, String tagcontent){
+   protected String getUserParameter (Hashtable parameters, String tagcontent) throws CmsException{
         String userparameter = "";
         String parameterName = null;
         String parameterValue = null;
@@ -283,6 +300,11 @@ public class CmsShowContent extends CmsXmlTemplate {
             int index = tagcontent.indexOf(",");
             if (index != -1) {
                 parameterName = tagcontent.substring(0, index);
+                // todo: check also if the length is ok and if the last char is in {0,1,..,9}
+                if(!(parameterName.startsWith(C_FILTER_PARAMETERS_START)  )){
+                    throw new CmsException("The filterparameter has to be \""
+                            +C_FILTER_PARAMETERS_START+"N\" where 0 <= N <= 9.");
+                }
                 parameterValue = (String)parameters.get(parameterName);
                 if (parameterValue != null) {
                     userparameter = parameterValue;
@@ -414,10 +436,19 @@ public class CmsShowContent extends CmsXmlTemplate {
     * @param templateSelector template section that should be processed
     * @return object with caching information
     */
-    public CmsCacheDirectives getCacheDirectives(CmsObject cms,
-            String templateFile, String elementName, Hashtable parameters,
-            String templateSelector) {
-        // don't cache
-        return new CmsCacheDirectives(false);
+    public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile,
+                String elementName, Hashtable parameters, String templateSelector) {
+
+        CmsCacheDirectives result = new CmsCacheDirectives(true, false, false, false, false);
+        result.setCacheUri(true);
+        result.noAutoRenewAfterPublish();
+        Vector para = new Vector();
+        para.add(C_ID_PARAMETER);
+        for(int i=0; i < 10; i++){
+            para.add(C_FILTER_PARAMETERS_START + i);
+        }
+        result.setCacheParameters(para);
+
+        return result;
     }
 }
