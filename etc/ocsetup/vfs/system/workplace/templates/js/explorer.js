@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-* Date   : $Date: 2002/08/16 13:57:53 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2002/08/23 08:56:50 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1115,7 +1115,7 @@ showKontext(doc, welche, id,x,y);
          // TODO: Figure aut the value of plainresid at runtime
          var plainresid = 3;         
          	
-         if (vi.resource[vi.liste[i].type] == undefined) {
+         if (typeof vi.resource[vi.liste[i].type] == 'undefined') {
          // The user has no access to this resource type
          	noaccess = true;
          	vi_icon = vi.resource[plainresid].icon;
@@ -1237,7 +1237,7 @@ showKontext(doc, welche, id,x,y);
     for(i=0;i<vi.liste.length;i++){
 
          var access = true;          
-         if (vi.resource[vi.liste[i].type] == undefined) {
+         if (typeof vi.resource[vi.liste[i].type] == 'undefined') {         
          // The user has no access to this resource type
          	access = false;
          } 
