@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/09/21 06:25:53 $
-* Version: $Revision: 1.215 $
+* Date   : $Date: 2001/09/24 14:17:05 $
+* Version: $Revision: 1.216 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.215 $ $Date: 2001/09/21 06:25:53 $ *
+ * @version $Revision: 1.216 $ $Date: 2001/09/24 14:17:05 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -3121,7 +3121,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
          try {
              // create the statement
              con = DriverManager.getConnection(m_poolNameBackup);
-             statement = con.prepareStatement(m_cq.get("C_PROJECTS_READALL_BACKUP"));
+             statement = con.prepareStatement(m_cq.get("C_PROJECTS_READLAST_BACKUP"));
+             statement.setInt(1, 300);
              res = statement.executeQuery();
              while(res.next()) {
                  Vector resources = readBackupProjectResources(res.getInt("VERSION_ID"));
