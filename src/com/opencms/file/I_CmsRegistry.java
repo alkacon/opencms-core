@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
-* Date   : $Date: 2002/07/24 15:59:08 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2002/08/08 09:42:03 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.28 $ $Date: 2002/07/24 15:59:08 $
+ * @version $Revision: 1.29 $ $Date: 2002/08/08 09:42:03 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -786,4 +786,12 @@ public void setSystemValue(String dataName, String value) throws CmsException;
  * @param Hashtable the value to be set.
  */
 public void setSystemValues(String dataName, Hashtable values) throws CmsException;
+
+/**
+ * Returns all exportpoints and paths.
+ *
+ *
+ * @return Hashtable The exportpoints and the paths.
+ */
+public Hashtable getExportpoints();
 }
