@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/03/04 15:11:32 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2005/03/04 15:29:41 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package org.opencms.workplace;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
@@ -65,7 +64,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  * 
  * @since 5.1
  */
@@ -137,8 +136,7 @@ public class CmsFrameset extends CmsWorkplace {
     public String getBroadcastMessage() {
         StringBuffer result = new StringBuffer(512);
         String sessionId = getSession().getId();
-        CmsObject cms = getCms();
-
+        
         CmsBroadcastMessageQueue messageQueue = OpenCms.getSessionInfoManager().getBroadcastMessageQueue(sessionId);
         if (messageQueue.hasBroadcastMessagesPending()) {
             // create a javascript alert for the message 
@@ -151,12 +149,14 @@ public class CmsFrameset extends CmsWorkplace {
                 StringBuffer msg = new StringBuffer(256);
                 msg.append('[');
                 msg.append(getSettings().getMessages().getDateTime(message.getSendTime()));
-                msg.append("] Message from ");
+                msg.append("] ");
+                msg.append(key("label.broadcastmessagefrom"));
+                msg.append(' ');
                 msg.append(message.getUser().getName());
                 msg.append(":\n");
                 msg.append(message.getMessage());
                 msg.append("\n\n");
-                result.append(CmsEncoder.escape(msg.toString(), cms.getRequestContext().getEncoding()));
+                result.append(CmsEncoder.escape(msg.toString(), getEncoding()));
             }
             result.append("'));\", 2000);");   
             result.append("\n//-->\n</script>");            
