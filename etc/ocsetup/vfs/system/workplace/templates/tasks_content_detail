@@ -291,13 +291,57 @@ top.help_url='Aufgaben/aufgabebearbeiten.html';
 
 <html>
 
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_task.js"></SCRIPT>
+
 <script language=JavaScript>
 <!--
 top.help_url='Aufgaben/aufgabebearbeiten.html';
-//-->
-</script>
 
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+function validateDate()
+{
+	var check = checkTaskDate(document.NEWTASK.DATE.value);
+    switch(check)
+    {
+    case 0:
+    {
+        return true;
+        break;
+    }
+    case 1:
+    {
+		alert("]]><label value="task.dialog.due.checkdate"/><![CDATA[\n]]><label value="task.dialog.due.past"/><![CDATA[");
+		return false;
+        break;
+    }
+    case 2:
+    {
+		alert("]]><label value="task.dialog.due.checkdate"/><![CDATA[\n]]><label value="task.dialog.due.format"/><![CDATA[");
+		return false;
+        break;
+    }
+    case 3:
+    {
+		alert("]]><label value="task.dialog.due.checkdate"/><![CDATA[\n]]><label value="task.dialog.due.month"/><![CDATA[");
+		return false;
+        break;
+    }
+    case 4:
+    {
+		alert("]]><label value="task.dialog.due.checkdate"/><![CDATA[\n]]><label value="task.dialog.due.day"/><![CDATA[");
+		return false;
+        break;    
+    }
+    default:
+    {
+		alert("]]><label value="task.dialog.due.checkdate"/><![CDATA[");
+		return false;
+        break;    
+    }
+    }
+}
+
+//-->
 
 <head>
 
@@ -351,7 +395,7 @@ top.help_url='Aufgaben/aufgabebearbeiten.html';
     <tr><td colspan=3 class=formular>
             <table cellspacing=0 cellpadding=5 width=100%>
             <tr>
-                <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="return( true );" /><![CDATA[</td>
+                <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="return( validateDate() );" /><![CDATA[</td>
                 <td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='tasks_content_detail.html'" /><![CDATA[</td>
             </tr>
             </table>
