@@ -30,7 +30,6 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 import java.net.*;
-
 /**
  * This class provides several utilities and methods
  * used by the OpenCms setup wizard
@@ -589,5 +588,80 @@ public class CmsSetupUtils {
         return -1;
     }
 
+    /**
+     * Writes the version info of the used servlet engine and the used JDK
+     * to the version.txt
+     *
+     * @param thisEngine The servlet engine in use
+     * @param usedJDK The JDK version in use
+     */
+    public static void writeVersionInfo(String thisEngine, String usedJDK, String basePath){
+		FileOutputStream fOut = null;
+		DataOutputStream dOut = null;
+		byte[] content = null;
+		FileInputStream fileStream = null;
+		int charsRead;
+        String newEntry = new String();
+        newEntry = "\n############### currently used configuration ################\n"+
+                   "Date:                "+getNiceDate(System.currentTimeMillis())+'\n'+
+                   "Used JDK:            "+usedJDK+'\n'+
+                   "Used Servlet Engine: "+thisEngine+'\n';
+        content = newEntry.getBytes();
+        String filename = basePath+"WEB-INF/ocsetup/version.txt";
+		try {
+            File file = new File(filename);
+            if(file.exists()){
+                // new FileOutputStream of the existing file with parameter append=true
+                fOut = new FileOutputStream(filename, true);
+            } else {
+			    fOut = new FileOutputStream(file);
+            }
+			// write the content to the file in server filesystem
+			dOut = new DataOutputStream(fOut);
+			dOut.write(content);
+			dOut.flush();
+		} catch (IOException e) {
+		} finally {
+			try {
+				if (fOut != null)
+					fOut.close();
+			} catch (IOException e) {
+			}
+		}
+    }
+    /**
+     * Gets a formated time string form a long time value.
+     * @param time The time value as a long.
+     * @return Formated time string.
+     */
 
+    private static String getNiceDate(long time) {
+        StringBuffer niceTime = new StringBuffer();
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(new java.util.Date(time));
+        String day = "0" + new Integer(cal.get(Calendar.DAY_OF_MONTH)).intValue();
+        String month = "0" + new Integer(cal.get(Calendar.MONTH) + 1).intValue();
+        String year = new Integer(cal.get(Calendar.YEAR)).toString();
+        String hour = "0" + new Integer(cal.get(Calendar.HOUR) + 12
+                * cal.get(Calendar.AM_PM)).intValue();
+        String minute = "0" + new Integer(cal.get(Calendar.MINUTE));
+        if(day.length() == 3) {
+            day = day.substring(1, 3);
+        }
+        if(month.length() == 3) {
+            month = month.substring(1, 3);
+        }
+        if(hour.length() == 3) {
+            hour = hour.substring(1, 3);
+        }
+        if(minute.length() == 3) {
+            minute = minute.substring(1, 3);
+        }
+        niceTime.append(day + ".");
+        niceTime.append(month + ".");
+        niceTime.append(year + " ");
+        niceTime.append(hour + ":");
+        niceTime.append(minute);
+        return niceTime.toString();
+    }
 }
