@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
- * Date   : $Date: 2000/04/13 21:07:15 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/05/12 08:45:02 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/04/13 21:07:15 $
+ * @version $Revision: 1.17 $ $Date: 2000/05/12 08:45:02 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -235,7 +235,16 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
      * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
 	public String getMailServer() throws CmsException {
-		return getDataValue("mailserver");
+        return getDataValue("mail.server");
+	}
+
+	/**
+     * Gets the default mail sender.
+     * @return Mail address of the default mail sender.
+     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     */
+	public String getDefaultMailSender() throws CmsException {
+        return getDataValue("mail.defaultsender");
 	}
     
     /**

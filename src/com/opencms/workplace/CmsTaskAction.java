@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/04/20 08:53:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/05/12 08:44:54 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,10 +43,10 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/04/20 08:53:32 $
+ * @version $Revision: 1.11 $ $Date: 2000/05/12 08:44:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
-public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
+public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLogChannels {
 
 	/**
 	 * Constant for generating user javascriptlist
@@ -611,17 +611,33 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		contentBuf.append("\n\n\nhttp://"+serverName+servletPath+actionPath+"login.html?startTaskId="+task.getId()+"&startProjectId="+projectid);
 		String subject=lang.getLanguageValue("task.email.create.subject");
 		A_CmsUser[] users={cms.readAgent(task)};
-		CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
-		
+		CmsMail mail = null;
+        try {
+            mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
+        } catch(CmsException e) {
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] Could not generate mail while creating task for " + cms.readOwner(task).getName() + ". ");
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] " + e);                
+            }
+        }
 		// if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
 		if (cms.getTaskPar(task.getId(),C_TASKPARA_ALL)!=null) {
 			// the news deliver always "checked" or ""
 			if (cms.getTaskPar(task.getId(),C_TASKPARA_ALL).equals("checked")) {
-				mail=new CmsMail(cms,cms.readOwner(task),cms.readGroup(task),subject,contentBuf.toString());
+                try {
+                    mail=new CmsMail(cms,cms.readOwner(task),cms.readGroup(task),subject,contentBuf.toString());
+                } catch(CmsException e) {
+                    if(A_OpenCms.isLogging()) {
+                        A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] Could not generate mail while creating task for " + cms.readOwner(task).getName() + ". ");
+                        A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] " + e);                
+                    }
+                }
 			}
 		}
 		
-		mail.start();
+        if(mail != null) {
+            mail.start();
+        }
 		
 	}
 
