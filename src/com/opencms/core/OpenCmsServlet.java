@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/03/01 13:22:30 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/03/08 08:59:28 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.23 $ $Date: 2000/03/01 13:22:30 $  
+* @version $Revision: 1.24 $ $Date: 2000/03/08 08:59:28 $  
 * 
 */
 
@@ -448,22 +448,18 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
             // access denied error - display login dialog
             case CmsException.C_ACCESS_DENIED: 
                 requestAuthorization(req,res); 
-                //System.err.println(e.toString());
                 e.printStackTrace();
                 break;
             // file not found - display 404 error.
             case CmsException.C_NOT_FOUND:
-                //System.err.println(e.toString());
                 res.setContentType("text/plain");
                 res.getWriter().print(createErrorBox(e));
                 //res.sendError(res.SC_NOT_FOUND);
                 break;
             case CmsException.C_SERVICE_UNAVAILABLE:
-                //System.err.println(e.toString());
                 res.sendError(res.SC_SERVICE_UNAVAILABLE, e.toString());
                 break;
             default:
-                //System.err.println(e.toString());
                 res.setContentType("text/plain");
                 e.printStackTrace();
                 res.getWriter().print(createErrorBox(e));
@@ -475,7 +471,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
     }
      
      /**
-      * Generates a formate exception output. <br>
+      * Generates a formated exception output. <br>
       * Because the exception could be thrown while accessing the system files,
       * the complete HTML code must be added here!
       * @param e The caught CmsException.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/02/21 14:00:35 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2000/03/08 08:59:29 $
+ * Version: $Revision: 1.51 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.50 $ $Date: 2000/02/21 14:00:35 $
+ * @version $Revision: 1.51 $ $Date: 2000/03/08 08:59:29 $
  */
 public interface I_CmsWpConstants {
 
@@ -111,6 +111,9 @@ public interface I_CmsWpConstants {
     
     /** Parameter for a navigation position */
     public static final String C_PARA_NAVPOS = "navpos";  
+    
+    /** Parameter for a new owner*/
+    public static final String C_PARA_NEWOWNER = "newowner";  
     
     // Filenames of workplace files
         

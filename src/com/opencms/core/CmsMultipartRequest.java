@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartRequest.java,v $
- * Date   : $Date: 2000/02/29 16:44:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/08 08:59:28 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,7 +54,7 @@ import com.opencms.file.*;
 * 
 * @author Alexander Kandzior
 * @author Michael Emmerich
-* @version $Revision: 1.4 $ $Date: 2000/02/29 16:44:45 $  
+* @version $Revision: 1.5 $ $Date: 2000/03/08 08:59:28 $  
 * 
 */
 public class CmsMultipartRequest implements HttpServletRequest {
@@ -331,14 +331,14 @@ public class CmsMultipartRequest implements HttpServletRequest {
 		return m_req.isRequestedSessionIdFromURL();
 	}
 
-     /**
+    /**
 	 * Implements HttpServletRequest method.
 	 * 
 	 * @return True, if the client submitted a session ID via  an URL.
 	 */
     public boolean isRequestedSessionIdFromUrl () {
 		return m_req.isRequestedSessionIdFromUrl();
-	}
+    }
     
 	 
 	/**
