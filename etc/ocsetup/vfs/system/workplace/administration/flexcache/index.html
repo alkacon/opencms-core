@@ -107,42 +107,90 @@ top.head.helpUrl='administration/index.html';
 
 <blockquote>
 
-<h2>
-Entries in Flex Cache: <font color="red"><b><%=sizeEntries%></b></font><br>
-Keys in Flex Cache: <font color="red"><b><%=sizeKeys%></b></font><br>
-Max. size of all entries: <font color="red"><b><%=maxCacheByteSize%> bytes</b></font><br>
-Avg. size of all entries: <font color="red"><b><%=avgCacheByteSize%> bytes</b></font><br>
-Cur. size of all entries: <font color="red"><b><%=currentCacheByteSize%> bytes</b></font>
-</h2>
+<table border="0" cellpadding="3" cellspacing="0">
+<tr>
+	<td class="wizardbig"><b>Entries in Flex Cache:</b></td>
+	<td class="wizardbig" align="right"><font color="red"><b><%=sizeEntries%></b></font></td>
+	<td>&nbsp;</td>
+</tr>
+<tr>
+	<td class="wizardbig"><b>Keys in Flex Cache:</b></td>
+	<td class="wizardbig" align="right"><font color="red"><b><%=sizeKeys%></b></font></td>
+	<td>&nbsp;</td>
+</tr>
+<tr>
+	<td class="wizardbig"><b>Max. size of all entries:</b></td>
+	<td class="wizardbig" align="right"><font color="red"><b><%=maxCacheByteSize%></b></font></td>
+	<td class="wizardbig"><b>bytes</b></td>
+</tr>
+<tr>
+	<td class="wizardbig"><b>Avg. size of all entries:</b></td>
+	<td class="wizardbig" align="right"><font color="red"><b><%=avgCacheByteSize%></b></font></td>
+	<td class="wizardbig"><b>bytes</b></td>
+</tr>
+<tr>
+	<td class="wizardbig"><b>Cur. size of all entries:</b></td>
+	<td class="wizardbig" align="right"><font color="red"><b><%=currentCacheByteSize%></b></font></td>
+	<td class="wizardbig"><b>bytes</b></td>
+</tr>
+</table>
 
 </blockquote>
 
 <form action="<%=request.getRequestURI()%>">
-<input type="submit" name="action" value="<%= label_10 %>">
+<table border="0" cellpadding="3" cellspacing="0">
+<tr>
+    <td><input type="submit" name="action" value="<%= label_10 %>"></td>
+</tr>
+</table>
 </form>
 
+
+<h2>Clear Flex Cache options</h2>
+
 <form method="POST" action="index.html">
-
-    <input type="submit" name="action" value="<%= label_1 %>"><br>
-    <input type="submit" name="action" value="<%= label_2 %>"><p>
-
-    <input type="submit" name="action" value="<%= label_9 %>"><p>
-
+<table border="0" cellpadding="3" cellspacing="0">
+<tr>
+	<td><input type="submit" name="action" value="<%= label_1 %>"></td>
+	<td><input type="submit" name="action" value="<%= label_2 %>"></td>
+</tr>
+</table>
 <%
     if (cache.cacheOffline()) {
 %>
+<h3>Clear online / offline cache options</h3>
+<table border="0" cellpadding="3" cellspacing="0">
+<tr>
+	<td><b>Online</b> cache</td>
+	<td><b>Offline</b> cache</td>
+</tr>
+<tr>
+	<td><input type="submit" name="action" value="<%= label_5 %>"></td>
+	<td><input type="submit" name="action" value="<%= label_7 %>"></td>
+</tr><tr>
+	<td><input type="submit" name="action" value="<%= label_6 %>"></td>
+	<td><input type="submit" name="action" value="<%= label_8 %>"></td>
+</tr>
 
-    <input type="submit" name="action" value="<%= label_5 %>"><br>
-    <input type="submit" name="action" value="<%= label_6 %>"><br>
-    <input type="submit" name="action" value="<%= label_7 %>"><br>
-    <input type="submit" name="action" value="<%= label_8 %>"><p>
-
+</table>
 <%
     }
 %>
-    <input type="submit" name="action" value="<%= label_3 %>"><br>
-    <input type="submit" name="action" value="<%= label_4 %>">
 
+<h3>Purge repository</h3>
+<table border="0" cellpadding="3" cellspacing="0">
+<tr>
+    <td><input type="submit" name="action" value="<%= label_9 %>"></td>
+</tr>
+</table>
+
+<h2>Cached resources options</h2>
+<table border="0" cellpadding="3" cellspacing="0">
+<tr>
+    <td><input type="submit" name="action" value="<%= label_3 %>"></td>
+    <td><input type="submit" name="action" value="<%= label_4 %>"></td>
+</tr>
+</table>
 </form>
 
 <%
