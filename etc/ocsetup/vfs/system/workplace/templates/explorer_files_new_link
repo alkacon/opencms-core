@@ -95,6 +95,7 @@ return true;
 <HTML>
 <script language=JavaScript>
 <!--
+top.help_url='2_2_2_2_3_7.html';
 function show_help()
 {
 	return '2_2_2_2_3_7.html';

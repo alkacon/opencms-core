@@ -73,6 +73,7 @@ function show_help()
 
 <script language=JavaScript>
 <!--
+top.help_url='2_2_2_2_3_4_1.html';
 function show_help()
 {
 	return '2_2_2_2_3_4_1.html';
@@ -154,6 +155,7 @@ function show_help()
 	
 	<script language=JavaScript>
 	<!--
+	top.help_url='2_2_2_2_6_1.html';
 	function show_help()
 	{
 		return '2_2_2_2_6_1.html';
@@ -192,6 +194,7 @@ function show_help()
 
 <script language=JavaScript>
 <!--
+top.help_url='help/3.html';
 function show_help()
 {
 	return 'help/3.html';

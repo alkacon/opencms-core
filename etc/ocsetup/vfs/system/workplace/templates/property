@@ -6,6 +6,7 @@
 
 <script language=JavaScript>
 <!--
+top.help_url='2_1_2_2_1.html';
 function show_help()
 {
 	return '2_1_2_2_1.html';
@@ -93,6 +94,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <HTML>
 <script language=JavaScript>
 <!--
+top.help_url='2_2_2_2_9.html';
 function show_help()
 {
 	return '2_2_2_2_9.html';
@@ -190,6 +192,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 <script language=JavaScript>
 <!--
+top.help_url='2_2_2_2_9_2.html';
 function show_help()
 {
 	return '2_2_2_2_9_2.html';
@@ -287,6 +290,7 @@ function show_help()
 
 <script language=JavaScript>
 <!--
+top.help_url='2_2_2_2_9_4.html';
 function show_help()
 {
 	return '2_2_2_2_9_4.html';
@@ -323,6 +327,7 @@ function show_help()
 
 <script language=JavaScript>
 <!--
+top.help_url='2_2_2_2_9_1.html';
 function show_help()
 {
 	return '2_2_2_2_9_1.html';
@@ -423,6 +428,7 @@ function show_help()
 
 <script language=JavaScript>
 <!--
+top.help_url='2_2_2_2_9_3.html';
 function show_help()
 {
 	return '2_2_2_2_9_3.html';

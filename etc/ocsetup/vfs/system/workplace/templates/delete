@@ -112,6 +112,7 @@ function show_help()
 //for the filename to delete
 var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
 
+top.help_url='2_2_2_2_5_7.html';
 function show_help()
 {
 	return '2_2_2_2_5_7.html';
