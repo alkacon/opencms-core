@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/10/19 18:05:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/10/20 10:54:08 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -51,9 +52,12 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -63,10 +67,10 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.0
  */
-public class CmsXmlContentEditor extends CmsEditor {
+public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
     
     /** Indicates a new file should be created. */
     public static final String EDITOR_ACTION_NEW = I_CmsEditorActionHandler.C_DIRECT_EDIT_OPTION_NEW;
@@ -75,15 +79,19 @@ public class CmsXmlContentEditor extends CmsEditor {
     public static final int ACTION_NEW = 151;
     
     /** The content object to edit. */
-    CmsXmlContent m_content;
+    private CmsXmlContent m_content;
+    
     /** The structure of the content object to edit. */
-    CmsXmlContentDefinition m_contentDefinition;
+    private CmsXmlContentDefinition m_contentDefinition;
     
     /** File object used to read and write contents. */
     private CmsFile m_file;
     
     /** Parameter to indicate if a new XML content resource should be created. */
     private String m_paramNewLink;
+    
+    /** Stores the different schema types used in the editor form.  */
+    private List m_types;
     
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     private static final String EDITOR_TYPE = "xmlcontent";
@@ -229,7 +237,7 @@ public class CmsXmlContentEditor extends CmsEditor {
         // close the editor
         actionClose();
     }
-    
+
     /**
      * Creates a parameter String for passing it to the editor in a "new" operation.<p>
      * 
@@ -260,7 +268,7 @@ public class CmsXmlContentEditor extends CmsEditor {
         int pos = m_paramNewLink.indexOf('|');
         String collectorName = m_paramNewLink.substring(0, pos);
         String param = m_paramNewLink.substring(pos+1);
-
+        
         // get the collector used for calculating the next file name
         I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(collectorName);    
         
@@ -268,12 +276,12 @@ public class CmsXmlContentEditor extends CmsEditor {
             
             // one resource serves as a "template" for the new resource
             CmsFile templateFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-            CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCms(), templateFile);
+            CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCms(), templateFile);            
             Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
             
             // now create a new XML content based on the templates content definition            
             CmsXmlContent newContent = new CmsXmlContent(template.getContentDefinition(new CmsXmlEntityResolver(getCms())), locale, template.getEncoding());  
-
+            
             // IMPORTANT: calculation of the name MUST be done here so the file name is ensured to be valid
             String newFileName = collector.getCreateLink(getCms(), collectorName, param);            
             
@@ -422,7 +430,7 @@ public class CmsXmlContentEditor extends CmsEditor {
 
                     I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
                     I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(value.getTypeName());                    
-                    result.append(widget.getEditorWidget(getCms(), m_content, this, m_contentDefinition, value));
+                    result.append(widget.getDialogWidget(getCms(), m_content, this, m_contentDefinition, value));
                 }               
             }
             
@@ -440,8 +448,9 @@ public class CmsXmlContentEditor extends CmsEditor {
      * Generates the HTML for the end of the html editor form page.<p>
      * 
      * @return the HTML for the end of the html editor form page
+     * @throws JspException if including the error page fails
      */
-    public String getXmlEditorHtmlEnd() {
+    public String getXmlEditorHtmlEnd() throws JspException {
         
         StringBuffer result = new StringBuffer(128);
         try {
@@ -458,15 +467,100 @@ public class CmsXmlContentEditor extends CmsEditor {
     
                     I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
                     I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(value.getTypeName());                    
-                    result.append(widget.getEditorHtmlEnd(getCms(), m_content, this, m_contentDefinition, value));
+                    result.append(widget.getDialogHtmlEnd(getCms(), m_content, this, m_contentDefinition, value));
                 }               
             }
-        } catch (Throwable t) {
-            OpenCms.getLog(this).error("Error in XML editor", t);
+        } catch (CmsXmlException e) {
+            showErrorPage(e, "xml");
         }
         return result.toString();
     }
     
+    /**
+     * Generates the javascript includes for the used xml schema types in the editor form.<p>
+     * 
+     * @return the javascript includes for the used xml schema types
+     * @throws JspException if including the error page fails
+     */
+    public String getXmlEditorIncludes() throws JspException {
+        
+        StringBuffer result = new StringBuffer(128);
+        try {
+            Iterator i = getTypes().iterator();
+            while (i.hasNext()) {
+                String key = (String)i.next();
+                I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(key);
+                result.append(widget.getDialogIncludes(getCms(), this, m_contentDefinition));
+                result.append("\n");
+            }
+        } catch (CmsXmlException e) {
+            showErrorPage(e, "xml");
+        }
+        return result.toString();
+    }
     
+    /**
+     * Generates the javascript initialization calls for the used xml schema types in the editor form.<p>
+     * 
+     * @return the javascript initialization calls for the used xml schema types
+     * @throws JspException if including the error page fails
+     */
+    public String getXmlEditorInitCalls() throws JspException {
+        StringBuffer result = new StringBuffer(128);
+        try {
+            Iterator i = getTypes().iterator();
+            while (i.hasNext()) {
+                String key = (String)i.next();
+                I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(key);
+                result.append(widget.getDialogInitCall(getCms(), this));
+            }
+        } catch (CmsXmlException e) {
+            showErrorPage(e, "xml");
+        }
+        return result.toString();
+    }
+    
+    /**
+     * Generates the javascript initialization methods for the used xml contents.<p>
+     * 
+     * @return the javascript initialization methods for the used xml contents
+     * @throws JspException if including the error page fails
+     */
+    public String getXmlEditorInitMethods() throws JspException {
+        StringBuffer result = new StringBuffer(128);
+        try {
+            Iterator i = getTypes().iterator();
+            while (i.hasNext()) {
+                String key = (String)i.next();
+                I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(key);
+                result.append(widget.getDialogInitMethod(getCms(), m_content, this, m_contentDefinition, null));
+                result.append("\n");
+            }
+        } catch (CmsXmlException e) {
+            showErrorPage(e, "xml");
+        }
+        return result.toString();
+    }
+    
+    /**
+     * Returns the different xml schema types used in the form to display.<p>
+     * 
+     * @return the different xml schema type names
+     */
+    private List getTypes() {
+        
+        if (m_types == null) {
+            List typeSequence = m_contentDefinition.getTypeSequence();
+            // collect different widget types
+            Set types = new HashSet();
+            for (int i=0; i<typeSequence.size(); i++) {
+                I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)typeSequence.get(i);
+                types.add(type.getTypeName());
+            }  
+            m_types = new ArrayList(types.size());
+            m_types.addAll(types);
+        }
+        return m_types;
+    }
     
 }

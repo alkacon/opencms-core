@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/10/14 15:58:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/10/20 10:54:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.util.Iterator;
@@ -55,7 +56,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -234,7 +235,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject, A_CmsXmlDocument)
      */
-    public String getStringValue(CmsObject cms, A_CmsXmlDocument document) {
+    public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {
         
         if (m_stringValue == null) {
             m_stringValue = createStringValue(cms, document);
@@ -262,13 +263,17 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, org.opencms.xml.A_CmsXmlDocument, java.lang.String)
      */
-    public void setStringValue(CmsObject cms, A_CmsXmlDocument document, String value) throws CmsXmlException {
+    public void setStringValue(CmsObject cms, I_CmsXmlDocument document, String value) throws CmsXmlException {
 
         Element content = m_element.element(CmsXmlPage.NODE_CONTENT);
         Element links = m_element.element(CmsXmlPage.NODE_LINKS);
 
-        String encoding = document.getEncoding();
-        CmsLinkProcessor linkProcessor = document.getLinkProcessor(cms, new CmsLinkTable());
+        int todo = 0;
+        // TODO: solve Interface vs. abstract issue
+        A_CmsXmlDocument xmlDoc = (A_CmsXmlDocument)document;
+        
+        String encoding = xmlDoc.getEncoding();
+        CmsLinkProcessor linkProcessor = xmlDoc.getLinkProcessor(cms, new CmsLinkTable());
 
         if (encoding != null) {
             // ensure all chars in the given content are valid chars for the selected charset
@@ -276,7 +281,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
         }
         
         // do some processing to remove unnecessary tags if necessary
-        String contentConversion = document.getConversion();    
+        String contentConversion = xmlDoc.getConversion();    
         if (CmsHtmlConverter.isConversionEnabled(contentConversion)) {
             CmsHtmlConverter converter = new CmsHtmlConverter(encoding, contentConversion);
             value = converter.convertToStringSilent(value);
@@ -328,10 +333,14 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
      * 
      * @return the String value for this XML page element
      */
-    private String createStringValue(CmsObject cms, A_CmsXmlDocument document) {
+    private String createStringValue(CmsObject cms, I_CmsXmlDocument document) {
         
         Element data = m_element.element(CmsXmlPage.NODE_CONTENT);
         Attribute enabled = m_element.attribute(CmsXmlPage.ATTRIBUTE_ENABLED);
+        
+        int todo = 0;
+        // TODO: solve Interface vs. abstract issue
+        A_CmsXmlDocument xmlDoc = (A_CmsXmlDocument)document;
         
         String content = "";
         if (enabled == null || Boolean.valueOf(enabled.getText()).booleanValue()) {
@@ -341,11 +350,11 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
             CmsLinkTable linkTable = getLinkTable();
             if (!linkTable.isEmpty()) {
                 
-                int todo = 0;
+                int todo2 = 0;
                 // TODO: boolean value for "editor mode" currently always set to "false", see XML page handling of this
                 
                 // replace macros with links
-                CmsLinkProcessor linkProcessor = new CmsLinkProcessor(cms, linkTable, document.getEncoding(), null);                
+                CmsLinkProcessor linkProcessor = new CmsLinkProcessor(cms, linkTable, xmlDoc.getEncoding(), null);                
                 try {                    
                     content = linkProcessor.processLinks(content);
                 } catch (ParserException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlBooleanValue.java,v $
- * Date   : $Date: 2004/10/15 15:19:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/20 10:54:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@ package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.I_CmsXmlDocument;
 
 import org.dom4j.Element;
 
@@ -42,7 +42,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.2
  */
 public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
@@ -173,9 +173,9 @@ public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject, A_CmsXmlDocument)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject, I_CmsXmlDocument)
      */
-    public String getStringValue(CmsObject cms, A_CmsXmlDocument document) {
+    public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {
 
         return m_stringValue;
     }
@@ -199,7 +199,7 @@ public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, org.opencms.xml.A_CmsXmlDocument, java.lang.String)
      */
-    public void setStringValue(CmsObject cms, A_CmsXmlDocument document, String value) {
+    public void setStringValue(CmsObject cms, I_CmsXmlDocument document, String value) {
 
         m_element.clearContent();
         m_element.addText(value);

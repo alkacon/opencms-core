@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/10/18 13:55:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/20 10:54:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,9 @@
 package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
-import org.opencms.workplace.editors.CmsXmlContentEditor;
-import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Map;
@@ -45,28 +44,28 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public interface I_CmsXmlWidget {
     
     /**
-     * Generates the html to include at the end of the editor form, if needed.<p>
+     * Generates the html to include at the end of the dialog form, if needed.<p>
      * 
      * @param cms an initialized instance of a CmsObject
      * @param document the XML document this value belongs to
-     * @param editor the XML content editor
-     * @param contentDefinition the content defintion object
+     * @param widgetDialog the dialog where the widget is used on
+     * @param contentDefinition the content definition object
      * @param value the XML content value to generate the widget for
      * 
      * @return the html to include at the end of the editor form
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    String getEditorHtmlEnd(
+    String getDialogHtmlEnd(
         CmsObject cms,
-        A_CmsXmlDocument document,
-        CmsXmlContentEditor editor,
+        I_CmsXmlDocument document,
+        I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) throws CmsXmlException;
     
@@ -74,49 +73,49 @@ public interface I_CmsXmlWidget {
      * Generates the necessary javascript inclusion code for an individual widget.<p>
      * 
      * @param cms an initialized instance of a CmsObject
-     * @param editor the XML content editor
-     * @param contentDefinition the content defintion object
+     * @param widgetDialog the dialog where the widget is used on
+     * @param contentDefinition the content definition object
      * 
      * @return the javascript inclusion code
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    String getEditorIncludes(
+    String getDialogIncludes(
         CmsObject cms,
-        CmsXmlContentEditor editor,
+        I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition) throws CmsXmlException;
     
     /**
      * Generates the initialisation call method for an individual widget.<p>
      * 
      * @param cms an initialized instance of a CmsObject
-     * @param editor the XML content editor
+     * @param widgetDialog the dialog where the widget is used on
      * 
      * @return the initialisation call method
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    String getEditorInitCall(
+    String getDialogInitCall(
         CmsObject cms,
-        CmsXmlContentEditor editor) throws CmsXmlException;
+        I_CmsWidgetDialog widgetDialog) throws CmsXmlException;
     
     /**
      * Generates the initialization code for the provided XML content value.<p>
      * 
      * @param cms an initialized instance of a CmsObject
      * @param document the XML document this value belongs to
-     * @param editor the XML content editor
-     * @param contentDefinition the content defintion object
+     * @param widgetDialog the dialog where the widget is used on
+     * @param contentDefinition the content definition object
      * @param value the XML content value to generate the initialization for
      * 
      * @return the initialization code
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    String getEditorInitMethod(
+    String getDialogInitMethod(
         CmsObject cms,
-        A_CmsXmlDocument document,
-        CmsXmlContentEditor editor,
+        I_CmsXmlDocument document,
+        I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) throws CmsXmlException;
     
@@ -125,18 +124,18 @@ public interface I_CmsXmlWidget {
      * 
      * @param cms an initialized instance of a CmsObject
      * @param document the XML document this value belongs to
-     * @param editor the XML content editor
-     * @param contentDefinition the content defintion object
+     * @param widgetDialog the dialog where the widget is used on
+     * @param contentDefinition the content definition object
      * @param value the XML content value to generate the widget for
      * 
      * @return the HTML form for this content node
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    String getEditorWidget(
+    String getDialogWidget(
         CmsObject cms,
-        A_CmsXmlDocument document,
-        CmsXmlContentEditor editor,
+        I_CmsXmlDocument document,
+        I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) throws CmsXmlException;
 
@@ -156,15 +155,15 @@ public interface I_CmsXmlWidget {
      * @param cms an initialized instance of a CmsObject
      * @param document the XML document this value belongs to
      * @param formParameters the map of parameters to get the value from
-     * @param editor the xml content editor
+     * @param widgetDialog the dialog where the widget is used on
      * @param value the XML content value to set the editor value in
      * 
      * @throws CmsXmlException if something goes wrong
      */
     void setEditorValue(
         CmsObject cms,
-        A_CmsXmlDocument document,
+        I_CmsXmlDocument document,
         Map formParameters,
-        CmsXmlContentEditor editor,
+        I_CmsWidgetDialog widgetDialog,
         I_CmsXmlContentValue value) throws CmsXmlException;
 }

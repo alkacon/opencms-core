@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlHtmlWidget.java,v $
- * Date   : $Date: 2004/10/18 14:46:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/20 10:54:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,10 @@ package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.workplace.editors.CmsXmlContentEditor;
-import org.opencms.xml.A_CmsXmlDocument;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Map;
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
@@ -58,24 +58,72 @@ public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
 
         // empty constructor is required for class registration
     }
+    
+    /**
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition)
+     */
+    public String getDialogIncludes(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
+        CmsXmlContentDefinition contentDefinition) {
+            
+        StringBuffer result = new StringBuffer(16);
+        result.append("<script type=\"text/javascript\">\n<!--\n");
+        result.append("\t_editor_url = \"");
+        result.append(CmsWorkplace.getSkinUri());
+        result.append("editors/htmlarea/\";\n");
+        result.append("\t_editor_lang = \"");
+        result.append(widgetDialog.getLocale());
+        result.append("\";\n");
+        result.append("//-->\n</script>\n");
+        result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "editors/htmlarea/htmlarea.js"));
+        result.append("\n");
+        result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/htmlarea.js"));
+        return result.toString();
+    }
+    
+    /**
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog)
+     */
+    public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+        
+        return "\tinitHtmlArea();";
+    }
+    
+    /**
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     */
+    public String getDialogInitMethod(
+        CmsObject cms,
+        I_CmsXmlDocument document,
+        I_CmsWidgetDialog widgetDialog,
+        CmsXmlContentDefinition contentDefinition,
+        I_CmsXmlContentValue value) {
+        
+        StringBuffer result = new StringBuffer(8);
+        result.append("function initHtmlArea() {\n");
+        result.append("\tinitHtmlAreas();\n");
+        result.append("}\n");        
+        return result.toString();
+    }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getEditorWidget(org.opencms.file.CmsObject, org.opencms.xml.A_CmsXmlDocument, org.opencms.workplace.editors.CmsXmlContentEditor, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
      */
-    public String getEditorWidget(
+    public String getDialogWidget(
         CmsObject cms,
-        A_CmsXmlDocument document,
-        CmsXmlContentEditor editor,
+        I_CmsXmlDocument document,
+        I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) throws CmsXmlException {
 
         String id = getParameterName(value);
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(editor, contentDefinition, value.getNodeName()));
+        result.append(getMessage(widgetDialog, contentDefinition, value.getNodeName()));
         result.append(": </td>");
-        result.append(getHelpBubble(cms, editor, contentDefinition, value.getNodeName()));
-        result.append("</td><td class=\"xmlTd\">");
+        result.append(getHelpBubble(cms, widgetDialog, contentDefinition, value.getNodeName()));
+        result.append("<td class=\"xmlTd\">");
         result.append("<textarea class=\"xmlInput maxwidth\" name=\"");
         result.append(id);
         result.append("\" id=\"");
@@ -88,13 +136,13 @@ public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, org.opencms.xml.A_CmsXmlDocument, java.util.Map, org.opencms.workplace.editors.CmsXmlContentEditor, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, java.util.Map, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public void setEditorValue(
         CmsObject cms,
-        A_CmsXmlDocument document,
+        I_CmsXmlDocument document,
         Map formParameters,
-        CmsXmlContentEditor editor,
+        I_CmsWidgetDialog widgetDialog,
         I_CmsXmlContentValue value) throws CmsXmlException {
 
         String[] values = (String[])formParameters.get(getParameterName(value));

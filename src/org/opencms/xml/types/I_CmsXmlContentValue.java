@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/20 10:54:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
-import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.I_CmsXmlDocument;
 
 import org.dom4j.Element;
 
@@ -41,7 +41,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
@@ -74,7 +74,7 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    String getStringValue(CmsObject cms, A_CmsXmlDocument document) throws CmsXmlException;
+    String getStringValue(CmsObject cms, I_CmsXmlDocument document) throws CmsXmlException;
     
     /**
      * Sets the provided String as value of this XML content node.<p>  
@@ -85,5 +85,5 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * 
      * @throws CmsXmlException if something goes wrong
      */    
-    void setStringValue(CmsObject cms, A_CmsXmlDocument document, String value) throws CmsXmlException;    
+    void setStringValue(CmsObject cms, I_CmsXmlDocument document, String value) throws CmsXmlException;    
 }

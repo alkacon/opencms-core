@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlBooleanWidget.java,v $
- * Date   : $Date: 2004/10/18 14:46:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/20 10:54:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,9 @@ package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.editors.CmsXmlContentEditor;
-import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.CmsXmlBooleanValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -47,7 +46,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.2
  */
 public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
@@ -61,12 +60,12 @@ public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getEditorWidget(org.opencms.file.CmsObject, org.opencms.xml.A_CmsXmlDocument, org.opencms.workplace.editors.CmsXmlContentEditor, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
      */
-    public String getEditorWidget(
+    public String getDialogWidget(
         CmsObject cms,
-        A_CmsXmlDocument document,
-        CmsXmlContentEditor editor,
+        I_CmsXmlDocument document,
+        I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) {
 
@@ -74,9 +73,9 @@ public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
 
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(editor, contentDefinition, value.getNodeName()));
+        result.append(getMessage(widgetDialog, contentDefinition, value.getNodeName()));
         result.append(": </td>");
-        result.append(getHelpBubble(cms, editor, contentDefinition, value.getNodeName()));
+        result.append(getHelpBubble(cms, widgetDialog, contentDefinition, value.getNodeName()));
         result.append("<td class=\"xmlTd\">");        
         boolean booleanValue = castValue.getBooleanValue();
         String id = getParameterName(value);
@@ -95,11 +94,11 @@ public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
     /**
      * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, org.opencms.xml.A_CmsXmlDocument, java.util.Map, org.opencms.workplace.editors.CmsXmlContentEditor, org.opencms.xml.types.I_CmsXmlContentValue)
      */
-    public void setEditorValue(
+    public void setEditorValue (
         CmsObject cms,
-        A_CmsXmlDocument document,
+        I_CmsXmlDocument document,
         Map formParameters,
-        CmsXmlContentEditor editor,
+        I_CmsWidgetDialog widgetDialog,
         I_CmsXmlContentValue value) throws CmsXmlException {
 
         String[] values = (String[])formParameters.get(getParameterName(value));

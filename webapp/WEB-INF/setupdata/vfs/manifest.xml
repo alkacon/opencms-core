@@ -13081,6 +13081,71 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/resources/components/widgets</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 19 Oct 2004 11:24:45 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Oct 2004 11:24:45 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/colorpicker.js</source>
+			<destination>system/workplace/resources/components/widgets/colorpicker.js</destination>
+			<type>plain</type>
+			<uuidresource>c5a7cfb9-21b0-11d9-8112-c726a0fc5cd5</uuidresource>
+			<datelastmodified>Tue, 19 Oct 2004 11:31:45 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Oct 2004 11:25:09 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS to open color selector]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/fileselector.js</source>
+			<destination>system/workplace/resources/components/widgets/fileselector.js</destination>
+			<type>plain</type>
+			<uuidresource>947f2585-21b8-11d9-844e-c726a0fc5cd5</uuidresource>
+			<datelastmodified>Tue, 19 Oct 2004 12:25:13 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Oct 2004 12:21:03 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS to open VFS file selector]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/htmlarea.js</source>
+			<destination>system/workplace/resources/components/widgets/htmlarea.js</destination>
+			<type>plain</type>
+			<uuidresource>5f0daaf9-21c7-11d9-8b42-c726a0fc5cd5</uuidresource>
+			<datelastmodified>Wed, 20 Oct 2004 10:01:30 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Oct 2004 14:06:56 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS to edit html fields]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file> 
+		<file>
 			<destination>system/workplace/resources/editors</destination>
 			<type>folder</type>
 			<datelastmodified>Tue, 17 Aug 2004 12:34:57 CEST</datelastmodified>
