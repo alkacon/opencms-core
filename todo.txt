@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/Attic/todo.txt,v $
- * Date   : $Date: 2002/08/23 10:33:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2002/08/23 13:38:55 $
+ * Version: $Revision: 1.2 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ Description:
   keep the filesize reasonable.
  
 Issues:
-    None known. Someone has to to the work.
+    None known. Someone has to do the work.
 
 Assigned to: 
   (No volunteer yet)
@@ -124,7 +124,7 @@ Description:
   be unused. This should be checked and unused files should be removed.
 
 Issues:
-  None known. Someone has to to the work.
+  None known. Someone has to do the work.
 
 Assigned to: 
   (No volunteer yet)
@@ -143,7 +143,7 @@ Description:
   to try our OpenCms on their system.
 
 Issues:
-  None known. Someone has to to the work.
+  None known. Someone has to do the work.
 
 Assigned to: 
   (No volunteer yet)
