@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2001/08/01 07:24:06 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -151,7 +151,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         Enumeration  enu=parameters.keys();
         while (enu.hasMoreElements()) {
           String a=(String)enu.nextElement();
-          System.err.println("## "+a);
           String b=parameters.get(a).toString();
           System.err.println("## "+a+" -> "+b);
         }
@@ -166,54 +165,55 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         }
         System.err.println("");
         System.err.println("-------------------------------------------------");
-        */
+      */
 
-    String hasFilterParam = (String) session.getValue("filterparameter");
-    template.setData("filternumber","0");
+	String hasFilterParam = (String) session.getValue("filterparameter");
+	template.setData("filternumber","0");
 
-    //change filter
-    if ((hasFilterParam == null) && (filterParam == null) && (setaction == null)) {
-      if (selectBox != null) {
-        session.putValue("filter", selectBox);
-        template.setData("filternumber",selectBox);
-      }
-    } else {
-      template.setData("filternumber", (String)session.getValue("filter"));
-    }
+	//change filter
+	if ((hasFilterParam == null) && (filterParam == null) && (setaction == null)) {
+	  if (selectBox != null) {
+	    session.putValue("filter", selectBox);
+	    template.setData("filternumber",selectBox);
+	  }
+	} else {
+	  template.setData("filternumber", (String)session.getValue("filter"));
+	}
 
-    //move id values to id, remove old markers
-    if (idlock != null) {
-      id = idlock;
-      session.putValue("idlock", idlock);
-      session.removeValue("idedit");
-      session.removeValue("idnew");
-      session.removeValue("iddelete");
-    }
-    if (idedit != null) {
-      id = idedit;
-      session.putValue("idedit", idedit);
-      session.removeValue("idlock");
-      session.removeValue("idnew");
-      session.removeValue("iddelete");
-    }
-    if (iddelete != null) {
-      id = iddelete;
-      session.putValue("iddelete", iddelete);
-      session.removeValue("idedit");
-      session.removeValue("idnew");
-      session.removeValue("idlock");
-    }
-    if ((id != null) && (id.equals("new"))) {
-      session.putValue("idnew", id);
-      session.removeValue("idedit");
-      session.removeValue("idnew");
-      session.removeValue("iddelete");
-      session.removeValue("idlock");
-    }
+	//move id values to id, remove old markers
+	if (idlock != null) {
+	  id = idlock;
+	  session.putValue("idlock", idlock);
+	  session.removeValue("idedit");
+	  session.removeValue("idnew");
+	  session.removeValue("iddelete");
+	}
+	if (idedit != null) {
+	  id = idedit;
+	  session.putValue("idedit", idedit);
+	  session.removeValue("idlock");
+	  session.removeValue("idnew");
+	  session.removeValue("iddelete");
+	}
+	if (iddelete != null) {
+	  id = iddelete;
+	  session.putValue("iddelete", iddelete);
+	  session.removeValue("idedit");
+	  session.removeValue("idnew");
+	  session.removeValue("idlock");
+	}
+	if ((id != null) && (id.equals("new"))) {
+	  session.putValue("idnew", id);
+	  session.removeValue("idedit");
+	  session.removeValue("idnew");
+	  session.removeValue("iddelete");
+	  session.removeValue("idlock");
+	}
 
-    //get marker id from session
-    String idsave = (String) session.getValue("idsave");
-    if (ok == null) {
+	//get marker id from session
+	String idsave = (String) session.getValue("idsave");
+	if (ok == null) {
+
           idsave = null;
         }
 
