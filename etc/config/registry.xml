@@ -26,15 +26,14 @@
         <repository>
             <path>/system/classes/</path>
         </repository>
+		<!-- enable this for synchronizing resources and set the desired paths
 		<syncpath>c:/work41/sync</syncpath>
 		<syncproject>_syncProject</syncproject>
 		<syncresource>
 			<res1>/content/</res1>
-			<res2>/system/workplace/config/</res2>
-			<res3>/system/workplace/action/syncfolder.html</res3>
-			<res4>/system/workplace/templates/syncfolder</res4>
-			<res5>/system/workplace/templates/head</res5>
-		</syncresource>
+			<res2>/download/</res2>
+			<res3>/pics/</res3>
+		</syncresource> -->
     </system>
     <modules/>
 </registry>
