@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/04/02 12:31:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/04/02 15:52:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -425,8 +425,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         
         // initialize "disabled" attribute for input fields
         String disabled = "";
+        boolean isEditable = true;
         if (!isEditable()) {
             disabled = " disabled=\"disabled\"";
+            isEditable = false;
         }
         
         // get all properties for the resource
@@ -437,11 +439,6 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             // ignore
         }
         
-        // check if we are in the online project
-        boolean onlineProject = false;
-        if (getCms().getRequestContext().currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            onlineProject = true;    
-        }
         
         // check for presence of property definitions, should always be true
         boolean present = false;
@@ -482,8 +479,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                         // structure form
                         propValue = getJsp().getRequest().getParameter(PREFIX_STRUCTURE + propName);
                         valueStructure = getJsp().getRequest().getParameter(PREFIX_STRUCTURE + propName);
-                        if (onlineProject) {
-                            // in online project, values from diabled fields are not posted
+                        if (!isEditable) {
+                            // values from disabled fields are not posted
                             valueResource = getJsp().getRequest().getParameter(PREFIX_RESOURCE + propName);
                         } else {
                             valueResource = getJsp().getRequest().getParameter(PREFIX_VALUE + propName);
@@ -491,8 +488,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                     } else {
                         // resource form
                         propValue = getJsp().getRequest().getParameter(PREFIX_RESOURCE + propName);
-                        if (onlineProject) {
-                            // in online project, values from diabled fields are not posted
+                        if (!isEditable) {
+                            // values from disabled fields are not posted
                             valueStructure = getJsp().getRequest().getParameter(PREFIX_STRUCTURE + propName);
                         } else {
                             valueStructure = getJsp().getRequest().getParameter(PREFIX_VALUE + propName);
@@ -889,6 +886,11 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             if (propertiesToWrite.size() > 0) {
                 // lock resource if autolock is enabled
                 checkLock(getParamResource());
+                CmsResource resource = getCms().readFileHeader(getParamResource());
+                if (resource.isFolder() && !getParamResource().endsWith("/")) {
+                    // append folder separator to resource name
+                    setParamResource(getParamResource() + "/");    
+                }
                 //write the new property values
                 getCms().writePropertyObjects(getParamResource(), propertiesToWrite);
             }
