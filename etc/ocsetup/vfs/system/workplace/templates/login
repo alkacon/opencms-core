@@ -25,7 +25,7 @@
 </head>
 
 <!-- Begin content login -->
-<!-- version-number of the workplace (should correspond to the version-number of OpenCms) 4.3.15 -->
+<!-- version-number of the workplace (should correspond to the version-number of OpenCms) 4.3.16 -->
 <body bgcolor="#ffffff" marginwidth = 0 marginheight = 20 leftmargin=0 topmargin=20 onload="document.LOGIN.NAME.focus()">
 
 <form action="login.html" method=post id=LOGIN name=LOGIN>

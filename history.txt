@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.16 Bela Tegeuse - 31 May 2001
+! Added the administration point for clear cache.
+* fixed bug in publishProject if no ElementCache exists.
+
 OpenCms 4.3.15 Bela Tegeuse - 29 May 2001
 ! Added clear cache in publishproject for element cache in generic and mysql.
 
