@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/09 11:10:48 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/07/09 13:37:31 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.16 $ $Date: 2003/07/09 11:10:48 $
+ * @version $Revision: 1.17 $ $Date: 2003/07/09 13:37:31 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1147,10 +1147,10 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         try {
             // delete resource data from database
             conn = m_sqlManager.getConnection(resource.getProjectId());            
-            //stmt = m_sqlManager.getPreparedStatement(conn, resource.getProjectId(), "C_RESOURCES_DELETEBYID");
             stmt = m_sqlManager.getPreparedStatement(conn, resource.getProjectId(), "C_RESOURCES_ID_DELETE");
             stmt.setString(1, resource.getId().toString());
             stmt.executeUpdate();
+            
             m_sqlManager.closeAll(null, stmt, null);
 
             // delete the file content
