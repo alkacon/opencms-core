@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/18 15:39:00 $
- * Version: $Revision: 1.240 $
+ * Date   : $Date: 2003/09/18 15:42:00 $
+ * Version: $Revision: 1.241 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.240 $ $Date: 2003/09/18 15:39:00 $
+ * @version $Revision: 1.241 $ $Date: 2003/09/18 15:42:00 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2111,13 +2111,9 @@ public class CmsDriverManager extends Object {
      * @param context the current request context
      * @param timestamp the max age of backup resources
      * @param versions the number of remaining backup versions for each resource
-     * @return the oldest remaining version
      * @throws CmsException if operation was not succesful
      */
-    public int deleteBackups(CmsObject cms, CmsRequestContext context, long timestamp, int versions) throws CmsException {
-        int lastVersion = 1;
-
-
+    public void deleteBackups(CmsObject cms, CmsRequestContext context, long timestamp, int versions) throws CmsException {
         if (isAdmin(context)) {
             // get all resources from the backup table
             // do only get one version per resource
@@ -2137,8 +2133,7 @@ public class CmsDriverManager extends Object {
                     m_backupDriver.deleteBackup(res, maxTag, versionsToDelete);           
                 }
             }
-        }
-        return lastVersion;
+        }       
     }
 
     /**
