@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/06/08 13:24:46 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2004/06/16 07:31:19 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  * 
  * @since 5.1
  */
@@ -126,9 +126,9 @@ public class CmsExplorer extends CmsWorkplace {
                     // other cases (resource null, no folder), first get the resource name from settings
                     showLinks = settings.getExplorerShowLinks();
                     currentResource = settings.getExplorerResource();
-                    if ((currentResource == null) || (!resourceExists(getCms(), currentResource))) {
-                        currentResource = "/";
-                        settings.setExplorerResource(currentResource);
+                    if (!resourceExists(getCms(), currentResource)) {
+                        // resource does not exist, display root folder
+                        settings.setExplorerResource("/");
                         showLinks = false;
                     }
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/06/16 07:31:19 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.1
  */
@@ -492,6 +492,7 @@ public class CmsTree extends CmsWorkplace {
         if (getTreeType() == null) {
             currentResource = getSettings().getExplorerResource();
         } else {
+            // get the current tree resource from the settings for a special tree type
             currentResource = getSettings().getTreeResource(getTreeType());
         }
         
@@ -499,10 +500,6 @@ public class CmsTree extends CmsWorkplace {
         // both "resource" and "lastknown" must be folders
         if (resource != null) {
             resource = CmsResource.getFolderPath(resource);
-            if (resource.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/") && (! resource.startsWith(getSettings().getSite()))) {
-                // restrict access to /system/ 
-                resource = "/";   
-            }         
         }       
         if ((lastknown != null) && (! lastknown.endsWith("/"))) {
             lastknown += "/";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2004/06/16 07:31:19 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.78 $
+ * @version $Revision: 1.79 $
  * 
  * @since 5.1
  */
@@ -1436,8 +1436,9 @@ public abstract class CmsWorkplace {
         
         // check site setting
         if (!(settings.getSite().equals(reqCont.getSiteRoot()))) {
+            // site was switched, set new site root
             reqCont.setSiteRoot(settings.getSite());
-            settings.setExplorerResource("/");
+            // removed setting explorer resource to "/" to get the stored folder
         }        
     }
     

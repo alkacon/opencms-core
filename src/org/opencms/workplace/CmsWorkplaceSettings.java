@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2004/06/13 23:41:52 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/06/16 07:31:19 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -148,6 +148,10 @@ public class CmsWorkplaceSettings {
         String mode = getExplorerMode();
         if (mode == null) {
             mode = "explorerview";
+        }
+        if ("explorerview".equals(mode)) {
+            // append the current site to the key when in explorer view mode
+            mode += "_" + getSite() + "/";
         }
         // get the resource for the given mode
         String resource = (String)m_explorerResource.get(mode);
@@ -357,6 +361,10 @@ public class CmsWorkplaceSettings {
         String mode = getExplorerMode();
         if (mode == null) {
             mode = "explorerview";
+        }
+        if ("explorerview".equals(mode)) {
+            // append the current site to the key when in explorer view mode
+            mode += "_" + getSite() + "/";
         }
        
         // set the resource for the given mode
