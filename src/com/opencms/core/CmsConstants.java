@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsConstants.java,v $
- * Date   : $Date: 2000/09/18 08:25:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/09/18 08:25:50 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ package com.opencms.core;
 * The Class is abstract since there is no need to instantiate it. 
 *   
 * @author Anders Fugmann
-* @version $Revision: 1.4 $ $Date: 2000/09/18 08:25:02 $  
+* @version $Revision: 1.5 $ $Date: 2000/09/18 08:25:50 $  
 * 
 */
 public abstract class CmsConstants {
@@ -43,5 +43,5 @@ public abstract class CmsConstants {
   * USE_MULTISITE defines weather or not to use the new multisite functionality.
   * This variable will be removed when multisite is fully functional.
   */
-	public static boolean USE_MULTISITE = true;
+	public static boolean USE_MULTISITE = false;
 }
