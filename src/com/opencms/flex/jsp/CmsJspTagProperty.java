@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagProperty.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/03/04 17:27:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.util.Encoder;
  * Provides access to the properties of a resource in the OpenCms VFS .<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -50,20 +50,28 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     private boolean m_escapeHtml = false;
     
     // public accessor constants
+    public static final String USE_URI = "uri";
     public static final String USE_PARENT = "parent";
-    public static final String USE_THIS = "this";
     public static final String USE_SEARCH = "search";
+    public static final String USE_SEARCH_URI = "search.uri";
     public static final String USE_SEARCH_PARENT = "search-parent";
+    public static final String USE_ELEMENT_URI = "element.uri";
+    public static final String USE_THIS = "this";
+    public static final String USE_SEARCH_ELEMENT_URI = "search.element.uri";
     public static final String USE_SEARCH_THIS = "search-this";
     
     /** static array of the possible "file" properties */
     private static final String[] m_actionValues =
         {
+            USE_URI,
             USE_PARENT,
-            USE_THIS,
-            USE_SEARCH_THIS,
             USE_SEARCH,
+            USE_SEARCH_URI,
             USE_SEARCH_PARENT,
+            USE_ELEMENT_URI,
+            USE_THIS,
+            USE_SEARCH_ELEMENT_URI,
+            USE_SEARCH_THIS
         };
 
     /** array list for fast lookup */
@@ -213,22 +221,26 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
         if (action == null) action = m_actionValues[0];
 
         switch (m_actionValue.indexOf(action)) {      
-            case 0: // USE_PARENT
+            case 0: // USE_URI
+            case 1: // USE_PARENT
                 // Read properties of parent (i.e. top requested) file
                 value = req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, false, defaultValue); 
                 break;
-            case 1: // USE_THIS
-                // Read properties of this file            
-                value = req.getCmsObject().readProperty(req.getCmsResource(), property, false, defaultValue);
-                break;
-            case 2: // USE_SEARCH_THIS
-                // Try to find property on this file and all parent folders
-                value = req.getCmsObject().readProperty(req.getCmsResource(), property, true, defaultValue);
-                break;
-            case 3: // USE_SEARCH
+            case 2: // USE_SEARCH
+            case 3: // USE_SEARCH_URI
             case 4: // USE_SEARCH_PARENT 
                 // Try to find property on parent file and all parent folders
                 value = req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, true, defaultValue);
+                break;                
+            case 5: // USE_ELEMENT_URI
+            case 6: // USE_THIS
+                // Read properties of this file            
+                value = req.getCmsObject().readProperty(req.getCmsResource(), property, false, defaultValue);
+                break;
+            case 7: // USE_SEARCH_ELEMENT_URI
+            case 8: // USE_SEARCH_THIS
+                // Try to find property on this file and all parent folders
+                value = req.getCmsObject().readProperty(req.getCmsResource(), property, true, defaultValue);
                 break;
             default:
                 // Read properties of the file named in the attribute            
