@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/06 13:21:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/06 14:16:24 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,10 +46,10 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/06/06 13:21:02 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/06 14:16:24 $
  * 
  */
-public class CmsResourceBroker implements I_CmsResourceBroker {
+public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsQuerys {
 	
 	/**
 	 * The configuration of the property-file.
@@ -1197,7 +1197,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker {
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 								String groupname)
         throws CmsException {
-     return null;
+        //return m_dbAccess.readGroup(groupname);
+        return null;
+     
     }
 
 	/**

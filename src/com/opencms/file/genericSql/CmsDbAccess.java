@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/06 13:53:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/06/06 14:16:24 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.5 $ $Date: 2000/06/06 13:53:42 $ * 
+ * @version $Revision: 1.6 $ $Date: 2000/06/06 14:16:24 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants {
 	
@@ -222,7 +222,53 @@ public class CmsDbAccess implements I_CmsConstants {
 		
 		// TODO: start the connection-guard here...
     }
-	
+
+     // methods working with users and groups
+    
+    /**
+	 * Returns a group object.<P/>
+	 * @param groupname The name of the group that is to be read.
+	 * @return Group.
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */
+   /*  public CmsGroup readGroup(String groupname)
+         throws CmsException {
+         Connection con=null;
+         
+         CmsGroup group=null;
+         ResultSet res = null;
+   
+         try{ 
+             // read the group from the database
+             con=getConnection();
+             PreparedStatement statementGroupRead=con.prepareStatement(C_GROUP_READ);
+             statementGroupRead.setString(1,groupname);
+             res = statementGroupRead.executeQuery();
+             putConnection(con);
+             // create new Cms group object
+			 if(res.next()) {
+                group=new CmsGroup(res.getInt(C_GROUP_ID),
+                                   res.getInt(C_PARENT_GROUP_ID),
+                                   res.getString(C_GROUP_NAME),
+                                   res.getString(C_GROUP_DESCRIPTION),
+                                   res.getInt(C_GROUP_FLAGS));                                
+             } else {
+                 throw new CmsException("[" + this.getClass().getName() + "] "+groupname,CmsException.C_NO_GROUP);
+             }
+       
+         } catch (SQLException e){
+            putConnection(con);
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+         return group;
+     } */
+    
+    
+    
+    
+    
+    
+    
 	/**
 	 * Private method to init all statements in the pool.
 	 */
@@ -259,4 +305,5 @@ public class CmsDbAccess implements I_CmsConstants {
 		// increment the id-value and return it.
 		return( ++m_maxIds[key] );
 	}
+
 }
