@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2003/01/29 16:28:07 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.NodeList;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.64 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.65 $ $Date: 2003/01/29 16:28:07 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -473,7 +473,7 @@ public Vector getResourcesForProject() throws CmsException {
 private void importResource(String source, String destination, String type, String user, String group, String access, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
     // print out the information for shell-users
     m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
-    m_report.print(destination + " ");
+    m_report.print(C_ROOT + destination + " ");
     boolean success = true;
     byte[] content = null;
     String fullname = null;
