@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/10 14:35:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,9 @@ package org.opencms.frontend.templateone;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeBinary;
+import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -51,18 +54,20 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * This Property Dialog is shown specially by xmlpages for OpenCms template one,
+ * This property dialog is shown specially by files using the OpenCms template one,
  * and for any folders except system folders.<p>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author Andreas Zahner (a.zahner@alkacon.com)
+ * 
+ * @version $Revision: 1.4 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
     
     /** 
      * String Array with default properties.<p>
      *  
-     * Looping this to create form fields or get http request data and set the properties
+     * Loop this to create form fields or get HTTP request data and set the property values.<p>
      */    
     private static final String[] C_DEFAULT_PROPERTIES = {
         
@@ -71,11 +76,11 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
     };
     
     /** 
-     * String Array with ebk properties.<p>
+     * Contains all properties to set with this customized dialog.<p>
      *  
-     * Looping this to get http request data and set the properties
+     * Loop this to get the HTTP request data and set the property values.<p>
      */  
-    private static final String[] C_EBK_PROPERTIES = {
+    private static final String[] C_ALL_PROPERTIES = {
         
         CmsTemplateNavigation.C_PROPERTY_HEADNAV_USE,
         CmsTemplateBean.C_PROPERTY_SHOWHEADIMAGE,
@@ -89,10 +94,10 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         CmsTemplateBean.C_PROPERTY_CONFIGPATH
     };
     
-    /** mode used for switching between different radio types. */
+    /** Mode used for switching between different radio types. */
     private static final String C_ENABLE = "enable";
     
-    /** mode used for switching between different radio types. */
+    /** Mode used for switching between different radio types. */
     private static final String C_INDIVIDUAL = "individual";
     
     /** Prefix for the localized keys of the dialog. */
@@ -110,7 +115,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
     /** The true parameter value. */
     private static final String C_PARAM_TRUE = "true";
 
-    /** The path of the template one main template. */
+    /** The path of the "template one" template. */
     private static final String C_TEMPLATE_ONE = "/system/modules/org.opencms.frontend.templateone/templates/main";
     
     /**
@@ -118,7 +123,8 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      * 
      * Do not use this constructor on JSP pages.<p>
      */
-    public CmsPropertyTemplateOne() {        
+    public CmsPropertyTemplateOne() {
+        
         super(null);
     }
     
@@ -128,6 +134,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      * @param jsp an initialized JSP action element
      */
     public CmsPropertyTemplateOne(CmsJspActionElement jsp) {
+        
         super(jsp);        
     }
 
@@ -139,6 +146,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      * @param res the JSP response
      */
     public CmsPropertyTemplateOne(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+        
         super(new CmsJspActionElement(context, req, res));        
     }
     
@@ -149,6 +157,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      * @throws JspException if problems including sub-elements occur
      */
     public void actionEdit(HttpServletRequest request) throws JspException {
+        
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
@@ -300,6 +309,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      * @return the JavaScript to set the property form values delayed
      */
     public String buildSetFormValues() {
+        
         StringBuffer result = new StringBuffer(1024);
         // loop over the default properties
         for (int i=0; i<C_DEFAULT_PROPERTIES.length; i++) {
@@ -362,23 +372,23 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      * @see org.opencms.workplace.I_CmsDialogHandler#getDialogUri(java.lang.String, CmsJspActionElement)
      */
     public String getDialogUri(String resource, CmsJspActionElement jsp) {
+        
         try {
             CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);
-            if (res.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
-                if (C_TEMPLATE_ONE.equals(jsp.property("template", resource))) {
-                    // display special property dialog for xmlpage types with "template one" as template
+            if (! res.isFolder() && res.getTypeId() != CmsResourceTypeBinary.C_RESOURCE_TYPE_ID 
+                    && res.getTypeId() != CmsResourceTypePlain.C_RESOURCE_TYPE_ID && res.getTypeId() != CmsResourceTypeImage.C_RESOURCE_TYPE_ID) {
+                // file is no plain text, binary or image type, check "template" property
+                if (C_TEMPLATE_ONE.equals(jsp.getCmsObject().readPropertyObject(jsp.getCmsObject().getSitePath(res), I_CmsConstants.C_PROPERTY_TEMPLATE, true).getValue(""))) {
+                    // display special property dialog for files with "template one" as template
                     return C_MODULE_PATH + "dialogs/property.jsp";
+                } else if (res.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
+                    // show xmlpage property dialog for xmlpages not using "template one" as template
+                    return C_PATH_WORKPLACE + "editors/dialogs/property.jsp";
                 }
-                
-                return C_PATH_WORKPLACE + "editors/dialogs/property.jsp";
             }
-            if (res.isFolder()) {
-                if (!res.getRootPath().startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM)) {
-                    // display special property dialog for folders. excluse system folders
-                    return C_MODULE_PATH + "dialogs/property.jsp";
-                }
-                
-                return C_PATH_WORKPLACE + "editors/dialogs/property.jsp";
+            if (res.isFolder() && ! res.getRootPath().startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM)) {
+                // display special property dialog also for folders but exclude the system folders
+                return C_MODULE_PATH + "dialogs/property.jsp";
             }
             String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
@@ -388,8 +398,8 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             }
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error(e);
             }
         }
         return URI_PROPERTY_DIALOG;
@@ -403,6 +413,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      * @throws CmsException if editing is not successful
      */
     protected boolean performEditOperation(HttpServletRequest request) throws CmsException {
+        
         boolean useTempfileProject = Boolean.valueOf(getParamUsetempfileproject()).booleanValue();
         try {
             if (useTempfileProject) {
@@ -416,9 +427,9 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
                 writeProperty(curProperty, paramValue, oldValue);
             }
             
-            // loop over the ebk properties
-            for (int i=0; i<C_EBK_PROPERTIES.length; i++) {
-                String curProperty = C_EBK_PROPERTIES[i];
+            // loop over all properties
+            for (int i=0; i<C_ALL_PROPERTIES.length; i++) {
+                String curProperty = C_ALL_PROPERTIES[i];
                 String paramValue = CmsEncoder.decode(request.getParameter(PREFIX_VALUE + curProperty));
                 String oldValue = request.getParameter(PREFIX_HIDDEN + curProperty);                
                 writeProperty(curProperty, paramValue, oldValue);
@@ -657,6 +668,11 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         return result; 
     }   
     
+    /**
+     * Checks if the currently edited resource is a folder.<p>
+     * 
+     * @return true if the resource is a folder, otherwise false
+     */
     private boolean isFolder() {
         
         try {
@@ -665,9 +681,8 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
                 return true;
             }
         } catch (CmsException e) {
-            // ignore
-        }
-        
+            // ignore this exception
+        }       
         return false;
     }
 }
