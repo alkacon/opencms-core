@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2004/08/26 15:42:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/09/30 07:56:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -55,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
@@ -447,9 +448,19 @@ public abstract class CmsEditor extends CmsDialog {
         } catch (CmsException e) {
             if ((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
                 try {
+                    CmsLock tempFileLock = getCms().getLock(temporaryFilename);
+                    if (!tempFileLock.equals(CmsLock.getNullLock())) {
+                        if (!tempFileLock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
+                            // the resource is locked by another user- change the lock to the current user
+                            getCms().changeLock(temporaryFilename);
+                        }
+                    } else {
+                        // the resource is not locked- create a lock for the current user
+                        getCms().lockResource(temporaryFilename);
+                    }
+                    
                     // try to re-use the old temporary file
                     getCms().changeLastModifiedProjectId(temporaryFilename);
-                    getCms().lockResource(temporaryFilename);
                 } catch (Exception ex) {
                     // should usually never happen
                     if (OpenCms.getLog(this).isInfoEnabled()) {
