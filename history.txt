@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.19 Chusuk       - 13 November 2001
+* Bugfixing mastermodule.
+- The setup-wizard can now setup a oracle oci database.
+
 OpenCms 4.5.18 Chusuk       - 12 November 2001
 * Bugfixing mastermodule.
 - Added systemproperty to registry.xml: UseWpPicturesFromVFS - if this is set to true
