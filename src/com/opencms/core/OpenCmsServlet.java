@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/10/31 13:11:24 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2000/12/19 08:19:40 $
+ * Version: $Revision: 1.64 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.63 $ $Date: 2000/10/31 13:11:24 $  
+* @version $Revision: 1.64 $ $Date: 2000/12/19 08:19:40 $  
 * 
 * */
 
@@ -799,7 +799,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		        sessionData.put(C_SESSION_USERNAME,cms.getRequestContext().currentUser().getName());
 				sessionData.put(C_SESSION_CURRENTGROUP,cms.getRequestContext().currentGroup().getName());
 				sessionData.put(C_SESSION_PROJECT,new Integer(cms.getRequestContext().currentProject().getId()));
-				sessionData.put(C_SESSION_DATA, session.getValue(C_SESSION_DATA));
+				
+				Hashtable oldData = (Hashtable)session.getValue(C_SESSION_DATA);
+				if(oldData == null) {
+				    oldData = new Hashtable();
+				}
+				sessionData.put(C_SESSION_DATA, oldData);
+
 
 				// was there any change on current-user, current-group or current-project?
 				boolean dirty = false;
