@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/14 09:04:29 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2000/07/17 10:20:25 $
+ * Version: $Revision: 1.95 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.94 $ $Date: 2000/07/14 09:04:29 $ * 
+ * @version $Revision: 1.95 $ $Date: 2000/07/17 10:20:25 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -141,13 +141,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	/**
 	 * The prepared-statement-pool.
 	 */
-	private CmsPreparedStatementPool m_pool = null;
+	private CmsDbPool m_pool = null;
 	
 	/**
 	 * The connection guard.
 	 */
 	private CmsConnectionGuard m_guard = null;
-	
+
 	/**
 	 * A array containing all max-ids for the tables.
 	 */
@@ -253,7 +253,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		}
 		
 		// create the pool
-		m_pool = new CmsPreparedStatementPool(driver, url, user, password, maxConn);
+		m_pool = new CmsDbPool(driver, url, user, password, maxConn);
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] pool created");
 		}
@@ -4763,12 +4763,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		// init statements for id
 		m_pool.initPreparedStatement(C_SYSTEMID_INIT_KEY,C_SYSTEMID_INIT);
 		
-		m_pool.initIdStatement(C_SYSTEMID_LOCK_KEY,C_SYSTEMID_LOCK);
-		m_pool.initIdStatement(C_SYSTEMID_READ_KEY,C_SYSTEMID_READ);
-		m_pool.initIdStatement(C_SYSTEMID_WRITE_KEY,C_SYSTEMID_WRITE);
-		m_pool.initIdStatement(C_SYSTEMID_UNLOCK_KEY,C_SYSTEMID_UNLOCK);
+		// TODO: implement this!
 		
-	
+		m_pool.initPreparedStatement(C_SYSTEMID_LOCK_KEY,C_SYSTEMID_LOCK);
+		m_pool.initPreparedStatement(C_SYSTEMID_READ_KEY,C_SYSTEMID_READ);
+		m_pool.initPreparedStatement(C_SYSTEMID_WRITE_KEY,C_SYSTEMID_WRITE);
+		m_pool.initPreparedStatement(C_SYSTEMID_UNLOCK_KEY,C_SYSTEMID_UNLOCK);	
 	}
 	
 
@@ -4904,31 +4904,35 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * @return next-id The next possible id for this table.
 	 */
 	private synchronized int nextId(int key) 
-         throws CmsException {
-		
+		throws CmsException {
 		int newId = C_UNKNOWN_INT;
+		PreparedStatement firstStatement = null;
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		try {
-			statement = m_pool.getIdStatement(C_SYSTEMID_LOCK_KEY);
-			statement.executeUpdate();
+			firstStatement = m_pool.getPreparedStatement(C_SYSTEMID_LOCK_KEY);
+			firstStatement.executeUpdate();
 			
-			statement = m_pool.getIdStatement(C_SYSTEMID_READ_KEY);
+			statement = m_pool.getNextPreparedStatement(firstStatement, C_SYSTEMID_READ_KEY);
 			statement.setInt(1,key);
 			res = statement.executeQuery();
 			if (res.next()){
 				newId = res.getInt(C_SYSTEMID_ID);
 				res.close();
 			}else{
-                 throw new CmsException("[" + this.getClass().getName() + "] "+" cant read Id! ",CmsException.C_NO_GROUP);		
+				res.close();
+				throw new CmsException("[" + this.getClass().getName() + "] "+" cant read Id! ",CmsException.C_NO_GROUP);		
 			}
-			statement = m_pool.getIdStatement(C_SYSTEMID_WRITE_KEY);
+			
+			statement = m_pool.getNextPreparedStatement(firstStatement, C_SYSTEMID_WRITE_KEY);
 			statement.setInt(1,newId+1);
 			statement.setInt(2,key);
 			statement.executeUpdate();
 			
-			statement = m_pool.getIdStatement(C_SYSTEMID_UNLOCK_KEY);
+			statement = m_pool.getNextPreparedStatement(firstStatement, C_SYSTEMID_UNLOCK_KEY);
 			statement.executeUpdate();
+			
+			m_pool.putPreparedStatement(C_SYSTEMID_LOCK_KEY, firstStatement);
 			
 		} catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
@@ -5096,61 +5100,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 */
 	public void destroy() 
 		throws CmsException {
-
-		Vector statements;
-		Hashtable allStatements = m_pool.getAllPreparedStatement();
-		Enumeration keys = allStatements.keys();
-		
-		Vector connections = m_pool.getAllConnections();
-		
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] closing all statements.");
-		}
-		// close all statements
-		while(keys.hasMoreElements()) {
-			Object key = keys.nextElement();
-			if (allStatements.get(key) instanceof PreparedStatement){
-				try{
-					((PreparedStatement) allStatements.get(key)).close();
-				} catch(SQLException exc) {
-					if(A_OpenCms.isLogging()) {
-							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing Id-statement: " + exc.getMessage());
-						}
-				}	
-			}else{
-				statements = (Vector) allStatements.get(key);
-				for(int i = 0; i < statements.size(); i++) {
-					try {
-						((PreparedStatement) statements.elementAt(i)).close();
-					} catch(SQLException exc) {
-						if(A_OpenCms.isLogging()) {
-							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing statement: " + exc.getMessage());
-						}
-					}
-				}
-			}
-		}
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] closing all connections.");
-		}
-		// close all connections
-		for(int i = 0; i < connections.size(); i++) {
-			try {
-				((Connection) connections.elementAt(i)).close();
-			} catch(SQLException exc) {
-				if(A_OpenCms.isLogging()) {
-					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing connection: " + exc.getMessage());
-				}
-			}
-		}
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
-		}
 		
 		// stop the connection-guard
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] stop connection guard");
 		}
 		m_guard.destroy();
+		
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy the db-pool.");
+		}
+		m_pool.destroy();
+
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
+		}
 	}
 }

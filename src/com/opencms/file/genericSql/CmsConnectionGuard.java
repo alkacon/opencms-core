@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsConnectionGuard.java,v $
- * Date   : $Date: 2000/07/17 10:20:26 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsConnectionGuard.java,v $
+ * Date   : $Date: 2000/07/17 10:20:53 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,7 +26,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file.mySql;
+package com.opencms.file.genericSql;
 
 import com.opencms.file.utils.*;
 import com.opencms.core.*;
@@ -42,7 +42,7 @@ import java.sql.*;
  * 
  * @author Alexander Lucas
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/07/17 10:20:26 $
+ * @version $Revision: 1.8 $ $Date: 2000/07/17 10:20:53 $
  */
 public class CmsConnectionGuard extends Thread implements I_CmsLogChannels {
 	/** The keep-alive statement */
@@ -91,20 +91,7 @@ public class CmsConnectionGuard extends Thread implements I_CmsLogChannels {
             } 
 			
 			// get all connections
-			connections = m_pool.getAllConnections();
-			
-			for(int i = 0; i < connections.size(); i++) {
-				try {
-					connection = (Connection) connections.elementAt(i);
-					statement = connection.createStatement();
-					statement.execute(C_KEEP_ALIVE_STATEMENT);
-					statement.close();
-				} catch(SQLException exc) {
-					if(OpenCms.isLogging()) {
-						A_OpenCms.log(C_OPENCMS_INFO, "[CmsConnectionGuard] error while sending keep-alive query: " + exc.getMessage());
-					} 
-				}
-			}
+			m_pool.keepAlive();
         }
     }
                       	

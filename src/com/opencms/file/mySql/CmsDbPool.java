@@ -1,8 +1,8 @@
 /*
  *
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/07/14 09:04:31 $
- * Version: $Revision: 1.18 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbPool.java,v $
+ * Date   : $Date: 2000/07/17 10:20:26 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -27,7 +27,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file.utils;
+package com.opencms.file.mySql;
 
 import java.sql.*;
 import java.util.*; 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * @author u.roland
  * @author a.schouten
  */
-public class CmsPreparedStatementPool {
+public class CmsDbPool {
 	
 	/*
 	 * maximum of connections to the database
@@ -101,7 +101,7 @@ public class CmsPreparedStatementPool {
      * @param passwd - the passwd of the user to connect to the db.
      * @param maxConn - maximum connections
 	 */
-	public CmsPreparedStatementPool(String driver, String url, String user, String passwd, int maxConn) throws CmsException {
+	public CmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws CmsException {
 		this.m_driver = driver;
 		this.m_url = url;
 		this.m_user = user;

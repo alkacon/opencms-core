@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/14 12:27:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/07/17 10:20:26 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.5 $ $Date: 2000/07/14 12:27:27 $ * 
+ * @version $Revision: 1.6 $ $Date: 2000/07/17 10:20:26 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -161,7 +161,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	/**
 	 * The prepared-statement-pool.
 	 */
-	private CmsPreparedStatementPool m_pool = null;
+	private CmsDbPool m_pool = null;
 	
 	/**
 	 * The connection guard.
@@ -273,7 +273,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		}
 		
 		// create the pool
-		m_pool = new CmsPreparedStatementPool(driver, url, user, password, maxConn);
+		m_pool = new CmsDbPool(driver, url, user, password, maxConn);
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] pool created");
 		}
@@ -5150,6 +5150,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		
 		Vector connections = m_pool.getAllConnections();
 		
+		// stop the connection-guard
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] stop connection guard");
+		}
+		m_guard.destroy();
+		
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] closing all statements.");
 		}
@@ -5193,12 +5199,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
 		}
-		
-		// stop the connection-guard
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] stop connection guard");
-		}
-		m_guard.destroy();
 	}
 
 	/**
