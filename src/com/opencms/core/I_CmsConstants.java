@@ -6,14 +6,14 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/01/26 17:57:00 $
+ * @version $Revision: 1.23 $ $Date: 2000/01/26 18:48:28 $
  */
 public interface I_CmsConstants
 {
 	/**
 	 * The version-string for the cvs.
 	 */
-	static String C_VERSION = "Release 3.3 Caladan: Jessica $Name:  $";
+	static String C_VERSION = "Release 3.3 Caladan: Jessica";
 
 	/**
 	 * The minimum-size of a passwordstring.
@@ -112,6 +112,12 @@ public interface I_CmsConstants
 	 */
 	 static final String C_GROUP_PROJECTLEADER = "Projectleader";
 
+	/**
+	 * This is the group for users. If you are in this group, you can use
+	 * the workplace.
+	 */
+	 static final String C_GROUP_USERS = "Users";
+	 
 	/**
 	 * This is the group for guests.
 	 */
