@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/05/03 07:20:32 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/05/05 08:42:27 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public class CmsObject {
 
@@ -3680,6 +3680,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsFile writeFile(CmsFile file) throws CmsException {
+       
         return getResourceType(file.getType()).writeFile(this, file);
     }
 

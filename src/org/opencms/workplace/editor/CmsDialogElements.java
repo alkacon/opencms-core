@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/04/28 22:34:06 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/05/05 08:42:27 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.3.0
  */
@@ -280,7 +280,9 @@ public class CmsDialogElements extends CmsDialog {
                 }
             }
             // write the temporary file
-            getCms().writeFile(page.write(file));
+            // odd behaviour,  getCms().writeFile(page.write(file)); does not work here
+            file = page.write(file);
+            getCms().writeFile(file);
             // set the javascript functions which should be executed
             if (page.isEnabled(getParamElementname(), getElementLocale())) {
                 m_changeElement = getParamElementname();
