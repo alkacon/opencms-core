@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/09/28 13:30:38 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/10/26 17:23:49 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/09/28 13:30:38 $
+ * @version $Revision: 1.15 $ $Date: 2000/10/26 17:23:49 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1064,6 +1064,24 @@ public java.lang.String[] getRepositories() {
 	retValueArray = new String[retValue.size()];
 	retValue.copyInto(retValueArray);
 	return retValueArray;
+}
+/**
+ * Returns a value for a system-key.
+ * E.g. <code>&lt;system&gt;&lt;mailserver&gt;mail.server.com&lt;/mailserver&gt;&lt;/system&gt;</code>
+ * can be requested via <code>getSystemValue("mailserver");</code> and returns "mail.server.com.
+ *
+ * @parameter String the key of the system-value.
+ * @return the value for that system-key.
+ */
+public String getSystemValue(String key) {
+	String retValue = null;
+	try {
+		Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
+		retValue = systemElement.getElementsByTagName(key).item(0).getFirstChild().getNodeValue();
+	} catch (Exception exc) {
+		// ignore the exception - registry is not wellformed
+	}
+	return retValue;
 }
 /**
  * Returns all views and korresponding urls for all modules.
