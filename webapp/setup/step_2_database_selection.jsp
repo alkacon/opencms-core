@@ -1,4 +1,3 @@
-<!-- ------------------------------------------------- JSP DECLARATIONS ------------------------------------------------ -->
 <% /* Initialize the Bean */ %>
 <jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
 
@@ -22,18 +21,14 @@
 		}
 	}
 
-%>
-<!-- ------------------------------------------------------------------------------------------------------------------- -->
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
-<head> 
+<head>
 	<title>OpenCms Setup Wizard</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<link rel="Stylesheet" type="text/css" href="style.css">	
-
-<script language="Javascript">
+<script type="text/javascript">
 	location.href = "<%= nextPage %>";
 </script>
-
 </head>
 
 <body>
