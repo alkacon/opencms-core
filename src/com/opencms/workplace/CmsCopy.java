@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/03/10 14:11:34 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/03/16 20:47:47 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.11 $ $Date: 2000/03/10 14:11:34 $
+ * @version $Revision: 1.12 $ $Date: 2000/03/16 20:47:47 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -125,8 +125,18 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
 					if (flags.equals("false")) {
 						 // set access flags of the new file to the default flags
 						CmsFile newfile=cms.readFile(newFolder,file.getName());
-						// TODO: use the default flags in the user preferences when they are implemented             
-						newfile.setAccessFlags(C_ACCESS_DEFAULT_FLAGS);  
+				
+                        Hashtable startSettings=null;
+                        Integer accessFlags=null;
+                        startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+                            if (startSettings != null) {
+                                accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
+                                if (accessFlags == null) {
+                                    accessFlags=new Integer(C_ACCESS_DEFAULT_FLAGS);
+                                }
+                             }           
+                        
+						newfile.setAccessFlags(accessFlags.intValue());  
 				 		cms.writeFile(newfile);
 				    }
 				}else{
@@ -139,8 +149,17 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
              if (flags.equals("false")) {
                  // set access flags of the new file to the default flags
                  CmsFile newfile=cms.readFile(newFolder,newFile);
-                 // TODO: use the default flags in the user preferences when they are implemented             
-                 newfile.setAccessFlags(C_ACCESS_DEFAULT_FLAGS);  
+                      
+                 Hashtable startSettings=null;
+                 Integer accessFlags=null;
+                 startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+                 if (startSettings != null) {
+                    accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
+                        if (accessFlags == null) {
+                            accessFlags=new Integer(C_ACCESS_DEFAULT_FLAGS);
+                        }
+                 }                           
+                 newfile.setAccessFlags(accessFlags.intValue());  
                  cms.writeFile(newfile);
              }
 			 session.removeValue(C_PARA_FILE);
