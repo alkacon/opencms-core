@@ -14,7 +14,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/25 14:02:39 $
  */
 public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
     
@@ -24,6 +24,9 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
      */
     private static I_CmsTemplateCache m_cache = null;
 
+    /** Boolean for additional debug output control */
+    private static final boolean C_DEBUG = true;
+    
     public CmsDumpTemplate() {
     }
     
@@ -72,8 +75,25 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
      * @exception CmsException 
      */
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
-        //String s = templateFile.getContents();
-        return cms.readFile(templateFile).getContents();
+        if(C_DEBUG && A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file " + templateFile);
+        }
+        byte[] s = null;
+        try {
+            s = cms.readFile(templateFile).getContents();
+        } catch(Exception e) {
+            String errorMessage = "Error while reading file " + templateFile + ": " + e;
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsDumpTemplate] " + errorMessage);
+                e.printStackTrace();
+            }
+            if(e instanceof CmsException) {
+                throw (CmsException)e;
+            } else {
+                throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+            }
+        }
+        return s;
     }
     
     /**

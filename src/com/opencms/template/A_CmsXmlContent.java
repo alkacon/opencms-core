@@ -44,7 +44,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/21 10:35:18 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/25 14:02:39 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -60,7 +60,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 	public static final String C_MINIMUM_CLASSNAME = "com.opencms.template.A_CmsXmlContent";
 
 	/** Constant pathname, where to find templates */
-	public static final String C_TEMPLATEPATH = "/";
+	public static final String C_TEMPLATEPATH = "/system/workplace/templates/";
 
 	/** Constant extension of the template-files. */
 	public static final String C_TEMPLATE_EXTENSION = "";
@@ -150,6 +150,11 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             CmsFile file = cms.readFile(filename);            
             init(cms, file);
         } else {
+            String fullPath = lookupAbsoluteFilename(cms, filename, this);
+            CmsFile file = cms.readFile(fullPath);
+            init(cms, file);
+        }
+        /*} else {
             // no absolute filename given.
             // we have to search for the file first.
 			Class actualClass = getClass();
@@ -187,10 +192,66 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                     }
                 }
                 throwException("Cannot find template file for request \"" + filename + "\". ", CmsException.C_NOT_FOUND);
+            } 
+        } */
+    }
+
+    public static String lookupAbsoluteFilename(A_CmsObject cms, String filename, Object requestingObject) throws CmsException {
+        // no absolute filename given.
+        // we have to search for the file first.
+        Class actualClass = requestingObject.getClass();
+        A_CmsResource retValue = null;
+		String completeFilename = null;
+
+        // we use this Vector for storing all tried filenames.
+        // so we can give detailled error messages if the 
+        // template file was not found.
+        Vector checkedFilenames = new Vector();
+        
+        if(filename.startsWith("/")) {
+            completeFilename = filename;
+        } else {
+        // Now start the loop to search 
+        while(retValue == null) {
+		    completeFilename = C_TEMPLATEPATH + actualClass.getName() + "." + filename + C_TEMPLATE_EXTENSION;            
+		    checkedFilenames.addElement(completeFilename);
+            retValue = null;
+            try {
+                retValue = cms.readFileHeader(completeFilename);
+            } catch(Exception e) {
+                retValue=null;
+            }
+            //retValue = readTemplateFile(cms, completeFilename);
+            actualClass = actualClass.getSuperclass();
+            if(actualClass.getName().equals(C_MINIMUM_CLASSNAME)){ 
+			    if(retValue == null) {
+                    // last chance to get the filename
+                    completeFilename = C_TEMPLATEPATH + filename + C_TEMPLATE_EXTENSION;
+                    checkedFilenames.addElement(completeFilename);
+                    try {
+                        retValue = cms.readFileHeader(completeFilename);
+                    } catch(Exception e) {
+                        retValue=null;
+                    }
+                    break;
+                }
             }
         }
+        if(retValue == null) {
+            Enumeration checkedEnum = checkedFilenames.elements();
+            if(A_OpenCms.isLogging()) {
+                while(checkedEnum.hasMoreElements()) {
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, "[A_CmsXmlContent] checked: " + (String)checkedEnum.nextElement());
+                }
+            }
+            throw new CmsException("Cannot find template file for request \"" + filename + "\". ", CmsException.C_NOT_FOUND);
+        }
+        }
+        return completeFilename;
     }
-                                                                                            
+    
+    
+    
     /**
      * Initialize the XML content class.
      * Load and parse the content of the given CmsFile object.
@@ -598,7 +659,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                                 // throw it again
                                 if(thrown instanceof CmsException) {
                                     throw (CmsException)thrown;
-                                } else {                                    
+                                } else { 
+                                    thrown.printStackTrace();
                                     throwException("processNode received an exception while handling XML tag \"" 
                                             + child.getNodeName() + "\" by \"" + callMethod.getName() + "\" for file " 
                                             + getFilename() + ": " + e, CmsException.C_XML_PROCESS_ERROR);

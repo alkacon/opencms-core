@@ -14,12 +14,12 @@ import org.xml.sax.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/21 10:35:18 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/25 14:02:39 $
  */
 public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     
     /** Boolean for additional debug output control */
-    private final static boolean C_DEBUG = true;
+    protected final static boolean C_DEBUG = true;
     
     /**
      * Error string to be inserted for corrupt subtemplates for guest user requests.
@@ -29,7 +29,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     /**
      * Template cache for storing cacheable results of the subtemplates.
      */
-    private static I_CmsTemplateCache m_cache = null;
+    protected static I_CmsTemplateCache m_cache = null;
     
     /**
      * For debugging purposes only.
@@ -123,7 +123,13 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
         }
 
         String result = null;        
-        CmsXmlTemplateFile xmlTemplateDocument = new CmsXmlTemplateFile(cms, templateFile);       
+
+        CmsXmlTemplateFile xmlTemplateDocument = new CmsXmlTemplateFile();       
+        String fullFileName = CmsXmlTemplateFile.lookupAbsoluteFilename(cms, templateFile, xmlTemplateDocument);
+        CmsFile file = cms.readFile(fullFileName);
+        xmlTemplateDocument.init(cms, file);       
+                
+        //CmsXmlTemplateFile xmlTemplateDocument = new CmsXmlTemplateFile(cms, templateFile);       
         String templateDatablockName = xmlTemplateDocument.getTemplateDatablockName(templateSelector);
                 
         // Try to process the template file

@@ -14,7 +14,7 @@ import java.util.*;
  * generation of the master template class to be used.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/25 14:02:39 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels {
     
@@ -44,13 +44,16 @@ public class CmsRootTemplate implements I_CmsLogChannels {
                 && ! templateClass.shouldReload(cms, masterTemplate.getAbsolutePath(), parameters)) {
             result = cache.get(cacheKey);
             if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsRootTemplate] page " + masterTemplate.getAbsolutePath() + " was read from cache");                                                                 
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsRootTemplate] page " + masterTemplate.getAbsolutePath() + " was read from cache.");                                                                 
             }
         } else {
             try {
                 result = templateClass.getContent(cms, masterTemplate.getAbsolutePath(), null, parameters);
             } catch(CmsException e) {
                 cache.clearCache(cacheKey);
+                if(A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsRootTemplate] Could not get contents of master template " + masterTemplate.getName());
+                }
                 throw e;
             }
             if(templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), parameters)) {
