@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/09/29 10:09:50 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/10/02 10:57:22 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,6 @@
 
 package org.opencms.jsp;
 
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -53,7 +50,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -214,34 +211,11 @@ public class CmsJspTagTemplate extends BodyTagSupport {
             CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
             String filename = controller.getCmsObject().getRequestContext().getUri();
             
-            CmsXmlPage page = (CmsXmlPage)req.getAttribute(filename);                    
-            if (page == null) {
-                // try to unmarshal the top-level resource
-                CmsResource resource = controller.getCmsResource();
-                if (resource.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
-                    try {
-                        // make sure a page is only read once (not every time for each element)
-                        page = CmsXmlPageFactory.unmarshal(controller.getCmsObject(), CmsFile.upgrade(resource, controller.getCmsObject()));
-                        req.setAttribute(filename, page);                
-                    } catch (CmsException e) {
-                        OpenCms.getLog(CmsJspTagTemplate.class).error("Error unmarshaling " + resource.getRootPath(), e);
-                    }
-                }    
-            }    
-            
-            if (page == null) {
-                // try to unmarshal the requested URI
-                CmsResource resource = null;
-                try {
-                    resource = controller.getCmsObject().readResource(controller.getCmsObject().getRequestContext().getUri());
-                    if (resource.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
-                        // make sure a page is only read once (not every time for each element)
-                        page = CmsXmlPageFactory.unmarshal(controller.getCmsObject(), CmsFile.upgrade(resource, controller.getCmsObject()));
-                        req.setAttribute(filename, page);
-                    }
-                } catch (CmsException e) {
-                    OpenCms.getLog(CmsJspTagTemplate.class).error("Error reading/unmarshaling " + resource.getRootPath(), e);
-                }
+            CmsXmlPage page = null;
+            try {
+                page = CmsXmlPageFactory.unmarshal(controller.getCmsObject(), filename, req);               
+            } catch (CmsException e) {
+                OpenCms.getLog(CmsJspTagTemplate.class).error("Error checking for XML page '" + filename + "'", e);
             }
             
             if (page != null) {

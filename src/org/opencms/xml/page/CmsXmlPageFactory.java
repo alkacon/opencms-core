@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPageFactory.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/02 10:57:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,9 @@ package org.opencms.xml.page;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -45,6 +48,8 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
+import javax.servlet.ServletRequest;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -55,7 +60,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public final class CmsXmlPageFactory {
@@ -165,7 +170,9 @@ public final class CmsXmlPageFactory {
         String fileName = cms.getSitePath(file);
         boolean allowRelative = false;
         try {
-            allowRelative = Boolean.valueOf(cms.readPropertyObject(fileName, CmsXmlPage.C_PROPERTY_ALLOW_RELATIVE, false).getValue()).booleanValue();
+            allowRelative = Boolean.valueOf(
+                cms.readPropertyObject(fileName, CmsXmlPage.C_PROPERTY_ALLOW_RELATIVE, false).getValue()
+            ).booleanValue();
         } catch (CmsException e) {
             // allowRelative will be false
         }
@@ -213,6 +220,77 @@ public final class CmsXmlPageFactory {
         newPage.setAllowRelativeLinks(allowRelative);
 
         return newPage;
+    }
+
+    /**
+     * Factory method to unmarshal (read) a XML page instance from
+     * a resource, using the request attributes as cache.<p>
+     * 
+     * @param cms the current OpenCms context object
+     * @param resource the resource to unmarshal
+     * @param req the current request
+     * 
+     * @return the unmarshaled xmlpage, or null if the given resource was not of type {@link CmsResourceTypeXmlPage}.<p>
+     * 
+     * @throws CmsException in something goes wring
+     */
+    public static CmsXmlPage unmarshal(CmsObject cms, CmsResource resource, ServletRequest req) throws CmsException {
+
+        String sitePath = cms.getSitePath(resource);
+        
+        if (resource.getTypeId() != CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
+            // sanity check: resource must be of type XML page
+            throw new CmsXmlException("Resource '" + sitePath + "' is not of required type XML page");
+        }
+
+        // try to get the requested page form the current request attributes 
+        CmsXmlPage page = (CmsXmlPage)req.getAttribute(sitePath);
+
+        if (page == null) {
+            // read the page from VFS
+            page = unmarshal(cms, CmsFile.upgrade(resource, cms));
+            // store the page that was read as request attribute for future read requests
+            req.setAttribute(sitePath, page);
+        }
+
+        return page;
+    }
+
+    /**
+     * Factory method to unmarshal (read) a XML page instance from
+     * a filename in the VFS, using the request attributes as cache.<p>
+     * 
+     * @param cms the current OpenCms context object
+     * @param filename the filename of the resource to unmarshal
+     * @param req the current request
+     * 
+     * @return the unmarshaled xmlpage, or null if the given resource was not of type {@link CmsResourceTypeXmlPage}.<p>
+     * 
+     * @throws CmsException in something goes wring
+     */
+    public static CmsXmlPage unmarshal(CmsObject cms, String filename, ServletRequest req) throws CmsException {
+        
+        // try to get the requested page form the current request attributes
+        CmsXmlPage page = (CmsXmlPage)req.getAttribute(filename);
+
+        if (page != null) {
+            return page;
+        }
+        
+        // always use "ignore expiration" filter, date validity must be checked before calling this if required
+        CmsFile file = cms.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION);
+        
+        if (file.getTypeId() != CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
+            // sanity check: file must be of type XML page
+            throw new CmsXmlException("Resource '" + filename + "' is not of required type XML page");
+        }
+        
+        // read the page from VFS
+        page = unmarshal(cms, file);
+        // store the page that was read as request attribute for future read requests
+        req.setAttribute(filename, page);
+        
+        return page;
     }
 
     /**
