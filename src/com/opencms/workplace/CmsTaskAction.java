@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/04/17 14:35:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/18 11:35:55 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/04/17 14:35:22 $
+ * @version $Revision: 1.8 $ $Date: 2000/04/18 11:35:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
@@ -87,8 +87,8 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
             contentBuf.append(": ");            
             contentBuf.append(task.getName());            
 			String subject=lang.getLanguageValue("task.email.accept.subject");
-			A_CmsUser[] users={cms.readAgent(task)};
-			CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
+			A_CmsUser[] users={cms.readOwner(task)};
+			CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,contentBuf.toString());
 			mail.start();
 		}
 		
