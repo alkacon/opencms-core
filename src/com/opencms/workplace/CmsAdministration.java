@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/09/21 06:42:38 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.16 $ $Date: 2001/07/31 15:50:17 $
+ * @version $Name:  $ $Revision: 1.17 $ $Date: 2001/09/21 06:42:38 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -70,7 +70,10 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 
     private String generateIcon(CmsObject cms, CmsXmlTemplateFile templateDocument, Hashtable parameters,
             CmsXmlLanguageFile lang, String picName, String sender, String languageKey,
-                    String iconActiveMethod, String iconVisibleMethod) throws CmsException {
+                    String iconActiveMethod, String iconVisibleMethod, String accessActive, String accessVisible) throws CmsException {
+
+        boolean hasAccessActive = (new Boolean(accessActive)).booleanValue();
+        boolean hasAccessVisible = (new Boolean(accessVisible)).booleanValue();
         String iconPicPath = (String)picsUrl(cms, "", null, null);
         if(sender.startsWith("/system/modules")) {
 
@@ -93,6 +96,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
                 activate = ((Boolean)groupsMethod.invoke(o, new Object[] {
                     cms, lang, parameters
                 })).booleanValue();
+
             }
             catch(NoSuchMethodException exc) {
 
@@ -175,11 +179,11 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 
         // Insert a html-break, if needed
         if(iconLabelBuffer.toString().indexOf("- ") != -1) {
-            iconLabelBuffer.insert(iconLabelBuffer.toString().indexOf("- ") + 2, "<BR>");
+            iconLabelBuffer.insert(iconLabelBuffer.toString().indexOf("- ") + 1, "<BR>");
         }
         templateDocument.setData("linkName", iconLabelBuffer.toString());
-        if(visible) {
-            if(activate) {
+        if(visible && hasAccessVisible) {
+            if(activate && hasAccessActive) {
                 templateDocument.setData("picture", iconPicPath + picName + ".gif");
                 return templateDocument.getProcessedDataValue("defaulticon");
             }
@@ -262,6 +266,8 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             String folderPos[] = new String[numFolders];
             String folderVisible[] = new String[numFolders];
             String folderActiv[] = new String[numFolders];
+            String accessActive[] = new String[numFolders];
+            String accessVisible[] = new String[numFolders];
             for(int i = 0;i < numFolders;i++) {
                 CmsResource aktIcon = (CmsResource)iconVector.elementAt(i);
                 try {
@@ -276,6 +282,8 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
                     }
                     folderVisible[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_VISIBLE));
                     folderActiv[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_ACTIV));
+                    accessActive[i] = new Boolean(checkActive(cms, aktIcon)).toString();
+                    accessVisible[i] = new Boolean(checkVisible(cms, aktIcon)).toString();
                 }
                 catch(Exception exc) {
                     throw new CmsException("[" + this.getClass().getName() + "] "
@@ -288,10 +296,12 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             int zeile = 0;
             while(element < numFolders) {
                 String completeRow = "";
-                while((element < numFolders) && (element < (zeile + 1) * C_ELEMENT_PER_ROW)) {
+                //while((element < numFolders) && (element < (zeile + 1) * C_ELEMENT_PER_ROW)) {
+                while((element < numFolders)) {
                     int pos = index[element];
                     completeRow += generateIcon(cms, templateDocument, parameters, lang, folderTitles[pos],
-                            iconNames[element], folderLangKeys[pos], folderActiv[pos], folderVisible[pos]);
+                            iconNames[element], folderLangKeys[pos], folderActiv[pos], folderVisible[pos],
+                            accessActive[pos], accessVisible[pos]);
                     element++;
                 }
                 templateDocument.setData("entrys", completeRow);
@@ -385,4 +395,80 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
              }
         }
     } // of sort
+
+    /**
+     * Check if this resource should be displayed in the administrationview.
+     * @param cms The CmsObject
+     * @param resource The resource to be checked.
+     * @return True or false.
+     * @exception CmsException if something goes wrong.
+     */
+
+    private boolean checkVisible(CmsObject cms, CmsResource resource) throws CmsException {
+        boolean access = false;
+        int accessflags = resource.getAccessFlags();
+
+        // First check if the user may have access by one of his groups.
+        boolean groupAccess = false;
+        Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
+        while((!groupAccess) && allGroups.hasMoreElements()) {
+            CmsGroup nextGroup = (CmsGroup)allGroups.nextElement();
+            if(nextGroup.getName().equals(C_GROUP_ADMIN)){
+                return true;
+            }
+            groupAccess = cms.readGroup(resource).equals(nextGroup);
+
+        }
+        if(groupAccess && (resource.getAccessFlags() & C_ACCESS_GROUP_VISIBLE) == C_ACCESS_GROUP_VISIBLE) {
+            return true;
+        }
+        // is the resource owned by this user?
+        if(resource.getOwnerId() == cms.getRequestContext().currentUser().getId()) {
+            if( (resource.getAccessFlags() & C_ACCESS_OWNER_VISIBLE) == C_ACCESS_OWNER_VISIBLE ) {
+                return true ;
+            }
+        }
+        if ((resource.getAccessFlags() & C_ACCESS_PUBLIC_VISIBLE) == C_ACCESS_PUBLIC_VISIBLE){
+            return true;
+        }
+        return access;
+    }
+
+    /**
+     * Check if this resource should be active in the administrationview.
+     * @param cms The CmsObject
+     * @param resource The resource to be checked.
+     * @return True or false.
+     * @exception CmsException if something goes wrong.
+     */
+
+    private boolean checkActive(CmsObject cms, CmsResource resource) throws CmsException {
+        boolean access = false;
+        int accessflags = resource.getAccessFlags();
+
+        // First check if the user may have access by one of his groups.
+        boolean groupAccess = false;
+        Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
+        while((!groupAccess) && allGroups.hasMoreElements()) {
+            CmsGroup nextGroup = (CmsGroup)allGroups.nextElement();
+            if(nextGroup.getName().equals(C_GROUP_ADMIN)){
+                return true;
+            }
+            groupAccess = cms.readGroup(resource).equals(nextGroup);
+
+        }
+        if(groupAccess && (resource.getAccessFlags() & C_ACCESS_GROUP_READ) == C_ACCESS_GROUP_READ) {
+            return true;
+        }
+        // is the resource owned by this user?
+        if(resource.getOwnerId() == cms.getRequestContext().currentUser().getId()) {
+            if( (resource.getAccessFlags() & C_ACCESS_OWNER_READ) == C_ACCESS_OWNER_READ ) {
+                return true ;
+            }
+        }
+        if ((resource.getAccessFlags() & C_ACCESS_PUBLIC_READ) == C_ACCESS_PUBLIC_READ){
+            return true;
+        }
+        return access;
+    }
 }
