@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2001/09/10 09:56:00 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2002/04/05 08:45:59 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2001/09/10 09:56:00 $
+ * @version $Revision: 1.30 $ $Date: 2002/04/05 08:45:59 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -602,8 +602,11 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
         insertProperty(properties, "Hauptlogo_target", (String)parameters.get("mlogolink"));
         insertProperty(properties, "Sektionslogo_img", (String)parameters.get("slogopic"));
         insertProperty(properties, "Sektionslogo_target", (String)parameters.get("slogolink"));
-        insertProperty(properties, "FreierLink_navtext", (String)parameters.get("statnav"));
-        insertProperty(properties, "FreierLink_target", (String)parameters.get("statlink"));
+        //set properties for FreierLink only when the entry is not empty
+        if (!((String)parameters.get("statnav")).equals("") && !((String)parameters.get("statlink")).equals("")){
+                insertProperty(properties, "FreierLink_navtext", (String)parameters.get("statnav"));
+                insertProperty(properties, "FreierLink_target", (String)parameters.get("statlink"));
+        }
         insertProperty(properties, "Templ_bgcolor", (String)parameters.get("bcoldyn"));
         insertProperty(properties, "Templ_fontcolor", (String)parameters.get("tcoldyn"));
         //insertProperty(properties, "FreierLink_bgcolor", (String)parameters.get("bcollink"));
