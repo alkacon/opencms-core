@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/12/15 14:25:21 $
- * Version: $Revision: 1.427 $
+ * Date   : $Date: 2002/12/16 13:24:02 $
+ * Version: $Revision: 1.428 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,26 +26,28 @@ OpenCms 5.0 (next release)
 ! Help system will now look up if a directory for the current locale exists and display the "online help" button only in this case
 ! Preference panel for startup options will not display language selection if only one locale directory exists
 ! New "relativeroot" property tells the link substitution in the editor to generate relative URLs instead of absolute URLs
+* Description of a Module (and Module Parameters) is now saved in a CDATA section and not longer scambled after server restart
 * It's now possible to use "special" HTML chars (like < > " &) in resource property values
-* "Undo changes" now also returns the file-last-modified date to the value from the online project
-* JSP based templates now work with linked files in the VFS
+* "Undo changes" now also resets the file-last-modified date
+* JSP based templates now work when linked to in the VFS
 * Improved spelling for english language locale
-* Gallery contents are exported even if "exclude system folder" is checked in export
-* Added entry for "publishclass" when creating a module
+* The gallery contents are exported even if "exclude system folder" is checked in export dialog
+* Added entry for module "publishclass" on the workplace dialog when creating a new module 
 * Fixed template selection issue when creating a new page
 * Fixed issue with response.setContentType() in JSP pages
+- Attribute "part" in the <cms:template> tag has been renamed to "element"
 - Added Ant 1.5 support for build.xml (thanks to Thorsten Guenther for the patch)
 - WYSIWYG editor now tries to preserve the HTML source formatting
 - WYSIWYG editor now uses the "script save" variation of the control,
   so it sould not longer be neccessary to change IE security settings for this editor
-  Note: it is still required for the LEdit text editor
+  (note: it is still required for the LEdit text editor)
 - Changed behaviour for deleted files that reside in a folder that is locked:
   Now the file is also shifted to the current project where the lock is applied,
   old behaviour was to stay in the project where it was deleted in
 - Improved report output for actions like "publish", "export" etc. with nicer html,
   also improved the report templates and some of the workplace classes dealing with the reports
-- Added all default directories (like "/system/") to exclude-list in module import 
-- Modules are now exported to and read from /WEB-INF/export/modules/ (was /WEB-INF/export/)
+- Added all default directories (like "/system/") to the exclude-list in the module import 
+- Modules are now exported to and read from /WEB-INF/export/modules/ (was /WEB-INF/export/ before)
 - Some cleanup of code comments
 - Removed unrequired imports and non-static access to static resources in all classes
 
