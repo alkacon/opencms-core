@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
- * Date   : $Date: 2004/09/27 15:21:38 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/10/07 16:00:11 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * Creation date: (27.10.00 10:04:42)
  * 
  * @author Michael Knoll
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -367,7 +367,7 @@ public abstract class A_CmsContentDefinition implements I_CmsContent {
     protected boolean accessOwner(CmsObject cms, CmsUser currentUser, int flags) throws CmsException {
         
         // is the resource owned by this user?
-        if (getOwner().equals(currentUser.getId())) {
+        if (currentUser.getId().equals(getOwner())) {
             if ((getAccessFlags() & flags) == flags) {
                 return true;
             }
