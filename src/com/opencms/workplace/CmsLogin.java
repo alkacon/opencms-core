@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/08/28 13:17:44 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2001/01/03 13:09:43 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Waruschan Babachan
- * @version $Revision: 1.35 $ $Date: 2000/08/28 13:17:44 $
+ * @version $Revision: 1.36 $ $Date: 2001/01/03 13:09:43 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants {
@@ -161,7 +161,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			try {
 				username=cms.loginUser(name,password);
 			} catch (CmsException e) {
-			  if (e.getType()==CmsException.C_NO_USER) {
+			  if ((e.getType()==CmsException.C_NO_USER)||(e.getType()==CmsException.C_ACCESS_DENIED)) {
 					// there was an authentification error during login
 					// set user to null and switch to error template
 					username=null;
@@ -171,6 +171,13 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 					throw e;
 				}   
 			}   
+			// please no GuestUsers in Workplace
+			if ((username != null) && (username.equals(cms.C_USER_GUEST))){
+				username=null;
+				xmlTemplateDocument.setData("details", "please no guest users here");
+				template="error";
+			}
+
 			// check if a user was found.
 			if (username!= null) {
 				// get a session for this user so that he is authentificated at the
