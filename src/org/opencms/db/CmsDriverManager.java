@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/17 16:11:34 $
- * Version: $Revision: 1.449 $
+ * Date   : $Date: 2004/11/17 17:09:00 $
+ * Version: $Revision: 1.450 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.449 $ $Date: 2004/11/17 16:11:34 $
+ * @version $Revision: 1.450 $ $Date: 2004/11/17 17:09:00 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5138,7 +5138,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsGroup group = (CmsGroup)m_groupCache.get(new CacheId(project.getGroupId()));
         if (group == null) {
             try {
-                group = m_userDriver.readGroup(null, project.getGroupId());
+                group = m_userDriver.readGroup(CmsRuntimeInfoFactory.getNullRuntimeInfo(), project.getGroupId());
             } catch (CmsException exc) {
                 if (exc.getType() == CmsException.C_NO_GROUP) {
                     // the group does not exist any more - return a dummy-group
@@ -5165,7 +5165,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public CmsGroup readGroup(CmsTask task) throws CmsException {
 
-        return m_userDriver.readGroup(null, task.getRole());
+        return m_userDriver.readGroup(CmsRuntimeInfoFactory.getNullRuntimeInfo(), task.getRole());
     }
 
     /**
@@ -5179,7 +5179,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
 
-        return m_userDriver.readGroup(null, groupId);
+        return m_userDriver.readGroup(CmsRuntimeInfoFactory.getNullRuntimeInfo(), groupId);
     }
 
     /**
@@ -5218,7 +5218,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         group = (CmsGroup)m_groupCache.get(new CacheId(project.getManagerGroupId()));
         if (group == null) {
             try {
-                group = m_userDriver.readGroup(null, project.getManagerGroupId());
+                group = m_userDriver.readGroup(CmsRuntimeInfoFactory.getNullRuntimeInfo(), project.getManagerGroupId());
             } catch (CmsException exc) {
                 if (exc.getType() == CmsException.C_NO_GROUP) {
                     // the group does not exist any more - return a dummy-group
