@@ -131,7 +131,11 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
         // Make sure old "uk" stuff still works        
         if ("uk".equals(language)) language = "en";
         
-        langFiles = cms.getFilesInFolder(I_CmsWpConstants.C_VFS_PATH_LOCALES + language + "/");
+        try {
+            langFiles = cms.getFilesInFolder(I_CmsWpConstants.C_VFS_PATH_LOCALES + language + "/");
+        } catch (CmsException e) {
+            // noop
+        }
 
         // get all modules-language Files
         List modules = (List) new ArrayList();
