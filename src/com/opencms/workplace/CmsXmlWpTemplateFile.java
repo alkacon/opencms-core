@@ -14,7 +14,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/02/02 11:28:25 $
+ * @version $Revision: 1.21 $ $Date: 2000/02/03 13:20:01 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -170,8 +170,20 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         }
     
         workplaceObject = (I_CmsWpElement)loadedClass;
-        result = workplaceObject.handleSpecialWorkplaceTag(m_cms, n, this, callingObject, (Hashtable)userObj, m_languageFile);                
-    
+        try {
+            result = workplaceObject.handleSpecialWorkplaceTag(m_cms, n, this, callingObject, (Hashtable)userObj, m_languageFile);                
+        } catch(Exception e) {
+            String errorMessage = "Error while building workplace element \"" + tagname + "\": " + e;
+            if(e instanceof CmsException) {
+                if(A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+                }
+                throw (CmsException)e;
+            } else {
+                e.printStackTrace();
+                throwException(errorMessage);
+            }            
+        }
         return result; 
     }                    
     
