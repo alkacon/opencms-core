@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsVfsIndexResource.java,v $
- * Date   : $Date: 2004/07/06 08:39:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/19 09:06:48 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,14 @@
 package org.opencms.search;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.OpenCms;
 
 /**
  * Contains the data of a VFS Cms resource specified by a Lucene 
  * search result document.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2004/07/06 08:39:39 $
+ * @version $Revision: 1.8 $ $Date: 2004/11/19 09:06:48 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -55,17 +56,26 @@ public class CmsVfsIndexResource extends A_CmsIndexResource {
         m_data = res;
         m_id = res.getResourceId();
         m_name = res.getName();
-        m_type = res.getTypeId();
+        
+        // TODO: needs a better way to identify the generic type of a resource
+        try {
+            I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(res.getTypeId());
+            I_CmsResourceType genericType = (I_CmsResourceType)resourceType.getClass().newInstance();
+            m_type = genericType.getTypeId();
+        } catch (Exception exc) {
+            m_type = res.getTypeId();
+        }
+        
         // TODO: Add check for encoding property or otherwise care about the encoding here
         m_mimeType = OpenCms.getResourceManager().getMimeType(res.getName(), null);
         m_path = res.getRootPath();
     }
 
     /**
-     * @see org.opencms.search.A_CmsIndexResource#getDocumentKey()
+     * @see org.opencms.search.A_CmsIndexResource#getDocumentKey(boolean)
      */
-    public String getDocumentKey() {
+    public String getDocumentKey(boolean withMimeType) {
 
-        return "VFS" + getType() + ":" + getMimetype();
+        return "VFS" + getType() + ((withMimeType) ? ":" + getMimetype() : "");
     }
 }

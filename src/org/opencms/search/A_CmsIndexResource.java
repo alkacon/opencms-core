@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/A_CmsIndexResource.java,v $
- * Date   : $Date: 2004/07/06 08:39:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/19 09:06:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.util.CmsUUID;
  * An index resource is a wrapper class that contains the data of a
  * Cms resource specified by a Lucene search result document.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2004/07/06 08:39:39 $
+ * @version $Revision: 1.4 $ $Date: 2004/11/19 09:06:48 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -131,7 +131,8 @@ public abstract class A_CmsIndexResource {
     /**
      * Returns the document key for the search manager.<p> 
      * 
+     * @param withMimeType true if the mime type should be included in the key
      * @return the document key for the search manager
      */
-    public abstract String getDocumentKey();
+    public abstract String getDocumentKey(boolean withMimeType);
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/11/16 15:13:00 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/11/19 09:06:48 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.lucene.index.IndexWriter;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.25 $ $Date: 2004/11/16 15:13:00 $
+ * @version $Revision: 1.26 $ $Date: 2004/11/19 09:06:48 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -681,11 +681,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     protected I_CmsDocumentFactory getDocumentFactory(A_CmsIndexResource resource) {
 
-        String documentTypeKey = resource.getDocumentKey();
+        String documentTypeKey = resource.getDocumentKey(true);
 
         I_CmsDocumentFactory factory = (I_CmsDocumentFactory)m_documentTypes.get(documentTypeKey);
         if (factory == null) {
-            factory = (I_CmsDocumentFactory)m_documentTypes.get(resource.getType() + "");
+            factory = (I_CmsDocumentFactory)m_documentTypes.get(resource.getDocumentKey(false));
         }
 
         return factory;
