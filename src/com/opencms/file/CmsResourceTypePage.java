@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/10/23 17:28:13 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2002/10/23 18:28:57 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2002/10/23 17:28:13 $
+ * @version $Revision: 1.37 $ $Date: 2002/10/23 18:28:57 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -55,7 +55,10 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 
      private static final String C_DEFAULTBODY_START = "<?xml version=\"1.0\" encoding=\"" + I_CmsXmlParser.C_XML_ENCODING + "\"?>\n<XMLTEMPLATE>\n<TEMPLATE>\n<![CDATA[\n";
      private static final String C_DEFAULTBODY_END = "]]></TEMPLATE>\n</XMLTEMPLATE>";
-
+    
+    /** String to save the combined /default/vfs/ path */
+    private static String C_DEFVFS = C_DEFAULT_SITE + C_ROOTNAME_VFS;
+    
      /**
       * The id of resource type.
       */
@@ -353,7 +356,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // Check the path of the body file.
         // Don't use the checkBodyPath method here to avaoid overhead.
         String bodyPath=(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")))+(source);
-        String bodyXml=cms.getRequestContext().getDirectoryTranslator().translateResource(C_DEFAULT_SITE + C_ROOTNAME_VFS + hXml.getElementTemplate("body"));        
+        String bodyXml=cms.getRequestContext().getDirectoryTranslator().translateResource(C_DEFVFS + hXml.getElementTemplate("body"));        
 
         if ((C_DEFAULT_SITE + C_ROOTNAME_VFS + bodyPath).equals(bodyXml)){
 
@@ -839,6 +842,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         //}
     }
 
+
     /**
      * method to check get the real body path from the content file
      *
@@ -852,7 +856,9 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
         String body = "";
         try{
-            body = hXml.getElementTemplate("body");
+            // Return translated path name for body
+            body = cms.getRequestContext().getDirectoryTranslator().translateResource(C_DEFVFS + hXml.getElementTemplate("body"));        
+            if (body.startsWith(C_DEFVFS)) body = body.substring(C_DEFVFS.length());
         } catch (CmsException exc){
             // could not read body
         }
@@ -866,7 +872,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @param file File in which the body path is stored.
      */
     private String checkBodyPath(CmsObject cms, CmsFile file) throws CmsException {
-        String result =(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")))+(file.getAbsolutePath());
+        // Use translated path name of body
+        String result = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")) + file.getAbsolutePath();
         if (!result.equals(readBodyPath(cms, (CmsFile)file))){
             result = null;
         }
