@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2002/05/24 12:51:09 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/07/10 07:59:56 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,6 +81,11 @@ public class LinkChecker{
             int paraStart = work.indexOf("?");
             if(paraStart >= 0){
                 work = work.substring(0, paraStart);
+            }
+            // dont forget the anker links
+            int ankerStart = work.indexOf("#");
+            if(ankerStart >= 0){
+                work = work.substring(0, ankerStart);
             }
             // here is something for the future: if link starts with /// it is the full name of the resource
             if(work.startsWith("///")){
