@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagFileProperty.java,v $
-* Date   : $Date: 2002/10/30 10:25:29 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/11/16 13:17:54 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,13 +31,12 @@ package com.opencms.flex.jsp;
 
 import com.opencms.core.CmsException;
 import com.opencms.flex.cache.CmsFlexRequest;
-import com.opencms.flex.util.CmsPropertyLookup;
 
 /**
  * This Tag provides access to the currently included files OpenCms properties.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -109,30 +108,25 @@ public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport {
     public static String propertyTagAction(String property, String action, String defaultValue, CmsFlexRequest req) 
     throws CmsException
     {
-        String result = null;
+        // Make sure that no null String is returned
+        if (defaultValue == null) defaultValue = "";
         
         if ("parent".equals(action)) {                    
             // Read properties of parent (i.e. top requested) file
-            result = CmsPropertyLookup.lookupProperty(req.getCmsObject(), req.getCmsRequestedResource(), property, false);                  
+            return req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, false, defaultValue);                  
         } else if ("this".equals(action)) {
             // Read properties of this file
-            result = CmsPropertyLookup.lookupProperty(req.getCmsObject(), req.getCmsResource(), property, false);
+            return  req.getCmsObject().readProperty(req.getCmsResource(), property, false, defaultValue);
         } else if ("search-this".equals(action)) {
             // Try to find property on this file and all parent folders
-            result = CmsPropertyLookup.lookupProperty(req.getCmsObject(), req.getCmsResource(), property, true);
+            return req.getCmsObject().readProperty(req.getCmsResource(), property, true, defaultValue);
         } else if ("search-parent".equals(action) || "search".equals(action)) {
             // Try to find property on parent file and all parent folders
-            result = CmsPropertyLookup.lookupProperty(req.getCmsObject(), req.getCmsRequestedResource(), property, true);
+            return  req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, true, defaultValue);
         } else {
             // Read properties of the file named in the attribute
-            result = CmsPropertyLookup.lookupProperty(req.getCmsObject(), req.toAbsolute(action), property, false);                  
+            return  req.getCmsObject().readProperty(req.toAbsolute(action), property, false, defaultValue);
         }
-
-        if ((defaultValue != null) && (result == null)) {
-            result = defaultValue;
-        }
-                        
-        return result;
     }
 
 }
