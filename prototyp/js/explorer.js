@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/11/17 15:59:02 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/11/17 16:05:32 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -617,10 +617,10 @@ function displayHead(doc){
     doc.open();
     doc.writeln(headHead);
 
-    if(vr.actProject!=vr.onlineProject){
+    if(vr.actProject==vr.onlineProject){
         doc.writeln("<td class=menu nowrap width=32px>"+
             //"<a href=\"javascript: top.updateFrame('body.explorer_content.explorer_files','explorer_files_new.html');\""+
-            "<a href='explorer_files_new.html'>"+
+            "<a href='explorer_files_new.html' "+
             "onmouseout=\"top.choff(document, 'bt_new');\" "+
             "onmouseover=\"top.chon(document, 'bt_new');\">");
         doc.writeln("<img alt=new width=32  height=32 border=0 name='bt_new'></a></td>"); 
