@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
- * Date   : $Date: 2000/08/08 14:08:21 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/08/28 14:02:39 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,8 +38,9 @@ import javax.servlet.http.*;
  * session-failover in distributed-server environments.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/08/08 14:08:21 $  
+ * @version $Revision: 1.13 $ $Date: 2000/08/28 14:02:39 $  
  */
+
 public class CmsSession implements I_CmsSession, I_CmsConstants {
 	
 	/**
@@ -51,6 +52,7 @@ public class CmsSession implements I_CmsSession, I_CmsConstants {
 	 * The sessiondata.
 	 */
 	private Hashtable m_sessionData;
+
 
 	/**
 	 * Constructs a new CmsSession on base of a HttpSession.
@@ -75,6 +77,16 @@ public class CmsSession implements I_CmsSession, I_CmsConstants {
 	 */
 	public Object getValue(String name) {
 		return m_sessionData.get(name);
+	}
+	public String[] getValueNames() {
+	    String[] name=new String[m_sessionData.size()];
+
+	    Enumeration enu=m_sessionData.keys();
+	    for (int i=0;i<m_sessionData.size();i++) {
+		    name[i]=(String) enu.nextElement();
+	    }
+
+	    return name;
 	}
 	/**
 	 * Puts a value into the session

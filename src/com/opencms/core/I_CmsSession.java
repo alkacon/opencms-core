@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsSession.java,v $
- * Date   : $Date: 2000/08/08 14:08:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/08/28 14:02:39 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,10 +39,10 @@ import javax.servlet.http.*;
  * 
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/08/08 14:08:21 $  
+ * @version $Revision: 1.10 $ $Date: 2000/08/28 14:02:39 $  
  */
 public interface I_CmsSession  {
-	
+
 	/**
 	 * Gets a value from the session.
 	 * 
@@ -50,6 +50,7 @@ public interface I_CmsSession  {
 	 * @return the object for this key.
 	 */
 	public Object getValue(String name);
+		public String[] getValueNames();
 	/**
 	 * Puts a value into the session
 	 * 

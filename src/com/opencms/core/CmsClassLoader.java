@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
- * Date   : $Date: 2000/08/24 15:31:13 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/08/28 14:02:39 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -111,7 +111,7 @@ import com.opencms.file.*;
  * with a parent classloader. Normally this should be the classloader 
  * that loaded this loader. 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/08/24 15:31:13 $
+ * @version $Revision: 1.12 $ $Date: 2000/08/28 14:02:39 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -329,11 +329,12 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 						A_OpenCms.log(C_OPENCMS_DEBUG,"Try to load archive file " + filename + ".");
 					}
 					myClassData = loadClassFromZipFile(m_cms.readFile(filename),name);
-				} catch (Exception e) {
+				} catch (Exception e) { 
 					myClassData = null;
 				}
 			}
 			else {
+  				
 				//filename = filename + className;
 				// check if the repository name is just a path.
 				// if so, add the complete classname and the fileextension ".class"
@@ -344,6 +345,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 				try {
 					
 					classFile = m_cms.readFile(filename);
+					
 					myClassData = classFile.getContents();
 				} catch(Exception e) {
 					// File could not be read for any reason
