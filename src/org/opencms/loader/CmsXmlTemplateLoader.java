@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/09/03 12:10:31 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/09/03 14:59:04 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -450,7 +450,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
                     } 
                     throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
                 }
-                A_CmsXmlContent.clearFileCache();
+                // TODO: Make cache more efficient
+                clearLoaderCache(true, true);
                 output = callCanonicalRoot(cms, tmpl, masterTemplate, newParameters);
             } catch (CmsException e) {
                 if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
