@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/07/18 13:25:09 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/08/07 09:39:59 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2000/07/18 13:25:09 $
+ * @version $Revision: 1.24 $ $Date: 2000/08/07 09:39:59 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -459,6 +459,10 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             result.append("<HTML>\n<HEAD>\n");
             result.append("<link rel=stylesheet type=\"text/css\" href=\"" + style + "\">\n");
             result.append("</HEAD>\n");
+            result.append("<BASE href=\"");
+            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)m_cms.getRequestContext().getRequest().getOriginalRequest();
+            result.append(req.getScheme() + "://" + req.getHeader("HOST") + req.getServletPath() + "/");
+            result.append("\"></BASE>");
             result.append("<BODY " + getProcessedDataValue("bodytag", callingObject, parameters) + ">\n");
                 
             while(cdataStart != -1) {                
