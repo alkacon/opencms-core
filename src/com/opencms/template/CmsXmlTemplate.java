@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/07/16 18:24:16 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2001/07/30 15:21:50 $
+* Version: $Revision: 1.70 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.69 $ $Date: 2001/07/16 18:24:16 $
+ * @version $Revision: 1.70 $ $Date: 2001/07/30 15:21:50 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -1026,12 +1026,11 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         // TODO: replace _ELEMENT_ by a constant
         parameterHashtable.put("_ELEMENT_", tagcontent);
 
-
         // Try to get the result from the cache
         //if(subTemplate.isCacheable(cms, templateFilename, tagcontent, parameterHashtable, null)) {
         if(subTemplate.collectCacheDirectives(cms, templateFilename, tagcontent, parameterHashtable, null).isInternalCacheable()) {
             subTemplateKey = subTemplate.getKey(cms, templateFilename, parameterHashtable, null);
-            if(m_cache.has(subTemplateKey) && (!subTemplate.shouldReload(cms, templateFilename, tagcontent, parameterHashtable, null))) {
+            if(m_cache != null && m_cache.has(subTemplateKey) && (!subTemplate.shouldReload(cms, templateFilename, tagcontent, parameterHashtable, null))) {
                 result = m_cache.get(subTemplateKey);
                 if(cms.getRequestContext().isStreaming()) {
                     try {
@@ -1085,7 +1084,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
             // Store the results in the template cache, if cacheable
             //if(subTemplate.isCacheable(cms, templateFilename, tagcontent, parameterHashtable, null)) {
-            if(subTemplate.collectCacheDirectives(cms, templateFilename, tagcontent, parameterHashtable, null).isInternalCacheable()) {
+            if(subTemplate.collectCacheDirectives(cms, templateFilename, tagcontent, parameterHashtable, null).isInternalCacheable() && m_cache != null) {
 
                 // we don't need to re-get the caching-key here since it already exists
                 m_cache.put(subTemplateKey, result);
