@@ -42,7 +42,7 @@ redirectlocation.1 = /${app.name}/download/
     </target>
 
     <target name="import_vfs" depends="update_properties">
-        <copy file="${tomcat.home}/webapps/${app.name}/WEB-INF/ocsetup/vfs/manifest.xml" tofile="${tomcat.home}/webapps/${app.name}/WEB-INF/ocsetup/vfs/manifest.org"/>
+        <move file="${tomcat.home}/webapps/${app.name}/WEB-INF/ocsetup/vfs/manifest.xml" tofile="${tomcat.home}/webapps/${app.name}/WEB-INF/ocsetup/vfs/manifest.org"/>
         <copy file="${additionalfiles.home}/manifest.xml" todir="${tomcat.home}/webapps/${app.name}/WEB-INF/ocsetup/vfs"/>
         <copy file="${additionalfiles.home}/import_orig.js" tofile="${additionalfiles.home}/import.js"/>
         <replace file="${additionalfiles.home}/import.js" token="admin.password" value="${admin.password}"/>
