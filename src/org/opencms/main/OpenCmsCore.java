@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/22 13:52:27 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2004/02/23 15:15:21 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.91 $
+ * @version $Revision: 1.92 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -273,11 +273,13 @@ public final class OpenCmsCore {
      *
      * @param cms the current CmsObject
      * @param resourceName the requested resource
+     * @param req the current request
+     * @param res the current response
      * @return CmsFile the requested file read from the VFS
      * 
      * @throws CmsException in case the file does not exist or the user has insufficient access permissions 
      */
-    public CmsFile initResource(CmsObject cms, String resourceName) throws CmsException {
+    public CmsFile initResource(CmsObject cms, String resourceName, HttpServletRequest req, HttpServletResponse res) throws CmsException {
 
         CmsFile file = null;
         CmsException tmpException = null;
@@ -366,7 +368,7 @@ public final class OpenCmsCore {
         Iterator i = m_checkFile.iterator();
         while (i.hasNext()) {
             try {
-                file = ((I_CmsResourceInit)i.next()).initResource(file, cms);
+                file = ((I_CmsResourceInit)i.next()).initResource(file, cms, req, res);
                 // the loop has to be interrupted when the exception is thrown!
             } catch (CmsResourceInitException e) {
                 break;
@@ -1622,7 +1624,7 @@ public final class OpenCmsCore {
         try {
             cms = initCmsObject(req, res);
             // user is initialized, now deliver the requested resource
-            CmsFile file = initResource(cms, cms.getRequestContext().getUri());
+            CmsFile file = initResource(cms, cms.getRequestContext().getUri(), req, res);
             if (file != null) {
                 // a file was read, go on process it
                 res.setContentType(getMimeType(file.getName(), cms.getRequestContext().getEncoding()));

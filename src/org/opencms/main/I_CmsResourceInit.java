@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsResourceInit.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/23 15:15:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,13 +34,16 @@ package org.opencms.main;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * This interface checks the requested resource from the OpenCms request context
  * and returns it to the calling method, which will usually be 
  * OpenCms.initResource(cms).<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public interface I_CmsResourceInit {
     
@@ -49,10 +52,12 @@ public interface I_CmsResourceInit {
      * 
      * @param file the requested file
      * @param cms the current CmsObject
+     * @param req the current request
+     * @param res the current response
      * @return CmsFile a file in the OpenCms VFS
      * @throws CmsResourceInitException if other implementations of the interface should not be executed
      */
-    CmsFile initResource(CmsFile file, CmsObject cms) throws CmsResourceInitException;
+    CmsFile initResource(CmsFile file, CmsObject cms, HttpServletRequest req, HttpServletResponse res) throws CmsResourceInitException;
     
 }
 
