@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/02/17 13:57:41 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2000/02/17 19:21:35 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.42 $ $Date: 2000/02/17 13:57:41 $
+ * @version $Revision: 1.43 $ $Date: 2000/02/17 19:21:35 $
  */
 public interface I_CmsWpConstants {
 
@@ -112,7 +112,7 @@ public interface I_CmsWpConstants {
     // Filenames of workplace files
     
     /** prefix for temporary files */
-    public static final String C_WP_TEMP_PREFIX = "_";
+    public static final String C_WP_TEMP_PREFIX = "~";
     
 	/** The filename to the icontemplate */
 	public static final String C_ICON_TEMPLATEFILE = "icontemplate";
@@ -450,7 +450,7 @@ public interface I_CmsWpConstants {
             { "htmledit", "textedit"};
         
     /** default selected option value for editor view select boxes */
-    public static final int C_SELECTBOX_EDITORVIEWS_DEFAULT = 1;
+    public static final int C_SELECTBOX_EDITORVIEWS_DEFAULT = 0;
     
     // Parameters for file list
     
