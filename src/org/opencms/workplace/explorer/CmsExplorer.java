@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/03/17 09:05:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -384,7 +384,11 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(',');
 
             // position 9: project
-            int projectId = lock.isNullLock() ? res.getProjectLastModified() : lock.getProjectId();
+            int projectId = res.getProjectLastModified();
+            if (! lock.isNullLock() && lock.getType() != CmsLock.C_TYPE_INHERITED && lock.getType() != CmsLock.C_TYPE_SHARED_INHERITED) {
+                // use lock project ID only if lock is not inherited
+                projectId = lock.getProjectId();    
+            }
             content.append(projectId);
             content.append(",");
 
@@ -502,7 +506,7 @@ public class CmsExplorer extends CmsWorkplace {
             } else {
                 if (res.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                     // resource is locked and modified
-                    lockedInProject = lock.getProjectId();
+                    lockedInProject = projectId;
                 } else {
                     // resource is locked and unchanged
                     lockedInProject = lock.getProjectId();
