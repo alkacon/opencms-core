@@ -41,9 +41,6 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 		<td class=dialogtxt align=left><INPUT size="30" maxlength="30" class="textfeld3" type="file" id="DATEINAME" name="DATEINAME" onfocus="UPLOAD.WEITER.disabled=false"></td>
 	</tr>
 	<tr>
-	<td class=formular colspan=2><input type=checkbox name="unzip" name="unzip">&nbsp;]]><LABEL value="button.unzip" /><![CDATA[</td>
-
-	<tr>
 		<td colspan=2 class=formular>
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
@@ -134,7 +131,7 @@ function check_textfeld(formular, feld)
 	</tr>
 	<tr>
 		<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
-		<td class=dialogtxt><INPUT class="textfeld2" id="TITLE" name="TITLE" onfocus="UPLOADPIC.FERTIG.disabled=false;"></td>
+		<td class=dialogtxt><INPUT class="textfeld2" id="TITLE" name="TITLE" maxlength=100 onfocus="UPLOADPIC.FERTIG.disabled=false;"></td>
 	</tr>
 	<tr>
 		<td class=formular>]]><LABEL value="input.description" /><![CDATA[:</td>
