@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/21 18:40:56 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/22 11:40:59 $
  */
  class CmsAccessFileMySql extends A_CmsAccessFile implements I_CmsConstants  {
 
@@ -91,7 +91,51 @@ import com.opencms.core.*;
      */   
     private static final String C_FILE_DELETE = "DELETE FROM FILES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
             
+  
+     /**
+     * SQL Command for getting all subfolders.
+     * Because of the regular expression in this SQL command, this cannot be made with 
+     * a prepared statement.
+     */   
+    private static final String C_RESOURCE_GETSUBFOLDERS1 = "SELECT * FROM RESOURCES WHERE RESOURCE_NAME RLIKE '^";
+     
+     /**
+     * SQL Command for getting all subfolders.
+     * Because of the regular expression in this SQL command, this cannot be made with 
+     * a prepared statement.
+     */   
+    private static final String C_RESOURCE_GETSUBFOLDERS2 = "[^/]+/$' AND PROJECT_ID = ";
     
+     /**
+     * SQL Command for getting all subfolders.
+     * Because of the regular expression in this SQL command, this cannot be made with 
+     * a prepared statement.
+     */   
+    private static final String C_RESOURCE_GETSUBFOLDERS3 = " ORDER BY RESOURCE_NAME ASC";
+                                          
+            
+      /**
+     * SQL Command for getting all files of a folder.
+     * Because of the regular expression in this SQL command, this cannot be made with 
+     * a prepared statement.
+     */   
+    private static final String C_RESOURCE_GETFILESINFOLDER1 = "SELECT * FROM RESOURCES WHERE RESOURCE_NAME RLIKE '^";
+     
+     /**
+     * SQL Command for getting all files of a folder.
+     * Because of the regular expression in this SQL command, this cannot be made with 
+     * a prepared statement.
+     */   
+    private static final String C_RESOURCE_GETFILESINFOLDER2 = "[^/]+$' AND PROJECT_ID = ";
+    
+     /**
+     * SQL Command for getting all files of a folder.
+     * Because of the regular expression in this SQL command, this cannot be made with 
+     * a prepared statement.
+     */   
+    private static final String C_RESOURCE_GETFILESINFOLDER3 = " ORDER BY RESOURCE_NAME ASC";
+                                          
+
      /**
      * Name of the column RESOURCE_NAME in the SQL tables RESOURCE and FILES.
      */
@@ -217,7 +261,7 @@ import com.opencms.core.*;
     */
     private PreparedStatement m_statementFileRename;
 
-
+ 
     
     /**
      * Constructor, creartes a new CmsAccessFileMySql object and connects it to the
@@ -327,10 +371,8 @@ import com.opencms.core.*;
               
          try { 
               // read the file header
-             System.err.println("read file header");
-              file=(CmsFile)readFileHeader(project,filename);
-             System.err.println("done");   
-              // file was loaded, so get the content
+             file=(CmsFile)readFileHeader(project,filename);
+            // file was loaded, so get the content
               if(file != null) {
                    // read the file content form the database
                    synchronized (m_statementFileRead) {
@@ -715,25 +757,23 @@ import com.opencms.core.*;
         
     }
 	
+	
 	/**
 	 * Renames the folder to the new name.
 	 * 
 	 * This is a very complex operation, because all sub-resources may be
 	 * renamed, too.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource (, No path information allowed).
+	 * @param newname The new name of the resource 
 	 * @param force If force is set to true, all sub-resources will be renamed.
 	 * If force is set to false, the folder will be renamed only if it is empty.
 	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be renamed. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */		
-	 void renameFolder(String project, String oldname, 
-							 String newname, boolean force)
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */			
+	 void renameFolder(A_CmsProject project, String oldname, 
+					   String newname, boolean force)
          throws CmsException {
      }
 	
@@ -743,42 +783,34 @@ import com.opencms.core.*;
 	 * This is a very complex operation, because all sub-resources may be
 	 * delted, too.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param foldername The complete path of the folder.
 	 * @param force If force is set to true, all sub-resources will be deleted.
 	 * If force is set to false, the folder will be deleted only if it is empty.
 	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be deleted. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
+     * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 void deleteFolder(String project, String foldername, boolean force)
+	 void deleteFolder(A_CmsProject project, String foldername, boolean force)
          throws CmsException {
      }
 	
-	/**
+     /**
 	 * Copies a folder.
 	 * 
 	 * This is a very complex operation, because all sub-resources may be
 	 * copied, too.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param source The complete path of the sourcefolder.
 	 * @param destination The complete path of the destinationfolder.
 	 * @param force If force is set to true, all sub-resources will be copied.
 	 * If force is set to false, the folder will be copied only if it is empty.
 	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be copied. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * the destination foldername.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 void copyFolder(String project, String source, String destination, 
+	 void copyFolder(A_CmsProject project, String source, String destination, 
 						    boolean force)
-		throws CmsException, CmsDuplicateKeyException 
+		throws CmsException
      {
      }
 	
@@ -788,271 +820,114 @@ import com.opencms.core.*;
 	 * This is a very complex operation, because all sub-resources may be
 	 * moved, too.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param source The complete path of the sourcefile.
 	 * @param destination The complete path of the destinationfile.
 	 * @param force If force is set to true, all sub-resources will be moved.
 	 * If force is set to false, the folder will be moved only if it is empty.
 	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be moved. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * the destination filename.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 void moveFolder(String project, String source, 
+	 void moveFolder(A_CmsProject project, String source, 
 						   String destination, boolean force)
-         throws CmsException, CmsDuplicateKeyException {
+         throws CmsException {
      }
 
 	/**
 	 * Returns a abstract Vector with all subfolders.<BR/>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param foldername the complete path to the folder.
 	 * 
-	 * @return subfolders A abstract Vector with all subfolders for the overgiven folder.
+	 * @return Vector with all subfolders for the given folder.
 	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 Vector getSubFolders(String project, String foldername)
+	 Vector getSubFolders(A_CmsProject project, String foldername)
          throws CmsException {
-                 return null;
+         Vector folders=new Vector();
+         CmsFolder folder=null;
+         ResultSet res =null;
+         
+           try {
+            //  get all subfolders
+             Statement s = m_Con.createStatement();		
+  
+             res =s.executeQuery(C_RESOURCE_GETSUBFOLDERS1+foldername
+                                +C_RESOURCE_GETSUBFOLDERS2+project.getId()+
+                                 C_RESOURCE_GETSUBFOLDERS3);
+            // create new folder objects
+		    while ( res.next() ) {
+               folder = new CmsFolder(res.getString(C_RESOURCE_NAME),
+                                               res.getInt(C_RESOURCE_TYPE),
+                                               res.getInt(C_RESOURCE_FLAGS),
+                                               res.getInt(C_USER_ID),
+                                               res.getInt(C_GROUP_ID),
+                                               res.getInt(C_PROJECT_ID),
+                                               res.getInt(C_ACCESS_FLAGS),
+                                               res.getInt(C_STATE),
+                                               res.getInt(C_LOCKED_BY),
+                                               res.getLong(C_DATE_CREATED),
+                                               res.getLong(C_DATE_LASTMODIFIED)
+                                               );
+               folders.addElement(folder);
+             }
+
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);		
+         }
+         return folders;
      }
 	
 	/**
-	 * Returns a abstract Vector with all subfiles.<BR/>
+	 * Returns a Vector with all file headers of a folder.<BR/>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param foldername the complete path to the folder.
 	 * 
-	 * @return subfiles A abstract Vector with all subfiles for the overgiven folder.
+	 * @return subfiles A Vector with all file headers of the folder.
 	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 Vector getFilesInFolder(String project, String foldername)
+	 Vector getFilesInFolder(A_CmsProject project, String foldername)
          throws CmsException {
-                 return null;
-     }
-	
-	/**
-	 * Changes the flags for this resource<BR/>
-	 * 
-	 * The user may change the flags, if he is admin of the resource.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param filename The complete path to the resource.
-	 * @param flags The new flags for the resource.
-	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource.
-	 */
-	 void chmod(String project, String filename, int flags)
-         throws CmsException {
-     }
-     
-	/**
-	 * Changes the owner for this resource<BR/>
-	 * 
-	 * The user may change this, if he is admin of the resource.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param filename The complete path to the resource.
-	 * @param newOwner The name of the new owner for this resource.
-	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. It will also be thrown, if the newOwner doesn't exists.
-	 */
-	 void chown(String project, String filename, String newOwner)
-         throws CmsException {
-     }
+         Vector files=new Vector();
+         CmsResource file=null;
+         ResultSet res =null;
+         
+           try {
+            //  get all subfolders
+             Statement s = m_Con.createStatement();		
+  
+             res =s.executeQuery(C_RESOURCE_GETFILESINFOLDER1+foldername
+                                +C_RESOURCE_GETFILESINFOLDER2+project.getId()+
+                                 C_RESOURCE_GETFILESINFOLDER3);
+            // create new folder objects
+		    while ( res.next() ) {
+                     file = new CmsFile(res.getString(C_RESOURCE_NAME),
+                                           res.getInt(C_RESOURCE_TYPE),
+                                           res.getInt(C_RESOURCE_FLAGS),
+                                           res.getInt(C_USER_ID),
+                                           res.getInt(C_GROUP_ID),
+                                           res.getInt(C_PROJECT_ID),
+                                           res.getInt(C_ACCESS_FLAGS),
+                                           res.getInt(C_STATE),
+                                           res.getInt(C_LOCKED_BY),
+                                           res.getInt(C_LAUNCHER_TYPE),
+                                           res.getString(C_LAUNCHER_CLASSNAME),
+                                           res.getLong(C_DATE_CREATED),
+                                           res.getLong(C_DATE_LASTMODIFIED),
+                                           new byte[0]
+                                           );
+                     files.addElement(file);
+             }
 
-	/**
-	 * Changes the group for this resource<BR/>
-	 * 
-	 * The user may change this, if he is admin of the resource.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param filename The complete path to the resource.
-	 * @param newGroup The new of the new group for this resource.
-	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. It will also be thrown, if the newGroup doesn't exists.
-	 */
-	 void chgrp(String project, String filename, String newGroup)
-         throws CmsException {
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);		
+         }
+           return files;
      }
-
-	/**
-	 * Locks a resource<BR/>
-	 * 
-	 * A user can lock a resource, so he is the only one who can write this 
-	 * resource.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param resource The complete path to the resource to lock.
-	 * @param force If force is true, a existing locking will be oberwritten.
-	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. It will also be thrown, if there is a existing lock
-	 * and force was set to false.
-	 */
-	 void lockFile(String project, String resource, boolean force)
-         throws CmsException {
-     }
-	
-	/**
-	 * Tests, if a resource was locked<BR/>
-	 * 
-	 * A user can lock a resource, so he is the only one who can write this 
-	 * resource. This methods checks, if a resource was locked.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param resource The complete path to the resource.
-	 * 
-	 * @return true, if the resource is locked else it returns false.
-	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. 
-	 */
-	 boolean isLocked(String project, String resource)
-         throws CmsException {
-         return true;
-     }
-	
-	/**
-	 * Returns the user, who had locked the resource.<BR/>
-	 * 
-	 * A user can lock a resource, so he is the only one who can write this 
-	 * resource. This methods checks, if a resource was locked.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param resource The complete path to the resource.
-	 * 
-	 * @return true, if the resource is locked else it returns false.
-	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. 
-	 */
-	 A_CmsUser lockedBy(String project, String resource)
-         throws CmsException {
-                 return null;
-     }
-
-	/**
-	 * Returns a MetaInformation of a file or folder.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param name The resource-name of which the MetaInformation has to be read.
-	 * @param meta The metadefinition-name of which the MetaInformation has to be read.
-	 * 
-	 * @return metainfo The metainfo as string.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	 String readMetaInformation(String project, String name, String meta)
-         throws CmsException {
-                 return null;
-     }
-
-	/**
-	 * Writes a couple of MetaInformation for a file or folder.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param name The resource-name of which the MetaInformation has to be set.
-	 * @param metainfos A Hashtable with metadefinition- metainfo-pairs as strings.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	 void writeMetaInformations(String project, String name, 
-									  Hashtable metainfos)
-         throws CmsException {
-     }
-
-	/**
-	 * Returns a list of all MetaInformations of a file or folder.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param name The resource-name of which the MetaInformation has to be read
-	 * 
-	 * @return abstract Vector of MetaInformation as Strings.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	 Vector readAllMetaInformations(String project, String name)
-         throws CmsException {
-                 return null;
-     }
-	
-	/**
-	 * Deletes all MetaInformation for a file or folder.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param resourcename The resource-name of which the MetaInformation has to be delteted.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	 void deleteAllMetaInformations(String project, String resourcename)
-         throws CmsException {
-     }
-
-	/**
-	 * Deletes a MetaInformation for a file or folder.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param resourcename The resource-name of which the MetaInformation has to be delteted.
-	 * @param meta The metadefinition-name of which the MetaInformation has to be set.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	 void deleteMetaInformation(String project, String resourcename, 
-									  String meta)
-         throws CmsException {
-     }
-
-	/**
-	 * Declines a resource. The resource can be copied to the onlineproject.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The name of the project.
-	 * @param resource The full path to the resource, which will be declined.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	 void declineResource(String project, String resource)
-         throws CmsException {
-     }
-
-	/**
-	 * Rejects a resource. The resource will be copied to the following project,
-	 * at publishing time.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The name of the project.
-	 * @param resource The full path to the resource, which will be declined.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	 void rejectResource(String project, String resource)
-         throws CmsException {
-     }
-     
+	     
      /**
      * This method creates all preparted SQL statements required in this class.
      * 
@@ -1071,7 +946,7 @@ import com.opencms.core.*;
             m_statementFileDelete=m_Con.prepareStatement(C_FILE_DELETE);
             m_statementResourceRename=m_Con.prepareStatement(C_RESOURCE_RENAME);
             m_statementFileRename=m_Con.prepareStatement(C_FILE_RENAME);
-         } catch (SQLException e){
+           } catch (SQLException e){
            
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
