@@ -14,7 +14,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/01/27 15:01:43 $
+ * @version $Revision: 1.14 $ $Date: 2000/01/27 15:32:19 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -178,4 +178,36 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
     public void clearStartup(){
         setData(C_TAG_STARTUP,"");
     }
+    
+   /**
+    * Creates a datablock consisting of a single TextNode containing 
+    * data and stores this block into the datablock-hashtable.
+    * 
+    * @param tag Key for this datablock.
+    * @param data String to be put in the datablock.
+    */
+    public void setXmlData(String tag, String data) {
+        setData(tag, data);
+    }
+        
+    /**
+     * Removes a datablock from the internal hashtable and
+     * from the XML document
+     * @param tag Key of the datablock to delete.
+     */    
+    public void removeXmlData(String tag) {
+        removeData(tag);
+    }
+    
+	/**
+	 * Gets the text and CDATA content of a datablock from the 
+	 * datablock hashtable.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @return Datablock content for the given key or null if no datablock
+	 * is found for this key.
+	 */
+    public String getXmlDataValue(String tag) throws CmsException {
+        return getDataValue(tag);
+    }               
 }
