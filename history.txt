@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.27 Chusuk       - xx December 2001
+OpenCms 4.5.27 Chusuk       - 4 December 2001
 * Bugfix in language files and templates: the tagname "link" was renamed to "linkto" because of problems with the
   registered HTML-tag "LINK".
 * Bugfix in PL/SQL-Package opencmsproject: when publishing a resource an exception is thrown if the parent folder
