@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/07 14:00:56 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/06/07 14:12:21 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.21 $ $Date: 2000/06/07 14:00:56 $ * 
+ * @version $Revision: 1.22 $ $Date: 2000/06/07 14:12:21 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -1219,9 +1219,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		throws CmsException {
 		// TODO: init all default-resources
 
-		// TODO: add correct groups here!
-		CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), new CmsGroup(-1, -1, "", "", 0), "", "", C_USER_TYPE_SYSTEMUSER); 
-		CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), new CmsGroup(-1, -1, "", "", 0), "", "", C_USER_TYPE_SYSTEMUSER); 
+		CmsGroup guests = createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
+        CmsGroup adminstrators = createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER, null);            
+		CmsGroup projectleaders = createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group",C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER|C_FLAG_GROUP_PROJECTCOWORKER|C_FLAG_GROUP_ROLE,null);
+        CmsGroup users = createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED|C_FLAG_GROUP_ROLE|C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
+               
+        CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, "", "", C_USER_TYPE_SYSTEMUSER); 
+		CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), adminstrators, "", "", C_USER_TYPE_SYSTEMUSER); 
 	}
 	
 	/**

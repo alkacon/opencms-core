@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/06/07 09:11:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/06/07 14:12:21 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -103,7 +103,6 @@ public class CmsPreparedStatementPool {
 		this.m_passwd = passwd;
 		this.m_maxConn = maxConn;
 		
-        System.err.println("***"+driver);
 		// register the driver for the database
 		try {
 			Class.forName(m_driver);
@@ -111,7 +110,6 @@ public class CmsPreparedStatementPool {
 		catch (ClassNotFoundException e) {
            	throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
 		}
-		System.err.println("**Done");
 		// init the hashtables and vector(s)
 		m_prepStatements = new Hashtable();
 		m_prepStatementsCache  = new Hashtable();
@@ -120,12 +118,10 @@ public class CmsPreparedStatementPool {
 		// init connections
 		for (int i = 0; i < m_maxConn; i++) {
 			Connection conn = null;
-			System.err.println("***Adding connection "+i);
+	
 			try {
-                System.err.println(m_url+" "+m_user+" "+m_passwd);
-				conn = DriverManager.getConnection(m_url, m_user, m_passwd);
-                System.err.println("***"+conn);
-				m_connections.addElement(conn);
+      			conn = DriverManager.getConnection(m_url, m_user, m_passwd);
+   				m_connections.addElement(conn);
 			}
 			catch (SQLException e) {
 				throw new CmsException(CmsException.C_SQL_ERROR, e);
