@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/08/15 13:50:03 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2001/10/05 07:33:07 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@ package com.opencms.core;
 
 import java.io.*;
 import java.util.*;
-import java.lang.reflect.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import source.org.apache.java.io.*;
@@ -51,7 +50,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.62 $ $Date: 2001/08/15 13:50:03 $
+ * @version $Revision: 1.63 $ $Date: 2001/10/05 07:33:07 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -69,19 +68,12 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     /**
      * The default mimetype
      */
-
-    //private static String C_DEFAULT_MIMETYPE="application/octet-stream";
     private static String C_DEFAULT_MIMETYPE = "text/html";
 
     /**
      * The resource-broker to access the database.
      */
     private static I_CmsResourceBroker c_rb;
-
-    /**
-     * The session storage for all active users.
-     */
-    private CmsCoreSession m_sessionStorage;
 
     /**
      * Reference to the OpenCms launcer manager
@@ -122,7 +114,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * @param conf The configurations from the property-file.
      */
     OpenCms(Configurations conf) throws Exception {
-
         // invoke the ResourceBroker via the initalizer
         try {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -303,11 +294,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * @param project The id of the current project.
      */
     public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, String user,
-            String group, int project) throws CmsException {
+            String group, int project, CmsCoreSession sessionStorage) throws CmsException {
         if((!m_enableElementCache) || (project == C_PROJECT_ONLINE_ID)){
-            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache);
+            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache, sessionStorage);
         }else{
-            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, new CmsElementCache(10,200,10));
+            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, new CmsElementCache(10,200,10), sessionStorage);
         }
     }
 

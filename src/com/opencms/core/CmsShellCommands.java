@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/09/28 10:05:24 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2001/10/05 07:33:07 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.39 $ $Date: 2001/09/28 10:05:24 $
+ * @version $Revision: 1.40 $ $Date: 2001/10/05 07:33:07 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -62,7 +62,7 @@ public class CmsShellCommands implements I_CmsConstants {
     public CmsShellCommands(A_OpenCms openCms, CmsObject cms) throws Exception {
         m_openCms = openCms;
         m_cms = cms;
-        m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
+        m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID, null);
 
         // print the version-string
         version();

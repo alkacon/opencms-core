@@ -9,6 +9,7 @@ Legend:
 - General comment
 
 OpenCms 4.5.14 Gom Jabbar   - xx September 2001
+! A simple broadcast message service is availabla for Administrators.
 * Temporary projects are now created with the right type and will be deleted after publish.
 * Corrupt language files will not destroy the complete system.
 * When removing resources from the database (e.g. when publish a project) the properties

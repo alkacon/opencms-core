@@ -3063,6 +3063,15 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/ic_usermessages.gif</source>
+            <destination>pics/system/ic_usermessages.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
             <source>pics/system/ic_usermanagement_in.gif</source>
             <destination>pics/system/ic_usermanagement_in.gif</destination>
             <type>image</type>
@@ -5552,6 +5561,48 @@
         <file>
             <source>system/workplace/administration/user/groups/index.html</source>
             <destination>system/workplace/administration/user/groups/index.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <destination>system/workplace/administration/user/usermessages</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[icon.usermessages]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[ic_usermessages]]></value>
+                </property>
+                <property>
+                    <name>NavPos</name>
+                    <type>0</type>
+                    <value><![CDATA[3]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/workplace/administration/user/usermessages/administration_content_usermessages</source>
+            <destination>system/workplace/administration/user/usermessages/administration_content_usermessages</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/user/usermessages/index.html</source>
+            <destination>system/workplace/administration/user/usermessages/index.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/10/05 07:33:07 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -49,18 +49,10 @@ import source.org.apache.java.util.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2001/07/31 15:50:12 $
+ * @version $Revision: 1.19 $ $Date: 2001/10/05 07:33:07 $
  *
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
-
-    //private static String basePath = null;
-
-    /** Reference to the system log */
-    //private static CmsLog c_cmsLog = null;
-
-    /** Indicates if the system log is initialized */
-    //protected static boolean c_servletLogging = false;
 
     /**
      * Destructor, called when the the servlet is shut down.
@@ -96,7 +88,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @param project The id of the current project.
      */
     abstract public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes,
-        String user, String group, int project) throws CmsException;
+        String user, String group, int project, CmsCoreSession sessionStorage) throws CmsException;
 
     /**
      * Checks if the system logging is active.

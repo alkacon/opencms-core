@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/09/06 13:20:17 $
-* Version: $Revision: 1.183 $
+* Date   : $Date: 2001/10/05 07:33:07 $
+* Version: $Revision: 1.184 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.183 $ $Date: 2001/09/06 13:20:17 $
+ * @version $Revision: 1.184 $ $Date: 2001/10/05 07:33:07 $
  */
 public interface I_CmsConstants {
 
@@ -522,6 +522,16 @@ public interface I_CmsConstants {
      * The key for the original session to store the session data.
      */
     static final String C_SESSION_DATA = "_session_data_";
+
+    /**
+     * The key for the session to store Broadcast messages.
+     */
+    static final String C_SESSION_BROADCASTMESSAGE = "BROADCASTMESSAGE";
+
+    /**
+     * The key for the session to store, if a message is pending for this user.
+     */
+    static final String C_SESSION_MESSAGEPENDING = "BROADCASTMESSAGE_PENDING";
 
     /**
      * Session key for storing the possition in the administration navigation

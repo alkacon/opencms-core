@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/09/28 10:05:49 $
-* Version: $Revision: 1.190 $
+* Date   : $Date: 2001/10/05 07:33:07 $
+* Version: $Revision: 1.191 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,10 +50,15 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.190 $ $Date: 2001/09/28 10:05:49 $
+ * @version $Revision: 1.191 $ $Date: 2001/10/05 07:33:07 $
  *
  */
 public class CmsObject implements I_CmsConstants {
+
+    /**
+     * Method that can be invoked to find out all currently logged in users.
+     */
+    private CmsCoreSession m_sessionStorage = null;
 
     /**
      * The current version-number of OpenCms
@@ -1554,7 +1559,7 @@ private void setCmsObjectForStaticExport(int projectId) throws CmsException{
     CmsDummyResponse dRes = new CmsDummyResponse();
 
     cmsForStaticExport.init(m_rb, dReq, dRes, C_USER_GUEST,
-                             C_GROUP_GUEST, projectId, false, null);
+                             C_GROUP_GUEST, projectId, false, null, null);
     cmsForStaticExport.setLauncherManager(getLauncherManager());
     m_rb.setCmsObjectForStaticExport(cmsForStaticExport);
 }
@@ -2072,7 +2077,8 @@ public void init(I_CmsResourceBroker broker) throws CmsException {
  *
  * @exception CmsException if operation was not successful.
  */
-public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, boolean streaming, CmsElementCache elementCache) throws CmsException {
+public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, boolean streaming, CmsElementCache elementCache, CmsCoreSession sessionStorage) throws CmsException {
+    m_sessionStorage = sessionStorage;
     m_rb = broker;
     m_context = new CmsRequestContext();
     m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId, streaming, elementCache);
@@ -2192,7 +2198,7 @@ public String loginUser(String username, String password) throws CmsException {
     // login the user
     CmsUser newUser = m_rb.loginUser(m_context.currentUser(), m_context.currentProject(), username, password);
     // init the new user
-    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache());
+    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage);
     // return the user-name
     return (newUser.getName());
 }
@@ -2209,7 +2215,7 @@ public String loginWebUser(String username, String password) throws CmsException
     // login the user
     CmsUser newUser = m_rb.loginWebUser(m_context.currentUser(), m_context.currentProject(), username, password);
     // init the new user
-    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache());
+    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage);
     // return the user-name
     return (newUser.getName());
 }
@@ -3583,6 +3589,36 @@ public void writeUser(CmsUser user) throws CmsException {
  */
 public void writeWebUser(CmsUser user) throws CmsException {
     m_rb.writeWebUser(m_context.currentUser(), m_context.currentProject(), user);
+}
+
+/**
+ * Returns a list of all currently logged in users.
+ * This method is only allowed for administrators.
+ */
+public void sendBroadcastMessage(String message) throws CmsException {
+    if(isAdmin()) {
+        if(m_sessionStorage != null) {
+            m_sessionStorage.sendBroadcastMessage(message);
+        }
+    } else {
+        throw new CmsException("sendBroadcastMessage() not allowed", CmsException.C_NO_ACCESS);
+    }
+}
+
+/**
+ * Returns a list of all currently logged in users.
+ * This method is only allowed for administrators.
+ */
+public Vector getLoggedInUsers() throws CmsException {
+    if(isAdmin()) {
+        if(m_sessionStorage != null) {
+            return m_sessionStorage.getLoggedInUsers();
+        } else {
+            return null;
+        }
+    } else {
+        throw new CmsException("getLoggedInUsers() not allowed", CmsException.C_NO_ACCESS);
+    }
 }
 
 /**

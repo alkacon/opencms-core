@@ -367,6 +367,7 @@
             <syncfolder>Synchronisation- management</syncfolder>
             <user>User- management</user>
             <users>Edit Users</users>
+            <usermessages>Messages</usermessages>
         </icon>
         
         <editor>
@@ -584,6 +585,9 @@
             <propertydef>Property</propertydef>
             <path>Folder</path>
             <mimetype>MimeTyp</mimetype>
+            <messagepending>pending messages</messagepending>
+            <messagetoall>Message to all</messagetoall>
+            <sendmessage>send</sendmessage>            
             <name>Name</name>
             <newsstate>News-State</newsstate>
             <articlestate>Article State</articlestate>

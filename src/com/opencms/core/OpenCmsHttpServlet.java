@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/09/13 09:14:23 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2001/10/05 07:33:07 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2001/09/13 09:14:23 $
+ * @version $Revision: 1.18 $ $Date: 2001/10/05 07:33:07 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -699,7 +699,8 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         // create the cms-object for the class-loader to read classes from the vfs
         CmsObject cms = new CmsObject();
         try {
-            m_opencms.initUser(cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
+            // m_sessionStorage.getClass().
+            m_opencms.initUser(cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID, m_sessionStorage);
         } catch (CmsException exc) {
             throw new ServletException("Error while initializing the cms-object for the classloader", exc);
         }
@@ -784,7 +785,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
 
         //set up the default Cms object
         try {
-            m_opencms.initUser(cms, cmsReq, cmsRes, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
+            m_opencms.initUser(cms, cmsReq, cmsRes, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID, m_sessionStorage);
 
             // check if a parameter "opencms=login" was included in the request.
             // this is used to force the HTTP-Authentification to appear.
@@ -846,7 +847,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                 if(user != null) {
                     group = m_sessionStorage.getCurrentGroup(session.getId());
                     project = m_sessionStorage.getCurrentProject(session.getId());
-                    m_opencms.initUser(cms, cmsReq, cmsRes, user, group, project.intValue());
+                    m_opencms.initUser(cms, cmsReq, cmsRes, user, group, project.intValue(), m_sessionStorage);
                 }
             }
             else {

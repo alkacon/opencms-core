@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2001/08/02 14:56:08 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2001/10/05 07:33:07 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.40 $ $Date: 2001/08/02 14:56:08 $
+ * @version $Revision: 1.41 $ $Date: 2001/10/05 07:33:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -122,6 +122,15 @@ public class CmsWpMain extends CmsWorkplaceDefault {
                 xmlTemplateDocument.setData(CmsSyncFolder.C_SYNC_BUTTON, xmlTemplateDocument.getProcessedDataValue(CmsSyncFolder.C_SYNC_BUTTON_ENABLED, this));
             }
         }
+        // send message, if this is the foot
+        if (templateFile.equalsIgnoreCase(xmlTemplateDocument.C_TEMPLATEPATH+"foot")){
+            String message = (String)cms.getRequestContext().getSession(true).getValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+            if(message != null) {
+                cms.getRequestContext().getSession(true).removeValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+                xmlTemplateDocument.setData("message", "alert(unescape('BROADCASTMESSAGE: " + Encoder.escape(message) + "'));");
+            }
+        }
+
         // Now load the template file and start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }

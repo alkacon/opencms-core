@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2001/10/05 07:33:07 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -51,7 +51,7 @@ import FESI.Interpreter.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.69 $ $Date: 2001/07/31 15:50:12 $
+ * @version $Revision: 1.70 $ $Date: 2001/10/05 07:33:07 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -107,7 +107,7 @@ public class CmsShell implements I_CmsConstants {
 
             m_logMemory = conf.getBoolean("log.memory", false);
             //log in default user.
-            m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
+            m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID, null);
         }
         catch(Exception exc) {
             printException(exc);

@@ -366,6 +366,7 @@
             <syncfolder>Synchronisations- verwaltung</syncfolder>
             <user>Benutzer- verwaltung</user>
             <users>Benutzer</users>
+            <usermessages>Nachrichten</usermessages>
         </icon>
         
         <editor>
@@ -585,6 +586,9 @@
             <propertydef>Eigenschaft</propertydef>
             <path>Ordner</path>
             <mimetype>MimeTyp</mimetype>
+            <messagepending>anstehende Nachrichten</messagepending>
+            <messagetoall>Nachricht an alle</messagetoall>
+            <sendmessage>senden</sendmessage>
             <name>Name</name>       
             <newsstate>News-Status</newsstate>
             <notavailable>N/A</notavailable>
