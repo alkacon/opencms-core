@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/17 15:51:01 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2000/02/17 18:44:31 $
+ * Version: $Revision: 1.64 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.63 $ $Date: 2000/02/17 15:51:01 $
+ * @version $Revision: 1.64 $ $Date: 2000/02/17 18:44:31 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3713,7 +3713,7 @@ System.err.println(">>> readFile(2) error for\n" +
 				((c < '0') || (c > '9')) &&
 				((c < 'A') || (c > 'Z')) &&
 				(c != '-') && (c != '/') && (c != '.') &&
-				(c != '|') && (c != '_') //removed because of MYSQL regexp syntax
+				(c != '|') && (c != '_') && (c != '~') 
 				) {
 				throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 					CmsException.C_BAD_NAME);
