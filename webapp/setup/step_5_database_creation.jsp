@@ -1,13 +1,8 @@
-<% /* Initialize the Bean */ %>
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
+<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%--
+--%><%@ page import="org.opencms.setup.*,java.util.*" %><%--
 
-<% /* Set all given Properties */%>
-<jsp:setProperty name="Bean" property="*" />
-
-<% /* Import packages */ %>
-<%@ page import="org.opencms.setup.*,java.util.*" %>
-
-<%
+--%><%
 	/* next page to be accessed */
 	String nextPage = "step_6_module_selection.jsp";
 	
@@ -70,6 +65,7 @@
 		Bean.initHtmlParts();
 	}
 
+	boolean dbError = false;
 	boolean enableContinue = false;
 	if(!createDb && !createTables && dbExists)	{
 		enableContinue = true;
@@ -148,6 +144,7 @@ OpenCms Setup Wizard - Create database & tables
 								}
 								else	{
 									enableContinue = false;
+									dbError = true;
 								 %>
 									<tr>
 										<td><img src="resources/error.gif" border="0"></td>
@@ -195,6 +192,7 @@ OpenCms Setup Wizard - Create database & tables
 								}
 								else	{ 
 									enableContinue = false;
+									dbError = true;
 								%>
 								
 									<tr>
@@ -255,6 +253,7 @@ OpenCms Setup Wizard - Create database & tables
 								}
 								else	{ 
 									enableContinue = false;
+									dbError = true;
 								%>
 								
 									<tr>
@@ -300,7 +299,7 @@ OpenCms Setup Wizard - Create database & tables
 <input name="btcontinue" type="submit" value="Continue &#062;&#062;" class="dialogbutton" disabled="disabled" id="btcontinue">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>
-<% if (enableContinue)	{
+<% if (enableContinue && !dbError)	{
 	out.println("<script type=\"text/javascript\">\ndocument.getElementById(\"btcontinue\").disabled = false;\n</script>");
 } %>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
