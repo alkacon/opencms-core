@@ -67,7 +67,7 @@
 				
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_link" action="doEditHTML(41);" alt="linkto"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_vfslink" action="doEditHTML(46);" alt="linkto"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_vfslink" action="doEditHTML(46);" alt="linkinternal"/><![CDATA[</td>
 				
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_image" action="doEditHTML(42);" alt="image"/><![CDATA[</td>
