@@ -1,4 +1,4 @@
-\chapter{New Features For Resources}
+\section{New Features For Resources}
 
 With the new Projectmechanism in OpenCms 4.4 come several new
 features for resources in the offline project.
@@ -12,15 +12,13 @@ These features are:
 \item Copy resources to an existing project.
 \end{itemize}
 
-\newpage
-\section{Undelete resources}
-\index{undelete}
-When a resource that already exists in the online
-project is deleted it is marked by crossing out its entry in the
-file list. Now it is possible to undelete these resources. When
-undeleting a folder all subresources in this folder that were
-marked as deleted are undeleted, too. You must have write access
-to undelete a resource.
+
+\subsection{Undelete resources} \index{undelete} When a resource
+that already exists in the online project is deleted it is marked
+by crossing out its entry in the file list. Now it is possible to
+undelete these resources. When undeleting a folder all
+subresources in this folder that were marked as deleted are
+undeleted, too. You must have write access to undelete a resource.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -35,9 +33,8 @@ to undelete a resource.
 After the resource is undeleted its state is set to changed and
 the resource is locked by the current user.
 
-\newpage
-\section{Undo changes}
-\index{undo}
+
+\subsection{Undo changes} \index{undo}
 
 Changes of a resource can now be undone. The resource must be
 marked as changed and it must be locked. You must have write
@@ -57,9 +54,7 @@ not published are lost and new resources are deleted.
 \end{figure}
 
 
-\newpage
-\section{Restore a version from history}
-\index{history}
+\subsection{Restore a version from history} \index{history}
 
 Now older versions of a file can be restored from the history. The
 file must be locked. This feature currently works only for files
@@ -90,9 +85,7 @@ want to restore a version.
 \end{figure}
 
 
-\newpage
-\section{Publish a resource}
-\index{publish resource}
+\subsection{Publish a resource} \index{publish resource}
 
 Resources can now be published directly. They must be unlocked to
 enable the function in the context menu. Only the projectmanager
@@ -118,8 +111,7 @@ When a resource is published directly
 \end{itemize}
 
 
-\newpage
-\section{Copy a resource to the project}
+\subsection{Copy a resource to the project}
 
 A resource that does not belongs to the current offline project is
 colored grey. You can copy this resource to the current offline
