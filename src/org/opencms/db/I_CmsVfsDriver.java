@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/04/01 10:23:11 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2004/04/23 14:51:07 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.71 $ $Date: 2004/04/01 10:23:11 $
+ * @version $Revision: 1.72 $ $Date: 2004/04/23 14:51:07 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -195,9 +195,7 @@ public interface I_CmsVfsDriver {
     CmsResource createSibling(CmsProject project, CmsResource resource, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
 
     /**
-     * Deletes all properties of a specified resource.<p>
-     *
-     * Both the structure and resource values of the properties are deleted.<p>
+     * Deletes all property values (both structure and resource values) of a specified resource.<p>
      *
      * @param projectId the id of the project
      * @param resource the resource

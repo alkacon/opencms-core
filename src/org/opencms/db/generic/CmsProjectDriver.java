@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/04/20 12:42:27 $
- * Version: $Revision: 1.161 $
+ * Date   : $Date: 2004/04/23 14:51:07 $
+ * Version: $Revision: 1.162 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.161 $ $Date: 2004/04/20 12:42:27 $
+ * @version $Revision: 1.162 $ $Date: 2004/04/23 14:51:07 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -694,6 +694,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         CmsFile newFile = null;
         CmsResource onlineFileHeader = null;
         List offlineProperties = null;
+        CmsProperty property = null;
 
         /*
          * Things to know:
@@ -735,19 +736,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // write the file to the backup and publishing history
                     if (backupEnabled) {
-                        // TODO this feature might be removed or modified for future backup implementations
-                        /*
-                        if (offlineFile == null) {
-                            offlineFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), true, offlineFileHeader.getStructureId());
-                            offlineFile.setFullResourceName(offlineFileHeader.getRootPath());
-                        }
-                        
-                        if (offlineProperties == null) {
-                            offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFileHeader, offlineFileHeader.getType());
-                        }
-                        m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), offlineFile, offlineProperties, backupTagId, publishDate, maxVersions);
-                        */
-
                         // delete all backups as well
                         m_driverManager.deleteBackup(offlineFileHeader);                                                                 
                     }
@@ -824,11 +812,24 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFileHeader);
 
                     // if the offline file has a resource ID different from the online file
-                    // (probably because a (deleted) file was replaced by a new file with the
-                    // same name), the properties with the "old" resource ID have to be
-                    // deleted also offline
+                    // (probably because a deleted file was replaced by a new file with the
+                    // same name), the properties mapped to the "old" resource ID have to be
+                    // deleted also offline. if this is the case, the online and offline structure
+                    // ID's do match, but the resource ID's are different. structure IDs are reused
+                    // to prevent orphan structure records in the online project.
                     if (!onlineFileHeader.getResourceId().equals(offlineFileHeader.getResourceId())) {
-                        m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), onlineFileHeader);
+                        offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(context.currentProject(), onlineFileHeader);
+                        if (offlineProperties.size() > 0) {
+                            for (int i = 0; i < offlineProperties.size(); i++) {
+                                property = (CmsProperty)offlineProperties.get(i);
+                                property.setStructureValue(null);
+                                property.setResourceValue(CmsProperty.C_DELETE_VALUE);
+                            }
+                            m_driverManager.getVfsDriver().writePropertyObjects(
+                                context.currentProject(),
+                                onlineFileHeader,
+                                offlineProperties);
+                        }
                     }
 
                     // remove the file online
