@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/07/18 16:38:04 $
- * Version: $Revision: 1.557 $
+ * Date   : $Date: 2004/07/23 13:32:42 $
+ * Version: $Revision: 1.558 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,8 @@ OpenCms 5.3.6 Ix - mm dd, 2004
 - CmsRegistry moved to package com.opencms.legacy and deprecated (likley to be fully deleted soon)
 - Access to registry now through CmsRegistry singleton, not longer through OpenCms object
 ! Implemented writing of new XML configuration after a configuration change
+! The FlexCache can now generate variations for session attributes, 
+  use "session=(a,b)" as cache property values
 
 OpenCms 5.3.5 Ix - June 16, 2004
 - Important: This version contains changes to the OpenCms VFS database schema

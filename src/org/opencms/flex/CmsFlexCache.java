@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/07/07 18:01:08 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/07/23 13:30:12 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.cache.I_CmsLruCacheObject;
 import org.opencms.file.CmsObject;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.util.Collections;
@@ -89,7 +90,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -470,21 +471,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
         super.finalize();
     }    
-    
-    /**
-     * This method checks if a given key
-     * is already contained in the cache.<p>
-     *
-     * @return true if key is in the cache, false otherwise
-     * @param key the key to look for
-     */
-    boolean containsKey(CmsFlexCacheKey key) {
-        if (! isEnabled()) {
-            return false;
-        }
-        return (get(key) != null);
-    }
-    
+
     /**
      * Looks up a specific entry in the cache.<p>
      * 
@@ -495,33 +482,33 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @param key The key to look for in the cache
      * @return the entry found for the key, or null if key is not in the cache
      */
-    CmsFlexCacheEntry get(CmsFlexCacheKey key) {
+    CmsFlexCacheEntry get(CmsFlexRequestKey key) {
         if (! isEnabled()) {
             // cache is disabled
             return null;
         }
-        Object o = m_keyCache.get(key.m_resource);
+        Object o = m_keyCache.get(key.getResource());
         if (o != null) {
             // found a matching key in the cache
             CmsFlexCacheVariation v = (CmsFlexCacheVariation)o;
             String variation = v.m_key.matchRequestKey(key);
             
-            if (variation == null) {
+            if (CmsStringUtil.isEmpty(variation)) {
                 // requested resource is not cacheable
                 return null;
             }
-            CmsFlexCacheEntry e = (CmsFlexCacheEntry)v.m_map.get(variation);
-            if (e == null) {
+            CmsFlexCacheEntry entry = (CmsFlexCacheEntry)v.m_map.get(variation);
+            if (entry == null) {
                 // no cache entry available for variation
                 return null;
             }
-            if (e.getDateExpires() < key.m_timeout) {
+            if (entry.getDateExpires() < System.currentTimeMillis()) {
                 // cache entry avaiable but expired, remove entry
-                this.m_variationCache.remove(e);
+                this.m_variationCache.remove(entry);
                 return null;
             }
             // return the found cache entry
-            return e;
+            return entry;
         } else {
             return null;
         }
@@ -582,13 +569,13 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             return false;
         }
         if (DEBUG > 1) {
-            System.err.println("FlexCache: Trying to add entry for resource " + key.m_resource);
+            System.err.println("FlexCache: Trying to add entry for resource " + key.getResource());
         }
         if (variation != null) {
             // This is a cachable result
-            key.m_variation = variation;
+            key.setVariation(variation);
             if (DEBUG > 1) {
-                System.err.println("FlexCache: Adding entry for resource " + key.m_resource + " with variation:" + key.m_variation);
+                System.err.println("FlexCache: Adding entry for resource " + key.getResource() + " with variation:" + key.getVariation());
             }
             put(key, entry);
             // Note that duplicates are NOT checked, it it assumed that this is done beforehand,
@@ -612,13 +599,13 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (! isEnabled()) {
             return;
         }
-        Object o = m_keyCache.get(key.m_resource);
+        Object o = m_keyCache.get(key.getResource());
         if (o == null) {
             // No variation map for this resource yet, so create one
             CmsFlexCacheVariation variationMap = new CmsFlexCacheVariation(key);
-            m_keyCache.put(key.m_resource, variationMap);
+            m_keyCache.put(key.getResource(), variationMap);
             if (DEBUG > 1) {
-                System.err.println("FlexCache: Added pre-calculated key for resource " + key.m_resource);
+                System.err.println("FlexCache: Added pre-calculated key for resource " + key.getResource());
             }
         }
         // If != null the key is already in the cache, so we just do nothing
@@ -633,10 +620,10 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (! isEnabled()) {
             return;
         }
-        Object o = m_keyCache.get(key.m_resource);
+        Object o = m_keyCache.get(key.getResource());
         if (o != null) {
             //Object old = ((HashMap)o).remove(key.Variation);
-            Object old = ((HashMap)o).get(key.m_variation);
+            Object old = ((HashMap)o).get(key.getVariation());
             if (old != null) {
                 this.getEntryLruCache().remove((I_CmsLruCacheObject)old);
             }
@@ -933,23 +920,23 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     private void put(CmsFlexCacheKey key, CmsFlexCacheEntry theCacheEntry) {
         
-        Object o = m_keyCache.get(key.m_resource);
-        if (key.m_timeout > 0) {
-            theCacheEntry.setDateExpiresToNextTimeout(key.m_timeout);
+        Object o = m_keyCache.get(key.getResource());
+        if (key.getTimeout() > 0) {
+            theCacheEntry.setDateExpiresToNextTimeout(key.getTimeout());
         }
         if (o != null) {
             // We already have a variation map for this resource
             Map m = ((CmsFlexCacheVariation)o).m_map;
             boolean wasAdded = true;
-            if (! m.containsKey(key.m_variation)) {
+            if (! m.containsKey(key.getVariation())) {
                 wasAdded = this.m_variationCache.add(theCacheEntry);
             } else {
                 wasAdded = this.m_variationCache.touch(theCacheEntry);
             }
             
             if (wasAdded) {
-                theCacheEntry.setVariationData(key.m_variation, m);
-                m.put(key.m_variation, theCacheEntry);
+                theCacheEntry.setVariationData(key.getVariation(), m);
+                m.put(key.getVariation(), theCacheEntry);
             }
         } else {
             // No variation map for this resource yet, so create one
@@ -958,14 +945,14 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             boolean wasAdded = this.m_variationCache.add(theCacheEntry);
             
             if (wasAdded) {
-                theCacheEntry.setVariationData(key.m_variation, list.m_map);
-                list.m_map.put(key.m_variation, theCacheEntry);
-                m_keyCache.put(key.m_resource, list);
+                theCacheEntry.setVariationData(key.getVariation(), list.m_map);
+                list.m_map.put(key.getVariation(), theCacheEntry);
+                m_keyCache.put(key.getResource(), list);
             }
         }
         
         if (DEBUG > 0) {
-            System.err.println("FlexCache: Entry "  + m_size + " added for resource " + key.m_resource + " with variation " + key.m_variation);
+            System.err.println("FlexCache: Entry "  + m_size + " added for resource " + key.getResource() + " with variation " + key.getVariation());
         }
         if (DEBUG > 2) {
             System.err.println("FlexCache: Entry added was:\n" + theCacheEntry.toString());

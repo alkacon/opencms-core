@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2004/07/07 18:01:08 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/07/23 13:30:12 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
     
@@ -77,8 +77,8 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     /** Flag to check if this request is in the online project or not. */
     private boolean m_isOnline;
     
-    /** The CmsFlexCacheKey for this request. */
-    private CmsFlexCacheKey m_key;
+    /** The CmsFlexRequestKey for this request. */
+    private CmsFlexRequestKey m_key;
     
     /** Map of parameters from the original request. */
     private Map m_parameters;
@@ -490,10 +490,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @return the CmsFlexCacheKey for this request
      */
-    CmsFlexCacheKey getCmsCacheKey() {
+    CmsFlexRequestKey getCmsCacheKey() {
         // The key for this request is only calculated if actually requested
         if (m_key == null) {
-            m_key = new CmsFlexCacheKey(this, m_elementUri, m_isOnline);
+            m_key = new CmsFlexRequestKey(this, m_elementUri, m_isOnline);
         }
         return m_key;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2004/06/25 16:40:20 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/07/23 13:30:12 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.opencms.util.CmsDateUtil;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -722,17 +722,17 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * from the provided parameters.<p>
      * 
      * @param resourcename the target resouce for which to create the cache key
-     * @param value the value of the cache property of the resource
+     * @param cacheDirectives the cache directives of the resource (value of the property "cache")
      * @param online indicates if this resource is online or offline
      *
      * @return the generated cache key
      * @throws CmsException in case the value String had a parse error
      */
-    CmsFlexCacheKey setCmsCacheKey(String resourcename, String value, boolean online) throws CmsException {
-        m_key = new CmsFlexCacheKey(resourcename, value, online);
+    CmsFlexCacheKey setCmsCacheKey(String resourcename, String cacheDirectives, boolean online) throws CmsException {
+        m_key = new CmsFlexCacheKey(resourcename, cacheDirectives, online);
         if (m_key.hadParseError()) {
             // We throw the exception here to make sure this response has a valid key (cache=never)
-            throw new org.opencms.main.CmsException(org.opencms.main.CmsException.C_FLEX_CACHE);            
+            throw new CmsException(CmsException.C_FLEX_CACHE);            
         }
         return m_key;
     }
