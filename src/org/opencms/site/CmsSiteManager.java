@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/11/10 08:12:57 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/12/10 17:36:25 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -298,7 +298,17 @@ public final class CmsSiteManager implements Cloneable {
         // create ad return the site manager 
         return new CmsSiteManager(cms, siteRoots, siteDefault, siteWorkplace);
     }
-    
+
+    /**
+     * Returns if the given site matcher matches a site.<p>
+     * 
+     * @param matcher the site matcher to match the site with
+     * @return true if the matcher matches a site
+     */
+    public boolean isMatching(CmsSiteMatcher matcher) {
+        return m_sites.get(matcher) != null;
+    }
+
     /**
      * Returns the default site.<p>
      * 
