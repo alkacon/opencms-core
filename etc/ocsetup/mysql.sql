@@ -242,7 +242,7 @@ create table CMS_SYSTEMID               (TABLE_KEY varchar(255) not null,
 
 create table CMS_EXPORT_LINKS           (LINK_ID int not null,
                                          LINK varchar(255) not null,
-                                         CREATEDATE bigint not null,
+                                         CREATEDATE DATETIME not null,
                                          PROCESSED bit,
                                          primary key (LINK_ID),
                                          key(LINK(100)),

@@ -216,7 +216,7 @@ primary key (TABLE_KEY));
 CREATE TABLE CMS_EXPORT_LINKS           
 (LINK_ID int not null,
  LINK VARCHAR2(255) not null,
- CREATEDATE int not null,
+ CREATEDATE DATE not null,
  PROCESSED int,
  primary key (LINK_ID),
  unique (LINK));

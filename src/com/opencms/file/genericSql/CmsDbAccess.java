@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/02/13 16:12:11 $
-* Version: $Revision: 1.237 $
+* Date   : $Date: 2002/03/15 08:45:46 $
+* Version: $Revision: 1.238 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.237 $ $Date: 2002/02/13 16:12:11 $ *
+ * @version $Revision: 1.238 $ $Date: 2002/03/15 08:45:46 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -5925,7 +5925,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             if(res.next()) {
                 link = new CmsExportLink(res.getInt(m_cq.get("C_EXPORT_ID")),
                                    res.getString(m_cq.get("C_EXPORT_LINK")),
-                                   res.getLong(m_cq.get("C_EXPORT_DATE")),
+                                   SqlHelper.getTimestamp(res,m_cq.get("C_EXPORT_DATE")).getTime(),
                                    null);
 
                 // now the dependencies
@@ -5999,7 +5999,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             if(res.next()) {
                 link = new CmsExportLink(res.getInt(m_cq.get("C_EXPORT_ID")),
                                    res.getString(m_cq.get("C_EXPORT_LINK")),
-                                   res.getLong(m_cq.get("C_EXPORT_DATE")),
+                                   SqlHelper.getTimestamp(res,m_cq.get("C_EXPORT_DATE")).getTime(),
                                    null);
 
             }
@@ -6173,7 +6173,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement=con.prepareStatement(m_cq.get("C_EXPORT_LINK_WRITE"));
             statement.setInt(1, id);
             statement.setString(2, link.getLink());
-            statement.setLong(3, link.getLastExportDate());
+            statement.setTimestamp(3, new Timestamp(link.getLastExportDate()));
             statement.setBoolean(4, link.getProcessedState());
             statement.executeUpdate();
             // now the dependencies

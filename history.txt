@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.7.1 Ecaz - 15 March 2002
+- Changed one sql datatype from bigint to datetime to support ms sql server 7.
+
 OpenCms 4.7.0 Ecaz - 14 March 2002
 ! workplace limited port
   This is the port the workplace access is limited to. With the opencms.properties
