@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/07/29 15:58:47 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2003/07/29 16:27:47 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.74 $ 
+ * @version $Revision: 1.75 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -462,10 +462,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * Returns the ID of the project if the resource is directly locked in the database<p>
      * 
      * Don't use this method to detect the lock state of a resource. 
-     * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} 
-     * instead to detect the lock state.
+     * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} instead.
      *
      * @return the project id
+     * @deprecated the lock state is not part of the resource anymore
+     * @see com.opencms.file.CmsObject#getLock(CmsResource)
      * @see org.opencms.lock.CmsLock#getProjectId()
      */
     public int getLockedInProject() {
@@ -519,9 +520,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }     
 
     /**
-     * Returns the project id of this resource.<p>
+     * Returns the ID of the project where the resource has been last modified.<p>
      *
-     * @return the project id of this resource.
+     * @return the ID of the project where the resource has been last modified
      */
     public int getProjectId() {
         return m_projectId;
@@ -597,7 +598,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * path including the site root or not.<p>
      * 
      * @return true if the current state of this resource contains the full resource path
-     * @deprectated in the revised resouce model
+     * @deprecated in the revised resource model
      */
     public boolean hasFullResourceName() {
         return (getFullResourceName() != null);
@@ -613,12 +614,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-    * Checks if this resource belongs to a project.<p>
-    * 
-    * @param project the project which this resources is checked against
-    * @return true if this resource is in the project, false otherwise
+     * Checks if this resource belongs to a project.<p>
+     * 
+     * @param project the project which this resources is checked against
+     * @return true if this resource is in the project, false otherwise
      */
     public boolean inProject(CmsProject project) {
+        // this code is suspicious...
         return project.getId() == getProjectId();
     }
     
@@ -644,11 +646,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * Checks if this resource is currently directly locked in the database.<p>
      * 
      * Don't use this method to detect the lock state of a resource. 
-     * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} 
-     * instead to detect the lock state.
+     * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} instead.
      *
      * @return true, if and only if this resource is directly locked by a user
-     * @deprecated use {@link com.opencms.file.CmsObject#getLock(CmsResource)} instead to detect the lock state
+     * @deprecated the lock state is not part of the resource anymore
+     * @see com.opencms.file.CmsObject#getLock(CmsResource)
      * @see org.opencms.lock.CmsLock#isNullLock()
      */
     public boolean isLocked() {
@@ -659,10 +661,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * Returns the ID of the user if the resource is directly locked in the database.<p>
      * 
      * Don't use this method to detect the lock state of a resource. 
-     * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} 
-     * instead to detect the lock state.
+     * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} instead.
      *
      * @return the CmsUUID of the user
+     * @deprecated the lock state is not part of the resource anymore
+     * @see com.opencms.file.CmsObject#getLock(CmsResource)
      * @see org.opencms.lock.CmsLock#getUserId()
      */
     public CmsUUID isLockedBy() {
@@ -702,9 +705,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      *
      * @param file the file id to set
      */
+    /*
     public void setFileId(CmsUUID file) {
         m_contentId = file;
     }
+    */
     
     /**
     * Sets the flags of this resource.<p>
@@ -735,8 +740,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     
     /**
      * Sets the the user id that locked this resource.<p>
+     * 
+     * Don't use this method to detect the lock state of a resource. 
+     * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} instead.
      *
      * @param user the user id to set
+     * @deprecated the lock state is not part of the resource anymore
+     * @see com.opencms.file.CmsObject#getLock(CmsResource)
+     * @see org.opencms.lock.CmsLock#getUserId()
      */
     public void setLocked(CmsUUID user) {
         m_lockedByUserId = user;
@@ -744,11 +755,17 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /**
      * Sets the project id in which this resource is locked.<p>
+     * 
+     * Don't use this method to detect the lock state of a resource. 
+     * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} instead.
      *
-     * @param project a project id
+     * @param projectId a project id
+     * @deprecated the lock state is not part of the resource anymore
+     * @see com.opencms.file.CmsObject#getLock(CmsResource)
+     * @see org.opencms.lock.CmsLock#getProjectId()
      */
-    public void setLockedInProject(int project) {
-        m_lockedInProject = project;
+    public void setLockedInProject(int projectId) {
+        m_lockedInProject = projectId;
     }
 
     /**
@@ -761,12 +778,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Sets the project id of this resource.<p>
+     * Sets the ID of the project where the resource has been last modified.<p>
      *
-     * @param project a project id
+     * @param projectId the ID of the project where the resource has been last modified
      */
-    public void setProjectId(int project) {
-        m_projectId = project;
+    public void setProjectId(int projectId) {
+        m_projectId = projectId;
     }
     
     /**
