@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/09/30 14:46:34 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/10/06 14:46:21 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.defaults.master.genericsql;
 
 import org.opencms.db.CmsDbUtil;
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsUUID;
@@ -85,9 +86,11 @@ public class CmsDbAccess {
     /**
      * Initializes the SqlManager with the used pool.<p>
      */
-    public void init(String dbPool) {
+    public com.opencms.defaults.master.genericsql.CmsSqlManager init(String dbPool) {
         m_sqlManager = initQueries(dbPool, getClass());
         m_poolUrl = dbPool;
+        
+        return m_sqlManager;
     }
 
     /**
@@ -1567,6 +1570,7 @@ public class CmsDbAccess {
      * New published data will be add to this Vector to return it.
      */
     protected void publishOneLine(CmsObject cms, CmsMasterDataSet dataset, int subId, String contentDefinitionName, boolean enableHistory, int versionId, long publishingDate, Vector changedRessources, Vector changedModuleData) throws CmsException {
+        int state = dataset.m_state;
 
         try {
             Class.forName(contentDefinitionName).getMethod("beforePublish", new Class[] { CmsObject.class, Boolean.class, Integer.class, Integer.class, Long.class, Vector.class, Vector.class, CmsMasterDataSet.class }).invoke(null, new Object[] { cms, new Boolean(enableHistory), new Integer(subId), new Integer(versionId), new Long(publishingDate), changedRessources, changedModuleData, dataset });
@@ -1587,7 +1591,7 @@ public class CmsDbAccess {
         // delete the online data
         publishDeleteData(dataset.m_masterId, subId, "online");
 
-        if (dataset.m_state == I_CmsConstants.C_STATE_DELETED) {
+        if (state == I_CmsConstants.C_STATE_DELETED) {
             // delete the data from offline
             // the state was DELETED
             publishDeleteData(dataset.m_masterId, subId, "offline");
@@ -1615,7 +1619,8 @@ public class CmsDbAccess {
         }
 
         // update changedModuleData Vector
-        changedModuleData.add(cms.getRequestContext().addSiteRoot(contentDefinitionName + "/" + dataset.m_masterId));
+        //changedModuleData.add(cms.getRequestContext().addSiteRoot(contentDefinitionName + "/" + dataset.m_masterId));
+        changedModuleData.add(new CmsPublishedResource(contentDefinitionName, dataset.m_masterId, dataset.m_subId, state));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2003/10/02 16:37:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/10/06 14:46:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,11 +48,14 @@ import java.io.Serializable;
  * that is written during each publishing process.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/10/02 16:37:49 $
+ * @version $Revision: 1.5 $ $Date: 2003/10/06 14:46:21 $
  * @since 5.1.11
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(int, int)
  */
 public class CmsPublishedResource extends Object implements Serializable, Cloneable {
+    
+    /** The content ID of the published module data.<p> */
+    private CmsUUID m_masterId;
 
     /** The content ID of the published resource.<p> */
     private CmsUUID m_contentId;
@@ -74,9 +77,12 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
 
     /** The count of siblings of the published resource. */
     private int m_siblingCount;
+    
+    /** The full package and class name of the content definition class of the published module data.</p> */
+    private String m_contentDefinitionName;
 
     /**
-     * Creates a new published resource object.<p>
+     * Creates an object for published VFS resources.<p>
      * 
      * @param structureId the structure ID of the published resource
      * @param resourceId the resource ID of the published resource
@@ -94,6 +100,28 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
         m_resourceType = resourceType;
         m_resourceState = resourceState;
         m_siblingCount = siblingCount;
+        m_masterId = CmsUUID.getNullUUID();
+        m_contentDefinitionName = "";
+    }
+    
+    /**
+     * Creates an object for published COS resources.<p>
+     * 
+     * @param contentDefinitionName full package and class name of the content definition class
+     * @param masterId the content ID of the published module data
+     * @param subId the module ID of the published module data
+     * @param resourceState the state of the resource *before* it was published
+     */
+    public CmsPublishedResource(String contentDefinitionName, CmsUUID masterId, int subId, int resourceState) {
+        m_structureId = CmsUUID.getNullUUID();
+        m_resourceId = CmsUUID.getNullUUID();
+        m_contentId = CmsUUID.getNullUUID();
+        m_rootPath = "";
+        m_resourceType = subId;
+        m_resourceState = resourceState;
+        m_siblingCount = 0;
+        m_masterId = masterId; 
+        m_contentDefinitionName = contentDefinitionName;       
     }
 
     /**
@@ -120,6 +148,15 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
         m_contentId = null;
         m_rootPath = null;
     }
+    
+    /**
+     * Returns the content ID of the published module data.<p>
+     * 
+     * @return the content ID of the published module data
+     */
+    public CmsUUID getMasterId() {
+        return m_masterId;
+    }    
 
     /**
      * Returns the content ID of the published resource.<p>
@@ -235,6 +272,15 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     public boolean isUnChanged() {
         return getState() == I_CmsConstants.C_STATE_UNCHANGED;
     }
+    
+    /**
+     * Checks if this published resource represents a VFS or a COS resource.<p>
+     * 
+     * @return true if this published resource is a VFS resource
+     */
+    public boolean isVfsResource() {
+        return !getStructureId().equals(CmsUUID.getNullUUID());
+    }
 
     /**
      * Returns the count of siblings of the published resource.<p>
@@ -243,6 +289,15 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      */
     public int getLinkCount() {
         return m_siblingCount;
+    }
+    
+    /**
+     * Returns the full package and class name of the content definition class of the published module data.</p>
+     * 
+     * @return the full package and class name of the content definition class
+     */
+    public String getContentDefinitionName() {
+        return m_contentDefinitionName;
     }
 
     /**

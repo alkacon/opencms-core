@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/02 16:37:49 $
- * Version: $Revision: 1.121 $
+ * Date   : $Date: 2003/10/06 14:46:21 $
+ * Version: $Revision: 1.122 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.121 $ $Date: 2003/10/02 16:37:49 $
+ * @version $Revision: 1.122 $ $Date: 2003/10/06 14:46:21 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -2224,7 +2224,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         int resourceType = I_CmsConstants.C_UNKNOWN_ID;
         int resourceState = I_CmsConstants.C_UNKNOWN_ID;
         List publishedResources = (List) new ArrayList();
-        int siblingCount = I_CmsConstants.C_UNKNOWN_ID;          
+        int siblingCount = I_CmsConstants.C_UNKNOWN_ID;  
+        CmsUUID masterId = CmsUUID.getNullUUID();
+        String contentDefinitionName = null;     
 
         try {
             conn = m_sqlManager.getConnection(projectId);
@@ -2240,8 +2242,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 resourceState = res.getInt(5);
                 resourceType = res.getInt(6);
                 siblingCount = res.getInt(7);
+                masterId = new CmsUUID(res.getString(8));
+                contentDefinitionName = res.getString(9);
                 
-                publishedResources.add(new CmsPublishedResource(structureId, resourceId, contentId, rootPath, resourceType, resourceState, siblingCount));
+                if (masterId.equals(CmsUUID.getNullUUID())) {
+                    publishedResources.add(new CmsPublishedResource(structureId, resourceId, contentId, rootPath, resourceType, resourceState, siblingCount));
+                } else {
+                    publishedResources.add(new CmsPublishedResource(contentDefinitionName, masterId, resourceType, resourceState));
+                }
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -2357,6 +2365,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(7, resource.getType());
             stmt.setString(8, publishId.toString());
             stmt.setInt(9, resource.getLinkCount());
+            stmt.setString(10, CmsUUID.getNullUUID().toString());
+            stmt.setString(11, "");
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -2364,6 +2374,35 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
+    
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#writePublishHistory(com.opencms.file.CmsProject, org.opencms.util.CmsUUID, int, org.opencms.util.CmsUUID, int, int)
+     */
+    public void writePublishHistory(CmsProject currentProject, CmsUUID publishId, int tagId, String contentDefinitionName, CmsUUID masterId, int subId, int state) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = m_sqlManager.getConnection(currentProject);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_PUBLISH_HISTORY");
+            stmt.setInt(1, tagId);
+            stmt.setString(2, CmsUUID.getNullUUID().toString());
+            stmt.setString(3, CmsUUID.getNullUUID().toString());
+            stmt.setString(4, CmsUUID.getNullUUID().toString());
+            stmt.setString(5, "");
+            stmt.setInt(6, state);
+            stmt.setInt(7, subId);
+            stmt.setString(8, publishId.toString());
+            stmt.setInt(9, 0);
+            stmt.setString(10, masterId.toString());
+            stmt.setString(11, contentDefinitionName);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }    
 
     /**
      * Writes a serializable object to the systemproperties.
