@@ -106,7 +106,7 @@
 	var LANG_SPLITCELL = "<%= wp.key("editor.context.splitcell") %>";
 </script>
 <%
-	if ("edit".equals(wp.getParamEditormode()) || CmsEditor.BROWSER_NS.equals(wp.getBrowserType()) || ("true".equals(wp.getParamNoactivex()) && "edit".equals(wp.getParamEditormode()))) {
+	if ("edit".equals(wp.getParamEditormode()) || ("true".equals(wp.getParamNoactivex()) && "edit".equals(wp.getParamEditormode()))) {
 		%><script type="text/javascript" src="<%= wp.getEditorResourceUri() %>scripts/edit.js"></script><%  
 	} else {
 		%><script type="text/javascript" src="<%= wp.getEditorResourceUri() %>scripts/edithtml.js"></script><%
@@ -303,7 +303,7 @@ End Sub
 <%= wp.buttonBarStartTab(0, 5) %>
 
 <%= wp.buttonBarLabel("input.editor") %>
-<td><%= wp.buildSelectViews("class=\"textfeld\" name=\"editormode\" width=\"120\" onchange=\"doTemplSubmit(3);\"") %></td>
+<td><%= wp.buildSelectViews("class=\"textfeld\" name=\"editormode\" width=\"120\" onchange=\"doTemplSubmit(1);\"") %></td>
 <%= wp.buttonBarSeparator(5, 5) %>
 <%
 if (options.showElement("selector.elements")) {
@@ -326,7 +326,7 @@ if (options.showElement("selector.elements")) {
 <%= wp.buttonBarHorizontalLine() %>
 
 <%
-if (CmsEditor.BROWSER_NS.equals(wp.getBrowserType()) || ("true".equals(wp.getParamNoactivex())  && "edit".equals(wp.getParamEditormode()))) {
+if ("true".equals(wp.getParamNoactivex())  && "edit".equals(wp.getParamEditormode())) {
 	%><%@ include file="form_ns.txt" %><%
 } else {
 	if ("edit".equals(wp.getParamEditormode())) {
