@@ -821,6 +821,8 @@ function DECMD_HYPERLINK_onclick()
 function DECMD_IMAGE_onclick()
 {
   EDITOR.EDIT_HTML.ExecCommand(DECMD_IMAGE,OLECMDEXECOPT_PROMPTUSER);
+  // comundus GmbH 
+  makeImageLinks();
   EDITOR.EDIT_HTML.focus();
 }
 function DECMD_HYPERLINK_NODIALOG_onclick()
@@ -873,4 +875,62 @@ function resetStyles() {
 function initStyles() {
     getStyles();
     resetStyles();
+}
+
+/**
+* Delete all empty <a>-Tags (by comundus GmbH)
+*/
+function deleteEmptyATags()
+{
+   	var allLinks = EDITOR.EDIT_HTML.DOM.all.tags("A"); 
+	var allImgLinks;                                            
+
+    for(var i = 0; i < allLinks.length; i++) 
+	{
+		if (allLinks[i].innerText == "")
+		{
+			allImgLinks = allLinks[i].all.tags("IMG");
+			if (allImgLinks.length == 0)
+				allLinks[i].removeNode();
+		}
+	}
+}
+
+/***********************************************************/
+/* Replace  absolute Image-Path by relative Path.Example, 
+/* http://10.0.0.0:8080/system/test -> /system/test
+/* (by comundus GmbH)
+/***********************************************************/
+function makeImageLinks()
+{
+ 	var systemPath = getSystemPath();
+       	var col = document.EDIT_HTML.DOM.all.tags("img");
+ 	var i;
+    	for (i=0; i<col.length; i++)
+	{
+		var el = col[i];
+	        var href = el.getAttribute("src");
+        	href = href.replace(systemPath, "");
+		el.setAttribute("src", href);
+		el.removeAttribute("style");
+	}	
+}
+
+/***********************************************************/
+/* Get the IP-adress of the page (by comundus GmbH)
+/***********************************************************/
+function getSystemPath()
+{
+	var systemPath="";
+	var localURL=document.URL;
+	var n;
+   
+    	n = localURL.indexOf("://", 0);
+    	if (n<0) return systemPath;
+    	
+    	n = localURL.indexOf("/", n+3);
+    	if (n<0) n = localURL.length;
+    	
+    	systemPath = localURL.substring(0, n);
+    	return systemPath;
 }
