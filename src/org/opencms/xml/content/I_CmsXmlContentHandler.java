@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/01 17:36:03 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/02 10:43:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentHandler {
@@ -121,10 +121,11 @@ public interface I_CmsXmlContentHandler {
      * 
      * @param cms the current OpenCms user context
      * @param content the XML content to display the preview URI for
+     * @param resourcename the name in the VFS of the resource that is currently edited
      * 
      * @return the preview URI for the given XML content value object to be displayed in the editor
      */
-    String getPreviewUri(CmsObject cms, CmsXmlContent content);
+    String getPreviewUri(CmsObject cms, CmsXmlContent content, String resourcename);
 
     /**
      * Resolves the "appinfo" schema node of the XML content definition according 
@@ -138,7 +139,7 @@ public interface I_CmsXmlContentHandler {
     void resolveAppInfo(CmsObject cms, CmsXmlContent content) throws CmsException;
 
     /**
-     * Perfroms a validation of the given XML content value, and saves all errors or warnings found in 
+     * Performs a validation of the given XML content value, and saves all errors or warnings found in 
      * the provided XML content error handler.<p> 
      * 
      * The handler parameter is optional, if <code>null</code> is given a new error handler 

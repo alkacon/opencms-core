@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/01 17:36:03 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/02 10:43:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -206,9 +206,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getPreviewUri(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getPreviewUri(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, java.lang.String)
      */
-    public String getPreviewUri(CmsObject cms, CmsXmlContent content) {
+    public String getPreviewUri(CmsObject cms, CmsXmlContent content, String resourcename) {
 
         // the default implementation currently does not support a preview URI
         // TODO: read some node from schema appinfo and create a link based on that information
