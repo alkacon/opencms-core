@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2003/02/21 15:18:23 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/03/07 11:17:22 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -422,9 +422,6 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             reg.setModuleParameterdef(name, paraNames, paraDesc, paraTyp, paraVal);
             
             // set the module type
-            // there is no GUI element to select the module type yet. as a quick-n-dirty hack, we can
-            // determine it's type by checking whether we have a module property "additionalresources"    
-            
             String moduleType = (String)table.get(C_MODULE_TYPE);
             if (moduleType!=null && moduleType.equals("checked")) {
                 reg.setModuleType( name, CmsRegistry.C_MODULE_TYPE_SIMPLE );
