@@ -36,9 +36,8 @@ Step 4
 Unzip the OpenCms distribution (opencms_40xxx.zip). We currently have no
 RPM or setup.exe available, but this is a planned project for the future.
 Copy the opencms.properties from the config folder and the opencms.jar to your
-servlets directory. Copy the pics folder residing in the workplace to your
-apache document root folder. Create two new folders ExternalComponents and logs
-in your servlet directory.
+servlets directory. Copy the pics folder residing in the workplace to your apache document root folder.
+Create two new folders ExternalComponents and logs in your servlet directory.
 
 Get the database driver mysql_uncomp.jar and xerces.jar described in Components
 and copy them to the newly created ExternalComponents folder and to the opencms
@@ -57,7 +56,7 @@ Step 5
 For setting up the opencms database cd to config in the extracted opencms folder. 
 Create a new database by
 
-mysqladmin create opencms
+mysqladmin create opencms41
 
 Finally run
 
@@ -74,30 +73,31 @@ prints out the following list of tables:
   CMS_FILES 
   CMS_GROUPS 
   CMS_GROUPUSERS 
-  CMS_METADEF 
-  CMS_METAINFO 
   CMS_PROJECTS 
   CMS_PROPERTIES 
   CMS_RESOURCES 
+  CMS_SYSTEMID
+  CMS_SYSTEMPROPERTIES
   CMS_USERS 
-  CMS_USERS_ADDITIONALINFO 
 +--------------------------+
 
 
 Step 6
-Edit the cmssetup.txt and fill in your personal path to your earlier
-copied pics folder in the apache docroot in the line beginning with
-"AddMountPoint". 
+
+Edit the opencms.properties and set the path for the log file:
+
+log.file=(your servlet path)/servlets/logs/opencms.log
+
+On UNIX systems the system may have problems writing to the logs folder.
+For this reason you should set its owner to nobody.
+
 Change the export path to an existing empty folder in the line beginning with
-"setExportPath" (You will find these lines near to the end of the file).
+"writeExportPath" (You will find these lines near to the end of the file cmssetup.txt).
 cd to the parent opencms folder and initialize the database with all workplace 
 default files by calling:
 
 java -mx64M -classpath opencms:jar:xerces.jar:mysql_uncomp.jar 
-   com.opencms.setup.CmsShell 
-   com.opencms.file.CmsInitMySqlFillDefaults 
-   org.gjt.mm.mysql.Driver 
-   "jdbc:mysql://localhost:3306/opencms?user=root&password=" < config/cmssetup.txt
+   com.opencms.core.CmsShell config/opencms.properties < config/cmssetup.txt
 
 This must be written in one single command line. The Java binary java
 should reside in the bin folder of your JDK installation.
@@ -117,10 +117,7 @@ able to check the basic OpenCms system. Call the OpenCms console by
 entering
 
 java -mx64M -classpath opencms:jar:xerces.jar:mysql_uncomp.jar 
-   com.opencms.setup.CmsShell 
-   com.opencms.file.CmsInitMySql 
-   org.gjt.mm.mysql.Driver 
-   "jdbc:mysql://localhost:3306/opencms?user=root&;password=" 
+   com.opencms.core.CmsShell config/opencms.properties
    
 (This command is similar to the one above. Note that CmsInitMySqlFillDefaults
 changed to CmsInitMySql and the pipe "< config/cmssetup.txt"
@@ -136,19 +133,6 @@ The OpenCms console answers with
 
 [Resource]:/system/workplace/action/start.html , Project=1 , User=1 , \
    Group=1 : Access=rwvrwvr-v- : Resource-type=2
-
-For performance reasons, all pictures used in the workplace are not stored in
-the OpenCms database, but accessed directly by the Apache (Remember, you
-copied the pics folder to the Apache document root in step 4). OpenCms mounts
-this folder into its own directory structure to give you access to all your
-pictures inside the OpenCms system. Check that your pics mountpoint was set
-correctly by accessing another file from the console:
-
-> readFile "/system/workplace/pics/system/opencms.gif"
-
-The answer should be similar to the last one above. If you are not able to read
-a file from the mountpoint, check if you copied all files correctly in step 4
-and make sure you updated the line AddMountPoint earlier in this step.
 
 Step 7
 Now you can finalize the configuration of your servlet zone. Make sure that your
@@ -174,14 +158,6 @@ to the Servlet Aliases section and
 
 servlet.opencms.initArgs=properties=(your servlet path)/servlets/opencms.properties
 to the Servlet Init Parameters section. 
-
-Edit the opencms.properties and set the path for the log file:
-
-log.file=(your servlet path)/servlets/logs/opencms.log
-
-On UNIX systems the apache may have problems writing to the logs folder.
-For this reason you should set its owner to nobody.
-
 
 
 Step 8: Now your system is ready!

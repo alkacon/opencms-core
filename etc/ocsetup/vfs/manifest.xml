@@ -3605,15 +3605,6 @@
             <properties/>
         </file>
         <file>
-            <source>templates/explorer_files_new_pdfpage</source>
-            <destination>system/workplace/templates/explorer_files_new_pdfpage</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>templates/explorer_files_new_upload</source>
             <destination>system/workplace/templates/explorer_files_new_upload</destination>
             <type>plain</type>
