@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/02/18 15:18:52 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/03/13 09:38:24 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -724,7 +724,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res)
     throws CmsException, IOException {
         
-        long timer1;
+        long timer1 = 0;
         if (DEBUG > 0) {
             timer1 = System.currentTimeMillis();        
             System.err.println("============ CmsXmlTemplateLoader loading: " + cms.getSitePath(file));            
