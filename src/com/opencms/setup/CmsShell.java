@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/01/24 18:56:36 $
+ * @version $Revision: 1.15 $ $Date: 2000/01/25 15:46:19 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1325,8 +1325,7 @@ public class CmsShell implements I_CmsConstants {
 	 * 
 	 * @param groupname The name of the group.
 	 */
-	public void getChilds(String groupname)
-		throws CmsException {
+	public void getChilds(String groupname) {
 		try {
 			Vector groups = m_cms.getChilds(groupname);
 			for( int i = 0; i < groups.size(); i++ ) {
@@ -1336,4 +1335,15 @@ public class CmsShell implements I_CmsConstants {
 			System.err.println(exc);
 		}
 	}
+
+	/**
+	 * This method can be called, to determine if the file-system was changed 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * @return the number of file-system-changes.
+	 */
+	 public void getFileSystemChanges() {
+		System.out.println( m_cms.getFileSystemChanges() );
+	 }
 }
