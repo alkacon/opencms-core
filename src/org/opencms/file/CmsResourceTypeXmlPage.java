@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/04/30 10:04:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/04/30 13:27:36 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -198,7 +198,9 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
      */
     public void writeFile(CmsObject cms, CmsFile file) throws CmsException {     
         // validate the xml structure before writing the file           
-        CmsXmlPage.read(cms, file).validateXmlStructure();
+        CmsXmlPage xmlPage = CmsXmlPage.read(cms, file).validateXmlStructure();
+        // validate the HTML structure
+        xmlPage.validateHTMLStructure(cms);
         // xml is valid if no exception occured
         cms.doWriteFile(file);
     }        

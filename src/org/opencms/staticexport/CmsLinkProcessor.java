@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/04/05 05:44:50 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/04/30 13:27:36 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,16 +51,16 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
     
     /** HTML end */
-    private static final String C_HTML_END = "\n</body></html>";
+    private static final String C_HTML_END = "</body></html>";
     
     /** HTML start */
-    private static final String C_HTML_START = "<html><body>\n";
+    private static final String C_HTML_START = "<html><body>";
     
     /** Processing mode "process links" */
     private static final int C_PROCESS_LINKS = 1;
