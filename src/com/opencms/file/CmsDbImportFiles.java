@@ -13,7 +13,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.2 $ $Date: 2000/02/14 14:05:05 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/15 08:12:31 $
  */
 class CmsDbImportFiles implements I_CmsConstants {
 	
@@ -35,7 +35,7 @@ class CmsDbImportFiles implements I_CmsConstants {
 	/** to update and the db and creates the folder and files - resource name */
 	private String s_fName=null;
 	/** to update and the db and creates the folder and files - resource typename */
-	private String s_fTypename=null;
+	private String s_fTypename=new String();
 	/** to update and the db and creates the folder and files - file content */
 	private String s_fContent=null;
 
@@ -139,10 +139,23 @@ class CmsDbImportFiles implements I_CmsConstants {
 		}
 		//end for
 		
+		if( s_fTypename.equals(C_TYPE_FOLDER_NAME) ) {
+			if( (!(s_fName.equals("/"))) ) {
+				s_fName=s_fName.substring(1,(s_fName.length()-1));
+			}else {
+				s_fName=s_fName.substring(0,(s_fName.length()-1));
+			}
+		}
+		
+		
+		System.out.println(s_fName);
+		
 		if(s_fTypename.equals(C_TYPE_FOLDER_NAME)){
-			s_fName=s_fName.substring(0,(s_fName.length()-1));
 			try {
-				CmsFolder newFolder = RB.createFolder(user,project,importPath, s_fName, h_fMeta);
+				if( !(s_fName.equals("")) ) {
+					//System.out.println(importPath+" "+s_fName);
+					CmsFolder newFolder = RB.createFolder(user,project,importPath, s_fName, h_fMeta);
+				}
 			} catch (CmsException e) {
 				//System.out.println(e);
 				errMsg.addElement(e.getMessage());
@@ -150,11 +163,16 @@ class CmsDbImportFiles implements I_CmsConstants {
 			
 
 		} else {
-			String picimportPath= importPath+s_fName.substring(0,s_fName.lastIndexOf("/")+1);
+			String picimportPath=null;
+			if(importPath.equals("/")) {
+				picimportPath= s_fName.substring(0,s_fName.lastIndexOf("/")+1);
+			}else {
+				picimportPath= importPath+s_fName.substring(1,s_fName.lastIndexOf("/")+1);
+			}
 			s_fName=s_fName.substring((s_fName.lastIndexOf("/")+1),s_fName.length());
-			//System.out.println(picimportPath);
 			//System.out.println(s_fName);
 			try {
+				System.out.println(picimportPath+" "+s_fName);
 				CmsFile newFile = RB.createFile(user, project, picimportPath ,s_fName, fContent, s_fTypename, h_fMeta);
 			} catch (CmsException e) {
 				

@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2000/02/11 18:59:59 $
+ * @version $Revision: 1.33 $ $Date: 2000/02/15 08:11:53 $
  */
 public interface I_CmsConstants
 {
@@ -526,20 +526,31 @@ public interface I_CmsConstants
 	
 
 	/**
-	 * Type values for the database import and export
+	 * Values for the database import and export
 	 */
-	// what to export
+	
+	/** Export type value - exports users and resources */
 	final static int C_EXPORTUSERSFILES=0;
+	/**Export type value - exports only users */
 	final static int C_EXPORTONLYUSERS=1;
+	/**Export type value - exports only resources */
 	final static int C_EXPORTONLYFILES=2;
-	// root element in the XML file (document node)
+	/** 
+	 * root element in the XML file (the document node)
+	 * needed, to insert other elements
+	 */
 	final static String C_FELEMENT = "CMS_EXPORT";
-	// for the files
+	/** first XML element tag for the resources */
 	final static String C_TFILES = "FILES";
+	/** XML tag to defines one resource */
 	final static String C_TFILEOBJ = "FILEOBJ";
-	final static String C_TFNAME = "NAME";	
-	final static String C_TFTYPE = "TYPE";	
+	/** XML tag to defines the resource name */
+	final static String C_TFNAME = "NAME";
+	/** XML tag to defines the resource type */
+	final static String C_TFTYPE = "TYPE";
+	/** XML tag to defines the resource typename */
 	final static String C_TFTYPENAME = "TYPENAME";
+	
 	//final static String C_TFFLAG = "FLAG";
 	//final static String C_TFUSER = "USER";
 	//final static String C_TFGROUP = "GROUP";
@@ -551,36 +562,66 @@ public interface I_CmsConstants
 	//final static String C_TFCREATED = "CFREATED";	
 	//final static String C_TFMODIFIED = "MODIFIED";	
 	//final static String C_TFSIZE = "SIZE";
-	final static String C_TFMETAINFO = "METAINFO";	
+	
+	/** XML tag to defines the resource metainfo */
+	final static String C_TFMETAINFO = "METAINFO";
+	/** XML tag to defines the resource metaname */
 	final static String C_TFMETANAME = "METANAME";
+	/** XML tag to defines the resource metatype */
 	final static String C_TFMETATYPE = "METATYP";
+	/** XML tag to defines the resource metavalue */
 	final static String C_TFMETAVALUE = "METAVALUE";
+	/** XML tag to defines the resource content if resource is a file */
 	final static String C_FCONTENT = "CONTENT";	
-	// for the groups
+	
+	/** first XML element tag for the groups */
 	final static String C_TGROUPS = "GROUPS";
+	/** XML tag to defines one group */
 	final static String C_TGROUPOBJ = "GROUPOBJ";
-	final static String C_TGNAME = "NAME";	
+	/** XML tag to defines the group name */
+	final static String C_TGNAME = "NAME";
+	/** XML tag to defines the parentgroup name */
 	final static String C_TGPARENTGROUP = "PARENTGROUP";	
+	/** XML tag to defines the description of group */
 	final static String C_TGDESC = "DESC";	
+	/** XML tag to defines the flag of group */
 	final static String C_TGFLAG = "FLAG";
+	/** XML tag to defines all users of the group */
 	final static String C_TGROUPUSERS = "GROUPUSERS";
+	/** XML tag to defines the name of  user in group */
 	final static String C_TGUSER = "USER";
-	// for the useres
+	
+	/** first XML element tag for the users */
 	final static String C_TUSERS = "USERS";
+	/** XML tag to defines one user */
 	final static String C_TUSEROBJ = "USEROBJ";
+	/** XML tag to defines the user login */
 	final static String C_TULOGIN = "LOGIN";
+	/** XML tag to defines the user PASSWD default "Kennwort" */
 	final static String C_TUPASSWD = "PASSWD";
+	/** XML tag to defines the user Lastname */
 	final static String C_TUNAME = "NAME";	
+	/** XML tag to defines the user Firstname */
 	final static String C_TUFIRSTNAME = "FIRSTNAME";	
-	final static String C_TUDESC = "DESC";	
-	final static String C_TUEMAIL = "EMAIL";	
+	/** XML tag to defines the user Description */
+	final static String C_TUDESC = "DESC";
+	/** XML tag to defines the user EMail */
+	final static String C_TUEMAIL = "EMAIL";
+	/** XML tag to defines the user defaultgroup */
 	final static String C_TUDGROUP = "DEFAULTGROUP";	
-	final static String C_TUDISABLED = "DISABLED";	
+	/** XML tag to defines if the user is disabled */
+	final static String C_TUDISABLED = "DISABLED";
+	/** XML tag to defines the user flag */
 	final static String C_TUFLAG = "FLAG";
+	/** XML tag to defines the groups in which the user is in */
 	final static String C_TUSERGROUPS = "USERGROUPS";
+	/** XML tag to defines the user group name */
 	final static String C_TUGROUP = "GROUP";
+	/** XML tag to defines additional user info */
 	final static String C_TUADDINFO = "ADDINFO";
+	/** XML tag to defines additional user info key */
 	final static String C_TUINFOKEY = "INFOKEY";
+	/** XML tag to defines additional user info value */
 	final static String C_TUINFOVALUE = "INFOVALUE";
 }
 
