@@ -8,6 +8,15 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.31 Arakis - 28 July 2000
+
+! Added task components to the core.
+! Added recovery-password for users.
+* Corrected some bugs on the workplace.
+* Texteditor for Netscape fixed.
+* Corrected some bugs for moving, renaming and copying resources.
+- The resource-broker instance is now stored in OpenCms instead of CmsObject. 
+
 OpenCms 4.0.29 Giedi Prime: Rabban - 02 June 2000
 
 ! Added picture gallerys and adminstration tool.
