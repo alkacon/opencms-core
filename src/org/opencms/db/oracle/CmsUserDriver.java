@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2004/08/18 11:54:19 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/08/19 12:26:35 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.27 $ $Date: 2004/08/18 11:54:19 $
+ * @version $Revision: 1.28 $ $Date: 2004/08/19 12:26:35 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -79,9 +79,6 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
             // crypt the password with MD5
             stmt.setString(3, encryptPassword(password));
-            stmt.setString(4, encryptPassword(""));
-            stmt.setString(3, encryptPassword(password));
-
             stmt.setString(4, encryptPassword(""));
             stmt.setString(5, m_sqlManager.validateEmpty(description));
             stmt.setString(6, m_sqlManager.validateEmpty(firstname));

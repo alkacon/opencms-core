@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/08/18 11:45:27 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/08/19 12:26:35 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.47 $ $Date: 2004/08/18 11:45:27 $
+ * @version $Revision: 1.48 $ $Date: 2004/08/19 12:26:35 $
  */
 public class CmsExport implements Serializable {
 
@@ -931,7 +931,8 @@ public class CmsExport implements Serializable {
         // encode the password, using a base 64 decoder
         String passwd = new String(Base64.encodeBase64(user.getPassword().getBytes()));
         e.addElement(I_CmsConstants.C_EXPORT_TAG_PASSWORD).addCDATA(passwd);
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_RECOVERYPASSWORD).addCDATA(user.getRecoveryPassword());
+        String recPasswd = new String(Base64.encodeBase64(user.getRecoveryPassword().getBytes()));
+        e.addElement(I_CmsConstants.C_EXPORT_TAG_RECOVERYPASSWORD).addCDATA(recPasswd);
         e.addElement(I_CmsConstants.C_EXPORT_TAG_DESCRIPTION).addCDATA(user.getDescription());
         e.addElement(I_CmsConstants.C_EXPORT_TAG_FIRSTNAME).addText(user.getFirstname());
         e.addElement(I_CmsConstants.C_EXPORT_TAG_LASTNAME).addText(user.getLastname());
