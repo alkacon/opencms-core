@@ -5,7 +5,7 @@ package com.opencms.core;
  * class to get access to this contsnats.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 1999/12/16 18:55:53 $
+ * @version $Revision: 1.8 $ $Date: 1999/12/21 18:40:56 $
  */
 public interface I_CmsConstants
 {
@@ -288,5 +288,14 @@ public interface I_CmsConstants
       * This value will be returned for long's withaout a value.
       */
      static final int C_UNKNOWN_LONG        = -1;  
-	 
+     
+     /**
+      * This is the id for an undefined launcher.
+      */
+     static final int C_UNKNOWN_LAUNCHER_ID  = -1;
+
+      /**
+      * This is the classname for an undefined launcher.
+      */
+     static final String C_UNKNOWN_LAUNCHER  = "UNKNOWN";
 }

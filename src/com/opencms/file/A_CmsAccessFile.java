@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/21 14:23:14 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/21 18:40:56 $
  */
 abstract class A_CmsAccessFile {
 
@@ -80,153 +80,93 @@ abstract class A_CmsAccessFile {
 	
 	/**
 	 * Writes the fileheader to the Cms.
-	 * If some mandatory metadefinitions for the resourcetype are missing, a 
-	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR/>
-	 * 
-	 * @param callingUser The user who wants to use this method.
+     * 
 	 * @param project The project in which the resource will be used.
-	 * @param resource The resource to write the header of.
-	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
-	 * The keys for this Hashtable are the names for metadefinitions, the values are
-	 * the values for the metainfos.
+	 * @param filename The complete name of the new file (including pathinformation).
 	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be wrote. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
+     * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	abstract void writeFileHeader(String project, 
-						 A_CmsResource resource, Hashtable metainfos)
+
+	abstract void writeFileHeader(A_CmsProject project, CmsFile file)
 		throws CmsException;
 
 	/**
 	 * Renames the file to the new name.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource (, No path information allowed).
+	 * @param newname The new name of the resource.
 	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be renamed. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */		
-	abstract void renameFile(String project, 
-					String oldname, String newname)
+	abstract void renameFile(A_CmsProject project, String oldname, String newname)
 		throws CmsException;
 	
 	/**
 	 * Deletes the file.
 	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
+     * @param project The project in which the resource will be used.
 	 * @param filename The complete path of the file.
 	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be deleted. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
+     * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	abstract void deleteFile(String project, String filename)
+	abstract void deleteFile(A_CmsProject project, String filename)
 		throws CmsException;
 	
 	/**
 	 * Copies the file.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param source The complete path of the sourcefile.
 	 * @param destination The complete path of the destinationfile.
 	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be copied. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * the destination filename.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	abstract void copyFile(String project, String source, String destination)
-		throws CmsException, CmsDuplicateKeyException;
+	abstract void copyFile(A_CmsProject project, String source, String destination)
+		throws CmsException;
 	
 	/**
 	 * Moves the file.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param source The complete path of the sourcefile.
 	 * @param destination The complete path of the destinationfile.
 	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be moved. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * the destination filename.
+     * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	abstract void moveFile(String project, String source, 
+	abstract void moveFile(A_CmsProject project, String source, 
 				  String destination)
-		throws CmsException, CmsDuplicateKeyException;
-	
-	/**
-	 * Sets the resource-type of this resource.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param resource The complete path for the resource to be changed.
-	 * @param type The new type for the resource.
-	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
-	 * 
-	 * @exception CmsException will be thrown, if the file type couldn't be changed. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */
-	abstract void setResourceType(String project, String resource, 
-								A_CmsResourceType newType, Hashtable metainfos)
 		throws CmsException;
-	
+	 
+		
 	/**
-	 * Creates a new folder with the overgiven resourcetype and metainfos.
-	 * If some mandatory metadefinitions for the resourcetype are missing, a 
-	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR/>
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
-	 * If there is already a file with this filename, a CmsDuplicateKey exception will
-	 * be thrown.
+	 * Creates a new folder 
 	 * 
-	 * @param callingUser The user who wants to use this method.
+	 * @param user The user who wants to create the folder.
 	 * @param project The project in which the resource will be used.
-	 * @param folder The complete path to the folder in which the new folder will 
+	 * @param foldername The complete path to the folder in which the new folder will 
 	 * be created.
-	 * @param newFolderName The name of the new folder (, No pathinformation allowed).
-	 * @param metainfos A Hashtable of metainfos, that should be set for this folder.
-	 * The keys for this Hashtable are the names for metadefinitions, the values are
-	 * the values for the metainfos.
+	 * @param flags The flags of this resource.
 	 * 
-	 * @return file The created file.
-	 * 
-	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
-	 * or if the filename is not valid. The CmsException will also be thrown, if the 
-	 * user has not the rights for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * this name.
+	 * @return The created folder.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract CmsFolder createFolder(String project, String folder, 
-								  String newFolderName, Hashtable metainfos)
-		throws CmsException, CmsDuplicateKeyException;
+	abstract CmsFolder createFolder(A_CmsUser user,
+                                    A_CmsProject project, String foldername,
+                                    int flags)
+        throws CmsException;
 
 	/**
 	 * Reads a folder from the Cms.<BR/>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
-	 * @param folder The complete path to the folder from which the folder will be 
-	 * read.
 	 * @param foldername The name of the folder to be read.
 	 * 
-	 * @return folder The read folder.
+	 * @return The read folder.
 	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be read. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
+     * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract CmsFolder readFolder(String project, String folder, String folderName)
+	abstract CmsFolder readFolder(A_CmsProject project, String foldername)
 		throws CmsException;
 	
 	/**
