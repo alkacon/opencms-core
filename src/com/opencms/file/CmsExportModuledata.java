@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2002/02/20 11:08:25 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/07/24 07:41:35 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.defaults.master.*;
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.4 $ $Date: 2002/02/20 11:08:25 $
+ * @version $Revision: 1.5 $ $Date: 2002/07/24 07:41:35 $
  */
 public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
@@ -129,6 +129,11 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
      * The channelid and the resourceobject of the exported channels
      */
     private Hashtable m_channelIds = new Hashtable();
+    
+    /**
+     * 
+     */
+    private Vector m_exportedMasters = new Vector();
 
     /**
      * This constructs a new CmsExportModuledata-object which exports the channels and modulemasters.
@@ -578,8 +583,11 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
                 for(int i=0; i<allDatasets.size(); i++){
                     CmsMasterDataSet curDataset = (CmsMasterDataSet)allDatasets.elementAt(i);
-                    writeExportManifestEntries(classname, curDataset, masterNr, subId);
-                    masterNr++;
+                    if(!m_exportedMasters.contains(""+curDataset.m_masterId)){
+                        writeExportManifestEntries(classname, curDataset, masterNr, subId);
+                        m_exportedMasters.add(""+curDataset.m_masterId);
+                        masterNr++;
+                    }
                 }
             } catch (InvocationTargetException ite) {
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
