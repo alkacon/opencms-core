@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2005/03/02 13:21:06 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/03/13 10:02:55 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,6 +56,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -73,13 +74,21 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /** The property to set to enable xerces schema validation. */
     public static final String C_XERCES_SCHEMA_PROPERTY = "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation";
+
+    /**
+     * Hides the public constructor.<p>
+     */
+    protected CmsXmlContent() {
+
+        // noop
+    }
 
     /**
      * Create a new XML content based on the given content definiton,
@@ -119,14 +128,6 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         m_contentDefinition = getContentDefinition(resolver);
         // initialize the XML content structure
         initDocument(m_document, encoding, m_contentDefinition);
-    }
-
-    /**
-     * Hides the public constructor.<p>
-     */
-    private CmsXmlContent() {
-
-        // noop
     }
 
     /**
@@ -379,6 +380,24 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             visitor.visit(value);
         }
     }
+    
+    /**
+     * @see org.opencms.xml.A_CmsXmlDocument#getBookmark(java.lang.String)
+     */
+    protected Object getBookmark(String bookmark) {
+
+        // allows package classes to directly access the bookmark information of the XML content 
+        return super.getBookmark(bookmark);
+    }
+
+    /**
+     * @see org.opencms.xml.A_CmsXmlDocument#getBookmarks()
+     */
+    protected Set getBookmarks() {
+        
+        // allows package classes to directly access the bookmark information of the XML content 
+        return super.getBookmarks();
+    }    
 
     /**
      * Returns the XML root element node for the given locale.<p>
