@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
- * Date   : $Date: 2000/08/28 14:02:39 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/08/29 09:05:22 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -111,7 +111,7 @@ import com.opencms.file.*;
  * with a parent classloader. Normally this should be the classloader 
  * that loaded this loader. 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/08/28 14:02:39 $
+ * @version $Revision: 1.13 $ $Date: 2000/08/29 09:05:22 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -280,7 +280,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 				
 		// first try to load the class using the parent class loader.
 		try {
-			
+			System.err.println("*** Load from parent CL: "+name);
 			c = Class.forName(name);
 		} catch(ClassNotFoundException e) {
 			// to continue set c back to null
@@ -319,7 +319,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 		String filename = null;
 		byte[] myClassData = null;
 		
-		while(allRepositories.hasMoreElements()) {
+		while( (allRepositories.hasMoreElements()) && (classFile==null)) {
 			filename = (String)allRepositories.nextElement();
 			
 			
@@ -334,7 +334,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 				}
 			}
 			else {
-  				
+  				System.err.println("*** Try to load form VFS "+name);
 				//filename = filename + className;
 				// check if the repository name is just a path.
 				// if so, add the complete classname and the fileextension ".class"
@@ -343,9 +343,9 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 					filename=filename+classname+".class";
 				}
 				try {
-					
+					System.err.println("*** Load class "+filename);
 					classFile = m_cms.readFile(filename);
-					
+					System.err.println("*** Class found "+classFile);
 					myClassData = classFile.getContents();
 				} catch(Exception e) {
 					// File could not be read for any reason

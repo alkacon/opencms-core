@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/08/28 15:48:08 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2000/08/29 09:05:23 $
+ * Version: $Revision: 1.48 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2000/08/28 15:48:08 $
+ * @version $Revision: 1.48 $ $Date: 2000/08/29 09:05:23 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
 																		I_CmsWpConstants {
@@ -89,6 +89,9 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 	* Clears the internal language cache
 	**/
 	public static void clearcache() {
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(C_OPENCMS_INFO,"clear language file cache");
+		}
 	    m_langFiles = new Hashtable();
 	    
 	}
