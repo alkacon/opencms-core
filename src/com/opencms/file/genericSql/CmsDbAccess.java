@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/03/15 08:45:46 $
-* Version: $Revision: 1.238 $
+* Date   : $Date: 2002/04/05 06:34:33 $
+* Version: $Revision: 1.239 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.238 $ $Date: 2002/03/15 08:45:46 $ *
+ * @version $Revision: 1.239 $ $Date: 2002/04/05 06:34:33 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -11304,6 +11304,44 @@ public CmsTask readTask(int id) throws CmsException {
             }
         }
 
+    }
+
+    /**
+     * Changes the user type of the user
+     *
+     * @param userId The id of the user to change
+     * @param userType The new usertype of the user
+     */
+    public void changeUserType(int userId, int userType) throws CmsException{
+        PreparedStatement statement = null;
+        Connection con = null;
+
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            // write data to database
+            statement = con.prepareStatement(m_cq.get("C_USERS_UPDATE_USERTYPE"));
+            statement.setInt(1, userType);
+            statement.setInt(2, userId);
+            statement.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } finally {
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }
     }
 
     /**
