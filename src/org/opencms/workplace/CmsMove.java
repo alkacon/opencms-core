@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/22 17:12:01 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace;
 
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
@@ -48,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -155,6 +156,7 @@ public class CmsMove extends CmsDialog {
                 // error during copy, show error dialog
                 setParamErrorstack(e.getStackTraceAsString());
                 setParamMessage(message + key("error.message." + getParamDialogtype()));
+                setParamReasonSuggestion(getErrorSuggestionDefault());
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
             }
         }
@@ -212,7 +214,7 @@ public class CmsMove extends CmsDialog {
         if (targetRes != null) {
             if (DIALOG_CONFIRMED.equals(getParamAction())) {
                 // delete existing target resource if confirmed by the user
-                getCms().deleteResource(target);
+                getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
             } else {
                 // throw exception to indicate that the target exists
                 throw new CmsException("The target already exists", CmsException.C_FILE_EXISTS);

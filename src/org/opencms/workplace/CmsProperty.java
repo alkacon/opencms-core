@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/22 17:12:01 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -186,6 +186,7 @@ public class CmsProperty extends CmsDialog {
             setParamErrorstack(e.getStackTraceAsString());
             String message = "Error reading properties from resource " + getParamFile();
             setParamMessage(message + key("error.message." + getParamDialogtype()));
+            setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }        
         
@@ -381,7 +382,7 @@ public class CmsProperty extends CmsDialog {
             // error defining property, show error dialog
             setParamErrorstack(e.getStackTraceAsString());
             setParamMessage(key("error.message.newprop"));
-            setParamDialogtype("newprop");
+            setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
          
         } catch (IOException exc) {
@@ -423,8 +424,7 @@ public class CmsProperty extends CmsDialog {
         } catch (CmsException e) {
             // error defining property, show error dialog
             setParamErrorstack(e.getStackTraceAsString());
-            setParamMessage(key("error.message." + DIALOG_TYPE));
-            setParamDialogtype("newprop");
+            setParamReasonSuggestion(getErrorSuggestionDefault());
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
      
             } catch (IOException exc) {

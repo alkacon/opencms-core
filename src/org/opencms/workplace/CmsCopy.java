@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/07/17 12:00:40 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/22 17:12:01 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace;
 
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
@@ -48,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -178,6 +179,7 @@ public class CmsCopy extends CmsDialog {
                 // error during copy, show error dialog
                 setParamErrorstack(e.getStackTraceAsString());
                 setParamMessage(message + key("error.message." + getParamDialogtype()));
+                setParamReasonSuggestion(getErrorSuggestionDefault());
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
             }
         }
@@ -219,10 +221,10 @@ public class CmsCopy extends CmsDialog {
         
         // set the target parameter value
         setParamTarget(target);        
-        
+            
         // delete existing target resource if confirmed by the user
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
-            getCms().deleteResource(target);
+            getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         }            
         
         // copy the resource       

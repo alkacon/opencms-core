@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/22 07:57:57 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/07/22 17:12:01 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1
  */
@@ -622,7 +622,7 @@ public class CmsExplorer extends CmsWorkplace {
         
         if ("vfslink".equals(mode)) {
             try {
-                return new Vector(getCms().fetchVfsLinksForResource(resource));
+                return new Vector(getCms().getAllVfsLinks(resource));
             } catch (CmsException e) {
                 return new Vector();
             }

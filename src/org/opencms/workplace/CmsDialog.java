@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/22 17:12:01 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -266,6 +266,21 @@ public class CmsDialog extends CmsWorkplace {
     public void setParamMessage(String value) {
         m_paramMessage = value;
     }
+    
+    private String m_paramReasonSuggestion = null;
+    
+    public String getParamReasonSuggestion() {
+        return m_paramReasonSuggestion;
+    }
+    
+    public void setParamReasonSuggestion(String value) {
+        m_paramReasonSuggestion = value;
+    }
+    
+    public String getErrorSuggestionDefault() {
+        return key("error.reason." + getParamDialogtype()) + "<br>\n" + key("error.suggestion." + getParamDialogtype()) + "\n";        
+    }
+    
     
     /**
      * Returns the value of the errorstack parameter, 
