@@ -105,7 +105,8 @@ PARENT_GROUP_ID int not null,
 GROUP_NAME VARCHAR2(16) not null, 
 GROUP_DESCRIPTION VARCHAR2(255) not null, 
 GROUP_FLAGS int not null, 
-primary key(GROUP_ID));
+primary key(GROUP_ID),
+unique(GROUP_NAME));
 
 CREATE TABLE CMS_SYSTEMID 
 (TABLE_KEY int not null, 
