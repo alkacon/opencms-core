@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2000/02/08 13:21:04 $
+ * @version $Revision: 1.26 $ $Date: 2000/02/08 15:45:03 $
  */
 public interface I_CmsWpConstants {
 
@@ -50,6 +50,9 @@ public interface I_CmsWpConstants {
 	
 	/** The filename to the projectlisttemplate */
 	public static final String C_PROJECTLIST_TEMPLATEFILE = "projecttemplate";
+	
+	/** The filename to the projectlisttemplate */
+	public static final String C_CONTEXTMENUE_TEMPLATEFILE = "contexttemplate";
 	
 	/** The explorer tree. */
     public static final String C_WP_EXPLORER_TREE="explorer_tree.html";

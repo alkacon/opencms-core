@@ -14,7 +14,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/02/08 13:21:04 $
+ * @version $Revision: 1.24 $ $Date: 2000/02/08 15:45:03 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -103,6 +103,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         registerTag("TEXTBUTTON", "com.opencms.workplace.CmsButtonText");
         registerTag("SELECT", "com.opencms.workplace.CmsSelectBox");
         registerTag("PROJECTLIST", "com.opencms.workplace.CmsProjectlist");
+        registerTag("CONTEXTMENUE", "com.opencms.workplace.CmsContextmenue");
     }    
     
     /**

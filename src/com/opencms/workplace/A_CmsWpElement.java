@@ -17,7 +17,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/02/08 15:31:21 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/08 15:45:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -38,6 +38,11 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
     protected static CmsXmlWpTemplateFile m_projectlistdef = null;
 	
     /**
+     * Reference to projectlist definition file
+     */
+    protected static CmsXmlWpTemplateFile m_contextdef = null;
+	
+	/**
      * Reference to the label defintion file
      */
     protected static CmsXmlWpLabelDefFile m_labeldef = null;
@@ -130,6 +135,23 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
     }
 	
     /**
+     * Reads the contextmenue definition file.
+     * @param cms The actual cms object
+     * @return Reference to the list defintion file.
+     * @exception CmsException
+     */
+    public CmsXmlWpTemplateFile getContextmenueDefinitions(A_CmsObject cms) throws CmsException {
+        if(m_contextdef == null) {
+            if(m_workplaceElementPath == null) {
+                CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+                m_workplaceElementPath = configFile.getWorkplaceElementPath();
+            }
+            m_contextdef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_CONTEXTMENUE_TEMPLATEFILE);
+        }
+        return m_contextdef;
+    }	
+	
+	/**
      * Reads the label definition file.
      * @param cms The actual cms object
      * @return Reference to the label defintion file.

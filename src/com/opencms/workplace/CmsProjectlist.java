@@ -15,7 +15,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/02/08 09:51:35 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/08 15:45:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -25,7 +25,7 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
      * <P>
      * Returns the processed code with the actual elements.
      * <P>
-     * Projectöists can be referenced in any workplace template by <br>
+     * Projectlists can be referenced in any workplace template by <br>
      * // TODO: insert correct syntax here!
      * <CODE>&lt;PROJECTLIST /&gt;</CODE>
      * 
@@ -82,9 +82,13 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 			// TODO: get the correct state of the project
 			// state = ???;
 			// TODO: get the correct snaplock of the project
-			snaplock = listdef.getProcessedXmlDataValue(C_TAG_PROJECTLIST_SNAPLOCK,
-														callingObject, parameters);
-			System.err.println("Snaplock " + snaplock);
+			try {
+				System.err.println(i);
+				snaplock = listdef.getProcessedXmlDataValue(C_TAG_PROJECTLIST_SNAPLOCK,
+															callingObject, parameters);
+			} catch (Exception exc) {
+				exc.printStackTrace();
+			}
 			
 			// get the processed list.
 			listdef.setXmlData(C_PROJECTLIST_NAME, project.getName());

@@ -51,44 +51,20 @@ function show_help()
 </body>
 </html>
 
-
-<div id="project_lock" class="kontextmenu">
-<table class=filekontext>
-<tr><td>
-<table CELLPADDING=1 CELLSPACING=1 BORDER=0 bgcolor="#c0c0c0" width=100%>
-<TR><TD>
-<A class=kontextlink href="javascript:doPAction(DO_PTASK);">Aufgabe erstellen</A> 
-</TD></TR>
-     
-<tr><td><hr></td></tr>
-
-<TR><TD>
-<A class=kontextlink href="javascript:doPAction(DO_PUNLOCK);">Sperrungen aufheben</A> 
-</TD></TR>
-
-
-</table>
-</td></tr>
-</table>
-</div>
-
-<div id="project_unlock" class="kontextmenu">
-<table class=filekontext>
-<tr><td>
-<table CELLPADDING=1 CELLSPACING=1 BORDER=0 bgcolor="#c0c0c0" width=100%>
-<TR><TD>
-<A class=kontextlink href="javascript:doPAction(DO_PTASK);">Aufgabe erstellen</A> 
-</TD></TR>
-
-<tr><td><hr></td></tr>
-<TR><TD>
-<A class=kontextlink href="javascript:doPAction(DO_PONLINE);">Veröffentlichen</A> 
-</TD></TR>
-
-</table>
-</td></tr>
-</table>
-</div>
+<!-- Contextmenues -->
 ]]>
+
+<contextmenue name="project_lock">
+	<contextentry name="project.context.createtask" href="javascript:doPAction(DO_PTASK);"/>
+	<contextspacer/>
+	<contextentry name="project.context.removelock" href="javascript:doPAction(DO_PUNLOCK);"/>
+</contextmenue>
+
+<contextmenue name="project_unlock">
+	<contextentry name="project.context.createtask" href="javascript:doPAction(DO_PTASK);"/>
+	<contextspacer/>
+	<contextentry name="project.context.publish" href="javascript:doPAction(DO_PONLINE);"/>
+</contextmenue>
+
 </TEMPLATE>
 </WORKPLACE>

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+	<CONTEXTHEAD>
+		<![CDATA[
+		<div id="]]><PROCESS>name</PROCESS><![CDATA[" class="kontextmenu">
+		<table class=filekontext>
+		<tr><td>
+		<table CELLPADDING=1 CELLSPACING=1 BORDER=0 bgcolor="#c0c0c0" width=100%>
+		]]>
+	</CONTEXTHEAD>
+	
+	<CONTEXTENTRY>
+		<![CDATA[
+		<TR><TD>
+		<A class=kontextlink href="]]><PROCESS>href</PROCESS><![CDATA[">]]><PROCESS>name</PROCESS><![CDATA[</A> 
+		</TD></TR>
+		]]>
+	</CONTEXTENTRY>
+	
+	<CONTEXTSPACER>
+		<![CDATA[
+			<tr><td><hr></td></tr>
+		]]>
+	</CONTEXTSPACER>
+	
+	<CONTEXTFOOT>
+		<![CDATA[
+		</table>
+		</td></tr>
+		</table>
+		</div>
+		]]>
+	</CONTEXTFOOT>
+</WORKPLACE>
