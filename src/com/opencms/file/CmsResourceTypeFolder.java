@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/07/25 12:07:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2001/07/26 07:55:38 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -613,6 +613,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     }
 
     /**
+     * Imports a Folder.
      * Does the Linkmanagement when a resource is imported.
      * When a resource has to be imported, the URL´s of the
      * Links inside the resources have to be saved and changed to the corresponding ID´s
@@ -624,16 +625,35 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 
         String path = importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
 		String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
-		int state = C_STATE_NEW;
+        String fullname = null;
 
         try {
             cmsfolder = createResource(cms, path, name, properties, content);
-            lockResource(cms, path + name + "/", true);
-            state = C_STATE_NEW;
+            if(cmsfolder != null){
+                fullname = cmsfolder.getAbsolutePath();
+                lockResource(cms, fullname, true);
+            }
         } catch (CmsException e) {
             // an exception is thrown if the folder already exists
-            state = C_STATE_CHANGED;
         }
+        if(fullname != null){
+            try{
+                cms.chmod(fullname, Integer.parseInt(access));
+            }catch(CmsException e){
+                System.out.println("chmod(" + access + ") failed ");
+            }
+            try{
+                cms.chgrp(fullname, group);
+            }catch(CmsException e){
+                System.out.println("chgrp(" + group + ") failed ");
+            }
+            try{
+                cms.chown(fullname, user);
+            }catch(CmsException e){
+                System.out.println("chown((" + user + ") failed ");
+            }
+        }
+
         return cmsfolder;
     }
 

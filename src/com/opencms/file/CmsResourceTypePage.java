@@ -3,8 +3,8 @@ import java.util.zip.*;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2001/07/25 13:51:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2001/07/26 07:55:38 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -43,7 +43,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2001/07/25 13:51:28 $
+ * @version $Revision: 1.6 $ $Date: 2001/07/26 07:55:38 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -546,10 +546,29 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // do not use createResource because then there will the body-file be created too.
         // that would cause an exception while importing because of trying to
         // duplicate an entry
-//        file = (CmsFile)createResource(cms, path, name, properties, content);
-
         file = (CmsFile)cms.doCreateFile(path, name, content, type, properties);
-        lockResource(cms, file.getAbsolutePath(), true);
+        String fullname = file.getAbsolutePath();
+        lockResource(cms, fullname, true);
+        try{
+            cms.doChmod(fullname, Integer.parseInt(access));
+        }catch(CmsException e){
+            System.out.println("chmod(" + access + ") failed ");
+        }
+        try{
+            cms.doChgrp(fullname, group);
+        }catch(CmsException e){
+            System.out.println("chgrp(" + group + ") failed ");
+        }
+        try{
+            cms.doChown(fullname, user);
+        }catch(CmsException e){
+            System.out.println("chown((" + user + ") failed ");
+        }
+        if(launcherStartClass != null){
+            file.setLauncherClassname(launcherStartClass);
+            cms.writeFile(file);
+        }
+
         return file;
     }
 

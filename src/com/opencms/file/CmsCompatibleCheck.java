@@ -1,8 +1,8 @@
 package com.opencms.file;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCompatibleCheck.java,v $
- * Date   : $Date: 2001/07/12 09:09:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/07/26 07:55:38 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -57,6 +57,11 @@ public class CmsCompatibleCheck implements I_CmsConstants{
      * @return true if the resource is ok.
      */
     public boolean isTemplateCompatible(String name, byte[] content, String type){
+
+        // dont check folders
+        if (C_TYPE_FOLDER_NAME.equals(type)){
+            return true;
+        }
         if ( name == null){
             return false;
         }

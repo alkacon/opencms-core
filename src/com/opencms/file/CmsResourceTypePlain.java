@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
- * Date   : $Date: 2001/07/13 10:14:52 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2001/07/26 07:55:38 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -352,20 +352,38 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
 
         String path = importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
 		String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
-		int state = C_STATE_NEW;
-        // this is a file
+
         // first delete the file, so it can be overwritten
         try {
             lockResource(cms, path + name, true);
             deleteResource(cms, path + name);
-            state = C_STATE_CHANGED;
         } catch (CmsException exc) {
-            state = C_STATE_NEW;
             // ignore the exception, the file dosen't exist
         }
         // now create the file
         file = (CmsFile)createResource(cms, path, name, properties, content);
-        lockResource(cms, file.getAbsolutePath(), true);
+        String fullname = file.getAbsolutePath();
+        lockResource(cms, fullname, true);
+        try{
+            cms.chmod(fullname, Integer.parseInt(access));
+        }catch(CmsException e){
+            System.out.println("chmod(" + access + ") failed ");
+        }
+        try{
+            cms.chgrp(fullname, group);
+        }catch(CmsException e){
+            System.out.println("chgrp(" + group + ") failed ");
+        }
+        try{
+            cms.chown(fullname, user);
+        }catch(CmsException e){
+            System.out.println("chown((" + user + ") failed ");
+        }
+        if(launcherStartClass != null){
+            file.setLauncherClassname(launcherStartClass);
+            cms.writeFile(file);
+        }
+
         return file;
     }
 

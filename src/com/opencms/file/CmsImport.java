@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2001/07/24 12:06:38 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2001/07/26 07:55:38 $
+ * Version: $Revision: 1.48 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -45,7 +45,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.47 $ $Date: 2001/07/24 12:06:38 $
+ * @version $Revision: 1.48 $ $Date: 2001/07/26 07:55:38 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -411,8 +411,9 @@ public Vector getResourcesForProject() throws CmsException {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
+
 /**
- * Imports a file into the cms.
+ * Imports a resource (file or folder) into the cms.
  * @param source the path to the source-file
  * @param destination the path to the destination-file in the cms
  * @param type the resource-type of the file
@@ -425,88 +426,42 @@ public Vector getResourcesForProject() throws CmsException {
  * @param fileCodes code of the written files (for the registry)
  *       not used when null
  */
-private void importFile(String source, String destination, String type, String user, String group, String access, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
+private void importResource(String source, String destination, String type, String user, String group, String access, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
     // print out the information for shell-users
     System.out.print("Importing ");
     System.out.print(destination + " ");
-    boolean success = false;
+    boolean success = true;
     byte[] content = null;
     String fullname = null;
     try {
         String path = m_importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
         String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
-        int state = C_STATE_NEW;
-        if (source == null) {
-            // this is a directory
-            try {
-                CmsFolder cmsfolder = m_cms.createFolder(path, name, properties);
-                fullname = cmsfolder.getAbsolutePath();
-                m_cms.lockResource(path + name + "/", true);
-                success = true;
-                state = C_STATE_NEW;
-            } catch (CmsException e) {
-                // an exception is thrown if the folder already exists
-                state = C_STATE_CHANGED;
-            }
-        } else {
-            // this is a file
-            // first delete the file, so it can be overwritten
-            try {
-                m_cms.lockResource(path + name, true);
-                m_cms.deleteFile(path + name);
-                state = C_STATE_CHANGED;
-            } catch (CmsException exc) {
-                state = C_STATE_NEW;
-                // ignore the exception, the file dosen't exist
-            }
-            // read the filecontent
+        if (source != null){
             content = getFileBytes(source);
-
-            // set invalid files to type compatible_plain
-            type = fitFileType(path, name, content, type, properties);
-            // now create the file
-            fullname = m_cms.createFile(path, name, content, type, properties).getAbsolutePath();
-            m_cms.lockResource(path + name, true);
-            success = true;
         }
-        if (fullname != null) {
-            try {
-                m_cms.chmod(fullname, Integer.parseInt(access));
-            } catch(CmsException exc) {
-                System.out.print("chmod(" + access + ") failed ");
-            }
-            try {
-                m_cms.chgrp(fullname, group);
-            } catch(CmsException exc) {
-                System.out.print("chgrp(" + group + ") failed ");
-            }
-            try {
-                m_cms.chown(fullname, user);
-            } catch(CmsException exc) {
-                System.out.print("chown(" + user + ") failed ");
-            }
-            if(launcherStartClass != null) {
-                CmsFile f = m_cms.readFile(fullname);
-                f.setLauncherClassname(launcherStartClass);
-                m_cms.writeFile(f);
-            }
+        // set invalid files to type compatible_plain
+        type = fitFileType(path, name, content, type, properties);
+
+        CmsResource res = m_cms.importResource(source, destination, type, user, group, access,
+                                    properties,launcherStartClass, content, m_importPath);
+        if(res != null){
+            fullname = res.getAbsolutePath();
         }
         System.out.println("OK");
     } catch (Exception exc) {
         // an error while importing the file
         success = false;
-exc.printStackTrace();
-        System.out.println("Error");
+        System.out.println("Error: "+exc.toString());
     }
     byte[] digestContent = {0};
     if (content != null) {
         digestContent = m_digest.digest(content);
     }
-    if (success) {
-        if (writtenFilenames != null) {
+    if (success && (fullname != null)){
+        if (writtenFilenames != null){
             writtenFilenames.addElement(fullname);
         }
-        if (fileCodes != null) {
+        if (fileCodes != null){
             fileCodes.addElement(new String(digestContent));
         }
     }
@@ -595,7 +550,7 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
                 }
 
                 // import the specified file and write maybe put it on the lists writtenFilenames,fileCodes
-                importFile(source, destination, type, user, group, access, properties, launcherStartClass, writtenFilenames, fileCodes);
+                importResource(source, destination, type, user, group, access, properties, launcherStartClass, writtenFilenames, fileCodes);
             } else {
                 System.out.print("skipping " + destination);
             }
