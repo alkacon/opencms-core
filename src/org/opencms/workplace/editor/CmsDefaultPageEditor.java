@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/16 15:43:44 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/01/16 16:52:00 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1.12
  */
@@ -342,15 +342,43 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @return the html for the body name selectbox
      */
     public String buildSelectBodyName(String attributes) {
-        List bodies = m_page.getNames(getParamBodylanguage());
-        Collections.sort(bodies);
-        int currentIndex = bodies.indexOf(getParamBodyname());   
-        if (currentIndex == -1) {
-            currentIndex = bodies.indexOf(I_CmsConstants.C_XML_BODY_ELEMENT);
-            setParamBodyname(I_CmsConstants.C_XML_BODY_ELEMENT);
+        List elementList = null;
+        try { 
+            elementList = CmsDialogElements.computeElements(getCms(), getParamTempfile());
+        } catch (CmsException e) {
+            // no property found, display all present elements instead
+            List bodies = m_page.getNames(getParamBodylanguage());
+            Collections.sort(bodies);
+            int currentIndex = bodies.indexOf(getParamBodyname());   
+            if (currentIndex == -1) {
+                currentIndex = bodies.indexOf(I_CmsConstants.C_XML_BODY_ELEMENT);
+                setParamBodyname(I_CmsConstants.C_XML_BODY_ELEMENT);
+            }
+            return buildSelect(attributes, bodies, bodies, currentIndex, false);
         }
-
-        return buildSelect(attributes, bodies, bodies, currentIndex, false);
+        
+        int counter = 0;
+        int currentIndex = -1; 
+        Iterator i = elementList.iterator();
+        List options = new ArrayList(elementList.size());
+        List values = new ArrayList(elementList.size());
+        while (i.hasNext()) {
+            // get the current list element
+            String[] currentElement = (String[])i.next();               
+            String elementName = currentElement[0];
+            String elementNice = currentElement[1];
+            if (getParamBodyname().equals(elementName)) {
+                // current body is the displayed one, mark it as selected
+                currentIndex = counter;
+            }
+            if (m_page.isEnabled(elementName, getParamBodylanguage())) {
+                // add element only if it is enabled
+                options.add(elementNice);
+                values.add(elementName);
+                counter++;
+            }
+        } 
+        return buildSelect(attributes, options, values, currentIndex, false);
     }
     
     /**

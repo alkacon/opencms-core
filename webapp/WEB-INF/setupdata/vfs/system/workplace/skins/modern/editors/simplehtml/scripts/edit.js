@@ -159,6 +159,8 @@ function changeBody(bodyName, language) {
 	if (bodyName != document.EDITOR.bodyname.value && language == document.EDITOR.bodylanguage.value) {
 		document.EDITOR.bodyname.value = bodyName;
 		doTemplSubmit(3);	
+	} else {
+		doTemplSubmit(1);
 	}
 }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/01/16 15:43:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/01/16 16:52:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.editor;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.0
  */
@@ -369,18 +370,33 @@ public class CmsDialogElements extends CmsDialog {
      */
     public List computeElements() throws CmsException {
         if (m_elementList == null) {
-            m_elementList = new ArrayList();
-            String currentTemplate = null;
-            try {
-                currentTemplate = getCms().readProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, true);
-            } catch (CmsException e) {
-                // ignore this exception
-            }
+            m_elementList = computeElements(getCms(), getParamTempfile());
+        }
+        return m_elementList;
+    }
+    
+    /**
+     * Creates a list of possible elements of a template from the template property "template-elements".<p>
+     * 
+     * @param cms the CmsObject
+     * @param resource the resource to read from
+     * @return the list of elements in a String array with element name, nice name (if present) and mandatory flag
+     * @throws CmsException if reading the property fails
+     */
+    public static List computeElements(CmsObject cms, String resource) throws CmsException {   
+        List elementList = new ArrayList();
+        synchronized (elementList) {
+            String currentTemplate = cms.readProperty(resource, I_CmsConstants.C_PROPERTY_TEMPLATE, true);
             if (currentTemplate == null) {
                 currentTemplate = "";
-            }      
+            }
+            String elements = null;
             // read the property from the template file
-            String elements = getCms().readProperty(currentTemplate, "template-elements", false, null);
+            try {
+            elements = cms.readProperty(currentTemplate, I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS, false, null);
+            } catch (CmsException e) {
+                // ingor this exception
+            }
             if (elements == null) {
                 // no elements defined on template file, don't create list
                 return null;
@@ -405,10 +421,10 @@ public class CmsDialogElements extends CmsDialog {
                     // no nice name found, use element name as nice name
                     niceName = currentElement;
                 }
-                m_elementList.add(new String[] {currentElement, niceName, mandatory});
+                elementList.add(new String[] {currentElement, niceName, mandatory});
             }
         }
-        return m_elementList;
+        return elementList;
     }
     
 }
