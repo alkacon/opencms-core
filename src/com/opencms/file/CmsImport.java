@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/08/28 13:02:27 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/08/29 16:02:57 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,18 +32,25 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.*;
 import java.lang.reflect.*;
+import java.security.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
 import org.w3c.dom.*;
+import source.org.apache.java.util.*;
 
 /**
  * This class holds the functionaility to import resources from the filesystem 
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2000/08/28 13:02:27 $
+ * @version $Revision: 1.18 $ $Date: 2000/08/29 16:02:57 $
  */
 public class CmsImport implements I_CmsConstants {
+
+	/**
+	 * The algorithm for the message digest
+	 */
+	private String C_IMPORT_DIGEST="MD5";
 	
 	/**
 	 * The import-file to load resources from
@@ -74,6 +81,11 @@ public class CmsImport implements I_CmsConstants {
 	 * The xml manifest-file.
 	 */
 	private Document m_docXml;
+
+	/**
+	 * Digest for taking a fingerprint of the files
+	 */
+	private MessageDigest m_digest = null;
 	
 	/**
 	 * This constructs a new CmsImport-object which imports the resources.
@@ -89,14 +101,30 @@ public class CmsImport implements I_CmsConstants {
 		m_importPath = importPath;
 		m_cms = cms;
  
+		// create the digest
+		createDigest();
+		
 		// open the import resource
 		getImportResource();
 
 		// read the xml-config file
 		getXmlConfigFile(); 
-		
-		// import the resources 
 	}
+/**
+ * Read infos from the properties and create a MessageDigest
+ * Creation date: (29.08.00 15:45:35)
+ */
+private void createDigest() throws CmsException {
+	Configurations config = m_cms.getConfigurations();
+	 
+	String digest = C_IMPORT_DIGEST;
+	// create the digest
+	try {
+		m_digest = MessageDigest.getInstance(digest); 
+	} catch (NoSuchAlgorithmException e) {
+		throw new CmsException("Could'nt create MessageDigest with algorithm " + digest);
+	}
+}
 	/**
 	 * Creates missing property definitions if needed.
 	 * 
@@ -262,81 +290,94 @@ public Vector getConflictingFilenames() throws CmsException {
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		} 
 	}
-	/**
-	 * Imports a file into the cms.
-	 * @param source the path to the source-file
-	 * @param destination the path to the destination-file in the cms
-	 * @param type the resource-type of the file
-	 * @param user the owner of the file
-	 * @param group the group of the file
-	 * @param access the access-flags of the file
-	 * @param properties a hashtable with properties for this resource
-	 * @return true if file was actually written, false if an error occurred
-	 */
-	private boolean importFile(String source, String destination, String type, String user, String group, String access, Hashtable properties) {
-		// print out the information for shell-users
-		System.out.print("Importing ");
-		System.out.print(source + ", ");	
-		System.out.print(destination + ", ");	
-		System.out.print(type + ", ");	
-		System.out.print(user + ", ");	
-		System.out.print(group + ", ");	
-		System.out.print(access + "... ");
-		
-		boolean successfull = false;
-		try {			
-			String path = m_importPath + destination.substring(0,destination.lastIndexOf("/")+1);
-			String name = destination.substring((destination.lastIndexOf("/")+1),destination.length());
-			String fullname=null;
-	        int state=C_STATE_NEW;
-			
-			if(source == null) {
-				// this is a directory
-				try {
-				   CmsFolder cmsfolder= m_cms.createFolder(path, name, properties);
-				   fullname = cmsfolder.getAbsolutePath();
-				   successfull=true;
-				   state=C_STATE_NEW;
-				} catch (CmsException e) { 
-					// an exception is thrown if the folder already exists
-				   state=C_STATE_CHANGED;
-				} 
-			} else {
-				// this is a file
-				// first delete the file, so it can be overwritten
-				try {         
-					   m_cms.deleteFile(path+name);	
-					   state=C_STATE_CHANGED;
-				} catch(CmsException exc) {
-					   state=C_STATE_NEW;
-					   // ignore the exception, the file dosen't exist
-				}
-				// now create the file 
-				fullname = m_cms.createFile(path, name, getFileBytes(source), type, properties).getAbsolutePath();
-				successfull=true;
+/**
+ * Imports a file into the cms.
+ * @param source the path to the source-file
+ * @param destination the path to the destination-file in the cms
+ * @param type the resource-type of the file
+ * @param user the owner of the file
+ * @param group the group of the file
+ * @param access the access-flags of the file
+ * @param properties a hashtable with properties for this resource
+ * @param writtenFilenames filenames of the files and folder which have actually been successfully written
+ *       not used when null
+ * @param fileCodes code of the written files (for the registry) 
+ *       not used when null
+ */
+private void importFile(String source, String destination, String type, String user, String group, String access, 
+					Hashtable properties, Vector writtenFilenames, Vector fileCodes) {
+	// print out the information for shell-users
+	System.out.print("Importing ");
+	System.out.print(source + ", ");
+	System.out.print(destination + ", ");
+	System.out.print(type + ", ");
+	System.out.print(user + ", ");
+	System.out.print(group + ", ");
+	System.out.print(access + "... ");
+	boolean success = false;
+	byte[] content = null;
+	try {
+		String path = m_importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
+		String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
+		String fullname = null;
+		int state = C_STATE_NEW;
+		if (source == null) {
+			// this is a directory
+			try {
+				CmsFolder cmsfolder = m_cms.createFolder(path, name, properties);
+				fullname = cmsfolder.getAbsolutePath();
+				success = true;
+				state = C_STATE_NEW;
+			} catch (CmsException e) {
+				// an exception is thrown if the folder already exists
+				state = C_STATE_CHANGED;
 			}
-		  
-			if (fullname!=null) {
-				m_cms.chmod(fullname, Integer.parseInt(access));
-			    m_cms.chgrp(fullname, group);
-			    m_cms.chown(fullname, user);
-			    // for debugging: check whether the kernel and this method determine the same status
-			    int kernelstate = m_cms.readFileHeader(fullname).getState();
-			    if ((state != kernelstate) && A_OpenCms.isLogging()) { 
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "CmsImport: different statuses, kernel sais "+kernelstate+
-					" import sais "+ state); 
-			    }
-				// m_cms.chstate(fullname,state);
+		} else {
+			// this is a file
+			// first delete the file, so it can be overwritten
+			try {
+				m_cms.deleteFile(path + name);
+				state = C_STATE_CHANGED;
+			} catch (CmsException exc) {
+				state = C_STATE_NEW;
+				// ignore the exception, the file dosen't exist
 			}
-			System.out.println("OK");
-		} catch(Exception exc) {
-			// an error while importing the file
-			successfull = false;
-			System.out.println("Error");
-			exc.printStackTrace();
-		}	
-		return successfull;	
+			// now create the file
+			content = getFileBytes(source);
+			fullname = m_cms.createFile(path, name, content, type, properties).getAbsolutePath();
+			success = true;
+		}
+		if (fullname != null) {
+			m_cms.chmod(fullname, Integer.parseInt(access));
+			m_cms.chgrp(fullname, group);
+			m_cms.chown(fullname, user);
+			// for debugging: check whether the kernel and this method determine the same status
+			int kernelstate = m_cms.readFileHeader(fullname).getState();
+			if ((state != kernelstate) && A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "CmsImport: different statuses, kernel sais " + kernelstate + " import sais " + state);
+			}
+			// m_cms.chstate(fullname,state);
+		}
+		System.out.println("OK");
+	} catch (Exception exc) {
+		// an error while importing the file
+		success = false;
+		System.out.println("Error");
+		exc.printStackTrace();
 	}
+	byte[] digestContent = {0};
+	if (content != null) {
+		digestContent = m_digest.digest(content);
+	} 
+	if (success) {
+		if (writtenFilenames != null) {
+			writtenFilenames.addElement(m_importPath + destination);
+		}
+		if (fileCodes != null) {
+			fileCodes.addElement(digestContent);
+		}
+	}
+}
 /**
  * Imports the resources and writes them to the cms even if there already exist conflicting files
  */
@@ -406,17 +447,8 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
 					}
 				}
 
-				// import the specified file
-				boolean succes = importFile(source, destination, type, user, group, access, properties); 
-				if (succes) {
-					if (writtenFilenames != null) {
-						writtenFilenames.addElement(m_importPath + destination);
-					}
-					if (fileCodes != null) {
-						// TODO generating a code for the resource name
-						fileCodes.addElement("code of " + m_importPath + destination);
-					}
-				}
+				// import the specified file and write maybe put it on the lists writtenFilenames,fileCodes
+				importFile(source, destination, type, user, group, access, properties, writtenFilenames, fileCodes); 
 			} else {
 				System.out.print("skipping " + destination);
 			}
