@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.132 $
+* Date   : $Date: 2003/07/14 18:43:54 $
+* Version: $Revision: 1.133 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.132 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.133 $ $Date: 2003/07/14 18:43:54 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -261,7 +261,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         
         try {       
             // initalize the Hashtable with all available mimetypes
-            m_mt = m_driverManager.readMimeTypes(null, null);
+            m_mt = m_driverManager.readMimeTypes();
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Found mime types     : " + m_mt.size() + " entrys");
 
             // Check, if the HTTP streaming should be enabled
@@ -271,7 +271,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
             if(!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
                 // now initialise the OpenCms scheduler to launch cronjobs
-                m_table = new CmsCronTable(m_driverManager.readCronTable(null, null));
+                m_table = new CmsCronTable(m_driverManager.readCronTable());
                 m_scheduler = new CmsCronScheduler(this, m_table);
                 if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". OpenCms scheduler    : enabled");
             } else {
@@ -1025,7 +1025,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      */
     void updateCronTable() {
         try {
-            m_table.update(m_driverManager.readCronTable(null, null));
+            m_table.update(m_driverManager.readCronTable());
         } catch(Exception exc) {
             if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) {
                 log(C_OPENCMS_CRITICAL, "[OpenCms] crontable corrupt. Scheduler is now disabled!");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/14 11:05:23 $
-* Version: $Revision: 1.314 $
+* Date   : $Date: 2003/07/14 18:43:54 $
+* Version: $Revision: 1.315 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.314 $
+ * @version $Revision: 1.315 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -129,7 +129,7 @@ public class CmsObject implements I_CmsConstants {
  * @throws CmsException if operation was not successful.
  */
 public void acceptTask(int taskId) throws CmsException {
-    m_driverManager.acceptTask(m_context.currentUser(), m_context.currentProject(), taskId);
+    m_driverManager.acceptTask(m_context, taskId);
 }
 
 /**
@@ -141,7 +141,7 @@ public void acceptTask(int taskId) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public boolean accessProject(int projectId) throws CmsException {
-    return (m_driverManager.accessProject(m_context.currentUser(), m_context.currentProject(), projectId));
+    return (m_driverManager.accessProject(m_context, projectId));
 }
 
 /**
@@ -173,7 +173,7 @@ public boolean accessWrite(String resource) throws CmsException {
  */
 
 public void addFileExtension(String extension, String resTypeName) throws CmsException {
-    m_driverManager.addFileExtension(m_context.currentUser(), m_context.currentProject(), extension, resTypeName);
+    m_driverManager.addFileExtension(m_context, extension, resTypeName);
 }
 /**
  * Adds a new group to the Cms.<p>
@@ -191,7 +191,7 @@ public void addFileExtension(String extension, String resTypeName) throws CmsExc
  * @throws CmsException if operation was not successful.
  */
 public CmsGroup createGroup(String name, String description, int flags, String parent) throws CmsException {
-    return (m_driverManager.createGroup(m_context.currentUser(), m_context.currentProject(), name, description, flags, parent));
+    return (m_driverManager.createGroup(m_context, name, description, flags, parent));
 }
 
 /**
@@ -209,7 +209,7 @@ public CmsGroup createGroup(String name, String description, int flags, String p
  * @throws CmsException if something goes wrong
  */
 public CmsGroup createGroup(String id, String name, String description, int flags, String parent) throws CmsException {
-	return m_driverManager.createGroup(m_context.currentUser(), m_context.currentProject(), id, name, description, flags, parent);
+	return m_driverManager.createGroup(m_context, id, name, description, flags, parent);
 }
 
 /**
@@ -231,7 +231,7 @@ public CmsGroup createGroup(String id, String name, String description, int flag
  * @throws CmsException if operation was not successful.
  */
 public CmsUser addUser(String name, String password, String group, String description, Hashtable additionalInfos, int flags) throws CmsException {
-    return (m_driverManager.addUser(this, m_context.currentUser(), m_context.currentProject(), name, password, group, description, additionalInfos, flags));
+    return (m_driverManager.addUser(this, m_context, name, password, group, description, additionalInfos, flags));
 }
 
 /**
@@ -263,9 +263,9 @@ public CmsUser addUser(String name, String password, String group, String descri
 public CmsUser addImportUser(String id, String name, String password, String recoveryPassword, String description,
         String firstname, String lastname, String email, int flags, Hashtable additionalInfos,
         String defaultGroup, String address, String section, int type) throws CmsException {
-    return (m_driverManager.addImportUser(m_context.currentUser(), m_context.currentProject(), id, name, password,
-            recoveryPassword, description, firstname, lastname, email, flags, additionalInfos,
-            defaultGroup, address, section, type));
+    return (m_driverManager.addImportUser(m_context, id, name, password, recoveryPassword,
+            description, firstname, lastname, email, flags, additionalInfos, defaultGroup,
+            address, section, type));
 }
 
 /**
@@ -279,7 +279,7 @@ public CmsUser addImportUser(String id, String name, String password, String rec
  * @throws CmsException if operation was not successful.
  */
 public void addUserToGroup(String username, String groupname) throws CmsException {
-    m_driverManager.addUserToGroup(m_context.currentUser(), m_context.currentProject(), username, groupname);
+    m_driverManager.addUserToGroup(m_context, username, groupname);
 }
 /**
  * Adds a web user to the Cms.
@@ -300,7 +300,7 @@ public void addUserToGroup(String username, String groupname) throws CmsExceptio
  * @throws CmsException if operation was not successful.
  */
 public CmsUser addWebUser(String name, String password, String group, String description, Hashtable additionalInfos, int flags) throws CmsException {
-    return (m_driverManager.addWebUser(this, m_context.currentUser(), m_context.currentProject(), name, password, group, description, additionalInfos, flags));
+    return (m_driverManager.addWebUser(this, m_context, name, password, group, description, additionalInfos, flags));
 }
 /**
  * Adds a web user to the Cms.
@@ -322,7 +322,7 @@ public CmsUser addWebUser(String name, String password, String group, String des
  * @throws CmsException if operation was not successful.
  */
 public CmsUser addWebUser(String name, String password, String group, String additionalGroup, String description, Hashtable additionalInfos, int flags) throws CmsException {
-    CmsUser newWebUser = m_driverManager.addWebUser(this, m_context.currentUser(), m_context.currentProject(), name, password, group, additionalGroup, description, additionalInfos, flags);
+    CmsUser newWebUser = m_driverManager.addWebUser(this, m_context, password, group, additionalGroup, description, additionalInfos, flags);
     return newWebUser;
 }
 /**
@@ -332,7 +332,7 @@ public CmsUser addWebUser(String name, String password, String group, String add
  * @throws CmsException if operation was not successful.
  */
 public CmsUser anonymousUser() throws CmsException {
-    return (m_driverManager.anonymousUser(m_context.currentUser(), m_context.currentProject()));
+    return (m_driverManager.anonymousUser(m_context));
 }
 
     /**
@@ -434,7 +434,7 @@ public void chtype(String filename, String newType) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 protected void doChtype(String filename, String newType) throws CmsException {
-    m_driverManager.chtype(m_context.currentUser(), m_context.currentProject(), addSiteRoot(filename), newType);
+    m_driverManager.chtype(m_context, addSiteRoot(filename), newType);
 }
 
 /**
@@ -492,7 +492,7 @@ public void copyResource(String source, String destination, boolean keepFlags) t
  * has not the appropriate rights to copy the file.
  */
 protected void doCopyFile(String source, String destination) throws CmsException {
-    m_driverManager.copyFile(m_context.currentUser(), m_context.currentProject(), addSiteRoot(source), addSiteRoot(destination));
+    m_driverManager.copyFile(m_context, addSiteRoot(source), addSiteRoot(destination));
 }
 
 /**
@@ -505,7 +505,7 @@ protected void doCopyFile(String source, String destination) throws CmsException
  * user has not the appropriate rights to copy the folder.
  */
 protected void doCopyFolder(String source, String destination) throws CmsException {
-    m_driverManager.copyFolder(m_context.currentUser(), m_context.currentProject(), addSiteRoot(source), addSiteRoot(destination));
+    m_driverManager.copyFolder(m_context, addSiteRoot(source), addSiteRoot(destination));
 }
 
 /**
@@ -562,7 +562,7 @@ public void copyResourceToProject(String resource) throws CmsException {
      * @throws CmsException if operation was not successful.
  */
 protected void doCopyResourceToProject(String resource) throws CmsException {
-    m_driverManager.copyResourceToProject(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resource));
+    m_driverManager.copyResourceToProject(m_context, addSiteRoot(resource));
 }
 
 /**
@@ -574,7 +574,7 @@ protected void doCopyResourceToProject(String resource) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public int countLockedResources(int id) throws CmsException {
-    return m_driverManager.countLockedResources(m_context.currentUser(), m_context.currentProject(), id);
+    return m_driverManager.countLockedResources(m_context, id);
 }
 /**
  * Creates a new file with the given content and resourcetype.<br>
@@ -727,9 +727,8 @@ public CmsResource createResource(String newResourceName, String type, Map prope
  * filename is not valid or if the user has not the appropriate rights to create a new file.
  */
 protected CmsFile doCreateFile(String newFileName, byte[] contents, String type) throws CmsException {
-    CmsFile file = m_driverManager.createFile(m_context.currentUser(), m_context.currentGroup(),
-                                   m_context.currentProject(), addSiteRoot(newFileName), contents,
-                                   type, new HashMap());
+    CmsFile file = m_driverManager.createFile(m_context, addSiteRoot(newFileName),
+                                   contents, type, new HashMap());
     return file;
 }
 /**
@@ -754,9 +753,8 @@ protected CmsFile doCreateFile(String newFileName, byte[] contents, String type,
     if(properties == null) {
         properties = new Hashtable();
     }
-    CmsFile file = m_driverManager.createFile(m_context.currentUser(), m_context.currentGroup(),
-                                   m_context.currentProject(), addSiteRoot(newFileName), contents,
-                                   type, properties);
+    CmsFile file = m_driverManager.createFile(m_context, addSiteRoot(newFileName),
+                                   contents, type, properties);
     return file;
 }
 
@@ -773,8 +771,7 @@ protected CmsFile doCreateFile(String newFileName, byte[] contents, String type,
  * a new folder.
  */
 protected CmsFolder doCreateFolder(String folder, String newFolderName) throws CmsException {
-    CmsFolder cmsFolder = m_driverManager.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(),
-                                            addSiteRoot(folder + newFolderName + C_FOLDER_SEPARATOR), new Hashtable());
+    CmsFolder cmsFolder = m_driverManager.createFolder(m_context, addSiteRoot(folder + newFolderName + C_FOLDER_SEPARATOR), new Hashtable());
     return cmsFolder;
 }
 
@@ -794,15 +791,14 @@ protected CmsFolder doCreateFolder(String folder, String newFolderName) throws C
  *
  */
 protected CmsFolder doCreateFolder(String newFolderName, Map properties) throws CmsException {
-    CmsFolder cmsFolder = m_driverManager.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(),
-                                            addSiteRoot(newFolderName), properties);
+    CmsFolder cmsFolder = m_driverManager.createFolder(m_context, addSiteRoot(newFolderName), properties);
     return cmsFolder;
 }
 
     protected CmsResource doReplaceResource(String resName, byte[] newResContent, String newResType, Map newResProps) throws CmsException {
         CmsResource res = null;
         
-        res = m_driverManager.replaceResource(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resName), newResType, newResProps, newResContent);        
+        res = m_driverManager.replaceResource(m_context, addSiteRoot(resName), newResType, newResProps, newResContent);        
         return res;
     }
 
@@ -830,9 +826,9 @@ protected CmsFolder doCreateFolder(String newFolderName, Map properties) throws 
 	 */
 	protected CmsResource doImportResource(String newResourceName, int resourceType, Map properties, int launcherType,
                                         String launcherClassname, String ownername, String groupname, int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
-    	CmsResource cmsResource = m_driverManager.importResource(m_context.currentUser(), m_context.currentProject(),
-                                            addSiteRoot(newResourceName), resourceType, properties, launcherType,
-                                            launcherClassname, ownername, groupname, accessFlags, lastmodified, filecontent);
+    	CmsResource cmsResource = m_driverManager.importResource(m_context, addSiteRoot(newResourceName),
+                                            resourceType, properties, launcherType, launcherClassname,
+                                            ownername, groupname, accessFlags, lastmodified, filecontent);
 
 	    return cmsResource;
 	}
@@ -855,9 +851,8 @@ protected CmsFolder doCreateFolder(String newFolderName, Map properties) throws 
                                String username, String groupname, int accessFlags,
                                int resourceType, byte[] filecontent)
         throws CmsException{
-        m_driverManager.writeResource(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resourcename),
-                           properties, username, groupname, accessFlags, resourceType,
-                           filecontent);
+        m_driverManager.writeResource(m_context, addSiteRoot(resourcename), properties,
+                           username, groupname, accessFlags, resourceType, filecontent);
     }
 /**
   * Creates a new project for task handling.
@@ -873,7 +868,7 @@ protected CmsFolder doCreateFolder(String newFolderName, Map properties) throws 
   * @throws CmsException if operation was not successful.
   */
 public CmsTask createProject(String projectname, int projectType, String roleName, long timeout, int priority) throws CmsException {
-    return m_driverManager.createProject(m_context.currentUser(), projectname, projectType, roleName, timeout, priority);
+    return m_driverManager.createProject(m_context, projectname, projectType, roleName, timeout, priority);
 }
 /**
  * Creates a new project.
@@ -887,7 +882,7 @@ public CmsTask createProject(String projectname, int projectType, String roleNam
  */
 public CmsProject createProject(String name, String description, String groupname, String managergroupname) throws CmsException
 {
-    CmsProject newProject = m_driverManager.createProject(m_context.currentUser(), m_context.currentProject(), name, description, groupname, managergroupname);
+    CmsProject newProject = m_driverManager.createProject(m_context, name, description, groupname, managergroupname);
     return (newProject);
 }
 
@@ -904,7 +899,7 @@ public CmsProject createProject(String name, String description, String groupnam
  */
 public CmsProject createProject(String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException
 {
-    CmsProject newProject = m_driverManager.createProject(m_context.currentUser(), m_context.currentProject(), name, description, groupname, managergroupname, projecttype);
+    CmsProject newProject = m_driverManager.createProject(m_context, name, description, groupname, managergroupname, projecttype);
     return (newProject);
 }
 
@@ -915,7 +910,7 @@ public CmsProject createProject(String name, String description, String groupnam
  */
 public CmsProject createTempfileProject() throws CmsException
 {
-    CmsProject newProject = m_driverManager.createTempfileProject(this, m_context.currentUser(), m_context.currentProject());
+    CmsProject newProject = m_driverManager.createTempfileProject(this, m_context);
     return (newProject);
 }
 
@@ -928,7 +923,7 @@ public CmsProject createTempfileProject() throws CmsException
  * @throws CmsException if operation was not successful.
  */
 public CmsPropertydefinition createPropertydefinition(String name, String resourcetype) throws CmsException {
-    return (m_driverManager.createPropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype));
+    return (m_driverManager.createPropertydefinition(m_context, name, resourcetype));
 }
 
 /**
@@ -970,7 +965,7 @@ public CmsTask createTask(int projectid, String agentName, String roleName, Stri
   * @throws CmsException if operation was not successful.
   */
 public CmsTask createTask(String agentName, String roleName, String taskname, String taskcomment, long timeout, int priority) throws CmsException {
-    return (m_driverManager.createTask(m_context.currentUser(), m_context.currentProject(), agentName, roleName, taskname, taskcomment, timeout, priority));
+    return (m_driverManager.createTask(m_context, agentName, roleName, taskname, taskcomment, timeout, priority));
 }
 /**
  * Deletes all properties for a file or folder.
@@ -980,7 +975,7 @@ public CmsTask createTask(String agentName, String roleName, String taskname, St
  * @throws CmsException if operation was not successful.
  */
 public void deleteAllProperties(String resourcename) throws CmsException {
-    m_driverManager.deleteAllProperties(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resourcename));
+    m_driverManager.deleteAllProperties(m_context, addSiteRoot(resourcename));
 }
 /**
  * Deletes a file.
@@ -1025,7 +1020,7 @@ public void deleteFolder(String foldername) throws CmsException {
  *
  */
 public void deleteEmptyFolder(String foldername) throws CmsException {
-    m_driverManager.deleteFolder(m_context.currentUser(), m_context.currentProject(), addSiteRoot(foldername));
+    m_driverManager.deleteFolder(m_context, addSiteRoot(foldername));
 }
 
 /**
@@ -1051,7 +1046,7 @@ public void deleteResource(String filename) throws CmsException {
  * has not the appropriate rights to delete the file.
  */
 protected void doDeleteFile(String filename) throws CmsException {
-    m_driverManager.deleteFile(m_context.currentUser(), m_context.currentProject(), addSiteRoot(filename));
+    m_driverManager.deleteFile(m_context, addSiteRoot(filename));
 }
 
 /**
@@ -1066,7 +1061,7 @@ protected void doDeleteFile(String filename) throws CmsException {
  * has not the rights to delete this folder.
  */
 protected void doDeleteFolder(String foldername) throws CmsException {
-    m_driverManager.deleteFolder(m_context.currentUser(), m_context.currentProject(), addSiteRoot(foldername));
+    m_driverManager.deleteFolder(m_context, addSiteRoot(foldername));
 }
 
 /**
@@ -1079,7 +1074,7 @@ protected void doDeleteFolder(String foldername) throws CmsException {
  */
 public void undeleteResource(String filename) throws CmsException {
     //read the file header including deleted
-    CmsResource res = m_driverManager.readFileHeader(m_context.currentUser(), m_context.currentProject(), addSiteRoot(filename), true);
+    CmsResource res = m_driverManager.readFileHeader(m_context, addSiteRoot(filename), true);
     I_CmsResourceType rt = getResourceType(res.getType());
     rt.undeleteResource(this, filename);
 }
@@ -1093,7 +1088,7 @@ public void undeleteResource(String filename) throws CmsException {
  * has not the appropriate rights to undelete the file.
  */
 protected void doUndeleteFile(String filename) throws CmsException {
-    m_driverManager.undeleteResource(m_context.currentUser(), m_context.currentProject(), addSiteRoot(filename));
+    m_driverManager.undeleteResource(m_context, addSiteRoot(filename));
 }
 
 /**
@@ -1108,7 +1103,7 @@ protected void doUndeleteFile(String filename) throws CmsException {
  * has not the rights to undelete this folder.
  */
 protected void doUndeleteFolder(String foldername) throws CmsException {
-    m_driverManager.undeleteResource(m_context.currentUser(), m_context.currentProject(), addSiteRoot(foldername));
+    m_driverManager.undeleteResource(m_context, addSiteRoot(foldername));
 }
 
 /**
@@ -1121,7 +1116,7 @@ protected void doUndeleteFolder(String foldername) throws CmsException {
  * @throws CmsException  if operation was not successful.
  */
 public void deleteGroup(String delgroup) throws CmsException {
-    m_driverManager.deleteGroup(m_context.currentUser(), m_context.currentProject(), delgroup);
+    m_driverManager.deleteGroup(m_context, delgroup);
 }
 /**
  * Deletes a project.
@@ -1131,7 +1126,7 @@ public void deleteGroup(String delgroup) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public void deleteProject(int id) throws CmsException {
-    m_driverManager.deleteProject(m_context.currentUser(), m_context.currentProject(), id);
+    m_driverManager.deleteProject(m_context, id);
 }
 /**
  * Deletes a property for a file or folder.
@@ -1142,7 +1137,7 @@ public void deleteProject(int id) throws CmsException {
  * @throws CmsException Throws if operation was not successful.
  */
 public void deleteProperty(String resourcename, String property) throws CmsException {
-    m_driverManager.deleteProperty(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resourcename), property);
+    m_driverManager.deleteProperty(m_context, addSiteRoot(resourcename), property);
 }
 /**
  * Deletes the property-definition for a resource type.
@@ -1153,7 +1148,7 @@ public void deleteProperty(String resourcename, String property) throws CmsExcep
  * @throws CmsException if operation was not successful.
  */
 public void deletePropertydefinition(String name, String resourcetype) throws CmsException {
-    m_driverManager.deletePropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype);
+    m_driverManager.deletePropertydefinition(m_context, name, resourcetype);
 }
 /**
  * Deletes a user from the Cms.
@@ -1166,7 +1161,7 @@ public void deletePropertydefinition(String name, String resourcetype) throws Cm
  * @throws CmsException if operation was not successful.
  */
 public void deleteUser(CmsUUID userId) throws CmsException {
-    m_driverManager.deleteUser(m_context.currentUser(), m_context.currentProject(), userId);
+    m_driverManager.deleteUser(m_context, userId);
 }
 /**
  * Deletes a user from the Cms.
@@ -1179,7 +1174,7 @@ public void deleteUser(CmsUUID userId) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public void deleteUser(String username) throws CmsException {
-    m_driverManager.deleteUser(m_context.currentUser(), m_context.currentProject(), username);
+    m_driverManager.deleteUser(m_context, username);
 }
 /**
  * Deletes a web user from the Cms.
@@ -1189,7 +1184,7 @@ public void deleteUser(String username) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public void deleteWebUser(CmsUUID userId) throws CmsException {
-    m_driverManager.deleteWebUser(m_context.currentUser(), m_context.currentProject(), userId);
+    m_driverManager.deleteWebUser(m_context, userId);
 }
 /**
  * Destroys the resource borker and required modules and connections.
@@ -1206,7 +1201,7 @@ public void destroy() throws Throwable, CmsException {
  * @throws CmsException if operation was not successful.
  */
 public void endTask(int taskid) throws CmsException {
-    m_driverManager.endTask(m_context.currentUser(), m_context.currentProject(), taskid);
+    m_driverManager.endTask(m_context, taskid);
 }
 /**
  * Exports cms-resources to a zip-file.
@@ -1218,7 +1213,7 @@ public void endTask(int taskid) throws CmsException {
  */
 public void exportResources(String exportFile, String[] exportPaths) throws CmsException {
     // export the resources
-    m_driverManager.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this);
+    m_driverManager.exportResources(this, m_context, exportFile, exportPaths);
 }
 /**
  * Exports cms-resources to a zip-file.
@@ -1232,7 +1227,7 @@ public void exportResources(String exportFile, String[] exportPaths) throws CmsE
  */
 public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged) throws CmsException {
     // export the resources
-    m_driverManager.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem, excludeUnchanged);
+    m_driverManager.exportResources(this, m_context, exportFile, exportPaths, includeSystem, excludeUnchanged);
 }
 
 /**
@@ -1248,7 +1243,7 @@ public void exportResources(String exportFile, String[] exportPaths, boolean inc
  */
 public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata, long contentAge, I_CmsReport report) throws CmsException {
     // export the resources
-    m_driverManager.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem, excludeUnchanged, exportUserdata, contentAge, report);
+    m_driverManager.exportResources(this, m_context, exportFile, exportPaths, includeSystem, excludeUnchanged, exportUserdata, contentAge, report);
 }
 /**
  * Exports cms-resources to a zip-file.
@@ -1289,7 +1284,7 @@ public CmsFile exportResource(CmsFile file) throws CmsException {
      * @throws Throws CmsException if something goes wrong.
      */
     public void exportModuledata(String exportFile, String[] exportChannels, String[] exportModules, I_CmsReport report) throws CmsException {
-        m_driverManager.exportModuledata(m_context.currentUser(), m_context.currentProject(), exportFile, exportChannels, exportModules, this, report);
+        m_driverManager.exportModuledata(this, m_context, exportFile, exportChannels, exportModules, report);
     }
 
 /**
@@ -1306,8 +1301,8 @@ public CmsFile exportResource(CmsFile file) throws CmsException {
 public void exportStaticResources(Vector startpoints, Vector projectResources, Vector allExportedLinks,
             CmsPublishedResources changedResources, I_CmsReport report) throws CmsException {
 
-    m_driverManager.exportStaticResources(m_context.currentUser(), m_context.currentProject(),
-             this, startpoints, projectResources, allExportedLinks, changedResources, report);
+    m_driverManager.exportStaticResources(this, m_context,
+             startpoints, projectResources, allExportedLinks, changedResources, report);
 }
 
 /**
@@ -1322,8 +1317,8 @@ public void exportStaticResources(Vector startpoints, Vector projectResources, V
  */
 public void exportStaticResources(Vector linksToExport) throws CmsException {
 
-    m_driverManager.exportStaticResources(m_context.currentUser(), m_context.currentProject(),
-             this, linksToExport);
+    m_driverManager.exportStaticResources(this, m_context,
+             linksToExport);
 }
 
 /**
@@ -1351,7 +1346,7 @@ public CmsObject getCmsObjectForStaticExport(CmsExportRequest dReq, CmsExportRes
  * @throws CmsException if operation was not successful.
  */
 public void forwardTask(int taskid, String newRoleName, String newUserName) throws CmsException {
-    m_driverManager.forwardTask(m_context.currentUser(), m_context.currentProject(), taskid, newRoleName, newUserName);
+    m_driverManager.forwardTask(m_context, taskid, newRoleName, newUserName);
 }
 /**
  * Returns all projects, which the current user can access.
@@ -1361,7 +1356,7 @@ public void forwardTask(int taskid, String newRoleName, String newUserName) thro
  * @throws CmsException if operation was not successful.
  */
 public Vector getAllAccessibleProjects() throws CmsException {
-    return (m_driverManager.getAllAccessibleProjects(m_context.currentUser(), m_context.currentProject()));
+    return (m_driverManager.getAllAccessibleProjects(m_context));
 }
 /**
  * Returns all projects which are owned by the current user or which are manageable
@@ -1372,7 +1367,7 @@ public Vector getAllAccessibleProjects() throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public Vector getAllManageableProjects() throws CmsException {
-    return (m_driverManager.getAllManageableProjects(m_context.currentUser(), m_context.currentProject()));
+    return (m_driverManager.getAllManageableProjects(m_context));
 }
 
 /**
@@ -1404,7 +1399,7 @@ public Vector getAllBackupProjects() throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public Hashtable getAllResourceTypes() throws CmsException {
-    return (m_driverManager.getAllResourceTypes(m_context.currentUser(), m_context.currentProject()));
+    return (m_driverManager.getAllResourceTypes(m_context));
 }
 
 /**
@@ -1434,7 +1429,7 @@ public Hashtable getCacheInfo() {
  * @throws CmsException if operation was not successful.
  */
 public Vector getChild(String groupname) throws CmsException {
-    return (m_driverManager.getChild(m_context.currentUser(), m_context.currentProject(), groupname));
+    return (m_driverManager.getChild(m_context, groupname));
 }
 /**
  * Returns all child groups of a group.
@@ -1446,14 +1441,14 @@ public Vector getChild(String groupname) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public Vector getChilds(String groupname) throws CmsException {
-    return (m_driverManager.getChilds(m_context.currentUser(), m_context.currentProject(), groupname));
+    return (m_driverManager.getChilds(m_context, groupname));
 }
 /**
  * Gets the configurations of the properties-file.
  * @return the configurations of the properties-file.
  */
 public Configurations getConfigurations() {
-    return m_driverManager.getConfigurations(getRequestContext().currentUser(), getRequestContext().currentProject());
+    return m_driverManager.getConfigurations();
 }
 /**
  * Gets all groups to which a given user directly belongs.
@@ -1464,7 +1459,7 @@ public Configurations getConfigurations() {
  * @throws CmsException if operation was not successful.
  */
 public Vector getDirectGroupsOfUser(String username) throws CmsException {
-    return (m_driverManager.getDirectGroupsOfUser(m_context.currentUser(), m_context.currentProject(), username));
+    return (m_driverManager.getDirectGroupsOfUser(m_context, username));
 }
 /**
  * Returns a Vector with all files of a given folder.
@@ -1479,7 +1474,7 @@ public Vector getDirectGroupsOfUser(String username) throws CmsException {
  * @throws CmsException if the user has not hte appropriate rigths to access or read the resource.
  */
 public List getFilesInFolder(String foldername) throws CmsException {
-    return (m_driverManager.getSubFiles(m_context.currentUser(), m_context.currentProject(), addSiteRoot(foldername), false));
+    return (m_driverManager.getSubFiles(m_context, addSiteRoot(foldername), false));
 }
 
 /**
@@ -1495,7 +1490,7 @@ public List getFilesInFolder(String foldername) throws CmsException {
  * @throws CmsException if the user has not hte appropriate rigths to access or read the resource.
  */
 public List getFilesInFolder(String foldername, boolean includeDeleted) throws CmsException {
-    return (m_driverManager.getSubFiles(m_context.currentUser(), m_context.currentProject(), addSiteRoot(foldername), includeDeleted));
+    return (m_driverManager.getSubFiles(m_context, addSiteRoot(foldername), includeDeleted));
 }
 
 /**
@@ -1509,7 +1504,7 @@ public List getFilesInFolder(String foldername, boolean includeDeleted) throws C
  * @throws CmsException if operation was not successful.
  */
 public Vector getFilesWithProperty(String propertyDefinition, String propertyValue) throws CmsException {
-    return m_driverManager.getFilesWithProperty(m_context.currentUser(), m_context.currentProject(), propertyDefinition, propertyValue);
+    return m_driverManager.getFilesWithProperty(m_context, propertyDefinition, propertyValue);
 }
 
     /**
@@ -1557,7 +1552,7 @@ public Vector getFilesWithProperty(String propertyDefinition, String propertyVal
  * @return the number of file-system-changes.
  */
 public long getFileSystemChanges() {
-    return (m_driverManager.getFileSystemChanges(m_context.currentUser(), m_context.currentProject()));
+    return (m_driverManager.getFileSystemChanges());
 }
 /**
  * This method can be called, to determine if the file-system was changed in the past.
@@ -1568,7 +1563,7 @@ public long getFileSystemChanges() {
  * @return the number of file-system-changes.
  */
 public long getFileSystemFolderChanges() {
-    return (m_driverManager.getFileSystemFolderChanges(m_context.currentUser(), m_context.currentProject()));
+    return (m_driverManager.getFileSystemFolderChanges());
 }
     /**
      * Returns a Vector with the complete folder-tree for this project.<br>
@@ -1592,7 +1587,7 @@ public long getFileSystemFolderChanges() {
  * @throws CmsException if operation was not successful
  */
 public Vector getGroups() throws CmsException {
-    return (m_driverManager.getGroups(m_context.currentUser(), m_context.currentProject()));
+    return (m_driverManager.getGroups(m_context));
 }
 /**
  * Gets all groups of a user.
@@ -1603,7 +1598,7 @@ public Vector getGroups() throws CmsException {
  * @throws CmsException if operation was not succesful.
  */
 public Vector getGroupsOfUser(String username) throws CmsException {
-    return (m_driverManager.getGroupsOfUser(m_context.currentUser(), m_context.currentProject(), username));
+    return (m_driverManager.getGroupsOfUser(m_context, username));
 }
 /**
  * Get the launcher manager used with this instance of CmsObject.
@@ -1692,7 +1687,7 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
      *          Admingroup for no Group.
      */
     public String getReadingpermittedGroup(int projectId, String resource) throws CmsException {
-        return m_driverManager.getReadingpermittedGroup(m_context.currentUser(), m_context.currentProject(), projectId, addSiteRoot(resource));
+        return m_driverManager.getReadingpermittedGroup(m_context, projectId, addSiteRoot(resource));
     }
 
 /**
@@ -1703,7 +1698,7 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
  * @throws CmsException if operation was not successful.
  */
 public CmsGroup getParent(String groupname) throws CmsException {
-    return (m_driverManager.getParent(m_context.currentUser(), groupname));
+    return (m_driverManager.getParent(m_context, groupname));
 }
 /**
  * Gets the Registry.
@@ -1713,7 +1708,7 @@ public CmsGroup getParent(String groupname) throws CmsException {
  */
 
 public I_CmsRegistry getRegistry() throws CmsException {
-    return (m_driverManager.getRegistry(m_context.currentUser(), m_context.currentProject(), this));
+    return (m_driverManager.getRegistry(this));
 }
 /**
  * Returns the current request-context.
@@ -1733,7 +1728,7 @@ public CmsRequestContext getRequestContext() {
  * @throws CmsException  Throws CmsException if operation was not succesful.
  */
 public Vector getResourcesInFolder(String folder) throws CmsException {
-    return m_driverManager.getResourcesInFolder(m_context.currentUser(), m_context.currentProject(), addSiteRoot(folder));
+    return m_driverManager.getResourcesInFolder(m_context, addSiteRoot(folder));
 }
 
    /**
@@ -1752,8 +1747,8 @@ public Vector getResourcesInFolder(String folder) throws CmsException {
      */
     public Vector getResourcesWithProperty(String propertyDefinition,
                                            String propertyValue, int resourceType) throws CmsException {
-        return m_driverManager.getResourcesWithProperty(m_context.currentUser(), m_context.currentProject(),
-                                             propertyDefinition, propertyValue, resourceType);
+        return m_driverManager.getResourcesWithProperty(m_context, propertyDefinition,
+                                             propertyValue, resourceType);
     }
 
    /**
@@ -1771,8 +1766,7 @@ public Vector getResourcesInFolder(String folder) throws CmsException {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getResourcesWithProperty(String propertyDefinition) throws CmsException {
-        return m_driverManager.getResourcesWithProperty(m_context.currentUser(), m_context.currentProject(),
-                                             propertyDefinition);
+        return m_driverManager.getResourcesWithProperty(m_context, propertyDefinition);
     }
 
 /**
@@ -1785,7 +1779,7 @@ public Vector getResourcesInFolder(String folder) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public I_CmsResourceType getResourceType(int resourceType) throws CmsException {
-    return (m_driverManager.getResourceType(m_context.currentUser(), m_context.currentProject(), resourceType));
+    return (m_driverManager.getResourceType(m_context, resourceType));
 }
 /**
  * Returns a I_CmsResourceType.
@@ -1797,7 +1791,7 @@ public I_CmsResourceType getResourceType(int resourceType) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public I_CmsResourceType getResourceType(String resourceType) throws CmsException {
-    return (m_driverManager.getResourceType(m_context.currentUser(), m_context.currentProject(), resourceType));
+    return (m_driverManager.getResourceType(m_context, resourceType));
 }
 /**
  * Returns a Vector with all subfolders of a given folder.
@@ -1809,7 +1803,7 @@ public I_CmsResourceType getResourceType(String resourceType) throws CmsExceptio
  * @throws CmsException if the user has not the rights to access or read the resource.
  */
 public List getSubFolders(String foldername) throws CmsException {
-    return (m_driverManager.getSubFolders(m_context.currentUser(), m_context.currentProject(), addSiteRoot(foldername), false));
+    return (m_driverManager.getSubFolders(m_context, addSiteRoot(foldername), false));
 }
 
 /**
@@ -1823,7 +1817,7 @@ public List getSubFolders(String foldername) throws CmsException {
  * @throws CmsException if the user has not the rights to access or read the resource.
  */
 public List getSubFolders(String foldername, boolean includeDeleted) throws CmsException {
-    return (m_driverManager.getSubFolders(m_context.currentUser(), m_context.currentProject(), addSiteRoot(foldername), includeDeleted));
+    return (m_driverManager.getSubFolders(m_context, addSiteRoot(foldername), includeDeleted));
 }
 
 /**
@@ -1836,7 +1830,7 @@ public List getSubFolders(String foldername, boolean includeDeleted) throws CmsE
   * @throws CmsException if operation was not successful.
   */
 public String getTaskPar(int taskid, String parname) throws CmsException {
-    return (m_driverManager.getTaskPar(m_context.currentUser(), m_context.currentProject(), taskid, parname));
+    return (m_driverManager.getTaskPar(m_context, taskid, parname));
 }
 /**
  * Get the template task id fo a given taskname.
@@ -1858,7 +1852,7 @@ public int getTaskType(String taskname) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public Vector getUsers() throws CmsException {
-    return (m_driverManager.getUsers(m_context.currentUser(), m_context.currentProject()));
+    return (m_driverManager.getUsers(m_context));
 }
 /**
  * Returns all users of the given type in the Cms.
@@ -1870,7 +1864,7 @@ public Vector getUsers() throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public Vector getUsers(int type) throws CmsException {
-    return (m_driverManager.getUsers(m_context.currentUser(), m_context.currentProject(), type));
+    return (m_driverManager.getUsers(m_context, type));
 }
  /**
  * Returns all users from a given type that start with a specified string<P/>
@@ -1882,7 +1876,7 @@ public Vector getUsers(int type) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public Vector getUsers(int type, String namefilter) throws CmsException {
-    return m_driverManager.getUsers(m_context.currentUser(), m_context.currentProject(), type,namefilter);
+    return m_driverManager.getUsers(m_context, type, namefilter);
 }
 /**
  * Gets all users of a group.
@@ -1893,7 +1887,7 @@ public Vector getUsers(int type, String namefilter) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public Vector getUsersOfGroup(String groupname) throws CmsException {
-    return (m_driverManager.getUsersOfGroup(m_context.currentUser(), m_context.currentProject(), groupname));
+    return (m_driverManager.getUsersOfGroup(m_context, groupname));
 }
 
 /**
@@ -1916,8 +1910,7 @@ public Vector getUsersByLastname(String Lastname,
                                  int wasLoggedIn,
                                  int nMax) throws CmsException {
 
-    return m_driverManager.getUsersByLastname(m_context.currentUser(),
-                                   m_context.currentProject(),
+    return m_driverManager.getUsersByLastname(m_context,
                                    Lastname,
                                    UserType,
                                    UserStatus,
@@ -1936,7 +1929,7 @@ public Vector getUsersByLastname(String Lastname,
 public void importFolder(String importFile, String importPath) throws CmsException {
     // import the resources
     clearcache();
-    m_driverManager.importFolder(m_context.currentUser(), m_context.currentProject(), importFile, addSiteRoot(importPath), this);
+    m_driverManager.importFolder(this, m_context, importFile, addSiteRoot(importPath));
     clearcache();
 }
 
@@ -1989,7 +1982,7 @@ public void importResources(String importFile, String importPath, I_CmsReport re
     clearcache();
     
     // import the resources
-    m_driverManager.importResources(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this, report);
+    m_driverManager.importResources(this, m_context, importFile, importPath, report);
     
     clearcache();
 }
@@ -2037,7 +2030,7 @@ public void init(CmsDriverManager driverManager, I_CmsRequest req, I_CmsResponse
  * @throws CmsException if operation was not successful.
  */
 public boolean isAdmin() throws CmsException {
-    return m_driverManager.isAdmin(getRequestContext().currentUser(), getRequestContext().currentProject());
+    return m_driverManager.isAdmin(m_context);
 }
 
 /**
@@ -2047,7 +2040,7 @@ public boolean isAdmin() throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public boolean isManagerOfProject() throws CmsException {
-    return m_driverManager.isManagerOfProject(getRequestContext().currentUser(), getRequestContext().currentProject());
+    return m_driverManager.isManagerOfProject(m_context);
 }
 
 /**
@@ -2063,7 +2056,7 @@ public boolean isManagerOfProject() throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsUser lockedBy(CmsResource resource) throws CmsException {
-    return (m_driverManager.lockedBy(m_context.currentUser(), m_context.currentProject(), resource));
+    return (m_driverManager.lockedBy(m_context, resource));
 }
 /**
     * Returns the user, who has locked a given resource.
@@ -2078,7 +2071,7 @@ public CmsUser lockedBy(CmsResource resource) throws CmsException {
     * @throws CmsException if operation was not successful.
     */
 public CmsUser lockedBy(String resource) throws CmsException {
-    return (m_driverManager.lockedBy(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resource)));
+    return (m_driverManager.lockedBy(m_context, addSiteRoot(resource)));
 }
 /**
  * Locks the given resource.
@@ -2128,7 +2121,7 @@ public void lockResource(String resource, boolean force) throws CmsException {
  * It will also be thrown, if there is a existing lock and force was set to false.
  */
 protected void doLockResource(String resource, boolean force) throws CmsException {
-    m_driverManager.lockResource(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resource), force);
+    m_driverManager.lockResource(m_context, addSiteRoot(resource), force);
 }
 
 /**
@@ -2142,7 +2135,7 @@ protected void doLockResource(String resource, boolean force) throws CmsExceptio
  */
 public String loginUser(String username, String password) throws CmsException {
     // login the user
-    CmsUser newUser = m_driverManager.loginUser(m_context.currentUser(), m_context.currentProject(), username, password, m_context.getRemoteAddress());
+    CmsUser newUser = m_driverManager.loginUser(m_context, username, password, m_context.getRemoteAddress());
     // init the new user
     init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
 
@@ -2163,7 +2156,7 @@ public String loginUser(String username, String password) throws CmsException {
  */
 public String loginWebUser(String username, String password) throws CmsException {
     // login the user
-    CmsUser newUser = m_driverManager.loginWebUser(m_context.currentUser(), m_context.currentProject(), username, password, m_context.getRemoteAddress());
+    CmsUser newUser = m_driverManager.loginWebUser(m_context, username, password, m_context.getRemoteAddress());
     // init the new user
     init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
     // return the user-name
@@ -2195,7 +2188,7 @@ public void moveResource(String source, String destination) throws CmsException 
  * or if the file couldn't be moved.
  */
 protected void doMoveResource(String source, String destination) throws CmsException {
-    m_driverManager.moveResource(m_context.currentUser(), m_context.currentProject(), addSiteRoot(source), addSiteRoot(destination));
+    m_driverManager.moveResource(m_context, addSiteRoot(source), addSiteRoot(destination));
 }
 
 
@@ -2205,8 +2198,8 @@ protected void doMoveResource(String source, String destination) throws CmsExcep
 	 * @param id the id of the project to be published
 	 * @throws CmsException if operation was not successful
  */
-public void publishProject(int id) throws CmsException {
-    publishProject(id, new CmsShellReport());
+public void publishProject() throws CmsException {
+    publishProject(new CmsShellReport());
 }
 
     /**
@@ -2216,28 +2209,28 @@ public void publishProject(int id) throws CmsException {
      * @param report A report object to provide the loggin messages
      * @throws CmsException if operation was not successful
      */
-    public void publishProject(int publishProjectId, I_CmsReport report) throws CmsException {
+    public void publishProject(I_CmsReport report) throws CmsException {
         Vector newResources = null;
         Vector deletedResources = null;
         Vector changedResources = null;
         Vector changedModuleMasters = null;
         boolean success = false;
         CmsPublishedResources publishedResources = null;
-        CmsProject publishProject = null;
+        //CmsProject publishProject = null;
         
         clearcache();
         
         publishedResources = new CmsPublishedResources();
-        publishProject = readProject(publishProjectId);
+        //publishProject = readProject(publishProjectId);
         
         try {            
             // first we remember the new resources for the link management
-            newResources = readProjectView(publishProjectId, "new");
-            deletedResources = readProjectView(publishProjectId, "deleted");
-            changedResources = readProjectView(publishProjectId, "changed");
+            newResources = readProjectView(m_context.currentProject().getId(), "new");
+            deletedResources = readProjectView(m_context.currentProject().getId(), "deleted");
+            changedResources = readProjectView(m_context.currentProject().getId(), "changed");
             
             updateOnlineProjectLinks(deletedResources, changedResources, null, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
-            publishedResources = m_driverManager.publishProject(this, m_context.currentUser(), m_context.currentProject(), publishProject, report);
+            publishedResources = m_driverManager.publishProject(this, m_context, report);
             
             // update the online links table for the new resources (now they are there)
             updateOnlineProjectLinks(null, null, newResources, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
@@ -2292,7 +2285,7 @@ public void publishProject(int id) throws CmsException {
             }
             success = true;
         } catch (Exception e) {
-            String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + publishProjectId + " Time:" + new Date();
+            String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
             String stamp2 = "[" + this.getClass().getName() + ".publishProject()/1] User: " + m_context.currentUser().toString();
             if (DEBUG > 0) {
                 System.err.println("###################################");
@@ -2313,7 +2306,7 @@ public void publishProject(int id) throws CmsException {
             }
         } finally {
             if (changedResources == null || changedResources.size() < 1) {
-                String stamp1 = "[" + this.getClass().getName() + ".publishProject()/2] Project:" + publishProjectId + " Time:" + new Date();
+                String stamp1 = "[" + this.getClass().getName() + ".publishProject()/2] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
                 String stamp2 = "[" + this.getClass().getName() + ".publishProject()/2] User: " + m_context.currentUser().toString();
                 String stamp3 = "[" + this.getClass().getName() + ".publishProject()/2] Vector was null or empty";
                 if (DEBUG > 0) {
@@ -2335,7 +2328,7 @@ public void publishProject(int id) throws CmsException {
             }
             // set current project to online project if the published project was temporary
             // and the published project is still the current project
-            if (publishProject.getId() == m_context.currentProject().getId() && (publishProject.getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
+            if (m_context.currentProject().getId() == m_context.currentProject().getId() && (m_context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
                 m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
             }
         }
@@ -2343,7 +2336,7 @@ public void publishProject(int id) throws CmsException {
         CmsProject onlineProject = this.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         this.joinLinksToTargets(onlineProject, report);
 
-        this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_PROJECT, publishProject);
+        this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_PROJECT, m_context.currentProject());
     }
 
 /**
@@ -2385,7 +2378,7 @@ public int publishResource(String resourcename, boolean justPrepare, I_CmsReport
     }
     if(res.getState() == C_STATE_NEW){
         try{
-            m_driverManager.readFolder(m_context.currentUser(), readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), res.getParentId(), false);
+            m_driverManager.readFolder(m_context, res.getParentId(), false);
         } catch (CmsException ex){
             throw new CmsException("[CmsObject] cannot read parent folder in online project", CmsException.C_NOT_FOUND);
         }
@@ -2393,9 +2386,9 @@ public int publishResource(String resourcename, boolean justPrepare, I_CmsReport
     if(oldProjectId != C_PROJECT_ONLINE_ID){
         // check access to project
         if(isAdmin() || isManagerOfProject()){
-            int newProjectId = m_driverManager.createDirectPublishProject(m_context.currentUser(), m_context.currentProject(),
-                                              "Direct Publish","","Users",
-                                              "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();                                              
+            int newProjectId = m_driverManager.createDirectPublishProject(m_context, "Direct Publish",
+                                              "","Users","Projectmanager",
+                                              I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();                                              
             retValue = newProjectId;
             getRequestContext().setCurrentProject(newProjectId);
             I_CmsResourceType rt = getResourceType(res.getType());
@@ -2405,7 +2398,7 @@ public int publishResource(String resourcename, boolean justPrepare, I_CmsReport
             rt.changeLockedInProject(this, newProjectId, resourcename);
             if(!justPrepare){
                 // publish the temporary project
-                publishProject(newProjectId, report);
+                publishProject(report);
             }
             getRequestContext().setCurrentProject(oldProjectId);
         } else {
@@ -2427,7 +2420,7 @@ public int publishResource(String resourcename, boolean justPrepare, I_CmsReport
  * @throws CmsException if operation was not successful.
  */
 public CmsUser readAgent(CmsTask task) throws CmsException {
-    return (m_driverManager.readAgent(m_context.currentUser(), m_context.currentProject(), task));
+    return (m_driverManager.readAgent(m_context, task));
 }
 
 /**
@@ -2445,7 +2438,7 @@ public CmsUser readAgent(CmsTask task) throws CmsException {
  * @throws CmsException  if operation was not successful.
  */
 public List readAllBackupFileHeaders(String filename) throws CmsException {
-    return (m_driverManager.readAllBackupFileHeaders(m_context.currentUser(), m_context.currentProject(), addSiteRoot(filename)));
+    return (m_driverManager.readAllBackupFileHeaders(m_context, addSiteRoot(filename)));
 }
 
     /**
@@ -2471,7 +2464,7 @@ public List readAllBackupFileHeaders(String filename) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public Vector readAllPropertydefinitions(int resourceType) throws CmsException {
-    return (m_driverManager.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourceType));
+    return (m_driverManager.readAllPropertydefinitions(m_context, resourceType));
 }
 
 /**
@@ -2486,7 +2479,7 @@ public Vector readAllPropertydefinitions(int resourceType) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public Vector readAllPropertydefinitions(String resourcetype) throws CmsException {
-    return (m_driverManager.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype));
+    return (m_driverManager.readAllPropertydefinitions(m_context, resourcetype));
 }
 
 /****************     methods for link management            ****************************/
@@ -2573,7 +2566,7 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
  * @throws CmsException if operation was not successful.
  */
 public String readExportPath() throws CmsException {
-    return m_driverManager.readExportPath(m_context.currentUser(), m_context.currentProject());
+    return m_driverManager.readExportPath();
 }
 /**
  * Reads a exportrequest from the Cms.
@@ -2657,7 +2650,7 @@ public void writeExportLinkProcessedState(CmsExportLink link) throws CmsExceptio
  * or if the file couldn't be read.
  */
 public CmsFile readFile(String filename) throws CmsException {
-    return (m_driverManager.readFile(m_context.currentUser(), m_context.currentProject(), addSiteRoot(filename)));
+    return (m_driverManager.readFile(m_context, addSiteRoot(filename)));
 }
 /**
  * Reads a file from the Cms.
@@ -2671,7 +2664,7 @@ public CmsFile readFile(String filename) throws CmsException {
  * or if the file couldn't be read.
  */
 public CmsFile readFile(String filename, boolean includeDeleted) throws CmsException {
-    return (m_driverManager.readFile(m_context.currentUser(), m_context.currentProject(), addSiteRoot(filename), includeDeleted));
+    return (m_driverManager.readFile(m_context, addSiteRoot(filename), includeDeleted));
 }
 /**
  * Reads a file from the Cms.
@@ -2685,7 +2678,7 @@ public CmsFile readFile(String filename, boolean includeDeleted) throws CmsExcep
  * to read this resource, or if the file couldn't be read.
  */
 public CmsFile readFile(String folder, String filename) throws CmsException {
-    return (m_driverManager.readFile(m_context.currentUser(), m_context.currentProject(), addSiteRoot(folder + filename)));
+    return (m_driverManager.readFile(m_context, addSiteRoot(folder + filename)));
 }
 /**
  * Gets the known file extensions (=suffixes).
@@ -2696,7 +2689,7 @@ public CmsFile readFile(String folder, String filename) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public Hashtable readFileExtensions() throws CmsException {
-    return m_driverManager.readFileExtensions(null, null);
+    return m_driverManager.readFileExtensions();
 }
 /**
  * Reads a file header from the Cms.
@@ -2711,7 +2704,7 @@ public Hashtable readFileExtensions() throws CmsException {
  * to read the file headers, or if the file headers couldn't be read.
  */
 public CmsResource readFileHeader(String filename) throws CmsException {
-    return (m_driverManager.readFileHeader(m_context.currentUser(), m_context.currentProject(), addSiteRoot(filename)));
+    return (m_driverManager.readFileHeader(m_context, addSiteRoot(filename)));
 }
 
 /**
@@ -2729,7 +2722,7 @@ public CmsResource readFileHeader(String filename) throws CmsException {
  * to read the file headers, or if the file headers couldn't be read
  */
 public CmsResource readFileHeader(String filename, boolean includeDeleted) throws CmsException {
-    return (m_driverManager.readFileHeader(m_context.currentUser(), m_context.currentProject(), addSiteRoot(filename), includeDeleted));
+    return (m_driverManager.readFileHeader(m_context, addSiteRoot(filename), includeDeleted));
 }
     
 /**
@@ -2746,7 +2739,7 @@ public CmsResource readFileHeader(String filename, boolean includeDeleted) throw
  * to read the file headers, or if the file headers couldn't be read.
  */
 public CmsResource readFileHeader(String filename, int projectId) throws CmsException {
-    return (m_driverManager.readFileHeaderInProject(m_context.currentUser(), m_context.currentProject(), projectId, addSiteRoot(filename)));
+    return (m_driverManager.readFileHeaderInProject(m_context, projectId, addSiteRoot(filename)));
 }
 
 /**
@@ -2763,7 +2756,7 @@ public CmsResource readFileHeader(String filename, int projectId) throws CmsExce
  * to read the file header, or if the file header couldn't be read.
  */
 public CmsResource readFileHeader(String folder, String filename) throws CmsException {
-    return (m_driverManager.readFileHeader(m_context.currentUser(), m_context.currentProject(), addSiteRoot(folder + filename)));
+    return (m_driverManager.readFileHeader(m_context, addSiteRoot(folder + filename)));
 }
 
 /**
@@ -2780,7 +2773,7 @@ public CmsResource readFileHeader(String folder, String filename) throws CmsExce
  * to read the file headers, or if the file headers couldn't be read.
  */
 public CmsResource readBackupFileHeader(String filename, int versionId) throws CmsException {
-    return (m_driverManager.readBackupFileHeader(m_context.currentUser(), m_context.currentProject(), versionId, addSiteRoot(filename)));
+    return (m_driverManager.readBackupFileHeader(m_context, versionId, addSiteRoot(filename)));
 }
 
 /**
@@ -2797,7 +2790,7 @@ public CmsResource readBackupFileHeader(String filename, int versionId) throws C
  * to read the file, or if the file couldn't be read.
  */
 public CmsBackupResource readBackupFile(String filename, int versionId) throws CmsException {
-    return (m_driverManager.readBackupFile(m_context.currentUser(), m_context.currentProject(), versionId, addSiteRoot(filename)));
+    return (m_driverManager.readBackupFile(m_context, versionId, addSiteRoot(filename)));
 }
 /**
  * Reads all file headers of a project from the Cms.
@@ -2810,7 +2803,7 @@ public CmsBackupResource readBackupFile(String filename, int versionId) throws C
  * to read the file headers, or if the file headers couldn't be read.
  */
 public Vector readFileHeaders(int projectId) throws CmsException {
-    return (m_driverManager.readFileHeaders(m_context.currentUser(), m_context.currentProject(), projectId));
+    return (m_driverManager.readFileHeaders(m_context, projectId));
 }
 
 /**
@@ -2825,7 +2818,7 @@ public Vector readFileHeaders(int projectId) throws CmsException {
  * to read this folder, or if the folder couldn't be read
  */
 public CmsFolder readFolder(String folderName, boolean includeDeleted) throws CmsException {
-    return (m_driverManager.readFolder(m_context.currentUser(), m_context.currentProject(), addSiteRoot(folderName), includeDeleted));
+    return (m_driverManager.readFolder(m_context, addSiteRoot(folderName), includeDeleted));
 }
 
 /**
@@ -2840,7 +2833,7 @@ public CmsFolder readFolder(String folderName, boolean includeDeleted) throws Cm
  * to read this folder, or if the folder couldn't be read
  */
 public CmsFolder readFolder(String folderName) throws CmsException {
-    return (m_driverManager.readFolder(m_context.currentUser(), m_context.currentProject(), addSiteRoot(folderName)));
+    return (m_driverManager.readFolder(m_context, addSiteRoot(folderName)));
 }
 
 /**
@@ -2855,7 +2848,7 @@ public CmsFolder readFolder(String folderName) throws CmsException {
  * to read this folder, or if the folder couldn't be read
  */
 public CmsFolder readFolder(CmsUUID folderId, boolean includeDeleted) throws CmsException {
-    return (m_driverManager.readFolder(m_context.currentUser(), m_context.currentProject(), folderId, includeDeleted));
+    return (m_driverManager.readFolder(m_context, folderId, includeDeleted));
 }
 
 /**
@@ -2869,7 +2862,7 @@ public CmsFolder readFolder(CmsUUID folderId, boolean includeDeleted) throws Cms
   * @throws CmsException if operation was not successful.
   */
 public Vector readGivenTasks(int projectId, String ownerName, int taskType, String orderBy, String sort) throws CmsException {
-    return (m_driverManager.readGivenTasks(m_context.currentUser(), m_context.currentProject(), projectId, ownerName, taskType, orderBy, sort));
+    return (m_driverManager.readGivenTasks(m_context, projectId, ownerName, taskType, orderBy, sort));
 }
 /**
  * Reads the group of a project from the OpenCms.
@@ -2879,7 +2872,7 @@ public Vector readGivenTasks(int projectId, String ownerName, int taskType, Stri
  * @throws CmsException if operation was not successful.
  */
 public CmsGroup readGroup(CmsProject project) throws CmsException {
-    return (m_driverManager.readGroup(m_context.currentUser(), m_context.currentProject(), project));
+    return (m_driverManager.readGroup(m_context, project));
 }
 /**
  * Reads the group of a resource from the Cms.
@@ -2889,7 +2882,7 @@ public CmsGroup readGroup(CmsProject project) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsGroup readGroup(CmsResource resource) throws CmsException {
-    return (m_driverManager.readGroup(m_context.currentUser(), m_context.currentProject(), resource));
+    return (m_driverManager.readGroup(m_context, resource));
 }
 /**
  * Reads the group (role) of a task from the Cms.
@@ -2900,7 +2893,7 @@ public CmsGroup readGroup(CmsResource resource) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsGroup readGroup(CmsTask task) throws CmsException {
-    return (m_driverManager.readGroup(m_context.currentUser(), m_context.currentProject(), task));
+    return (m_driverManager.readGroup(m_context, task));
 }
 /**
  * Reads a group of the Cms.
@@ -2911,7 +2904,7 @@ public CmsGroup readGroup(CmsTask task) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsGroup readGroup(String groupName) throws CmsException {
-    return (m_driverManager.readGroup(m_context.currentUser(), groupName));
+    return (m_driverManager.readGroup(m_context, groupName));
 }
 /**
  * Reads a group of the Cms.
@@ -2922,7 +2915,7 @@ public CmsGroup readGroup(String groupName) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
-    return (m_driverManager.readGroup(m_context.currentUser(), m_context.currentProject(), groupId));
+    return (m_driverManager.readGroup(groupId));
 }
 /**
  * Reads the managergroup of a project from the Cms.
@@ -2932,7 +2925,7 @@ public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsGroup readManagerGroup(CmsProject project) throws CmsException {
-    return (m_driverManager.readManagerGroup(m_context.currentUser(), m_context.currentProject(), project));
+    return (m_driverManager.readManagerGroup(project));
 }
 /**
  * Gets all Mime-Types known by the system.
@@ -2942,7 +2935,7 @@ public CmsGroup readManagerGroup(CmsProject project) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public Hashtable readMimeTypes() throws CmsException {
-    return m_driverManager.readMimeTypes(null, null);
+    return m_driverManager.readMimeTypes();
 }
 /**
  * Reads the original agent of a task from the Cms.
@@ -2953,7 +2946,7 @@ public Hashtable readMimeTypes() throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
-    return (m_driverManager.readOriginalAgent(m_context.currentUser(), m_context.currentProject(), task));
+    return (m_driverManager.readOriginalAgent(m_context, task));
 }
 /**
  * Reads the owner of a project from the Cms.
@@ -2963,7 +2956,7 @@ public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsUser readOwner(CmsProject project) throws CmsException {
-    return (m_driverManager.readOwner(m_context.currentUser(), m_context.currentProject(), project));
+    return (m_driverManager.readOwner(m_context, project));
 }
 /**
  * Reads the owner of a resource from the Cms.
@@ -2973,7 +2966,7 @@ public CmsUser readOwner(CmsProject project) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsUser readOwner(CmsResource resource) throws CmsException {
-    return (m_driverManager.readOwner(m_context.currentUser(), m_context.currentProject(), resource));
+    return (m_driverManager.readOwner(m_context, resource));
 }
 /**
  * Reads the owner (initiator) of a task from the Cms.
@@ -2984,7 +2977,7 @@ public CmsUser readOwner(CmsResource resource) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsUser readOwner(CmsTask task) throws CmsException {
-    return (m_driverManager.readOwner(m_context.currentUser(), m_context.currentProject(), task));
+    return (m_driverManager.readOwner(m_context, task));
 }
 /**
  * Reads the owner of a tasklog from the Cms.
@@ -2994,7 +2987,7 @@ public CmsUser readOwner(CmsTask task) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsUser readOwner(CmsTaskLog log) throws CmsException {
-    return (m_driverManager.readOwner(m_context.currentUser(), m_context.currentProject(), log));
+    return (m_driverManager.readOwner(m_context, log));
 }
 /**
  * Reads a project from the Cms.
@@ -3004,7 +2997,7 @@ public CmsUser readOwner(CmsTaskLog log) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsProject readProject(int id) throws CmsException {
-    return (m_driverManager.readProject(m_context.currentUser(), m_context.currentProject(), id));
+    return (m_driverManager.readProject(m_context, id));
 }
 /**
  * Reads a project from the Cms.
@@ -3024,7 +3017,7 @@ public CmsProject readProject(CmsResource res) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsProject readProject(CmsTask task) throws CmsException {
-    return (m_driverManager.readProject(m_context.currentUser(), m_context.currentProject(), task));
+    return (m_driverManager.readProject(m_context, task));
 }
 
 /**
@@ -3037,7 +3030,7 @@ public CmsProject readProject(CmsTask task) throws CmsException {
  *
  */
 public Vector readProjectView(int projectId, String filter) throws CmsException {
-    return m_driverManager.readProjectView(m_context.currentUser(), m_context.currentProject(),projectId, filter);
+    return m_driverManager.readProjectView(m_context, projectId,filter);
 }
 
 /**
@@ -3071,7 +3064,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
      * @throws CmsException in case there where problems reading the property
      */
     public String readProperty(String resource, String property) throws CmsException {
-        return m_driverManager.readProperty(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
+        return m_driverManager.readProperty(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
     }
 
     /**
@@ -3086,7 +3079,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
      * @throws CmsException in case there where problems reading the property
      */
     public String readProperty(String resource, String property, boolean search) throws CmsException {
-        return m_driverManager.readProperty(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
+        return m_driverManager.readProperty(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
     }
 
     /**
@@ -3105,7 +3098,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
      * @throws CmsException in case there where problems reading the property
      */
     public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
-        return m_driverManager.readProperty(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search, propertyDefault);
+        return m_driverManager.readProperty(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search, propertyDefault);
     }
     
     /**
@@ -3116,7 +3109,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
      * @throws CmsException in case there where problems reading the properties
      */    
     public Map readProperties(String resource) throws CmsException {
-        return m_driverManager.readProperties(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), false);    
+        return m_driverManager.readProperties(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), false);    
     }    
         
     /**
@@ -3129,7 +3122,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
      * @throws CmsException in case there where problems reading the properties
      */           
     public Map readProperties(String resource, boolean search) throws CmsException {
-        return m_driverManager.readProperties(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), search);    
+        return m_driverManager.readProperties(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), search);    
     } 
                     
     /**
@@ -3159,7 +3152,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public CmsPropertydefinition readPropertydefinition(String name, String resourcetype) throws CmsException {
-    return (m_driverManager.readPropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype));
+    return (m_driverManager.readPropertydefinition(m_context, name, resourcetype));
 }
 
 /**
@@ -3193,7 +3186,7 @@ public Vector readTaskLogs(int taskid) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public Vector readTasksForProject(int projectId, int tasktype, String orderBy, String sort) throws CmsException {
-    return (m_driverManager.readTasksForProject(m_context.currentUser(), m_context.currentProject(), projectId, tasktype, orderBy, sort));
+    return (m_driverManager.readTasksForProject(projectId, tasktype, orderBy, sort));
 }
 /**
  * Reads all tasks for a role in a project.
@@ -3206,7 +3199,7 @@ public Vector readTasksForProject(int projectId, int tasktype, String orderBy, S
  * @throws CmsException if operation was not successful.
  */
 public Vector readTasksForRole(int projectId, String roleName, int tasktype, String orderBy, String sort) throws CmsException {
-    return (m_driverManager.readTasksForRole(m_context.currentUser(), m_context.currentProject(), projectId, roleName, tasktype, orderBy, sort));
+    return (m_driverManager.readTasksForRole(m_context, projectId, roleName, tasktype, orderBy, sort));
 }
 /**
  * Reads all tasks for a user in a project.
@@ -3219,7 +3212,7 @@ public Vector readTasksForRole(int projectId, String roleName, int tasktype, Str
  * @throws CmsException if operation was not successful.
  */
 public Vector readTasksForUser(int projectId, String userName, int tasktype, String orderBy, String sort) throws CmsException {
-    return (m_driverManager.readTasksForUser(m_context.currentUser(), m_context.currentProject(), projectId, userName, tasktype, orderBy, sort));
+    return (m_driverManager.readTasksForUser(m_context, projectId, userName, tasktype, orderBy, sort));
 }
 /**
  * Returns a user in the Cms.
@@ -3230,7 +3223,7 @@ public Vector readTasksForUser(int projectId, String userName, int tasktype, Str
  * @throws CmsException if operation was not successful
  */
 public CmsUser readUser(CmsUUID userId) throws CmsException {
-    return (m_driverManager.readUser(m_context.currentUser(), m_context.currentProject(), userId));
+    return (m_driverManager.readUser(m_context, userId));
 }
 /**
  * Returns a user in the Cms.
@@ -3241,7 +3234,7 @@ public CmsUser readUser(CmsUUID userId) throws CmsException {
  * @throws CmsException if operation was not successful
  */
 public CmsUser readUser(String username) throws CmsException {
-    return m_driverManager.readUser(m_context.currentUser(), m_context.currentProject(), username);
+    return m_driverManager.readUser(username);
 }
 /**
  * Returns a user in the Cms.
@@ -3253,7 +3246,7 @@ public CmsUser readUser(String username) throws CmsException {
  * @throws CmsException if operation was not successful
  */
 public CmsUser readUser(String username, int type) throws CmsException {
-    return (m_driverManager.readUser(m_context.currentUser(), m_context.currentProject(), username, type));
+    return (m_driverManager.readUser(username, type));
 }
 /**
  * Returns a user in the Cms, if the password is correct.
@@ -3265,7 +3258,7 @@ public CmsUser readUser(String username, int type) throws CmsException {
  * @throws CmsException if operation was not successful
  */
 public CmsUser readUser(String username, String password) throws CmsException {
-    return (m_driverManager.readUser(m_context.currentUser(), m_context.currentProject(), username, password));
+    return (m_driverManager.readUser(username, password));
 }
 
 /**
@@ -3283,7 +3276,7 @@ public CmsUser readUser(String username, String password) throws CmsException {
 */
 public CmsUser readWebUser(String username)
         throws CmsException{
-    return (m_driverManager.readWebUser(m_context.currentUser(), m_context.currentProject(), username));
+    return (m_driverManager.readWebUser(m_context, username));
 }
 
 /**
@@ -3302,7 +3295,7 @@ public CmsUser readWebUser(String username)
  */
 public CmsUser readWebUser(String username, String password)
         throws CmsException{
-    return (m_driverManager.readWebUser(m_context.currentUser(), m_context.currentProject(), username, password));
+    return (m_driverManager.readWebUser(username, password));
 }
 /**
  * Reactivates a task from the Cms.
@@ -3312,7 +3305,7 @@ public CmsUser readWebUser(String username, String password)
  * @throws CmsException if operation was not successful.
  */
 public void reaktivateTask(int taskId) throws CmsException {
-    m_driverManager.reaktivateTask(m_context.currentUser(), m_context.currentProject(), taskId);
+    m_driverManager.reaktivateTask(m_context, taskId);
 }
 /**
  * Sets a new password if the user knows his recovery-password.
@@ -3324,7 +3317,7 @@ public void reaktivateTask(int taskId) throws CmsException {
  * @throws CmsException if operation was not successfull.
  */
 public void recoverPassword(String username, String recoveryPassword, String newPassword) throws CmsException {
-    m_driverManager.recoverPassword(this, m_context.currentUser(), m_context.currentProject(), username, recoveryPassword, newPassword);
+    m_driverManager.recoverPassword(this, m_context, username, recoveryPassword, newPassword);
 }
 /**
  * Removes a user from a group.
@@ -3338,7 +3331,7 @@ public void recoverPassword(String username, String recoveryPassword, String new
  * @throws CmsException if operation was not successful.
  */
 public void removeUserFromGroup(String username, String groupname) throws CmsException {
-    m_driverManager.removeUserFromGroup(m_context.currentUser(), m_context.currentProject(), username, groupname);
+    m_driverManager.removeUserFromGroup(m_context, username, groupname);
 }
 /**
  * Renames the file to the new name.
@@ -3380,7 +3373,7 @@ public void renameResource(String oldname, String newname) throws CmsException {
  * to rename the file, or if the file couldn't be renamed.
  */
 protected void doRenameResource(String oldname, String newname) throws CmsException {
-    m_driverManager.renameResource(m_context.currentUser(), m_context.currentProject(), addSiteRoot(oldname), newname);
+    m_driverManager.renameResource(m_context, addSiteRoot(oldname), newname);
 }
 
     /**
@@ -3406,7 +3399,7 @@ protected void doRenameResource(String oldname, String newname) throws CmsExcept
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     protected void doRestoreResource(int versionId, String filename) throws CmsException{
-        m_driverManager.restoreResource(m_context.currentUser(), m_context.currentProject(), versionId, addSiteRoot(filename));
+        m_driverManager.restoreResource(m_context, versionId, addSiteRoot(filename));
     }
 
 /**
@@ -3434,7 +3427,7 @@ public void setLauncherManager(com.opencms.launcher.CmsLauncherManager launcherM
  * @throws CmsException if operationwas not successful.
  */
 public void setName(int taskId, String name) throws CmsException {
-    m_driverManager.setName(m_context.currentUser(), m_context.currentProject(), taskId, name);
+    m_driverManager.setName(m_context, taskId, name);
 }
 /**
  * Sets a new parent-group for an already existing group in the Cms.
@@ -3445,7 +3438,7 @@ public void setName(int taskId, String name) throws CmsException {
  * @throws CmsException  if operation was not successfull.
  */
 public void setParentGroup(String groupName, String parentGroupName) throws CmsException {
-    m_driverManager.setParentGroup(m_context.currentUser(), m_context.currentProject(), groupName, parentGroupName);
+    m_driverManager.setParentGroup(m_context, groupName, parentGroupName);
 }
 /**
  * Sets the password for a user.
@@ -3456,7 +3449,7 @@ public void setParentGroup(String groupName, String parentGroupName) throws CmsE
  * @throws CmsException if operation was not successful.
  */
 public void setPassword(String username, String newPassword) throws CmsException {
-    m_driverManager.setPassword(this, m_context.currentUser(), m_context.currentProject(), username, newPassword);
+    m_driverManager.setPassword(this, m_context, username, newPassword);
 }
 /**
  * Sets the password for a user.
@@ -3468,7 +3461,7 @@ public void setPassword(String username, String newPassword) throws CmsException
  * @throws CmsException if operation was not successful.
  */
 public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
-    m_driverManager.setPassword(this, m_context.currentUser(), m_context.currentProject(), username, oldPassword, newPassword);
+    m_driverManager.setPassword(this, m_context, username, oldPassword, newPassword);
 }
 /**
  * Sets the priority of a task.
@@ -3479,7 +3472,7 @@ public void setPassword(String username, String oldPassword, String newPassword)
  * @throws CmsException if operation was not successful.
  */
 public void setPriority(int taskId, int priority) throws CmsException {
-    m_driverManager.setPriority(m_context.currentUser(), m_context.currentProject(), taskId, priority);
+    m_driverManager.setPriority(m_context, taskId, priority);
 }
 /**
  * Sets the recovery password for a user.
@@ -3505,7 +3498,7 @@ public void setRecoveryPassword(String username, String oldPassword, String newP
  * @throws CmsException if operation was not successful.
  */
 public void setTaskPar(int taskid, String parname, String parvalue) throws CmsException {
-    m_driverManager.setTaskPar(m_context.currentUser(), m_context.currentProject(), taskid, parname, parvalue);
+    m_driverManager.setTaskPar(m_context, taskid, parname, parvalue);
 }
 /**
  * Sets the timeout of a task.
@@ -3516,7 +3509,7 @@ public void setTaskPar(int taskid, String parname, String parvalue) throws CmsEx
  * @throws CmsException if operation was not successful.
  */
 public void setTimeout(int taskId, long timeout) throws CmsException {
-    m_driverManager.setTimeout(m_context.currentUser(), m_context.currentProject(), taskId, timeout);
+    m_driverManager.setTimeout(m_context, taskId, timeout);
 }
 /**
  * Synchronize cms-resources on virtual filesystem with the server filesystem.
@@ -3538,7 +3531,7 @@ public void syncFolder(String resourceName) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public void unlockProject(int id) throws CmsException {
-    m_driverManager.unlockProject(m_context.currentUser(), m_context.currentProject(), id);
+    m_driverManager.unlockProject(m_context, id);
 }
 
 /**
@@ -3558,7 +3551,7 @@ public void unlockResource(String resource, boolean forceRecursive) throws CmsEx
 }
 
 protected void doUnlockResource(CmsResource resource) throws CmsException {
-    m_driverManager.unlockResource(m_context.currentUser(), m_context.currentProject(), resource);
+    m_driverManager.unlockResource(m_context, resource);
 }
 
 /**
@@ -3571,7 +3564,7 @@ protected void doUnlockResource(CmsResource resource) throws CmsException {
  */
 public void undoChanges(String filename) throws CmsException {
     //read the file header including deleted
-    CmsResource res = m_driverManager.readFileHeader(m_context.currentUser(), m_context.currentProject(), addSiteRoot(filename), true);
+    CmsResource res = m_driverManager.readFileHeader(m_context, addSiteRoot(filename), true);
     I_CmsResourceType rt = getResourceType(res.getType());
     rt.undoChanges(this, filename);
 }
@@ -3586,7 +3579,7 @@ public void undoChanges(String filename) throws CmsException {
  * to write this resource.
  */
 protected void doUndoChanges(String resource) throws CmsException {
-    m_driverManager.undoChanges(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resource));
+    m_driverManager.undoChanges(m_context, addSiteRoot(resource));
 }
 
 /**
@@ -3600,7 +3593,7 @@ protected void doUndoChanges(String resource) throws CmsException {
  * to unlock this resource.
  */
 protected void doUnlockResource(String resource) throws CmsException {
-    m_driverManager.unlockResource(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resource));
+    m_driverManager.unlockResource(m_context, addSiteRoot(resource));
 }
 
 /**
@@ -3613,7 +3606,7 @@ protected void doUnlockResource(String resource) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public boolean userInGroup(String username, String groupname) throws CmsException {
-    return (m_driverManager.userInGroup(m_context.currentUser(), m_context.currentProject(), username, groupname));
+    return (m_driverManager.userInGroup(m_context, username, groupname));
 }
 /**
  * Writes the export-path for the system.
@@ -3625,7 +3618,7 @@ public boolean userInGroup(String username, String groupname) throws CmsExceptio
  * @throws CmsException if operation ws not successful.
  */
 public void writeExportPath(String path) throws CmsException {
-    m_driverManager.writeExportPath(m_context.currentUser(), m_context.currentProject(), path);
+    m_driverManager.writeExportPath(m_context, path);
 }
 /**
  * Writes a file to the Cms.
@@ -3636,7 +3629,7 @@ public void writeExportPath(String path) throws CmsException {
  * if the user has not the rights write the file.
  */
 public void writeFile(CmsFile file) throws CmsException {
-    m_driverManager.writeFile(m_context.currentUser(), m_context.currentProject(), file);
+    m_driverManager.writeFile(m_context, file);
 }
 /**
  * Writes the file extensions.
@@ -3648,7 +3641,7 @@ public void writeFile(CmsFile file) throws CmsException {
  */
 
 public void writeFileExtensions(Hashtable extensions) throws CmsException {
-    m_driverManager.writeFileExtensions(m_context.currentUser(), m_context.currentProject(), extensions);
+    m_driverManager.writeFileExtensions(m_context, extensions);
 }
 /**
  * Writes a file-header to the Cms.
@@ -3659,7 +3652,7 @@ public void writeFileExtensions(Hashtable extensions) throws CmsException {
  * if the user has not the rights to write the file header..
  */
 public void writeFileHeader(CmsFile file) throws CmsException {
-    m_driverManager.writeFileHeader(m_context.currentUser(), m_context.currentProject(), file);
+    m_driverManager.writeFileHeader(m_context, file);
 }
     
 /**
@@ -3669,7 +3662,7 @@ public void writeFileHeader(CmsFile file) throws CmsException {
  * @throws CmsException  if operation was not successful.
  */
 public void writeGroup(CmsGroup group) throws CmsException {
-    m_driverManager.writeGroup(m_context.currentUser(), m_context.currentProject(), group);
+    m_driverManager.writeGroup(m_context, group);
 }
 /**
  * Writes a couple of Properties for a file or folder.
@@ -3680,7 +3673,7 @@ public void writeGroup(CmsGroup group) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public void writeProperties(String name, Map properties) throws CmsException {
-    m_driverManager.writeProperties(m_context.currentUser(), m_context.currentProject(), addSiteRoot(name), properties);
+    m_driverManager.writeProperties(m_context, addSiteRoot(name), properties);
 }
 /**
  * Writes a property for a file or folder.
@@ -3692,7 +3685,7 @@ public void writeProperties(String name, Map properties) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public void writeProperty(String name, String property, String value) throws CmsException {
-    m_driverManager.writeProperty(m_context.currentUser(), m_context.currentProject(), addSiteRoot(name), property, value);
+    m_driverManager.writeProperty(m_context, addSiteRoot(name), property, value);
 }
 /**
  * Writes the property-definition for the resource type.
@@ -3716,7 +3709,7 @@ public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition defin
  * @throws CmsException if operation was not successful.
  */
 public void writeTaskLog(int taskid, String comment) throws CmsException {
-    m_driverManager.writeTaskLog(m_context.currentUser(), m_context.currentProject(), taskid, comment);
+    m_driverManager.writeTaskLog(m_context, taskid, comment);
 }
 /**
  * Writes a new user tasklog for a task.
@@ -3728,7 +3721,7 @@ public void writeTaskLog(int taskid, String comment) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public void writeTaskLog(int taskid, String comment, int taskType) throws CmsException {
-    m_driverManager.writeTaskLog(m_context.currentUser(), m_context.currentProject(), taskid, comment, taskType);
+    m_driverManager.writeTaskLog(m_context, taskid, comment, taskType);
 }
 /**
  * Updates the user information.
@@ -3741,7 +3734,7 @@ public void writeTaskLog(int taskid, String comment, int taskType) throws CmsExc
  * @throws CmsException if operation was not successful.
  */
 public void writeUser(CmsUser user) throws CmsException {
-    m_driverManager.writeUser(m_context.currentUser(), m_context.currentProject(), user);
+    m_driverManager.writeUser(m_context, user);
 }
 /**
  * Updates the user information of a web user.
@@ -3753,7 +3746,7 @@ public void writeUser(CmsUser user) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public void writeWebUser(CmsUser user) throws CmsException {
-    m_driverManager.writeWebUser(m_context.currentUser(), m_context.currentProject(), user);
+    m_driverManager.writeWebUser(m_context, user);
 }
 
 /**
@@ -3795,7 +3788,7 @@ public Vector getLoggedInUsers() throws CmsException {
 	 * @throws CmsException if something goes wrong
  */
 public void changeLockedInProject(int projectId, String resourcename) throws CmsException{
-    CmsResource res = m_driverManager.readFileHeader(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resourcename), true);
+    CmsResource res = m_driverManager.readFileHeader(m_context, addSiteRoot(resourcename), true);
     I_CmsResourceType rt = getResourceType(res.getType());
     rt.changeLockedInProject(this, projectId, resourcename);
 }
@@ -3809,7 +3802,7 @@ public void changeLockedInProject(int projectId, String resourcename) throws Cms
 	 * @throws CmsException if something goes wrong
  */
 protected void doChangeLockedInProject(int projectId, String resourcename) throws CmsException{
-    m_driverManager.changeLockedInProject(projectId, addSiteRoot(resourcename), m_context.currentUser());
+    m_driverManager.changeLockedInProject(m_context, projectId, addSiteRoot(resourcename));
 }
 
     /**
@@ -3879,7 +3872,7 @@ public int getBackupVersionId(){
      */
     public void backupProject(int projectId, int versionId, long publishDate) throws CmsException {
         CmsProject backupProject = m_driverManager.readProject(projectId);
-        m_driverManager.backupProject(backupProject, versionId, publishDate, getRequestContext().currentUser());
+        m_driverManager.backupProject(m_context, backupProject, versionId, publishDate, getRequestContext().currentUser());
     }
 
     /**
@@ -3892,7 +3885,7 @@ public int getBackupVersionId(){
      */
     public String readCronTable()
         throws CmsException {
-        return m_driverManager.readCronTable(m_context.currentUser(), m_context.currentProject());
+        return m_driverManager.readCronTable();
     }
 
     /**
@@ -3908,7 +3901,7 @@ public int getBackupVersionId(){
      */
     public void writeCronTable(String crontable)
         throws CmsException {
-        m_driverManager.writeCronTable(m_context.currentUser(), m_context.currentProject(), crontable);
+        m_driverManager.writeCronTable(m_context, crontable);
     }
 
 
@@ -3940,7 +3933,7 @@ public int getBackupVersionId(){
      * @param userType The new type of the user
      */
     public void changeUserType(CmsUUID userId, int userType) throws CmsException{
-        m_driverManager.changeUserType(m_context.currentUser(), m_context.currentProject(), userId, userType);
+        m_driverManager.changeUserType(m_context, userId, userType);
     }
 
     /**
@@ -3950,7 +3943,7 @@ public int getBackupVersionId(){
      * @param userType The new type of the user
      */
     public void changeUserType(String username, int userType) throws CmsException{
-        m_driverManager.changeUserType(m_context.currentUser(), m_context.currentProject(), username, userType);
+        m_driverManager.changeUserType(m_context, username, userType);
     }
     
     /**
@@ -3980,7 +3973,7 @@ public int getBackupVersionId(){
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public Vector readResourcesLikeName(String resourcename) throws CmsException {
-        return m_driverManager.readResourcesLikeName(m_context.currentUser(), m_context.currentProject(), resourcename);
+        return m_driverManager.readResourcesLikeName(m_context, resourcename);
     }
 
     /**
@@ -3994,7 +3987,7 @@ public int getBackupVersionId(){
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readFilesByType(int projectId, int resourcetype) throws CmsException {
-        return m_driverManager.readFilesByType(m_context.currentUser(), m_context.currentProject(), projectId, resourcetype);
+        return m_driverManager.readFilesByType(m_context, projectId, resourcetype);
     }
 
     /**
@@ -4010,7 +4003,7 @@ public int getBackupVersionId(){
      * @return the linkchecktable.
      */
     public void writeLinkCheckTable(Hashtable linkchecktable) throws CmsException {
-        m_driverManager.writeLinkCheckTable(m_context.currentUser(), m_context.currentProject(), linkchecktable);
+        m_driverManager.writeLinkCheckTable(m_context, linkchecktable);
     }
 
     /**
@@ -4025,7 +4018,7 @@ public int getBackupVersionId(){
      * @return the linkchecktable.
      */
     public Hashtable readLinkCheckTable() throws CmsException {
-        return m_driverManager.readLinkCheckTable(m_context.currentUser(), m_context.currentProject());
+        return m_driverManager.readLinkCheckTable();
     }
     
     /**
@@ -4035,7 +4028,7 @@ public int getBackupVersionId(){
      * @return int The oldest remaining version
      */
     public int deleteBackups(int weeks) throws CmsException{
-       return m_driverManager.deleteBackups(this, m_context.currentUser(), m_context.currentProject(), weeks);
+       return m_driverManager.deleteBackups(this, m_context, weeks);
     }
     
     /**
@@ -4055,7 +4048,7 @@ public int getBackupVersionId(){
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getVisibleResourcesWithProperty(String propertyDefinition, String propertyValue, int resourceType) throws CmsException{
-        return m_driverManager.getVisibleResourcesWithProperty(m_context.currentUser(), m_context.currentProject(), propertyDefinition, propertyValue, resourceType);
+        return m_driverManager.getVisibleResourcesWithProperty(m_context, propertyDefinition, propertyValue, resourceType);
     }
     
     /**
@@ -4078,7 +4071,7 @@ public int getBackupVersionId(){
      * @param timestamp timestamp the new timestamp of the changed resource
      */
     protected void doTouch( String resourceName, long timestamp ) throws CmsException {
-        m_driverManager.touch( m_context.currentUser(), m_context.currentProject(), addSiteRoot(resourceName), timestamp );
+        m_driverManager.touch( m_context, addSiteRoot(resourceName), timestamp );
     }    
     
     /**
@@ -4234,7 +4227,7 @@ public int getBackupVersionId(){
 	 * @return
 	 */
 	public I_CmsPrincipal lookupPrincipal (CmsUUID principalId) throws CmsException {
-    	return m_driverManager.lookupPrincipal(m_context.currentUser(), m_context.currentProject(), principalId);
+    	return m_driverManager.lookupPrincipal(principalId);
     }
     
     /**
@@ -4245,7 +4238,7 @@ public int getBackupVersionId(){
 	 * @throws CmsException	if something goes wrong
 	 */
 	public I_CmsPrincipal lookupPrincipal (String principalName) throws CmsException {
-    	return m_driverManager.lookupPrincipal(m_context.currentUser(), m_context.currentProject(), principalName);
+    	return m_driverManager.lookupPrincipal(principalName);
     }
     
     /**
@@ -4269,7 +4262,7 @@ public int getBackupVersionId(){
 	 */	
 	public CmsAccessControlList getAccessControlList(String resourceName, boolean inheritedOnly) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
-		return m_driverManager.getAccessControlList(m_context.currentUser(), m_context.currentProject(), res, inheritedOnly); 
+		return m_driverManager.getAccessControlList(m_context, res, inheritedOnly); 
     }
     
 	/**
@@ -4293,7 +4286,7 @@ public int getBackupVersionId(){
 	 */
 	public Vector getAccessControlEntries(String resourceName, boolean getInherited) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
-		return m_driverManager.getAccessControlEntries(m_context.currentUser(), m_context.currentProject(), res, getInherited);
+		return m_driverManager.getAccessControlEntries(m_context, res, getInherited);
 	}
 	
 	/**
@@ -4322,7 +4315,7 @@ public int getBackupVersionId(){
 		CmsResource resource = readFileHeader(resourceName, true);
 		CmsUser user = m_context.currentUser();
 		
-		return m_driverManager.getPermissions(m_context.currentUser(), m_context.currentProject(), resource,user);		
+		return m_driverManager.getPermissions(m_context, resource, user);		
 	}
 	
 	/**
@@ -4335,7 +4328,7 @@ public int getBackupVersionId(){
 	 */
 	public boolean hasPermissions(String resourceName, CmsPermissionSet requiredPermissions) throws CmsException {
 		CmsResource resource = readFileHeader(resourceName);
-		return m_driverManager.hasPermissions(m_context.currentUser(), m_context.currentProject(), resource, requiredPermissions, false);
+		return m_driverManager.hasPermissions(m_context, resource, requiredPermissions, false);
 	}
 		
 	/**
@@ -4347,7 +4340,7 @@ public int getBackupVersionId(){
 	 * @throws CmsException			if something goes wrong
 	 */
 	public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
-		return m_driverManager.hasPermissions(m_context.currentUser(), m_context.currentProject(), resource, requiredPermissions, false);
+		return m_driverManager.hasPermissions(m_context, resource, requiredPermissions, false);
 	}
 		
 	/**
@@ -4360,7 +4353,7 @@ public int getBackupVersionId(){
 	 * @throws CmsException			if something goes wrong
 	 */
 	public boolean hasPermissions(CmsProject project, CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
-		return m_driverManager.hasPermissions(m_context.currentUser(), project, resource, requiredPermissions, false);
+		return m_driverManager.hasPermissions(m_context, resource, requiredPermissions, false);
 	}
 	
 	/**
@@ -4388,7 +4381,7 @@ public int getBackupVersionId(){
 			acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_USER);
 		}
 				
-		m_driverManager.writeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, acEntry);
+		m_driverManager.writeAccessControlEntry(m_context, res, acEntry);
 	}
 	
 	/**
@@ -4418,7 +4411,7 @@ public int getBackupVersionId(){
 			acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_USER);
 		}		
 
-		m_driverManager.writeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, acEntry);
+		m_driverManager.writeAccessControlEntry(m_context, res, acEntry);
 	}
 	
 	/**
@@ -4440,7 +4433,7 @@ public int getBackupVersionId(){
 			principal = readUser(principalName);
 		}		
 		
-		m_driverManager.removeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, principal.getId());
+		m_driverManager.removeAccessControlEntry(m_context, res, principal.getId());
 	}
 	
 	/**
@@ -4451,7 +4444,7 @@ public int getBackupVersionId(){
 	public void cpacc(String sourceName, String destName) throws CmsException {
 		CmsResource source = readFileHeader(sourceName);
 		CmsResource dest = readFileHeader(destName);
-		m_driverManager.copyAccessControlEntries(m_context.currentUser(), m_context.currentProject(), source, dest);
+		m_driverManager.copyAccessControlEntries(m_context, source, dest);
 }
 	
 	/**
@@ -4463,7 +4456,7 @@ public int getBackupVersionId(){
 	 */
 	// TODO: force the access control entries to belong to the given resource
 	public void writeAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
-		m_driverManager.writeAccessControlEntries(m_context.currentUser(), m_context.currentProject(), resource, acEntries);
+		m_driverManager.writeAccessControlEntries(m_context, resource, acEntries);
 	}
     
     public String readAbsolutePath(CmsResource resource) {
@@ -4473,7 +4466,7 @@ public int getBackupVersionId(){
     public String readAbsolutePath(CmsResource resource, boolean includeDeleted) {                
         try {
             if (!resource.hasFullResourceName()) {
-                m_driverManager.readPath(m_context.currentUser(), m_context.currentProject(), resource, includeDeleted);
+                m_driverManager.readPath(m_context, resource, includeDeleted);
             }
         } catch (CmsException e) {
             resource.setFullResourceName(null);
@@ -4484,7 +4477,7 @@ public int getBackupVersionId(){
     }    
     
     public CmsResource createVfsLink(String linkName, String targetName, Map linkProperties) throws CmsException {
-        return m_driverManager.createVfsLink(m_context.currentUser(), m_context.currentProject(), addSiteRoot(linkName), addSiteRoot(targetName), linkProperties);
+        return m_driverManager.createVfsLink(m_context, addSiteRoot(linkName), addSiteRoot(targetName), linkProperties);
     }    
     
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2003/07/06 13:44:27 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/07/14 18:43:54 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.40 $ $Date: 2003/07/06 13:44:27 $
+ * @version $Revision: 1.41 $ $Date: 2003/07/14 18:43:54 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
@@ -454,6 +454,6 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      */
     public static I_CmsRegistry getRegistry() throws CmsException {
         if (m_driverManager == null) return null;
-        return m_driverManager.getRegistry(null, null, null);
+        return m_driverManager.getRegistry(null);
     }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
- * Date   : $Date: 2003/02/21 15:18:23 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/07/14 18:43:54 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
@@ -114,7 +114,7 @@ public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
             m_report.println(m_report.key("report.publish_project_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             // now unlock and publish the project
             m_cms.unlockProject(project.getId());
-            m_cms.publishProject(project.getId(), m_report);
+            m_cms.publishProject(m_report);
 
             m_report.println(m_report.key("report.publish_project_end"), I_CmsReport.C_FORMAT_HEADLINE);
             m_report.println(m_report.key("report.delete_module_end"), I_CmsReport.C_FORMAT_HEADLINE);

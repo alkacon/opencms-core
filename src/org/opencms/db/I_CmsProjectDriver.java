@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/07 12:47:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/14 18:43:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.CmsException;
 import com.opencms.file.CmsExportLink;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
+import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsTask;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
@@ -51,7 +52,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/07/07 12:47:14 $
+ * @version $Revision: 1.4 $ $Date: 2003/07/14 18:43:54 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -128,7 +129,7 @@ public interface I_CmsProjectDriver {
      */     
     org.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl);
     
-    Vector publishProject(CmsUser user, CmsProject publishProject, CmsProject onlineProject, boolean backupEnabled, I_CmsReport report, Hashtable exportpoints) throws CmsException;
+    Vector publishProject(CmsRequestContext m_context, CmsProject onlineProject, boolean backupEnabled, I_CmsReport report, Hashtable exportpoints) throws CmsException;
     Vector readAllProjectResources(int projectId) throws CmsException;
     CmsExportLink readExportLink(String request) throws CmsException;
     CmsExportLink readExportLinkHeader(String request) throws CmsException;

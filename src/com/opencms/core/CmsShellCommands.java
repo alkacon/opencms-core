@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/11 13:59:40 $
-* Version: $Revision: 1.89 $
+* Date   : $Date: 2003/07/14 18:43:54 $
+* Version: $Revision: 1.90 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.89 $ $Date: 2003/07/11 13:59:40 $
+ * @version $Revision: 1.90 $ $Date: 2003/07/14 18:43:54 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -1731,7 +1731,7 @@ class CmsShellCommands implements I_CmsConstants {
             reg.importModule(fileName, new Vector(), new CmsShellReport());
             // finally publish the project
             m_cms.unlockProject(id);
-            m_cms.publishProject(id);            
+            m_cms.publishProject();            
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -1767,7 +1767,7 @@ class CmsShellCommands implements I_CmsConstants {
             m_cms.copyResourceToProject(C_ROOT);
             m_cms.importResources(importFile, C_ROOT);
             m_cms.unlockProject(id);
-            m_cms.publishProject(id);
+            m_cms.publishProject();
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -1958,7 +1958,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             int projectId = Integer.parseInt(id);
             m_cms.unlockProject(projectId);
-            m_cms.publishProject(projectId);
+            m_cms.publishProject();
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPublishProjectThread.java,v $
- * Date   : $Date: 2003/06/25 13:52:24 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/07/14 18:43:54 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,14 +45,14 @@ import com.opencms.report.I_CmsReport;
  */
 public class CmsAdminPublishProjectThread extends A_CmsReportThread {
 
-    private int m_projectId;
+    //private int m_projectId;
     private CmsObject m_cms;
     private I_CmsReport m_report;
 
-    public CmsAdminPublishProjectThread(CmsObject cms, int projectId, I_CmsSession session) {
+    public CmsAdminPublishProjectThread(CmsObject cms, I_CmsSession session) {
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
-        m_projectId = projectId;
+        //m_projectId = projectId;
         String locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
         m_report = new CmsHtmlReport(locale);
     }
@@ -60,7 +60,7 @@ public class CmsAdminPublishProjectThread extends A_CmsReportThread {
     public void run() {
         try {
             m_report.println(m_report.key("report.publish_project_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-            m_cms.publishProject(m_projectId, m_report);
+            m_cms.publishProject(m_report);
             m_report.println(m_report.key("report.publish_project_end"), I_CmsReport.C_FORMAT_HEADLINE);
         }
         catch(CmsException e) {

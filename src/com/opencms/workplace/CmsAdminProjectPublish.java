@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2003/07/11 13:29:50 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/07/14 18:43:54 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.30 $ $Date: 2003/07/11 13:29:50 $
+ * @version $Revision: 1.31 $ $Date: 2003/07/14 18:43:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -109,9 +109,9 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
 
         if("doThePublish".equals(action)){
             // linkcheck is ready. Now we can start the publishing
-            int projectId = ((Integer)session.getValue(C_PROJECT_ID_FOR_PUBLISH)).intValue();
+            //int projectId = ((Integer)session.getValue(C_PROJECT_ID_FOR_PUBLISH)).intValue();
             session.removeValue(C_PROJECT_ID_FOR_PUBLISH);
-            A_CmsReportThread doPublish = new CmsAdminPublishProjectThread(cms, projectId, session);
+            A_CmsReportThread doPublish = new CmsAdminPublishProjectThread(cms, session);
             doPublish.start();
             session.putValue(C_PUBLISH_THREAD, doPublish);
             xmlTemplateDocument.setData("actionParameter", "showPublishResult");

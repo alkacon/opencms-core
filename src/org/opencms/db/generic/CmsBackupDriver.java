@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/14 11:05:23 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/14 18:43:54 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/07/14 11:05:23 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/14 18:43:54 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -564,7 +564,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             CmsUser lastModified = m_driverManager.getUserDriver().readUser(resource.getResourceLastModifiedBy());
             lastModifiedName = lastModified.getName() + " " + lastModified.getFirstname() + " " + lastModified.getLastname();
 
-            CmsUser created = m_driverManager.readUser(currentUser, publishProject, resource.getOwnerId());
+            CmsUser created = m_driverManager.readUser(null, resource.getOwnerId());
             createdName = created.getName() + " " + created.getFirstname() + " " + created.getLastname();
         } catch (CmsException e) {
             lastModifiedName = "";

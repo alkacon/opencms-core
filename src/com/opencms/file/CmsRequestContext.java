@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/07/11 06:25:23 $
-* Version: $Revision: 1.78 $
+* Date   : $Date: 2003/07/14 18:43:54 $
+* Version: $Revision: 1.79 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.78 $ $Date: 2003/07/11 06:25:23 $
+ * @version $Revision: 1.79 $ $Date: 2003/07/14 18:43:54 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -167,12 +167,12 @@ public class CmsRequestContext implements I_CmsConstants {
         //CmsProject project = null;
         
         try {
-            m_user = m_driverManager.readUser(null, null, user);
+            m_user = m_driverManager.readUser(user);
         } catch (CmsException ex) {
         }
         // if no user found try to read webUser
         if (m_user == null) {
-            m_user = m_driverManager.readWebUser(null, null, user);
+            m_user = m_driverManager.readWebUser(this, user);
         }
 
         // check, if the user is disabled
@@ -188,7 +188,7 @@ public class CmsRequestContext implements I_CmsConstants {
             setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         }
         
-        m_currentGroup = m_driverManager.readGroup(m_user, currentGroup);
+        m_currentGroup = m_driverManager.readGroup(this, currentGroup);
         m_streaming = streaming;
         m_elementCache = elementCache;
         m_directoryTranslator = directoryTranslator;
@@ -274,8 +274,7 @@ public class CmsRequestContext implements I_CmsConstants {
     public CmsFolder currentFolder() throws CmsException {
         return (
             m_driverManager.readFolder(
-                currentUser(),
-                currentProject(),
+                this,
                 addSiteRoot(getFolderUri())
                 ));
     }
@@ -421,7 +420,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * @throws CmsException if operation was not successful.
      */
     public boolean isAdmin() throws CmsException {
-        return (m_driverManager.isAdmin(m_user, m_currentProject));
+        return (m_driverManager.isAdmin(this));
     }
 
     /**
@@ -433,7 +432,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * @throws CmsException if operation was not successful.
      */
     public boolean isProjectManager() throws CmsException {
-        return (m_driverManager.isProjectManager(m_user, m_currentProject));
+        return (m_driverManager.isProjectManager(this));
     }
 
     /**
@@ -447,13 +446,12 @@ public class CmsRequestContext implements I_CmsConstants {
         // is the user in that group?
         if (m_driverManager
             .userInGroup(
-                m_user,
-                m_currentProject,
+                this,
                 m_user.getName(),
                 groupname)) {
             // Yes - set it to the current Group.
             m_currentGroup =
-                m_driverManager.readGroup(m_user, groupname);
+                m_driverManager.readGroup(this, groupname);
         } else {
             // No - throw exception.
             throw new CmsException(
@@ -471,7 +469,7 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public CmsProject setCurrentProject(int projectId) throws CmsException {
         CmsProject newProject =
-            m_driverManager.readProject(m_user, m_currentProject, projectId);
+            m_driverManager.readProject(this, projectId);
         if (newProject != null) {
             m_currentProject = newProject;
         }
@@ -632,7 +630,7 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public void initEncoding() {
         try {
-            m_encoding = m_driverManager.readProperty(m_user, m_currentProject, addSiteRoot(m_req.getRequestedResource()), getAdjustedSiteRoot(m_req.getRequestedResource()), C_PROPERTY_CONTENT_ENCODING, true);
+            m_encoding = m_driverManager.readProperty(this, addSiteRoot(m_req.getRequestedResource()), getAdjustedSiteRoot(m_req.getRequestedResource()), C_PROPERTY_CONTENT_ENCODING, true);
         } catch (CmsException e) {
             m_encoding = null;
         }

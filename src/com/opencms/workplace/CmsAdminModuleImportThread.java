@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleImportThread.java,v $
- * Date   : $Date: 2003/03/06 17:37:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/14 18:43:54 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleImportThread extends A_CmsReportThread {
@@ -112,7 +112,7 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
             m_report.println(m_report.key("report.publish_project_begin"), I_CmsReport.C_FORMAT_HEADLINE);            
             // now unlock and publish the project
             m_cms.unlockProject(project.getId());
-            m_cms.publishProject(project.getId(), m_report);                
+            m_cms.publishProject(m_report);                
 
             m_report.println(m_report.key("report.publish_project_end"), I_CmsReport.C_FORMAT_HEADLINE);
             m_report.println(m_report.key("report.import_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
