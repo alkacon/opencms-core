@@ -13,6 +13,7 @@ OpenCms 4.5.27 Chusuk       - xx December 2001
   registered HTML-tag "LINK".
 * Bugfix in PL/SQL-Package opencmsproject: when publishing a resource an exception is thrown if the parent folder
   can not be found in online project
+* Bugfix set the default propertie for link replacement so the editor created links work again.
 ! The recovery password can be set by anybody who knows the users name and password.
 
 OpenCms 4.5.26 Chusuk       - 3 December 2001
