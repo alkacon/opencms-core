@@ -12,10 +12,17 @@ var selectedowner=null;
 
 function checkSelected()
 {
- for(i=0;i<document.GROUP.name.length;++i)if(document.GROUP.name.options[i].selected == true)selectedowner=document.GROUP.name.options[i].value;
- 
- location.href='chgrp.html?newowner='+selectedowner;
- //alert(document.GROUP.name.options[i].value);
+    for(i=0;i<document.GROUP.name.length;++i)
+    {
+        if(document.GROUP.name.options[i].selected == true)
+        {
+        selectedowner=document.GROUP.name.options[i].value;
+        }
+    }
+
+//alert(selectedowner);
+//location.href='chgrp.html?newgroup='+document.GROUP.name.value"
+    location.href='chgrp.html?newgroup='+selectedowner;
 }
 
 
@@ -84,7 +91,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='chgrp.html?newgroup='+document.GROUP.name.value"></td>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="javascript:checkSelected()"></td>
 					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=lasturl"></td>
 				</tr>
 				</table>
@@ -118,10 +125,17 @@ var selectedowner=null;
 
 function checkSelected()
 {
- for(i=0;i<document.GROUP.name.length;++i)if(document.GROUP.name.options[i].selected == true)selectedowner=document.GROUP.name.options[i].value;
- 
- location.href='chown.html?newowner='+selectedowner;
- //alert(document.GROUP.name.options[i].value);
+    for(i=0;i<document.GROUP.name.length;++i)
+    {
+        if(document.GROUP.name.options[i].selected == true)
+        {
+        selectedowner=document.GROUP.name.options[i].value;
+        }
+    }
+
+    //alert(selectedowner);
+    //location.href='chgrp.html?newowner='+selectedowner;
+    location.href='chgrp.html?newgroup='+selectedowner;
 }
 
 
@@ -194,8 +208,10 @@ function checkSelected()
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='chgrp.html?newgroup='+document.GROUP.name.value+'&flags='+document.GROUP.ALL.checked;"></td>
+
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="javascript:checkSelected()"></td>
 					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=lasturl"></td>
+
 				</tr>
 				</table>
 			</td>
