@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/09/06 06:15:36 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -129,7 +129,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
                 if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                     session.removeValue(C_SESSION_THREAD_ERROR);
                 }
-                Thread doExport = new CmsAdminStaticExportThread(cms, exportTo, exportPaths);
+                Thread doExport = new CmsAdminStaticExportThread(cms, exportTo, exportPaths, session);
                 doExport.start();
                 session.putValue(C_STATICEXPORT_THREAD , doExport);
                 xmlTemplateDocument.setData("time", "10");

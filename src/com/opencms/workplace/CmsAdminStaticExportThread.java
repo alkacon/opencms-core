@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExportThread.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/09/06 06:15:36 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -50,15 +50,17 @@ public class CmsAdminStaticExportThread extends Thread implements I_CmsConstants
 
     private String[] m_exportPaths;
 
-    public CmsAdminStaticExportThread(CmsObject cms, String exportTo, String[] exportPaths) {
+    private I_CmsSession m_session;
+
+    public CmsAdminStaticExportThread(CmsObject cms, String exportTo, String[] exportPaths, I_CmsSession session) {
         m_cms = cms;
+        m_session = session;
         m_exportPaths = exportPaths;
         m_exportTo = exportTo;
 
     }
 
     public void run() {
-        I_CmsSession session = m_cms.getRequestContext().getSession(true);
         boolean everythingOk  = true;
         String errormessage = "Error exporting resources:\n";
         Vector folderNames = new Vector();
@@ -92,7 +94,7 @@ public class CmsAdminStaticExportThread extends Thread implements I_CmsConstants
             }
         }
         if(!everythingOk){
-            session.putValue(C_SESSION_THREAD_ERROR, errormessage );
+            m_session.putValue(C_SESSION_THREAD_ERROR, errormessage );
         }
     }
 
