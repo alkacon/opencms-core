@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/02/21 08:35:09 $
-* Version: $Revision: 1.134 $
+* Date   : $Date: 2001/02/21 10:04:38 $
+* Version: $Revision: 1.135 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.134 $ $Date: 2001/02/21 08:35:09 $
+ * @version $Revision: 1.135 $ $Date: 2001/02/21 10:04:38 $
  */
 public interface I_CmsConstants {
 
@@ -983,7 +983,7 @@ public interface I_CmsConstants {
     /**
      * A tag in the manifest-file.
      */
-    public static String C_EXPORT_TAG_USERINFOS = "userinfos";
+    public static String C_EXPORT_TAG_USERINFO = "userinfo";
 
     /**
      * A tag in the manifest-file.
