@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2002/11/02 10:33:25 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2002/12/15 14:21:51 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -194,54 +194,73 @@ public class Encoder {
 
     /**
      * Escapes a String so it may be printed as text content or attribute
-     * value. Non printable characters are escaped using character references.
-     * Where the format specifies a deault entity reference, that reference
-     * is used (e.g. <tt>&amp;lt;</tt>).
-     *
-     * @param source The string to escape
-     * @return The escaped string
+     * value in a HTML page or an XML file.<p>
+     * 
+     * This method replaces the following characters in a String:
+     * <ul>
+     * <li><b>&lt;</b> with &amp;lt;
+     * <li><b>&gt;</b> with &amp;gt;
+     * <li><b>&amp;</b> with &amp;amp;
+     * <li><b>&quot;</b> with &amp;quot;
+     * </ul>
+     * 
+     * @param source the string to escape
+     * @return the escaped string
+     * 
+     * @see #escapeHtml(String)
      */
     public static String escapeXml(String source) {
-        StringBuffer result;
-        int i;
-        char ch;
-        String charRef;
-        result = new StringBuffer(source.length());
-        for(i = 0;i < source.length();++i) {
-            ch = source.charAt(i);
-            charRef = getEntityRef(ch);
-            if(charRef == null) {
-                result.append(ch);
-            }
-            else {
-                result.append(charRef);
+        if (source == null) return null;
+        StringBuffer result = new StringBuffer(source.length()*2);
+        for(int i = 0;i < source.length(); ++i) {
+            char ch = source.charAt(i);
+            switch (ch) {
+                case '<' :
+                    result.append("&lt;");
+                    break;
+                case '>' :
+                    result.append("&gt;");
+                    break;
+                case '&' :
+                    result.append("&amp;");
+                    break;
+                case '"' :
+                    result.append("&quot;");
+                    break;
+                default :
+                    result.append(ch);
             }
         }
-        return result.toString();
-    }
+        return new String(result);
+    }   
 
     /**
-     * Encodes special XML characters into the equivalent character references.
-     *
-     * @param ch The character to encode
-     * @return The encoded character as a String
+     * Escapes special characters in a HTML-String with their number-based 
+     * entity representation, for example &amp; becomes &amp;#38;.<p>
+     * 
+     * A character <code>num</code> is replaced if<br>
+     * <code>((num &gt; 122) || (num &lt; 48) || (num == 60) || (num == 62))</code><p>
+     * 
+     * @param source the String to escape
+     * @return String the escaped String
+     * 
+     * @see #escapeXml(String)
      */
-    private static String getEntityRef(char ch) {
-        // These four entities have to be escaped by default.
-        switch(ch) {
-        case '<':
-            return "&lt;";
-
-        case '>':
-            return "&gt;";
-
-        case '&':
-            return "&amp;";
-
-        case '"':
-            return "&quot;";
+    public static String escapeHtml(String source) {
+        if (source == null) return null;
+        StringBuffer result = new StringBuffer(source.length()*2);
+        for(int i = 0;i < source.length();i++) {
+            int ch = source.charAt(i);
+            if((ch > 122) || (ch < 48) || (ch == 60) || (ch == 62)) {
+                result.append("&#");
+                result.append(ch);
+                result.append(";");
+            }
+            else {
+                result.append((char)ch);
+            }
         }
-        return null;
+        return new String(result);
     }
 
     /**
