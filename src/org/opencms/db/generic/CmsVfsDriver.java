@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/10/07 14:12:39 $
- * Version: $Revision: 1.145 $
+ * Date   : $Date: 2003/10/09 07:50:54 $
+ * Version: $Revision: 1.146 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.145 $ $Date: 2003/10/07 14:12:39 $
+ * @version $Revision: 1.146 $ $Date: 2003/10/09 07:50:54 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -2301,6 +2301,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             // test if the definition for the property exists
             propdef = readPropertyDefinition(meta, projectId, resourceType);
         } catch (CmsException ex) {
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Could not read propertydefinition " + meta+" projectId: "+projectId+" resourceType: "+resourceType, ex);                           }
             propdef = null;
         }
 
