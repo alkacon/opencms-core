@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDefinition.java,v $
-* Date   : $Date: 2001/08/03 10:29:40 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/12/06 23:16:53 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,8 @@
 
 package com.opencms.template.cache;
 
-import java.util.*;
-import com.opencms.file.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /**
  * An instance of CmsElementDefinitions represents an "pointer" to other

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLauncherManager.java,v $
-* Date   : $Date: 2002/10/30 10:29:23 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2002/12/06 23:16:54 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.*;
  * given launcher id.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.21 $ $Date: 2002/10/30 10:29:23 $
+ * @version $Revision: 1.22 $ $Date: 2002/12/06 23:16:54 $
  */
 public class CmsLauncherManager implements I_CmsLogChannels {
 
@@ -187,7 +187,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
     private Hashtable getKnownLaunchers(OpenCms cms) {
         Hashtable knownLaunchers = new Hashtable();
         try{
-            I_CmsRegistry reg = cms.getRegistry();
+            I_CmsRegistry reg = OpenCms.getRegistry();
             knownLaunchers = reg.getSystemValues(I_CmsConstants.C_REGISTRY_KNOWNLAUNCHERS);
         } catch (CmsException exc){
             A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] error getKnownLaunchers: "+exc.getMessage());

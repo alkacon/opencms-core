@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsAccessFilesystem.java,v $
-* Date   : $Date: 2002/02/04 16:30:17 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/12/06 23:16:58 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,15 @@
 
 package com.opencms.file.utils;
 
-import java.util.*;
-import java.io.*;
-import java.sql.*;
-import com.opencms.file.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsLogChannels;
 
-import com.opencms.core.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Hashtable;
 
 
 public class CmsAccessFilesystem implements I_CmsConstants {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2002/09/12 15:19:14 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2002/12/06 23:16:47 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,19 +29,27 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import javax.servlet.http.*;
-import java.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsPropertydefinition;
+import com.opencms.file.CmsResource;
+import com.opencms.file.CmsUser;
+import com.opencms.file.I_CmsResourceType;
+import com.opencms.util.Utils;
+
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Template class for displaying the property screens of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2002/09/12 15:19:14 $
+ * @version $Revision: 1.29 $ $Date: 2002/12/06 23:16:47 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2002/11/07 19:33:57 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2002/12/06 23:16:46 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,11 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import java.util.*;
-import javax.servlet.http.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.OpenCms;
+import com.opencms.file.CmsObject;
+
+import java.util.Vector;
 
 /**
  * Definition of some paths for the workplace. Currently some are static,
@@ -44,7 +42,7 @@ import javax.servlet.http.*;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.45 $ $Date: 2002/11/07 19:33:57 $
+ * @version $Revision: 1.46 $ $Date: 2002/12/06 23:16:46 $
  */
 
 public class CmsXmlWpConfigFile {

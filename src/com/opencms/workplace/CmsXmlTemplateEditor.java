@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2002/12/04 15:00:36 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2002/12/06 23:16:46 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,23 +29,40 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.linkmanagement.*;
-import com.opencms.template.*;
-import org.xml.sax.*;
-import org.w3c.dom.*;
-import java.util.*;
-import java.io.*;
-import javax.servlet.http.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.core.I_CmsSession;
+import com.opencms.core.OpenCms;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.file.CmsResource;
+import com.opencms.linkmanagement.CmsPageLinks;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsTemplateClassManager;
+import com.opencms.template.CmsXmlControlFile;
+import com.opencms.template.CmsXmlTemplate;
+import com.opencms.template.CmsXmlTemplateFile;
+import com.opencms.util.Encoder;
+import com.opencms.util.Utils;
+
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.w3c.dom.Element;
 
 /**
  * Template class for displaying the XML template editor of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.72 $ $Date: 2002/12/04 15:00:36 $
+ * @version $Revision: 1.73 $ $Date: 2002/12/06 23:16:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -99,7 +116,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             cms.chmod(temporaryFilename, 91);
         }
         catch(CmsException e) {
-            if((e.getType() != e.C_FILE_EXISTS) && (e.getType() != e.C_SQL_ERROR)) {
+            if((e.getType() != CmsException.C_FILE_EXISTS) && (e.getType() != CmsException.C_SQL_ERROR)) {
                 cms.getRequestContext().setCurrentProject(curProject);
                 // This was no file exists exception.
                 // Vary bad. We should not go on here since we may run
@@ -119,7 +136,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 cms.chmod(extendedTempFile, 91);
             }
             catch(CmsException e) {
-                if((e.getType() != e.C_FILE_EXISTS) && (e.getType() != e.C_SQL_ERROR)) {
+                if((e.getType() != CmsException.C_FILE_EXISTS) && (e.getType() != CmsException.C_SQL_ERROR)) {
                     cms.getRequestContext().setCurrentProject(curProject);
                     // This was no file exists exception.
                     // Vary bad. We should not go on here since we may run
@@ -408,7 +425,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
             if(editor == null || "".equals(editor)) {
                 if(startView == null || "".equals(startView)){
-                    editor = this.C_SELECTBOX_EDITORVIEWS[C_SELECTBOX_EDITORVIEWS_DEFAULT[browserId]];
+                    editor = C_SELECTBOX_EDITORVIEWS[C_SELECTBOX_EDITORVIEWS_DEFAULT[browserId]];
                 } else {
                     editor = startView;
                 }
@@ -574,7 +591,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             
             // save file contents to our temporary file.
             //Gridnine AB Aug 8, 2002
-            content = encoder.unescape(content,
+            content = Encoder.unescape(content,
                 cms.getRequestContext().getEncoding());
             // TODO: Set correct error page here
             if((!exitRequested) || saveRequested) {
@@ -674,7 +691,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // Load the body!
         content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);
         //Gridnine AB Aug 8, 2002
-        content = encoder.escapeWBlanks(content,
+        content = Encoder.escapeWBlanks(content,
             cms.getRequestContext().getEncoding());
         parameters.put(C_PARA_CONTENT, content);
 

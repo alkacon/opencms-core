@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCoreSession.java,v $
-* Date   : $Date: 2002/10/30 10:12:05 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/12/06 23:16:51 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,9 @@
 
 package com.opencms.core;
 
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * This class implements a session storage which is mainly used to count the
@@ -48,7 +48,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.8 $ $Date: 2002/10/30 10:12:05 $
+ * @version $Revision: 1.9 $ $Date: 2002/12/06 23:16:51 $
  * 
  * @see #sendBroadcastMessage(String message)
  */

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsConnection.java,v $
-* Date   : $Date: 2002/06/30 22:37:41 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/12/06 23:16:53 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,16 @@
 
 package com.opencms.dbpool;
 
-import java.sql.*;
-import java.util.*;
-import source.org.apache.java.util.*;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.Statement;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * This class is used to create an connection-pool for opencms.
@@ -39,10 +46,10 @@ import source.org.apache.java.util.*;
  */
 public class CmsConnection implements Connection {
 
-        /**
-         * Constant: key for simnple statements
-         */
-        private static final String C_SIMPLE_STATEMENT_KEY = "SIMPLE_STATEMENT";
+    /**
+     * Constant: key for simnple statements
+     */
+    private static final String C_SIMPLE_STATEMENT_KEY = "SIMPLE_STATEMENT";
 
     /**
      * The original connection to the db

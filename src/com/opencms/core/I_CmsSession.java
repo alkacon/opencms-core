@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsSession.java,v $
-* Date   : $Date: 2002/10/30 10:14:04 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/12/06 23:16:51 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,6 @@
 
 package com.opencms.core;
 
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
 
 /**
  * This interface defines an OpenCms session, a generic session object 
@@ -39,7 +36,7 @@ import javax.servlet.http.*;
  * 
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2002/10/30 10:14:04 $  
+ * @version $Revision: 1.15 $ $Date: 2002/12/06 23:16:51 $  
  */
 public interface I_CmsSession {
     

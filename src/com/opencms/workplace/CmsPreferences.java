@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferences.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/12/06 23:16:46 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,19 +29,20 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import javax.servlet.http.*;
-import java.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsObject;
+import com.opencms.template.A_CmsXmlContent;
+
+import java.util.Hashtable;
 
 /**
  * Template class for displaying the preference screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2001/07/31 15:50:19 $
+ * @version $Revision: 1.8 $ $Date: 2002/12/06 23:16:46 $
  */
 
 public class CmsPreferences extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {

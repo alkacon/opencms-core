@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2002/11/07 19:33:56 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,21 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import java.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.util.Utils;
+
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.8 $ $Date: 2002/11/07 19:33:56 $
+ * @version $Revision: 1.9 $ $Date: 2002/12/06 23:16:49 $
  */
 
 public class CmsHelperMastertemplates {

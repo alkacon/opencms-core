@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2002/11/07 19:33:56 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,21 +29,31 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import java.util.*;
-import java.io.*;
-import java.lang.reflect.*;
-import javax.servlet.http.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.template.CmsTemplateClassManager;
+import com.opencms.template.CmsXmlTemplateFile;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * This class is used to display the administration view.
  *
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.21 $ $Date: 2002/11/07 19:33:56 $
+ * @version $Name:  $ $Revision: 1.22 $ $Date: 2002/12/06 23:16:49 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -88,7 +98,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             iconActiveMethod = iconActiveMethod.substring(iconActiveMethod.lastIndexOf(".") + 1);
             Method groupsMethod = null;
             try {
-                Object o = callingObject.getClassInstance(cms, className);
+                Object o = CmsTemplateClassManager.getClassInstance(cms, className);
                 groupsMethod = o.getClass().getMethod(iconActiveMethod, new Class[] {
                     CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class
                 });
@@ -134,7 +144,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             iconVisibleMethod = iconVisibleMethod.substring(iconVisibleMethod.lastIndexOf(".") + 1);
             Method groupsMethod = null;
             try {
-                Object o = callingObject.getClassInstance(cms, className);
+                Object o = CmsTemplateClassManager.getClassInstance(cms, className);
                 groupsMethod = o.getClass().getMethod(iconVisibleMethod, new Class[] {
                     CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class
                 });

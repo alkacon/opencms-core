@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagementThread.java,v $
- * Date   : $Date: 2002/11/29 14:39:22 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2002/12/06 23:16:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,14 +30,15 @@ package com.opencms.workplace;
 
 /**
  * @author Hanjo Riege
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 
-import com.opencms.file.*;
-import com.opencms.linkmanagement.*;
-import com.opencms.report.*;
-import com.opencms.util.*;
-import com.opencms.core.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.file.CmsObject;
+import com.opencms.linkmanagement.LinkChecker;
+import com.opencms.report.CmsReport;
 
 public class CmsAdminLinkmanagementThread extends Thread {
 

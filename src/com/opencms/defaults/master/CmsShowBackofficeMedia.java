@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsShowBackofficeMedia.java,v $
-* Date   : $Date: 2002/01/25 08:04:54 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/12/06 23:16:58 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,16 +28,14 @@
 
 package com.opencms.defaults.master;
 
-import java.util.*;
-import java.io.*;
-import com.opencms.template.*;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import com.opencms.workplace.*;
-import com.opencms.defaults.*;
-import com.opencms.defaults.master.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.template.CmsCacheDirectives;
+import com.opencms.template.CmsXmlTemplate;
+
+import java.util.Hashtable;
 
 
 public class CmsShowBackofficeMedia extends CmsXmlTemplate {

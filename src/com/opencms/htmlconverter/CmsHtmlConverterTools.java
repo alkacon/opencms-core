@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2002/12/04 14:50:31 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/12/06 23:16:58 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,13 +28,15 @@
 
 package com.opencms.htmlconverter;
 
-import java.io.*;
-import java.util.*;
-import org.w3c.dom.*;
-
 import com.opencms.util.LinkSubstitution;
 
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 /**
  * Various methods used by CmsHtmlConverter to

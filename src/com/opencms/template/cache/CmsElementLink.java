@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLink.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/12/06 23:16:53 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,6 @@
 
 package com.opencms.template.cache;
 
-import java.util.*;
-import java.io.*;
-import com.opencms.file.*;
 
 /**
  * An instance of CmsElementLink is a link to another element. The link contains

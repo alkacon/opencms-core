@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
-* Date   : $Date: 2002/07/12 11:55:37 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2002/12/06 23:16:53 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,7 @@
 
 package com.opencms.template.cache;
 
-import com.opencms.template.CmsCacheDirectives;
-import java.util.*;
+import java.util.Vector;
 
 /**
  * This class implements a LRU cache. It uses a Hashtable algorithm with the

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/09/03 11:57:00 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2002/12/06 23:16:53 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -2774,10 +2774,10 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         }
 
         if (actProjectId == C_PROJECT_ONLINE_ID){
-            style = this.C_STYLE_UNCHANGED;
+            style = C_STYLE_UNCHANGED;
         } else if (projectId != actProjectId) {
             // not is in this project
-            style = this.C_STYLE_NOTINPROJECT;
+            style = C_STYLE_NOTINPROJECT;
         } else {
             // get the lockstate of an entry: if its unlocked and changed enable direct publish
             try {
@@ -2798,16 +2798,16 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
 
             switch (state){
                 case C_STATE_NEW:
-                    style = this.C_STYLE_NEW;
+                    style = C_STYLE_NEW;
                     break;
                 case C_STATE_CHANGED:
-                    style = this.C_STYLE_CHANGED;
+                    style = C_STYLE_CHANGED;
                     break;
                 case C_STATE_DELETED:
-                    style = this.C_STYLE_DELETED;
+                    style = C_STYLE_DELETED;
                     break;
                 default:
-                    style = this.C_STYLE_UNCHANGED;
+                    style = C_STYLE_UNCHANGED;
                     break;
             }
         }
@@ -3632,12 +3632,12 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
             String permissionsAtI=(String)parameters.get("permission_"+i);
             if(permissionsAtI != null) {
                 if(permissionsAtI.equals("on")) {
-                    accessFlag += new Integer(this.C_ACCESS_FLAGS[i]).intValue();
+                    accessFlag += new Integer(C_ACCESS_FLAGS[i]).intValue();
                 }
             }
         }
         if(accessFlag == 0){
-            accessFlag = this.C_DEFAULT_PERMISSIONS;
+            accessFlag = C_DEFAULT_PERMISSIONS;
         }
         return accessFlag;
     }
@@ -3648,7 +3648,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
      private void setAccessValue(CmsXmlWpTemplateFile template, int accessFlags){
         // permissions check boxes
         for(int i=0; i<=8; i++) {
-            int accessValueAtI = new Integer(this.C_ACCESS_FLAGS[i]).intValue();
+            int accessValueAtI = new Integer(C_ACCESS_FLAGS[i]).intValue();
             if ((accessFlags & accessValueAtI) > 0) {
                 template.setData("permission_"+i,"checked");
             } else {

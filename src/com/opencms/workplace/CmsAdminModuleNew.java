@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/12/06 23:16:47 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,21 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsObject;
+import com.opencms.file.I_CmsRegistry;
+import com.opencms.template.CmsXmlTemplateFile;
 
-import java.util.*;
-import java.io.*;
-import javax.servlet.http.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  *  Template class for displaying OpenCms workplace admin module screens.
@@ -108,17 +115,17 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
                 return startProcessing(cms, xmlTemplateDocument, elementName, parameters, C_WAIT);
             }
             else {
-                xmlTemplateDocument.clearcache();
+                CmsXmlWpTemplateFile.clearcache();
                 return startProcessing(cms, xmlTemplateDocument, elementName, parameters, C_DONE);
             }
         }
         if(step != null) {
             if("server".equals(step)) {
-                File modulefolder = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + reg.C_MODULE_PATH);
+                File modulefolder = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH);
                 if(!modulefolder.exists()) {
                     boolean success = modulefolder.mkdir();
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && (!success)) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsAccessFilesystem] Couldn't create folder " + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + reg.C_MODULE_PATH + ".");
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsAccessFilesystem] Couldn't create folder " + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + ".");
                     }
                 }
                 String listentrys = "";
@@ -161,16 +168,16 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
                         filecontent = (byte[])session.getValue(C_PARA_FILECONTENT);
 
                         // first create the folder if it doesnt exists
-                        File discFolder = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + reg.C_MODULE_PATH);
+                        File discFolder = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH);
                         if(!discFolder.exists()) {
                             boolean success = discFolder.mkdir();
                             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && (!success)) {
-                                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsAccessFilesystem] Couldn't create folder " + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + reg.C_MODULE_PATH + ".");
+                                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsAccessFilesystem] Couldn't create folder " + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + ".");
                             }
                         }
 
                         // now write the file into the modules dierectory in the exportpaht
-                        File discFile = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + reg.C_MODULE_PATH + filename);
+                        File discFile = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + filename);
                         try {
 
                             // write the new file to disk
@@ -182,7 +189,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
                             throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage());
                         }
                         session.removeValue(C_MODULE_NAV);
-                        templateSelector = importModule(cms, reg, xmlTemplateDocument, session, com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + reg.C_MODULE_PATH + filename);
+                        templateSelector = importModule(cms, reg, xmlTemplateDocument, session, com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + filename);
                     }
                     else {
                         if("serverupload".equals(step)) {
@@ -192,7 +199,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
                                 templateSelector = C_DONE;
                             }
                             else {
-                                templateSelector = importModule(cms, reg, xmlTemplateDocument, session, com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + reg.C_MODULE_PATH + filename);
+                                templateSelector = importModule(cms, reg, xmlTemplateDocument, session, com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + filename);
                             }
                         }
                     }

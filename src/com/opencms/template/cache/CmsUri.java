@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2002/06/21 15:35:20 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2002/12/06 23:16:53 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,16 @@
 
 package com.opencms.template.cache;
 
-import java.util.*;
-import java.io.*;
-import com.opencms.core.*;
-import com.opencms.file.*;
-import com.opencms.template.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsResponse;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.template.CmsCacheDirectives;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * An instance of CmsUri represents an requestable ressource in the OpenCms
@@ -186,7 +191,7 @@ public class CmsUri implements I_CmsConstants {
             return;
         }
         // maybe it is an Admin
-        if(currentGroup.getName().equals(cms.C_GROUP_ADMIN)){
+        if(currentGroup.getName().equals(CmsObject.C_GROUP_ADMIN)){
             // ok Admins can read everything
             return;
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2002/12/04 14:43:45 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2002/12/06 23:16:47 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,22 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import java.util.*;
-import javax.servlet.http.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsProject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.file.CmsUser;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsXmlTemplateFile;
+import com.opencms.util.Encoder;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Template class for displaying OpenCms workplace main screen.
@@ -42,7 +52,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.44 $ $Date: 2002/12/04 14:43:45 $
+ * @version $Revision: 1.45 $ $Date: 2002/12/06 23:16:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -99,7 +109,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		}
 
 		// set the publishProject Button to enable if user has the right to publish the project
-		if (templateFile.equalsIgnoreCase(xmlTemplateDocument.C_TEMPLATEPATH + "head")) {
+		if (templateFile.equalsIgnoreCase(CmsXmlTemplateFile.C_TEMPLATEPATH + "head")) {
 			if ((cms.isAdmin() || cms.isManagerOfProject()) && (!reqCont.currentProject().equals(cms.onlineProject()))) {
 				xmlTemplateDocument.setData("publish", xmlTemplateDocument.getProcessedDataValue("PUBLISH_ENABLED", this));
 			}
@@ -109,7 +119,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		}
 
 		// set the sync button to enabled if no entries for synchronisation in registry
-		if (templateFile.equalsIgnoreCase(xmlTemplateDocument.C_TEMPLATEPATH + "head")) {
+		if (templateFile.equalsIgnoreCase(CmsXmlTemplateFile.C_TEMPLATEPATH + "head")) {
 			String syncpath = null;
 			syncpath = cms.getRegistry().getSystemValue(CmsSyncFolder.C_SYNCHRONISATION_PROJECT);
 			if (syncpath == null) {
@@ -121,7 +131,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		}
 
 		// send message, if this is the foot
-		if (templateFile.equalsIgnoreCase(xmlTemplateDocument.C_TEMPLATEPATH + "foot")) {
+		if (templateFile.equalsIgnoreCase(CmsXmlTemplateFile.C_TEMPLATEPATH + "foot")) {
 			String message = (String) cms.getRequestContext().getSession(true).getValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
 			if (message != null) {
 				cms.getRequestContext().getSession(true).removeValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
@@ -132,7 +142,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 
 		// test if the "help"- button has to be displayed for the user's 
 		// current language in case we process the head template
-		if (templateFile.equalsIgnoreCase(xmlTemplateDocument.C_TEMPLATEPATH + "head")) {
+		if (templateFile.equalsIgnoreCase(CmsXmlTemplateFile.C_TEMPLATEPATH + "head")) {
 			String userLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
 			xmlTemplateDocument.setData("LOCALE", "" + userLanguage);
 

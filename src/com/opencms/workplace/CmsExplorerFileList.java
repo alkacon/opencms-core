@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerFileList.java,v $
-* Date   : $Date: 2001/07/31 15:50:18 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2002/12/06 23:16:47 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,12 +29,17 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import javax.servlet.http.*;
-import java.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Template class for displaying the file list tree of the OpenCms workplace.<P>
@@ -42,7 +47,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2001/07/31 15:50:18 $
+ * @version $Revision: 1.17 $ $Date: 2002/12/06 23:16:47 $
  */
 
 public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants,I_CmsFileListUsers {

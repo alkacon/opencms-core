@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNewFiles.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/12/06 23:16:47 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,16 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import java.util.*;
-import javax.servlet.http.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsObject;
+import com.opencms.template.CmsXmlTemplateFile;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Template class for displaying the conflicting Files for a new Module.

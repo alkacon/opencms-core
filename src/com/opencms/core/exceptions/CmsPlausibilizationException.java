@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/exceptions/Attic/CmsPlausibilizationException.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/12/06 23:16:58 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,15 +28,15 @@
 
 package com.opencms.core.exceptions;
 
-import java.io.*;
-import java.util.*;
-import com.opencms.core.*;
+import com.opencms.core.CmsException;
+
+import java.util.Vector;
 
 /**
  * This exception is thrown to signalize plausibilization errors in backoffice modules.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.3 $ $Date: 2002/12/06 23:16:58 $
  */
 public class CmsPlausibilizationException extends CmsException {
 

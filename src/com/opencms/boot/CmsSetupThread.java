@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupThread.java,v $
-* Date   : $Date: 2002/06/30 22:49:55 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/12/06 23:16:54 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,10 @@
 
 package com.opencms.boot;
 
-import java.util.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PipedOutputStream;
+import java.io.PrintStream;
 
 /**
  * Thread which first redirects System.out and System.err

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsMain.java,v $
-* Date   : $Date: 2002/08/22 09:58:46 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/12/06 23:16:54 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,13 @@
 
 package com.opencms.boot;
 
-import java.util.*;
-import java.io.*;
-import java.lang.reflect.*;
-import source.org.apache.java.util.*;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * This class is a commadnlineinterface for the opencms. It can be used to test
@@ -39,7 +42,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.8 $ $Date: 2002/08/22 09:58:46 $
+ * @version $Revision: 1.9 $ $Date: 2002/12/06 23:16:54 $
  */
 public class CmsMain {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/I_CmsLauncher.java,v $
-* Date   : $Date: 2002/04/14 22:03:21 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/12/06 23:16:54 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,16 +28,17 @@
 
 package com.opencms.launcher;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import javax.servlet.http.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
 
 /**
  * Common interface for OpenCms launchers.
  * Classes for each customized launcher have to be implemtented.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2002/04/14 22:03:21 $
+ * @version $Revision: 1.15 $ $Date: 2002/12/06 23:16:54 $
  */
 public interface I_CmsLauncher {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
-* Date   : $Date: 2002/10/23 15:12:46 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,9 @@
 
 package com.opencms.file;
 
-import java.util.*;
-import javax.servlet.http.*;
-import source.org.apache.java.util.*;
+import com.opencms.core.CmsException;
 
-import com.opencms.core.*;
-import com.opencms.launcher.*;
-import com.opencms.file.genericSql.*;
-//import com.opencms.file.genericSql.linkmanagement.*;
+import java.util.Hashtable;
 
 public interface I_CmsResourceType
 {

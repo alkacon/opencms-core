@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/10/30 10:19:07 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/12/06 23:16:58 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,22 +28,32 @@
 
 package com.opencms.file.oraclesql;
 
-import oracle.jdbc.driver.*;
-
-import javax.servlet.http.*;
-import java.util.*;
-import java.sql.*;
-import java.security.*;
-import java.io.*;
-import source.org.apache.java.io.*;
-import source.org.apache.java.util.*;
-
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.*;
-import com.opencms.file.*;
-import com.opencms.file.utils.*;
-import com.opencms.util.*;
-import com.opencms.report.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsBackupProject;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsUser;
+import com.opencms.util.SqlHelper;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import oracle.jdbc.driver.OracleResultSet;
+import source.org.apache.java.util.Configurations;
 
 
 /**
@@ -54,7 +64,7 @@ import com.opencms.report.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.5 $ $Date: 2002/10/30 10:19:07 $ *
+ * @version $Revision: 1.6 $ $Date: 2002/12/06 23:16:58 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 

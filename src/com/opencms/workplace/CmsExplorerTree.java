@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
-* Date   : $Date: 2002/11/16 13:23:06 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/12/06 23:16:48 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,12 +29,18 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import javax.servlet.http.*;
-import java.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.util.Encoder;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Template class for displaying the folder tree of the OpenCms workplace.<P>
@@ -42,7 +48,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2002/11/16 13:23:06 $
+ * @version $Revision: 1.14 $ $Date: 2002/12/06 23:16:48 $
  */
 
 public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConstants {

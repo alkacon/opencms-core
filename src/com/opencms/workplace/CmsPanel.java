@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPanel.java,v $
-* Date   : $Date: 2002/11/16 13:23:06 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,21 +29,24 @@
 
 package com.opencms.workplace;
 
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.file.*;
-import java.util.*;
-import java.lang.reflect.*;
-import javax.servlet.http.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.template.A_CmsXmlContent;
+
+import java.util.Hashtable;
+import java.util.Vector;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Class for building workplace panel bars. <BR>
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PANELBAR&gt;</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2002/11/16 13:23:06 $
+ * @version $Revision: 1.10 $ $Date: 2002/12/06 23:16:49 $
  */
 
 public class CmsPanel extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants {
@@ -127,7 +130,7 @@ public class CmsPanel extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpCo
         for(int i = 0;i < nl.getLength();i++) {
             Element tempElem = null;
             nodeLoop = nl.item(i);
-            if(nodeLoop.getNodeType() == nodeLoop.ELEMENT_NODE) {
+            if(nodeLoop.getNodeType() == Node.ELEMENT_NODE) {
                 tempElem = (Element)nodeLoop;
                 if(tempElem.getNodeName().toLowerCase().equals(C_WPTAG_PANEL)) {
                     panelName = tempElem.getAttribute(C_WPTAG_ATTR_PANELNAME);

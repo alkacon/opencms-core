@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerShowResource.java,v $
-* Date   : $Date: 2002/01/23 14:56:20 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,11 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import java.util.*;
-import java.io.*;
-import javax.servlet.http.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+
+import java.io.IOException;
+import java.util.Hashtable;
 
 /**
  * Common template class for displaying ressource after preview in Explorer.

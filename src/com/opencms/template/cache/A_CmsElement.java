@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2002/12/06 23:16:51 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,21 @@
 
 package com.opencms.template.cache;
 
-import java.util.*;
-import java.io.*;
-import com.opencms.boot.*;
-import com.opencms.core.*;
-import com.opencms.file.*;
-import com.opencms.template.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.template.A_CmsCacheDirectives;
+import com.opencms.template.CmsCacheDirectives;
+import com.opencms.template.CmsTemplateClassManager;
+import com.opencms.template.I_CmsTemplate;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * An instance of A_CmsElement represents an requestable Element in the OpenCms
@@ -165,7 +174,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
             return;
         }
         // maybe it is an Admin
-        if(currentGroup.getName().equals(cms.C_GROUP_ADMIN)){
+        if(currentGroup.getName().equals(CmsObject.C_GROUP_ADMIN)){
             // ok Admins can read everything
             return;
         }
@@ -301,11 +310,11 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                     if (m_cacheDirectives.isInternalCacheable() && (!m_cacheDirectives.isUserPartOfKey())){
                         CmsResource templ = cms.readFileHeader(m_templateName);
                         int accessflags = templ.getAccessFlags() ;
-                        if(!((accessflags & templ.C_ACCESS_INTERNAL_READ) > 0)){
+                        if(!((accessflags & CmsResource.C_ACCESS_INTERNAL_READ) > 0)){
                             // internal flag not set
                             proxyPrivate = true;
                             if(m_readAccessGroup == null || "".equals(m_readAccessGroup)
-                                    || (cms.C_GROUP_GUEST).equals(m_readAccessGroup)){
+                                    || (CmsObject.C_GROUP_GUEST).equals(m_readAccessGroup)){
                                 // lesbar für guest
                                 proxyPublic = true;
                                 if((!m_cacheDirectives.isParameterPartOfKey()) && (!m_cacheDirectives.isTimeCritical())){
@@ -334,9 +343,9 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
             }
         }
         // In Exportmodus set this template as dependency for the request
-        if(cms.getMode() == cms.C_MODUS_EXPORT && m_templateName != null){
+        if(cms.getMode() == CmsObject.C_MODUS_EXPORT && m_templateName != null){
             cms.getRequestContext().addDependency(cms.getSiteName()
-                    + cms.C_ROOTNAME_VFS + m_templateName);
+                    + CmsObject.C_ROOTNAME_VFS + m_templateName);
         }
         proxySettings.merge(m_cacheDirectives);
         // now for the subelements
@@ -399,7 +408,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         int len = variant.size();
 
         // if this is exportmodus register that to the variant
-        if(cms.getMode() == cms.C_MODUS_EXPORT){
+        if(cms.getMode() == CmsObject.C_MODUS_EXPORT){
             variant.setExported();
         }
 
@@ -460,8 +469,8 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                             } catch(Exception e) {
                                 // An error occured while getting the element's content.
                                 // Do some error handling here.
-                                if(cms.C_USER_TYPE_SYSTEMUSER == cms.getRequestContext().currentUser().getType()
-                                    && !cms.C_GROUP_GUEST.equals(cms.getRequestContext().currentGroup().getName())){
+                                if(CmsObject.C_USER_TYPE_SYSTEMUSER == cms.getRequestContext().currentUser().getType()
+                                    && !CmsObject.C_GROUP_GUEST.equals(cms.getRequestContext().currentGroup().getName())){
                                     // a systemuser gets the real message.(except guests)
                                     errorMessage = e.toString();
                                 }
@@ -469,7 +478,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                                 buffer = null;
                                 if(e instanceof CmsException) {
                                     CmsException ce = (CmsException)e;
-                                    if(ce.getType() == ce.C_ACCESS_DENIED) {
+                                    if(ce.getType() == CmsException.C_ACCESS_DENIED) {
                                         // This was an access denied exception.
                                         // If we are streaming, we have to catch it and print an error message
                                         // If we are not streaming, we can throw it again and force an authorization request

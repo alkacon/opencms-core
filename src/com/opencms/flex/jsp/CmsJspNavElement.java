@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavElement.java,v $
- * Date   : $Date: 2002/10/31 11:39:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2002/12/06 23:16:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,17 +30,22 @@
 
 package com.opencms.flex.jsp;
 
-import com.opencms.flex.cache.*;
-import java.util.*;
-import com.opencms.file.*;
-import com.opencms.core.*;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * Bean to extract navigation information from the OpenCms VFS folder
  * structure.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspNavElement implements Comparable {
     
@@ -323,7 +328,7 @@ public class CmsJspNavElement implements Comparable {
         Iterator i = v.iterator();
         while (i.hasNext()) {
             CmsResource r = (CmsResource)i.next();
-            if (r.getState() != r.C_STATE_DELETED) {
+            if (r.getState() != CmsResource.C_STATE_DELETED) {
                 CmsJspNavElement element = getNavigationForResource(cms, r.getAbsolutePath());
                 if ((element != null) && element.isInNavigation()) {
                     if ((prefix == null) || (element.getNavText().startsWith(prefix))) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPreparedStatement.java,v $
-* Date   : $Date: 2002/09/02 07:31:00 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/12/06 23:16:53 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,12 @@
 
 package com.opencms.dbpool;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.Reader;
+import java.math.BigDecimal;
 import java.sql.*;
-import java.util.*;
-import java.io.*;
-import java.math.*;
-import source.org.apache.java.util.*;
+import java.util.Calendar;
 
 /**
  * This class is used to create an connection-pool for opencms.

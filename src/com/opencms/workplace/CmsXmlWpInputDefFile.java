@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpInputDefFile.java,v $
-* Date   : $Date: 2002/10/30 10:38:40 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,19 +30,17 @@
 package com.opencms.workplace;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import java.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.template.A_CmsXmlContent;
 
 /**
  * Content definition for the workplace input element definition file.
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2002/10/30 10:38:40 $
+ * @version $Revision: 1.16 $ $Date: 2002/12/06 23:16:49 $
  */
 
 public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2002/12/04 14:52:46 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2002/12/06 23:16:53 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,15 +27,22 @@
 */
 package com.opencms.util;
 
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.CmsStaticExportProperties;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.core.OpenCms;
 import com.opencms.file.CmsObject;
-import com.opencms.core.*;
 import com.opencms.file.CmsStaticExport;
-import com.opencms.htmlconverter.*;
-import org.apache.oro.text.perl.*;
-import javax.servlet.http.*;
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import com.opencms.htmlconverter.CmsHtmlConverter;
+
+import java.net.URL;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.oro.text.perl.MalformedPerl5PatternException;
+import org.apache.oro.text.perl.Perl5Util;
 
 /**
  * Title:        OpenCms
@@ -167,7 +174,7 @@ public class LinkSubstitution {
         }
         // first ask if this is the export
         int modus = cms.getMode();
-        if(modus == cms.C_MODUS_EXPORT){
+        if(modus == CmsObject.C_MODUS_EXPORT){
             // we have to register this link to the requestcontex
             cms.getRequestContext().addLink(link);
             // and we have to process the startrule
@@ -185,7 +192,7 @@ public class LinkSubstitution {
         // check if we are in a https page (then we have to set the http
         // protocol ahead the "not-https-links" in this page
         boolean httpsMode = false;
-        if(modus == cms.C_MODUS_ONLINE){
+        if(modus == CmsObject.C_MODUS_ONLINE){
             // https pages are always online
             String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
             if("https".equalsIgnoreCase(scheme)){
@@ -196,7 +203,7 @@ public class LinkSubstitution {
         if(httpsMode){
             needsScheme = CmsStaticExport.needsScheme(link);
         }
-        String[] rules = cms.getStaticExportProperties().getLinkRules(modus);
+        String[] rules = CmsStaticExportProperties.getLinkRules(modus);
         if(rules == null || rules.length == 0){
             return link;
         }
@@ -226,13 +233,13 @@ public class LinkSubstitution {
                     // found the match
                     if(httpsMode && !retValue.startsWith("http")){
                         if(needsScheme){
-                            retValue = cms.getStaticExportProperties().getUrlPrefixArray()[3] + retValue;
+                            retValue = CmsObject.getStaticExportProperties().getUrlPrefixArray()[3] + retValue;
                         }
                     }else{
-                        if(cms.getStaticExportProperties().relativLinksInExport() && modus == cms.C_MODUS_EXPORT
-                                && (retValue != null) && retValue.startsWith(cms.getStaticExportProperties().getUrlPrefixArray()[0])){
+                        if(CmsObject.getStaticExportProperties().relativLinksInExport() && modus == CmsObject.C_MODUS_EXPORT
+                                && (retValue != null) && retValue.startsWith(CmsObject.getStaticExportProperties().getUrlPrefixArray()[0])){
                             // we want the path relative
-                            retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((cms.getStaticExportProperties().getUrlPrefixArray()[0]).length()));
+                            retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((CmsObject.getStaticExportProperties().getUrlPrefixArray()[0]).length()));
                         }
                     }
                     return retValue;
@@ -245,12 +252,12 @@ public class LinkSubstitution {
         }
         if(httpsMode && !retValue.startsWith("http")){
             if(needsScheme){
-                retValue = cms.getStaticExportProperties().getUrlPrefixArray()[3] + retValue;
+                retValue = CmsObject.getStaticExportProperties().getUrlPrefixArray()[3] + retValue;
             }
         }else{
-            if(cms.getStaticExportProperties().relativLinksInExport() && modus == cms.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(cms.getStaticExportProperties().getUrlPrefixArray()[0])){
+            if(CmsObject.getStaticExportProperties().relativLinksInExport() && modus == CmsObject.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(CmsObject.getStaticExportProperties().getUrlPrefixArray()[0])){
                 // we want the path relative
-                retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((cms.getStaticExportProperties().getUrlPrefixArray()[0]).length()));
+                retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((CmsObject.getStaticExportProperties().getUrlPrefixArray()[0]).length()));
             }
         }
         return retValue;

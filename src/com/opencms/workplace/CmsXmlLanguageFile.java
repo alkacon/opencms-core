@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2002/11/16 13:23:06 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2002/12/06 23:16:46 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,17 +30,22 @@
 package com.opencms.workplace;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import java.util.*;
-import java.io.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsObject;
+import com.opencms.template.A_CmsXmlContent;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Content definition for language files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.35 $ $Date: 2002/11/16 13:23:06 $
+ * @version $Revision: 1.36 $ $Date: 2002/12/06 23:16:46 $
  */
 
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants,I_CmsConstants {

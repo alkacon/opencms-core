@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,15 +28,20 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import javax.servlet.http.*;
-import java.util.*;
-import java.io.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.file.I_CmsRegistry;
+import com.opencms.util.Encoder;
+import com.opencms.util.Utils;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Template class for displaying the screen for changing the navigation position
@@ -44,7 +49,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.4 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.5 $ $Date: 2002/12/06 23:16:49 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {

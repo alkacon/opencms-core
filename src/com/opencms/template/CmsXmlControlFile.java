@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2002/10/30 10:32:23 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2002/12/06 23:16:50 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,19 +30,28 @@
 package com.opencms.template;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.template.cache.*;
-import com.opencms.util.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import java.util.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.template.cache.CmsElementDefinition;
+import com.opencms.template.cache.CmsElementDefinitionCollection;
+import com.opencms.util.Utils;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.26 $ $Date: 2002/10/30 10:32:23 $
+ * @version $Revision: 1.27 $ $Date: 2002/12/06 23:16:50 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -158,7 +167,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
         int numElements = parameterTags.getLength();
         for(int i = 0;i < numElements;i++) {
             Node n = (Node)parameterTags.item(i);
-            if(n.getNodeType() == n.ELEMENT_NODE && n.getNodeName().toLowerCase().equals("parameter")) {
+            if(n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals("parameter")) {
                 String name = ((Element)n).getAttribute("name");
                 if(name != null && !"".equals(name)) {
                     result.put(name, getTagValue((Element)n));
@@ -222,7 +231,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
         Vector collectNames = new Vector();
         for(int i = 0;i < numElements;i++) {
             Node n = (Node)nl.item(i);
-            if(n.getNodeType() == n.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(tag.toLowerCase())) {
+            if(n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(tag.toLowerCase())) {
                 String name = ((Element)n).getAttribute("name");
                 if(name == null || "".equals(name)) {
 

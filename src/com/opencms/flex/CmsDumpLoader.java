@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsDumpLoader.java,v $
- * Date   : $Date: 2002/12/06 15:57:31 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2002/12/06 23:16:58 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,13 @@
 package com.opencms.flex;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.*;
-import com.opencms.file.*;
-
-import com.opencms.flex.cache.*;
-import com.opencms.flex.util.I_CmsFlexLruCacheObject;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.flex.cache.CmsFlexCache;
+import com.opencms.flex.cache.CmsFlexRequest;
+import com.opencms.flex.cache.CmsFlexResponse;
 
 import java.io.IOException;
 
@@ -50,7 +52,7 @@ import javax.servlet.ServletException;
  * by other loaders. 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implements I_CmsResourceLoader {
     

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2001/07/31 15:50:18 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2002/12/06 23:16:46 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,25 @@
 
 package com.opencms.workplace;
 
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.file.*;
-import java.lang.reflect.*;
-import java.util.*;
-import javax.servlet.http.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.file.CmsUser;
+import com.opencms.file.I_CmsResourceType;
+import com.opencms.template.A_CmsXmlContent;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.GregorianCalendar;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import org.w3c.dom.Element;
 
 /**
  * Class for building a file list. <BR>
@@ -50,7 +61,7 @@ import javax.servlet.http.*;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.52 $ $Date: 2001/07/31 15:50:18 $
+ * @version $Revision: 1.53 $ $Date: 2002/12/06 23:16:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2002/08/23 16:49:33 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2002/12/06 23:16:58 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,19 @@
 
 package com.opencms.defaults.master;
 
-import com.opencms.defaults.master.genericsql.*;
-import com.opencms.core.*;
-import com.opencms.defaults.*;
-import com.opencms.file.*;
-import java.util.*;
-import java.util.zip.*;
-import org.w3c.dom.*;
-import com.opencms.template.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.defaults.A_CmsContentDefinition;
+import com.opencms.defaults.I_CmsExtendedContentDefinition;
+import com.opencms.defaults.master.genericsql.CmsDbAccess;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.file.CmsUser;
+
+import java.util.HashMap;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * This class is the master of several Modules. It carries a lot of generic
@@ -45,8 +50,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.24 $
- * $Date: 2002/08/23 16:49:33 $
+ * $Revision: 1.25 $
+ * $Date: 2002/12/06 23:16:58 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -872,7 +877,7 @@ public abstract class CmsMasterContent
         Vector subChannels = cms.getResourcesInFolder("//cos" + channel);
         for (int i=0; i < subChannels.size(); i++) {
             CmsResource resource = (CmsResource)subChannels.get(i);
-            if (resource.getState() != resource.C_STATE_DELETED) {            
+            if (resource.getState() != CmsResource.C_STATE_DELETED) {            
                 String folder = resource.getAbsolutePath();
                 Vector v = getAllSubChannelsOf(cms, folder);
                 if (v.size() == 0 && hasWriteAccess(cms, resource)) {
@@ -908,7 +913,7 @@ public abstract class CmsMasterContent
         int offset = rootChannel.length()-1;
         for (int i=0; i < subChannels.size(); i++) {
             CmsResource resource = (CmsResource)subChannels.get(i);
-            if (resource.getState() != resource.C_STATE_DELETED) {
+            if (resource.getState() != CmsResource.C_STATE_DELETED) {
                 String folder = resource.getAbsolutePath();
                 Vector v = getAllSubChannelsOf(cms, folder);
                 if (v.size() == 0 && hasWriteAccess(cms, resource)) {

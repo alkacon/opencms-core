@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
-* Date   : $Date: 2002/11/07 19:30:00 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/12/06 23:16:54 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,15 +29,18 @@
 package com.opencms.defaults;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.workplace.I_CmsWpConstants;
 
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import java.util.*;
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import org.w3c.dom.Element;
 
 /**
  * Template content definition for generating HTML forms.
@@ -46,7 +49,7 @@ import java.lang.reflect.*;
  * See the handleXxxTag Methods for more details.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2002/11/07 19:30:00 $
+ * @version $Revision: 1.14 $ $Date: 2002/12/06 23:16:54 $
  */
 public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 

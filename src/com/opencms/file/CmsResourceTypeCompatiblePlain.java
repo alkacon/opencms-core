@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeCompatiblePlain.java,v $
-* Date   : $Date: 2002/08/24 08:42:37 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,8 @@
 
 package com.opencms.file;
 
-import com.opencms.core.*;
-import com.opencms.util.*;
-import java.util.*;
-import java.util.zip.*;
-import java.io.*;
-import com.opencms.file.genericSql.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 
 /**
  * The resource type compatible plain is a system used resourcetype to show
@@ -42,7 +38,7 @@ import com.opencms.file.genericSql.*;
  * copied or deleted.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.4 $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.5 $Date: 2002/08/24 08:42:37 $
  *
  */
 public class CmsResourceTypeCompatiblePlain extends CmsResourceTypePlain {

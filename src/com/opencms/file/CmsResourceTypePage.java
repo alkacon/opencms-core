@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/11/07 19:32:12 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,25 +28,25 @@
 
 package com.opencms.file;
 
-import java.util.zip.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.linkmanagement.CmsPageLinks;
+import com.opencms.template.CmsXmlControlFile;
+import com.opencms.template.I_CmsXmlParser;
 
-
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.util.*;
-import com.opencms.linkmanagement.*;
-import java.util.*;
-
-import java.io.*;
-import org.w3c.dom.*;
-import com.opencms.file.genericSql.*;
+import java.io.Serializable;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 //import com.opencms.file.genericSql.linkmanagement.*;
 
 /**
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.39 $ $Date: 2002/11/07 19:32:12 $
+ * @version $Revision: 1.40 $ $Date: 2002/12/06 23:16:45 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2002/11/16 13:19:16 $
-* Version: $Revision: 1.101 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.102 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,24 +29,36 @@
 
 package com.opencms.template;
 
-import java.util.*;
-import java.io.*;
-import com.opencms.launcher.*;
-import com.opencms.file.*;
-import com.opencms.util.*;
-import com.opencms.defaults.*;
-import com.opencms.core.*;
-import com.opencms.template.cache.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import javax.servlet.http.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.defaults.A_CmsContentDefinition;
+import com.opencms.defaults.I_CmsTimedContentDefinition;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.file.CmsResource;
+import com.opencms.launcher.I_CmsTemplateCache;
+import com.opencms.template.cache.A_CmsElement;
+import com.opencms.template.cache.CmsElementCache;
+import com.opencms.template.cache.CmsElementDefinition;
+import com.opencms.template.cache.CmsElementDefinitionCollection;
+import com.opencms.template.cache.CmsElementDescriptor;
+import com.opencms.template.cache.CmsElementVariant;
+import com.opencms.template.cache.CmsElementXml;
+import com.opencms.util.Utils;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Template class for displaying the processed contents of hierachical XML template files
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.101 $ $Date: 2002/11/16 13:19:16 $
+ * @version $Revision: 1.102 $ $Date: 2002/12/06 23:16:49 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -416,7 +428,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      */
     public Object getQueryString(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         String query = "";
-        if(cms.getMode() == cms.C_MODUS_EXPORT){
+        if(cms.getMode() == CmsObject.C_MODUS_EXPORT){
             Enumeration parameters = cms.getRequestContext().getRequest().getParameterNames();
             if(parameters == null){
                 return query;
@@ -850,7 +862,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         // get the parameternames of the original request and get the values from the userObject
         try{
             Enumeration parameters = null;
-            if(cms.getMode() == cms.C_MODUS_EXPORT){
+            if(cms.getMode() == CmsObject.C_MODUS_EXPORT){
                 parameters = cms.getRequestContext().getRequest().getParameterNames();
             }else{
                 parameters = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getParameterNames();
@@ -1119,7 +1131,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                                 parameters, templateSelector).getCacheKey(cms, parameters);
         if(cms.getRequestContext().isElementCacheEnabled() && (cacheKey != null) &&
                 (cms.getRequestContext().currentProject().equals(cms.onlineProject()) )) {
-            boolean exportmode = cms.getMode() == cms.C_MODUS_EXPORT;
+            boolean exportmode = cms.getMode() == CmsObject.C_MODUS_EXPORT;
             Hashtable externVarDeps = cms.getVariantDependencies();
             long exTimeForVariant = Long.MAX_VALUE;
             long now = System.currentTimeMillis();
@@ -1132,7 +1144,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             if(cosDeps != null){
                 for (int i = 0; i < cosDeps.size(); i++){
                     A_CmsContentDefinition contentDef = (A_CmsContentDefinition)cosDeps.elementAt(i);
-                    String key = cms.getSiteName() + cms.C_ROOTNAME_COS + "/"+contentDef.getClass().getName() +"/"+contentDef.getUniqueId(cms);
+                    String key = cms.getSiteName() + CmsObject.C_ROOTNAME_COS + "/"+contentDef.getClass().getName() +"/"+contentDef.getUniqueId(cms);
                     if(exportmode){
                         cms.getRequestContext().addDependency(key);
                     }
@@ -1156,7 +1168,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             // now for the Classes
             if(cosClassDeps != null){
                 for(int i=0; i<cosClassDeps.size(); i++){
-                    String key = cms.getSiteName() + cms.C_ROOTNAME_COS + "/" + ((Class)cosClassDeps.elementAt(i)).getName() +"/";
+                    String key = cms.getSiteName() + CmsObject.C_ROOTNAME_COS + "/" + ((Class)cosClassDeps.elementAt(i)).getName() +"/";
                     allDeps.add(key);
                     if(exportmode){
                         cms.getRequestContext().addDependency(key);
@@ -1539,7 +1551,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
 
         CmsElementDefinitionCollection subtemplateDefinitions = new CmsElementDefinitionCollection();
-        String readAccessGroup = cms.C_GROUP_ADMIN;
+        String readAccessGroup = CmsObject.C_GROUP_ADMIN;
         int variantCachesize = 100;
         // if the templateFile is null someone didnt set the Templatefile in the elementdefinition
         // in this case we have to use the aktual body template when resolving the variant.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/11/03 10:47:58 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2002/12/06 23:16:54 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,19 +29,28 @@
 package com.opencms.file.mySql;
 
 
-import javax.servlet.http.*;
-import java.util.*;
-import java.sql.*;
-import java.security.*;
-import java.io.*;
-import source.org.apache.java.io.*;
-import source.org.apache.java.util.*;
-
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.*;
-import com.opencms.file.utils.*;
-import com.opencms.util.*;
+import com.opencms.util.Encoder;
+import com.opencms.util.SqlHelper;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
+
+import source.org.apache.java.util.Configurations;
 
 
 
@@ -53,7 +62,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.77 $ $Date: 2002/11/03 10:47:58 $ *
+ * @version $Revision: 1.78 $ $Date: 2002/12/06 23:16:54 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 

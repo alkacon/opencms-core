@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/12/06 22:04:57 $
- * Version: $Revision: 1.420 $
+ * Date   : $Date: 2002/12/06 23:13:09 $
+ * Version: $Revision: 1.421 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,6 +27,7 @@ OpenCms 5.0 (next release)
 * Fixed template selection issue when creating a new page
 * Fixed issue with response.setContentType() in JSP pages
 - Some cleanup of code comments
+- Removed unrequired imports and non-static access to static resources in all classes
 
 OpenCms 5.0 beta 2 Kaitain - 11 November 2002
 ! Default index.jsp "welcome to OpenCms" page is now included in a new installation

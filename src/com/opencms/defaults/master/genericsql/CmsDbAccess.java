@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/11/17 13:56:46 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2002/12/06 23:16:58 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,19 +28,33 @@
 
 package com.opencms.defaults.master.genericsql;
 
-import java.sql.*;
-import java.util.*;
-import java.io.*;
-import java.io.IOException;
-import java.lang.reflect.*;
+import com.opencms.boot.CmsBase;
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.boot.CmsBase;
-import com.opencms.file.*;
-import com.opencms.util.*;
 import com.opencms.dbpool.CmsIdGenerator;
-import com.opencms.defaults.master.*;
-import com.opencms.boot.*;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.defaults.master.CmsMasterMedia;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.file.CmsUser;
+import com.opencms.util.Utils;
+
+import java.io.ByteArrayInputStream;
+import java.lang.reflect.Constructor;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Vector;
 
 /**
  * This class provides methods to access the database in a generic way.
@@ -483,7 +497,7 @@ public class CmsDbAccess {
                 if(resources.size() >= 1) {
                     // add the name of the channel to the ret-value
                     CmsResource resource = (CmsResource)resources.get(0);
-                    if (resource.getState() != resource.C_STATE_DELETED) {
+                    if (resource.getState() != CmsResource.C_STATE_DELETED) {
                         retValue.add(resource.getAbsolutePath());
                     }
                 }
@@ -1821,7 +1835,7 @@ public class CmsDbAccess {
         }
 
         // update changedModuleData Vector
-        changedModuleData.add(cms.getSiteName() + cms.C_ROOTNAME_COS + "/"+
+        changedModuleData.add(cms.getSiteName() + CmsObject.C_ROOTNAME_COS + "/"+
             contentDefinitionName +"/"+dataset.m_masterId);
     }
 

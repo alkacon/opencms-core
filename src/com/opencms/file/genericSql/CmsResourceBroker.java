@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/11/17 14:51:53 $
-* Version: $Revision: 1.344 $
+* Date   : $Date: 2002/12/06 23:16:56 $
+* Version: $Revision: 1.345 $
 
 *
 * This library is part of OpenCms -
@@ -29,21 +29,36 @@
 
 package com.opencms.file.genericSql;
 
-import javax.servlet.http.*;
-import java.util.*;
-import java.net.*;
-import java.io.*;
-import source.org.apache.java.io.*;
-import source.org.apache.java.util.*;
 import com.opencms.boot.CmsBase;
-import com.opencms.core.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsLogChannels;
 import com.opencms.file.*;
-import com.opencms.template.*;
-import com.opencms.report.*;
-import com.opencms.util.*;
-import java.sql.SQLException;
-import java.util.zip.*;
-import org.w3c.dom.*;
+import com.opencms.report.I_CmsReport;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsTemplateClassManager;
+import com.opencms.util.Utils;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import org.w3c.dom.Document;
+import source.org.apache.java.util.Configurations;
 
 
 /**
@@ -56,7 +71,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.344 $ $Date: 2002/11/17 14:51:53 $
+ * @version $Revision: 1.345 $ $Date: 2002/12/06 23:16:56 $
 
  *
  */
@@ -4012,7 +4027,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             try {
                 cmsFolder = m_dbAccess.readFolder(currentProject.getId(), foldername);
             } catch(CmsException exc) {
-                if(exc.getType() == exc.C_NOT_FOUND) {
+                if(exc.getType() == CmsException.C_NOT_FOUND) {
                     // ignore the exception - file dosen't exist in this project
                     return new Vector(); //just an empty vector.
                 } else {
@@ -5819,7 +5834,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
             try {
                 group=m_dbAccess.readGroup(project.getGroupId()) ;
             } catch(CmsException exc) {
-                if(exc.getType() == exc.C_NO_GROUP) {
+                if(exc.getType() == CmsException.C_NO_GROUP) {
                     // the group does not exist any more - return a dummy-group
                     return new CmsGroup(C_UNKNOWN_ID, C_UNKNOWN_ID, project.getGroupId() + "", "deleted group", 0);
                 }
@@ -5852,7 +5867,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
             try {
                 group=m_dbAccess.readGroup(resource.getGroupId()) ;
             } catch(CmsException exc) {
-                if(exc.getType() == exc.C_NO_GROUP) {
+                if(exc.getType() == CmsException.C_NO_GROUP) {
                     return new CmsGroup(C_UNKNOWN_ID, C_UNKNOWN_ID, resource.getGroupId() + "", "deleted group", 0);
                 }
             }
@@ -5945,7 +5960,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
             try {
                 group=m_dbAccess.readGroup(project.getManagerGroupId()) ;
             } catch(CmsException exc) {
-                if(exc.getType() == exc.C_NO_GROUP) {
+                if(exc.getType() == CmsException.C_NO_GROUP) {
                     // the group does not exist any more - return a dummy-group
                     return new CmsGroup(C_UNKNOWN_ID, C_UNKNOWN_ID, project.getManagerGroupId() + "", "deleted group", 0);
                 }

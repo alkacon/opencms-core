@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbManager.java,v $
-* Date   : $Date: 2002/11/17 16:43:16 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,16 +29,17 @@
 package com.opencms.file;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import java.util.*;
-import source.org.apache.java.util.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+
+import source.org.apache.java.util.Configurations;
 
 /**
  * Initializes the configuret ResourceBroker and starts its init-method.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2002/11/17 16:43:16 $
+ * @version $Revision: 1.10 $ $Date: 2002/12/06 23:16:45 $
  */
 public class CmsRbManager implements I_CmsLogChannels, I_CmsConstants {
 

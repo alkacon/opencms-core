@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButton.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,20 +29,22 @@
 
 package com.opencms.workplace;
 
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.file.*;
-import java.util.*;
-import java.lang.reflect.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+import com.opencms.template.A_CmsXmlContent;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Hashtable;
+
+import org.w3c.dom.Element;
 
 /**
  * Class for building workplace buttons. <BR>
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2001/07/31 15:50:17 $
+ * @version $Revision: 1.16 $ $Date: 2002/12/06 23:16:49 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

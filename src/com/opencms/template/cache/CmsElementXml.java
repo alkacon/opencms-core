@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2002/06/21 15:35:20 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2002/12/06 23:16:51 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,14 @@
 
 package com.opencms.template.cache;
 
-import java.util.*;
-import com.opencms.boot.*;
-import com.opencms.core.*;
-import com.opencms.file.*;
-import com.opencms.template.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+import com.opencms.template.A_CmsCacheDirectives;
+import com.opencms.template.CmsCacheDirectives;
+import com.opencms.template.I_CmsTemplate;
+
+import java.util.Hashtable;
 
 /**
  * An instance of CmsElementXML represents an requestable Element in the OpenCms
@@ -168,7 +171,7 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                 } catch(Exception e) {
                     if(e instanceof CmsException) {
                         CmsException ce = (CmsException)e;
-                        if(ce.getType() == ce.C_ACCESS_DENIED) {
+                        if(ce.getType() == CmsException.C_ACCESS_DENIED) {
                             // This was an access denied exception.
                             // This is not very critical at the moment.
                             if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {

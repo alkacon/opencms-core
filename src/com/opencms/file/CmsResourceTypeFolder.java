@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2002/11/07 19:31:51 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,15 @@
 
 package com.opencms.file;
 
-import com.opencms.core.*;
-import java.util.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsLogChannels;
 
-import java.io.*;
-import com.opencms.file.genericSql.*;
+import java.io.Serializable;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Access class for resources of the type "Folder".

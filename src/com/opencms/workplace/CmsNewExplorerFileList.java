@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2002/11/16 13:23:06 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2002/12/06 23:16:46 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,17 +28,25 @@
 
 package com.opencms.workplace;
 
-import java.util.*;
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.launcher.*;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.template.cache.*;
-import com.opencms.util.*;
-import java.util.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.file.CmsResource;
+import com.opencms.file.I_CmsRegistry;
+import com.opencms.launcher.I_CmsTemplateCache;
+import com.opencms.template.CmsCacheDirectives;
+import com.opencms.template.I_CmsDumpTemplate;
+import com.opencms.template.cache.A_CmsElement;
+import com.opencms.template.cache.CmsElementDump;
+import com.opencms.util.Utils;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Template class for dumping files to the output without further
@@ -46,7 +54,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.49 $ $Date: 2002/11/16 13:23:06 $
+ * @version $Revision: 1.50 $ $Date: 2002/12/06 23:16:46 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -630,7 +638,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 // remove the channel resources
                 for(int i=0; i<resources.size(); i++){
                     CmsResource curRes = (CmsResource)resources.elementAt(i);
-                    if(curRes.getResourceName().startsWith(cms.getRequestContext().getSiteName()+cms.C_ROOTNAME_COS)){
+                    if(curRes.getResourceName().startsWith(cms.getRequestContext().getSiteName()+CmsObject.C_ROOTNAME_COS)){
                         resources.remove(i);
                     }
                 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButtonSubmit.java,v $
-* Date   : $Date: 2002/11/16 13:23:06 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/12/06 23:16:46 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,19 +29,20 @@
 
 package com.opencms.workplace;
 
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.file.*;
-import java.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+import com.opencms.template.A_CmsXmlContent;
+
+import java.util.Hashtable;
+
+import org.w3c.dom.Element;
 
 /**
  * Class for building workplace submit buttons. <BR>
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;SUBMITBUTTON&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2002/11/16 13:23:06 $
+ * @version $Revision: 1.10 $ $Date: 2002/12/06 23:16:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

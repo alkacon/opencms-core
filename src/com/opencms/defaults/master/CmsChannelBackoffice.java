@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2002/09/03 11:57:01 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/12/06 23:16:57 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,17 +28,19 @@
 
 package com.opencms.defaults.master;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import com.opencms.workplace.*;
-import com.opencms.defaults.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsSession;
+import com.opencms.defaults.A_CmsBackoffice;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsUser;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.util.Encoder;
+import com.opencms.workplace.CmsXmlLanguageFile;
+import com.opencms.workplace.CmsXmlWpTemplateFile;
 
-import java.util.*;
-import java.io.*;
-import java.sql.*;
-import java.text.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 public class CmsChannelBackoffice extends A_CmsBackoffice{
@@ -344,12 +346,12 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             String permissionsAtI=(String)parameters.get("permissions"+i);
             if(permissionsAtI != null) {
                 if(permissionsAtI.equals("on")) {
-                    accessFlag += new Integer(this.C_ACCESS_FLAGS[i]).intValue();
+                    accessFlag += new Integer(C_ACCESS_FLAGS[i]).intValue();
                 }
             }
         }
         if(accessFlag == 0){
-            accessFlag = this.C_DEFAULT_PERMISSIONS;
+            accessFlag = C_DEFAULT_PERMISSIONS;
         }
         return accessFlag;
     }
@@ -360,7 +362,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
      private void setAccessValue(CmsXmlWpTemplateFile template, int accessFlags){
         // permissions check boxes
         for(int i=0; i<=8; i++) {
-            int accessValueAtI = new Integer(this.C_ACCESS_FLAGS[i]).intValue();
+            int accessValueAtI = new Integer(C_ACCESS_FLAGS[i]).intValue();
             if ((accessFlags & accessValueAtI) > 0) {
                 template.setData("permissions_check_"+i,"checked");
             } else {

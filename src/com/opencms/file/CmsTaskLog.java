@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTaskLog.java,v $
-* Date   : $Date: 2002/11/02 10:32:22 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,15 +29,14 @@
 package com.opencms.file;
 
 
-import com.opencms.core.*;
-import java.util.*;
+import com.opencms.core.I_CmsConstants;
 
 
 /**
  * This class describes a tasklog in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.8 $ $Date: 2002/11/02 10:32:22 $
+ * @version $Revision: 1.9 $ $Date: 2002/12/06 23:16:45 $
  */
 public class CmsTaskLog implements I_CmsConstants {
 

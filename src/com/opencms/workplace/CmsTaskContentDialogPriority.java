@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
-* Date   : $Date: 2002/09/03 11:57:07 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,19 +29,28 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import java.util.*;
-import javax.servlet.http.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsTask;
+import com.opencms.file.CmsUser;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.util.Encoder;
+import com.opencms.util.Utils;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Template class for displaying OpenCms workplace task content screens.
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2002/09/03 11:57:07 $
+ * @version $Revision: 1.19 $ $Date: 2002/12/06 23:16:49 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

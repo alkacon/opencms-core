@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2002/10/30 10:29:15 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2002/12/06 23:16:54 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,12 +30,21 @@
 package com.opencms.launcher;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.template.*;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import java.util.*;
-import java.io.*;
-import javax.servlet.http.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsResponse;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsRootTemplate;
+import com.opencms.template.CmsTemplateClassManager;
+import com.opencms.template.I_CmsTemplate;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Hashtable;
 
 /**
  * Abstract OpenCms launcher class.
@@ -59,7 +68,7 @@ import javax.servlet.http.*;
  * </UL>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2002/10/30 10:29:15 $
+ * @version $Revision: 1.37 $ $Date: 2002/12/06 23:16:54 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsConstants {
 

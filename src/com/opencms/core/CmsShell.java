@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
-* Date   : $Date: 2002/10/30 10:12:47 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2002/12/06 23:16:51 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,22 +28,32 @@
 
 package com.opencms.core;
 
-import java.util.*;
-import java.io.*;
-import com.opencms.boot.*;
-import com.opencms.file.*;
-import java.lang.reflect.*;
-import source.org.apache.java.util.*;
+import com.opencms.boot.CmsBase;
+import com.opencms.file.CmsObject;
 
-import FESI.jslib.*;
-import FESI.Exceptions.*;
-import FESI.Parser.*;
-import FESI.AST.*;
-import FESI.Extensions.Extension;
-import FESI.Extensions.BasicIOInterface;
-import FESI.gui.*;
-import FESI.Data.*;
-import FESI.Interpreter.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.StreamTokenizer;
+import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Vector;
+
+import source.org.apache.java.util.Configurations;
+import source.org.apache.java.util.ExtendedProperties;
+
+import FESI.Data.ESUndefined;
+import FESI.Data.ESValue;
+import FESI.Exceptions.EcmaScriptException;
+import FESI.Interpreter.Evaluator;
+import FESI.jslib.JSException;
+import FESI.jslib.JSFunctionAdapter;
+import FESI.jslib.JSGlobalObject;
+import FESI.jslib.JSObject;
+import FESI.jslib.JSUtil;
 
 /**
  * This class is a commad line interface to OpenCms which 
@@ -52,7 +62,7 @@ import FESI.Interpreter.*;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.71 $ $Date: 2002/10/30 10:12:47 $
+ * @version $Revision: 1.72 $ $Date: 2002/12/06 23:16:51 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -176,8 +186,8 @@ public class CmsShell implements I_CmsConstants {
 
                 //put all tokens into a vector.
                 Vector args = new Vector();
-                while(st.nextToken() != st.TT_EOF) {
-                    if(st.ttype == st.TT_NUMBER) {
+                while(st.nextToken() != StreamTokenizer.TT_EOF) {
+                    if(st.ttype == StreamTokenizer.TT_NUMBER) {
                         args.addElement(new Double(st.nval).intValue() + "");
                     } else {
                         args.addElement(st.sval);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsCallableStatement.java,v $
-* Date   : $Date: 2002/09/02 07:30:54 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/12/06 23:16:53 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,18 @@
 
 package com.opencms.dbpool;
 
-import java.sql.*;
-import java.util.*;
-import java.io.*;
-import java.math.*;
-import source.org.apache.java.util.*;
+import java.math.BigDecimal;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.CallableStatement;
+import java.sql.Clob;
+import java.sql.PreparedStatement;
+import java.sql.Ref;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Map;
 
 /**
  * This class is used to create an connection-pool for opencms.

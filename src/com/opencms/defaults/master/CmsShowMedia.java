@@ -24,17 +24,18 @@ package com.opencms.defaults.master;
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import com.opencms.workplace.*;
-import com.opencms.defaults.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.template.CmsCacheDirectives;
+import com.opencms.template.CmsXmlTemplate;
 
-import java.lang.reflect.*;
-
-import java.util.*;
-import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * XmlTemplate class to show media objects

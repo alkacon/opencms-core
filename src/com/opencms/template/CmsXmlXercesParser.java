@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
-* Date   : $Date: 2002/10/30 10:32:23 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2002/12/06 23:16:51 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,13 +30,22 @@
 package com.opencms.template;
 
 import com.opencms.boot.I_CmsLogChannels;
-import java.io.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
-import org.apache.xerces.dom.*;
-import org.apache.xml.serialize.*;
-import com.opencms.core.*;
+import com.opencms.core.A_OpenCms;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
+
+import org.apache.xerces.parsers.DOMParser;
+import org.apache.xml.serialize.DOMSerializer;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Implementation of the OpenCms XML parser interface for
@@ -44,7 +53,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2002/10/30 10:32:23 $
+ * @version $Revision: 1.18 $ $Date: 2002/12/06 23:16:51 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser,I_CmsLogChannels {
     

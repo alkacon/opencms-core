@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2002/11/07 19:33:56 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,15 +28,19 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import javax.servlet.http.*;
-import java.util.*;
-import java.io.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.file.I_CmsRegistry;
+import com.opencms.util.Utils;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Template class for displaying the new resource screen for a new folder
@@ -44,7 +48,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2002/11/07 19:33:56 $
+ * @version $Revision: 1.34 $ $Date: 2002/12/06 23:16:49 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -610,7 +614,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                 properties.remove("Hauptlogo_img");
             }else{
                 CmsResource pic = cms.readFileHeader(logo);
-                if(!(cms.getResourceType(pic.getType()).getResourceTypeName()).equals(cms.C_TYPE_IMAGE_NAME)){
+                if(!(cms.getResourceType(pic.getType()).getResourceTypeName()).equals(CmsObject.C_TYPE_IMAGE_NAME)){
                    return 1;
                 }
             }
@@ -625,7 +629,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                     properties.remove("Verzeichnislogo_img");
                 }else{
                     CmsResource pic = cms.readFileHeader(logo);
-                    if(!(cms.getResourceType(pic.getType()).getResourceTypeName()).equals(cms.C_TYPE_IMAGE_NAME)){
+                    if(!(cms.getResourceType(pic.getType()).getResourceTypeName()).equals(CmsObject.C_TYPE_IMAGE_NAME)){
                        return 1;
                     }
                 }

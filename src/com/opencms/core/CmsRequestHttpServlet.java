@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2002/10/30 10:19:43 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2002/12/06 23:16:51 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,11 +30,15 @@ package com.opencms.core;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.flex.util.CmsResourceTranslator;
-import com.opencms.util.*;
-import java.util.*;
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Implementation of the I_CmsRequest interface which wraps a HttpServletRequest
@@ -58,7 +62,7 @@ import javax.servlet.http.*;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.33 $ $Date: 2002/10/30 10:19:43 $
+ * @version $Revision: 1.34 $ $Date: 2002/12/06 23:16:51 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 

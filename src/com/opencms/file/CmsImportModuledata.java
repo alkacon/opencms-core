@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2002/02/18 09:48:25 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/12/06 23:16:46 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,26 +28,43 @@
 
 package com.opencms.file;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import java.lang.reflect.*;
-import java.security.*;
-import java.text.*;
-import com.opencms.boot.*;
-import com.opencms.core.*;
-import com.opencms.file.*;
-import com.opencms.template.*;
-import com.opencms.defaults.master.*;
-import org.w3c.dom.*;
-import source.org.apache.java.util.*;
+import com.opencms.boot.CmsBase;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.defaults.master.CmsMasterMedia;
+import com.opencms.template.A_CmsXmlContent;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * This class holds the functionaility to import resources from the filesystem
  * into the cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2002/02/18 09:48:25 $
+ * @version $Revision: 1.3 $ $Date: 2002/12/06 23:16:46 $
  */
 public class CmsImportModuledata implements I_CmsConstants, Serializable {
 
@@ -358,7 +375,7 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
             }
             if(res == null){
                 // get a new channelid
-                int newChannelId = com.opencms.dbpool.CmsIdGenerator.nextId(this.C_TABLE_CHANNELID);
+                int newChannelId = com.opencms.dbpool.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
                 properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId+"");
                 res = m_cms.importResource("", destination, type, user, group, access,
                                             properties, "", null, m_importPath);
@@ -480,7 +497,7 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
         try{
             newDataset.m_accessFlags = Integer.parseInt(accessFlags);
         } catch (Exception e){
-            newDataset.m_accessFlags = this.C_ACCESS_DEFAULT_FLAGS;
+            newDataset.m_accessFlags = C_ACCESS_DEFAULT_FLAGS;
         }
         // set the publication date
         publicationDate = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PUBLICATIONDATE);

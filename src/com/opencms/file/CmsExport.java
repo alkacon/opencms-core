@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/11/11 15:02:11 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.37 $ $Date: 2002/11/11 15:02:11 $
+ * @version $Revision: 1.38 $ $Date: 2002/12/06 23:16:45 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -348,7 +348,7 @@ public void addSingleFiles(Vector fileNames) throws CmsException {
                     m_exportedResources.add(fileName);
                 }
             } catch(CmsException exc) {
-                if(exc.getType() != exc.C_RESOURCE_DELETED) {
+                if(exc.getType() != CmsException.C_RESOURCE_DELETED) {
                     throw exc;
                 }
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsIdGenerator.java,v $
-* Date   : $Date: 2001/10/25 10:31:39 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/12/06 23:16:53 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,15 @@
 package com.opencms.dbpool;
 
 
-import java.sql.*;
-import java.util.*;
-import source.org.apache.java.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 
-import com.opencms.core.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Hashtable;
 
 /**
  * This class is used to create an connection-pool for opencms.

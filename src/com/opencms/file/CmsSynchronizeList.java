@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronizeList.java,v $
-* Date   : $Date: 2002/04/11 12:13:41 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.util.*;
  * in the virtual filesystem (VFS) and the server filesystem (SFS)
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.7 $ $Date: 2002/04/11 12:13:41 $
+ * @version $Revision: 1.8 $ $Date: 2002/12/06 23:16:45 $
  */
 public class CmsSynchronizeList implements I_CmsConstants, Serializable {
 
@@ -96,7 +96,7 @@ public class CmsSynchronizeList implements I_CmsConstants, Serializable {
             throw new CmsException(newFile.getName()+" already exists on filesystem.");
         }
         try {
-            String pathName = newFile.getPath().substring(0, (int)newFile.getPath().lastIndexOf(newFile.separatorChar)+1);
+            String pathName = newFile.getPath().substring(0, (int)newFile.getPath().lastIndexOf(File.separatorChar)+1);
             File directory = new File(pathName);
             if (directory.exists()){
                 fOut = new FileOutputStream(newFile);

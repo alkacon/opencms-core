@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2002/07/10 07:59:56 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/12/06 23:16:58 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -114,7 +114,7 @@ public class LinkChecker{
      *          this CmsPageLinks object contains all links on the page withouth a valid target.
      */
     public void checkProject(CmsObject cms, int projectId, I_CmsReport report)throws CmsException{
-        if(projectId == cms.C_PROJECT_ONLINE_ID){
+        if(projectId == CmsObject.C_PROJECT_ONLINE_ID){
             // lets check only the online project
             Vector result = cms.getOnlineBrokenLinks();
             for(int i=0; i<result.size(); i++){

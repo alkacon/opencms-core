@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mssql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/10/30 10:18:42 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/12/06 23:16:57 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,19 +29,21 @@
 package com.opencms.file.mssql;
 
 
-import javax.servlet.http.*;
-import java.util.*;
-import java.sql.*;
-import java.security.*;
-import java.io.*;
-import source.org.apache.java.io.*;
-import source.org.apache.java.util.*;
-
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.*;
-import com.opencms.file.*;
-import com.opencms.file.utils.*;
-import com.opencms.util.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsBackupProject;
+import com.opencms.util.SqlHelper;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
+
+import source.org.apache.java.util.Configurations;
 
 
 
@@ -50,7 +52,7 @@ import com.opencms.util.*;
  * the database.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2002/10/30 10:18:42 $ *
+ * @version $Revision: 1.3 $ $Date: 2002/12/06 23:16:57 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2002/09/16 11:53:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2002/12/06 23:16:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject {
     
@@ -221,7 +221,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
             res.sendRedirect(m_redirectTarget);
         } else {      
             // Process cached headers first
-            res.processHeaders(m_headers, res);
+            CmsFlexResponse.processHeaders(m_headers, res);
             // Check if this cache entry is a "leaf" (i.e. no further includes)            
             boolean hasNoSubElements = ((m_elements != null) && (m_elements.size() == 1));            
             // Write output to stream and process all included elements

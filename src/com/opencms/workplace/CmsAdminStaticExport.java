@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2002/11/08 10:19:14 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/12/06 23:16:46 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,22 +28,27 @@
 
 package com.opencms.workplace;
 
-import com.opencms.boot.*;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import java.util.*;
-import java.io.*;
-import javax.servlet.http.*;
-import org.apache.oro.text.perl.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.file.CmsStaticExport;
+import com.opencms.util.Encoder;
+
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import org.apache.oro.text.perl.Perl5Util;
 
 /**
  * Template class for displaying OpenCms workplace admin static export.
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -96,7 +101,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
         }
         if(action == null || "dynPrint".equals(action)) {
             // This is an initial request of the static export page
-            Vector exportStartPoints = cms.getStaticExportProperties().getStartPoints();
+            Vector exportStartPoints = CmsObject.getStaticExportProperties().getStartPoints();
             String allStartPoints = "";
             if(exportStartPoints != null){
                 for(int i=0; i<exportStartPoints.size(); i++){
@@ -105,7 +110,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
                 }
             }
             xmlTemplateDocument.setData("exportpoints", allStartPoints);
-            xmlTemplateDocument.setData("path", cms.getStaticExportProperties().getExportPath());
+            xmlTemplateDocument.setData("path", CmsObject.getStaticExportProperties().getExportPath());
             if("dynPrint".equals(action)){
                 // print the dynamic rules to the errorlog
                 System.err.println("");
@@ -237,7 +242,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
     public Boolean isExportActive(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
         boolean isProMan = isProjectManager(cms, lang, parameters).booleanValue();
-        return new Boolean(cms.getStaticExportProperties().isStaticExportEnabled() && isProMan);
+        return new Boolean(CmsObject.getStaticExportProperties().isStaticExportEnabled() && isProMan);
     }
 
     /**
@@ -258,7 +263,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
     public Boolean isExportActiveAdmin(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
         boolean isAdmin = isAdmin(cms, lang, parameters).booleanValue();
-        return new Boolean(cms.getStaticExportProperties().isStaticExportEnabled() && isAdmin);
+        return new Boolean(CmsObject.getStaticExportProperties().isStaticExportEnabled() && isAdmin);
     }
 
     /** Parse the string which holds all resources

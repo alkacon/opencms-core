@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/07/31 15:50:15 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2002/12/06 23:16:54 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,16 +28,12 @@
 
 package com.opencms.file.mySql;
 
-import javax.servlet.http.*;
-import java.util.*;
-import java.net.*;
-import java.io.*;
-import source.org.apache.java.io.*;
-import source.org.apache.java.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsProject;
+import com.opencms.file.CmsTask;
+import com.opencms.file.CmsUser;
 
-import com.opencms.core.*;
-import com.opencms.file.*;
-import com.opencms.template.*;
+import source.org.apache.java.util.Configurations;
 
 
 /**
@@ -50,7 +46,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.43 $ $Date: 2001/07/31 15:50:15 $
+ * @version $Revision: 1.44 $ $Date: 2002/12/06 23:16:54 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 /**

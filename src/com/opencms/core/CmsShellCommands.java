@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2002/10/30 10:13:09 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2002/12/06 23:16:51 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,16 @@
 
 package com.opencms.core;
 
-import java.util.*;
-import java.io.*;
 import com.opencms.file.*;
-import java.lang.reflect.*;
-import source.org.apache.java.util.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * This class is a commad line interface to OpenCms which 
@@ -41,7 +46,7 @@ import source.org.apache.java.util.*;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.55 $ $Date: 2002/10/30 10:13:09 $
+ * @version $Revision: 1.56 $ $Date: 2002/12/06 23:16:51 $
  * 
  * @see com.opencms.file.CmsObject
  */

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2002/11/18 09:34:45 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,26 +28,35 @@
 
 package com.opencms.file;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import java.lang.reflect.*;
-import java.security.*;
-import com.opencms.boot.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
+import com.opencms.boot.CmsBase;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.OpenCms;
+import com.opencms.linkmanagement.CmsPageLinks;
+import com.opencms.linkmanagement.LinkChecker;
+import com.opencms.report.I_CmsReport;
+import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Utils;
-import com.opencms.linkmanagement.*;
-import com.opencms.report.*;
-import org.w3c.dom.*;
-import source.org.apache.java.util.*;
+
+import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Hashtable;
+import java.util.Stack;
+import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * This class holds the functionaility to import resources from the filesystem
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.59 $ $Date: 2002/11/18 09:34:45 $
+ * @version $Revision: 1.60 $ $Date: 2002/12/06 23:16:45 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 

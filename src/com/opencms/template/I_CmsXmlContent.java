@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlContent.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/12/06 23:16:50 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,18 +29,21 @@
 
 package com.opencms.template;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import java.io.*;
-import org.xml.sax.*;
-import org.w3c.dom.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+
+import java.io.Writer;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
  * Common interface for OpenCms XML content classes.
  * Classes for each customized content type have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.9 $ $Date: 2002/12/06 23:16:50 $
  */
 public interface I_CmsXmlContent extends I_CmsContent {
     

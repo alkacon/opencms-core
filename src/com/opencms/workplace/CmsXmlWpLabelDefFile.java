@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpLabelDefFile.java,v $
-* Date   : $Date: 2002/10/30 10:38:47 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,18 +30,16 @@
 package com.opencms.workplace;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import java.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.template.A_CmsXmlContent;
 
 /**
  *  Content definition for the workplace label element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2002/10/30 10:38:47 $
+ * @version $Revision: 1.11 $ $Date: 2002/12/06 23:16:49 $
  **/
 
 public class CmsXmlWpLabelDefFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2002/09/03 11:57:01 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.defaults.master.*;
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.6 $ $Date: 2002/09/03 11:57:01 $
+ * @version $Revision: 1.7 $ $Date: 2002/12/06 23:16:45 $
  */
 public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
@@ -619,31 +619,31 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         Vector channels = content.getChannels();
 
         // write these informations to the xml-manifest
-        Element master = m_docXml.createElement(this.C_EXPORT_TAG_MASTER);
+        Element master = m_docXml.createElement(C_EXPORT_TAG_MASTER);
         m_mastersElement.appendChild(master);
 
-        addElement(m_docXml, master, this.C_EXPORT_TAG_MASTER_SUBID, ""+subId);
+        addElement(m_docXml, master, C_EXPORT_TAG_MASTER_SUBID, ""+subId);
         // add the name of the datasetfile and create the datasetfile
         // with the information from the dataset
-        addElement(m_docXml, master, this.C_EXPORT_TAG_MASTER_DATASET, dataSetFile);
+        addElement(m_docXml, master, C_EXPORT_TAG_MASTER_DATASET, dataSetFile);
         writeExportDataset(dataset, dataSetFile, masterNr, subId);
         // add the channel relation of this master
-        Element channelrel = m_docXml.createElement(this.C_EXPORT_TAG_MASTER_CHANNELREL);
+        Element channelrel = m_docXml.createElement(C_EXPORT_TAG_MASTER_CHANNELREL);
         master.appendChild(channelrel);
         Vector moduleChannels = content.getChannels();
         for(int i=0; i<moduleChannels.size(); i++){
             String channelname = (String)moduleChannels.elementAt(i);
-            addElement(m_docXml, channelrel, this.C_EXPORT_TAG_MASTER_CHANNELNAME, channelname);
+            addElement(m_docXml, channelrel, C_EXPORT_TAG_MASTER_CHANNELNAME, channelname);
         }
         // add the mediaset
-        Element mediaset = m_docXml.createElement(this.C_EXPORT_TAG_MASTER_MEDIASET);
+        Element mediaset = m_docXml.createElement(C_EXPORT_TAG_MASTER_MEDIASET);
         master.appendChild(mediaset);
         Vector moduleMedia = content.getMedia();
         for(int i=0; i<moduleMedia.size(); i++){
             // for each media add the name of the xml-file for the mediadata to the manifest
             // and create the files for the media information
             String mediaFile = "media_"+subId+"_"+masterNr+"_"+i+".xml";
-            addElement(m_docXml, mediaset, this.C_EXPORT_TAG_MASTER_MEDIA, mediaFile);
+            addElement(m_docXml, mediaset, C_EXPORT_TAG_MASTER_MEDIA, mediaFile);
             writeExportMediaset((CmsMasterMedia)moduleMedia.elementAt(i), mediaFile, masterNr, subId, i);
         }
     }
@@ -661,7 +661,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
         // add the data element
-        Element elementDataset = xmlDoc.createElement(this.C_EXPORT_TAG_MASTER_DATASET);
+        Element elementDataset = xmlDoc.createElement(C_EXPORT_TAG_MASTER_DATASET);
         xmlDoc.getDocumentElement().appendChild(elementDataset);
         // add the data of the contentdefinition
         // get the name of the owner
@@ -676,16 +676,16 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
             groupName = m_cms.readGroup(dataset.m_groupId).getName();
         } catch (CmsException e){
         }
-        addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_USER, ownerName);
-        addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_GROUP, groupName);
-        addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_ACCESSFLAGS, ""+dataset.m_accessFlags);
-        addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_PUBLICATIONDATE, Utils.getNiceDate(dataset.m_publicationDate));
-        addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_PURGEDATE, Utils.getNiceDate(dataset.m_purgeDate));
-        addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_FLAGS, ""+dataset.m_flags);
-        addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_FEEDID, ""+dataset.m_feedId);
-        addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_FEEDREFERENCE, ""+dataset.m_feedReference);
-        addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_FEEDFILENAME, dataset.m_feedFilename);
-        addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_TITLE, dataset.m_title);
+        addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_USER, ownerName);
+        addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_GROUP, groupName);
+        addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_ACCESSFLAGS, ""+dataset.m_accessFlags);
+        addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_PUBLICATIONDATE, Utils.getNiceDate(dataset.m_publicationDate));
+        addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_PURGEDATE, Utils.getNiceDate(dataset.m_purgeDate));
+        addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_FLAGS, ""+dataset.m_flags);
+        addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_FEEDID, ""+dataset.m_feedId);
+        addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_FEEDREFERENCE, ""+dataset.m_feedReference);
+        addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_FEEDFILENAME, dataset.m_feedFilename);
+        addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_TITLE, dataset.m_title);
         // get the values of data_big from the string array
         for(int i=0; i< dataset.m_dataBig.length; i++){
             String value = dataset.m_dataBig[i];
@@ -695,7 +695,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
                 dataFile = "databig_"+subId+"_"+masterNr+"_"+i+".dat";
                 writeExportContentFile(dataFile, value.getBytes());
             }
-            addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_DATABIG+i, dataFile);
+            addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_DATABIG+i, dataFile);
         }
         // get the values of data_medium from the string array
         for(int i=0; i< dataset.m_dataMedium.length; i++){
@@ -706,7 +706,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
                 dataFile = "datamedium_"+subId+"_"+masterNr+"_"+i+".dat";
                 writeExportContentFile(dataFile, value.getBytes());
             }
-            addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_DATAMEDIUM+i, dataFile);
+            addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_DATAMEDIUM+i, dataFile);
         }
         // get the values of data_small from the string array
         for(int i=0; i< dataset.m_dataSmall.length; i++){
@@ -717,22 +717,22 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
                 dataFile = "datasmall_"+subId+"_"+masterNr+"_"+i+".dat";
                 writeExportContentFile(dataFile, value.getBytes());
             }
-            addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_DATASMALL+i, dataFile);
+            addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_DATASMALL+i, dataFile);
         }
         // get the values of data_int from the int array
         for(int i=0; i< dataset.m_dataInt.length; i++){
             String value = ""+dataset.m_dataInt[i];
-            addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_DATAINT+i, value);
+            addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_DATAINT+i, value);
         }
         // get the values of data_reference from the int array
         for(int i=0; i< dataset.m_dataReference.length; i++){
             String value = ""+dataset.m_dataReference[i];
-            addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_DATAREFERENCE+i, value);
+            addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_DATAREFERENCE+i, value);
         }
         // get the values of data_reference from the int array
         for(int i=0; i< dataset.m_dataDate.length; i++){
             String value = Utils.getNiceDate(dataset.m_dataDate[i]);
-            addElement(xmlDoc, elementDataset, this.C_EXPORT_TAG_MASTER_DATADATE+i, value);
+            addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_DATADATE+i, value);
         }
 
         try {
@@ -761,18 +761,18 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         Element elementMedia = xmlDoc.createElement("media");
         xmlDoc.getDocumentElement().appendChild(elementMedia);
         // add the data of the contentdefinition
-        addElement(xmlDoc, elementMedia, this.C_EXPORT_TAG_MEDIA_POSITION, ""+media.getPosition());
-        addElement(xmlDoc, elementMedia, this.C_EXPORT_TAG_MEDIA_WIDTH, ""+media.getWidth());
-        addElement(xmlDoc, elementMedia, this.C_EXPORT_TAG_MEDIA_HEIGHT, ""+media.getHeight());
-        addElement(xmlDoc, elementMedia, this.C_EXPORT_TAG_MEDIA_SIZE, ""+media.getSize());
-        addElement(xmlDoc, elementMedia, this.C_EXPORT_TAG_MEDIA_MIMETYPE, media.getMimetype());
-        addElement(xmlDoc, elementMedia, this.C_EXPORT_TAG_MEDIA_TYPE, ""+media.getType());
-        addElement(xmlDoc, elementMedia, this.C_EXPORT_TAG_MEDIA_TITLE, media.getTitle());
-        addElement(xmlDoc, elementMedia, this.C_EXPORT_TAG_MEDIA_NAME, media.getName());
-        addElement(xmlDoc, elementMedia, this.C_EXPORT_TAG_MEDIA_DESCRIPTION, media.getDescription());
+        addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_POSITION, ""+media.getPosition());
+        addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_WIDTH, ""+media.getWidth());
+        addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_HEIGHT, ""+media.getHeight());
+        addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_SIZE, ""+media.getSize());
+        addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_MIMETYPE, media.getMimetype());
+        addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_TYPE, ""+media.getType());
+        addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_TITLE, media.getTitle());
+        addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_NAME, media.getName());
+        addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_DESCRIPTION, media.getDescription());
         // now add the name of the file where the media content is stored and write this file
         String contentFilename = "mediacontent_"+subId+"_"+masterNr+"_"+mediaId+".dat";
-        addElement(xmlDoc, elementMedia, this.C_EXPORT_TAG_MEDIA_CONTENT, contentFilename);
+        addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_CONTENT, contentFilename);
         writeExportContentFile(contentFilename, media.getMedia());
         // write the media xml-file
         try {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/11/16 13:14:21 $
-* Version: $Revision: 1.190 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.191 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,13 @@
 
 package com.opencms.file;
 
-import javax.servlet.http.*;
-import java.util.*;
-import source.org.apache.java.io.*;
-import source.org.apache.java.util.*;
-import com.opencms.core.*;
-import com.opencms.report.*;
+import com.opencms.core.CmsException;
+import com.opencms.report.I_CmsReport;
+
+import java.util.Hashtable;
+import java.util.Vector;
+
+import source.org.apache.java.util.Configurations;
 
 /**
  * This interface describes THE resource broker. All DB-specific access modules must
@@ -43,7 +44,7 @@ import com.opencms.report.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.190 $ $Date: 2002/11/16 13:14:21 $
+ * @version $Revision: 1.191 $ $Date: 2002/12/06 23:16:45 $
  *
  */
 

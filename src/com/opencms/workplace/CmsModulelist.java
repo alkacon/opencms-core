@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModulelist.java,v $
-* Date   : $Date: 2002/11/16 13:23:06 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/12/06 23:16:46 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,19 @@
 
 package com.opencms.workplace;
 
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.file.*;
-import com.opencms.util.*;
-import java.util.*;
-import java.lang.reflect.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.file.I_CmsRegistry;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.util.Utils;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import org.w3c.dom.Element;
 
 /**
  * Class for building modulelist. <BR>
@@ -43,7 +48,7 @@ import java.lang.reflect.*;
  * 
  * Creation date: (31.08.00 15:16:10)
  * @author: Hanjo Riege
- * @Version: $Revision: 1.6 $
+ * @Version: $Revision: 1.7 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

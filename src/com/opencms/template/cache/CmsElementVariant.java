@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementVariant.java,v $
-* Date   : $Date: 2002/10/15 13:17:18 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/12/06 23:16:53 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,8 @@
 
 package com.opencms.template.cache;
 
-import java.util.*;
-import java.io.*;
-import com.opencms.file.*;
+import java.io.UnsupportedEncodingException;
+import java.util.Vector;
 
 /**
  * An instance of CmsElementVariant stores a single cached variant for an

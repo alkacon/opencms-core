@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
-* Date   : $Date: 2001/12/06 10:02:00 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,19 +29,26 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import javax.servlet.http.*;
-import java.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.file.CmsUser;
+import com.opencms.template.CmsXmlControlFile;
+import com.opencms.util.Utils;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2001/12/06 10:02:00 $
+ * @version $Revision: 1.26 $ $Date: 2002/12/06 23:16:49 $
  */
 
 public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {

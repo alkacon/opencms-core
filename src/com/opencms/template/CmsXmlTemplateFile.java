@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2002/12/04 14:52:34 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2002/12/06 23:16:51 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,20 +29,34 @@
 
 package com.opencms.template;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.template.cache.*;
-import com.opencms.util.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import java.util.*;
-import java.io.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.core.I_CmsRequest;
+import com.opencms.core.OpenCms;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.template.cache.CmsElementLink;
+import com.opencms.template.cache.CmsElementVariant;
+import com.opencms.template.cache.CmsMethodLink;
+import com.opencms.util.LinkSubstitution;
+
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.55 $ $Date: 2002/12/04 14:52:34 $
+ * @version $Revision: 1.56 $ $Date: 2002/12/06 23:16:51 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -121,11 +135,11 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         for(int i=0; i < numElements; i++){
             Node n = (Node)list.item(i);
             // we only search in the template tags
-            if(n.getNodeType() == n.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(C_TEMPLATE)){
+            if(n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(C_TEMPLATE)){
                 NodeList subList = n.getChildNodes();
                 for(int j=0; j<subList.getLength(); j++){
                     Node subNode = (Node)subList.item(j);
-                    if(subNode.getNodeType()==subNode.ELEMENT_NODE && subNode.getNodeName().equalsIgnoreCase("link")){
+                    if(subNode.getNodeType()==Node.ELEMENT_NODE && subNode.getNodeName().equalsIgnoreCase("link")){
                         String value = subNode.getFirstChild().getNodeValue();
                         if(!retValue.contains(value)){
                             retValue.add(value);
@@ -245,7 +259,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             // Scan for cdatas
             Node n = data;
             while(n != null) {
-                if(n.getNodeType() == n.CDATA_SECTION_NODE) {
+                if(n.getNodeType() == Node.CDATA_SECTION_NODE) {
                     cdatas.addElement(n.getNodeValue());
                     n.setNodeValue("");
                 }
@@ -319,7 +333,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         Vector collectNames = new Vector();
         for(int i = 0;i < numElements;i++) {
             Node n = (Node)nl.item(i);
-            if(n.getNodeType() == n.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(tag.toLowerCase())) {
+            if(n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(tag.toLowerCase())) {
                 String name = ((Element)n).getAttribute("name");
                 if(name == null || "".equals(name)) {
                     // unnamed element found.
@@ -379,7 +393,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             int numElements = parameterTags.getLength();
             for(int i = 0;i < numElements;i++) {
                 Node n = (Node)parameterTags.item(i);
-                if(n.getNodeType() == n.ELEMENT_NODE && n.getNodeName().toLowerCase().equals("parameter")) {
+                if(n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals("parameter")) {
                     String name = ((Element)n).getAttribute("name");
                     if(name != null && !"".equals(name)) {
                         result.put(name, getTagValue((Element)n));
@@ -574,7 +588,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         Element domEl = getProcessedData(datablockName, callingObject, parameters, null);
         StringBuffer buf = new StringBuffer();
         for(Node n = domEl.getFirstChild(); n != null; n = treeWalker(domEl, n)) {
-            if(n.getNodeType() == n.ELEMENT_NODE && "element".equalsIgnoreCase(n.getNodeName())) {
+            if(n.getNodeType() == Node.ELEMENT_NODE && "element".equalsIgnoreCase(n.getNodeName())) {
                 // This is an <ELEMENT> tag. First get the name of this element
                 String elName = ((Element)n).getAttribute("name");
 
@@ -591,7 +605,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                     CmsElementLink link = new CmsElementLink(elName);
                     result.add(link);
                 }
-            } else if (n.getNodeType() == n.ELEMENT_NODE && "method".equalsIgnoreCase(n.getNodeName())) {
+            } else if (n.getNodeType() == Node.ELEMENT_NODE && "method".equalsIgnoreCase(n.getNodeName())) {
                 // this is a left over <METHOD> tag.
                 String methodName = ((Element)n).getAttribute("name");
                 String tagcontent = getTagValue((Element)n);
@@ -610,7 +624,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                         n = treeWalker(domEl, n);
                     }
                 }
-            } else if (n.getNodeType() == n.TEXT_NODE || n.getNodeType() == n.CDATA_SECTION_NODE) {
+            } else if (n.getNodeType() == Node.TEXT_NODE || n.getNodeType() == Node.CDATA_SECTION_NODE) {
                 buf.append(n.getNodeValue());
             }
         }

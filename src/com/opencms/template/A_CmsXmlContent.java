@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2002/11/17 13:54:20 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2002/12/06 23:16:50 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,29 @@
 package com.opencms.template;
 
 import com.opencms.boot.I_CmsLogChannels;
-import java.io.*;
-import java.util.*;
-import java.lang.reflect.*;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import com.opencms.launcher.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
  * Abstract class for OpenCms files with XML content.
@@ -67,7 +82,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.62 $ $Date: 2002/11/17 13:54:20 $
+ * @version $Revision: 1.63 $ $Date: 2002/12/06 23:16:50 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -628,12 +643,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
 
                     if(nodeValue != null) {
                         //if(child.getNodeType() == n.TEXT_NODE || child.getNodeType() == n.CDATA_SECTION_NODE) {
-                        if(child.getNodeType() == n.CDATA_SECTION_NODE) {
+                        if(child.getNodeType() == Element.CDATA_SECTION_NODE) {
                             //result.append(child.getNodeValue());
                             result.append(nodeValue);
                         }
                         else {
-                            if(child.getNodeType() == n.TEXT_NODE) {
+                            if(child.getNodeType() == Element.TEXT_NODE) {
                                 //String s = child.getNodeValue().trim();
                                 nodeValue = nodeValue.trim();
                                 //if(!"".equals(s)) {
@@ -1293,10 +1308,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         Node loop = parsedDoc.getDocumentElement();
         while(loop != null) {
             Node next = treeWalker(parsedDoc.getDocumentElement(), loop);
-            if(loop.getNodeType() == loop.TEXT_NODE) {
+            if(loop.getNodeType() == Node.TEXT_NODE) {
                 Node leftSibling = loop.getPreviousSibling();
                 Node rightSibling = loop.getNextSibling();
-                if(leftSibling == null || rightSibling == null || (leftSibling.getNodeType() == loop.ELEMENT_NODE && rightSibling.getNodeType() == loop.ELEMENT_NODE)) {
+                if(leftSibling == null || rightSibling == null || (leftSibling.getNodeType() == Node.ELEMENT_NODE && rightSibling.getNodeType() == Node.ELEMENT_NODE)) {
                     if("".equals(loop.getNodeValue().trim())) {
                         loop.getParentNode().removeChild(loop);
                     }
@@ -1534,11 +1549,11 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                     So we can put the content of the current node directly into
                     the output stream. */
                     String streamResults = null;
-                    if(child.getNodeType() == n.CDATA_SECTION_NODE) {
+                    if(child.getNodeType() == Node.CDATA_SECTION_NODE) {
                         streamResults = child.getNodeValue();
                     }
                     else {
-                        if(child.getNodeType() == n.TEXT_NODE) {
+                        if(child.getNodeType() == Node.TEXT_NODE) {
                             String s = child.getNodeValue().trim();
                             if(!"".equals(s)) {
                                 streamResults = child.getNodeValue();

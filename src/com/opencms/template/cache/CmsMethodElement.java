@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2002/10/15 14:26:51 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/12/06 23:16:51 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,17 +28,19 @@
 
 package com.opencms.template.cache;
 
-import java.util.*;
-import java.io.*;
-import com.opencms.boot.*;
-import com.opencms.core.*;
-import com.opencms.file.*;
-import com.opencms.template.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+import com.opencms.template.A_CmsCacheDirectives;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsCacheDirectives;
+import com.opencms.template.CmsMethodCacheDirectives;
+import com.opencms.template.CmsProcessedString;
+import com.opencms.template.I_CmsTemplate;
 
-import java.io.*;
-import java.lang.reflect.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Hashtable;
 
 /**
  * An instance of CmsMethodElement represents an special method Element in the OpenCms

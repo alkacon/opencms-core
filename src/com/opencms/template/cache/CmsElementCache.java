@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2001/11/05 15:56:01 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/12/06 23:16:53 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,11 @@
 
 package com.opencms.template.cache;
 
-import java.util.*;
-import java.io.*;
-import com.opencms.core.*;
-import com.opencms.file.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * This is the starting class for OpenCms element cache. Element cache was implemented for

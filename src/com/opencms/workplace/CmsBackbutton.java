@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsBackbutton.java,v $
-* Date   : $Date: 2002/11/16 13:23:06 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/12/06 23:16:48 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,15 @@
 
 package com.opencms.workplace;
 
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.file.*;
-import java.util.*;
-import java.lang.reflect.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsObject;
+import com.opencms.template.A_CmsXmlContent;
+
+import java.util.Hashtable;
+
+import org.w3c.dom.Element;
 
 /**
  * Class for building workplace icons. <BR>
@@ -43,7 +45,7 @@ import java.lang.reflect.*;
  *
  * Creation date: (09.08.00 15:21:44)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.6 $ $Date: 2002/11/16 13:23:06 $
+ * @version $Name:  $ $Revision: 1.7 $ $Date: 2002/12/06 23:16:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

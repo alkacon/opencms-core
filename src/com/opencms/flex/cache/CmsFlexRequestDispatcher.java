@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequestDispatcher.java,v $
-* Date   : $Date: 2002/11/16 13:16:32 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/12/06 23:16:54 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.flex.cache;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
 
 import javax.servlet.ServletException;
 
@@ -43,7 +44,7 @@ import javax.servlet.ServletException;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher {
         
@@ -207,7 +208,7 @@ public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher
                         cache = m_cms.readProperty(m_target, com.opencms.flex.I_CmsResourceLoader.C_LOADER_CACHEPROPERTY);                    
                         m_cache.putKey(w_res.setCmsCacheKey(m_target, cache, req.isOnline()));                                            
                     } catch (com.opencms.core.CmsException e) {
-                        if (e.getType() == e.C_FLEX_CACHE) {
+                        if (e.getType() == CmsException.C_FLEX_CACHE) {
                             // Invalid key is ignored but logged, used key is cache=never
                             if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) 
                                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[FlexCache] Invalid cache key for external resource \"" + m_target + "\": " + cache);
@@ -261,7 +262,7 @@ public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher
             java.util.Map headers = w_res.getHeaders();
             byte[] result = w_res.getWriterBytes();
             if (DEBUG > 3) System.err.println("Non-display include call - Result of include is:\n" + new String(result));
-            res.processHeaders(headers, res);
+            CmsFlexResponse.processHeaders(headers, res);
             res.addToIncludeResults(result);                    
         }              
 

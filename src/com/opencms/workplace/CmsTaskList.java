@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskList.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2002/12/06 23:16:46 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,26 @@
 
 package com.opencms.workplace;
 
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.file.*;
-import com.opencms.util.*;
-import java.util.*;
-import java.lang.reflect.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsProject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.file.CmsTask;
+import com.opencms.file.CmsUser;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.util.Utils;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import org.w3c.dom.Element;
 
 /**
  * Class for building task list. <BR>
@@ -44,7 +56,7 @@ import java.lang.reflect.*;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.17 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.18 $ $Date: 2002/12/06 23:16:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

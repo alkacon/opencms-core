@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2002/10/18 16:56:42 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2002/12/06 23:16:54 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,12 +30,18 @@ package com.opencms.boot;
 
 import com.opencms.util.Encoder;
 
-import source.org.apache.java.util.*;
-import java.io.*;
-import java.sql.*;
-import java.util.*;
-import java.net.*;
-import java.text.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.text.DateFormat;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import source.org.apache.java.util.ExtendedProperties;
 /**
  * This class provides several utilities and methods
  * used by the OpenCms setup wizard

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2002/10/30 10:16:38 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/12/06 23:16:58 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,21 @@
 package com.opencms.defaults.master;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.*;
-import com.opencms.core.exceptions.*;
-import com.opencms.dbpool.*;
-import com.opencms.defaults.*;
-import com.opencms.file.*;
-import com.opencms.template.*;
-import java.util.*;
-import java.lang.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.core.exceptions.CmsPlausibilizationException;
+import com.opencms.defaults.A_CmsContentDefinition;
+import com.opencms.defaults.CmsFilterMethod;
+import com.opencms.defaults.I_CmsExtendedContentDefinition;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.template.I_CmsContent;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * This class is the master of several Modules. It carries a lot of generic
@@ -46,8 +53,8 @@ import java.lang.*;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.11 $
- * $Date: 2002/10/30 10:16:38 $
+ * $Revision: 1.12 $
+ * $Date: 2002/12/06 23:16:58 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -804,7 +811,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * Sets the channelId of a new channel
      */
     private void setNewChannelId() throws CmsException{
-        int newChannelId = com.opencms.dbpool.CmsIdGenerator.nextId(this.C_TABLE_CHANNELID);
+        int newChannelId = com.opencms.dbpool.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
         m_properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId+"");
         m_channelId = newChannelId+"";
     }
@@ -924,11 +931,11 @@ public class CmsChannelContent extends A_CmsContentDefinition
         Vector errorCodes = new Vector();
         //check the channelname
         if (m_channelname == null || "".equals(m_channelname)) {
-            errorCodes.addElement(C_CHANNELNAME_ERRFIELD+C_ERRSPERATOR+this.C_ERRCODE_EMPTY);
+            errorCodes.addElement(C_CHANNELNAME_ERRFIELD+C_ERRSPERATOR+C_ERRCODE_EMPTY);
         }
         //check the parentchannel
         if (m_parentchannel == null || "".equals(m_parentchannel)) {
-            errorCodes.addElement(C_PARENT_ERRFIELD+C_ERRSPERATOR+this.C_ERRCODE_EMPTY);
+            errorCodes.addElement(C_PARENT_ERRFIELD+C_ERRSPERATOR+C_ERRCODE_EMPTY);
         }
         // now test if there was an error message and throw an exception
         if (errorCodes.size()>0) {

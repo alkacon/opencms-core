@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/11/16 13:14:02 $
-* Version: $Revision: 1.250 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.251 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,18 +29,25 @@
 package com.opencms.file;
 
 
-import java.util.*;
-import javax.servlet.http.*;
-import source.org.apache.java.util.*;
-
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.*;
 import com.opencms.flex.util.CmsResourceTranslator;
-import com.opencms.util.*;
-import com.opencms.launcher.*;
-import com.opencms.template.cache.*;
-import com.opencms.linkmanagement.*;
-import com.opencms.report.*;
+import com.opencms.launcher.CmsLauncherManager;
+import com.opencms.linkmanagement.CmsPageLinks;
+import com.opencms.linkmanagement.LinkChecker;
+import com.opencms.report.CmsShellReport;
+import com.opencms.report.I_CmsReport;
+import com.opencms.template.cache.CmsElementCache;
+import com.opencms.util.LinkSubstitution;
+import com.opencms.util.Utils;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.Vector;
+
+import source.org.apache.java.util.Configurations;
 
 /**
  * This class provides access to the OpenCms and its resources.
@@ -55,7 +62,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.250 $ $Date: 2002/11/16 13:14:02 $
+ * @version $Revision: 1.251 $ $Date: 2002/12/06 23:16:45 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2480,7 +2487,7 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
         if (getOnlineElementCache() != null) getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
         clearcache();
         // do static export if the static-export is enabled in opencms.properties
-        if (this.getStaticExportProperties().isStaticExportEnabled()){
+        if (getStaticExportProperties().isStaticExportEnabled()){
             try{
                 int oldId = m_context.currentProject().getId();
                 m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
@@ -2488,7 +2495,7 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
                 Vector linkChanges = new Vector();
                 // the return value for cluster server to syncronize the export
                 Vector allExportedLinks = new Vector();
-                this.exportStaticResources(this.getStaticExportProperties().getStartPoints(),
+                this.exportStaticResources(getStaticExportProperties().getStartPoints(),
                                  linkChanges, allExportedLinks, allChanged, report);
                 m_context.setCurrentProject(oldId);
                 Utils.getModulPublishMethods(this, linkChanges);
@@ -2504,7 +2511,7 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
                 }            
             }
         }else{
-            if("false_ssl".equalsIgnoreCase(this.getStaticExportProperties().getStaticExportEnabledValue())){
+            if("false_ssl".equalsIgnoreCase(getStaticExportProperties().getStaticExportEnabledValue())){
                 // just generate the link rules, in case there were properties changed
                 int oldId = m_context.currentProject().getId();
                 m_context.setCurrentProject(C_PROJECT_ONLINE_ID);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSearchForm.java,v $
-* Date   : $Date: 2002/04/24 07:12:55 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/12/06 23:16:46 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,17 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import java.util.*;
-import java.io.*;
-import javax.servlet.http.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsPropertydefinition;
+import com.opencms.file.I_CmsRegistry;
+import com.opencms.file.I_CmsResourceType;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * News administration template class
@@ -44,7 +48,7 @@ import javax.servlet.http.*;
  * editing news.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.1 $ $Date: 2002/04/24 07:12:55 $
+ * @version $Revision: 1.2 $ $Date: 2002/12/06 23:16:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

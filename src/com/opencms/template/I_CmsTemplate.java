@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsTemplate.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,11 @@
 
 package com.opencms.template;
 
-import com.opencms.launcher.*;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.template.cache.*;
-import java.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+import com.opencms.template.cache.A_CmsElement;
+
+import java.util.Hashtable;
 
 /**
  * Common interface for OpenCms template classes.
@@ -41,7 +41,7 @@ import java.util.*;
  * have to be implemtented.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.15 $ $Date: 2002/12/06 23:16:49 $
  */
 public interface I_CmsTemplate {
 

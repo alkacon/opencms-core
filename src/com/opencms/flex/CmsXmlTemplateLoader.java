@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2002/12/06 15:59:37 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2002/12/06 23:16:58 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,13 @@
 
 package com.opencms.flex;
 
-import com.opencms.core.*;
-import com.opencms.file.*;
-
-import com.opencms.flex.cache.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.I_CmsRequest;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.flex.cache.CmsFlexCache;
+import com.opencms.flex.cache.CmsFlexRequest;
+import com.opencms.flex.cache.CmsFlexResponse;
 import com.opencms.launcher.CmsXmlLauncher;
 
 import java.io.IOException;
@@ -55,7 +58,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourceLoader {

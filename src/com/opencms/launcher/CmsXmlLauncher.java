@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2002/11/08 21:55:05 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2002/12/06 23:16:54 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,15 +29,28 @@
 package com.opencms.launcher;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.template.*;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.template.cache.*;
-import com.opencms.util.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import java.util.*;
-import javax.servlet.http.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsRequest;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.template.CmsXmlControlFile;
+import com.opencms.template.I_CmsTemplate;
+import com.opencms.template.I_CmsXmlTemplate;
+import com.opencms.template.cache.CmsElementCache;
+import com.opencms.template.cache.CmsElementDefinition;
+import com.opencms.template.cache.CmsElementDefinitionCollection;
+import com.opencms.template.cache.CmsElementDescriptor;
+import com.opencms.template.cache.CmsUri;
+import com.opencms.template.cache.CmsUriDescriptor;
+import com.opencms.template.cache.CmsUriLocator;
+import com.opencms.util.Utils;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * OpenCms launcher class for XML templates.
@@ -56,7 +69,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.40 $ $Date: 2002/11/08 21:55:05 $
+ * @version $Revision: 1.41 $ $Date: 2002/12/06 23:16:54 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
     
@@ -249,8 +262,8 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
                     if(cmsUri.isHttpsResource() != httpsReq){
                         if(httpsReq){
                             //throw new CmsException(" "+file.getAbsolutePath()+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
-                        }else if(cms.getStaticExportProperties().isStaticExportEnabled()
-                                || "false_ssl".equals(cms.getStaticExportProperties().getStaticExportEnabledValue())){
+                        }else if(CmsObject.getStaticExportProperties().isStaticExportEnabled()
+                                || "false_ssl".equals(CmsObject.getStaticExportProperties().getStaticExportEnabledValue())){
                             // check if static export is enabled and value is not false_ssl
                             throw new CmsException(" "+file.getAbsolutePath()+" needs a https request", CmsException.C_HTTPS_REQUEST_ERROR);
                         }

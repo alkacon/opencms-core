@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
-* Date   : $Date: 2002/09/02 07:44:42 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,23 +28,25 @@
 
 package com.opencms.file;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import java.lang.reflect.*;
-import java.security.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import org.w3c.dom.*;
-import source.org.apache.java.util.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsLogChannels;
+
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * This class holds the functionality to synchronize resources from the filesystem
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.12 $ $Date: 2002/09/02 07:44:42 $
+ * @version $Revision: 1.13 $ $Date: 2002/12/06 23:16:45 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 
@@ -111,7 +113,7 @@ public class CmsSynchronize implements I_CmsConstants{
             m_vfsFolders = new Hashtable();
             m_vfsFiles = new Hashtable();
             // create the syncpath if necessary
-            syncpath = new File(m_synchronizePath.replace('/', syncpath.separatorChar));
+            syncpath = new File(m_synchronizePath.replace('/', File.separatorChar));
             if (!syncpath.exists()){
                 syncpath.mkdirs();
             }
@@ -154,7 +156,7 @@ public class CmsSynchronize implements I_CmsConstants{
         if (startResource.getAbsolutePath().endsWith("/")){
             // it's a folder, so all files and folders in this have to be synchronized
             // first create the start folder
-            startFolder = new File((m_synchronizePath+startResource.getAbsolutePath()).replace('/', startFolder.separatorChar));
+            startFolder = new File((m_synchronizePath+startResource.getAbsolutePath()).replace('/', File.separatorChar));
             startFolder.mkdirs();
             // now put the resource in the hashtable for VFS resources
             m_vfsFolders.put(m_synchronizePath+startResource.getAbsolutePath(), startResource);
@@ -192,7 +194,7 @@ public class CmsSynchronize implements I_CmsConstants{
                             }
                         }
                     } else {
-                        sfsFile = new File((m_synchronizePath+syncFolder.getAbsolutePath()).replace('/', sfsFile.separatorChar));
+                        sfsFile = new File((m_synchronizePath+syncFolder.getAbsolutePath()).replace('/', File.separatorChar));
                         sfsFile.mkdir();
                         // now put the resource in the hashtable for VFS resources
                         m_vfsFolders.put(m_synchronizePath+syncFolder.getAbsolutePath(), syncFolder);
@@ -418,7 +420,7 @@ public class CmsSynchronize implements I_CmsConstants{
             throw new CmsException("["+this.getClass().getName()+"] "+newFile.getPath()+" already exists on filesystem");
         }
         try {
-            File parentFolder = new File(newFile.getPath().replace('/', newFile.separatorChar).substring(0,newFile.getPath().lastIndexOf(newFile.separator)));
+            File parentFolder = new File(newFile.getPath().replace('/', File.separatorChar).substring(0,newFile.getPath().lastIndexOf(File.separator)));
             parentFolder.mkdirs();
             if (parentFolder.exists()){
                 fOut = new FileOutputStream(newFile);
@@ -495,12 +497,12 @@ public class CmsSynchronize implements I_CmsConstants{
                 if (!currentFile.delete()){
                     return false;
                 }
-                resourceName = currentFile.getParent().substring(m_synchronizePath.length())+currentFile.getName()+currentFile.separatorChar;
+                resourceName = currentFile.getParent().substring(m_synchronizePath.length())+currentFile.getName()+File.separatorChar;
             } else {
                 if (!currentFile.delete()){
                     return false;
                 }
-                resourceName = currentFile.getParent().substring(m_synchronizePath.length(), currentFile.getParent().lastIndexOf(currentFile.separatorChar)+1)+currentFile.getName();
+                resourceName = currentFile.getParent().substring(m_synchronizePath.length(), currentFile.getParent().lastIndexOf(File.separatorChar)+1)+currentFile.getName();
                 // if a file is deleted it has to be removed from the synchronize list
                 m_synchronizeList.remove(resourceName);
             }

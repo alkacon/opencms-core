@@ -55,8 +55,11 @@ package source.org.apache.java.util;
  *
  */
 
-import java.util.*;
-import java.io.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.NoSuchElementException;
+import java.util.Properties;
+import java.util.Vector;
 
 /**
  * This class is used to encapsulate properties and addresses
@@ -81,7 +84,7 @@ import java.io.*;
  * and faster transition between different configuration syntax.
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
- * @version $Revision: 1.2 $ $Date: 2000/08/08 14:01:44 $
+ * @version $Revision: 1.3 $ $Date: 2002/12/06 23:16:58 $
  */
 public class Configurations {
 

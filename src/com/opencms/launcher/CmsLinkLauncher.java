@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLinkLauncher.java,v $
-* Date   : $Date: 2002/05/07 14:28:11 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/12/06 23:16:54 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,16 @@
 
 package com.opencms.launcher;
 
-import com.opencms.template.*;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import java.util.*;
-import javax.servlet.http.*;
-import java.io.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * OpenCms launcher class for starting template classes implementing
@@ -46,7 +48,7 @@ import java.io.*;
  * be used to create output.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2002/05/07 14:28:11 $
+ * @version $Revision: 1.15 $ $Date: 2002/12/06 23:16:54 $
  */
 public class CmsLinkLauncher extends A_CmsLauncher {
 

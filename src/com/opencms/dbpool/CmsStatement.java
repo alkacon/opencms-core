@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsStatement.java,v $
-* Date   : $Date: 2002/06/30 22:36:43 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/12/06 23:16:53 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,11 @@
 
 package com.opencms.dbpool;
 
-import java.sql.*;
-import java.util.*;
-import source.org.apache.java.util.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.Statement;
 
 /**
  * This class is used to create an connection-pool for opencms.

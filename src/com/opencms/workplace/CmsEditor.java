@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2002/09/11 13:36:48 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2002/12/06 23:16:49 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,22 @@
 
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
-import java.util.*;
-import java.io.*;
-import javax.servlet.http.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.core.I_CmsSession;
+import com.opencms.core.OpenCms;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsXmlTemplateFile;
+import com.opencms.util.Encoder;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Hashtable;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Template class for displaying the text editor of the OpenCms workplace.<P>
@@ -43,7 +52,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.35 $ $Date: 2002/09/11 13:36:48 $
+ * @version $Revision: 1.36 $ $Date: 2002/12/06 23:16:49 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -172,7 +181,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
                 } catch (UnsupportedEncodingException e) {
                     content = new String(editFile.getContents());
                 }
-                content = enc.escapeWBlanks(content,
+                content = Encoder.escapeWBlanks(content,
                     cms.getRequestContext().getEncoding());
                 parameters.put(C_PARA_CONTENT, content);
             }
@@ -182,7 +191,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
             if(saveRequested) {
                 try{
                     //Gridnine AB Aug 8, 2002
-                    String decodedContent = enc.unescape(content,
+                    String decodedContent = Encoder.unescape(content,
                         cms.getRequestContext().getEncoding());
                     try {
                         editFile.setContents(decodedContent.getBytes(

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsExtendedContentDefinition.java,v $
-* Date   : $Date: 2002/01/31 10:18:03 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/12/06 23:16:54 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,13 +27,9 @@
 */
 package com.opencms.defaults;
 
-import com.opencms.template.*;
-import com.opencms.file.*;
+import com.opencms.file.CmsObject;
 
-import java.util.*;
-import java.lang.reflect.*;
-import com.opencms.core.*;
-import com.opencms.core.exceptions.*;
+import java.util.Vector;
 
 /**
  * Content Definitions that uses the projectmanagement,

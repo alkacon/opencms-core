@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCompatibleCheck.java,v $
-* Date   : $Date: 2002/11/07 19:30:21 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/12/06 23:16:45 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,11 +79,11 @@ public class CmsCompatibleCheck implements I_CmsConstants{
                                                 new java.io.StringReader(new String(content)));
                  for(Node n = xmlDoc.getFirstChild(); n != null; n = treeWalker(xmlDoc, n)) {
                     short ntype = n.getNodeType();
-                    if(((ntype > n.CDATA_SECTION_NODE) && ntype < n.DOCUMENT_TYPE_NODE)
-                                        || (ntype == n.ATTRIBUTE_NODE)){
+                    if(((ntype > Node.CDATA_SECTION_NODE) && ntype < Node.DOCUMENT_TYPE_NODE)
+                                        || (ntype == Node.ATTRIBUTE_NODE)){
                         return false;
                     }
-                    if(n.getNodeType() == n.ELEMENT_NODE){
+                    if(n.getNodeType() == Node.ELEMENT_NODE){
                         String tagName = n.getNodeName();
                         if(!("template".equalsIgnoreCase(tagName) || "xmltemplate".equalsIgnoreCase(tagName))){
                             return false;
@@ -114,7 +114,7 @@ public class CmsCompatibleCheck implements I_CmsConstants{
                 for(int i=0; i<list.getLength(); i++){
                     Node n = list.item(i);
                     short nodeType = n.getNodeType();
-                    if(nodeType == n.ELEMENT_NODE){
+                    if(nodeType == Node.ELEMENT_NODE){
                         // allowed is the Elementdef or the template tag
                         String nodeName = n.getNodeName();
                         if ("elementdef".equalsIgnoreCase(nodeName)){
@@ -134,7 +134,7 @@ public class CmsCompatibleCheck implements I_CmsConstants{
                             return false;
                         }
 
-                    }else if(nodeType == n.TEXT_NODE){
+                    }else if(nodeType == Node.TEXT_NODE){
                         // text node is only allowed if the value is empty
                         String nodeValue = n.getNodeValue();
                         if((nodeValue != null) && (nodeValue.trim().length() > 0)){
@@ -247,12 +247,12 @@ public class CmsCompatibleCheck implements I_CmsConstants{
         for(int i=0; i<list.getLength(); i++){
             Node n = list.item(i);
             short ntype = n.getNodeType();
-            if(ntype == n.TEXT_NODE){
+            if(ntype == Node.TEXT_NODE){
                 String nodeValue = n.getNodeValue();
                 if((nodeValue != null) && (nodeValue.trim().length() > 0)){
                     return false;
                 }
-            }else if(ntype == n.ELEMENT_NODE){
+            }else if(ntype == Node.ELEMENT_NODE){
                 // this should be <ELEMENT name="frametemplate"/>
                 if(! "element".equalsIgnoreCase(n.getNodeName())){
                     return false;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2002/09/12 15:19:27 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2002/12/06 23:16:51 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,17 @@
 
 package com.opencms.template;
 
-import java.util.*;
-import com.opencms.launcher.*;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.template.cache.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.launcher.I_CmsTemplateCache;
+import com.opencms.template.cache.A_CmsElement;
+import com.opencms.template.cache.CmsElementDump;
+
+import java.util.Hashtable;
 
 /**
  * Template class for dumping files to the output without further
@@ -41,7 +47,7 @@ import com.opencms.template.cache.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.28 $ $Date: 2002/09/12 15:19:27 $
+ * @version $Revision: 1.29 $ $Date: 2002/12/06 23:16:51 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -215,7 +221,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @return New element for the element cache
      */
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters){
-        String readAccessGroup = cms.C_GROUP_ADMIN;
+        String readAccessGroup = CmsObject.C_GROUP_ADMIN;
         try{
             readAccessGroup = cms.getReadingpermittedGroup(
                                 cms.getRequestContext().currentProject().getId(), templateFile);
