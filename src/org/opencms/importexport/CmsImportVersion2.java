@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2004/11/09 14:27:19 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,8 +56,6 @@ import java.io.File;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.zip.ZipFile;
-
-import org.apache.commons.collections.ExtendedProperties;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -215,7 +213,9 @@ public class CmsImportVersion2 extends A_CmsImport {
         try {
             m_webAppNames = getCompatibilityWebAppNames();
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error getting compatibility web-app names", e);
+            }
             m_report.println(e);
         }
         if (m_webAppNames == null) {
@@ -355,8 +355,11 @@ public class CmsImportVersion2 extends A_CmsImport {
                 removeFolders();
             }
         } catch (Exception exc) {
-            exc.printStackTrace(System.err);
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error(exc);
+            }            
             m_report.println(exc);
+            
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             if (m_importingChannelData) {
@@ -392,6 +395,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         byte[] content = null;
         String fullname = null;
         CmsResource res = null;
+        String targetName = null;
 
         try {
             
@@ -410,15 +414,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 } catch (Exception e) {
                     // ignore the exception, a new channel id will be generated
                 }
-                // TODO: CW: remove
-                /*
-                if (channelId == null) {
-                    // the channel id does not exist, so generate a new one
-                    int newChannelId = CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
-                    channelId = "" + newChannelId;
-                }
-                properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CHANNELID, channelId, null));
-                */
+
                 if (channelId != null) {
                     properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CHANNELID, channelId, null));
                 }
@@ -448,9 +444,19 @@ public class CmsImportVersion2 extends A_CmsImport {
             }             
             
             // extract the name of the resource form the destination
-            String targetName=destination;
+            targetName=destination;
             if (targetName.endsWith("/")) {
                 targetName=targetName.substring(0, targetName.length()-1);            
+            }
+            
+            boolean isFolder = false;
+            try {
+                isFolder = CmsFolder.isFolderType(resourceTypeId);
+            } catch (Throwable t) {                
+                // the specified resource type ID might be of an unknown resource type.
+                // as another option, check the content length and resource type name 
+                // to determine if the resource is a folder or not.              
+                isFolder = ((content.length == 0) && CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equalsIgnoreCase(resourceTypeName));                
             }
             
             // create a new CmsResource                         
@@ -459,14 +465,15 @@ public class CmsImportVersion2 extends A_CmsImport {
                 newUuidresource,
                 targetName,
                 resourceTypeId,
-                CmsFolder.isFolderType(resourceTypeId), 
+                isFolder, 
                 0,
                 m_cms.getRequestContext().currentProject().getId(), 
                 I_CmsConstants.C_STATE_NEW,
                 lastmodified,
                 curUser,
                 lastmodified,
-                curUser, CmsResource.DATE_RELEASED_DEFAULT, 
+                curUser, 
+                CmsResource.DATE_RELEASED_DEFAULT, 
                 CmsResource.DATE_EXPIRED_DEFAULT,
                 1, 
                 size
@@ -491,6 +498,10 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
             
         } catch (Exception exc) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error importing resource " + targetName, exc);
+            }
+            
             // an error while importing the file
             success = false;
             m_report.println(exc);
@@ -603,8 +614,11 @@ public class CmsImportVersion2 extends A_CmsImport {
                 mergePageFile(resname);
                 
             } catch (Exception e) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error merging page file " + resname, e);
+                }
+                
                 m_report.println(e);
-                // throw new CmsException(e.toString());
             }
 
             counter++;
@@ -623,13 +637,22 @@ public class CmsImportVersion2 extends A_CmsImport {
      */
     private void mergePageFile(String resourcename) throws Exception {
         
+        // in OpenCms versions <5 node names have not been case sensitive. thus, nodes are read both in upper
+        // and lower case letters, or have to be tested for equality ignoring upper/lower case...
+        
         // get the header file
         CmsFile pagefile = m_cms.readFile(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         Document contentXml = CmsImport.getXmlDocument(pagefile.getContents());
         
-        // get the <masterTemplate> node to check the content.
-        // this node contains the name of the template file
-        List masterTemplateNode = contentXml.selectNodes("//masterTemplate");
+        // get the <masterTemplate> node to check the content. this node contains the name of the template file.
+        String masterTemplateNodeName = "//masterTemplate";
+        List masterTemplateNode = contentXml.selectNodes(masterTemplateNodeName);
+        if (masterTemplateNode == null || masterTemplateNode.size() == 0) {
+            masterTemplateNode = contentXml.selectNodes(masterTemplateNodeName.toLowerCase());
+        }
+        if (masterTemplateNode == null || masterTemplateNode.size() == 0) {
+            masterTemplateNode = contentXml.selectNodes(masterTemplateNodeName.toUpperCase());
+        }        
         
         // there is only one <masterTemplate> allowed
         String mastertemplate = null;    
@@ -640,7 +663,11 @@ public class CmsImportVersion2 extends A_CmsImport {
         
         // get the <ELEMENTDEF> nodes to check the content.
         // this node contains the information for the body element.
-        List bodyNode = contentXml.selectNodes("//ELEMENTDEF");
+        String elementDefNodeName = "//ELEMENTDEF";
+        List bodyNode = contentXml.selectNodes(elementDefNodeName);
+        if (bodyNode == null || bodyNode.size() == 0) {
+            bodyNode = contentXml.selectNodes(elementDefNodeName.toLowerCase());
+        }
         
         // there is only one <ELEMENTDEF> allowed
         if (bodyNode.size() == 1) {
@@ -655,7 +682,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             String bodyclass = null;
             for (i = 0; i < nodes.size(); i++) {
                 node = (Node) nodes.get(i);
-                if ("CLASS".equals(node.getName())) {
+                if ("CLASS".equalsIgnoreCase(node.getName())) {
                     bodyclass = ((Element)node).getTextTrim();
                     break;
                 }
@@ -665,7 +692,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             String bodyname = null;          
             for (i = 0; i < nodes.size(); i++) {
                 node = (Node) nodes.get(i);
-                if ("TEMPLATE".equals(node.getName())) {
+                if ("TEMPLATE".equalsIgnoreCase(node.getName())) {
                     bodyname = ((Element)node).getTextTrim();
                     if (!bodyname.startsWith("/")) {
                         bodyname = CmsResource.getFolderPath(resourcename) + bodyname;
@@ -678,7 +705,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             Map bodyparams = null;
             for (i = 0; i < nodes.size(); i++) {
                 node = (Node) nodes.get(i);
-                if ("PARAMETER".equals(node.getName())) {
+                if ("PARAMETER".equalsIgnoreCase(node.getName())) {
                     Element paramElement = (Element) node;
                     if (bodyparams == null) {
                         bodyparams = new HashMap();
@@ -749,8 +776,8 @@ public class CmsImportVersion2 extends A_CmsImport {
             // now import the resource
             m_cms.importResource(resourcename, pagefile, pagefile.getContents(), properties);
 
-            // done, ulock the resource                   
-            m_cms.unlockResource(resourcename);
+            // done, unlock the resource                   
+            //m_cms.unlockResource(resourcename);
             
             // finally delete the old body file, it is not needed anymore
             m_cms.lockResource(bodyname);
@@ -767,16 +794,17 @@ public class CmsImportVersion2 extends A_CmsImport {
             pagefile.setType(CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
             // write all changes                     
             m_cms.writeFile(pagefile);
-            // don, ulock the resource                   
+            // done, unlock the resource                   
             m_cms.unlockResource(resourcename);
             m_report.println(" " + m_report.key("report.notconverted"), I_CmsReport.C_FORMAT_OK);
+            
         }
     }
     
     /**
      * Deletes the folder structure which has been creating while importing the body files..<p>
      *
-     *      * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
     private void removeFolders() throws CmsException {
         int size = m_folderStorage.size();
@@ -889,12 +917,17 @@ public class CmsImportVersion2 extends A_CmsImport {
      */
     private List getCompatibilityWebAppNames() throws Exception {        
         
-        String[] appNames = new ExtendedProperties((String)OpenCms.getRuntimeProperty(C_COMPATIBILITY_WEBAPPNAMES)).getStringArray(C_COMPATIBILITY_WEBAPPNAMES);
-        // old web application names (for editor macro replacement) 
-        if (appNames == null) {
-            appNames = new String[0];
+        List webAppNamesOri = new ArrayList();
+        
+        String configuredWebAppNames = (String)OpenCms.getRuntimeProperty(C_COMPATIBILITY_WEBAPPNAMES);
+        if (configuredWebAppNames != null && configuredWebAppNames.length() != 0) {
+            // split the comma separated list of web app names
+            StringTokenizer tokenizer = new StringTokenizer(configuredWebAppNames, ",;");        
+            while (tokenizer.hasMoreTokens()) {
+                webAppNamesOri.add(tokenizer.nextToken());
+            }
         }
-        List webAppNamesOri = Arrays.asList(appNames);
+        
         List webAppNames = new ArrayList();
         for (int i = 0; i < webAppNamesOri.size(); i++) {
             // remove possible white space
@@ -906,13 +939,16 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
             }
         }
+        
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Old context support  : " + ((webAppNames.size() > 0) ? "enabled" : "disabled"));
         }
+        
         // check if list is null
         if (webAppNames == null) {
             webAppNames = new ArrayList();
         }
+        
         // add current context to webapp names list
         if (!webAppNames.contains(OpenCms.getSystemInfo().getOpenCmsContext())) {
             webAppNames.add(OpenCms.getSystemInfo().getOpenCmsContext());
