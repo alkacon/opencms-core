@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $
- * Date   : $Date: 2000/02/20 09:48:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/20 16:07:41 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,8 +45,8 @@ import java.io.*;
  * This class is used to display the application form of mindfact and makes it
  * possible to send the application form as a mail.
  * 
- * @author $Author: a.lucas $
- * @version $Name:  $ $Revision: 1.4 $ $Date: 2000/02/20 09:48:31 $
+ * @author $Author: w.babachan $
+ * @version $Name:  $ $Revision: 1.5 $ $Date: 2000/02/20 16:07:41 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -108,6 +108,12 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 	private static final String C_ERR_FAX="Fax";
 	private static final String C_ERR_EMAIL="Email";
 	private static final String C_ERR_URL="Url";
+	// Datablocks
+	private static final String C_DATA_NEWPOSITION="newPosition";
+	private static final String C_DATA_BASE="base";	
+	private static final String C_DATA_HOW="how";
+	private static final String C_DATA_ANREDE="anrede";	
+	private static final String C_DATA_FAMILY="family";
 	// Hashtable keys for sending a mail
 	private static final String C_HASH_CERTIFICATES="certificates";
 	private static final String C_HASH_FROM="from";
@@ -161,6 +167,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
         return false;
     }
 	    
+	
     /**
      * Reads in the template file and starts the XML parser for the expected
      * content type <class>CmsXmlWpTemplateFile</code>
@@ -175,6 +182,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
         CmsXmlOnlineBewerbungContentDefinition xmlTemplateDocument = new CmsXmlOnlineBewerbungContentDefinition(cms, templateFile);       
         return xmlTemplateDocument;
     }        
+	
 	
     /**
      * Gets the content of a defined section in a given template file and its 
@@ -256,112 +264,28 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		email=(email==null?"":email);
 		url=(url==null?"":url);
 		errorNumber=(errorNumber==null?"":errorNumber);
-		action=(action==null?"":action);
-		if (!certificates.toLowerCase().trim().equals("unknown")) {
-			certificates="";
-		}
-		// CententDefinition
-		System.err.println("****->"+templateFile);
-		CmsXmlOnlineBewerbungContentDefinition datablock=(CmsXmlOnlineBewerbungContentDefinition)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-//		CmsXmlOnlineBewerbungContentDefinition datablock=new CmsXmlOnlineBewerbungContentDefinition(cms,templateFile);		
-		// for the first time there is no Parameter therefore get
-		// the default value.
-		// decodeField method converts umlaute letters from HTML format 
-		// in original form (e.g. &auml -> ä).
-		System.err.println("3:");
-		if (newPosition.equals("")){
-			System.err.println("4:");
-			newPosition=decodeField(datablock.getNewPosition(1));
-			System.err.println("4a:"+newPosition);
-		}
-		System.err.println("5:");
-		// build the selectbox dynamic and choose the selected option
-		for(int i=1;i<33;i++){
-			if (newPosition.equals(decodeField(datablock.getNewPosition(i)))) {
-				datablock.setSelected(i,"selected");				
-			} else {
-				datablock.setSelected(i,"");	
-			}
+		action=(action==null?"":action);		
+		if (certificates.equals("unknown")) {
+			 certificates="";
 		}		
-		System.err.println("6:");
-		// for the first time there is no Parameter therefore get
-		// the default value.
-		// decodeField method converts umlaute letters from HTML format 
-		// in original form (e.g. &auml -> ä).
-		if (base.equals("")){
-			base=decodeField(datablock.getBase(1));
-		}
-		System.err.println("7:");
-		// build the selectbox dynamic and choose the selected option
-		for(int i=1;i<5;i++){
-			if (base.equals(decodeField(datablock.getBase(i)))){
-				datablock.setSelected(i,"selected");				
-			} else {
-				datablock.setSelected(i,"");	
-			}
-		}
-		System.err.println("8:");
-		// for the first time there is no Parameter therefore get
-		// the default value.
-		// decodeField method converts umlaute letters from HTML format 
-		// in original form (e.g. &auml -> ä).
-		if (how.equals("")){
-			how=decodeField(datablock.getHow(1));
-		}
-		System.err.println("9:");
-		// build the selectbox dynamic and choose the selected option
-		for(int i=1;i<8;i++){
-			if (how.equals(decodeField(datablock.getHow(i)))) {
-				datablock.setSelected(i,"selected");				
-			} else {
-				datablock.setSelected(i,"");	
-			}
-		}
-		System.err.println("10:");
-		// for the first time there is no Parameter therefore get
-		// the default value.
-		// decodeField method converts umlaute letters from HTML format 
-		// in original form (e.g. &auml -> ä).
-		if (anrede.equals("")){
-			anrede=decodeField(datablock.getAnrede(1));
-		}
-		System.err.println("11:");
-		// build the selectbox dynamic and choose the selected option
-		for(int i=1;i<4;i++){
-			if (anrede.equals(decodeField(datablock.getAnrede(i)))){
-				datablock.setSelected(i,"selected");
-			} else {
-				datablock.setSelected(i,"");	
-			}
-		}
-		System.err.println("12:");
-		// for the first time there is no Parameter therefore get
-		// the default value.
-		// decodeField method converts umlaute letters from HTML format 
-		// in original form (e.g. &auml -> ä).
-		if (family.equals("")){
-			family=decodeField(datablock.getFamily(1));
-		}
-		System.err.println("13:");
-		// build the selectbox dynamic and choose the selected option
-		for(int i=1;i<6;i++){
-			if (family.equals(decodeField(datablock.getFamily(i)))) {
-				datablock.setSelected(i,"selected");				
-			} else {
-				datablock.setSelected(i,"");	
-			}
-		}
-		System.err.println("14:");
+		// CententDefinition		
+		CmsXmlOnlineBewerbungContentDefinition datablock=(CmsXmlOnlineBewerbungContentDefinition)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);	
+		
 		datablock.setText(text);
 		datablock.setCertificates(certificates);
-		datablock.setOldPosition(oldPosition);		
+		datablock.setOldPosition(oldPosition);	
+		datablock.setNewPosition(datablock.getOption(C_DATA_NEWPOSITION,newPosition));
+		datablock.setBase(datablock.getOption(C_DATA_BASE,base));
 		datablock.setEntry(entry);
+		datablock.setHow(datablock.getOption(C_DATA_HOW,how));
+		datablock.setAnrede(datablock.getOption(C_DATA_ANREDE,anrede));
 		datablock.setSalary(salary);
 		datablock.setTitel(titel);
 		datablock.setFirstname(firstname);
 		datablock.setSurname(surname);
 		datablock.setBirthdate(birthdate);
-		datablock.setCitizen(citizen);						
+		datablock.setCitizen(citizen);
+		datablock.setFamily(datablock.getOption(C_DATA_FAMILY,family));
 		datablock.setCo(co);
 		datablock.setStreet(street);
 		datablock.setPlz(plz);
@@ -375,34 +299,32 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		datablock.setAction(action);
 		datablock.setErrorNumber(errorNumber);
 		datablock.setErrorMessage(errorMessage);
-		System.err.println("15:");
-		//CmsXmlTemplateFile xmlTemplateDocument=(CmsXmlTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-		System.err.println("16:");
+		
 		if (action.equals("sendMail")) {
 			
 			errorMessage=formIsCorrect(parameters);
 			
-			if (!errorMessage.equals("")) {
-				
+			if (!errorMessage.equals("")) {				
 				errorNumber=new Integer((new Integer(errorNumber).intValue())-1).toString();
 				datablock.setErrorNumber(errorNumber);
-				datablock.setErrorMessage(datablock.getError(errorMessage));				
+				
+				datablock.setErrorMessage(datablock.getError(errorMessage));
+				
 				return startProcessing(cms, datablock, elementName, parameters, null);
 				
 			} else {
 				
 				// save File
-				certificates=saveFile(certificates,certificatesContent);
+				//certificates=saveFile(certificates,certificatesContent);
 				
 				HttpServletRequest req=(HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
 				
-				Hashtable mailInfo=null;
-				
+				Hashtable mailInfo=new Hashtable();
 				// this is nessesary to build the "BewerbungText" datablock				
-				mailInfo.put(C_HASH_TEXT,(text.equals("")?"nicht angegeben":text));
-				mailInfo.put(C_HASH_CERTIFICATES,(certificates.equals("")?"nicht angegeben":certificates));	
+				mailInfo.put(C_HASH_TEXT,(text.equals("")?"nicht angegeben":text));				
+				mailInfo.put(C_HASH_CERTIFICATES,(certificates.equals("")?"nicht angegeben":certificates));
 				mailInfo.put(C_HASH_OLDPOSITION,(oldPosition.equals("")?"nicht angegeben":oldPosition));
-				mailInfo.put(C_HASH_NEWPOSITION,((newPosition.equals("") || newPosition.equals("Bitte auswählen"))?"nicht angegeben":newPosition));
+				mailInfo.put(C_HASH_NEWPOSITION,((newPosition.equals("") || newPosition.equals("Bitte auswählen"))?"nicht angegeben":newPosition));	
 	 			mailInfo.put(C_HASH_BASE,((base.equals("") || base.equals("Bitte auswählen"))?"nicht angegeben":base));
 				mailInfo.put(C_HASH_ENTRY,(entry.equals("")?"nicht angegeben":entry));
 				mailInfo.put(C_HASH_SALARY,(salary.equals("")?"nicht angegeben":salary));
@@ -425,7 +347,6 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				mailInfo.put(C_HASH_EMAIL,(email.equals("")?"nicht angegeben":email));
 				mailInfo.put(C_HASH_URL,(url.equals("")?"nicht angegeben":url));
 				mailInfo.put(C_HASH_IP,req.getRemoteAddr());
-				
 				// this is nessesary because of "nicht angegeben" must be send
 				// or displayed if the user has nothing entered.
 				datablock.setText((String)mailInfo.get(C_HASH_TEXT));
@@ -454,7 +375,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				datablock.setEmail((String)mailInfo.get(C_HASH_EMAIL));
 				datablock.setUrl((String)mailInfo.get(C_HASH_URL));
 				
-				Hashtable mailTable=null;
+				Hashtable mailTable=new Hashtable();
 				
 				String from=(String)datablock.getFrom();
 				String an=(String)datablock.getTo();
@@ -463,7 +384,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				String host=(String)datablock.getMailserver();
 				String subject=(String)datablock.getSubject();
 				String content=(String)datablock.getBewerbungsText(mailInfo);
-								
+									
 				mailTable.put(C_HASH_CERTIFICATES,certificates);
 				mailTable.put(C_HASH_FROM,from);
 				mailTable.put(C_HASH_AN,an);
@@ -472,18 +393,17 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				mailTable.put(C_HASH_HOST,host);
 				mailTable.put(C_HASH_SUBJECT,subject);
 				mailTable.put(C_HASH_CONTENT,content);
-								
+										
 				// write in database
-				writeInDatabase(mailInfo);
+				//writeInDatabase(mailInfo);
 				
 				// send mail
-				CmsXmlMailThread mail=new CmsXmlMailThread(mailTable);
-				mail.start();
+				//CmsXmlMailThread mail=new CmsXmlMailThread(mailTable);
+				//mail.start();
 				
 				return startProcessing(cms, datablock, elementName, parameters, "Answer");
 			}
 		}
-		System.err.println("17:");
 		// At the first call of this method there is no action defined.
 		// set the error number -2 to go back two site after mailing the application form
 		datablock.setErrorNumber("-2");
@@ -491,44 +411,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		datablock.setErrorMessage("");
 		return startProcessing(cms, datablock, elementName, parameters, null);
 	}
-	
-	
-	/**	 
-	 * This method returns umlaute letters from HTML format in original format,
-	 * e.g. &auml; to ä and .....
-	 * 
-	 * @param field The field that must be decoded.
-	 * 
-	 * @return It returns the decoded field.
-	*/
-	private String decodeField(String field) {
-		// change all umlaute letters from HTML format in original format.
-		if (field!=null) {
-			while(field.indexOf("&auml;")!=-1) {
-				field=field.substring(0,field.indexOf("&auml;"))+"ä"+field.substring(field.indexOf("&auml;")+6);
-			}
-			while(field.indexOf("&ouml;")!=-1) {
-				field=field.substring(0,field.indexOf("&ouml;"))+"ö"+field.substring(field.indexOf("&ouml;")+6);
-			}
-			while(field.indexOf("&uuml;")!=-1) {
-				field=field.substring(0,field.indexOf("&uuml;"))+"ü"+field.substring(field.indexOf("&uuml;")+6);
-			}
-			while(field.indexOf("&Auml;")!=-1) {
-				field=field.substring(0,field.indexOf("&Auml;"))+"Ä"+field.substring(field.indexOf("&Auml;")+6);
-			}
-			while(field.indexOf("&Ouml;")!=-1) {
-				field=field.substring(0,field.indexOf("&Ouml;"))+"Ö"+field.substring(field.indexOf("&Ouml;")+6);
-			}
-			while(field.indexOf("&Uuml;")!=-1) {
-				field=field.substring(0,field.indexOf("&Uuml;"))+"Ü"+field.substring(field.indexOf("&Uuml;")+6);
-			}
-			while(field.indexOf("&szlig;")!=-1) {
-				field=field.substring(0,field.indexOf("&szlig;"))+"ß"+field.substring(field.indexOf("&szlig;")+7);
-			}
-		}
-		return field;
-	}
-	
+		
 	
 	/**
 	 * This method checked the parameter, if there is a CmsXml tag then it
@@ -555,6 +438,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 	 * @return it returns an error message if all fields are'nt correct and null if the fields are correct.
 	 */
 	private String formIsCorrect(Hashtable parameters) throws CmsException {
+		
 		
 		String errorMessage="";
 		
@@ -666,7 +550,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		value[24]=destroyCmsXmlTag((String)parameters.get(C_URL));
 		value[24]=(value[24]==null?"":value[24]);
 		parameter[24]=C_ERR_URL;
-				
+		
 		// check the parameters, if there is an error then build an error message
 		for (int i=0;i<25;i++) {
 			try {				
@@ -675,36 +559,42 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				errorMessage=errorMessage+e.getMessage()+", ";
 			}
 		}
+		
 		// text
 		if (value[0].trim().equals("")) {
 			if (errorMessage.indexOf(parameter[0])==-1) {
 				errorMessage=errorMessage+parameter[0]+", ";
 			}
-		}		
+		}
+		
 		// Current Job
 		if (value[2].trim().equals("") || value[2].length()>50) {
 			if (errorMessage.indexOf(parameter[2])==-1) {
 				errorMessage=errorMessage+parameter[2]+", ";
 			}
 		}
+		
 		// Desired Job
 		if (value[3].trim().equals("") || value[3].trim().equals("Bitte auswählen") || value[3].length()>50) {
 			if (errorMessage.indexOf(parameter[3])==-1) {
 				errorMessage=errorMessage+parameter[3]+", ";
 			}
 		}
+		
 		// Desired location
 		if (value[4].trim().equals("") || value[4].trim().equals("Bitte auswählen") || value[4].length()>30) {
 			if (errorMessage.indexOf(parameter[4])==-1) {
 				errorMessage=errorMessage+parameter[4]+", ";
 			}
 		}
+		
 		// Desired entry date
 		if (value[5].trim().equals("") || (!dateIsCorrect(value[5])) || value[5].length()>10) {
 			if (errorMessage.indexOf(parameter[5])==-1) {
 				errorMessage=errorMessage+parameter[5]+", ";
 			}
 		}
+		
 		// Salary
 		if (!value[6].trim().equals("") || value[6].length()>10) {
 			try {
@@ -715,66 +605,77 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				}
 			}
 		}
+		
 		// how have you found us (Aufmerksam geworden durch...)
 		if (value[7].trim().equals("") || value[7].trim().equals("Bitte auswählen") || value[7].length()>30) {
 			if (errorMessage.indexOf(parameter[7])==-1) {				
 				errorMessage=errorMessage+parameter[7]+", ";
 			}
 		}
+		
 		// Salutation (anrede)
 		if (value[8].trim().equals("") || value[8].trim().equals("Bitte auswählen") || value[8].length()>15) {
 			if (errorMessage.indexOf(parameter[8])==-1) {
 				errorMessage=errorMessage+parameter[8]+", ";
 			}
 		}
+		
 		// Title
 		if (value[9].length()>30) {
 			if (errorMessage.indexOf(parameter[9])==-1) {
 				errorMessage=errorMessage+parameter[9]+", ";
 			}
 		}
+		
 		// Firstname
 		if (value[10].trim().equals("") || value[10].length()>30) {
 			if (errorMessage.indexOf(parameter[10])==-1) {
 				errorMessage=errorMessage+parameter[10]+", ";
 			}
 		}
+		
 		// Surname
 		if (value[11].trim().equals("") || value[11].length()>30) {
 			if (errorMessage.indexOf(parameter[11])==-1) {
 				errorMessage=errorMessage+parameter[11]+", ";
 			}
 		}
+		
 		// Birthdate		
 		if (value[12].trim().equals("") || (!dateIsCorrect(value[12])) || value[12].length()>10) {
 			if (errorMessage.indexOf(parameter[12])==-1) {
 				errorMessage=errorMessage+parameter[12]+", ";
 			}
 		}
+		
 		// Citizenship		
 		if (value[13].trim().equals("") || value[13].length()>30) {
 			if (errorMessage.indexOf(parameter[13])==-1) {
 				errorMessage=errorMessage+parameter[13]+", ";
 			}
 		}
+		
 		// Family
 		if (value[14].length()>15) {
 			if (errorMessage.indexOf(parameter[14])==-1) {
 				errorMessage=errorMessage+parameter[14]+", ";
 			}
 		}
+		
 		// c/o
 		if (value[15].length()>30) {
 			if (errorMessage.indexOf(parameter[15])==-1) {
 				errorMessage=errorMessage+parameter[15]+", ";
 			}
 		}
+		
 		// Street
 		if (value[16].trim().equals("") || value[16].length()>30) {
 			if (errorMessage.indexOf(parameter[16])==-1) {
 				errorMessage=errorMessage+parameter[16]+", ";
 			}
 		}
+		
 		// PLZ
 		if (value[17].trim().equals("") || value[17].length()>5) {
 			if (errorMessage.indexOf(parameter[17])==-1) {
@@ -793,36 +694,42 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				}
 			}
 		}
+		
 		// City
 		if (value[18].trim().equals("") || value[18].length()>30) {
 			if (errorMessage.indexOf(parameter[18])==-1) {
 				errorMessage=errorMessage+parameter[18]+", ";
 			}
 		}
+		
 		// Company fon
 		if (value[19].length()>20) {
 			if (errorMessage.indexOf(parameter[19])==-1) {
 				errorMessage=errorMessage+parameter[19]+", ";
 			}
 		}
+		
 		// Private fon
 		if (value[20].trim().equals("") || value[20].length()>30) {
 			if (errorMessage.indexOf(parameter[20])==-1) {
 				errorMessage=errorMessage+parameter[20]+", ";
 			}
 		}
+		
 		// Mobile fon
 		if (value[21].length()>20) {
 			if (errorMessage.indexOf(parameter[21])==-1) {
 				errorMessage=errorMessage+parameter[21]+", ";
 			}
 		}
+		
 		// Fax
 		if (value[22].length()>20) {
 			if (errorMessage.indexOf(parameter[22])==-1) {
 				errorMessage=errorMessage+parameter[22]+", ";
 			}
 		}
+		
 		// Email
 		if (!value[23].trim().equals("") || value[23].length()>30) {
 			if (value[23].indexOf('@')==-1 || value[23].indexOf('.')==-1) {
@@ -831,6 +738,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				}
 			}
 		}
+	
 		// URL
 		if (!value[24].trim().equals("") || value[24].length()>30) {
 			int first=value[24].indexOf('.');

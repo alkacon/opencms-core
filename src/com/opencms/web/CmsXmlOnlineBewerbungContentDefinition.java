@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungContentDefinition.java,v $
- * Date   : $Date: 2000/02/20 09:48:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/20 16:07:41 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,8 +39,8 @@ import java.io.*;
 /**
  * This class is used to access the application form's XML-datablocks.
  * 
- * @author $Author: a.lucas $
- * @version $Name:  $ $Revision: 1.4 $ $Date: 2000/02/20 09:48:31 $
+ * @author $Author: w.babachan $
+ * @version $Name:  $ $Revision: 1.5 $ $Date: 2000/02/20 16:07:41 $
  * @see com.opencms.template.CmsXmlTemplateFile
  */
 public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
@@ -48,7 +48,7 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
 	// Xml Datablocks
 	private static final String C_SELECTED="selected";
 	private static final String C_TEXT="text";
-	private static final String C_CERTIFICATES="file1";
+	private static final String C_CERTIFICATES="certificates";
 	private static final String C_OLDPOSITION="oldPosition";
 	private static final String C_NEWPOSITION="newPosition";	
 	private static final String C_BASE="base";	
@@ -146,305 +146,7 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
 		super();            
         init(cms, filename);
     }
-	
-	/**
-     * This method gets the value of text datablock.
-     * @return It returns the value of text datablock.
-     */
-    public String getText() throws CmsException {
-        return getDataValue(C_TEXT);
-    }
-	
-	
-	/**
-     * This method gets the value of certificate datablock.
-     * @return It returns the value of certificate datablock.
-     */
-    public String getCertificates() throws CmsException {
-        return getDataValue(C_CERTIFICATES);
-    }
-	
-	
-	/**
-     * This method gets the value of oldPosition datablock.
-     * @return It returns the value of oldPosition datablock.
-     */
-    public String getOldPosition() throws CmsException {
-        return getDataValue(C_OLDPOSITION);
-    }
-	
-	
-	/**
-     * This method gets the value of entry datablock.
-     * @return It returns the value of entry datablock.
-     */
-    public String getEntry() throws CmsException {
-        return getDataValue(C_ENTRY);
-    }
-	
-	
-	/**
-     * This method gets the value of salary datablock.
-     * @return It returns the value of salary datablock.
-     */
-    public String getSalary() throws CmsException {
-        return getDataValue(C_SALARY);
-    }
-	
-	
-	/**
-     * This method gets the value of titel datablock.
-     * @return It returns the value of titel datablock.
-     */
-    public String getTitel() throws CmsException {
-        return getDataValue(C_TITEL);
-    }
-	
-	
-	/**
-     * This method gets the value of firstname datablock.
-     * @return It returns the value of firstname datablock.
-     */
-    public String getFirstname() throws CmsException {
-        return getDataValue(C_FIRSTNAME);
-    }
-	
-	
-	/**
-     * This method gets the value of surname datablock.
-     * @return It returns the value of surname datablock.
-     */
-    public String getSurname() throws CmsException {
-        return getDataValue(C_SURNAME);
-    }
-	
-	
-	/**
-     * This method gets the value of birthdate datablock.
-     * @return It returns the value of birthdate datablock.
-     */
-    public String getBirthdate() throws CmsException {
-        return getDataValue(C_BIRTHDATE);
-    }
-	
-	
-	/**
-     * This method gets the value of citizen datablock.
-     * @return It returns the value of citizen datablock.
-     */
-    public String getCitizen() throws CmsException {
-        return getDataValue(C_CITIZEN);
-    }
-	
-	
-	/**
-     * This method gets the value of co datablock.
-     * @return It returns the value of co datablock.
-     */
-    public String getCo() throws CmsException {
-        return getDataValue(C_CO);
-    }
-	
-	
-	/**
-     * This method gets the value of street datablock.
-     * @return It returns the value of street datablock.
-     */
-    public String getStreet() throws CmsException {
-        return getDataValue(C_STREET);
-    }
-	
-	
-	/**
-     * This method gets the value of plz datablock.
-     * @return It returns the value of plz datablock.
-     */
-    public String getPlz() throws CmsException {
-        return getDataValue(C_PLZ);
-    }
-	
-	
-	/**
-     * This method gets the value of city datablock.
-     * @return It returns the value of city datablock.
-     */
-    public String getCity() throws CmsException {
-        return getDataValue(C_CITY);
-    }
-	
-	
-	/**
-     * This method gets the value of companyFon datablock.
-     * @return It returns the value of companyFon datablock.
-     */
-    public String getCompanyFon() throws CmsException {
-        return getDataValue(C_COMPANYFON);
-    }
-	
-	
-	/**
-     * This method gets the value of privateFon datablock.
-     * @return It returns the value of privateFon datablock.
-     */
-    public String getPrivateFon() throws CmsException {
-        return getDataValue(C_PRIVATEFON);
-    }
-	
-	
-	/**
-     * This method gets the value of mobileFon datablock.
-     * @return It returns the value of mobileFon datablock.
-     */
-    public String getMobileFon() throws CmsException {
-        return getDataValue(C_MOBILEFON);
-    }
-	
-	
-	/**
-     * This method gets the value of fax datablock.
-     * @return It returns the value of fax datablock.
-     */
-    public String getFax() throws CmsException {
-        return getDataValue(C_FAX);
-    }
-	
-	
-	/**
-     * This method gets the value of email datablock.
-     * @return It returns the value of email datablock.
-     */
-    public String getEmail() throws CmsException {
-        return getDataValue(C_EMAIL);
-    }
-	
-	
-	/**
-     * This method gets the value of url datablock.
-     * @return It returns the value of url datablock.
-     */
-    public String getUrl() throws CmsException {
-        return getDataValue(C_URL);
-    }
-	
-	
-	/**
-     * This method gets the value of action datablock.
-     * @return It returns the value of action datablock.
-     */
-    public String getAction() throws CmsException {
-        return getDataValue(C_ACTION);
-    }
-	
-	
-	/**
-     * This method gets the value of errorNumber datablock.
-     * @return It returns the value of errorNumber datablock.
-     */
-    public String getErrorNumber() throws CmsException {
-        return getDataValue(C_ERRORNUMBER);
-    }
-	
-	
-	/**
-     * This method gets the value of errorMessage datablock.
-     * @return It returns the value of errorMessage datablock.
-     */
-    public String getErrorMessage() throws CmsException {
-        return getDataValue(C_ERRORMESSAGE);
-	}
-	
-	
-	/**
-     * This method gets the value of newPosition datablock.
-     * @return It returns the value of newPosition datablock.
-     */
-    public String getNewPosition() throws CmsException {
-        return getDataValue(C_NEWPOSITION);
-	}
-	
-	
-	/**
-     * This method gets the value of newPosition datablock.
-     * @return It returns the value of newPosition datablock.
-     */
-    public String getNewPosition(int i) throws CmsException {
-		System.err.println("->"+C_NEWPOSITION+i);
-        return getDataValue(C_NEWPOSITION+i);
-	}
-	
-	
-	/**
-     * This method gets the value of base datablock.
-     * @return It returns the value of base datablock.
-     */
-    public String getBase() throws CmsException {
-        return getDataValue(C_BASE);
-	}
-	
-	
-	/**
-     * This method gets the value of base datablock.
-     * @return It returns the value of base datablock.
-     */
-    public String getBase(int i) throws CmsException {
-        return getDataValue(C_BASE+i);
-	}
-	
-	
-	/**
-     * This method gets the value of how datablock.
-     * @return It returns the value of how datablock.
-     */
-    public String getHow() throws CmsException {
-        return getDataValue(C_HOW);
-	}
-	
-	
-	/**
-     * This method gets the value of how datablock.
-     * @return It returns the value of how datablock.
-     */
-    public String getHow(int i) throws CmsException {
-        return getDataValue(C_HOW+i);
-	}
-	
-	
-	/**
-     * This method gets the value of anrede datablock.
-     * @return It returns the value of anrede datablock.
-     */
-    public String getAnrede() throws CmsException {
-        return getDataValue(C_ANREDE);
-	}
-	
-	
-	/**
-     * This method gets the value of anrede datablock.
-     * @return It returns the value of anrede datablock.
-     */
-    public String getAnrede(int i) throws CmsException {
-        return getDataValue(C_ANREDE+i);
-	}
-	
-	
-	/**
-     * This method gets the value of family datablock.
-     * @return It returns the value of family datablock.
-     */
-    public String getFamily() throws CmsException {
-        return getDataValue(C_FAMILY);
-	}
-	
-	
-	/**
-     * This method gets the value of family datablock.
-     * @return It returns the value of family datablock.
-     */
-    public String getFamily(int i) throws CmsException {
-        return getDataValue(C_FAMILY+i);
-	}
-	
-	
+		
 	/**
      * This method gets the value of bewerbungsText datablock.
      * @return It returns the value of bewerbungsText datablock.
@@ -475,20 +177,37 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
 		setData(C_MOBILEFON,(String)mailInfo.get(C_HASH_MOBILEFON));
 		setData(C_FAX,(String)mailInfo.get(C_HASH_FAX));
 		setData(C_EMAIL,(String)mailInfo.get(C_HASH_EMAIL));
-		setData(C_URL,(String)mailInfo.get(C_HASH_URL));		
-        return getDataValue(C_BEWERBUNGSTEXT);
+		setData(C_URL,(String)mailInfo.get(C_HASH_URL));
+        return getProcessedDataValue(C_BEWERBUNGSTEXT);
 	}
-	
+		
 	
 	/**
      * This method gets the value of "selected" datablock.
      * @return It returns the value of "selected" datablock.
      */
-    public String getSelected(int i) throws CmsException {
-        return getDataValue(C_SELECTED+i);
+    public String getOption(String optionName,String optionValue) throws CmsException {
+		String option="";
+		// for the first time there is no Parameter therefore get
+		// the default value.
+		// decodeField method converts umlaute letters from HTML format 
+		// in original form (e.g. &auml -> ä).		
+		if (optionValue.equals("")){			
+			optionValue=decodeField(getDataValue(optionName+1));
+		}
+		// build the selectbox dynamic and choose the selected option		
+		for(int i=1;i<51;i++){
+			if (hasData(optionName+i)) {
+				if (optionValue.equals(decodeField(getDataValue(optionName+i)))) {				
+					option=option+"<option selected>"+decodeField(getDataValue(optionName+i))+"\n";				
+				} else {
+					option=option+"<option>"+decodeField(getDataValue(optionName+i))+"\n";
+				}
+			}
+		}
+		return option;
 	}
-	
-	
+		
 	/**
      * This method gets the value of mailserver datablock.
      * @return It returns the value of mailserver datablock.
@@ -540,7 +259,7 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
      */
 	public String getError(String error) throws CmsException {
 		setData(C_MESSAGE,error);
-        return getDataValue(C_ERROR);
+        return getProcessedDataValue(C_ERROR);
     }
 	
 	
@@ -734,15 +453,7 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
     public void setErrorMessage(String errorMessage) throws CmsException {
         setData(C_ERRORMESSAGE,errorMessage);
 	}
-	
-	
-	/**
-     * This method sets the value of "selected" datablock.
-     */
-    public void setSelected(int i,String selected) throws CmsException {
-        setData(C_SELECTED+i,selected);
-	}
-	
+		
 	
 	/**
      * This method sets the value of newPosition datablock.
@@ -782,5 +493,41 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
     public void setFamily(String family) throws CmsException {
         setData(C_FAMILY,family);
 	}
+	
+	
+	/**	 
+	 * This method returns umlaute letters from HTML format in original format,
+	 * e.g. &auml; to ä and .....
+	 * 
+	 * @param field The field that must be decoded. 
+	 * @return It returns the decoded field.
+	*/
+	private String decodeField(String field) {
+		// change all umlaute letters from HTML format in original format.
+		if (field!=null) {
+			while(field.indexOf("&auml;")!=-1) {
+				field=field.substring(0,field.indexOf("&auml;"))+"ä"+field.substring(field.indexOf("&auml;")+6);
+			}
+			while(field.indexOf("&ouml;")!=-1) {
+				field=field.substring(0,field.indexOf("&ouml;"))+"ö"+field.substring(field.indexOf("&ouml;")+6);
+			}
+			while(field.indexOf("&uuml;")!=-1) {
+				field=field.substring(0,field.indexOf("&uuml;"))+"ü"+field.substring(field.indexOf("&uuml;")+6);
+			}
+			while(field.indexOf("&Auml;")!=-1) {
+				field=field.substring(0,field.indexOf("&Auml;"))+"Ä"+field.substring(field.indexOf("&Auml;")+6);
+			}
+			while(field.indexOf("&Ouml;")!=-1) {
+				field=field.substring(0,field.indexOf("&Ouml;"))+"Ö"+field.substring(field.indexOf("&Ouml;")+6);
+			}
+			while(field.indexOf("&Uuml;")!=-1) {
+				field=field.substring(0,field.indexOf("&Uuml;"))+"Ü"+field.substring(field.indexOf("&Uuml;")+6);
+			}
+			while(field.indexOf("&szlig;")!=-1) {
+				field=field.substring(0,field.indexOf("&szlig;"))+"ß"+field.substring(field.indexOf("&szlig;")+7);
+			}
+		}
+		return field;
+	}	
 	
 }
