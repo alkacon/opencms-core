@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/16 12:06:10 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/09/16 14:55:48 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -398,27 +398,27 @@ public class OpenCmsCore {
      * Destroys this OpenCms instance.<p> 
      */    
     protected synchronized void destroy() {        
-        if (isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, "[OpenCms] Performing shutdown ...");
+        if (isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, "[OpenCms] Performing shutdown ...");
         }
         try {
             m_scheduler.shutDown();
             m_driverManager.destroy();
         } catch (Throwable e) {
-            if (isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
-                log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, "[OpenCms]" + e.toString());
+            if (isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[OpenCms]" + e.toString());
             }
         }
         try {
             Utils.getModulShutdownMethods(getRegistry());
         } catch (Throwable e) {
             // log exception since we are about to shutdown anyway
-            if (isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
-                log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, "[OpenCms] Module shutdown exception: " + e);
+            if (isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[OpenCms] Module shutdown exception: " + e);
             }
         }
-        if (isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, "[OpenCms] ... shutdown completed.");
+        if (isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, "[OpenCms] ... shutdown completed.");
         }        
         m_instance = null;
     }
@@ -449,8 +449,8 @@ public class OpenCmsCore {
             CmsSecurityException e = (CmsSecurityException)t;
 
             // access error - display login dialog
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[OpenCms] Access denied: " + e.getMessage());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[OpenCms] Access denied: " + e.getMessage());
             }
             if (canWrite) {
                 try {
@@ -484,16 +484,16 @@ public class OpenCmsCore {
                 case CmsException.C_HTTPS_PAGE_ERROR :
                     // http page and https request - display 404 error.
                     status = HttpServletResponse.SC_NOT_FOUND;
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[OpenCms] Trying to get a http page with a https request. " + e.getMessage());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[OpenCms] Trying to get a http page with a https request. " + e.getMessage());
                     }
                     break;                                       
 
                 case CmsException.C_HTTPS_REQUEST_ERROR :
                     // https request and http page - display 404 error.
                     status = HttpServletResponse.SC_NOT_FOUND;
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[OpenCms] Trying to get a https page with a http request. " + e.getMessage());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[OpenCms] Trying to get a https page with a http request. " + e.getMessage());
                     }
                     break;
 
@@ -666,12 +666,12 @@ public class OpenCmsCore {
         try {
             props.load(getClass().getClassLoader().getResourceAsStream("com/opencms/core/errormsg.properties"));
         } catch (NullPointerException exc) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
             }
         } catch (java.io.IOException exc) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
             }
         }
         String value = props.getProperty(part);
@@ -938,8 +938,8 @@ public class OpenCmsCore {
         m_defaultEncoding = getDefaultEncoding();
         // check the opencms.properties for a different setting
         m_defaultEncoding = conf.getString("defaultContentEncoding", m_defaultEncoding);
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". OpenCms encoding     : " + m_defaultEncoding);
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms encoding     : " + m_defaultEncoding);
         }
         String systemEncoding = null;
         try {
@@ -947,13 +947,13 @@ public class OpenCmsCore {
         } catch (SecurityException se) {
             // security manager is active, but we will try other options before giving up
         }
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". System file.encoding : " + systemEncoding);
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". System file.encoding : " + systemEncoding);
         }
         if (!m_defaultEncoding.equals(systemEncoding)) {
             String msg = "OpenCms startup failure: System file.encoding '" + systemEncoding + "' not equal to OpenCms encoding '" + m_defaultEncoding + "'";
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN))
-            OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, ". Critical init error/1: " + msg);
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR))
+            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, ". Critical init error/1: " + msg);
             throw new Exception(msg);
         }
         try {
@@ -967,33 +967,33 @@ public class OpenCmsCore {
             // in Java < 1.4 there is no easy way to check if encoding is supported,
             // so you must make sure your setting in "opencms.properties" is correct.             
         }
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Encoding set to      : " + m_defaultEncoding);
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Encoding set to      : " + m_defaultEncoding);
         }
 
         // read server ethernet address (MAC) and init UUID generator
         String ethernetAddress = conf.getString("server.ethernet.address", CmsUUID.getDummyEthernetAddress());
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {            
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Ethernet address used: " + ethernetAddress);
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {            
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Ethernet address used: " + ethernetAddress);
         }
         CmsUUID.init(ethernetAddress);
         
         // check the installed Java SDK
         try {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
                 String jdkinfo = System.getProperty("java.vm.name") + " ";
                 jdkinfo += System.getProperty("java.vm.version") + " ";
                 jdkinfo += System.getProperty("java.vm.info") + " ";
                 jdkinfo += System.getProperty("java.vm.vendor") + " ";
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Java VM in use       : " + jdkinfo);
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Java VM in use       : " + jdkinfo);
                 String osinfo = System.getProperty("os.name") + " ";
                 osinfo += System.getProperty("os.version") + " ";
                 osinfo += System.getProperty("os.arch") + " ";
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Operating sytem      : " + osinfo);
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Operating sytem      : " + osinfo);
             }
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN))
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, ". Critical init error/2: " + e.getMessage());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR))
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, ". Critical init error/2: " + e.getMessage());
             // any exception here is fatal and will cause a stop in processing
             throw e;
         }
@@ -1006,8 +1006,8 @@ public class OpenCmsCore {
             // and init the cms-object with the rb.
             m_driverManager = CmsDriverManager.newInstance(conf);            
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, ". Critical init error/3: " + e.getMessage());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, ". Critical init error/3: " + e.getMessage());
             }
             // any exception here is fatal and will cause a stop in processing
             throw new CmsException("Database init failed", CmsException.C_RB_INIT_ERROR, e);
@@ -1017,8 +1017,8 @@ public class OpenCmsCore {
             // initalize the Hashtable with all available mimetypes
             Hashtable mimeTypes = m_driverManager.readMimeTypes();
             setMimeTypes(mimeTypes);
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Found mime types     : " + mimeTypes.size() + " entrys");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Found mime types     : " + mimeTypes.size() + " entrys");
             }
 
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
@@ -1026,15 +1026,15 @@ public class OpenCmsCore {
                 // now initialise the OpenCms scheduler to launch cronjobs
                 m_table = new CmsCronTable(m_driverManager.readCronTable());
                 m_scheduler = new CmsCronScheduler(this, m_table);
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN))
-                    OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". OpenCms scheduler    : enabled");
+                if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO))
+                    OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms scheduler    : enabled");
             } else {
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN))
-                    OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". OpenCms scheduler    : disabled");
+                if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO))
+                    OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms scheduler    : disabled");
             }
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, ". Critical init error/5: " + e.getMessage());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, ". Critical init error/5: " + e.getMessage());
             }
             // any exception here is fatal and will cause a stop in processing
             throw e;
@@ -1054,54 +1054,54 @@ public class OpenCmsCore {
                 flexExportUrl = flexExportUrl.substring(0, flexExportUrl.length() - 1);
             }
             setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". JSP export URL       : using value from opencms.properties - " + flexExportUrl);
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". JSP export URL       : using value from opencms.properties - " + flexExportUrl);
             }
         }
 
         // read flex jsp error page commit property and save in runtime configuration
         Boolean flexErrorPageCommit = conf.getBoolean(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, new Boolean(true));
         setRuntimeProperty(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, flexErrorPageCommit);
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". JSP errorPage commit : " + (flexErrorPageCommit.booleanValue() ? "enabled" : "disabled"));
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". JSP errorPage commit : " + (flexErrorPageCommit.booleanValue() ? "enabled" : "disabled"));
         }
 
         // try to initialize the flex cache
         try {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Flex cache init      : starting");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Flex cache init      : starting");
             }
             // pass configuration to flex cache for initialization
             new CmsFlexCache(conf);
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Flex cache init      : finished");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Flex cache init      : finished");
             }
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Flex cache init      : non-critical error " + e.toString());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Flex cache init      : non-critical error " + e.toString());
             }
         }
         
         // initialize the loaders
         try {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". ResourceLoader init  : starting");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". ResourceLoader init  : starting");
             }
             m_loaderManager = new CmsLoaderManager(conf);
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". ResourceLoader init  : finished");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". ResourceLoader init  : finished");
             }
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". ResourceLoader init  : non-critical error " + e.toString());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". ResourceLoader init  : non-critical error " + e.toString());
             }
         }
 
         // try to initialize directory translations
         try {
             boolean translationEnabled = conf.getBoolean("directory.translation.enabled", false);
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) { 
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Directory translation: " + (translationEnabled ? "enabled" : "disabled"));
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) { 
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Directory translation: " + (translationEnabled ? "enabled" : "disabled"));
             }
             if (translationEnabled) {
                 String[] translations = conf.getStringArray("directory.translation.rules");
@@ -1109,8 +1109,8 @@ public class OpenCmsCore {
                 m_directoryTranslator = new CmsResourceTranslator(translations, false);
             }
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Directory translation: non-critical error " + e.toString());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Directory translation: non-critical error " + e.toString());
             }
         }
         // make sure we always have at least an empty array      
@@ -1120,8 +1120,8 @@ public class OpenCmsCore {
         // try to initialize filename translations
         try {
             boolean translationEnabled = conf.getBoolean("filename.translation.enabled", false);
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) { 
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Filename translation : " + (translationEnabled ? "enabled" : "disabled"));
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) { 
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Filename translation : " + (translationEnabled ? "enabled" : "disabled"));
             }
             if (translationEnabled) {
                 String[] translations = conf.getStringArray("filename.translation.rules");
@@ -1129,8 +1129,8 @@ public class OpenCmsCore {
                 m_fileTranslator = new CmsResourceTranslator(translations, true);
             }
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Filename translation : non-critical error " + e.toString());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Filename translation : non-critical error " + e.toString());
             }
         }
         // make sure we always have at last an emtpy array      
@@ -1144,13 +1144,13 @@ public class OpenCmsCore {
             for (int i = 0; i < m_defaultFilenames.length; i++) {
                 // remove possible white space
                 m_defaultFilenames[i] = m_defaultFilenames[i].trim();
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Default file         : " + (i + 1) + " - " + m_defaultFilenames[i]);
+                if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Default file         : " + (i + 1) + " - " + m_defaultFilenames[i]);
                 }
             }
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Default file         : non-critical error " + e.toString());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Default file         : non-critical error " + e.toString());
             }
         }
         // make sure we always have at last an emtpy array      
@@ -1169,46 +1169,46 @@ public class OpenCmsCore {
             String path = ((String)immutableResourcesOri.get(i)).trim();
             if (path != null && !"".equals(path)) {
                 immutableResources.add(path);
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Immutable resource   : " + (i + 1) + " - " + path);
+                if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Immutable resource   : " + (i + 1) + " - " + path);
                 }
             }
         }
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Immutable resources  : " + ((immutableResources.size() > 0) ? "enabled" : "disabled"));
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Immutable resources  : " + ((immutableResources.size() > 0) ? "enabled" : "disabled"));
         }
         setRuntimeProperty("import.immutable.resources", immutableResources);
         
         // read the default user settings
         try {
             m_userDefaultLanguage = conf.getString("workplace.user.default.language", I_CmsWpConstants.C_DEFAULT_LANGUAGE);
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". User data init       : Default language is '" + m_userDefaultLanguage + "'");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". User data init       : Default language is '" + m_userDefaultLanguage + "'");
             }
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". User data init       : non-critical error " + e.toString());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". User data init       : non-critical error " + e.toString());
             }
         }
                 
         // read the password validating class
         m_passwordValidatingClass = conf.getString("passwordvalidatingclass", "com.opencms.util.PasswordValidtation");
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Password validation  : " + m_passwordValidatingClass);
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Password validation  : " + m_passwordValidatingClass);
         }
         
         // read the maximum file upload size limit
         Integer fileMaxUploadSize = new Integer(conf.getInteger("workplace.file.maxuploadsize", -1));
         setRuntimeProperty("workplace.file.maxuploadsize", fileMaxUploadSize);
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". File max. upload size: " + (fileMaxUploadSize.intValue() > 0 ? (fileMaxUploadSize + " KB") : "unlimited"));
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". File max. upload size: " + (fileMaxUploadSize.intValue() > 0 ? (fileMaxUploadSize + " KB") : "unlimited"));
         }
         
         // read old (proprietary XML-style) locale backward compatibily support flag
         Boolean showUserGroupIcon = conf.getBoolean("workplace.administration.showusergroupicon", new Boolean(true));
         setRuntimeProperty("workplace.administration.showusergroupicon", showUserGroupIcon);
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Show user/group icon : " + (showUserGroupIcon.booleanValue() ? "yes" : "no"));
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Show user/group icon : " + (showUserGroupIcon.booleanValue() ? "yes" : "no"));
         }
         
         // initialize "resourceinit" registry classes
@@ -1219,18 +1219,18 @@ public class OpenCmsCore {
                 String currentClass = (String)i.next();
                 try {
                     m_checkFile.add(Class.forName(currentClass).newInstance());
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Resource init class  : " + currentClass + " instanciated");
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                        OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Resource init class  : " + currentClass + " instanciated");
                     }
                 } catch (Exception e1) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Resource init class  : non-critical error " + e1.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                        OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Resource init class  : non-critical error " + e1.toString());
                     }
                 }
             }
         } catch (Exception e2) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Resource init class  : non-critical error " + e2.toString());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Resource init class  : non-critical error " + e2.toString());
             }
         }   
         
@@ -1238,12 +1238,12 @@ public class OpenCmsCore {
         String propertyDialogHandler = OpenCms.getRegistry().getPropertyDialogHandler();
         try { 
             setRuntimeProperty("propertydialoghandler", Class.forName(propertyDialogHandler).newInstance());
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Property dialog class: " + propertyDialogHandler);
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Property dialog class: " + propertyDialogHandler);
             }    
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Property dialog class: non-critical error " + e.toString());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Property dialog class: non-critical error " + e.toString());
             }   
         }
         
@@ -1253,8 +1253,8 @@ public class OpenCmsCore {
         // read old (proprietary XML-style) locale backward compatibily support flag
         Boolean supportOldLocales = conf.getBoolean("compatibility.support.oldlocales", new Boolean(false));
         setRuntimeProperty("compatibility.support.oldlocales", supportOldLocales);
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Old locale support   : " + (supportOldLocales.booleanValue() ? "enabled" : "disabled"));
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Old locale support   : " + (supportOldLocales.booleanValue() ? "enabled" : "disabled"));
         }
 
         // convert import files from 4.x versions old webapp URL
@@ -1262,8 +1262,8 @@ public class OpenCmsCore {
         if (webappUrl != null) {
             setRuntimeProperty("compatibility.support.import.old.webappurl", webappUrl);
         }
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Old webapp URL       : " + ((webappUrl == null) ? "not set!" : webappUrl));
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Old webapp URL       : " + ((webappUrl == null) ? "not set!" : webappUrl));
         }
 
         // unwanted resource properties which are deleted during import
@@ -1277,13 +1277,13 @@ public class OpenCmsCore {
             String name = ((String)propertyNamesOri.get(i)).trim();
             if (name != null && !"".equals(name)) {
                 propertyNames.add(name);
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Clear import property: " + (i + 1) + " - " + name);
+                if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Clear import property: " + (i + 1) + " - " + name);
                 }
             }
         }
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Remove properties    : " + ((propertyNames.size() > 0) ? "enabled" : "disabled"));
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Remove properties    : " + ((propertyNames.size() > 0) ? "enabled" : "disabled"));
         }
         setRuntimeProperty("compatibility.support.import.remove.propertytags", propertyNames);
 
@@ -1299,13 +1299,13 @@ public class OpenCmsCore {
             String name = ((String)webAppNamesOri.get(i)).trim();
             if (name != null && !"".equals(name)) {
                 webAppNames.add(name);
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Old context path     : " + (i + 1) + " - " + name);
+                if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Old context path     : " + (i + 1) + " - " + name);
                 }
             }
         }
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Old context support  : " + ((webAppNames.size() > 0) ? "enabled" : "disabled"));
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Old context support  : " + ((webAppNames.size() > 0) ? "enabled" : "disabled"));
         }
         setRuntimeProperty("compatibility.support.webAppNames", webAppNames);
 
@@ -1321,8 +1321,8 @@ public class OpenCmsCore {
             String name = ((String)labelSiteFoldersOri.get(i)).trim();
             if (name != null && !"".equals(name)) {
                 labelSiteFolders.add(name);
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Label links in folder: " + (i + 1) + " - " + name);
+                if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Label links in folder: " + (i + 1) + " - " + name);
                 }
             }
         }
@@ -1370,14 +1370,14 @@ public class OpenCmsCore {
         // initialize "exportname" folders
         m_exportProperties.setExportnames();
         
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Static export        : " + (m_exportProperties.isStaticExportEnabled()?"enabled":"disabled"));
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Static export        : " + (m_exportProperties.isStaticExportEnabled()?"enabled":"disabled"));
             if (m_exportProperties.isStaticExportEnabled()) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Export default       : " + m_exportProperties.getExportPropertyDefault());
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Export path          : " + m_exportProperties.getExportPath());
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Export rfs prefix    : " + m_exportProperties.getRfsPrefix());
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Export vfs prefix    : " + m_exportProperties.getVfsPrefix());
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Export link style    : " + (m_exportProperties.relativLinksInExport()?"relative":"absolute"));                
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Export default       : " + m_exportProperties.getExportPropertyDefault());
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Export path          : " + m_exportProperties.getExportPath());
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Export rfs prefix    : " + m_exportProperties.getRfsPrefix());
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Export vfs prefix    : " + m_exportProperties.getVfsPrefix());
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Export link style    : " + (m_exportProperties.relativLinksInExport()?"relative":"absolute"));                
             }
         }        
     }
@@ -1444,21 +1444,21 @@ public class OpenCmsCore {
 
         // Initialize the logging
         initLogging(m_configurations);
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ".");        
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ".");        
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ".");        
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ".");
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ".");        
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ".");        
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ".");        
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ".");
             printCopyrightInformation();       
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ".                      ...............................................................");        
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Startup time         : " + (new Date(System.currentTimeMillis())));        
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". OpenCms version      : " + OpenCms.getVersionName()); 
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". OpenCms context path : /" + CmsBase.getWebAppName());                    
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". OpenCms servlet path : " + servletMapping);                    
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". OpenCms base path    : " + getBasePath());        
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". OpenCms property file: " + CmsBase.getPropertiesPath(true));      
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". OpenCms logfile      : " + CmsBase.getAbsolutePath(logFile));   
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Servlet container    : " + context.getServerInfo());        
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ".                      ...............................................................");        
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Startup time         : " + (new Date(System.currentTimeMillis())));        
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms version      : " + OpenCms.getVersionName()); 
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms context path : /" + CmsBase.getWebAppName());                    
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms servlet path : " + servletMapping);                    
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms base path    : " + getBasePath());        
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms property file: " + CmsBase.getPropertiesPath(true));      
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms logfile      : " + CmsBase.getAbsolutePath(logFile));   
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Servlet container    : " + context.getServerInfo());        
         }
 
         try {
@@ -1474,7 +1474,7 @@ public class OpenCmsCore {
 
         // initalize the session storage
         m_sessionStorage = new CmsCoreSession();
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Session storage      : initialized");
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Session storage      : initialized");
                                      
         // check if basic or form based authentication should be used      
         m_useBasicAuthentication = m_configurations.getBoolean("auth.basic", true);        
@@ -1648,8 +1648,8 @@ public class OpenCmsCore {
                 // currently no init action depends on res, this might change in the future
             }
 
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Startup class init   : starting");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Startup class init   : starting");
             }
 
             // set context once and for all
@@ -1658,8 +1658,8 @@ public class OpenCmsCore {
                 context = context.substring(0, context.lastIndexOf('/'));
             }
             setOpenCmsContext(context);
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". OpenCms context      : " + context);
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms context      : " + context);
             }
 
             // check for old webapp names and extend with context
@@ -1690,8 +1690,8 @@ public class OpenCmsCore {
                 }
                 setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
                 CmsJspLoader.setJspExportUrl(flexExportUrl);
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". JSP export URL       : using value from first request - " + flexExportUrl);
+                if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". JSP export URL       : using value from first request - " + flexExportUrl);
                 }
             }
 
@@ -1703,26 +1703,26 @@ public class OpenCmsCore {
                         String currentClass = (String)startupNode.get("class" + i);
                         try {
                             Class.forName(currentClass).newInstance();
-                            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Startup class init   : " + currentClass + " instanciated");
+                            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Startup class init   : " + currentClass + " instanciated");
                             }
                         } catch (Exception e1) {
-                            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Startup class init   : non-critical error " + e1.toString());
+                            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Startup class init   : non-critical error " + e1.toString());
                             }
                         }
                     }
                 }
             } catch (Exception e2) {
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Startup class init   : non-critical error " + e2.toString());
+                if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Startup class init   : non-critical error " + e2.toString());
                 }
             }
 
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Startup class init   : finished");
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ".                      ...............................................................");
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ".");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Startup class init   : finished");
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ".                      ...............................................................");
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ".");
             }
         }
     }
@@ -1876,10 +1876,10 @@ public class OpenCmsCore {
         }
 
         // log with opencms-logger
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". OpenCms version " + OpenCms.getVersionName());
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms version " + OpenCms.getVersionName());
             for (int i = 0; i<copy.length; i++) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". " + copy[i]);
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". " + copy[i]);
             }
         }
     }     
@@ -1945,8 +1945,8 @@ public class OpenCmsCore {
             path = drive + CmsLinkManager.getAbsoluteUri(path, "/");
             path = path.replace('/', File.separatorChar);
             m_basePath = path;
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, "OpenCms: Base application path is " + m_basePath);
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, "OpenCms: Base application path is " + m_basePath);
             }
         }
         return path;
@@ -1999,8 +1999,8 @@ public class OpenCmsCore {
      * @return the upgraded OpenCmsCore object with the new runlevel
      */
     private OpenCmsCore setRunLevel(OpenCmsCore currentInstance, int level) {
-        if (isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, "OpenCms: Changing runlevel from " + m_runLevel + " to " + level);
+        if (isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, "OpenCms: Changing runlevel from " + m_runLevel + " to " + level);
         }          
         m_runLevel = level;
         if (currentInstance != null) {
@@ -2108,8 +2108,8 @@ public class OpenCmsCore {
         if (message == null) message = cause.toString();
         System.err.println("\n--------------------\nCritical error during OpenCms context init phase:\n" + message);
         System.err.println("Giving up, unable to start OpenCms.\n--------------------");        
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, message);
+        if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, message);
         }         
         throw cause;
     }
@@ -2121,8 +2121,8 @@ public class OpenCmsCore {
         try {
             m_table.update(m_driverManager.readCronTable());
         } catch (Exception exc) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[OpenCms] crontable corrupt. Scheduler is now disabled!");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[OpenCms] crontable corrupt. Scheduler is now disabled!");
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2003/09/16 12:06:09 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/09/16 14:55:48 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -129,9 +129,9 @@ public class CmsMethodElement extends A_CmsElement {
             try {
                 templateClass = getTemplateClass(cms, m_className);
             } catch(Throwable e) {
-                if(OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, toString() + " Could not load my template class \"" + m_className + "\". ");
-                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, e.toString());
+                if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, toString() + " Could not load my template class \"" + m_className + "\". ");
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, e.toString());
                     return e.toString().getBytes();
                 }
             }
@@ -211,8 +211,8 @@ public class CmsMethodElement extends A_CmsElement {
      * @throws CmsException
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
-        if(OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN) ) {
-            OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, errorMessage);
+        if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR) ) {
+            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, errorMessage);
         }
         throw new CmsException(errorMessage, type);
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2003/09/16 12:06:09 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/09/16 14:55:48 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -155,9 +155,9 @@ public class CmsElementLocator {
                              CmsXmlTemplateLoader.getElementCache(cms).getVariantCachesize());
                     put(desc, result);
                 } catch(Throwable e) {
-                    if(OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, toString() + " Could not initialize method element for class \"" + className  + "\". ");
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, e.toString());
+                    if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, toString() + " Could not initialize method element for class \"" + className  + "\". ");
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, e.toString());
                         return null;
                     }
                 }
@@ -167,9 +167,9 @@ public class CmsElementLocator {
                     result = cmsTemplate.createElement(cms, desc.getTemplateName(), parameters);
                     put(desc, result);
                 } catch(Throwable e) {
-                    if(OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, toString() + " Could not initialize (sub-)element for class \"" + desc.getClassName() + "\". ");
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, e.toString());
+                    if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, toString() + " Could not initialize (sub-)element for class \"" + desc.getClassName() + "\". ");
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, e.toString());
                         throw new CmsException("Could not initialize (sub-)element for class \"" +
                                              desc.getClassName() + "\". " +e.toString() , CmsException.C_XML_WRONG_TEMPLATE_CLASS);
                     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2003/09/16 12:06:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/16 14:55:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,29 +46,21 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsLog {
-    
-    /** Critical messages that stop further processing */
-    public static final String C_OPENCMS_CRITICAL = "org.opencms";
-
-    /** Debugging messages */
-    public static final String C_OPENCMS_DEBUG = "org.opencms";
-
-    /** Informational messages */
-    public static final String C_OPENCMS_INFO = "org.opencms";
-
-    /** Initialization messages */
-    public static final String C_OPENCMS_INIT = "org.opencms";
-
-
 
     /** Messages of the OpenCms Scheduler */
     public static final String CHANNEL_CRON = "org.opencms.cron";
 
     /** Flex loader messages */
     public static final String CHANNEL_FLEX = "org.opencms.flex";
+
+    /** Initialization messages */
+    public static final String CHANNEL_INIT = "org.opencms.init";
+
+    /** Informational messages */
+    public static final String CHANNEL_MAIN = "org.opencms";
 
     /** Informational messages */
     public static final String CHANNEL_MODULE = "org.opencms.module";
@@ -172,14 +164,19 @@ public class CmsLog {
         switch (level) {
             case LEVEL_TRACE:
                 log.trace(message);
+                break;
             case LEVEL_DEBUG:
                 log.debug(message);
+                break;
             case LEVEL_INFO:
                 log.info(message);
+                break;
             case LEVEL_WARN:
                 log.warn(message);
+                break;
             case LEVEL_ERROR:
                 log.error(message);
+                break;
             case LEVEL_FATAL:
             default:
                 log.fatal(message);
@@ -202,14 +199,19 @@ public class CmsLog {
         switch (level) {
             case LEVEL_TRACE:
                 log.trace(message, throwable);
+                break;
             case LEVEL_DEBUG:
                 log.debug(message, throwable);
+                break;
             case LEVEL_INFO:
                 log.info(message, throwable);
+                break;
             case LEVEL_WARN:
                 log.warn(message, throwable);
+                break;
             case LEVEL_ERROR:
                 log.error(message, throwable);
+                break;
             case LEVEL_FATAL:
             default:
                 log.fatal(message, throwable);             

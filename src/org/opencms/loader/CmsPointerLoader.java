@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2003/09/16 12:06:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/16 14:55:49 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Loader for "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
     
@@ -94,8 +94,8 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
             responsestream.write(C_EXPORT_SUFFIX.getBytes());
             responsestream.close();
         } catch (Throwable t) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) { 
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, this.getClass().getName() + " Error during static export of " + cms.readAbsolutePath(file) + ": " + t.getMessage());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) { 
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, this.getClass().getName() + " Error during static export of " + cms.readAbsolutePath(file) + ": " + t.getMessage());
             }        
         }        
     }    
@@ -129,8 +129,8 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
      * @see org.opencms.loader.I_CmsResourceLoader#init(source.org.apache.java.util.Configurations)
      */
     public void init(Configurations conf) {
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) { 
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Loader init          : " + this.getClass().getName() + " initialized!");
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) { 
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Loader init          : " + this.getClass().getName() + " initialized!");
         }        
     }
     

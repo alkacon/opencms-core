@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2003/09/16 12:06:10 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/09/16 14:55:49 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.40 $ $Date: 2003/09/16 12:06:10 $
+ * @version $Revision: 1.41 $ $Date: 2003/09/16 14:55:49 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 
@@ -172,8 +172,8 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
                 }
                 req.setCharacterEncoding(encoding);
             }
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_DEBUG, CmsLog.LEVEL_WARN)) 
-                OpenCms.log(CmsLog.C_OPENCMS_DEBUG, CmsLog.LEVEL_WARN, "Request character encoding is: '" + req.getCharacterEncoding() + "'");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_DEBUG)) 
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_DEBUG, "Request character encoding is: '" + req.getCharacterEncoding() + "'");
         }
     }
 

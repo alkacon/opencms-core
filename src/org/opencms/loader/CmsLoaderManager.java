@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2003/09/16 12:06:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/16 14:55:49 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  */
 public class CmsLoaderManager {
@@ -64,8 +64,8 @@ public class CmsLoaderManager {
     public CmsLoaderManager(Configurations conf) throws CmsException {
         List loaders = OpenCms.getRegistry().getResourceLoaders();
 
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". ResourceLoader init  : " + this.getClass().getPackage());
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". ResourceLoader init  : " + this.getClass().getPackage());
         }
 
         m_loaders = new I_CmsResourceLoader[16];
@@ -77,15 +77,15 @@ public class CmsLoaderManager {
                 I_CmsResourceLoader loaderInstance = (I_CmsResourceLoader)Class.forName(loaderName).newInstance();
                 loaderInstance.init(conf);                
                 addLoader(loaderInstance);
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". ResourceLoader loaded: " + loaderName + " with id " + loaderInstance.getLoaderId());
+                if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". ResourceLoader loaded: " + loaderName + " with id " + loaderInstance.getLoaderId());
                 }                
             } catch (Throwable e) {
                 // loader class not found, ignore class
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
+                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
                     String errorMessage = "Error while initializing loader \"" + loaderName + "\". Ignoring.";
-                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, "[CmsLoaderManager] " + errorMessage);
-                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, "[CmsLoaderManager] " + e);
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsLoaderManager] " + errorMessage);
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsLoaderManager] " + e);
                 }
             }
         }

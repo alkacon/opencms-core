@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/16 12:06:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/09/16 14:55:48 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2003/09/16 12:06:09 $
+ * @version $Revision: 1.18 $ $Date: 2003/09/16 14:55:48 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -287,8 +287,8 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
 
         String value = null;
         if ((value = c_queries.getProperty(queryKey)) == null) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + "] query '" + queryKey + "' not found in " + C_PROPERTY_FILENAME);
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + "] query '" + queryKey + "' not found in " + C_PROPERTY_FILENAME);
             }
         }
 
@@ -357,8 +357,8 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         
         message = className + message;
 
-        if (!logSilent && OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
-            OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, message);
+        if (!logSilent && OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, message);
         }
 
         switch (exceptionType) {
@@ -527,13 +527,13 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream(propertyFilename));
         } catch (NullPointerException exc) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + "] error loading " + propertyFilename);
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + "] error loading " + propertyFilename);
             }
             properties = null;
         } catch (java.io.IOException exc) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + "] error loading " + propertyFilename);
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + "] error loading " + propertyFilename);
             }
             properties = null;
         }

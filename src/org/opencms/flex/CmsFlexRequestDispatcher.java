@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2003/09/16 12:06:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/16 14:55:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -234,8 +234,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                     } catch (com.opencms.core.CmsException e) {
                         if (e.getType() == CmsException.C_FLEX_CACHE) {
                             // Invalid key is ignored but logged, used key is cache=never
-                            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) 
-                                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[FlexCache] Invalid cache key for external resource \"" + m_vfsTarget + "\": " + cacheProperty);
+                            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) 
+                                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[FlexCache] Invalid cache key for external resource \"" + m_vfsTarget + "\": " + cacheProperty);
                             // There will be a vaild key in the response ("cache=never") even after an exception
                             cache.putKey(w_res.getCmsCacheKey());
                         } else {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2003/09/16 12:06:10 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/09/16 14:55:49 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.32 $ $Date: 2003/09/16 12:06:10 $
+ * @version $Revision: 1.33 $ $Date: 2003/09/16 14:55:49 $
  */
 public class CmsResponseHttpServlet implements I_CmsResponse {
 
@@ -104,13 +104,13 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
         // If m != null, the method could be found.
         boolean result = (m != null);
 
-        if(OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
+        if(OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
             if(result) {
                 // We have JSDK 2
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Compatibility check  : JSDK 2 detected. ");
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Compatibility check  : JSDK 2 detected. ");
             } else {
                 // We have JSDK 1
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Compatibility check  : JSDK 1 detected. ");
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Compatibility check  : JSDK 1 detected. ");
             }
         }
         return result;
@@ -191,8 +191,8 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
         try {
             m_res.sendRedirect(hostName + contextPath + servlet + location);
         } catch(IOException exc) {
-            if(OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsResponseHttpServlet] Couldn't redirect to: " + hostName + contextPath + servlet + location);
+            if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsResponseHttpServlet] Couldn't redirect to: " + hostName + contextPath + servlet + location);
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2003/09/16 12:06:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/16 14:55:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Hashtable;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.0 beta 1
  */
 public class CmsJspTemplate extends CmsDumpTemplate {
@@ -92,8 +92,8 @@ public class CmsJspTemplate extends CmsDumpTemplate {
             throw new CmsException("[CmsJspTemplate] Error while reading JSP " + jspFile + "\n" + e, e);
         } catch (Exception e) {
             String errorMessage = "[CmsJspTemplate] Error while loading jsp file " + jspFile + ": " + e;
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, "[CmsJspTemplate] " + errorMessage);
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsJspTemplate] " + errorMessage);
             }
             if (e instanceof CmsException) {
                 throw (CmsException)e;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/09/16 12:06:10 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/09/16 14:55:49 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.44 $ $Date: 2003/09/16 12:06:10 $
+ * @version $Revision: 1.45 $ $Date: 2003/09/16 14:55:49 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -88,8 +88,8 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @throws CmsException
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
-        if(OpenCms.isLogging(CmsLog.C_OPENCMS_DEBUG, CmsLog.LEVEL_WARN) && C_DEBUG) {
-            OpenCms.log(CmsLog.C_OPENCMS_DEBUG, CmsLog.LEVEL_WARN, "[CmsDumpTemplate] Now dumping contents of file " + templateFile);
+        if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_DEBUG) && C_DEBUG) {
+            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_DEBUG, "[CmsDumpTemplate] Now dumping contents of file " + templateFile);
         }
         byte[] s = null;
         try {
@@ -108,8 +108,8 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
         }
         catch(Exception e) {
             String errorMessage = "Error while reading file " + templateFile + ": " + e;
-            if(OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR) ) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, "[CmsDumpTemplate] " + errorMessage);
+            if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR) ) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsDumpTemplate] " + errorMessage);
             }
             if(e instanceof CmsException) {
                 throw (CmsException)e;

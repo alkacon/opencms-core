@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/16 12:06:09 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2003/09/16 14:55:48 $
+ * Version: $Revision: 1.100 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.99 $ $Date: 2003/09/16 12:06:09 $
+ * @version $Revision: 1.100 $ $Date: 2003/09/16 14:55:48 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -528,8 +528,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     public void destroy() throws Throwable {
         finalize();
 
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + "] destroyed!");
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, "[" + this.getClass().getName() + "] destroyed!");
         }
     }
 
@@ -548,8 +548,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             // ignore the exception - the project was not readable so fill in the defaults
         }
 
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Database init        : filling default values");
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Database init        : filling default values");
         }
 
         // set the groups
@@ -619,13 +619,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         m_driverManager = driverManager;
 
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Assigned pool        : " + poolUrl);
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Assigned pool        : " + poolUrl);
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, this.getClass().toString() + " does not support successive drivers.");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, this.getClass().toString() + " does not support successive drivers.");
             }
         }
     }
@@ -692,8 +692,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 }
                 writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, currentFolder.getRootPath(), currentFolder);
             } catch (CmsException e) {
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishDeletedFolder] error writing backup/publishing history, type: " + e.getTypeText() + ",  " + currentFolder.toString());
+                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishDeletedFolder] error writing backup/publishing history, type: " + e.getTypeText() + ",  " + currentFolder.toString());
                 }
 
                 throw e;
@@ -704,8 +704,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 onlineFolder = m_driverManager.readFolder(context, currentFolder.getStructureId(), true);
                 onlineFolder.setFullResourceName(currentFolder.getRootPath());
             } catch (CmsException e) {
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishDeletedFolder] error reading resource, type: " + e.getTypeText() + ",  " + currentFolder.toString());
+                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishDeletedFolder] error reading resource, type: " + e.getTypeText() + ",  " + currentFolder.toString());
                 }
 
                 throw e;
@@ -716,8 +716,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 m_driverManager.getVfsDriver().deleteAllProperties(onlineProject.getId(), onlineFolder);
                 m_driverManager.getVfsDriver().deleteAllProperties(context.currentProject().getId(), currentFolder);
             } catch (CmsException e) {
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishDeletedFolder] error deleting properties, type: " + e.getTypeText() + ",  " + currentFolder.toString());
+                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishDeletedFolder] error deleting properties, type: " + e.getTypeText() + ",  " + currentFolder.toString());
                 }
 
                 throw e;
@@ -728,8 +728,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 m_driverManager.getVfsDriver().removeFolder(onlineProject, currentFolder);
                 m_driverManager.getVfsDriver().removeFolder(context.currentProject(), currentFolder);
             } catch (CmsException e) {
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishDeletedFolder] error removing resource, type: " + e.getTypeText() + ",  " + currentFolder.toString());
+                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishDeletedFolder] error removing resource, type: " + e.getTypeText() + ",  " + currentFolder.toString());
                 }
 
                 throw e;
@@ -740,8 +740,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 m_driverManager.getUserDriver().removeAccessControlEntries(onlineProject, onlineFolder.getResourceId());
                 m_driverManager.getUserDriver().removeAccessControlEntries(context.currentProject(), currentFolder.getResourceId());
             } catch (CmsException e) {
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishDeletedFolder] error removing ACLs, type: " + e.getTypeText() + ",  " + currentFolder.toString());
+                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishDeletedFolder] error removing ACLs, type: " + e.getTypeText() + ",  " + currentFolder.toString());
                 }
 
                 throw e;
@@ -796,8 +796,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     onlineFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), true, offlineFile.getStructureId());
                     onlineFile.setFullResourceName(offlineFileHeader.getRootPath());
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error reading resource, type: " + e.getTypeText() + ",  " + offlineFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error reading resource, type: " + e.getTypeText() + ",  " + offlineFile.toString());
                     }
 
                     throw e;
@@ -830,8 +830,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         m_driverManager.getVfsDriver().deleteAllProperties(context.currentProject().getId(), onlineFile);
                     }
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error deleting properties, type: " + e.getTypeText() + ",  " + offlineFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error deleting properties, type: " + e.getTypeText() + ",  " + offlineFile.toString());
                     }
 
                     throw e;
@@ -842,8 +842,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     m_driverManager.getVfsDriver().removeFile(onlineProject, onlineFile);
                     m_driverManager.getVfsDriver().removeFile(context.currentProject(), offlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error removing resource, type: " + e.getTypeText() + ",  " + offlineFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error removing resource, type: " + e.getTypeText() + ",  " + offlineFile.toString());
                     }
 
                     throw e;
@@ -854,8 +854,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     m_driverManager.getUserDriver().removeAccessControlEntries(onlineProject, onlineFile.getResourceId());
                     m_driverManager.getUserDriver().removeAccessControlEntries(context.currentProject(), offlineFile.getResourceId());
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error removing ACLs, type: " + e.getTypeText() + ",  " + offlineFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error removing ACLs, type: " + e.getTypeText() + ",  " + offlineFile.toString());
                     }
 
                     throw e;
@@ -869,8 +869,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
                     writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFileHeader.getRootPath(), offlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error writing backup/publishing history, type: " + e.getTypeText() + ",  " + offlineFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error writing backup/publishing history, type: " + e.getTypeText() + ",  " + offlineFile.toString());
                     }
 
                     throw e;
@@ -898,8 +898,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // remove the file online
                     m_driverManager.getVfsDriver().removeFile(onlineProject, onlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error deleting properties, type: " + e.getTypeText() + ",  " + offlineFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error deleting properties, type: " + e.getTypeText() + ",  " + offlineFile.toString());
                     }
 
                     throw e;
@@ -914,8 +914,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentStructureId(), newFile.getName());
                     m_driverManager.getVfsDriver().updateResource(newFile, offlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error creating resource, type: " + e.getTypeText() + ",  " + newFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error creating resource, type: " + e.getTypeText() + ",  " + newFile.toString());
                     }
 
                     throw e;
@@ -926,8 +926,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFile, offlineFile.getType());
                     m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), newFile, newFile.getType(), false);
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error writing properties, type: " + e.getTypeText() + ",  " + newFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error writing properties, type: " + e.getTypeText() + ",  " + newFile.toString());
                     }
 
                     throw e;
@@ -937,8 +937,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // write the ACL online
                     m_driverManager.getUserDriver().publishAccessControlEntries(context.currentProject(), onlineProject, newFile.getResourceId(), onlineFile.getResourceId());
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error writing ACLs, type: " + e.getTypeText() + ",  " + offlineFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error writing ACLs, type: " + e.getTypeText() + ",  " + offlineFile.toString());
                     }
 
                     throw e;
@@ -951,8 +951,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
                     m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), offlineFile, offlineProperties, backupTagId, publishDate, maxVersions);
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error writing backup/publishing history, type: " + e.getTypeText() + ",  " + offlineFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error writing backup/publishing history, type: " + e.getTypeText() + ",  " + offlineFile.toString());
                     }
 
                     throw e;
@@ -966,8 +966,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
                     m_driverManager.getVfsDriver().updateProjectId(context.currentProject(), 0, offlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error reseting resource state, type: " + e.getTypeText() + ",  " + offlineFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error reseting resource state, type: " + e.getTypeText() + ",  " + offlineFile.toString());
                     }
 
                     throw e;
@@ -988,14 +988,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             m_driverManager.getVfsDriver().removeFile(onlineProject, offlineFile);
                             m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentStructureId(), newFile.getName());
                         } catch (CmsException e1) {
-                            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error creating resource, type: " + e.getTypeText() + ",  " + offlineFile.toString());
+                            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error creating resource, type: " + e.getTypeText() + ",  " + offlineFile.toString());
                             }
 
                             throw e1;
                         }
-                    } else if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error creating resource, type: " + e.getTypeText() + ",  " + offlineFile.toString());
+                    } else if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error creating resource, type: " + e.getTypeText() + ",  " + offlineFile.toString());
                     }
 
                     throw e;
@@ -1006,8 +1006,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFile, offlineFile.getType());
                     m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), newFile, newFile.getType(), false);
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error writing properties, type: " + e.getTypeText() + ",  " + newFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error writing properties, type: " + e.getTypeText() + ",  " + newFile.toString());
                     }
 
                     throw e;
@@ -1017,8 +1017,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // write the ACL online
                     m_driverManager.getUserDriver().publishAccessControlEntries(context.currentProject(), onlineProject, offlineFile.getResourceId(), newFile.getResourceId());
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error writing ACLs, type: " + e.getTypeText() + ",  " + newFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error writing ACLs, type: " + e.getTypeText() + ",  " + newFile.toString());
                     }
 
                     throw e;
@@ -1031,8 +1031,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
                     writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFileHeader.getRootPath(), offlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error writing backup/publishing history, type: " + e.getTypeText() + ",  " + newFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error writing backup/publishing history, type: " + e.getTypeText() + ",  " + newFile.toString());
                     }
 
                     throw e;
@@ -1046,8 +1046,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
                     m_driverManager.getVfsDriver().updateProjectId(context.currentProject(), 0, offlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFile] error reseting resource state, type: " + e.getTypeText() + ",  " + offlineFile.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error reseting resource state, type: " + e.getTypeText() + ",  " + offlineFile.toString());
                     }
 
                     throw e;
@@ -1094,14 +1094,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             onlineFolder.setFullResourceName(offlineFolder.getRootPath());
                             m_driverManager.getVfsDriver().updateResource(onlineFolder, offlineFolder);
                         } catch (CmsException e1) {
-                            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFolder] error reading resource, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
+                            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFolder] error reading resource, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
                             }
 
                             throw e1;
                         }
-                    } else if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFolder] error creating resource, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
+                    } else if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFolder] error creating resource, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
                     }
 
                     throw e;
@@ -1111,8 +1111,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // write the ACL online
                     m_driverManager.getUserDriver().publishAccessControlEntries(context.currentProject(), onlineProject, offlineFolder.getResourceId(), newFolder.getResourceId());
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFolder] error writing ACLs, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFolder] error writing ACLs, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
                     }
 
                     throw e;
@@ -1123,8 +1123,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFolder, offlineFolder.getType());
                     m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), newFolder, newFolder.getType(), false);
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFolder] error writing properties, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFolder] error writing properties, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
                     }
 
                     throw e;
@@ -1142,14 +1142,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             onlineFolder.setFullResourceName(offlineFolder.getRootPath());
                             m_driverManager.getVfsDriver().updateResourceState(context.currentProject(), onlineFolder, CmsDriverManager.C_UPDATE_ALL);
                         } catch (CmsException e1) {
-                            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFolder] error creating resource, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
+                            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFolder] error creating resource, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
                             }
 
                             throw e1;
                         }
-                    } else if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFolder] error reading resource, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
+                    } else if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFolder] error reading resource, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
                     }
 
                     throw e;
@@ -1159,8 +1159,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // update the folder online
                     m_driverManager.getVfsDriver().updateResource(onlineFolder, offlineFolder);
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFolder] error updating resource, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFolder] error updating resource, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
                     }
 
                     throw e;
@@ -1170,8 +1170,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // write the ACL online
                     m_driverManager.getUserDriver().publishAccessControlEntries(context.currentProject(), onlineProject, offlineFolder.getResourceId(), onlineFolder.getResourceId());
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFolder] error writing ACLs, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFolder] error writing ACLs, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
                     }
 
                     throw e;
@@ -1183,8 +1183,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFolder, offlineFolder.getType());
                     m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), onlineFolder, offlineFolder.getType(), false);
                 } catch (CmsException e) {
-                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFolder] error writing properties, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFolder] error writing properties, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
                     }
 
                     throw e;
@@ -1198,8 +1198,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 }
                 writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFolder.getRootPath(), offlineFolder);
             } catch (CmsException e) {
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFolder] error writing backup/publishing history, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
+                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFolder] error writing backup/publishing history, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
                 }
 
                 throw e;
@@ -1214,8 +1214,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 m_driverManager.getVfsDriver().updateProjectId(context.currentProject(), 0, offlineFolder);
             } catch (CmsException e) {
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishFolder] error reseting resource state, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
+                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFolder] error reseting resource state, type: " + e.getTypeText() + ",  " + offlineFolder.toString());
                 }
 
                 throw e;
@@ -1483,12 +1483,12 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         try {
                             discAccess.removeResource(currentResourceName, currentExportKey);
                         } catch (CmsException e) {
-                            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishProject()] error deleting export point, type: " + e.getType() + ",  " + currentFile.toString());
+                            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishProject()] error deleting export point, type: " + e.getType() + ",  " + currentFile.toString());
                             }
                         } catch (Exception e) {
-                            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishProject()] error deleting export point " + currentFile.toString());
+                            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishProject()] error deleting export point " + currentFile.toString());
                             }
                         }
                     }
@@ -1517,12 +1517,12 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                             discAccess.writeFile(currentResourceName, currentExportKey, contents);
                         } catch (CmsException e) {
-                            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishProject()] error writing export point, type: " + e.getType() + ",  " + currentFile.toString());
+                            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishProject()] error writing export point, type: " + e.getType() + ",  " + currentFile.toString());
                             }
                         } catch (Exception e) {
-                            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishProject()] error writing export point " + currentFile.toString());
+                            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishProject()] error writing export point " + currentFile.toString());
                             }
                         }
                     }
@@ -1639,8 +1639,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             throw e;
         } catch (OutOfMemoryError o) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishProject] out of memory error!");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishProject] out of memory error!");
             }
 
             // clear all caches to reclaim memory

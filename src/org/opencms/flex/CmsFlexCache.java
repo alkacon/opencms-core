@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2003/09/16 12:06:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/09/16 14:55:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -374,8 +374,8 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         purgeDirectory(d);
          
         clear();
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) 
-            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "JSP repository purged - purgeJspRepository() called");
+        if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) 
+            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "JSP repository purged - purgeJspRepository() called");
     }
     
     /**
@@ -864,7 +864,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.3 $ 
+     * @version $Revision: 1.4 $ 
      */
     class CmsFlexCacheVariation extends Object implements org.opencms.cache.I_CmsLruCacheObject {
         

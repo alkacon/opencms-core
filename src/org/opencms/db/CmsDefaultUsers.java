@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2003/09/16 12:06:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/16 14:55:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $ $Date: 2003/09/16 12:06:09 $
+ * @version $Revision: 1.7 $ $Date: 2003/09/16 14:55:48 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
@@ -126,36 +126,36 @@ public class CmsDefaultUsers {
     public static CmsDefaultUsers initialize(Configurations conf) throws Exception {
         CmsDefaultUsers defaultUsers = null;
         // Read the default user configuration
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {            
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Default user names   : checking...");
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {            
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Default user names   : checking...");
         }        
         try {
             String[] defaultUserArray = conf.getStringArray("db.default.users");
             defaultUsers = new CmsDefaultUsers(defaultUserArray);        
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, ". Critical init error/6: " + e.getMessage());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, ". Critical init error/6: " + e.getMessage());
             }
             throw e;
         }
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {            
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Admin user           : " + defaultUsers.getUserAdmin());
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Guest user           : " + defaultUsers.getUserGuest());
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Administrators group : " + defaultUsers.getGroupAdministrators());
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Projectmanagers group: " + defaultUsers.getGroupProjectmanagers());
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Users group          : " + defaultUsers.getGroupUsers());
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Guests group         : " + defaultUsers.getGroupGuests());
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {            
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Admin user           : " + defaultUsers.getUserAdmin());
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Guest user           : " + defaultUsers.getUserGuest());
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Administrators group : " + defaultUsers.getGroupAdministrators());
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Projectmanagers group: " + defaultUsers.getGroupProjectmanagers());
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Users group          : " + defaultUsers.getGroupUsers());
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Guests group         : " + defaultUsers.getGroupGuests());
         } 
         try {
             String[] translationArray = conf.getStringArray("import.name.translations");
             defaultUsers.setNameTranslations(translationArray);  
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Name translation     : non-critical error " + e.getMessage());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Name translation     : non-critical error " + e.getMessage());
             }
         }        
-        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {            
-            OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Default user names   : initialized");
+        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {            
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Default user names   : initialized");
         }          
         
         return defaultUsers;         
@@ -252,8 +252,8 @@ public class CmsDefaultUsers {
                     m_groupTranslations = new HashMap();
                 } 
                 m_groupTranslations.put(name1, name2);  
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Name translation     : group " + name1 + " to " + name2);
+                if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Name translation     : group " + name1 + " to " + name2);
                 }                
             } else if (valid && ucmatch.startsWith(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_USER)) {
                 String name1 = match.substring(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_USER.length(), pos);
@@ -262,12 +262,12 @@ public class CmsDefaultUsers {
                     m_userTranslations = new HashMap();
                 } 
                 m_userTranslations.put(name1, name2);      
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Name translation     : user " + name1 + " to " + name2);
+                if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Name translation     : user " + name1 + " to " + name2);
                 }                             
             } else {
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INIT, CmsLog.LEVEL_WARN, ". Name translation     : ignoring invalid entry '" + match + "'");
+                if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_ERROR)) {
+                    OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_ERROR, ". Name translation     : ignoring invalid entry '" + match + "'");
                 }                 
             }
         }         

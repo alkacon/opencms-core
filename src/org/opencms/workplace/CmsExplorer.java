@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/09/16 12:06:09 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2003/09/16 14:55:48 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 5.1
  */
@@ -358,8 +358,8 @@ public class CmsExplorer extends CmsWorkplace {
             } catch (CmsException e) {
                 lock = CmsLock.getNullLock();
             
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) { 
-                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, this.getClass().getName() + " error getting lock state for resource " + res + " " + e.getMessage());
+                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) { 
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, this.getClass().getName() + " error getting lock state for resource " + res + " " + e.getMessage());
                 }             
             }      
             

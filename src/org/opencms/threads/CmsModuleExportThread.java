@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleExportThread.java,v $
- * Date   : $Date: 2003/09/16 12:06:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/09/16 14:55:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.file.CmsRegistry;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1.10
  */
 public class CmsModuleExportThread extends A_CmsReportThread {
@@ -113,8 +113,8 @@ public class CmsModuleExportThread extends A_CmsReportThread {
             }
         } catch (CmsException e) {
             getReport().println(e);
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, e.getMessage());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, e.getMessage());
             }
             if (DEBUG) {
                 System.err.println("CmsAdminModuleExportThread() Exception:" + e.getMessage());

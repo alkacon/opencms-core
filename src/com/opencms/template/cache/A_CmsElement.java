@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/09/16 12:06:09 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/09/16 14:55:48 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -467,22 +467,22 @@ public abstract class A_CmsElement {
                                 if(e instanceof CmsException) {
                                     CmsException ce = (CmsException)e;
                                     if(ce instanceof CmsSecurityException) {
-                                        if(OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                                            OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, toString() + " Access denied in element " + lookupName);
+                                        if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                                            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, toString() + " Access denied in element " + lookupName);
                                         }
                                         throw ce;
                                     } else {
                                         // Any other CmsException. This may be critical
-                                        if(OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                                            OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, toString() + " Error in element " + lookupName);
-                                            OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, toString() + e);
+                                        if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                                            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, toString() + " Error in element " + lookupName);
+                                            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, toString() + e);
                                         }
                                     }
                                 } else {
                                     // Any other Non-CmsException.
-                                    if(OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, toString() + " Non-CmsException in element " + lookupName);
-                                        OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, toString() + e);
+                                    if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, toString() + " Non-CmsException in element " + lookupName);
+                                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, toString() + e);
                                     }
                                 }
                             }
@@ -531,15 +531,15 @@ public abstract class A_CmsElement {
                             buffer = metEle.getContent(elementCache, cms, elDefs, null,parameters, methodParameter);
                         }catch(Exception e){
                             if(e instanceof CmsException) {
-                                if(OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, toString() + " Error in method " + methodName );
-                                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, toString() + e);
+                                if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, toString() + " Error in method " + methodName );
+                                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, toString() + e);
                                 }
                             }else{
                                 // Any other Non-CmsException.
-                                if(OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, toString() + " Non-CmsException in method " + methodName);
-                                    OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, toString() + e);
+                                if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, toString() + " Non-CmsException in method " + methodName);
+                                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, toString() + e);
                                 }
                             }
                         }
@@ -560,8 +560,8 @@ public abstract class A_CmsElement {
             return baos.toByteArray();
         } catch(IOException e) {
             // Something went wrong while writing to the OutputStream
-            if(OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, toString() + " Critical: IOException while writing to OutputStream. ");
+            if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, toString() + " Critical: IOException while writing to OutputStream. ");
             }
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
         }

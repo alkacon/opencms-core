@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/09/16 12:06:10 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/09/16 14:55:49 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.w3c.dom.Element;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.7 $ $Date: 2003/09/16 12:06:10 $
+ * @version $Revision: 1.8 $ $Date: 2003/09/16 14:55:49 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 
@@ -229,19 +229,19 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
                 }
             } catch (InvocationTargetException ite) {
                 m_report.println(ite);
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsExportModuledata] " + classname + ".readAllByChannel: Invocation target exception!");
+                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsExportModuledata] " + classname + ".readAllByChannel: Invocation target exception!");
                 }
             } catch (NoSuchMethodException nsm) {
                 m_report.println(nsm);
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsExportModuledata] " + classname + ".readAllByChannel: Requested method was not found!");
+                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsExportModuledata] " + classname + ".readAllByChannel: Requested method was not found!");
                 }
             } catch (Exception e) {
                 m_report.println(e);
-                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsExportModuledata] " + classname + ".readAllByChannel: Other exception! " + e);
-                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, e.getMessage());
+                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsExportModuledata] " + classname + ".readAllByChannel: Other exception! " + e);
+                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, e.getMessage());
                 }
             }
         }
@@ -317,26 +317,26 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             cd = (CmsMasterContent)co.newInstance(objects);
         } catch (InvocationTargetException ite) {
             m_report.println(ite);
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsExportModuledata] " + classname + " contentDefinitionConstructor: Invocation target exception!");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsExportModuledata] " + classname + " contentDefinitionConstructor: Invocation target exception!");
             }
         } catch (NoSuchMethodException nsm) {
             m_report.println(nsm);
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsExportModuledata] " + classname + " contentDefinitionConstructor: Requested method was not found!");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsExportModuledata] " + classname + " contentDefinitionConstructor: Requested method was not found!");
             }
         } catch (InstantiationException ie) {
             m_report.println(ie);
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsExportModuledata] " + classname + " contentDefinitionConstructor: the reflected class is abstract!");
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsExportModuledata] " + classname + " contentDefinitionConstructor: the reflected class is abstract!");
             }
         } catch (Exception e) {
             m_report.println(e);
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsExportModuledata] " + classname + " contentDefinitionConstructor: Other exception! " + e);
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsExportModuledata] " + classname + " contentDefinitionConstructor: Other exception! " + e);
             }
-            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, e.getMessage());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
+                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, e.getMessage());
             }
         }
         return cd;
