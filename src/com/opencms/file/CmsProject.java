@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/04/13 19:48:08 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/06/05 13:37:54 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,9 +37,9 @@ import java.sql.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/04/13 19:48:08 $
+ * @version $Revision: 1.13 $ $Date: 2000/06/05 13:37:54 $
  */
-public class CmsProject extends A_CmsProject implements I_CmsConstants,
+public class CmsProject implements I_CmsConstants,
                                                         Cloneable{
 	
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
- * Date   : $Date: 2000/04/28 13:47:07 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/06/05 13:37:58 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,10 +38,11 @@ import java.io.*;
  * This is a general helper class.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/04/28 13:47:07 $
+ * @version $Revision: 1.13 $ $Date: 2000/06/05 13:37:58 $
  */
 public class Utils implements I_CmsConstants, I_CmsLogChannels {
-	/** Constant for sorting files upward by name */
+
+	/** Constant for sorting files upward by name */
     public static final int C_SORT_NAME_UP = 1;
     
 	/** Constant for sorting files downward by name */
@@ -149,7 +150,7 @@ public class Utils implements I_CmsConstants, I_CmsLogChannels {
       * @param sorting The sorting method to be used.
       * @return Vector of sorted CmsFile objects
       */
-     public static Vector sort(A_CmsObject cms, Vector unsortedFiles, int sorting){
+     public static Vector sort(CmsObject cms, Vector unsortedFiles, int sorting){
          Vector v=new Vector();
      
          Enumeration enu =unsortedFiles.elements();
@@ -206,7 +207,7 @@ public class Utils implements I_CmsConstants, I_CmsLogChannels {
       * @exception CmsException Is thrown when file access failed.
       * 
       */
-     private static boolean compare(A_CmsObject cms, int sorting, CmsFile fileA, CmsFile fileB)
+     private static boolean compare(CmsObject cms, int sorting, CmsFile fileA, CmsFile fileB)
          throws CmsException {
        
          boolean cmp=false;
@@ -215,8 +216,8 @@ public class Utils implements I_CmsConstants, I_CmsLogChannels {
          String titleB = fileB.getName();
          long lastModifiedA=fileA.getDateLastModified();
          long lastModifiedB=fileB.getDateLastModified();
-         A_CmsProject projectA=cms.readProject(fileA);
-         A_CmsProject projectB=cms.readProject(fileB);
+         CmsProject projectA=cms.readProject(fileA);
+         CmsProject projectB=cms.readProject(fileB);
          
          switch(sorting) {
          case C_SORT_NAME_UP:                      
@@ -245,7 +246,7 @@ public class Utils implements I_CmsConstants, I_CmsLogChannels {
 	  * @param user The user to get the full name from
 	  * @return a string representation of the user fullname.
 	  */
-	 public static String getFullName(A_CmsUser user) {
+	 public static String getFullName(CmsUser user) {
 		 String retValue = "";
 		 if(user != null) {
 			 retValue += user.getFirstname() + " ";

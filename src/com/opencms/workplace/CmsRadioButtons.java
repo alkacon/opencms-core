@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRadioButtons.java,v $
- * Date   : $Date: 2000/03/28 13:52:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/03/28 13:52:17 $
+ * @version $Revision: 1.6 $ $Date: 2000/06/05 13:38:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsRadioButtons extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -60,7 +60,7 @@ public class CmsRadioButtons extends A_CmsWpElement implements I_CmsWpElement, I
      * // TODO: insert correct syntax here!
      * <CODE>&lt;RADIOBUTTON name="..." action="..." alt="..."/&gt;</CODE>
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param An XML element containing the <code>&lt;RADIOBUTTON&gt;</code> tag.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object.
@@ -69,7 +69,7 @@ public class CmsRadioButtons extends A_CmsWpElement implements I_CmsWpElement, I
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         
         /** StringBuffer for the generated output */
         StringBuffer result = new StringBuffer();
@@ -93,7 +93,7 @@ public class CmsRadioButtons extends A_CmsWpElement implements I_CmsWpElement, I
         int selectedOption = 0;
         
         try {
-            groupsMethod = callingObject.getClass().getMethod(radioMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Vector.class, Vector.class, Vector.class, Hashtable.class});
+            groupsMethod = callingObject.getClass().getMethod(radioMethod, new Class[] {CmsObject.class, CmsXmlLanguageFile.class, Vector.class, Vector.class, Vector.class, Hashtable.class});
             returnObject = (Integer)groupsMethod.invoke(callingObject, new Object[] {cms, lang, names, values, descriptions, parameters});
         } catch(NoSuchMethodException exc) {
             // The requested method was not found.

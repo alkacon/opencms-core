@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsInitMySqlFillDefaults.java,v $
- * Date   : $Date: 2000/04/17 15:33:19 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/06/05 13:37:54 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/04/17 15:33:19 $
+ * @version $Revision: 1.22 $ $Date: 2000/06/05 13:37:54 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -72,7 +72,7 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			new CmsAccessTask(propertyDriver, propertyConnectString ) );
 
 		userRb.addGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
-		A_CmsGroup adminGroup = userRb.addGroup(C_GROUP_ADMIN, "the admin-group", 
+		CmsGroup adminGroup = userRb.addGroup(C_GROUP_ADMIN, "the admin-group", 
 												C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER, null);
 		userRb.addGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", 
 						C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER|C_FLAG_GROUP_PROJECTCOWORKER|C_FLAG_GROUP_ROLE,
@@ -82,18 +82,18 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			
 		userRb.addUser(C_USER_GUEST, "", C_GROUP_GUEST, "the guest-user", 
 					   new Hashtable(), C_FLAG_ENABLED);
-		A_CmsUser admin = userRb.addUser(C_USER_ADMIN, "admin", C_GROUP_ADMIN, 
+		CmsUser admin = userRb.addUser(C_USER_ADMIN, "admin", C_GROUP_ADMIN, 
 										 "the admin-user", new Hashtable(), 
 										 C_FLAG_ENABLED);
 			
 		I_CmsRbProject projectRb = new CmsRbProject(
 			new CmsAccessProjectMySql(propertyDriver, propertyConnectString));
 			
-		A_CmsTask task = taskRb.createProject(admin, C_PROJECT_ONLINE, adminGroup, 
+		CmsTask task = taskRb.createProject(admin, C_PROJECT_ONLINE, adminGroup, 
 											  new java.sql.Timestamp(new Date().getTime()), 
 											  C_TASK_PRIORITY_NORMAL);
 
-		A_CmsProject project = projectRb.createProject(C_PROJECT_ONLINE_ID, C_PROJECT_ONLINE, "the online-project", task,
+		CmsProject project = projectRb.createProject(C_PROJECT_ONLINE_ID, C_PROJECT_ONLINE, "the online-project", task,
 													   userRb.readUser(C_USER_ADMIN), 
 													   userRb.readGroup(C_GROUP_GUEST), 
 													   userRb.readGroup(C_GROUP_PROJECTLEADER),
@@ -127,7 +127,7 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 		propertyRb.addProperty( C_SYSTEMPROPERTY_MOUNTPOINT, mount );
 
 		// read all mountpoints from the properties.
-		A_CmsMountPoint mountPoint;
+		CmsMountPoint mountPoint;
 		Hashtable mountedAccessModules = new Hashtable();
 		Enumeration keys = mount.keys();
 		Object key;
@@ -135,7 +135,7 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 		// walk throug all mount-points.
 		while(keys.hasMoreElements()) {
 			key = keys.nextElement();
-			mountPoint = (A_CmsMountPoint) mount.get(key);
+			mountPoint = (CmsMountPoint) mount.get(key);
 					
 			// select the right access-module for the mount-point
 			if( mountPoint.getMountpointType() == C_MOUNTPOINT_MYSQL ) {

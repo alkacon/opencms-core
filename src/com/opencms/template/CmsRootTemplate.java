@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
- * Date   : $Date: 2000/03/22 10:36:57 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/06/05 13:37:57 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * generation of the master template class to be used.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/03/22 10:36:57 $
+ * @version $Revision: 1.14 $ $Date: 2000/06/05 13:37:57 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels, I_CmsConstants {
     
@@ -53,7 +53,7 @@ public class CmsRootTemplate implements I_CmsLogChannels, I_CmsConstants {
      * If the result is cacheable, the complete output will be stored
      * in the template cache for later re-use.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param templateClass Instance of the template class to be called.
      * @param masterTemplate CmsFile object of the master template file.
      * @param cache templateCache to be used.
@@ -61,7 +61,7 @@ public class CmsRootTemplate implements I_CmsLogChannels, I_CmsConstants {
      * 
      * @return Byte array containing the results of the master template.
      */
-    public byte[] getMasterTemplate(A_CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate,
+    public byte[] getMasterTemplate(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate,
             com.opencms.launcher.I_CmsTemplateCache cache, Hashtable parameters) throws CmsException {
         
         byte[] result;

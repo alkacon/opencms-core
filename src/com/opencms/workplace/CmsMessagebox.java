@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMessagebox.java,v $
- * Date   : $Date: 2000/02/22 11:22:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,21 +44,21 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.6 $ $Date: 2000/02/22 11:22:42 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/05 13:37:59 $
  */
 public class CmsMessagebox extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
 
@@ -72,7 +72,7 @@ public class CmsMessagebox extends A_CmsWpElement implements I_CmsWpElement, I_C
      * // TODO: insert correct syntax here!
      * <CODE>&lt;MESSAGEBOX name="..." action="..." alt="..."/&gt;</CODE>
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param An XML element containing the <code>&lt;MESSAGEBOX&gt;</code> tag.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object.
@@ -81,7 +81,7 @@ public class CmsMessagebox extends A_CmsWpElement implements I_CmsWpElement, I_C
      * @return Processed button.
      * @exception CmsException
      */
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         // collect all required data
 		Node helpfilename=null;
 		String helpname=null;

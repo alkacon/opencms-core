@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2000/03/13 15:54:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/03/13 15:54:51 $
+ * @version $Revision: 1.2 $ $Date: 2000/06/05 13:38:00 $
  */
 public class CmsPreferences extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -51,21 +51,21 @@ public class CmsPreferences extends CmsWorkplaceDefault implements I_CmsWpConsta
      /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
     
    /**
      * User method to get the actual panel of the PReferences dialog.
      * <P>
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
@@ -73,7 +73,7 @@ public class CmsPreferences extends CmsWorkplaceDefault implements I_CmsWpConsta
      * @exception CmsException
      * @see #commonPicsUrl
      */    
-    public Object setPanel(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public Object setPanel(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
         throws CmsException {
         
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpBoxDefFile.java,v $
- * Date   : $Date: 2000/05/10 16:03:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.util.*;
  *  Content definition for the workplace messagebox element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/05/10 16:03:13 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/05 13:38:00 $
  **/
 public class CmsXmlWpBoxDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
                                                                      I_CmsWpConstants {
@@ -57,10 +57,10 @@ public class CmsXmlWpBoxDefFile extends A_CmsXmlContent implements I_CmsLogChann
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlWpBoxDefFile(A_CmsObject cms, String filename) throws CmsException {
+    public CmsXmlWpBoxDefFile(CmsObject cms, String filename) throws CmsException {
         super();
         init(cms, filename);
     }
@@ -69,10 +69,10 @@ public class CmsXmlWpBoxDefFile extends A_CmsXmlContent implements I_CmsLogChann
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlWpBoxDefFile(A_CmsObject cms, CmsFile file) throws CmsException {
+    public CmsXmlWpBoxDefFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
         init(cms, file);
     }        

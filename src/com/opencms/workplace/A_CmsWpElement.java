@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
- * Date   : $Date: 2000/04/10 08:45:41 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/06/05 13:37:58 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/04/10 08:45:41 $
+ * @version $Revision: 1.23 $ $Date: 2000/06/05 13:37:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -130,11 +130,11 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * Gets a reference to the default config file.
      * The path to this file ist stored in <code>C_WORKPLACE_INI</code>
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @return Reference to the config file.
      * @exception CmsException
      */
-    public CmsXmlWpConfigFile getConfigFile(A_CmsObject cms) throws CmsException {
+    public CmsXmlWpConfigFile getConfigFile(CmsObject cms) throws CmsException {
         //if(m_configFile == null) {
             m_configFile = new CmsXmlWpConfigFile(cms);
         //}
@@ -148,7 +148,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the buttons defintion file.
      * @exception CmsException
      */
-    public CmsXmlWpButtonsDefFile getButtonDefinitions(A_CmsObject cms) throws CmsException {
+    public CmsXmlWpButtonsDefFile getButtonDefinitions(CmsObject cms) throws CmsException {
         //if(m_buttondef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -165,7 +165,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the icons defintion file.
      * @exception CmsException
      */
-    public CmsXmlWpTemplateFile getIconDefinitions(A_CmsObject cms) throws CmsException {
+    public CmsXmlWpTemplateFile getIconDefinitions(CmsObject cms) throws CmsException {
         //if(m_icondef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -182,7 +182,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the list defintion file.
      * @exception CmsException
      */
-    public CmsXmlWpTemplateFile getProjectlistDefinitions(A_CmsObject cms) throws CmsException {
+    public CmsXmlWpTemplateFile getProjectlistDefinitions(CmsObject cms) throws CmsException {
         //if(m_projectlistdef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -199,7 +199,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the list defintion file.
      * @exception CmsException
      */
-    public CmsXmlWpTemplateFile getTaskListDefinitions(A_CmsObject cms) throws CmsException {
+    public CmsXmlWpTemplateFile getTaskListDefinitions(CmsObject cms) throws CmsException {
         //if(m_tasklistdef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -216,7 +216,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the list defintion file.
      * @exception CmsException
      */
-    public CmsXmlWpTemplateFile getContextmenueDefinitions(A_CmsObject cms) throws CmsException {
+    public CmsXmlWpTemplateFile getContextmenueDefinitions(CmsObject cms) throws CmsException {
         //if(m_contextdef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -233,7 +233,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the label defintion file.
      * @exception CmsException
      */
-     public CmsXmlWpLabelDefFile getLabelDefinitions(A_CmsObject cms) throws CmsException {
+     public CmsXmlWpLabelDefFile getLabelDefinitions(CmsObject cms) throws CmsException {
         //if(m_labeldef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -250,7 +250,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the label defintion file.
      * @exception CmsException
      */
-     public CmsXmlWpInputDefFile getInputDefinitions(A_CmsObject cms) throws CmsException {
+     public CmsXmlWpInputDefFile getInputDefinitions(CmsObject cms) throws CmsException {
         //if(m_inputdef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -267,7 +267,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the label defintion file.
      * @exception CmsException
      */
-     public CmsXmlWpTemplateFile getPanelDefinitions(A_CmsObject cms) throws CmsException {
+     public CmsXmlWpTemplateFile getPanelDefinitions(CmsObject cms) throws CmsException {
         //if(m_inputdef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -284,7 +284,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the label defintion file.
      * @exception CmsException
      */
-     public CmsXmlWpTemplateFile getErrorDefinitions(A_CmsObject cms) throws CmsException {
+     public CmsXmlWpTemplateFile getErrorDefinitions(CmsObject cms) throws CmsException {
         //if(m_errordef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -301,7 +301,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the box defintion file.
      * @exception CmsException
      */
-     public CmsXmlWpBoxDefFile getBoxDefinitions(A_CmsObject cms) throws CmsException {
+     public CmsXmlWpBoxDefFile getBoxDefinitions(CmsObject cms) throws CmsException {
         //if(m_boxdef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -318,7 +318,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the radiobutton defintion file.
      * @exception CmsException
      */
-     public CmsXmlWpTemplateFile getRadioDefinitions(A_CmsObject cms) throws CmsException {
+     public CmsXmlWpTemplateFile getRadioDefinitions(CmsObject cms) throws CmsException {
         //if(m_radiodef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -335,7 +335,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the list defintion file.
      * @exception CmsException
      */
-    public CmsXmlWpTemplateFile getTaskDocuDefinitions(A_CmsObject cms) throws CmsException {
+    public CmsXmlWpTemplateFile getTaskDocuDefinitions(CmsObject cms) throws CmsException {
         //if(m_taskdocudef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -352,7 +352,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the list defintion file.
      * @exception CmsException
      */
-    public CmsXmlWpTemplateFile getPrefsScrollerDefinitions(A_CmsObject cms) throws CmsException {
+    public CmsXmlWpTemplateFile getPrefsScrollerDefinitions(CmsObject cms) throws CmsException {
         //if(m_taskdocudef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);

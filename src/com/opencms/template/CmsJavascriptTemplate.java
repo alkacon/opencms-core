@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsJavascriptTemplate.java,v $
- * Date   : $Date: 2000/05/10 16:00:27 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/05 13:37:57 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,14 +52,14 @@ public class CmsJavascriptTemplate implements I_CmsJavascriptTemplate {
      * </UL>
      * Paramter names must be in "elementName.parameterName" format.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template
      * @param parameters Hashtable with all template class parameters.
      * @return Content of the template and all subtemplates.
      * @exception CmsException 
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
         throws CmsException {
         return "".getBytes();
     }
@@ -68,8 +68,8 @@ public class CmsJavascriptTemplate implements I_CmsJavascriptTemplate {
      * Gets the content of a defined section in a given template file 
      * with the given parameters.
      * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
@@ -77,7 +77,7 @@ public class CmsJavascriptTemplate implements I_CmsJavascriptTemplate {
      * @return Content of the template and all subtemplates.
      * @exception CmsException 
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector)
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector)
         throws CmsException {
         return "".getBytes();
     }
@@ -106,15 +106,15 @@ public class CmsJavascriptTemplate implements I_CmsJavascriptTemplate {
      * the name of the template file may be adequate.
      * Other classes have to return a more complex key.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return key that can be used for caching
      */
-    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
+    public Object getKey(CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
         //Vector v = new Vector();
-        A_CmsRequestContext reqContext = cms.getRequestContext();
+        CmsRequestContext reqContext = cms.getRequestContext();
         
         //v.addElement(reqContext.currentProject().getName());
         //v.addElement(templateFile);
@@ -128,28 +128,28 @@ public class CmsJavascriptTemplate implements I_CmsJavascriptTemplate {
      * Complex classes that are able top include other subtemplates
      * have to check the cacheability of their subclasses here!
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
 
     /**
      * Indicates if a previous cached result should be reloaded.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if reload is neccesary, <EM>false</EM> otherwise.
      */    
-    public boolean shouldReload(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean shouldReload(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return true;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
- * Date   : $Date: 2000/05/11 10:18:39 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/06/05 13:37:58 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/05/11 10:18:39 $
+ * @version $Revision: 1.6 $ $Date: 2000/06/05 13:37:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -51,14 +51,14 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }    
 
@@ -66,14 +66,14 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         
 		// get the session
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();    
@@ -140,7 +140,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
     * @return A vector of folder and file objects.
     * @exception Throws CmsException if something goes wrong.
     */
-    public Vector getFiles(A_CmsObject cms) 
+    public Vector getFiles(CmsObject cms) 
         throws CmsException {
         Vector resources = new Vector();
 		// get the session
@@ -166,7 +166,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 	 * @param resources A Vector to store the result into.
 	 * @param filter The filter-value, to select the files.
 	 */
-	private void getFiles(A_CmsObject cms, String folderName, Vector resources, String filter) 
+	private void getFiles(CmsObject cms, String folderName, Vector resources, String filter) 
         throws CmsException {
         Vector folders=new Vector();
         Vector files=new Vector();
@@ -183,7 +183,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 			
 			if( (! folder.inProject(cms.onlineProject())) && checkAccess(cms, folder) ){
 				if(folder.getState() != C_STATE_UNCHANGED) {
-					addResource(resources, filter, (A_CmsResource)folder);
+					addResource(resources, filter, (CmsResource)folder);
 				}
 				getFiles(cms, folder.getAbsolutePath(), resources, filter );
 			}
@@ -193,7 +193,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 			file = (CmsFile)files.elementAt(i);
 			if( ( !file.inProject(cms.onlineProject()) )&& 
 				(file.getState() != C_STATE_UNCHANGED) && checkAccess(cms, file) ) {
-				addResource(resources, filter, (A_CmsResource)file);
+				addResource(resources, filter, (CmsResource)file);
 			}
         } 
 	}
@@ -206,7 +206,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 	 * @param filter The filter to check the state.
 	 * @param resource The resource to check and add.
 	 */
-	private void addResource(Vector resources, String filter, A_CmsResource resource) {
+	private void addResource(Vector resources, String filter, CmsResource resource) {
 		if("all".equals(filter)) {
 			// add in all cases
 			resources.addElement(resource);
@@ -236,7 +236,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
      * @return New modified bit pattern.
      * @see I_CmsFileListUsers
      */
-    public int modifyDisplayedColumns(A_CmsObject cms, int prefs) {
+    public int modifyDisplayedColumns(CmsObject cms, int prefs) {
         prefs = ((prefs & C_FILELIST_NAME) == 0) ? prefs : (prefs - C_FILELIST_NAME);
         prefs = ((prefs & C_FILELIST_TITLE) == 0) ? prefs : (prefs - C_FILELIST_TITLE);
         return prefs;
@@ -251,12 +251,12 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
      * @param cms Cms object for accessing system resources.
      * @param filelist Template file containing the definitions for the file list together with
      * the included customized defintions.
-     * @param res A_CmsResource Object of the current file list entry.
+     * @param res CmsResource Object of the current file list entry.
      * @param lang Current language file.
      * @exception CmsException if access to system resources failed.
      * @see I_CmsFileListUsers
      */
-    public void getCustomizedColumnValues(A_CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, A_CmsResource res, CmsXmlLanguageFile lang) 
+    public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, CmsResource res, CmsXmlLanguageFile lang) 
         throws CmsException {
 		String name = res.getName();
 		String path = res.getPath();
@@ -279,7 +279,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
       * @return True or false.
       * @exception CmsException if something goes wrong.
       */
-     private boolean checkAccess(A_CmsObject cms, CmsResource res)
+     private boolean checkAccess(CmsObject cms, CmsResource res)
      throws CmsException {
          boolean access=false;
          int accessflags=res.getAccessFlags();
@@ -288,7 +288,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
          boolean groupAccess = false;
          Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
          while((!groupAccess) && allGroups.hasMoreElements()) {
-             groupAccess = cms.readGroup(res).equals((A_CmsGroup)allGroups.nextElement());
+             groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
          }
          
          if ( ((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) ||

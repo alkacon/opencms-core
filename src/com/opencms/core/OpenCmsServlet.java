@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/06/02 13:37:58 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2000/06/05 13:37:50 $
+ * Version: $Revision: 1.39 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.38 $ $Date: 2000/06/02 13:37:58 $  
+* @version $Revision: 1.39 $ $Date: 2000/06/05 13:37:50 $  
 * 
 * */
 
@@ -484,7 +484,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
      */
     private void checkRelocation(CmsObject cms) 
         throws CmsException {
-        A_CmsRequestContext context=cms.getRequestContext();
+        CmsRequestContext context=cms.getRequestContext();
         
         // check the if the current project is the online project. Only in this project,
         // a redirect is nescessary.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsErrorpage.java,v $
- * Date   : $Date: 2000/04/06 09:26:34 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,21 +43,21 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ERRORPAGE&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/04/06 09:26:34 $
+ * @version $Revision: 1.8 $ $Date: 2000/06/05 13:37:59 $
  */
 public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
 
@@ -71,7 +71,7 @@ public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_Cm
      * // TODO: insert correct syntax here!
      * <CODE>&lt;ERRORPAGEBOX name="..." action="..." alt="..."/&gt;</CODE>
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;ERRORPAGEBOX&gt;</code> tag.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object.
@@ -80,7 +80,7 @@ public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_Cm
      * @return Processed button.
      * @exception CmsException
      */
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         
         // collect all required data
         String errorTitle = n.getAttribute(C_ERROR_TITLE);

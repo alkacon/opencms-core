@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2000/05/30 11:44:52 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/05/30 11:44:52 $
+ * @version $Revision: 1.12 $ $Date: 2000/06/05 13:38:00 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -51,14 +51,14 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
     
@@ -73,7 +73,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @return Bytearre containgine the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
@@ -105,7 +105,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         filename=(String)session.getValue(C_PARA_FILE);
         propertydef=(String)session.getValue(C_PARA_PROPERTYDEF);    
 		
-        A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
+        CmsResource file=(CmsResource)cms.readFileHeader(filename);
         
         String edit=(String)parameters.get("EDIT");
         String delete=(String)parameters.get("DELETE");
@@ -209,8 +209,8 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                     String testValue=cms.readProperty(filename,propertydef);
                     if (testValue == null) {
                         // add the property   
-                        A_CmsResourceType type=cms.getResourceType(file.getType());
-                        A_CmsPropertydefinition def=cms.createPropertydefinition(newValue,
+                        CmsResourceType type=cms.getResourceType(file.getType());
+                        CmsPropertydefinition def=cms.createPropertydefinition(newValue,
                                                                           type.getResourceName(),
                                                                           C_PROPERTYDEF_TYPE_NORMAL);
                         cms.writePropertydefinition(def);
@@ -235,7 +235,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         if (title==null) {
             title="";
         }
-        A_CmsUser owner=cms.readOwner(file);
+        CmsUser owner=cms.readOwner(file);
         xmlTemplateDocument.setData("TITLE",title);
         xmlTemplateDocument.setData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
         xmlTemplateDocument.setData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
@@ -255,7 +255,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @param lang The content definition language file.
      * @return Formated state string.
      */
-     private String getState(A_CmsObject cms, A_CmsResource file,CmsXmlLanguageFile lang)
+     private String getState(CmsObject cms, CmsResource file,CmsXmlLanguageFile lang)
          throws CmsException {
          StringBuffer output=new StringBuffer();
          
@@ -275,14 +275,14 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    public Integer getProperty(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getProperty(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 	
 		int retValue = -1;
@@ -316,7 +316,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @return Value that is set into the input field.
      * @exception CmsExeption if something goes wrong.
      */
-    public String getPropertyValue(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
+    public String getPropertyValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
         
         String propertyValue=null;
@@ -346,14 +346,14 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    public Integer getPropertydef(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getPropertydef(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 	
 		int retValue = -1;
@@ -361,8 +361,8 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
        
         String filename=(String)session.getValue(C_PARA_FILE);       
         if (filename != null) {
-             A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
-             A_CmsResourceType type=cms.getResourceType(file.getType());
+             CmsResource file=(CmsResource)cms.readFileHeader(filename);
+             CmsResourceType type=cms.getResourceType(file.getType());
              // get all propertydefinitions for this type
              Vector propertydef =cms.readAllPropertydefinitions(type.getResourceName());
              // get all existing properties of this file
@@ -391,14 +391,14 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    public Integer getAllPropertydef(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getAllPropertydef(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 	
 		int retValue = -1;
@@ -406,8 +406,8 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
        
         String filename=(String)session.getValue(C_PARA_FILE);       
         if (filename != null) {
-             A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
-             A_CmsResourceType type=cms.getResourceType(file.getType());
+             CmsResource file=(CmsResource)cms.readFileHeader(filename);
+             CmsResourceType type=cms.getResourceType(file.getType());
              // get all propertydefinitions for this type
              Vector propertydef =cms.readAllPropertydefinitions(type.getResourceName());
         

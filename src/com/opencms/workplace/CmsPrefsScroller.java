@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPrefsScroller.java,v $
- * Date   : $Date: 2000/04/10 09:49:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PREFSSCROLLER&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/04/10 09:49:25 $
+ * @version $Revision: 1.2 $ $Date: 2000/06/05 13:38:00 $
  */
 public class CmsPrefsScroller extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -78,7 +78,7 @@ public class CmsPrefsScroller extends A_CmsWpElement implements I_CmsWpElement, 
      * "title" section of the current language file using the given 
      * tag name.
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;INPUT&gt;</code> tag.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object.
@@ -87,7 +87,7 @@ public class CmsPrefsScroller extends A_CmsWpElement implements I_CmsWpElement, 
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
 
         String methodName = n.getAttribute(C_WPTAG_ATTR_METHOD);
         String title = n.getAttribute(C_WPTAG_ATTR_TITLE);
@@ -99,7 +99,7 @@ public class CmsPrefsScroller extends A_CmsWpElement implements I_CmsWpElement, 
         Method fillMethod = null;
         String fillResult = null;
         try {
-            fillMethod = callingObject.getClass().getMethod(methodName, new Class[] {A_CmsObject.class, A_CmsXmlContent.class, CmsXmlLanguageFile.class, Hashtable.class, Object.class});
+            fillMethod = callingObject.getClass().getMethod(methodName, new Class[] {CmsObject.class, A_CmsXmlContent.class, CmsXmlLanguageFile.class, Hashtable.class, Object.class});
             fillResult = (String)fillMethod.invoke(callingObject, new Object[] {cms, doc, lang, parameters, callingObject});
         } catch(NoSuchMethodException exc) {
             // The requested method was not found.

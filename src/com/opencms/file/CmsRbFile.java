@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFile.java,v $
- * Date   : $Date: 2000/04/13 21:45:08 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/06/05 13:37:55 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/04/13 21:45:08 $
+ * @version $Revision: 1.24 $ $Date: 2000/06/05 13:37:55 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -85,11 +85,11 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public CmsFile createFile(A_CmsUser user,
-                               A_CmsProject project,
-                               A_CmsProject onlineProject,
+	 public CmsFile createFile(CmsUser user,
+                               CmsProject project,
+                               CmsProject onlineProject,
                                String filename, int flags,
-							   byte[] contents, A_CmsResourceType type) 
+							   byte[] contents, CmsResourceType type) 
 						
          throws CmsException {
                return m_accessFile.createFile(user,project,onlineProject,filename,flags,contents,type);
@@ -126,8 +126,8 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 * */
-	 public CmsFile readFile(A_CmsProject project,
-                             A_CmsProject onlineProject,
+	 public CmsFile readFile(CmsProject project,
+                             CmsProject onlineProject,
                              String filename)
 		throws CmsException{
         return m_accessFile.readFile(project,onlineProject,filename);
@@ -153,9 +153,9 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public A_CmsResource readFileHeader(A_CmsProject project, String filename)
+	 public CmsResource readFileHeader(CmsProject project, String filename)
 		 throws CmsException {
-         A_CmsResource res=null;
+         CmsResource res=null;
          if (filename.endsWith("/")) {
              res=m_accessFile.readFolder(project,filename);
          } else {
@@ -211,8 +211,8 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void writeFile(A_CmsProject project,
-                          A_CmsProject onlineProject,
+	public void writeFile(CmsProject project,
+                          CmsProject onlineProject,
                           CmsFile file, boolean changed)
 		throws CmsException{
         m_accessFile.writeFile(project,onlineProject,file,changed);
@@ -243,8 +243,8 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void writeFileHeader(A_CmsProject project, 
-                                A_CmsProject onlineProject,
+	public void writeFileHeader(CmsProject project, 
+                                CmsProject onlineProject,
                                 CmsFile file,boolean changed)
 		throws CmsException{
         m_accessFile.writeFileHeader(project,onlineProject,file,changed);
@@ -279,12 +279,12 @@ import com.opencms.core.*;
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource (A_CmsUser callingUser, No path information allowed).
+	 * @param newname The new name of the resource (CmsUser callingUser, No path information allowed).
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */		
-	public void renameFile(A_CmsProject project, 
-                           A_CmsProject onlineProject,
+	public void renameFile(CmsProject project, 
+                           CmsProject onlineProject,
 					       String oldname, String newname)
 		throws CmsException {
         m_accessFile.renameFile(project,onlineProject,oldname,newname);
@@ -310,7 +310,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void deleteFile(A_CmsProject project, String filename)
+	public void deleteFile(CmsProject project, String filename)
 		throws CmsException{
         m_accessFile.deleteFile(project,filename);
      }
@@ -336,7 +336,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void undeleteFile(A_CmsProject project, String filename)
+	public void undeleteFile(CmsProject project, String filename)
 		throws CmsException{
         m_accessFile.undeleteFile(project,filename);
      }
@@ -360,7 +360,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void removeFile(A_CmsProject project, String filename)
+	public void removeFile(CmsProject project, String filename)
 		throws CmsException{
         m_accessFile.removeFile(project,filename);
      }
@@ -400,8 +400,8 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void copyFile(A_CmsProject project,
-                         A_CmsProject onlineProject,
+	public void copyFile(CmsProject project,
+                         CmsProject onlineProject,
                          String source,String destination)
 		throws CmsException {
         m_accessFile.copyFile(project,onlineProject,source,destination);
@@ -430,8 +430,8 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public CmsFolder createFolder(A_CmsUser user, 
-                                  A_CmsProject project,
+	public CmsFolder createFolder(CmsUser user, 
+                                  CmsProject project,
                                   String folder,
                                   int flags)					
 		throws CmsException{
@@ -458,7 +458,7 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public CmsFolder readFolder(A_CmsProject project, String folder)
+	public CmsFolder readFolder(CmsProject project, String folder)
 		throws CmsException{
          return m_accessFile.readFolder(project,folder);
      }
@@ -483,7 +483,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void writeFolder(A_CmsProject project, CmsFolder folder, boolean changed)
+	public void writeFolder(CmsProject project, CmsFolder folder, boolean changed)
         throws CmsException {
         m_accessFile.writeFolder(project, folder,changed);
     }
@@ -514,7 +514,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void deleteFolder(A_CmsProject project, String foldername, boolean force)
+	public void deleteFolder(CmsProject project, String foldername, boolean force)
 		throws CmsException {
         m_accessFile.deleteFolder(project,foldername,force);
      }
@@ -540,7 +540,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void removeFolder(A_CmsProject project, String foldername)
+	public void removeFolder(CmsProject project, String foldername)
 		throws CmsException {
         m_accessFile.removeFolder(project,foldername);
      }
@@ -572,8 +572,8 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void copyFolder(A_CmsProject project,
-                           A_CmsProject onlineProject,
+	public void copyFolder(CmsProject project,
+                           CmsProject onlineProject,
                            String source,String destination)
         throws CmsException {
         m_accessFile.copyFolder(project,onlineProject,source,destination);
@@ -602,12 +602,12 @@ import com.opencms.core.*;
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource (A_CmsUser callingUser, No path information allowed).
+	 * @param newname The new name of the resource (CmsUser callingUser, No path information allowed).
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */		
-	public void renameFolder(A_CmsProject project, 
-                           A_CmsProject onlineProject,
+	public void renameFolder(CmsProject project, 
+                           CmsProject onlineProject,
 					       String oldname, String newname)
         throws CmsException {
         m_accessFile.renameFolder(project,onlineProject,oldname,newname);
@@ -633,7 +633,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public Vector getSubFolders(A_CmsProject project, String foldername)
+	public Vector getSubFolders(CmsProject project, String foldername)
 		throws CmsException{
          return m_accessFile.getSubFolders(project,foldername);
      }
@@ -657,7 +657,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public Vector getFilesInFolder(A_CmsProject project, String foldername)
+	public Vector getFilesInFolder(CmsProject project, String foldername)
 		throws CmsException {
          return m_accessFile.getFilesInFolder(project, foldername);
      }
@@ -687,8 +687,8 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void chmod(A_CmsProject project,
-                      A_CmsProject onlineProject,
+	public void chmod(CmsProject project,
+                      CmsProject onlineProject,
                       String filename, int flags)
 		throws CmsException {
         CmsResource resource = null;
@@ -734,9 +734,9 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void chown(A_CmsProject project, 
-                      A_CmsProject onlineProject,
-                      String filename, A_CmsUser newOwner)
+	public void chown(CmsProject project, 
+                      CmsProject onlineProject,
+                      String filename, CmsUser newOwner)
 		throws CmsException {
          CmsResource resource = null;
         
@@ -782,9 +782,9 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void chgrp(A_CmsProject project,
-                      A_CmsProject onlineProject,
-                      String filename, A_CmsGroup newGroup)
+	public void chgrp(CmsProject project,
+                      CmsProject onlineProject,
+                      String filename, CmsGroup newGroup)
 		throws CmsException{
         CmsResource resource = null;
         
@@ -833,9 +833,9 @@ import com.opencms.core.*;
 	 * It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	public void lockResource(A_CmsUser user,
-                             A_CmsProject project,
-                             A_CmsProject onlineProject,
+	public void lockResource(CmsUser user,
+                             CmsProject project,
+                             CmsProject onlineProject,
                              String resourcename, boolean force)
 		throws CmsException{
         CmsResource resource = null;
@@ -889,9 +889,9 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void unlockResource(A_CmsUser user,
-                               A_CmsProject project,
-                               A_CmsProject onlineProject,
+	public void unlockResource(CmsUser user,
+                               CmsProject project,
+                               CmsProject onlineProject,
                                String resourcename)
         throws CmsException {
        
@@ -944,8 +944,8 @@ import com.opencms.core.*;
 	 * @param resource The name of the resource.* 
  	 * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    public void copyResourceToProject(A_CmsProject project,
-                                      A_CmsProject onlineProject,
+    public void copyResourceToProject(CmsProject project,
+                                      CmsProject onlineProject,
                                       String resource)
         throws CmsException {
       
@@ -970,7 +970,7 @@ import com.opencms.core.*;
 	 * @return Vector of all resource names that are published.
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    public Vector publishProject(A_CmsProject project, A_CmsProject onlineProject)
+    public Vector publishProject(CmsProject project, CmsProject onlineProject)
         throws CmsException {
         return  m_accessFile.publishProject(project,onlineProject);
     }
@@ -983,7 +983,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void unlockProject(A_CmsProject project)
+	public void unlockProject(CmsProject project)
 		throws CmsException {
 		m_accessFile.unlockProject(project);
 	}
@@ -994,7 +994,7 @@ import com.opencms.core.*;
      * @param project The project to be published.
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    public void deleteProject(A_CmsProject project)
+    public void deleteProject(CmsProject project)
         throws CmsException {
         m_accessFile.deleteProject(project);
     }

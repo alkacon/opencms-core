@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/05/18 13:39:47 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2000/06/05 13:37:53 $
+ * Version: $Revision: 1.57 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.56 $ $Date: 2000/05/18 13:39:47 $
+ * @version $Revision: 1.57 $ $Date: 2000/06/05 13:37:53 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -368,7 +368,7 @@ import com.opencms.util.*;
      * @exception CmsException Throws CmsException if connection fails.
      * 
      */
-    public CmsAccessFileMySql(A_CmsMountPoint mountpoint)	
+    public CmsAccessFileMySql(CmsMountPoint mountpoint)	
         throws CmsException, ClassNotFoundException {
         
         m_mountpoint= (CmsMountPoint) mountpoint;
@@ -391,11 +391,11 @@ import com.opencms.util.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful
      */    
-	 public CmsFile createFile(A_CmsUser user,
-                               A_CmsProject project,
-                               A_CmsProject onlineProject,
+	 public CmsFile createFile(CmsUser user,
+                               CmsProject project,
+                               CmsProject onlineProject,
                                String filename, int flags,
-							   byte[] contents, A_CmsResourceType resourceType)
+							   byte[] contents, CmsResourceType resourceType)
 							
          throws CmsException {
 
@@ -478,8 +478,8 @@ import com.opencms.util.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful
      */    
-	 public CmsFile createFile(A_CmsProject project,
-                               A_CmsProject onlineProject,
+	 public CmsFile createFile(CmsProject project,
+                               CmsProject onlineProject,
                                CmsFile file,String filename)
          throws CmsException {
           Connection con=null; 
@@ -567,9 +567,9 @@ import com.opencms.util.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful
      */    
-	 public A_CmsResource createResource(A_CmsProject project,
-                                         A_CmsProject onlineProject,
-                                         A_CmsResource resource)
+	 public CmsResource createResource(CmsProject project,
+                                         CmsProject onlineProject,
+                                         CmsResource resource)
          throws CmsException {
             Connection con=null;  
             try {   
@@ -626,8 +626,8 @@ import com.opencms.util.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public CmsFile readFile(A_CmsProject project,
-                             A_CmsProject onlineProject,
+	 public CmsFile readFile(CmsProject project,
+                             CmsProject onlineProject,
                              String filename)
          throws CmsException {
           
@@ -726,7 +726,7 @@ import com.opencms.util.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public CmsFile readFileHeader(A_CmsProject project, String filename)
+	 public CmsFile readFileHeader(CmsProject project, String filename)
          throws CmsException {
          
          Connection con=null;
@@ -847,8 +847,8 @@ import com.opencms.util.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void writeFile(A_CmsProject project,
-                           A_CmsProject onlineProject,
+	 public void writeFile(CmsProject project,
+                           CmsProject onlineProject,
                            CmsFile file,boolean changed)
        throws CmsException {
     
@@ -883,8 +883,8 @@ import com.opencms.util.*;
 	 *
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void writeFileHeader(A_CmsProject project,
-                                 A_CmsProject onlineProject,
+	 public void writeFileHeader(CmsProject project,
+                                 CmsProject onlineProject,
                                  CmsFile file,boolean changed)
          throws CmsException {
          
@@ -984,8 +984,8 @@ import com.opencms.util.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */		
-	 public void renameFile(A_CmsProject project,
-                            A_CmsProject onlineProject,
+	 public void renameFile(CmsProject project,
+                            CmsProject onlineProject,
                             String oldname, String newname)
          throws CmsException {
          
@@ -1008,7 +1008,7 @@ import com.opencms.util.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void deleteFile(A_CmsProject project, String filename)
+	 public void deleteFile(CmsProject project, String filename)
          throws CmsException {
          Connection con=null;
          try { 
@@ -1036,7 +1036,7 @@ import com.opencms.util.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void undeleteFile(A_CmsProject project, String filename)
+	 public void undeleteFile(CmsProject project, String filename)
          throws CmsException {
          Connection con=null;
          try { 
@@ -1064,7 +1064,7 @@ import com.opencms.util.*;
 	  * @param filename The complete path of the file.
       * @exception CmsException Throws CmsException if operation was not succesful
       */
-     public void removeFile(A_CmsProject project, String filename) 
+     public void removeFile(CmsProject project, String filename) 
         throws CmsException{
         
          Connection con=null;
@@ -1101,8 +1101,8 @@ import com.opencms.util.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void copyFile(A_CmsProject project,
-                          A_CmsProject onlineProject,
+	 public void copyFile(CmsProject project,
+                          CmsProject onlineProject,
                           String source, String destination)
          throws CmsException {
          CmsFile file;
@@ -1125,8 +1125,8 @@ import com.opencms.util.*;
 	 * @return The created folder.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 public CmsFolder createFolder(A_CmsUser user,
-                                   A_CmsProject project, 
+	 public CmsFolder createFolder(CmsUser user,
+                                   CmsProject project, 
                                    String foldername,
                                    int flags)
          throws CmsException {
@@ -1185,8 +1185,8 @@ import com.opencms.util.*;
 	 * @return The created folder.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 public CmsFolder createFolder(A_CmsProject project,
-                                   A_CmsProject onlineProject,
+	 public CmsFolder createFolder(CmsProject project,
+                                   CmsProject onlineProject,
                                    CmsFolder folder,
                                    String foldername)
          throws CmsException{
@@ -1263,7 +1263,7 @@ import com.opencms.util.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 public CmsFolder readFolder(A_CmsProject project, String foldername)
+	 public CmsFolder readFolder(CmsProject project, String foldername)
          throws CmsException {
          
          CmsFolder folder=null;
@@ -1317,7 +1317,7 @@ import com.opencms.util.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void writeFolder(A_CmsProject project, CmsFolder folder,
+	 public void writeFolder(CmsProject project, CmsFolder folder,
                              boolean changed)
          throws CmsException {
           Connection con=null;
@@ -1381,7 +1381,7 @@ import com.opencms.util.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void deleteFolder(A_CmsProject project, String foldername, boolean force)
+	 public void deleteFolder(CmsProject project, String foldername, boolean force)
          throws CmsException {
          Connection con=null;
          // the current implementation only deletes empty folders
@@ -1424,7 +1424,7 @@ import com.opencms.util.*;
 	  * @param foldername The complete path of the folder.
       * @exception CmsException Throws CmsException if operation was not succesful
       */
-     public void removeFolder(A_CmsProject project, String foldername) 
+     public void removeFolder(CmsProject project, String foldername) 
         throws CmsException{
          
          Connection con=null;
@@ -1468,8 +1468,8 @@ import com.opencms.util.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void copyFolder(A_CmsProject project,
-                            A_CmsProject onlineProject,
+	 public void copyFolder(CmsProject project,
+                            CmsProject onlineProject,
                             String source, String destination)
          throws CmsException {
          
@@ -1485,8 +1485,8 @@ import com.opencms.util.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */		
-	 public void renameFolder(A_CmsProject project,
-                            A_CmsProject onlineProject,
+	 public void renameFolder(CmsProject project,
+                            CmsProject onlineProject,
                             String oldname, String newname)
          throws CmsException{
          // todo: Implement this            
@@ -1503,7 +1503,7 @@ import com.opencms.util.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 public Vector getSubFolders(A_CmsProject project, String foldername)
+	 public Vector getSubFolders(CmsProject project, String foldername)
          throws CmsException {
          Vector folders=new Vector();
          CmsFolder folder=null;
@@ -1563,7 +1563,7 @@ import com.opencms.util.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 public Vector getFilesInFolder(A_CmsProject project, String foldername)
+	 public Vector getFilesInFolder(CmsProject project, String foldername)
          throws CmsException {
          Vector files=new Vector();
          CmsResource file=null;
@@ -1623,11 +1623,11 @@ import com.opencms.util.*;
 	 * @param resourcename The name of the resource.
  	 * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-     public void copyResourceToProject(A_CmsProject project,
-                                       A_CmsProject onlineProject,
+     public void copyResourceToProject(CmsProject project,
+                                       CmsProject onlineProject,
                                        String resourcename) 
          throws CmsException {
-         A_CmsResource resource=readResource(onlineProject,resourcename);
+         CmsResource resource=readResource(onlineProject,resourcename);
          resource.setState(C_STATE_UNCHANGED);
          createResource(project,onlineProject,resource);
      }
@@ -1640,7 +1640,7 @@ import com.opencms.util.*;
 	 * @return Vector of all resource names that are published.
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    public Vector publishProject(A_CmsProject project, A_CmsProject onlineProject)
+    public Vector publishProject(CmsProject project, CmsProject onlineProject)
         throws CmsException {
         
         Vector resources = new Vector();
@@ -1769,7 +1769,7 @@ import com.opencms.util.*;
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void unlockProject(A_CmsProject project)
+	public void unlockProject(CmsProject project)
 		throws CmsException {
         Connection con=null;
 		try {
@@ -1791,7 +1791,7 @@ import com.opencms.util.*;
      * @param project The project to be deleted.
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    public void deleteProject(A_CmsProject project)
+    public void deleteProject(CmsProject project)
         throws CmsException {
         
         Connection con=null;
@@ -1827,7 +1827,7 @@ import com.opencms.util.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 private A_CmsResource readResource(A_CmsProject project, String filename)
+	 private CmsResource readResource(CmsProject project, String filename)
          throws CmsException {
                  
          CmsResource file=null;
@@ -1884,7 +1884,7 @@ import com.opencms.util.*;
 	  * @param foldername The complete path of the folder.
       * @exception CmsException Throws CmsException if operation was not succesful
       */
-     private void removeFolderForPublish(A_CmsProject project, String foldername) 
+     private void removeFolderForPublish(CmsProject project, String foldername) 
         throws CmsException{
          Connection con=null;
          try {    
@@ -1957,7 +1957,7 @@ import com.opencms.util.*;
         Vector undeletedResources=new Vector();
                 
         for (int i=0;i<resources.size();i++) {
-            A_CmsResource res=(A_CmsResource)resources.elementAt(i);
+            CmsResource res=(CmsResource)resources.elementAt(i);
             if (res.getState() != C_STATE_DELETED) {
                 undeletedResources.addElement(res);
             }
@@ -2002,13 +2002,13 @@ import com.opencms.util.*;
 		int in,out;
 		int nElem = list.size();
 		
-        A_CmsResource[] unsortedList = new A_CmsResource[list.size()];
+        CmsResource[] unsortedList = new CmsResource[list.size()];
         for (int i=0;i<list.size();i++) {
-            unsortedList[i]=(A_CmsResource)list.elementAt(i);
+            unsortedList[i]=(CmsResource)list.elementAt(i);
         }
         
  		for(out=1; out < nElem; out++) {
-			 A_CmsResource temp= unsortedList[out];
+			 CmsResource temp= unsortedList[out];
 			in = out;
 			while (in >0 && unsortedList[in-1].getAbsolutePath().compareTo(temp.getAbsolutePath()) >= 0){
 				unsortedList[in]=unsortedList[in-1];

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
- * Date   : $Date: 2000/05/22 12:17:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.util.*;
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/05/22 12:17:39 $
+ * @version $Revision: 1.10 $ $Date: 2000/06/05 13:38:00 $
  */
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,
                                                                    I_CmsWpConstants,
@@ -62,10 +62,10 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlLanguageFile(A_CmsObject cms, String filename) throws CmsException {
+    public CmsXmlLanguageFile(CmsObject cms, String filename) throws CmsException {
         super();
         init(cms, filename);
     }
@@ -74,10 +74,10 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlLanguageFile(A_CmsObject cms, CmsFile file) throws CmsException {
+    public CmsXmlLanguageFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
         init(cms, file);
     }        
@@ -89,10 +89,10 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
      * The position of the language file will be looked up in workplace.ini.
      * The selected language of the current user can be searched in the user object.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlLanguageFile(A_CmsObject cms) throws CmsException {
+    public CmsXmlLanguageFile(CmsObject cms) throws CmsException {
         super();
         
         if(m_languagePath == null) {

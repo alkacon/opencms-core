@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/05/30 11:44:52 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/05/30 11:44:52 $
+ * @version $Revision: 1.18 $ $Date: 2000/06/05 13:38:00 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                          I_CmsConstants {
@@ -140,14 +140,14 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
     
@@ -162,12 +162,12 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Bytearre containgine the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         
         // get request context and session
-        A_CmsRequestContext reqCont = cms.getRequestContext();     
+        CmsRequestContext reqCont = cms.getRequestContext();     
         HttpSession session= ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(true);   
         
         // define varialbes to store template and panel
@@ -360,7 +360,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param xmlTemplateDocument The template in which all data is added.
      */    
     private void setExplorerSettings(HttpSession session, Hashtable parameters,
-                                     A_CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
+                                     CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
              
         //get the actual user settings  
         // first try to read them from the session
@@ -490,7 +490,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param xmlTemplateDocument The template in which all data is added.
      */    
     private void setTaskSettings(HttpSession session, Hashtable parameters,
-                                 A_CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
+                                 CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
         // get the actual user settings  
         // first try to read them from the session
         Hashtable taskSettings=null;
@@ -608,7 +608,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param xmlTemplateDocument The template in which all data is added.
      */    
     private void setStartSettings(HttpSession session, Hashtable parameters,
-                                 A_CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
+                                 CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
            
         // get the actual user settings  
         // first try to read them from the session
@@ -698,7 +698,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
     * @param parameters Hashtable containing all request parameters
     * @return Hashtable containing the start settings.
     */
-    private Hashtable getStartSettings(A_CmsObject cms,Hashtable parameters) 
+    private Hashtable getStartSettings(CmsObject cms,Hashtable parameters) 
         throws CmsException {
         
            Hashtable startSettings=new Hashtable();
@@ -787,10 +787,10 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param xmlTemplateDocument The template in which all data is added.
      */    
     private void setUserSettings(HttpSession session, Hashtable parameters,
-                                 A_CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
+                                 CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
         
         // get the current user
-        A_CmsUser user=reqCont.currentUser();
+        CmsUser user=reqCont.currentUser();
 
         //set the required datablocks
         xmlTemplateDocument.setData("USER",user.getName());
@@ -820,14 +820,14 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      /**
      * User method to get the actual panel of the PReferences dialog.
      * <P>
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
      * @exception CmsException
      */    
-    public Object setPanel(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public Object setPanel(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
         throws CmsException {
         
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
@@ -843,7 +843,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -851,11 +851,11 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Index representing the user's current filter view in the vectors.
      * @exception CmsException
      */
-    public Integer getFilters(A_CmsObject cms, CmsXmlLanguageFile lang, Vector values, Vector names, Hashtable parameters) 
+    public Integer getFilters(CmsObject cms, CmsXmlLanguageFile lang, Vector values, Vector names, Hashtable parameters) 
 		throws CmsException {
         
         // Let's see if we have a session
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
       
         String filter= null;
@@ -961,7 +961,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * the group names after returning from this method.
      * <P>
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -969,15 +969,15 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Index representing the user's current group in the vectors.
      * @exception CmsException
      */
-    public Integer getGroups(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
 
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest ().getOriginalRequest()).getSession(false);
         String group=(String)session.getValue("USERSETTINGS");
        
         // Get a vector of all of the user's groups by asking the request context
-        A_CmsGroup currentGroup = reqCont.currentGroup();
+        CmsGroup currentGroup = reqCont.currentGroup();
         Vector allGroups = cms.getGroupsOfUser(reqCont.currentUser().getName());
          
         if (group == null) {
@@ -988,7 +988,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         int numGroups = allGroups.size();
         int currentGroupNum = 0;
         for(int i=0; i<numGroups; i++) {
-            A_CmsGroup loopGroup = (A_CmsGroup)allGroups.elementAt(i);
+            CmsGroup loopGroup = (CmsGroup)allGroups.elementAt(i);
             String loopGroupName = loopGroup.getName();
             values.addElement(loopGroupName);
             names.addElement(loopGroupName);
@@ -1006,7 +1006,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * The given vectors <code>names</code> and <code>values</code> will 
      * be filled with the appropriate information to be used for building
      * a select box.
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -1014,7 +1014,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Index representing the user's current group in the vectors.
      * @exception CmsException
      */
-    public Integer getLanguageFiles(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getLanguageFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
          
         CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);
@@ -1023,7 +1023,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
        
         String langName=null;
         Hashtable startSettings=null;
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest ().getOriginalRequest()).getSession(false);
        
         startSettings=(Hashtable)session.getValue("STARTSETTINGS");
@@ -1065,7 +1065,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * of these views after returning from this method.
      * <P>
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -1073,11 +1073,11 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Index representing the user's current workplace view in the vectors.
      * @exception CmsException
      */
-    public Integer getViews(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getViews(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
         
         // Let's see if we have a session
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
 
         Hashtable startSettings=null;
@@ -1139,7 +1139,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * the project names after returning from this method.
      * <P>
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -1147,10 +1147,10 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Index representing the user's current project in the vectors.
      * @exception CmsException
      */
-    public Integer getProjects(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getProjects(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
         // Get all project information
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
 
         Integer currentProject=null;
@@ -1177,7 +1177,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         int numProjects = allProjects.size();
         int currentProjectNum = 0;
         for(int i=0; i<numProjects; i++) {
-            A_CmsProject loopProject = (A_CmsProject)allProjects.elementAt(i);
+            CmsProject loopProject = (CmsProject)allProjects.elementAt(i);
             String loopProjectName = loopProject.getName();
             String loopProjectNameId = loopProject.getId() + "";
             values.addElement(loopProjectNameId);
@@ -1201,7 +1201,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * the group names after returning from this method.
      * <P>
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -1209,16 +1209,16 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Index representing the user's current group in the vectors.
      * @exception CmsException
      */
-    public Integer getDefaultGroup(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getDefaultGroup(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
 
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
        
         String group=null;
        
         // Get a vector of all of the user's groups by asking the request context
-        A_CmsGroup currentGroup = reqCont.currentUser().getDefaultGroup();
+        CmsGroup currentGroup = reqCont.currentUser().getDefaultGroup();
         Vector allGroups = cms.getGroupsOfUser(reqCont.currentUser().getName());
                 
         // try to get an existing value for the default value
@@ -1239,7 +1239,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         int numGroups = allGroups.size();
         int currentGroupNum = 0;
         for(int i=0; i<numGroups; i++) {
-            A_CmsGroup loopGroup = (A_CmsGroup)allGroups.elementAt(i);
+            CmsGroup loopGroup = (CmsGroup)allGroups.elementAt(i);
             String loopGroupName = loopGroup.getName();
             values.addElement(loopGroupName);
             names.addElement(loopGroupName);

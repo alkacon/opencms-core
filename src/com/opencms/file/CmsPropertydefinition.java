@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsPropertydefinition.java,v $
- * Date   : $Date: 2000/04/03 10:48:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/06/05 13:37:55 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,9 +32,9 @@ package com.opencms.file;
  * This class describes a Propertydefinition in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/04/03 10:48:29 $
+ * @version $Revision: 1.2 $ $Date: 2000/06/05 13:37:55 $
  */
-public class CmsPropertydefinition extends A_CmsPropertydefinition {
+public class CmsPropertydefinition {
 	/**
 	 * The name of this Propertydefinition.
 	 */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2000/03/28 09:10:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/03/28 09:10:41 $
+ * @version $Revision: 1.11 $ $Date: 2000/06/05 13:38:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -59,7 +59,7 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_Cm
      * // TODO: insert correct syntax here!
      * <CODE>&lt;SELECTBOX name="..." action="..." alt="..."/&gt;</CODE>
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;SELECTBOX&gt;</code> tag.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object.
@@ -68,7 +68,7 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_Cm
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         
         /** Here the different select box options will be stored */
         Vector values = new Vector();
@@ -105,7 +105,7 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_Cm
         Method groupsMethod = null;
         int selectedOption = 0;
         try {
-            groupsMethod = callingObject.getClass().getMethod(selectMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Vector.class, Vector.class, Hashtable.class});
+            groupsMethod = callingObject.getClass().getMethod(selectMethod, new Class[] {CmsObject.class, CmsXmlLanguageFile.class, Vector.class, Vector.class, Hashtable.class});
             selectedOption = ((Integer)groupsMethod.invoke(callingObject, new Object[] {cms, lang, values, names, parameters})).intValue();
         } catch(NoSuchMethodException exc) {
             // The requested method was not found.

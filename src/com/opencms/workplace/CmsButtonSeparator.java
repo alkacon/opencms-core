@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButtonSeparator.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/05 13:37:58 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTONSEPARATOR&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.9 $ $Date: 2000/06/05 13:37:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsButtonSeparator extends A_CmsWpElement implements I_CmsWpElement {    
@@ -56,7 +56,7 @@ public class CmsButtonSeparator extends A_CmsWpElement implements I_CmsWpElement
      * Button separators can be referenced in any workplace template by <br>
      * <CODE>&lt;BUTTONSEPARATOR/&gt;</CODE>
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;BUTTONSEPARATOR&gt;</code> tag <em>(not used here)</em>.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object.
@@ -65,7 +65,7 @@ public class CmsButtonSeparator extends A_CmsWpElement implements I_CmsWpElement
      * @return Processed button separator.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
 
         CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
         String result = buttondef.getButtonSeparator(callingObject);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpInputDefFile.java,v $
- * Date   : $Date: 2000/03/28 09:10:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/03/28 09:10:41 $
+ * @version $Revision: 1.11 $ $Date: 2000/06/05 13:38:00 $
  */
 public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
                                                                      I_CmsWpConstants {
@@ -58,10 +58,10 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogCha
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlWpInputDefFile(A_CmsObject cms, String filename) throws CmsException {
+    public CmsXmlWpInputDefFile(CmsObject cms, String filename) throws CmsException {
         super();
         init(cms, filename);
     }
@@ -70,10 +70,10 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogCha
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlWpInputDefFile(A_CmsObject cms, CmsFile file) throws CmsException {
+    public CmsXmlWpInputDefFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
         init(cms, file);
     }        

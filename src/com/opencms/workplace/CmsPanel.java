@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPanel.java,v $
- * Date   : $Date: 2000/04/20 08:11:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PANELBAR&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/04/20 08:11:55 $
+ * @version $Revision: 1.4 $ $Date: 2000/06/05 13:38:00 $
  */
 public class CmsPanel extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -76,7 +76,7 @@ public class CmsPanel extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
      * Each panel will be linked to the currently requested URL,
      * extended by the <code>?panel=name</code> parameter.
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;INPUT&gt;</code> tag.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object.
@@ -85,7 +85,7 @@ public class CmsPanel extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         
         // Currently requested panel
         String selectedPanel = (String)parameters.get(C_PARA_PANEL);
@@ -99,7 +99,7 @@ public class CmsPanel extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
 
         // base URL of the page, each panel is linked to.
         // This URL will be extendeb by "?panel=panelname" or "&panel=panelname"
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         
         String url = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getServletPath()
                 + reqCont.getUri();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChpwd.java,v $
- * Date   : $Date: 2000/05/11 10:18:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/05/11 10:18:40 $
+ * @version $Revision: 1.4 $ $Date: 2000/06/05 13:37:59 $
  */
 public class CmsChpwd extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -51,14 +51,14 @@ public class CmsChpwd extends CmsWorkplaceDefault implements I_CmsWpConstants,
      /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
     
@@ -73,7 +73,7 @@ public class CmsChpwd extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * @return Bytearre containgine the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
           

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbProject.java,v $
- * Date   : $Date: 2000/04/19 10:15:59 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/06/05 13:37:55 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/04/19 10:15:59 $
+ * @version $Revision: 1.15 $ $Date: 2000/06/05 13:37:55 $
  */
 class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	
@@ -65,7 +65,7 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject readProject(int id)
+	 public CmsProject readProject(int id)
 		 throws CmsException {
 		 return( m_accessProject.readProject(id) );
 	 }
@@ -77,7 +77,7 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject readProject(A_CmsTask task)
+	 public CmsProject readProject(CmsTask task)
 		 throws CmsException {
 		 return m_accessProject.readProject(task);
 	 }
@@ -95,9 +95,9 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject createProject(String name, String description, A_CmsTask task, 
-								A_CmsUser owner, A_CmsGroup group, 
-								A_CmsGroup managergroup, int flags)
+	 public CmsProject createProject(String name, String description, CmsTask task, 
+								CmsUser owner, CmsGroup group, 
+								CmsGroup managergroup, int flags)
 		 throws CmsException {
 		 return( m_accessProject.createProject(C_UNKNOWN_ID, name, description, task, 
 											   owner, group, managergroup,
@@ -118,9 +118,9 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject createProject(int id, String name, String description, A_CmsTask task, 
-								A_CmsUser owner, A_CmsGroup group, 
-								A_CmsGroup managergroup, int flags)
+	 public CmsProject createProject(int id, String name, String description, CmsTask task, 
+								CmsUser owner, CmsGroup group, 
+								CmsGroup managergroup, int flags)
 		 throws CmsException {
 		 return( m_accessProject.createProject(id, name, description, task, 
 											   owner, group, managergroup,
@@ -134,7 +134,7 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject writeProject(A_CmsProject project)
+	 public CmsProject writeProject(CmsProject project)
 		 throws CmsException {
 		 return( m_accessProject.writeProject(project) );
 	 }
@@ -146,7 +146,7 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public void deleteProject(A_CmsProject project)
+	 public void deleteProject(CmsProject project)
 		 throws CmsException {
 		 m_accessProject.deleteProject(project);
 	 }
@@ -158,7 +158,7 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 public Vector getAllAccessibleProjectsByUser(A_CmsUser user)
+	 public Vector getAllAccessibleProjectsByUser(CmsUser user)
 		 throws CmsException {
 		 return( m_accessProject.getAllAccessibleProjectsByUser(user) );
 	 }
@@ -170,7 +170,7 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 public Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
+	 public Vector getAllAccessibleProjectsByGroup(CmsGroup group)
 		 throws CmsException {
 		 // is this the admin-group?
 		 if( group.getName().equals(C_GROUP_ADMIN) ) {
@@ -189,7 +189,7 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 public Vector getAllAccessibleProjectsByManagerGroup(A_CmsGroup managergroup)
+	 public Vector getAllAccessibleProjectsByManagerGroup(CmsGroup managergroup)
 		 throws CmsException {
 		 // is this the admin-group?
 		 if( managergroup.getName().equals(C_GROUP_ADMIN) ) {

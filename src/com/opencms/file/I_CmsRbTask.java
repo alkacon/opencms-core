@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbTask.java,v $
- * Date   : $Date: 2000/03/15 14:32:14 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/06/05 13:37:56 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,14 +34,14 @@ import com.opencms.core.*;
 
 /**
  * This public class describes a resource broker for tasks in the Cms.<BR/>
- * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
+ * <B>All</B> Methods get a first parameter: CmsUser. It is the current user. This 
  * is for security-reasons, to check if this current user has the rights to call the
  * method.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.16 $ $Date: 2000/03/15 14:32:14 $
+ * @version $Revision: 1.17 $ $Date: 2000/06/05 13:37:56 $
  */
 interface I_CmsRbTask { 	
 
@@ -59,8 +59,8 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public A_CmsTask createProject(A_CmsUser owner, String projectname, int projectType,
-									A_CmsGroup role, java.sql.Timestamp timeout, 
+	 public CmsTask createProject(CmsUser owner, String projectname, int projectType,
+									CmsGroup role, java.sql.Timestamp timeout, 
 									int priority)
 		 throws CmsException;
 	 
@@ -77,8 +77,8 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public A_CmsTask createProject(A_CmsUser owner, String projectname, 
-									A_CmsGroup role, java.sql.Timestamp timeout, 
+	 public CmsTask createProject(CmsUser owner, String projectname, 
+									CmsGroup role, java.sql.Timestamp timeout, 
 									int priority)
 		 throws CmsException;
 	 
@@ -99,7 +99,7 @@ interface I_CmsRbTask {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 
-	 public A_CmsTask createTask(A_CmsUser currentUser, A_CmsProject project, A_CmsUser agent, A_CmsGroup role, 
+	 public CmsTask createTask(CmsUser currentUser, CmsProject project, CmsUser agent, CmsGroup role, 
 								 String taskname, String taskcomment, 
 								 java.sql.Timestamp timeout, int priority)
 		 throws CmsException;
@@ -122,7 +122,7 @@ interface I_CmsRbTask {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 
-	 public A_CmsTask createTask(A_CmsUser currentUser, A_CmsProject project, A_CmsUser agent, A_CmsGroup role, 
+	 public CmsTask createTask(CmsUser currentUser, CmsProject project, CmsUser agent, CmsGroup role, 
 								 String taskname, String taskcomment, int tasktype,
 								 java.sql.Timestamp timeout, int priority)
 		 throws CmsException;
@@ -145,7 +145,7 @@ interface I_CmsRbTask {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 
-	 public A_CmsTask createTask(A_CmsUser currentUser, int projectid, A_CmsUser agent, A_CmsGroup role, 
+	 public CmsTask createTask(CmsUser currentUser, int projectid, CmsUser agent, CmsGroup role, 
 								 String taskname, String taskcomment, int tasktype,
 								 java.sql.Timestamp timeout, int priority)
 		 throws CmsException;
@@ -158,7 +158,7 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void reaktivateTask(A_CmsUser currentUser, int taskId)
+	 public void reaktivateTask(CmsUser currentUser, int taskId)
 		 throws CmsException;
 	 
 	 /**
@@ -169,7 +169,7 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void endTask(A_CmsUser currentUser, int taskid) 
+	 public void endTask(CmsUser currentUser, int taskid) 
 		 throws CmsException;
 	 
 	 /**
@@ -182,8 +182,8 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void forwardTask(A_CmsUser currentUser, int taskid, 
-							 A_CmsGroup newRole, A_CmsUser newUser) 
+	 public void forwardTask(CmsUser currentUser, int taskid, 
+							 CmsGroup newRole, CmsUser newUser) 
 		 throws CmsException;
 	 
 	 /**
@@ -194,7 +194,7 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void acceptTask(A_CmsUser currentUser, int taskid)
+	 public void acceptTask(CmsUser currentUser, int taskid)
 		 throws CmsException;
 	 
 	 /**
@@ -206,7 +206,7 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void setPercentage(A_CmsUser currentUser, int taskid, int percentage)
+	 public void setPercentage(CmsUser currentUser, int taskid, int percentage)
 		 throws CmsException;
 	 
 	 /**
@@ -218,7 +218,7 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void setName(A_CmsUser currentUser, int taskId, String name)
+	 public void setName(CmsUser currentUser, int taskId, String name)
 		 throws CmsException;
 	 
 	 /**
@@ -230,7 +230,7 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void setPriority(A_CmsUser currentUser, int taskId, int priority)
+	 public void setPriority(CmsUser currentUser, int taskId, int priority)
 		 throws CmsException;
 	 
 	 /**
@@ -242,7 +242,7 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void setTimeout(A_CmsUser currentUser, int taskId, java.sql.Timestamp timeout)
+	 public void setTimeout(CmsUser currentUser, int taskId, java.sql.Timestamp timeout)
 		 throws CmsException;
 	 
 	 /**
@@ -252,7 +252,7 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public A_CmsTask readTask(int id)
+	 public CmsTask readTask(int id)
 		 throws CmsException;
 	 
 	 
@@ -263,7 +263,7 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public A_CmsTask writeTask(A_CmsTask task)
+	 public CmsTask writeTask(CmsTask task)
 		 throws CmsException;
 	 
 	 //--------------------------------------------
@@ -280,7 +280,7 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTasks(A_CmsProject project, int tasktype, 
+	 public Vector readTasks(CmsProject project, int tasktype, 
 							 String orderBy, String sort)
 		 throws CmsException;
 	 
@@ -294,7 +294,7 @@ interface I_CmsRbTask {
 	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTasks(A_CmsProject project, A_CmsGroup role, int tasktype, 
+	 public Vector readTasks(CmsProject project, CmsGroup role, int tasktype, 
 							 String orderBy, String sort) 
 		 throws CmsException;
 	 
@@ -307,7 +307,7 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTasks(A_CmsProject project, A_CmsUser user, int tasktype, 
+	 public Vector readTasks(CmsProject project, CmsUser user, int tasktype, 
 							 String orderBy, String sort) 
 		 throws CmsException;
 	 
@@ -321,7 +321,7 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readGivenTasks(A_CmsProject project, A_CmsUser owner, int taskType, 
+	 public Vector readGivenTasks(CmsProject project, CmsUser owner, int taskType, 
 								  String orderBy, String sort) 
 		 throws CmsException;
 
@@ -334,7 +334,7 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void writeTaskLog(int taskid, A_CmsUser user, String comment)
+	 public void writeTaskLog(int taskid, CmsUser user, String comment)
 		 throws CmsException;
 	 
 	 /**
@@ -354,7 +354,7 @@ interface I_CmsRbTask {
 	  * @return A Vector of new TaskLog objects 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readProjectLogs(A_CmsProject project)
+	 public Vector readProjectLogs(CmsProject project)
 		 throws CmsException;
 	 
 	 /**
@@ -406,6 +406,6 @@ interface I_CmsRbTask {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void writeTaskLog(int taskid, A_CmsUser user, String comment, int taskType)
+	 public void writeTaskLog(int taskid, CmsUser user, String comment, int taskType)
 		 throws CmsException;
 }

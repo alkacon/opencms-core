@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
- * Date   : $Date: 2000/05/11 10:18:40 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/05/11 10:18:40 $
+ * @version $Revision: 1.15 $ $Date: 2000/06/05 13:37:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsEditor extends CmsWorkplaceDefault {
@@ -52,14 +52,14 @@ public class CmsEditor extends CmsWorkplaceDefault {
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }    
     
@@ -72,14 +72,14 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * (MS IE or Netscape Navigator). If no such section exists, the default
      * section will be displayed.
      * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         
 
         // Get all editor parameters
@@ -156,13 +156,13 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * <code>&lt;METHOD name="setText"/&gt></code>. This call will be replaced
      * by the content of the file that should be edited.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of the file that should be edited.
      */
-    public Object setText(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) {        
+    public Object setText(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) {        
         
         Hashtable parameters = (Hashtable)userObj;
         String content = (String)parameters.get(C_PARA_CONTENT);        
@@ -179,7 +179,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * @param filename Name of the file to be loaded
      * @return CmsFile object of the loaded file
      */
-    private CmsFile readFile(A_CmsObject cms, String filename) throws CmsException {
+    private CmsFile readFile(CmsObject cms, String filename) throws CmsException {
         
         CmsFile result = null;
         try {
@@ -213,7 +213,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * @param templateFile the editor's template file containing different sections
      * @return name of the browser specific section in <code>templateFile</code>
      */
-    private String getBrowserSpecificSection(A_CmsObject cms, CmsXmlTemplateFile templateFile) {        
+    private String getBrowserSpecificSection(CmsObject cms, CmsXmlTemplateFile templateFile) {        
         
        
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();                

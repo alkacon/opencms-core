@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/05/30 14:00:56 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.28 $ $Date: 2000/05/30 14:00:56 $
+ * @version $Revision: 1.29 $ $Date: 2000/06/05 13:38:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -54,14 +54,14 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }    
     
@@ -69,16 +69,16 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
         HttpSession session = orgReq.getSession(true);
         // TODO: check, if this is neede: CmsFile editFile = null;
@@ -154,14 +154,14 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             }
                         
             // Check, if the selected page file is locked
-            A_CmsResource pageFileResource = cms.readFileHeader(file);
+            CmsResource pageFileResource = cms.readFileHeader(file);
             if(!pageFileResource.isLocked()) {
                 // BUG: Check only, dont't lock here!
                 cms.lockResource(file);
             }
                                     
             // The content file must be locked before editing            
-            A_CmsResource contentFileResource = cms.readFileHeader(bodyElementFilename);
+            CmsResource contentFileResource = cms.readFileHeader(bodyElementFilename);
             if(!contentFileResource.isLocked()) {
                 cms.lockResource(bodyElementFilename);
             }
@@ -447,7 +447,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * of these views after returning from this method.
      * <P>
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -455,7 +455,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * @return Index representing the user's current workplace view in the vectors.
      * @exception CmsException
      */
-    public Integer getBodys(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getBodys(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
         
         HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(false);        
@@ -486,7 +486,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         return new Integer(currentBodySectionIndex);
     }    
     
-    public Integer getAvailableTemplates(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getAvailableTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
         CmsXmlWpConfigFile configFile = getConfigFile(cms);
         String templatePath = configFile.getCommonTemplatePath();
@@ -497,7 +497,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         
         int numTemplates = allTemplateFiles.size();
         for(int i=0; i<numTemplates; i++) {
-            A_CmsResource file = (A_CmsResource)allTemplateFiles.elementAt(i);
+            CmsResource file = (CmsResource)allTemplateFiles.elementAt(i);
             if(file.getState() != C_STATE_DELETED) {
                 // TODO: check, if this is needed: String filename = file.getName();
                 String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
@@ -526,7 +526,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * <P>
      * Used to build font select boxes in editors.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -534,7 +534,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * @return Index representing the user's current workplace view in the vectors.
      * @exception CmsException
      */
-    public Integer getEditorViews(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getEditorViews(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
         Vector names2 = new Vector();
         Vector values2 = new Vector();
@@ -544,7 +544,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
         int browserId;
 
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
         String browser = orgReq.getHeader("user-agent");                
              
@@ -570,7 +570,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         return new Integer(currentIndex);
     }    
 
-    public Object setText(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public Object setText(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
         
         Hashtable parameters = (Hashtable)userObj;
@@ -603,7 +603,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * @return Value that is pre-set into the title field.
      * @exception CmsExeption if something goes wrong.
      */
-    public String setTitle(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
+    public String setTitle(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);        
         String name=(String)session.getValue("te_title");      
@@ -619,7 +619,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * @return Value that is pre-set into the title field.
      * @exception CmsExeption if something goes wrong.
      */
-    public String setBodyTitle(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
+    public String setBodyTitle(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);        
         String title=(String)session.getValue("te_oldbodytitle");      
@@ -633,16 +633,16 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * In the editor template file, this method can be invoked by
      * <code>&lt;METHOD name="previewUrl"/&gt;</code>.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
      * @exception CmsException
      */    
-    public Object previewUrl(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public Object previewUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {        
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         String servletPath = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getServletPath();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
         String tempPath = (String)session.getValue("te_temppagefile");
@@ -650,7 +650,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         return result;
     }
     
-    private String createTemporaryFile(A_CmsObject cms, A_CmsResource file) throws CmsException{
+    private String createTemporaryFile(CmsObject cms, CmsResource file) throws CmsException{
         String temporaryFilename = file.getPath() + C_TEMP_PREFIX + file.getName();
         
         // This is the code for single temporary files.
@@ -666,7 +666,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             }
         }*/         
         
-        // TODO: check, if this is needed: A_CmsResource tempFile = null;
+        // TODO: check, if this is needed: CmsResource tempFile = null;
         String extendedTempFile = null;
         boolean ok = true;
         
@@ -698,7 +698,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         return temporaryFilename;
     }        
 
-    private void commitTemporaryFile(A_CmsObject cms, String originalFilename, String temporaryFilename)
+    private void commitTemporaryFile(CmsObject cms, String originalFilename, String temporaryFilename)
             throws CmsException {
         CmsFile orgFile = cms.readFile(originalFilename);
         CmsFile tempFile = cms.readFile(temporaryFilename);
@@ -714,7 +714,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         }
     }
 
-    private void preview(String previewPath, A_CmsRequestContext reqCont) throws CmsException {
+    private void preview(String previewPath, CmsRequestContext reqCont) throws CmsException {
         HttpServletRequest srvReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();            
         String servletPath = srvReq.getServletPath();
         try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContent.java,v $
- * Date   : $Date: 2000/05/18 14:35:01 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/05/18 14:35:01 $
+ * @version $Revision: 1.13 $ $Date: 2000/06/05 13:38:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -50,14 +50,14 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 	/**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }    
 
@@ -65,14 +65,14 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
@@ -105,11 +105,11 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
     /**
      * Gets the tasks.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @return Vector representing the tasks.
      * @exception CmsException
      */
-    public Vector taskList(A_CmsObject cms, CmsXmlLanguageFile lang)
+    public Vector taskList(CmsObject cms, CmsXmlLanguageFile lang)
 		throws CmsException {
 		String orderBy = "";
 		String groupBy = "";
@@ -193,16 +193,16 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 	 * @return a vector of tasks.
 	 * @exception Throws a exception, if something goes wrong.
 	 */
-	private Vector readTasksForRole(A_CmsObject cms, int project, int taskType, String orderBy, String groupBy)
+	private Vector readTasksForRole(CmsObject cms, int project, int taskType, String orderBy, String groupBy)
 		throws CmsException {
 		String name = cms.getRequestContext().currentUser().getName();
 		Vector groups = cms.getGroupsOfUser(name);
-		A_CmsGroup group;
+		CmsGroup group;
 		Vector tasks;
 		Vector allTasks = new Vector();
 		
 		for(int i = 0; i < groups.size(); i++) {
-			group = (A_CmsGroup) groups.elementAt(i);
+			group = (CmsGroup) groups.elementAt(i);
 			tasks = cms.readTasksForRole(project, group.getName(), taskType, orderBy, groupBy);
 			
 			// join the vectors

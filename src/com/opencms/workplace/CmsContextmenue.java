@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsContextmenue.java,v $
- * Date   : $Date: 2000/05/12 07:43:56 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/05/12 07:43:56 $
+ * @version $Revision: 1.9 $ $Date: 2000/06/05 13:37:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement,
@@ -62,7 +62,7 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement,
      * // TODO: insert correct syntax here!
      * <CODE>&lt;Contextmenue /&gt;</CODE>
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;ICON&gt;</code> tag.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object <em>(not used here)</em>.
@@ -71,7 +71,7 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement,
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         // Read Contextmenue parameters
         String name = n.getAttribute("name");
 		String output="++ missing context ++";

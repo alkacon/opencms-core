@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImport.java,v $
- * Date   : $Date: 2000/03/17 09:24:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/06/05 13:37:54 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,16 +41,16 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.7 $ $Date: 2000/03/17 09:24:43 $
+ * @version $Revision: 1.8 $ $Date: 2000/06/05 13:37:54 $
  */
 class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 	
 	/** ResourceBroker to access all methods and objects */
 	private I_CmsResourceBroker m_RB = null;
 	/** User to access all resourcbroker methods and objects */
-	private A_CmsUser m_user = null;
+	private CmsUser m_user = null;
 	/** Project to access all resourcbroker methods and objects */
-	private A_CmsProject m_project = null;
+	private CmsProject m_project = null;
 	
 	/** to get the the XML object from the inputfile */
 	private I_CmsXmlParser m_parser = null;
@@ -120,7 +120,7 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 	 * @exception throws Exception
 	 * 
 	 */
-	CmsDbImport(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, String filename, String path)
+	CmsDbImport(I_CmsResourceBroker eRB, CmsUser luser, CmsProject lproject, String filename, String path)
 		throws IOException, Exception {
 		
 		m_RB=eRB;
@@ -372,7 +372,7 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 			}
 			// end for
 			try {
-				A_CmsUser newUser = m_RB.addUser(m_user, m_project, m_uLogin, m_uPasswd, m_uDGroup, m_uDesc, h_addInfo, Integer.parseInt(m_uFlag));
+				CmsUser newUser = m_RB.addUser(m_user, m_project, m_uLogin, m_uPasswd, m_uDGroup, m_uDesc, h_addInfo, Integer.parseInt(m_uFlag));
 				newUser.setEmail(m_uEmail);
 				newUser.setFirstname(m_uFirstname);
 				newUser.setLastname(m_uName);

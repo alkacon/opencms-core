@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/05/18 12:37:41 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/06/05 13:37:57 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -75,7 +75,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.25 $ $Date: 2000/05/18 12:37:41 $
+ * @version $Revision: 1.26 $ $Date: 2000/06/05 13:37:57 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -85,7 +85,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     
     /** parameter types for user methods called by METHOD tags */
     public static final Class[] C_PARAMTYPES_USER_METHODS
-            = new Class[] {A_CmsObject.class, String.class, A_CmsXmlContent.class, Object.class};
+            = new Class[] {CmsObject.class, String.class, A_CmsXmlContent.class, Object.class};
     
 	/** The classname of the super XML content class */
 	public static final String C_MINIMUM_CLASSNAME = "com.opencms.template.A_CmsXmlContent";
@@ -99,8 +99,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     /** Error message for bad <code>&lt;PROCESS&gt;</code> tags */
     public static final String C_ERR_NODATABLOCK = "? UNKNOWN DATABLOCK ";
     
-    /** A_CmsObject Object for accessing resources */
-    protected A_CmsObject m_cms;
+    /** CmsObject Object for accessing resources */
+    protected CmsObject m_cms;
         
     /** All XML tags known by this class. */
     protected Vector m_knownTags = new Vector();
@@ -164,12 +164,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * template files will be searched a hierachical order using
      * <code>lookupAbsoluteFilename</code>.
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param file CmsFile object of the file to be loaded and parsed.
      * @exception CmsException
      * @see #lookupAbsoluteFilename
      */
-    public void init(A_CmsObject cms, String filename) throws CmsException {
+    public void init(CmsObject cms, String filename) throws CmsException {
         if(! filename.startsWith("/")) {
             // this is no absolute filename. 
             filename = lookupAbsoluteFilename(cms, filename, this);
@@ -195,11 +195,11 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     /**
      * Initialize the XML content class.
      * Load and parse the content of the given CmsFile object.
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param file CmsFile object of the file to be loaded and parsed.
      * @exception CmsException
      */    
-    public void init(A_CmsObject cms, CmsFile file) throws CmsException {
+    public void init(CmsObject cms, CmsFile file) throws CmsException {
         String filename = file.getAbsolutePath();
         String currentProject = cms.getRequestContext().currentProject().getName();
         Document parsedContent = null;
@@ -234,12 +234,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 
     /**
      * Initialize the class with the given parsed XML DOM document.
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param document DOM document object containing the parsed XML file.
      * @param filename OpenCms filename of the XML file.
      * @exception CmsException
      */
-    public void init(A_CmsObject cms, Document content, String filename) throws CmsException {
+    public void init(CmsObject cms, Document content, String filename) throws CmsException {
         m_cms = cms;
         m_content = content;
         m_filename = filename;
@@ -284,7 +284,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @param documentType Document type of the new file.
      * @exception CmsException if no absolute filename is given or write access failed.
      */
-    public void createNewFile(A_CmsObject cms, String filename, String documentType) throws CmsException {
+    public void createNewFile(CmsObject cms, String filename, String documentType) throws CmsException {
         if(! filename.startsWith("/")) {
             // this is no absolute filename. 
             this.throwException("Cannot create new file. Bad name.", CmsException.C_BAD_NAME);
@@ -322,15 +322,15 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * <P>
      * The starting classname is determined by the class of the given <code>requestingObject</class>
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param filename Template file name to be loaded.
      * @param requestingObject Object whose class hierarchy should be used for resolving file names.
      * @return absolute path of the filename.
      * @exception CmsException
      */
-    public static String lookupAbsoluteFilename(A_CmsObject cms, String filename, Object requestingObject) throws CmsException {
+    public static String lookupAbsoluteFilename(CmsObject cms, String filename, Object requestingObject) throws CmsException {
         Class actualClass = requestingObject.getClass();
-        A_CmsResource retValue = null;
+        CmsResource retValue = null;
 		String completeFilename = null;
 
         // we use this Vector for storing all tried filenames.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSchedulerDbConnector.java,v $
- * Date   : $Date: 2000/04/26 07:48:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/05 13:37:50 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,21 +37,21 @@ import com.opencms.file.*;
  * sending a query all <code>sleep</code> seconds.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/04/26 07:48:04 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/05 13:37:50 $
  */
 public class CmsSchedulerDbConnector extends Thread implements I_CmsLogChannels {
     /** Time to sleep */
     private long m_sleep;
     
     /** Reference to the cms object used for queries.*/
-    private A_CmsObject m_cms;
+    private CmsObject m_cms;
 	
 	/**
 	 * Constructor for the Scheduler.
 	 * @param cms cms object the scheduler uses for database queries.
 	 * @param sleep time the scheduler has to pause between two actions.
 	 */
-	public CmsSchedulerDbConnector(A_CmsObject cms, long sleep) {
+	public CmsSchedulerDbConnector(CmsObject cms, long sleep) {
 		m_cms = cms;
 		m_sleep=60000*sleep;
 	}

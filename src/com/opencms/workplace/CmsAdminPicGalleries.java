@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
- * Date   : $Date: 2000/06/02 13:02:54 $
+ * Date   : $Date: 2000/06/05 13:37:58 $
  * Version: $ $
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.5 $ $Date: 2000/06/02 13:02:54 $
+ * @version $Revision: 1.6 $ $Date: 2000/06/05 13:37:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -49,14 +49,14 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }    
 
@@ -64,14 +64,14 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
        
 		HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();    
 		HttpSession session = orgReq.getSession(true);       
@@ -211,14 +211,14 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
     * @return A vector of folder and file objects.
     * @exception Throws CmsException if something goes wrong.
     */
-    public Vector getFiles(A_CmsObject cms) 
+    public Vector getFiles(CmsObject cms) 
         throws CmsException {
         Vector galleries = new Vector();
         Vector folders = cms.getSubFolders(getConfigFile(cms).getPicGalleryPath()); 
         int numFolders = folders.size();
 		
         for(int i=0; i<numFolders; i++) {
-            A_CmsResource currFolder = (A_CmsResource)folders.elementAt(i); 
+            CmsResource currFolder = (CmsResource)folders.elementAt(i); 
             galleries.addElement(currFolder);            
         }                                                            
         return galleries;
@@ -234,7 +234,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
      * @return New modified bit pattern.
      * @see I_CmsFileListUsers
      */
-    public int modifyDisplayedColumns(A_CmsObject cms, int prefs) {  
+    public int modifyDisplayedColumns(CmsObject cms, int prefs) {  
         prefs = ((prefs & C_FILELIST_NAME) == 0) ? prefs : (prefs - C_FILELIST_NAME);
         prefs = ((prefs & C_FILELIST_TITLE) == 0) ? prefs : (prefs - C_FILELIST_TITLE);
         prefs = ((prefs & C_FILELIST_TYPE) == 0) ? prefs : (prefs - C_FILELIST_TYPE);
@@ -251,12 +251,12 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
      * @param cms Cms object for accessing system resources.
      * @param filelist Template file containing the definitions for the file list together with
      * the included customized defintions.
-     * @param res A_CmsResource Object of the current file list entry.
+     * @param res CmsResource Object of the current file list entry.
      * @param lang Current language file.
      * @exception CmsException if access to system resources failed.
      * @see I_CmsFileListUsers
      */
-    public void getCustomizedColumnValues(A_CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, A_CmsResource res, CmsXmlLanguageFile lang) 
+    public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, CmsResource res, CmsXmlLanguageFile lang) 
         throws CmsException {
 		CmsXmlWpConfigFile config=this.getConfigFile(cms);
 		filelistTemplate.fastSetXmlData(C_FILELIST_ICON_VALUE, config.getWpPictureUrl()+"ic_file_picgallery.gif");
@@ -271,7 +271,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
@@ -279,7 +279,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
      * @exception CmsException
      */
     
-	public Integer getGroups(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+	public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// get all groups
 		Vector groups = cms.getGroups();
@@ -290,7 +290,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
 		names.addElement(prompt); 
 		values.addElement("Aufforderung"); // without significance for the user
 		for(int z = 0; z < groups.size(); z++) {
-			String name = ((A_CmsGroup)groups.elementAt(z)).getName();
+			String name = ((CmsGroup)groups.elementAt(z)).getName();
 			names.addElement(name);
 			values.addElement(name);
 		}

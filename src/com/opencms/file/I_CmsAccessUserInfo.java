@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessUserInfo.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/05 13:37:56 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/05 13:37:56 $
  */
 interface I_CmsAccessUserInfo {
 
@@ -51,7 +51,7 @@ interface I_CmsAccessUserInfo {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void addUserInformation(A_CmsUser user)
+	public void addUserInformation(CmsUser user)
         throws  CmsException;
     
 	/**
@@ -66,7 +66,7 @@ interface I_CmsAccessUserInfo {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsUser readUserInformation(A_CmsUser user)
+	public CmsUser readUserInformation(CmsUser user)
         throws CmsException;
 
 	/**
@@ -79,7 +79,7 @@ interface I_CmsAccessUserInfo {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public void writeUserInformation(A_CmsUser user)
+	 public void writeUserInformation(CmsUser user)
          throws CmsException;
 
 	/**

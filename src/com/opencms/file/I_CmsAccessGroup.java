@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessGroup.java,v $
- * Date   : $Date: 2000/03/29 15:13:12 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/05 13:37:56 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/03/29 15:13:12 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/05 13:37:56 $
  */
 interface I_CmsAccessGroup {
 		
@@ -61,7 +61,7 @@ interface I_CmsAccessGroup {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup readGroup(int groupid)
+	public CmsGroup readGroup(int groupid)
 		throws CmsException;
 
     /**
@@ -72,7 +72,7 @@ interface I_CmsAccessGroup {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	public A_CmsGroup readGroup(String groupname)
+	public CmsGroup readGroup(String groupname)
 		throws CmsException;
 
 	/**
@@ -112,7 +112,7 @@ interface I_CmsAccessGroup {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	public A_CmsGroup createGroup(String name, String description, int flags,String parent)
+	public CmsGroup createGroup(String name, String description, int flags,String parent)
 		throws CmsException;
 
      /**
@@ -123,7 +123,7 @@ interface I_CmsAccessGroup {
 	 * @param group The group that should be written to the Cms.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	public void writeGroup(A_CmsGroup group)
+	public void writeGroup(CmsGroup group)
 		throws CmsException;
     
 	/**
@@ -200,7 +200,7 @@ interface I_CmsAccessGroup {
 	 * @return The parent group of the actual group or null;
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup getParent(String groupname)
+	public CmsGroup getParent(String groupname)
          throws CmsException;	
 
 }

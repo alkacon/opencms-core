@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/06/02 09:46:21 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.24 $ $Date: 2000/06/02 09:46:21 $
+ * @version $Revision: 1.25 $ $Date: 2000/06/05 13:38:00 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -52,14 +52,14 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
       /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
     
@@ -74,7 +74,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * @return Bytearre containgine the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
@@ -111,7 +111,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
         
         String action = (String)parameters.get("action");
 
-        A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
+        CmsResource file=(CmsResource)cms.readFileHeader(filename);
       
         if (file.isFile()) {
             template="file";
@@ -237,7 +237,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 title="";
             }            
             
-            A_CmsUser owner=cms.readOwner(file);
+            CmsUser owner=cms.readOwner(file);
             xmlTemplateDocument.setData("TITLE",title);
             xmlTemplateDocument.setData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
             xmlTemplateDocument.setData("OWNER",Utils.getFullName(owner));
@@ -259,7 +259,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * @return Value that is pre-set into the anew name field.
      * @exception CmsExeption if something goes wrong.
      */
-    public String setValue(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
+    public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
         
@@ -274,7 +274,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 	 * @param cms The CmsObject, to access the XML read file.
 	 * @param file File in which the body path is stored.
 	 */
-	private String getBodyPath(A_CmsObject cms, CmsFile file)
+	private String getBodyPath(CmsObject cms, CmsFile file)
 		throws CmsException{
 		file=cms.readFile(file.getAbsolutePath());
 		CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
@@ -290,7 +290,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
        * @param bodypath the new XML content entry
        * @exception Exception if something goes wrong.
        */
-	  private void changeContent(A_CmsObject cms, CmsFile file, String bodypath)
+	  private void changeContent(CmsObject cms, CmsFile file, String bodypath)
 		  throws CmsException {
 		  file=cms.readFile(file.getAbsolutePath());
 		  CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
@@ -306,7 +306,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * @param lang The content definition language file.
      * @return Formated state string.
      */
-     private String getState(A_CmsObject cms, A_CmsResource file,CmsXmlLanguageFile lang)
+     private String getState(CmsObject cms, CmsResource file,CmsXmlLanguageFile lang)
          throws CmsException {
          StringBuffer output=new StringBuffer();
          
@@ -330,7 +330,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * will be added here as well.
      * @exception Throws CmsException if something goes wrong.
      */
-    private void getAllResources(A_CmsObject cms, String rootFolder,
+    private void getAllResources(CmsObject cms, String rootFolder,
                                  Vector allFiles, Vector allFolders) 
      throws CmsException {
         Vector folders=new Vector();
@@ -362,7 +362,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
        * @param path The path in the CmsFilesystem where the new page should be created.
        * @exception CmsException if something goes wrong.
        */
-     private void checkFolders(A_CmsObject cms, String path) 
+     private void checkFolders(CmsObject cms, String path) 
           throws CmsException {
           String completePath=C_CONTENTBODYPATH;
           StringTokenizer t=new StringTokenizer(path,"/");
@@ -396,7 +396,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
       * @param newFile The new name of the file.
       * @exception Throws CmsException if something goes wrong.
       */
-     private void renameFile (A_CmsObject cms, A_CmsResource file,String newFile)
+     private void renameFile (CmsObject cms, CmsResource file,String newFile)
      throws CmsException{
         if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
 		    String bodyPath = getBodyPath(cms, (CmsFile)file);
@@ -421,7 +421,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
       * @param newFolder The folder the file has to be moved to.
       * @param flags Flags that indicate if the access flags have to be set to the default values.
       */
-     private void moveFile(A_CmsObject cms, CmsFile file, String newFolder, String flags)
+     private void moveFile(CmsObject cms, CmsFile file, String newFolder, String flags)
                        
         throws CmsException {
          if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbUserGroup.java,v $
- * Date   : $Date: 2000/05/02 16:13:19 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/06/05 13:37:55 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,14 +35,14 @@ import com.opencms.core.*;
 
 /**
  * This class describes a resource broker for user and groups in the Cms.<BR/>
- * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
+ * <B>All</B> Methods get a first parameter: CmsUser. It is the current user. This 
  * is for security-reasons, to check if this current user has the rights to call the
  * method.<BR/>
  * 
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/05/02 16:13:19 $
+ * @version $Revision: 1.24 $ $Date: 2000/06/05 13:37:55 $
  */
  class CmsRbUserGroup implements I_CmsRbUserGroup, I_CmsConstants {
 
@@ -73,9 +73,9 @@ import com.opencms.core.*;
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public A_CmsUser readUser(String username)
+	 public CmsUser readUser(String username)
          throws CmsException {
-         A_CmsUser user=null;
+         CmsUser user=null;
          user=m_accessUserGroup.readUser(username);
          return user;
      }
@@ -92,9 +92,9 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	 public A_CmsUser readUser(String username, String password)
+	 public CmsUser readUser(String username, String password)
          throws CmsException {
-         A_CmsUser user=null;
+         CmsUser user=null;
          user=m_accessUserGroup.readUser(username,password);
          return user;
      }
@@ -109,9 +109,9 @@ import com.opencms.core.*;
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser readUser(int userid)
+	public CmsUser readUser(int userid)
 		throws CmsException {
-         A_CmsUser user=null;
+         CmsUser user=null;
          user=m_accessUserGroup.readUser(userid);
          return user;
      }
@@ -129,15 +129,15 @@ import com.opencms.core.*;
 	 public Vector getGroupsOfUser(String username)
          throws CmsException {
          Vector allGroups;
-         A_CmsGroup subGroup;
-         A_CmsGroup group;
+         CmsGroup subGroup;
+         CmsGroup group;
          // get all groups of the user
          Vector groups=m_accessUserGroup.getGroupsOfUser(username);
          allGroups=groups;
          // now get all childs of the groups
          Enumeration enu = groups.elements();
          while (enu.hasMoreElements()) {
-             group=(A_CmsGroup)enu.nextElement();
+             group=(CmsGroup)enu.nextElement();
              subGroup=getParent(group.getName());
 			 while(subGroup != null) {
 				 // is the subGroup already in the vector?
@@ -181,10 +181,10 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	 public A_CmsGroup readGroup(String groupname)
+	 public CmsGroup readGroup(String groupname)
          throws CmsException {
          
-         A_CmsGroup group = null;
+         CmsGroup group = null;
          group=m_accessUserGroup.readGroup(groupname);
          return group;
       }
@@ -201,10 +201,10 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	public A_CmsGroup readGroup(int groupId)
+	public CmsGroup readGroup(int groupId)
 		 throws CmsException {
          
-         A_CmsGroup group = null;
+         CmsGroup group = null;
          group=m_accessUserGroup.readGroup(groupId);
          return group;
       }
@@ -240,9 +240,9 @@ import com.opencms.core.*;
 	 public boolean userInGroup(String username, String groupname)
          throws CmsException {
 		 Vector groups = getGroupsOfUser(username);
-     	 A_CmsGroup group;
+     	 CmsGroup group;
 		 for(int z = 0; z < groups.size(); z++) {
-        	 group = (A_CmsGroup) groups.elementAt(z);
+        	 group = (CmsGroup) groups.elementAt(z);
          	 if(groupname.equals(group.getName())) {
 				 return true;
 			 }
@@ -270,13 +270,13 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	 public A_CmsUser addUser(String name, String password, 
+	 public CmsUser addUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
          throws CmsException {
          
-         A_CmsUser user=null;
-         A_CmsGroup grp = null;
+         CmsUser user=null;
+         CmsGroup grp = null;
          
          //check if the group is exiting
          grp=m_accessUserGroup.readGroup(group);
@@ -321,7 +321,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public void writeUser(A_CmsUser user)
+	 public void writeUser(CmsUser user)
          throws CmsException {
          m_accessUserGroup.writeUser(user);     
      }
@@ -343,11 +343,11 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	 public A_CmsGroup addGroup(String name, String description, 
+	 public CmsGroup addGroup(String name, String description, 
                          int flags, String parent)
          throws CmsException {
          
-         A_CmsGroup group=null;
+         CmsGroup group=null;
          group=m_accessUserGroup.createGroup(name,description,flags,parent);    
          return group;         
      }
@@ -360,7 +360,7 @@ import com.opencms.core.*;
 	 * @param group The group that should be written to the Cms.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	 public void writeGroup(A_CmsGroup group)
+	 public void writeGroup(CmsGroup group)
          throws CmsException{
          m_accessUserGroup.writeGroup(group);
      }
@@ -493,7 +493,7 @@ import com.opencms.core.*;
         Vector childs=new Vector();
         Vector allChilds=new Vector();
         Vector subchilds=new Vector();
-        A_CmsGroup group=null;
+        CmsGroup group=null;
         
         // get all child groups if the user group
         childs=m_accessUserGroup.getChild(groupname);
@@ -502,12 +502,12 @@ import com.opencms.core.*;
             // now get all subchilds for each group
             Enumeration enu=childs.elements();
             while (enu.hasMoreElements()) {
-                group=(A_CmsGroup)enu.nextElement();
+                group=(CmsGroup)enu.nextElement();
                 subchilds=getChilds(group.getName());
                 //add the subchilds to the already existing groups
                 Enumeration enusub=subchilds.elements();
                 while (enusub.hasMoreElements()) {
-                    group=(A_CmsGroup)enusub.nextElement();
+                    group=(CmsGroup)enusub.nextElement();
                     allChilds.addElement(group);
                 }       
             }
@@ -523,9 +523,9 @@ import com.opencms.core.*;
 	 * @return The parent group of the actual group or null;
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup getParent(String groupname)
+	public CmsGroup getParent(String groupname)
         throws CmsException {
-        A_CmsGroup parent= null;
+        CmsGroup parent= null;
         parent = m_accessUserGroup.getParent(groupname);
         return parent;
     }

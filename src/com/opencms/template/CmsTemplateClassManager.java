@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
- * Date   : $Date: 2000/04/19 13:12:12 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/06/05 13:37:57 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * be cached and re-used. 
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/04/19 13:12:12 $
+ * @version $Revision: 1.8 $ $Date: 2000/06/05 13:37:57 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels { 
     
@@ -55,12 +55,12 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
      * Gets the instance of the class with the given classname.
      * If no instance exists a new one will be created using the default constructor.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param classname Name of the requested class.
      * @return Instance of the class with the given name.
      * @exception CmsException 
      */
-    public static Object getClassInstance(A_CmsObject cms, String classname)
+    public static Object getClassInstance(CmsObject cms, String classname)
             throws CmsException {
         
         return getClassInstance(cms, classname, null);
@@ -70,13 +70,13 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
      * Gets the instance of the class with the given classname.
      * If no instance exists a new one will be created using the given arguments.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param classname Name of the requested class.
      * @param callParameters Array of arguments that should be passed to the Constructor.
      * @return Instance of the class with the given name.
      * @exception CmsException 
      */
-    public static Object getClassInstance(A_CmsObject cms, String classname, Object[] callParameters)
+    public static Object getClassInstance(CmsObject cms, String classname, Object[] callParameters)
             throws CmsException {
         
         int numParams = 0;
@@ -97,14 +97,14 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
      * If no instance exists a new one will be created using the given arguments
      * interpreted as objects of the given classes.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param classname Name of the requested class.
      * @param callParameters Array of arguments that should be passed to the Constructor.
      * @param parameterTypes Array of the types of the arguments.
      * @return Instance of the class with the given name.
      * @exception CmsException 
      */
-    public static Object getClassInstance(A_CmsObject cms, String classname, Object[] callParameters, Class[] parameterTypes)
+    public static Object getClassInstance(CmsObject cms, String classname, Object[] callParameters, Class[] parameterTypes)
             throws CmsException {
         
         Object o = null;

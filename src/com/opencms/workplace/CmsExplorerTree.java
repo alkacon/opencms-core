@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/04/20 08:11:54 $
+ * @version $Revision: 1.6 $ $Date: 2000/06/05 13:37:59 $
  */
 public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -118,14 +118,14 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
     
@@ -140,7 +140,7 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
      * @return Bytearre containgine the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    /*public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    /*public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
          
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);        
       
@@ -152,7 +152,7 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
      * Creates the folder tree in the workplace explorer.
      * @exception Throws CmsException if something goes wrong.
      */
-     public Object getTree(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+     public Object getTree(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
             // TODO: check, if this is needed: Hashtable parameters = (Hashtable)userObj;
             StringBuffer output=new StringBuffer();  
@@ -219,7 +219,7 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
      * @param output The output buffer where all data is written to.
      * @param tab The prefix-HTML code fo this subtree.
      */
-    private void showTree(A_CmsObject cms, String curfolder, String endfolder, String filelist,
+    private void showTree(CmsObject cms, String curfolder, String endfolder, String filelist,
                           CmsXmlWpTemplateFile template, StringBuffer output,
                           String tab) 
     throws CmsException {
@@ -341,7 +341,7 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
       * @return True or false.
       * @exception CmsException if something goes wrong.
       */
-     private boolean checkAccess(A_CmsObject cms, CmsResource res)
+     private boolean checkAccess(CmsObject cms, CmsResource res)
      throws CmsException {
          boolean access=false;
          int accessflags=res.getAccessFlags();
@@ -350,7 +350,7 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
          boolean groupAccess = false;
          Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
          while((!groupAccess) && allGroups.hasMoreElements()) {
-             groupAccess = cms.readGroup(res).equals((A_CmsGroup)allGroups.nextElement());
+             groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
          }
          
          if ( ((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) ||

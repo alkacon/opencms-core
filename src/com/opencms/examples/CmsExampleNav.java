@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsExampleNav.java,v $
- * Date   : $Date: 2000/04/03 10:48:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/06/05 13:37:51 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,21 +66,21 @@ import javax.servlet.http.*;
  * the same technique, too.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/04/03 10:48:28 $
+ * @version $Revision: 1.6 $ $Date: 2000/06/05 13:37:51 $
  */
 public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
         
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return true;
     }    
     
@@ -88,13 +88,13 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
      * Reads in the template file and starts the XML parser for the expected
      * content type <class>CmsExampleNavFile</code>
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public CmsXmlTemplateFile getOwnTemplateFile(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         CmsExampleNavFile xmlTemplateDocument = new CmsExampleNavFile(cms, templateFile);       
         return xmlTemplateDocument;
     }        
@@ -115,14 +115,14 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
      * parses the XML file and provides special methods for
      * accessing these tags (<code>CmsExampleNavFile</code>).
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object getNav(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Object getNav(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
         // Reference to our own document.
         CmsExampleNavFile xmlTemplateDocument = (CmsExampleNavFile)doc;     
@@ -143,7 +143,7 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
         // for any navigation properties and store
         // the maximum position found
         for(int i=0; i<numFolders; i++) {
-            A_CmsResource currFolder = (A_CmsResource)allFolders.elementAt(i);
+            CmsResource currFolder = (CmsResource)allFolders.elementAt(i);
             String filename = currFolder.getAbsolutePath();
             String navpos = cms.readProperty(filename, C_PROPERTY_NAVPOS);
             String navtext = cms.readProperty(filename, C_PROPERTY_NAVTEXT);     
@@ -190,7 +190,7 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
      * @return String containing generated output.
      * @exception CmsException if file or folder access failed.
      */    
-    protected String filesNav(A_CmsObject cms, String folderName, CmsExampleNavFile xmlTemplateDocument) throws CmsException {
+    protected String filesNav(CmsObject cms, String folderName, CmsExampleNavFile xmlTemplateDocument) throws CmsException {
 
         String requestedUri = cms.getRequestContext().getUri();        
         String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
@@ -211,7 +211,7 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
         // for any navigation properties and store
         // the maximum position found
         for(int j=0; j<numFiles; j++) {
-            A_CmsResource currFile = (A_CmsResource)allFiles.elementAt(j);
+            CmsResource currFile = (CmsResource)allFiles.elementAt(j);
             String filename = currFile.getAbsolutePath();
             String navpos = cms.readProperty(filename, C_PROPERTY_NAVPOS);
             String navtext = cms.readProperty(filename, C_PROPERTY_NAVTEXT);     
@@ -254,7 +254,7 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
     * @param nicenames Array of well formed navigation names
     * @param positions Array of navpostions
     */
-    private void sort(A_CmsObject cms, String[] filenames, String[] nicenames,
+    private void sort(CmsObject cms, String[] filenames, String[] nicenames,
                                  String[] positions, int max){
         // Sorting algorithm
         // This method uses an bubble sort, so replace this with something more

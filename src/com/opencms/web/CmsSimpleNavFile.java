@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsSimpleNavFile.java,v $
- * Date   : $Date: 2000/03/22 10:38:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/06/05 13:37:58 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.util.*;
  * Content definition for minfact CeBIT navigation definition file.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/03/22 10:38:24 $
+ * @version $Revision: 1.3 $ $Date: 2000/06/05 13:37:58 $
  */
  public class CmsSimpleNavFile extends CmsExampleNavFile {
 
@@ -55,10 +55,10 @@ import java.util.*;
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsSimpleNavFile(A_CmsObject cms, CmsFile file) throws CmsException {
+    public CmsSimpleNavFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
         init(cms, file);
     }
@@ -67,10 +67,10 @@ import java.util.*;
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsSimpleNavFile(A_CmsObject cms, String filename) throws CmsException {
+    public CmsSimpleNavFile(CmsObject cms, String filename) throws CmsException {
         super();            
         init(cms, filename);
     }

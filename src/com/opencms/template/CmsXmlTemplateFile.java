@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/05/30 12:05:33 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/06/05 13:37:57 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2000/05/30 12:05:33 $
+ * @version $Revision: 1.21 $ $Date: 2000/06/05 13:37:57 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -56,10 +56,10 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlTemplateFile(A_CmsObject cms, String filename) throws CmsException {
+    public CmsXmlTemplateFile(CmsObject cms, String filename) throws CmsException {
         super();
         registerMyTags();
         init(cms, filename);
@@ -69,10 +69,10 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlTemplateFile(A_CmsObject cms, CmsFile file) throws CmsException {
+    public CmsXmlTemplateFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
         registerMyTags();
         init(cms, file);

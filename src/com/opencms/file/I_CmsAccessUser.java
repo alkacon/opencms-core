@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessUser.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/05 13:37:56 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/05 13:37:56 $
  */
 interface I_CmsAccessUser {
 
@@ -50,7 +50,7 @@ interface I_CmsAccessUser {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser readUser(String username)
+	public CmsUser readUser(String username)
 		throws CmsException;
     
      /**
@@ -60,7 +60,7 @@ interface I_CmsAccessUser {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser readUser(int id)
+	public CmsUser readUser(int id)
 		throws CmsException;
 	
 	/**
@@ -72,7 +72,7 @@ interface I_CmsAccessUser {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	public A_CmsUser readUser(String username, String password)
+	public CmsUser readUser(String username, String password)
 		throws CmsException;
 
 	/** 
@@ -88,7 +88,7 @@ interface I_CmsAccessUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	public A_CmsUser createUser(String name, String password, 
+	public CmsUser createUser(String name, String password, 
 				               String description)
 		throws CmsException;
 
@@ -113,7 +113,7 @@ interface I_CmsAccessUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeUser(A_CmsUser user)
+	public void writeUser(CmsUser user)
 		throws CmsException;
 
 	/**

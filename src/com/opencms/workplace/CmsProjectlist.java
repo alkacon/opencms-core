@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
- * Date   : $Date: 2000/04/20 08:11:55 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/04/20 08:11:55 $
+ * @version $Revision: 1.14 $ $Date: 2000/06/05 13:38:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -62,14 +62,14 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
 
@@ -82,7 +82,7 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
      * // TODO: insert correct syntax here!
      * <CODE>&lt;PROJECTLIST /&gt;</CODE>
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;ICON&gt;</code> tag.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object <em>(not used here)</em>.
@@ -91,7 +91,7 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         // Read projectlist parameters
         String listMethod = n.getAttribute(C_PROJECTLIST_METHOD);
         
@@ -102,7 +102,7 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
         Method callingMethod = null;
 		Vector list = new Vector();
         try {
-            callingMethod = callingObject.getClass().getMethod(listMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class});
+            callingMethod = callingObject.getClass().getMethod(listMethod, new Class[] {CmsObject.class, CmsXmlLanguageFile.class});
             list = (Vector)callingMethod.invoke(callingObject, new Object[] {cms, lang});
         } catch(NoSuchMethodException exc) {
             // The requested method was not found.
@@ -131,7 +131,7 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 		
 		for(int i = 0; i < list.size(); i++) {
 			// get the actual project
-			A_CmsProject project = (A_CmsProject) list.elementAt(i);
+			CmsProject project = (CmsProject) list.elementAt(i);
 
 			// get the correckt state
 			if( project.getCountLockedResources() == 0 ) {
@@ -166,8 +166,8 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 	 * @param project The project to get the data from.
 	 * @exception CmsException is thrown if something goes wrong.
 	 */
-	public static void setListEntryData(A_CmsObject cms, CmsXmlLanguageFile lang, 
-										CmsXmlWpTemplateFile xmlFile, A_CmsProject project)
+	public static void setListEntryData(CmsObject cms, CmsXmlLanguageFile lang, 
+										CmsXmlWpTemplateFile xmlFile, CmsProject project)
 		throws CmsException {
 		
 		String state;

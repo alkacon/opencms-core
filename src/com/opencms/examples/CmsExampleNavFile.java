@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsExampleNavFile.java,v $
- * Date   : $Date: 2000/03/16 13:42:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/06/05 13:37:51 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.template.*;
  * of the navigation.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/03/16 13:42:59 $
+ * @version $Revision: 1.3 $ $Date: 2000/06/05 13:37:51 $
  */
  public class CmsExampleNavFile extends CmsXmlTemplateFile {
 
@@ -55,10 +55,10 @@ import com.opencms.template.*;
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsExampleNavFile(A_CmsObject cms, CmsFile file) throws CmsException {
+    public CmsExampleNavFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
         init(cms, file);
     }
@@ -67,10 +67,10 @@ import com.opencms.template.*;
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsExampleNavFile(A_CmsObject cms, String filename) throws CmsException {
+    public CmsExampleNavFile(CmsObject cms, String filename) throws CmsException {
         super();            
         init(cms, filename);
     }

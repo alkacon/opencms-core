@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/05/30 13:19:23 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.42 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import javax.servlet.http.*;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.41 $ $Date: 2000/05/30 13:19:23 $
+ * @version $Revision: 1.42 $ $Date: 2000/06/05 13:37:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -129,7 +129,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * Reads the code of a file list from the file list definition file
      * and returns the processed code with the actual elements.
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;FILELIST&gt;</code> tag.
      * @param callingObject reference to the calling object.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
@@ -137,7 +137,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc,
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc,
                                             Object callingObject, Hashtable parameters, 
                                             CmsXmlLanguageFile lang) throws CmsException { 
 		        
@@ -180,7 +180,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
       * @param columnsMethod.
       * @return HTML-Code of the file list. 
       */
-     private Object getFilelist(A_CmsObject cms, Vector list,
+     private Object getFilelist(CmsObject cms, Vector list,
                                 A_CmsXmlContent doc, CmsXmlLanguageFile lang,
                                 Hashtable parameters, I_CmsFileListUsers callingObject,
                                 CmsXmlWpConfigFile config) 
@@ -256,7 +256,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     template.fastSetXmlData(C_CONTEXT_MENU,getContextMenue(cms,res,template));
                     template.fastSetXmlData(C_CONTEXT_NUMBER,new Integer(contextNumber++).toString());
                     
-                    A_CmsResourceType type=cms.getResourceType(folder.getType());
+                    CmsResourceType type=cms.getResourceType(folder.getType());
                     String icon=getIcon(cms,type,config);
                     template.fastSetXmlData(C_FILELIST_ICON_VALUE,config.getWpPictureUrl()+icon);
                     // set the link, but only if the folder is not deleted
@@ -304,12 +304,12 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 					}
 					if ((filelist & C_FILELIST_OWNER) != 0) {  
 						// get the owner of the folder
-						A_CmsUser owner = cms.readOwner(folder);
+						CmsUser owner = cms.readOwner(folder);
 						template.fastSetXmlData(C_FILELIST_OWNER_VALUE,owner.getName());
 					 }
 					if ((filelist & C_FILELIST_GROUP) != 0) {  
 						// get the group of the folder
-						A_CmsGroup group = cms.readGroup(folder);
+						CmsGroup group = cms.readGroup(folder);
 						template.fastSetXmlData(C_FILELIST_GROUP_VALUE,group.getName());
 					}
 					if ((filelist & C_FILELIST_ACCESS) != 0) {  
@@ -341,7 +341,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     template.fastSetXmlData(C_CONTEXT_MENU,getContextMenue(cms,res,template));
                     template.fastSetXmlData(C_CONTEXT_NUMBER,new Integer(contextNumber++).toString());
                     
-                    A_CmsResourceType type=cms.getResourceType(file.getType());
+                    CmsResourceType type=cms.getResourceType(file.getType());
                     String icon=getIcon(cms,type,config);
                     template.fastSetXmlData(C_FILELIST_ICON_VALUE,config.getWpPictureUrl()+icon);
                      // set the link, but only if the resource is not deleted
@@ -390,12 +390,12 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 					}
 					if ((filelist & C_FILELIST_OWNER) != 0) {
 						// get the owner of the file
-						A_CmsUser owner = cms.readOwner(file);
+						CmsUser owner = cms.readOwner(file);
 						template.fastSetXmlData(C_FILELIST_OWNER_VALUE,owner.getName());
 					}
 					if ((filelist & C_FILELIST_GROUP) != 0) {
 						 // get the group of the file
-						A_CmsGroup group = cms.readGroup(file);
+						CmsGroup group = cms.readGroup(file);
 						template.fastSetXmlData(C_FILELIST_GROUP_VALUE,group.getName());
 					}
 					if ((filelist & C_FILELIST_ACCESS) != 0) {
@@ -569,7 +569,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * @param lang The content definition language file.
      * @return Formated state string.
      */
-     private String getState(A_CmsObject cms, CmsResource file,CmsXmlLanguageFile lang)
+     private String getState(CmsObject cms, CmsResource file,CmsXmlLanguageFile lang)
          throws CmsException {
          StringBuffer output=new StringBuffer();
          
@@ -591,7 +591,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * @param lang The content definition language file.
      * @return HTML code for selecting a lock icon.
      */
-     private String getLock(A_CmsObject cms, CmsResource file,CmsXmlWpTemplateFile template,
+     private String getLock(CmsObject cms, CmsResource file,CmsXmlWpTemplateFile template,
                                               CmsXmlLanguageFile lang)
          throws CmsException {
          StringBuffer output = new StringBuffer();
@@ -619,7 +619,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * @param file The CmsResource displayed in the the file list.
      * @return The name used for the actual entry.
      */
-     private String getName(A_CmsObject cms, CmsResource file) {
+     private String getName(CmsObject cms, CmsResource file) {
         StringBuffer output = new StringBuffer();  
         if (file.isFile()) {
             output.append(C_NAME_VALUE_FILE);    
@@ -636,7 +636,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * @param file The CmsResource displayed in the the file list.
      * @return The style used for the actual entry.
      */
-     private String getStyle(A_CmsObject cms, CmsResource file) 
+     private String getStyle(CmsObject cms, CmsResource file) 
         throws CmsException {
          StringBuffer output=new StringBuffer();
          // check if the resource is in the actual project
@@ -673,11 +673,11 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
       * @return String containing the complete name of the iconfile.
       * @exception Throws CmsException if something goes wrong.
       */
-     private String getIcon(A_CmsObject cms,A_CmsResourceType type, CmsXmlWpConfigFile config)
+     private String getIcon(CmsObject cms,CmsResourceType type, CmsXmlWpConfigFile config)
      throws CmsException {
         String icon=null;
         String filename=config.getWpPicturePath()+C_ICON_PREFIX+type.getResourceName().toLowerCase()+C_ICON_EXTENSION;
-        A_CmsResource iconFile;
+        CmsResource iconFile;
         
         // check if this icon is in the cache already
         icon=(String)m_iconCache.get(type.getResourceName());
@@ -708,7 +708,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
       * @exception Throws CmsException if something goes wrong.
       * 
       */
-     private String getContextMenue(A_CmsObject cms, CmsResource res, 
+     private String getContextMenue(CmsObject cms, CmsResource res, 
                                     CmsXmlWpTemplateFile template) 
          throws CmsException {
          String contextMenu=null;
@@ -724,7 +724,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                 }
             } else {
                  // get the type of the resource
-                A_CmsResourceType type=cms.getResourceType(res.getType());
+                CmsResourceType type=cms.getResourceType(res.getType());
                 // get the context menu
                 contextMenu=type.getResourceName();
                 // test if this resource is locked
@@ -749,7 +749,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
       * @return True or false.
       * @exception CmsException if something goes wrong.
       */
-     private boolean checkAccess(A_CmsObject cms, CmsResource res)
+     private boolean checkAccess(CmsObject cms, CmsResource res)
      throws CmsException {
          boolean access=false;
          int accessflags=res.getAccessFlags();
@@ -758,7 +758,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
          boolean groupAccess = false;
          Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
          while((!groupAccess) && allGroups.hasMoreElements()) {
-             groupAccess = cms.readGroup(res).equals((A_CmsGroup)allGroups.nextElement());
+             groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
          }
          
          if ( ((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) ||
@@ -775,7 +775,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * Sets the default preferences for the current user if those values are not available.
      * @return Hashtable with default preferences.
      */
-    private int getDefaultPreferences(A_CmsObject cms) {
+    private int getDefaultPreferences(CmsObject cms) {
         int filelist; 
         String explorerSettings=(String)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_EXPLORERSETTINGS);
           

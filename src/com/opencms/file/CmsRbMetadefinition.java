@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbMetadefinition.java,v $
- * Date   : $Date: 2000/04/07 15:57:37 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/05 13:37:55 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/04/07 15:57:37 $
+ * @version $Revision: 1.9 $ $Date: 2000/06/05 13:37:55 $
  */
 public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	
@@ -68,7 +68,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition readMetadefinition(String name, A_CmsResourceType type)
+	public CmsPropertydefinition readMetadefinition(String name, CmsResourceType type)
 		throws CmsException {
 		return(m_accessMetadefinition.readMetadefinition(name, type));
 	}
@@ -84,7 +84,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition readMetadefinition(String name, int type)
+	public CmsPropertydefinition readMetadefinition(String name, int type)
 		throws CmsException {
 		return(m_accessMetadefinition.readMetadefinition(name, type));
 	}
@@ -99,7 +99,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllMetadefinitions(A_CmsResourceType resourcetype)
+	public Vector readAllMetadefinitions(CmsResourceType resourcetype)
 		throws CmsException {
 		return(m_accessMetadefinition.readAllMetadefinitions(resourcetype));
 	}
@@ -130,7 +130,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllMetadefinitions(A_CmsResourceType resourcetype, int type)
+	public Vector readAllMetadefinitions(CmsResourceType resourcetype, int type)
 		throws CmsException {
 		return(m_accessMetadefinition.readAllMetadefinitions(resourcetype, type));
 	}
@@ -162,7 +162,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition createMetadefinition(String name, A_CmsResourceType resourcetype, 
+	public CmsPropertydefinition createMetadefinition(String name, CmsResourceType resourcetype, 
 													  int type)
 		throws CmsException {
 		return(m_accessMetadefinition.createMetadefinition(name, resourcetype, type));
@@ -177,7 +177,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void deleteMetadefinition(A_CmsPropertydefinition metadef)
+	public void deleteMetadefinition(CmsPropertydefinition metadef)
 		throws CmsException {
 		m_accessMetadefinition.deleteMetadefinition(metadef);
 	}
@@ -193,7 +193,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition writeMetadefinition(A_CmsPropertydefinition metadef)
+	public CmsPropertydefinition writeMetadefinition(CmsPropertydefinition metadef)
 		throws CmsException {
 		return(m_accessMetadefinition.writeMetadefinition(metadef));
 	}
@@ -210,7 +210,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public String readMetainformation(A_CmsResource resource, String meta)
+	public String readMetainformation(CmsResource resource, String meta)
 		throws CmsException {
 		return(m_accessMetadefinition.readMetainformation(resource, meta));
 	}	
@@ -243,7 +243,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeMetainformation(A_CmsResource resource, String meta,
+	public void writeMetainformation(CmsResource resource, String meta,
 											  String value)
 		throws CmsException {
 		m_accessMetadefinition.writeMetainformation(resource, meta, value);
@@ -275,7 +275,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeMetainformations(A_CmsResource resource, Hashtable metainfos)
+	public void writeMetainformations(CmsResource resource, Hashtable metainfos)
 		throws CmsException {
 		m_accessMetadefinition.writeMetainformations(resource, metainfos);
 	}
@@ -306,7 +306,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public Hashtable readAllMetainformations(A_CmsResource resource)
+	public Hashtable readAllMetainformations(CmsResource resource)
 		throws CmsException {
 		return(m_accessMetadefinition.readAllMetainformations(resource));
 	}
@@ -336,7 +336,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteAllMetainformations(A_CmsResource resource)
+	public void deleteAllMetainformations(CmsResource resource)
 		throws CmsException {
 		m_accessMetadefinition.deleteAllMetainformations(resource);
 	}
@@ -362,7 +362,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteMetainformation(A_CmsResource resource, String meta)
+	public void deleteMetainformation(CmsResource resource, String meta)
 		throws CmsException {
 		m_accessMetadefinition.deleteMetainformation(resource, meta);
 	}
@@ -390,7 +390,7 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteProject(A_CmsProject project)
+	public void deleteProject(CmsProject project)
 		throws CmsException {
 		m_accessMetadefinition.deleteProject(project);
 	}

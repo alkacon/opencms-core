@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbExportUsers.java,v $
- * Date   : $Date: 2000/02/16 18:06:27 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/05 13:37:54 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.template.*;
  * Exports Files from database into XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.3 $ $Date: 2000/02/16 18:06:27 $
+ * @version $Revision: 1.4 $ $Date: 2000/06/05 13:37:54 $
  */
 
 class CmsDbExportUsers implements I_CmsConstants {
@@ -48,9 +48,9 @@ class CmsDbExportUsers implements I_CmsConstants {
 	/** ResourceBroker to access all methods and objects */
 	private I_CmsResourceBroker m_RB = null;
 	/** User to access all resourcbroker methods and objects */
-	private A_CmsUser m_user = null;
+	private CmsUser m_user = null;
 	/** Project to access all resourcbroker methods and objects */
-	private A_CmsProject m_project = null;
+	private CmsProject m_project = null;
 
 	
 	/** need to initiate an XML object */
@@ -80,7 +80,7 @@ class CmsDbExportUsers implements I_CmsConstants {
 	 * @exception throws Exception
 	 * 
 	 */
-	CmsDbExportUsers(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, Document m_docXml)
+	CmsDbExportUsers(I_CmsResourceBroker eRB, CmsUser luser, CmsProject lproject, Document m_docXml)
 		throws Exception {
 		
 		m_RB=eRB;
@@ -133,7 +133,7 @@ class CmsDbExportUsers implements I_CmsConstants {
 				m_sectionElement.appendChild(m_newElement);
 				m_parentElement=m_newElement;
 				
-				A_CmsGroup g=(A_CmsGroup)genum.nextElement();
+				CmsGroup g=(CmsGroup)genum.nextElement();
 				
 				m_newElement= m_docXml.createElement(C_TGNAME);
 				m_parentElement.appendChild(m_newElement);
@@ -157,7 +157,7 @@ class CmsDbExportUsers implements I_CmsConstants {
 				if(gi!=(-1)) {
 					Enumeration genum2=groups.elements();
 					while (genum2.hasMoreElements()) {
-						A_CmsGroup pg=(A_CmsGroup)genum2.nextElement();
+						CmsGroup pg=(CmsGroup)genum2.nextElement();
 						if(pg.getId()==gi) {
 							help=(pg.getName());
 							break;
@@ -180,7 +180,7 @@ class CmsDbExportUsers implements I_CmsConstants {
 				Vector ug=m_RB.getUsersOfGroup(m_user,m_project,g.getName());
 				Enumeration ugenum=ug.elements();
 				while(ugenum.hasMoreElements()) {
-					A_CmsUser u=(A_CmsUser)ugenum.nextElement();
+					CmsUser u=(CmsUser)ugenum.nextElement();
 					m_newElement= m_docXml.createElement(C_TGUSER);
 					m_parentElement.appendChild(m_newElement);
 					m_newNode = m_docXml.createTextNode(u.getName());
@@ -213,7 +213,7 @@ class CmsDbExportUsers implements I_CmsConstants {
 				m_sectionElement.appendChild(m_newElement);
 				m_parentElement=m_newElement;
 				
-				A_CmsUser u=(A_CmsUser)enum.nextElement();
+				CmsUser u=(CmsUser)enum.nextElement();
 				
 				m_newElement= m_docXml.createElement(C_TULOGIN);
 				m_parentElement.appendChild(m_newElement);
@@ -245,7 +245,7 @@ class CmsDbExportUsers implements I_CmsConstants {
 				m_newNode = m_docXml.createTextNode(u.getEmail());
 				m_newElement.appendChild(m_newNode);
 				
-				A_CmsGroup g = u.getDefaultGroup();
+				CmsGroup g = u.getDefaultGroup();
 				m_newElement= m_docXml.createElement(C_TUDGROUP);
 				m_parentElement.appendChild(m_newElement);
 				m_newNode = m_docXml.createTextNode(g.getName());
@@ -259,7 +259,7 @@ class CmsDbExportUsers implements I_CmsConstants {
 				Vector ug=m_RB.getGroupsOfUser(m_user,m_project,u.getName());
 				Enumeration ugenum=ug.elements();
 				while (ugenum.hasMoreElements()){
-					A_CmsGroup ng=(A_CmsGroup)ugenum.nextElement();
+					CmsGroup ng=(CmsGroup)ugenum.nextElement();
 					m_newElement= m_docXml.createElement(C_TUGROUP);
 					m_parentElement.appendChild(m_newElement);
 					m_newNode = m_docXml.createTextNode(ng.getName());

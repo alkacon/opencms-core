@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2000/05/19 11:19:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/06/05 13:37:54 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/05/19 11:19:38 $
+ * @version $Revision: 1.3 $ $Date: 2000/06/05 13:37:54 $
  */
 class CmsExport implements I_CmsImportExport, I_CmsConstants {
 	
@@ -64,7 +64,7 @@ class CmsExport implements I_CmsImportExport, I_CmsConstants {
 	/**
 	 * The cms-object to do the operations.
 	 */
-	private A_CmsObject m_cms;
+	private CmsObject m_cms;
 	
 	/**
 	 * The xml manifest-file.
@@ -89,7 +89,7 @@ class CmsExport implements I_CmsImportExport, I_CmsConstants {
 	 * @param cms the cms-object to work with.
 	 * @exception CmsException the CmsException is thrown if something goes wrong.
 	 */
-	CmsExport(String exportFile, String exportPath, A_CmsObject cms) 
+	CmsExport(String exportFile, String exportPath, CmsObject cms) 
 		throws CmsException {
 		this(exportFile, exportPath, cms, false);
 	}
@@ -103,7 +103,7 @@ class CmsExport implements I_CmsImportExport, I_CmsConstants {
 	 * @param includeSystem desides, if to include the system-stuff.
 	 * @exception CmsException the CmsException is thrown if something goes wrong.
 	 */
-	CmsExport(String exportFile, String exportPath, A_CmsObject cms, boolean includeSystem) 
+	CmsExport(String exportFile, String exportPath, CmsObject cms, boolean includeSystem) 
 		throws CmsException {
 
 		m_exportFile = exportFile;
@@ -204,13 +204,13 @@ class CmsExport implements I_CmsImportExport, I_CmsConstants {
 		
 		// walk through all files and export them
 		for(int i = 0; i < subFiles.size(); i++) {
-			A_CmsResource file = (A_CmsResource) subFiles.elementAt(i);
+			CmsResource file = (CmsResource) subFiles.elementAt(i);
 			exportFile(m_cms.readFile(file.getAbsolutePath()));
 		}
 		
 		// walk through all subfolders and export them
 		for(int i = 0; i < subFolders.size(); i++) {
-			A_CmsResource folder = (A_CmsResource) subFolders.elementAt(i);
+			CmsResource folder = (CmsResource) subFolders.elementAt(i);
 	
 			// check if this is a system-folder and if it should be included.
 			if(folder.getAbsolutePath().startsWith("/system/")) {
@@ -243,7 +243,7 @@ class CmsExport implements I_CmsImportExport, I_CmsConstants {
 		
 		try {
 			// create the manifest-entrys
-			writeXmlEntrys((A_CmsResource) file);
+			writeXmlEntrys((CmsResource) file);
 			// store content in zip-file
 			ZipEntry entry = new ZipEntry(source);
 			m_exportZipStream.putNextEntry(entry);
@@ -263,7 +263,7 @@ class CmsExport implements I_CmsImportExport, I_CmsConstants {
 	 * @param resource The resource to get the data from.
 	 * @exception throws a CmsException if something goes wrong.
 	 */
-	private void writeXmlEntrys(A_CmsResource resource)
+	private void writeXmlEntrys(CmsResource resource)
 		throws CmsException {
 		String source, type, user, group, access;
 

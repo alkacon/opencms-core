@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbExportUser.java,v $
- * Date   : $Date: 2000/05/10 16:02:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/05 13:37:54 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -62,9 +62,9 @@ public class CmsDbExportUser
 	//ResourceBroker for all methods and objects
 	private I_CmsResourceBroker RB = null;
 	//to access all objects
-	private A_CmsUser user = null;
+	private CmsUser user = null;
 	//to access all objects
-	private A_CmsProject project = null;
+	private CmsProject project = null;
 	
 	//To convert into XML format
 	private I_CmsXmlParser parser = null;
@@ -83,7 +83,7 @@ public class CmsDbExportUser
 	/**
 	 * Constructor, creates a new CmsTask object.
 	 */
-	CmsDbExportUser(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, String filename)
+	CmsDbExportUser(I_CmsResourceBroker eRB, CmsUser luser, CmsProject lproject, String filename)
 		throws IOException, Exception
 	{
 		RB=eRB;
@@ -124,7 +124,7 @@ public class CmsDbExportUser
 				firstElement.appendChild(newElement);
 				parentElement=newElement;
 				
-				A_CmsUser u=(A_CmsUser)enum.nextElement();
+				CmsUser u=(CmsUser)enum.nextElement();
 				
 				newElement= docXml.createElement(C_TLOGIN);
 				parentElement.appendChild(newElement);
@@ -156,7 +156,7 @@ public class CmsDbExportUser
 				newNode = docXml.createTextNode(u.getEmail());
 				newElement.appendChild(newNode);
 				
-				A_CmsGroup g = u.getDefaultGroup();
+				CmsGroup g = u.getDefaultGroup();
 				newElement= docXml.createElement(C_TDGROUP);
 				parentElement.appendChild(newElement);
 				newNode = docXml.createTextNode(g.getName());
@@ -170,7 +170,7 @@ public class CmsDbExportUser
 				Vector ug=RB.getGroupsOfUser(user,project,u.getName());
 				Enumeration ugenum=ug.elements();
 				while (ugenum.hasMoreElements()){
-					A_CmsGroup ng=(A_CmsGroup)ugenum.nextElement();
+					CmsGroup ng=(CmsGroup)ugenum.nextElement();
 					newElement= docXml.createElement(C_TGROUP);
 					parentElement.appendChild(newElement);
 					newNode = docXml.createTextNode(ng.getName());

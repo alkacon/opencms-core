@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2000/05/10 14:25:44 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/06/05 13:37:55 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,10 +42,10 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/05/10 14:25:44 $
+ * @version $Revision: 1.22 $ $Date: 2000/06/05 13:37:55 $
  * 
  */
-public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
+public class CmsRequestContext implements I_CmsConstants {
 
 	/**
 	 * The rb to get access to the OpenCms.
@@ -65,17 +65,17 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	/**
 	 * The current user.
 	 */
-	private A_CmsUser m_user;
+	private CmsUser m_user;
 	
 	/**
 	 * The current group of the user.
 	 */
-	private A_CmsGroup m_currentGroup;
+	private CmsGroup m_currentGroup;
 	
 	/**
 	 * The current project.
 	 */
-	private A_CmsProject m_currentProject;
+	private CmsProject m_currentProject;
 		
 	/**
 	 * Initializes this RequestContext.
@@ -146,7 +146,7 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 * 
 	 * @return the current user object.
 	 */
-	public A_CmsUser currentUser() {
+	public CmsUser currentUser() {
 		return(m_user);
 	}
 	
@@ -155,7 +155,7 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 * 
 	 * @return the current group of the current user.
 	 */
-	public A_CmsGroup currentGroup() {
+	public CmsGroup currentGroup() {
 		return(m_currentGroup);
 	}
 
@@ -210,7 +210,7 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 * 
 	 * @return the current project for the user.
 	 */
-	public A_CmsProject currentProject() {
+	public CmsProject currentProject() {
 		return m_currentProject;
 	}
 
@@ -220,9 +220,9 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 * @param projectname The name of the project to be set as current.
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsProject setCurrentProject(int projectId)
+	public CmsProject setCurrentProject(int projectId)
 		throws CmsException  {
-		A_CmsProject newProject = m_rb.readProject(m_user, 
+		CmsProject newProject = m_rb.readProject(m_user, 
 												   m_currentProject, 
 												   projectId);
 		if( newProject != null ) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerFileList.java,v $
- * Date   : $Date: 2000/03/29 16:15:04 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/03/29 16:15:04 $
+ * @version $Revision: 1.11 $ $Date: 2000/06/05 13:37:59 $
  */
 public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                 I_CmsConstants, I_CmsFileListUsers {    
@@ -51,14 +51,14 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
     
@@ -68,7 +68,7 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
     * @return A vector of folder and file objects.
     * @exception Throws CmsException if something goes wrong.
     */
-   public Vector getFiles(A_CmsObject cms) 
+   public Vector getFiles(CmsObject cms) 
        throws CmsException {
        Vector filesfolders=new Vector();
   
@@ -139,12 +139,12 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
      * @param cms Cms object for accessing system resources.
      * @param filelist Template file containing the definitions for the file list together with
      * the included customized defintions.
-     * @param res A_CmsResource Object of the current file list entry.
+     * @param res CmsResource Object of the current file list entry.
      * @param lang Current language file.
      * @exception CmsException if access to system resources failed.
      * @see I_CmsFileListUsers
      */
-    public void getCustomizedColumnValues(A_CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, A_CmsResource res, CmsXmlLanguageFile lang) {
+    public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, CmsResource res, CmsXmlLanguageFile lang) {
     }       
 
     /**
@@ -155,7 +155,7 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
      * @return New modified bit pattern.
      * @see I_CmsFileListUsers
      */
-    public int modifyDisplayedColumns(A_CmsObject cms, int prefs) {
+    public int modifyDisplayedColumns(CmsObject cms, int prefs) {
         return prefs;
     }
    

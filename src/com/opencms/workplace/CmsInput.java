@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsInput.java,v $
- * Date   : $Date: 2000/03/27 09:53:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;INPUT&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/03/27 09:53:43 $
+ * @version $Revision: 1.9 $ $Date: 2000/06/05 13:37:59 $
  */
 public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -57,7 +57,7 @@ public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
      * // TODO: insert correct syntax here!
      * <CODE>&lt;INPUT name="..." action="..." alt="..."/&gt;</CODE>
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;INPUT&gt;</code> tag.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object.
@@ -66,7 +66,7 @@ public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         String styleClass= n.getAttribute(C_INPUT_CLASS);
         String name=n.getAttribute(C_INPUT_NAME);
         String size=n.getAttribute(C_INPUT_SIZE);
@@ -79,7 +79,7 @@ public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
 			// call the method for generating value
 			Method valueMethod = null;
 			try {
-			    valueMethod = callingObject.getClass().getMethod(method, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class});
+			    valueMethod = callingObject.getClass().getMethod(method, new Class[] {CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class});
 			    value = (String)valueMethod.invoke(callingObject, new Object[] {cms, lang, parameters});
 			} catch(NoSuchMethodException exc) {
 			    // The requested method was not found.

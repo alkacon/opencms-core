@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessMetadefinition.java,v $
- * Date   : $Date: 2000/04/07 15:57:37 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/06/05 13:37:56 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/04/07 15:57:37 $
+ * @version $Revision: 1.10 $ $Date: 2000/06/05 13:37:56 $
  */
 interface I_CmsAccessMetadefinition {
 
@@ -53,7 +53,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition readMetadefinition(String name, A_CmsResourceType type)
+	public CmsPropertydefinition readMetadefinition(String name, CmsResourceType type)
 		throws CmsException;
 	
 	/**
@@ -67,7 +67,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition readMetadefinition(String name, int type)
+	public CmsPropertydefinition readMetadefinition(String name, int type)
 		throws CmsException;
 	
 	/**
@@ -80,7 +80,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllMetadefinitions(A_CmsResourceType resourcetype)
+	public Vector readAllMetadefinitions(CmsResourceType resourcetype)
 		throws CmsException;
 	
 	/**
@@ -107,7 +107,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllMetadefinitions(A_CmsResourceType resourcetype, int type)
+	public Vector readAllMetadefinitions(CmsResourceType resourcetype, int type)
 		throws CmsException;
 
 	/**
@@ -135,7 +135,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition createMetadefinition(String name, A_CmsResourceType resourcetype, 
+	public CmsPropertydefinition createMetadefinition(String name, CmsResourceType resourcetype, 
 													  int type)
 		throws CmsException;
 		
@@ -148,7 +148,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void deleteMetadefinition(A_CmsPropertydefinition metadef)
+	public void deleteMetadefinition(CmsPropertydefinition metadef)
 		throws CmsException;
 	
 	/**
@@ -162,7 +162,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition writeMetadefinition(A_CmsPropertydefinition metadef)
+	public CmsPropertydefinition writeMetadefinition(CmsPropertydefinition metadef)
 		throws CmsException;
 	
 	// now the stuff for metainformations
@@ -177,7 +177,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public String readMetainformation(A_CmsResource resource, String meta)
+	public String readMetainformation(CmsResource resource, String meta)
 		throws CmsException;	
 
 	/**
@@ -205,7 +205,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeMetainformation(A_CmsResource resource, String meta,
+	public void writeMetainformation(CmsResource resource, String meta,
 											  String value)
 		throws CmsException;
 
@@ -232,7 +232,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeMetainformations(A_CmsResource resource, Hashtable metainfos)
+	public void writeMetainformations(CmsResource resource, Hashtable metainfos)
 		throws CmsException;
 
 	/**
@@ -258,7 +258,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public Hashtable readAllMetainformations(A_CmsResource resource)
+	public Hashtable readAllMetainformations(CmsResource resource)
 		throws CmsException;
 	
 	/**
@@ -283,7 +283,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteAllMetainformations(A_CmsResource resource)
+	public void deleteAllMetainformations(CmsResource resource)
 		throws CmsException;
 
 	/**
@@ -305,7 +305,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteMetainformation(A_CmsResource resource, String meta)
+	public void deleteMetainformation(CmsResource resource, String meta)
 		throws CmsException;     	
 
 	/**
@@ -329,6 +329,6 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteProject(A_CmsProject project)
+	public void deleteProject(CmsProject project)
 		throws CmsException;
 }

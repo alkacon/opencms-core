@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
- * Date   : $Date: 2000/04/18 13:54:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/05 13:37:50 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -93,7 +93,7 @@ import com.opencms.file.*;
 
 /**
  * This class loader loads classes from the opencms system using
- * a A_CmsObject object to get access to all system resources.
+ * a CmsObject object to get access to all system resources.
  * It is based on the AdaptiveClassLoader published by Apache.
  * All classes have to be in original .class format and must not
  * be packed in jar or zip files.
@@ -110,7 +110,7 @@ import com.opencms.file.*;
  * with a parent classloader. Normally this should be the classloader 
  * that loaded this loader. 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/04/18 13:54:54 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/05 13:37:50 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -142,20 +142,20 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
      */
     private Vector repository;
     
-    private A_CmsObject m_cms;
+    private CmsObject m_cms;
     
     /**
      * Creates a new class loader that will load classes from specified
      * class repositories.
      *
-     * @param cms A_CmsObject Object to get access to system resources
+     * @param cms CmsObject Object to get access to system resources
      * @param classRepository An set of Strings indicating directories.
      * @param parent Parent classloader that should be called first before 
      *        trying to load classes from the opencms system.
      * @throw java.lang.IllegalArgumentException if the objects contained
      *        in the vector are not valid cms folders.
      */
-    public CmsClassLoader(A_CmsObject cms, Vector classRepository, ClassLoader parent)
+    public CmsClassLoader(CmsObject cms, Vector classRepository, ClassLoader parent)
         throws IllegalArgumentException { 
 
         // Create the cache of loaded classes

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/04/20 08:11:55 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2000/04/20 08:11:55 $
+ * @version $Revision: 1.19 $ $Date: 2000/06/05 13:38:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -95,14 +95,14 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 	/**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }    
 
@@ -110,14 +110,14 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
@@ -198,25 +198,25 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    public Integer getTeams(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getTeams(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// get all groups
 		Vector groups = cms.getGroups();
-		A_CmsGroup group;
+		CmsGroup group;
 		
 		names.addElement(lang.getLanguageValue("task.label.emptyrole"));
 		values.addElement(lang.getLanguageValue("task.label.emptyrole"));
 
 		// fill the names and values
 		for(int z = 0; z < groups.size(); z++) {
-			group = (A_CmsGroup)groups.elementAt(z);
+			group = (CmsGroup)groups.elementAt(z);
 			// is the group a role?
 			if( group.getRole() ) {
 				String name = group.getName();
@@ -233,14 +233,14 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
     }
 
     /**
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
      * @exception CmsException
      */    
-    public Object getUsers(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public Object getUsers(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
 		throws CmsException {
 		
 		StringBuffer retValue = new StringBuffer();
@@ -253,8 +253,8 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 		Vector groups = cms.getGroups();
 		
 		for(int n = 0; n < groups.size(); n++) {
-			if(((A_CmsGroup)groups.elementAt(n)).getRole()) {
-				String groupname = ((A_CmsGroup)groups.elementAt(n)).getName();
+			if(((CmsGroup)groups.elementAt(n)).getRole()) {
+				String groupname = ((CmsGroup)groups.elementAt(n)).getName();
 				// get users of this group
 				Vector users = cms.getUsersOfGroup(groupname);
 
@@ -265,7 +265,7 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 								chooseUser + C_USER_4 + C_USER_5);
 			
 				for(int m = 0; m < users.size(); m++) {
-					A_CmsUser user = (A_CmsUser)users.elementAt(m);
+					CmsUser user = (CmsUser)users.elementAt(m);
 					
 					// create entry for user
 					retValue.append(C_USER_1 + groupname + C_USER_2 + (m + 1) + C_USER_3 + 
@@ -284,7 +284,7 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 		Vector users = cms.getUsers();
 		
 		for(int m = 0; m < users.size(); m++) {
-			A_CmsUser user = (A_CmsUser)users.elementAt(m);
+			CmsUser user = (CmsUser)users.elementAt(m);
 				
 			// create entry for user
 			retValue.append(C_USER_1 + C_ALL_ROLES + C_USER_2 + (m + 1) + C_USER_3 + 

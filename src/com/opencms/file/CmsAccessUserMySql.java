@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessUserMySql.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/06/05 13:37:54 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.15 $ $Date: 2000/06/05 13:37:54 $
  */
 class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
      
@@ -134,10 +134,10 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public A_CmsUser readUser(String username)
+	 public CmsUser readUser(String username)
          throws CmsException {
       
-         A_CmsUser user=null;
+         CmsUser user=null;
          ResultSet res = null;
 
          try{
@@ -168,10 +168,10 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public A_CmsUser readUser(int userid)
+	 public CmsUser readUser(int userid)
          throws CmsException {
       
-         A_CmsUser user=null;
+         CmsUser user=null;
          ResultSet res = null;
          
          try{
@@ -202,10 +202,10 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	 public A_CmsUser readUser(String username, String password)
+	 public CmsUser readUser(String username, String password)
          throws CmsException {
          
-         A_CmsUser user=null;
+         CmsUser user=null;
          ResultSet res=null;
    
          try{
@@ -241,7 +241,7 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	 public A_CmsUser createUser(String name, String password, 
+	 public CmsUser createUser(String name, String password, 
 					   String description) 				
         throws CmsException {
 
@@ -294,7 +294,7 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public void writeUser(A_CmsUser user)
+	 public void writeUser(CmsUser user)
          throws CmsException {
          
          // empty for future use.
@@ -309,7 +309,7 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
      public Vector getUsers()
      throws CmsException {
          Vector users=new Vector();
-         A_CmsUser user=null;
+         CmsUser user=null;
          ResultSet res =null;
          
          try {

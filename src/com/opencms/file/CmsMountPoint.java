@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsMountPoint.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/05 13:37:54 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,10 +36,10 @@ import com.opencms.core.*;
  * filesystem of  the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.4 $ $Date: 2000/06/05 13:37:54 $
  */
 
-public class CmsMountPoint extends A_CmsMountPoint implements I_CmsConstants {
+public class CmsMountPoint implements I_CmsConstants {
     /**
      * Definition of the location of this mountpoint in the logical Cms fielsystem.
      */
@@ -137,7 +137,7 @@ public class CmsMountPoint extends A_CmsMountPoint implements I_CmsConstants {
 	 * @param type The default resourcetype for this mountpoint.
 	 */
 	public CmsMountPoint(String mountpoint, String mountpath, String name,
-                         A_CmsUser user, A_CmsGroup group, A_CmsProject project,
+                         CmsUser user, CmsGroup group, CmsProject project,
                          int type, int flags, int accessFlags,
                          int launcherId, String launcherClass) {
 		m_mountpoint = mountpoint;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
- * Date   : $Date: 2000/05/29 11:24:25 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/06/05 13:37:57 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -59,7 +59,7 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/05/29 11:24:25 $
+ * @version $Revision: 1.14 $ $Date: 2000/06/05 13:37:57 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         
@@ -104,13 +104,13 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
      * After this the abstract method launch(...) is called to
      * invoke the customized part of the launcher.
      * 
-	 * @param cms A_CmsObject Object for accessing system resources.
+	 * @param cms CmsObject Object for accessing system resources.
 	 * @param file CmsFile Object with the selected resource to be shown.
 	 * @param startTemplateClass Name of the template class to start with.
 	 * @param openCms a instance of A_OpenCms for redirect-needs
      * @exception CmsException
      */
-    public void initlaunch(A_CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
+    public void initlaunch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
         
         // First some debugging output.
         if(C_DEBUG && A_OpenCms.isLogging()) {
@@ -164,13 +164,13 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
  	 * template class, template file and parameters. At least the 
  	 * canonical root's output must be written to the HttpServletResponse.
  	 * 
-	 * @param cms A_CmsObject Object for accessing system resources
+	 * @param cms CmsObject Object for accessing system resources
 	 * @param file CmsFile Object with the selected resource to be shown
 	 * @param startTemplateClass Name of the template class to start with.
 	 * @param openCms a instance of A_OpenCms for redirect-needs
      * @exception CmsException
 	 */	
-	protected abstract void launch(A_CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException;
+	protected abstract void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException;
     
 	/**
 	 * Utility method used by the launcher implementation to give control
@@ -178,7 +178,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
 	 * The CanonicalRoot will call the master template and return a byte array of the 
 	 * generated output.
 	 * 
-	 * @param cms A_CmsObject Object for accessing system resources.
+	 * @param cms CmsObject Object for accessing system resources.
 	 * @param templateClass Class that should generate the output of the master template.
 	 * @param masterTemplate CmsFile Object with masterTemplate for the output.
 	 * @param parameters Hashtable with all parameters for the template class.
@@ -186,7 +186,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
      * @exception CmsException
 	 * 
 	 */
-	protected byte[] callCanonicalRoot(A_CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, Hashtable parameters) throws CmsException {
+	protected byte[] callCanonicalRoot(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, Hashtable parameters) throws CmsException {
         try {
             com.opencms.template.CmsRootTemplate root = (CmsRootTemplate)CmsTemplateClassManager.getClassInstance(cms, "com.opencms.template.CmsRootTemplate");
             return root.getMasterTemplate(cms, templateClass, masterTemplate, m_templateCache, parameters);
@@ -208,12 +208,12 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
      * (we want to prevent the user from seeing any exeptions).
      * Otherwise a new Exception will be thrown.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param e Exception that should be handled.
      * @param errorText Error message that should be shown.
      * @exception CmsException
      */
-    public void handleException(A_CmsObject cms, Exception e, String errorText) throws CmsException {
+    public void handleException(CmsObject cms, Exception e, String errorText) throws CmsException {
         
         // Print out some error messages
         if(A_OpenCms.isLogging()) {
@@ -224,7 +224,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
 
         // If the user is "Guest", we send an servlet error.
         // Otherwise we try to throw an exception.
-        A_CmsRequestContext reqContext = cms.getRequestContext();        
+        CmsRequestContext reqContext = cms.getRequestContext();        
         if((! C_DEBUG) && cms.anonymousUser().equals(reqContext.currentUser())) {
             throw new CmsException(errorText, CmsException.C_SERVICE_UNAVAILABLE, e);
         } else {                        
@@ -243,7 +243,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
      * @param mimeType MIME type that should be set for the output.
      * @exception CmsException
      */
-    protected void writeBytesToResponse(A_CmsObject cms, byte[] result) 
+    protected void writeBytesToResponse(CmsObject cms, byte[] result) 
             throws CmsException {
         try {
             I_CmsResponse resp = cms.getRequestContext().getResponse();
@@ -263,12 +263,12 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
      * I_CmsTemplate.
      * If the template cache of the template class is not yet setted, this will
      * be done, too.
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param classname Name of the requested template class.
      * @return Instance of the template class.
      * @exception CmsException.
      */
-    protected I_CmsTemplate getTemplateClass(A_CmsObject cms, String classname) throws CmsException {
+    protected I_CmsTemplate getTemplateClass(CmsObject cms, String classname) throws CmsException {
    
         if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Getting start template class " + classname + ". ");

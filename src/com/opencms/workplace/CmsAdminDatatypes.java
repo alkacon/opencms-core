@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
- * Date   : $Date: 2000/04/17 10:37:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/05 13:37:58 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.6 $ $Date: 2000/04/17 10:37:10 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/05 13:37:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -69,14 +69,14 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }    
 
@@ -84,14 +84,14 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
@@ -176,14 +176,14 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
      * Gets all available resource types and returns a list
      * using the datablocks defined in the own template file.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current filter view in the vectors.
      * @exception CmsException
      */
 	
-	public String getDatatypes(A_CmsObject cms, A_CmsXmlContent doc, CmsXmlLanguageFile lang, Hashtable parameters, Object callingObj) 
+	public String getDatatypes(CmsObject cms, A_CmsXmlContent doc, CmsXmlLanguageFile lang, Hashtable parameters, Object callingObj) 
 		throws CmsException {
 		
 		StringBuffer result = new StringBuffer();
@@ -197,7 +197,7 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
         
         // Loop through all resource types
         while(allResTypes.hasMoreElements()) {
-            A_CmsResourceType currResType = (A_CmsResourceType)allResTypes.nextElement();
+            CmsResourceType currResType = (CmsResourceType)allResTypes.nextElement();
 			String resTypeName = currResType.getResourceName();
 			Vector suffList = (Vector) extByFiletypes.get(resTypeName);
 			result.append(getResourceEntry(cms, doc, lang, parameters, callingObj, 
@@ -215,7 +215,7 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
      *   
      * gets the HTML code for entry in the lists of resources.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param doc the template file which is used
      * @param lang reference to the currently valid language file
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
@@ -226,7 +226,7 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
      * @exception CmsException
      */
 	
-	private String getResourceEntry(A_CmsObject cms, A_CmsXmlContent doc, 
+	private String getResourceEntry(CmsObject cms, A_CmsXmlContent doc, 
 									CmsXmlLanguageFile lang, Hashtable parameters, 
 									Object callingObject, String resTypeName, Vector suffList) 
             throws CmsException {

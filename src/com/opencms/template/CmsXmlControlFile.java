@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
- * Date   : $Date: 2000/05/09 10:02:57 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/06/05 13:37:57 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.util.*;
  * Content definition for "clickable" and user requestable XML body files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/05/09 10:02:57 $
+ * @version $Revision: 1.15 $ $Date: 2000/06/05 13:37:57 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -54,10 +54,10 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlControlFile(A_CmsObject cms, String filename) throws CmsException {
+    public CmsXmlControlFile(CmsObject cms, String filename) throws CmsException {
         super();
         init(cms, filename);
     }
@@ -66,10 +66,10 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlControlFile(A_CmsObject cms, CmsFile file) throws CmsException {
+    public CmsXmlControlFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
         init(cms, file);
     }        

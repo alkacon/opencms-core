@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2000/05/31 10:21:46 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/06/05 13:37:56 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,10 +36,10 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/05/31 10:21:46 $
+ * @version $Revision: 1.17 $ $Date: 2000/06/05 13:37:56 $
  */
 
-public class CmsUser extends A_CmsUser implements I_CmsConstants,
+public class CmsUser implements I_CmsConstants,
                                                   Cloneable {
 
     /**
@@ -65,7 +65,7 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants,
     /**
      * The default group of this user.
      */
-    private A_CmsGroup m_defaultGroup= null;
+    private CmsGroup m_defaultGroup= null;
 	
 	/**
 	 * The flags of the user.
@@ -193,7 +193,7 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants,
      * 
      * @return Default Group of the user
      */
-    public A_CmsGroup getDefaultGroup() {
+    public CmsGroup getDefaultGroup() {
         return m_defaultGroup;
     }
      
@@ -203,7 +203,7 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants,
      * 
      * @param defaultGroup The default group of this user.
      */
-    public void setDefaultGroup(A_CmsGroup defaultGroup) {
+    public void setDefaultGroup(CmsGroup defaultGroup) {
         m_defaultGroup = defaultGroup;
         m_additionalInfo.put(C_ADDITIONAL_INFO_DEFAULTGROUP_ID, 
 							 new Integer(defaultGroup.getId()));
@@ -453,7 +453,7 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants,
     */
     public Object clone() {
         CmsUser user= new CmsUser(m_id,new String(m_name),new String (m_description));
-        user.setDefaultGroup( (A_CmsGroup)((CmsGroup)getDefaultGroup()).clone() );
+        user.setDefaultGroup( (CmsGroup)((CmsGroup)getDefaultGroup()).clone() );
         user.setAdditionalInfo((Hashtable)getAdditionalInfo().clone());
 		user.setFlags(m_flags);
 		user.setEmail(m_email);

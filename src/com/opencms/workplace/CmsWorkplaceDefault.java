@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/04/20 12:56:11 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.25 $ $Date: 2000/04/20 12:56:11 $
+ * @version $Revision: 1.26 $ $Date: 2000/06/05 13:38:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -67,14 +67,14 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return true;
     }
 
@@ -82,15 +82,15 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * Gets the key that should be used to cache the results of
      * this template class. 
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return key that can be used for caching
      */
-    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
+    public Object getKey(CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
         //Vector v = new Vector();
-        A_CmsRequestContext reqContext = cms.getRequestContext();
+        CmsRequestContext reqContext = cms.getRequestContext();
         
         //v.addElement(templateFile);
         //v.addElement(parameters);
@@ -126,7 +126,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * Any exceptions thrown while processing the template will be caught,
      * printed and and thrown again.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param xmlTemplateDocument XML parsed document of the content type "XML template file" or
      * any derived content type.
      * @param elementName Element name of this template in our parent template.
@@ -135,7 +135,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @return Content of the template and all subtemplates.
      * @exception CmsException 
      */
-    protected byte[] startProcessing(A_CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {     
+    protected byte[] startProcessing(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {     
         String lasturl = getLastUrl(cms, parameters);
         ((CmsXmlWpTemplateFile)xmlTemplateDocument).setData("lasturl", lasturl);        
         return super.startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
@@ -148,7 +148,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param parameters User parameters.
      * @return <code>lasturl</code> parameter.
      */
-    protected String getLastUrl(A_CmsObject cms, Hashtable parameters) {
+    protected String getLastUrl(CmsObject cms, Hashtable parameters) {
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();    
         HttpSession session = orgReq.getSession(true);
         String lasturl = (String)parameters.get("lasturl");
@@ -208,13 +208,13 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * Reads in the template file and starts the XML parser for the expected
      * content type <class>CmsXmlWpTemplateFile</code>
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public CmsXmlTemplateFile getOwnTemplateFile(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);       
         return xmlTemplateDocument;
     }        
@@ -222,14 +222,14 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
     /**
      * User method to get the name of the user.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
      * @exception CmsException
      */    
-    public Object userName(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public Object userName(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
 		throws CmsException {
 		return Utils.getFullName(cms.getRequestContext().currentUser());
     }
@@ -250,7 +250,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * in the <code>pics/system/</code> folder, can be accessed. In any workplace class 
      * template pictures can be accessed via <code>commonPicsUrl</code>.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
@@ -258,7 +258,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @exception CmsException
      * @see #commonPicsUrl
      */    
-    public Object picsUrl(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public Object picsUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
         if(m_picsurl == null) {            
             CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -279,14 +279,14 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * In any workplace template file, this method can be invoked by
      * <code>&lt;METHOD name="picsUrl"&gt;<em>PictureName</em>&lt;/METHOD&gt;</code>.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
      * @exception CmsException
      */    
-    public Object commonPicsUrl(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public Object commonPicsUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
         if(m_picsurl == null) {            
             CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
@@ -305,19 +305,19 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * In any workplace template file, this method can be invoked by
      * <code>&lt;METHOD name="helpUrl"&gt;<em>HelpFileName</em>&lt;/METHOD&gt;</code>.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
      * @exception CmsException
      */    
-    public Object helpUrl(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public Object helpUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {        
         if(m_helpfolder == null) { 
             m_helpfolder = getConfigFile(cms).getHelpPath();
         }
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         String servletPath = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getServletPath();
         String currentLanguage = C_CURRENT_LANGUAGE.toLowerCase();
         char separator = m_picsurl.charAt(m_picsurl.length()-1);
@@ -328,11 +328,11 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * Gets a reference to the default config file.
      * The path to this file ist stored in <code>C_WORKPLACE_INI</code>
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @return Reference to the config file.
      * @exception CmsException
      */
-    public CmsXmlWpConfigFile getConfigFile(A_CmsObject cms) throws CmsException {
+    public CmsXmlWpConfigFile getConfigFile(CmsObject cms) throws CmsException {
         //if(m_configFile == null) {
             m_configFile = new CmsXmlWpConfigFile(cms);
         //}
@@ -348,7 +348,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * <P>
      * Used to build font select boxes in editors.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -356,7 +356,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @return Index representing the user's current workplace view in the vectors.
      * @exception CmsException
      */
-    public Integer getFonts(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getFonts(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
         getConstantSelectEntries(names, values, C_SELECTBOX_FONTS, lang);
         return new Integer(0);
@@ -370,7 +370,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * <P>
      * Used to build font select boxes in editors.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -378,7 +378,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @return Index representing the user's current workplace view in the vectors.
      * @exception CmsException
      */
-    public Integer getFontStyles(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getFontStyles(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
         getConstantSelectEntries(names, values, C_SELECTBOX_FONTSTYLES, lang);
         return new Integer(0);
@@ -392,7 +392,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * <P>
      * Used to build font select boxes in editors.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -400,7 +400,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @return Index representing the user's current workplace view in the vectors.
      * @exception CmsException
      */
-    public Integer getFontSizes(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getFontSizes(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
         getConstantSelectEntries(names, values, C_SELECTBOX_FONTSIZES, lang);
         return new Integer(0);
@@ -413,15 +413,15 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * be activated or not. Icons will use this method if the attribute <code>method="isNotOnlineProject"</code>
      * is defined in the <code>&lt;ICON&gt;</code> tag.
      * 
-     * @param cms A_CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param cms CmsObject Object for accessing system resources <em>(not used here)</em>.
      * @param lang reference to the currently valid language file <em>(not used here)</em>.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
      * @exception CmsException if there were errors while accessing project data.
      */
-    public Boolean isNotOnlineProject(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) 
+    public Boolean isNotOnlineProject(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) 
             throws CmsException {           
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         return new Boolean(!reqCont.currentProject().equals(cms.onlineProject()));
     }    
 	
@@ -432,15 +432,15 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * be activated or not. Icons will use this method if the attribute <code>method="isAdministrator"</code>
      * is defined in the <code>&lt;ICON&gt;</code> tag.
      * 
-     * @param cms A_CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param cms CmsObject Object for accessing system resources <em>(not used here)</em>.
      * @param lang reference to the currently valid language file <em>(not used here)</em>.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
      * @exception CmsException if there were errors while accessing project data.
      */
-    public Boolean isAdmin(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) 
+    public Boolean isAdmin(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) 
             throws CmsException {           
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         return new Boolean(reqCont.isAdmin());
     }    
 	
@@ -451,15 +451,15 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * be activated or not. Icons will use this method if the attribute <code>method="isProjectManager"</code>
      * is defined in the <code>&lt;ICON&gt;</code> tag.
      * 
-     * @param cms A_CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param cms CmsObject Object for accessing system resources <em>(not used here)</em>.
      * @param lang reference to the currently valid language file <em>(not used here)</em>.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
      * @exception CmsException if there were errors while accessing project data.
      */
-    public Boolean isProjectManager(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) 
+    public Boolean isProjectManager(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) 
             throws CmsException {           
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         return new Boolean((reqCont.isAdmin() || reqCont.isProjectManager()));
     }    
 
@@ -471,12 +471,12 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * This method always returns <code>false</code> thus icons controlled by
      * this method will never be activated.
      * 
-     * @param cms A_CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param cms CmsObject Object for accessing system resources <em>(not used here)</em>.
      * @param lang reference to the currently valid language file <em>(not used here)</em>.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return <code>false</code>.
      */
-    public Boolean doNotShow(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
+    public Boolean doNotShow(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
         return new Boolean(false);
     }    
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLinkLauncher.java,v $
- * Date   : $Date: 2000/05/29 11:24:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/05 13:37:57 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/05/29 11:24:25 $
+ * @version $Revision: 1.4 $ $Date: 2000/06/05 13:37:57 $
  */
 public class CmsLinkLauncher extends A_CmsLauncher { 	
         
@@ -59,13 +59,13 @@ public class CmsLinkLauncher extends A_CmsLauncher {
  	 * template class, template file and parameters. At least the 
  	 * canonical root's output must be written to the HttpServletResponse.
  	 * 
-	 * @param cms A_CmsObject Object for accessing system resources
+	 * @param cms CmsObject Object for accessing system resources
 	 * @param file CmsFile Object with the selected resource to be shown
 	 * @param startTemplateClass Name of the template class to start with.
 	 * @param openCms a instance of A_OpenCms for redirect-needs
      * @exception CmsException
 	 */	
-	protected void launch(A_CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
+	protected void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
         
         String link=new String(file.getContents());
 		

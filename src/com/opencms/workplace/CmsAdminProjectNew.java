@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/06/02 11:51:45 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2000/06/05 13:37:58 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.28 $ $Date: 2000/06/02 11:51:45 $
+ * @version $Revision: 1.29 $ $Date: 2000/06/05 13:37:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -72,14 +72,14 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }    
 
@@ -87,21 +87,21 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
-		A_CmsRequestContext reqCont = cms.getRequestContext();   
+		CmsRequestContext reqCont = cms.getRequestContext();   
 		CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);   
 		 
 		// clear session values on first load 
@@ -229,7 +229,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 				}    
 				if(!"errornewproject".equals(templateSelector)) {   
 					// finally create the project
-         			A_CmsProject project = cms.createProject(newName, newDescription, newGroup, newManagerGroup);
+         			CmsProject project = cms.createProject(newName, newDescription, newGroup, newManagerGroup);
 					// change the current project
 					reqCont.setCurrentProject(project.getId());
 					// copy the resources to the project   
@@ -268,14 +268,14 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    public Integer getGroups(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// get all groups
 		Vector groups = cms.getGroups();
@@ -291,8 +291,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		// fill the names and values
 		int n=0;
 		for(int z = 0; z < groups.size(); z++) {
-			if(((A_CmsGroup)groups.elementAt(z)).getProjectCoWorker()) {
-				String name = ((A_CmsGroup)groups.elementAt(z)).getName(); 
+			if(((CmsGroup)groups.elementAt(z)).getProjectCoWorker()) {
+				String name = ((CmsGroup)groups.elementAt(z)).getName(); 
 				if(defaultGroup.equals(name)) { 
 					retValue = n;
 				}
@@ -311,14 +311,14 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    public Integer getManagerGroups(A_CmsObject cms, CmsXmlLanguageFile lang, 
+    public Integer getManagerGroups(CmsObject cms, CmsXmlLanguageFile lang, 
 									Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// get all groups
@@ -335,8 +335,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		// fill the names and values
 		int n=0;
 		for(int z = 0; z < groups.size(); z++) {
-			if(((A_CmsGroup)groups.elementAt(z)).getProjectmanager()) { 
-				String name = ((A_CmsGroup)groups.elementAt(z)).getName(); 
+			if(((CmsGroup)groups.elementAt(z)).getProjectmanager()) { 
+				String name = ((CmsGroup)groups.elementAt(z)).getName(); 
 				if(defaultGroup.equals(name)) { 
 					retValue = n;
 				}
@@ -348,7 +348,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         return new Integer(retValue);
     } 
 	
-	public Integer getSelectedResources(A_CmsObject cms, CmsXmlLanguageFile lang, 
+	public Integer getSelectedResources(CmsObject cms, CmsXmlLanguageFile lang, 
 									Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
@@ -370,7 +370,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
       * @return True or false.
       * @exception CmsException if something goes wrong.
       */
-     private boolean checkWriteable(A_CmsObject cms, String resPath) {
+     private boolean checkWriteable(CmsObject cms, String resPath) {
          boolean access=false;
 		 int accessflags;
 		 
@@ -381,7 +381,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 			boolean groupAccess = false;
 			Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
 			while((!groupAccess) && allGroups.hasMoreElements()) {
-			    groupAccess = cms.readGroup(res).equals((A_CmsGroup)allGroups.nextElement());
+			    groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
 			}
          
 			if ( ((accessflags & C_ACCESS_PUBLIC_WRITE) > 0) ||

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/05/12 07:43:56 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.42 $ $Date: 2000/05/12 07:43:56 $
+ * @version $Revision: 1.43 $ $Date: 2000/06/05 13:38:00 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -64,10 +64,10 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlWpTemplateFile(A_CmsObject cms, String filename) throws CmsException {
+    public CmsXmlWpTemplateFile(CmsObject cms, String filename) throws CmsException {
         super();
         registerMyTags();
         init(cms, filename);
@@ -77,10 +77,10 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlWpTemplateFile(A_CmsObject cms, CmsFile file) throws CmsException {
+    public CmsXmlWpTemplateFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
         registerMyTags();
         init(cms, file);
@@ -90,11 +90,11 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * Overridden init method of A_CmsXmlContent.
      * This method is now extended to get an actual instance of the
      * language file.
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param file CmsFile object of the file to be loaded and parsed.
      * @exception CmsException
      */
-    public void init(A_CmsObject cms, String filename) throws CmsException {
+    public void init(CmsObject cms, String filename) throws CmsException {
         m_languageFile = new CmsXmlLanguageFile(cms);
         super.init(cms, filename);
     }
@@ -103,11 +103,11 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * Overridden init method of A_CmsXmlContent.
      * This method is now extended to get an actual instance of the
      * language file.
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param file CmsFile object of the file to be loaded and parsed.
      * @exception CmsException
      */
-    public void init(A_CmsObject cms, CmsFile file) throws CmsException {
+    public void init(CmsObject cms, CmsFile file) throws CmsException {
         m_languageFile = new CmsXmlLanguageFile(cms);
         super.init(cms, file);
     }

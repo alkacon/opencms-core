@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
- * Date   : $Date: 2000/04/19 13:10:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/06/05 13:37:57 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/04/19 13:10:46 $
+ * @version $Revision: 1.11 $ $Date: 2000/06/05 13:37:57 $
  */
 public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
     
@@ -82,16 +82,16 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
      * Since this class is quite simple it's okay to return
      * just the name of the template file here.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return key that can be used for caching
      */
-    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameter, String templateSelector) {
+    public Object getKey(CmsObject cms, String templateFile, Hashtable parameter, String templateSelector) {
         //return templateFile.getAbsolutePath();
         //Vector v = new Vector();
-        A_CmsRequestContext reqContext = cms.getRequestContext();
+        CmsRequestContext reqContext = cms.getRequestContext();
         
         //v.addElement(reqContext.currentProject().getName());
         //v.addElement(templateFile);
@@ -102,14 +102,14 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
     /**
      * Gets the content of a given template file.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName <em>not used here</em>.
      * @param parameters <em>not used here</em>.
      * @return Unprocessed content of the given template file.
      * @exception CmsException 
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
         if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file " + templateFile);
         }
@@ -134,7 +134,7 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
     /**
      * Gets the content of a given template file.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName <em>not used here</em>.
      * @param parameters <em>not used here</em>.
@@ -142,7 +142,7 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
      * @return Unprocessed content of the given template file.
      * @exception CmsException 
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         // ignore the templateSelector since we only dump the template
         return getContent(cms, templateFile, elementName, parameters);
     }
@@ -152,7 +152,7 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
      * any subtemplates. So we can always return <code>true</code> here.
      * @return <code>true</code>
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return true;
     }    
     
@@ -161,7 +161,7 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
      * any subtemplates. So we can always return <code>false</code> here.
      * @return <code>false</code>
      */
-    public boolean shouldReload(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean shouldReload(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
 }

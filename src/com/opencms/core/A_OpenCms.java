@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2000/05/29 11:24:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/06/05 13:37:50 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import source.org.apache.java.util.*;
 *   
 * @author Alexander Lucas
 * @author Michael Emmerich
-* @version $Revision: 1.5 $ $Date: 2000/05/29 11:24:25 $  
+* @version $Revision: 1.6 $ $Date: 2000/06/05 13:37:50 $  
 * 
 */
 public abstract class A_OpenCms implements I_CmsLogChannels {
@@ -75,11 +75,11 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * file's launcher id and calls the initlaunch() method to initiate the 
      * generating of the output.
      * 
-     * @param cms A_CmsObject containing all document and user information
+     * @param cms CmsObject containing all document and user information
      * @param file CmsFile object representing the selected file.
      * @exception CmsException
      */
-    abstract public void showResource(A_CmsObject cms, CmsFile file) throws CmsException;
+    abstract public void showResource(CmsObject cms, CmsFile file) throws CmsException;
     
      /**
      * Sets the mimetype of the response.<br>
@@ -91,7 +91,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @param file The requested document.
      * 
      */
-    abstract void setResponse(A_CmsObject cms, CmsFile file);
+    abstract void setResponse(CmsObject cms, CmsFile file);
     
         
     /**

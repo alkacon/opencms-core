@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpButtonsDefFile.java,v $
- * Date   : $Date: 2000/04/06 08:31:26 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/04/06 08:31:26 $
+ * @version $Revision: 1.12 $ $Date: 2000/06/05 13:38:00 $
  */
 public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent 
         implements I_CmsLogChannels, I_CmsWpConstants {
@@ -59,10 +59,10 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlWpButtonsDefFile(A_CmsObject cms, String filename) throws CmsException {
+    public CmsXmlWpButtonsDefFile(CmsObject cms, String filename) throws CmsException {
         super();
         init(cms, filename);
     }
@@ -71,10 +71,10 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlWpButtonsDefFile(A_CmsObject cms, CmsFile file) throws CmsException {
+    public CmsXmlWpButtonsDefFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
         init(cms, file);
     }        

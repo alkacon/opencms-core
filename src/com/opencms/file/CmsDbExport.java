@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbExport.java,v $
- * Date   : $Date: 2000/02/16 18:06:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/05 13:37:54 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * Exports Groups, Users and Files from database into XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.4 $ $Date: 2000/02/16 18:06:27 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/05 13:37:54 $
  */
 
 class CmsDbExport implements I_CmsConstants, I_CmsDbExport {
@@ -49,9 +49,9 @@ class CmsDbExport implements I_CmsConstants, I_CmsDbExport {
 	/** ResourceBroker to access all methods and objects */
 	private I_CmsResourceBroker m_RB = null;
 	/** User to access all resourcbroker methods and objects */
-	private A_CmsUser m_user = null;
+	private CmsUser m_user = null;
 	/** Project to access all resourcbroker methods and objects */
-	private A_CmsProject m_project = null;
+	private CmsProject m_project = null;
 	
 	/** need to convert into XML format */
 	private I_CmsXmlParser m_parser = null;
@@ -90,7 +90,7 @@ class CmsDbExport implements I_CmsConstants, I_CmsDbExport {
 	 * @exception throws Exception
 	 * 
 	 */
-	CmsDbExport(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, String filename, String exportFolder, int exportType)
+	CmsDbExport(I_CmsResourceBroker eRB, CmsUser luser, CmsProject lproject, String filename, String exportFolder, int exportType)
 		throws IOException, Exception {
 		m_RB=eRB;
 		m_user=luser;

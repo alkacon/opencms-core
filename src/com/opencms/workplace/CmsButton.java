@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButton.java,v $
- * Date   : $Date: 2000/04/06 08:31:26 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/06/05 13:37:58 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/04/06 08:31:26 $
+ * @version $Revision: 1.11 $ $Date: 2000/06/05 13:37:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsButton extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -57,7 +57,7 @@ public class CmsButton extends A_CmsWpElement implements I_CmsWpElement, I_CmsWp
      * Buttons can be referenced in any workplace template by <br>
      * <CODE>&lt;BUTTON name="..." action="..." alt="..."/&gt;</CODE>
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;BUTTON&gt;</code> tag.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object <em>(not used here)</em>.
@@ -66,7 +66,7 @@ public class CmsButton extends A_CmsWpElement implements I_CmsWpElement, I_CmsWp
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         // Read button parameters
         String buttonName = n.getAttribute(C_BUTTON_NAME);
         String buttonAction = n.getAttribute(C_BUTTON_ACTION);
@@ -85,7 +85,7 @@ public class CmsButton extends A_CmsWpElement implements I_CmsWpElement, I_CmsWp
         {
             Method callMethod = null;
             try {
-                callMethod = callingObject.getClass().getMethod(buttonMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class});
+                callMethod = callingObject.getClass().getMethod(buttonMethod, new Class[] {CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class});
                 activate = ((Boolean)callMethod.invoke(callingObject, new Object[] {cms, lang, parameters})).booleanValue();
             } catch(NoSuchMethodException exc) {
             // The requested method was not found.

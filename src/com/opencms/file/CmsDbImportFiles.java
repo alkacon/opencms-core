@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImportFiles.java,v $
- * Date   : $Date: 2000/04/19 10:15:59 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/06/05 13:37:54 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.17 $ $Date: 2000/04/19 10:15:59 $
+ * @version $Revision: 1.18 $ $Date: 2000/06/05 13:37:54 $
  */
 class CmsDbImportFiles implements I_CmsConstants {
 	
@@ -49,9 +49,9 @@ class CmsDbImportFiles implements I_CmsConstants {
 	/** ResourceBroker to access all methods and objects */
 	private I_CmsResourceBroker m_RB = null;
 	/** User to access all resourcbroker methods and objects */
-	private A_CmsUser m_user = null;
+	private CmsUser m_user = null;
 	/** Project to access all resourcbroker methods and objects */
-	private A_CmsProject m_project = null;
+	private CmsProject m_project = null;
 	
 	/** to get the entries in the XML object */
 	private Node m_firstNode = null;
@@ -94,7 +94,7 @@ class CmsDbImportFiles implements I_CmsConstants {
  	 * @exception throws Exception
 	 * 
 	 */
-	CmsDbImportFiles(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, String path, Node fileNode , Vector errLog)
+	CmsDbImportFiles(I_CmsResourceBroker eRB, CmsUser luser, CmsProject lproject, String path, Node fileNode , Vector errLog)
 		throws IOException, Exception {
 		m_RB=eRB;
 		m_user=luser;

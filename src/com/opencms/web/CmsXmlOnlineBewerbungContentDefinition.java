@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungContentDefinition.java,v $ 
- * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/21 14:12:19 $
- * Version: $Revision: 1.9 $
+ * Author : $Author: a.schouten $
+ * Date   : $Date: 2000/06/05 13:37:58 $
+ * Version: $Revision: 1.10 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -35,8 +35,8 @@ import java.io.*;
 /**
  * This class is used to access the application form's XML-datablocks.
  * 
- * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.9 $ $Date: 2000/02/21 14:12:19 $
+ * @author $Author: a.schouten $
+ * @version $Name:  $ $Revision: 1.10 $ $Date: 2000/06/05 13:37:58 $
  * @see com.opencms.template.CmsXmlTemplateFile
  */
 public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
@@ -122,10 +122,10 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlOnlineBewerbungContentDefinition(A_CmsObject cms, CmsFile file)
+    public CmsXmlOnlineBewerbungContentDefinition(CmsObject cms, CmsFile file)
 													throws CmsException {
         super();
         init(cms, file);
@@ -136,10 +136,10 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlOnlineBewerbungContentDefinition(A_CmsObject cms,
+    public CmsXmlOnlineBewerbungContentDefinition(CmsObject cms,
 							String filename) throws CmsException {
 		super();            
         init(cms, filename);

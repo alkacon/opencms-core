@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/05/30 09:41:28 $
- * Version: $Revision: 1.121 $
+ * Date   : $Date: 2000/06/05 13:37:55 $
+ * Version: $Revision: 1.122 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.121 $ $Date: 2000/05/30 09:41:28 $
+ * @version $Revision: 1.122 $ $Date: 2000/06/05 13:37:55 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -90,7 +90,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	/**
 	 * The onlineproject is stored here, because it is needed very often.
 	 */
-	private A_CmsProject m_onlineProject = null;
+	private CmsProject m_onlineProject = null;
 	
 	/**
 	 * The constructor for this ResourceBroker. It gets all underlaying 
@@ -121,7 +121,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
 	/**
 	 * Returns the onlineproject. This is the default project. All anonymous 
-	 * (A_CmsUser callingUser, or guest) user will see the rersources of this project.
+	 * (CmsUser callingUser, or guest) user will see the rersources of this project.
 	 * 
 	 * <B>Security:</B>
 	 * All users are granted.
@@ -131,8 +131,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return the onlineproject object.
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsProject onlineProject(A_CmsUser currentUser, 
-									  A_CmsProject currentProject)
+	public CmsProject onlineProject(CmsUser currentUser, 
+									  CmsProject currentProject)
 		throws CmsException {
 		// is the online project in cache already?
 		if( m_onlineProject == null ) {
@@ -154,11 +154,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return true, if the user has access, else returns false.
 	 */
-	public boolean accessProject(A_CmsUser currentUser, A_CmsProject currentProject,
+	public boolean accessProject(CmsUser currentUser, CmsProject currentProject,
 								 int projectId) 
 		throws CmsException {
 		
-		A_CmsProject testProject = readProject(currentUser, currentProject, projectId);
+		CmsProject testProject = readProject(currentUser, currentProject, projectId);
 		
 		// is the project unlocked?
 		if( testProject.getFlags() != C_PROJECT_STATE_UNLOCKED ) {
@@ -177,7 +177,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		// test, if the user is in the same groups like the project.
 		for(int i = 0; i < groups.size(); i++) {
-			int groupId = ((A_CmsGroup) groups.elementAt(i)).getId();
+			int groupId = ((CmsGroup) groups.elementAt(i)).getId();
 			if( ( groupId == testProject.getGroupId() ) ||
 				( groupId == testProject.getManagerGroupId() ) ) {
 				return( true );
@@ -198,7 +198,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject readProject(A_CmsUser currentUser, A_CmsProject currentProject, 
+	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
 									 int id)
 		 throws CmsException {
 		 return( m_projectRb.readProject(id) );
@@ -216,8 +216,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject readProject(A_CmsUser currentUser, A_CmsProject currentProject, 
-									 A_CmsResource res)
+	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
+									 CmsResource res)
 		 throws CmsException {
 		 
 		 return readProject(currentUser, currentProject, res.getProjectId());
@@ -235,8 +235,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject readProject(A_CmsUser currentUser, A_CmsProject currentProject, 
-									 A_CmsTask task)
+	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
+									 CmsTask task)
 		 throws CmsException {
 		 
 		 // read the parent of the task, until it has no parents.
@@ -261,7 +261,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject createProject(A_CmsUser currentUser, A_CmsProject currentProject, 
+	 public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
 									   String name, String description, String groupname, 
 									   String managergroupname)
 		 throws CmsException {
@@ -270,12 +270,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 isProjectManager(currentUser, currentProject)) {
 			 
 			 // read the needed groups from the cms
-			 A_CmsGroup group = readGroup(currentUser, currentProject, groupname);
-			 A_CmsGroup managergroup = readGroup(currentUser, currentProject, 
+			 CmsGroup group = readGroup(currentUser, currentProject, groupname);
+			 CmsGroup managergroup = readGroup(currentUser, currentProject, 
 												 managergroupname);
 			 
 			 // create a new task for the project
-			 A_CmsTask task = m_taskRb.createProject(currentUser, name, group,
+			 CmsTask task = m_taskRb.createProject(currentUser, name, group,
 													 new java.sql.Timestamp(System.currentTimeMillis()),
 													 C_TASK_PRIORITY_NORMAL);
 			 
@@ -304,7 +304,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject createProject(A_CmsUser currentUser, A_CmsProject currentProject, 
+	 public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
 									   int id, String name, String description, String groupname, 
 									   String managergroupname)
 		 throws CmsException {
@@ -313,12 +313,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 isProjectManager(currentUser, currentProject)) {
 			 
 			 // read the needed groups from the cms
-			 A_CmsGroup group = readGroup(currentUser, currentProject, groupname);
-			 A_CmsGroup managergroup = readGroup(currentUser, currentProject, 
+			 CmsGroup group = readGroup(currentUser, currentProject, groupname);
+			 CmsGroup managergroup = readGroup(currentUser, currentProject, 
 												 managergroupname);
 			 
 			 // create a new task for the project
-			 A_CmsTask task = m_taskRb.createProject(currentUser, name, group,
+			 CmsTask task = m_taskRb.createProject(currentUser, name, group,
 													 new java.sql.Timestamp(System.currentTimeMillis()),
 													 C_TASK_PRIORITY_NORMAL);
 			 
@@ -343,8 +343,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 public Vector getAllAccessibleProjects(A_CmsUser currentUser, 
-											A_CmsProject currentProject)
+	 public Vector getAllAccessibleProjects(CmsUser currentUser, 
+											CmsProject currentProject)
 		 throws CmsException {
 		 
 		// get all groups of the user
@@ -358,7 +358,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		for(int i = 0; i < groups.size(); i++) {
 			// get all projects, which can be accessed by the current group
 			Vector projectsByGroup = 
-				m_projectRb.getAllAccessibleProjectsByGroup((A_CmsGroup)
+				m_projectRb.getAllAccessibleProjectsByGroup((CmsGroup)
 															 groups.elementAt(i));
 			// merge the projects to the vector
 			for(int j = 0; j < projectsByGroup.size(); j++) {
@@ -384,8 +384,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 public Vector getAllManageableProjects(A_CmsUser currentUser, 
-											A_CmsProject currentProject)
+	 public Vector getAllManageableProjects(CmsUser currentUser, 
+											CmsProject currentProject)
 		 throws CmsException {
 		 
 		// get all groups of the user
@@ -399,7 +399,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		for(int i = 0; i < groups.size(); i++) {
 			// get all projects, which can be managed by the current group
 			Vector projectsByGroup = 
-				m_projectRb.getAllAccessibleProjectsByManagerGroup((A_CmsGroup)
+				m_projectRb.getAllAccessibleProjectsByManagerGroup((CmsGroup)
 																	groups.elementAt(i));
 			// merge the projects to the vector
 			for(int j = 0; j < projectsByGroup.size(); j++) {
@@ -428,12 +428,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Vector publishProject(A_CmsUser currentUser,
-								 A_CmsProject currentProject,
+	public Vector publishProject(CmsUser currentUser,
+								 CmsProject currentProject,
 								 int id)
 		throws CmsException {
 		// read the project that should be published.
-		A_CmsProject publishProject = m_projectRb.readProject(id);
+		CmsProject publishProject = m_projectRb.readProject(id);
 		
 		if( (isAdmin(currentUser, currentProject) || 
 			isManagerOfProject(currentUser, publishProject) ) && 
@@ -448,7 +448,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 for( int i = 0; i < resources.size(); i++ ) {
 				 try {
 					 // read the online-resource
-					 A_CmsResource resource = m_fileRb.readFileHeader(
+					 CmsResource resource = m_fileRb.readFileHeader(
 						onlineProject(currentUser, currentProject), 
 						(String) resources.elementAt(i));
 					 // delete the metainfos of the online-resource
@@ -494,11 +494,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void unlockProject(A_CmsUser currentUser, A_CmsProject currentProject,int id)
+	public void unlockProject(CmsUser currentUser, CmsProject currentProject,int id)
 		throws CmsException {
 
 		// read the project.
-		A_CmsProject project = m_projectRb.readProject(id);
+		CmsProject project = m_projectRb.readProject(id);
 
 		// check the security
 		if( isAdmin(currentUser, currentProject) || 
@@ -529,11 +529,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void deleteProject(A_CmsUser currentUser, A_CmsProject currentProject,
+	public void deleteProject(CmsUser currentUser, CmsProject currentProject,
 							  int id)
 		throws CmsException {
 		// read the project that should be deleted.
-		A_CmsProject deleteProject = m_projectRb.readProject(id);
+		CmsProject deleteProject = m_projectRb.readProject(id);
 		
 		if( isAdmin(currentUser, currentProject) || 
 			isManagerOfProject(currentUser, deleteProject) || 
@@ -569,8 +569,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition readPropertydefinition(A_CmsUser currentUser, 
-												  A_CmsProject currentProject, 
+	public CmsPropertydefinition readPropertydefinition(CmsUser currentUser, 
+												  CmsProject currentProject, 
 												  String name, String resourcetype)
 		throws CmsException {
 		// no security check is needed here
@@ -595,7 +595,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllPropertydefinitions(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
 										 String resourcetype)
 		throws CmsException {
 		
@@ -621,7 +621,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllPropertydefinitions(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
 										 String resourcetype, int type)
 		throws CmsException {
 		
@@ -645,8 +645,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition createPropertydefinition(A_CmsUser currentUser, 
-													A_CmsProject currentProject, 
+	public CmsPropertydefinition createPropertydefinition(CmsUser currentUser, 
+													CmsProject currentProject, 
 													String name, 
 													String resourcetype, 
 													int type)
@@ -678,7 +678,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void deletePropertydefinition(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void deletePropertydefinition(CmsUser currentUser, CmsProject currentProject, 
 									 String name, String resourcetype)
 		throws CmsException {
 		// check the security
@@ -709,9 +709,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition writePropertydefinition(A_CmsUser currentUser, 
-												   A_CmsProject currentProject, 
-												   A_CmsPropertydefinition metadef)
+	public CmsPropertydefinition writePropertydefinition(CmsUser currentUser, 
+												   CmsProject currentProject, 
+												   CmsPropertydefinition metadef)
 		throws CmsException {
 		// check the security
 		if( isAdmin(currentUser, currentProject) ) {
@@ -738,10 +738,10 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public String readProperty(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public String readProperty(CmsUser currentUser, CmsProject currentProject, 
 									  String resource, String meta)
 		throws CmsException {
-		A_CmsResource res;
+		CmsResource res;
 		// read the resource from the currentProject, or the online-project
 		try {
 			res = m_fileRb.readFileHeader(currentProject, resource);
@@ -781,12 +781,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeProperty(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void writeProperty(CmsUser currentUser, CmsProject currentProject, 
 									 String resource, String meta, String value)
 		throws CmsException {
 
        // read the resource
-        A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+        CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
 		
 		// check the security
 		if( ! accessWrite(currentUser, currentProject, res) ) {
@@ -822,11 +822,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeProperties(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void writeProperties(CmsUser currentUser, CmsProject currentProject, 
 									  String resource, Hashtable metainfos)
 		throws CmsException {
 		// read the resource
-		A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+		CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
 		
 		// check the security
 		if( ! accessWrite(currentUser, currentProject, res) ) {
@@ -861,11 +861,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public Hashtable readAllProperties(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public Hashtable readAllProperties(CmsUser currentUser, CmsProject currentProject, 
 											 String resource)
 		throws CmsException {
 		
-		A_CmsResource res;
+		CmsResource res;
 		// read the resource from the currentProject, or the online-project
 		try {
 			res = m_fileRb.readFileHeader(currentProject, resource);
@@ -903,13 +903,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteAllProperties(A_CmsUser currentUser, 
-										  A_CmsProject currentProject, 
+	public void deleteAllProperties(CmsUser currentUser, 
+										  CmsProject currentProject, 
 										  String resource)
 		throws CmsException {
 
 		// read the resource
-		A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+		CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
 		
 		// check the security
 		if( ! accessWrite(currentUser, currentProject, res) ) {
@@ -945,12 +945,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteProperty(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void deleteProperty(CmsUser currentUser, CmsProject currentProject, 
 									  String resource, String meta)
 		throws CmsException {
 		
 		// read the resource
-		A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+		CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
 		
 		// check the security
 		if( ! accessWrite(currentUser, currentProject, res) ) {
@@ -959,7 +959,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 
 		// read the metadefinition
-		A_CmsPropertydefinition metadef = m_metadefRb.readMetadefinition(meta, res.getType());
+		CmsPropertydefinition metadef = m_metadefRb.readMetadefinition(meta, res.getType());
 		
 		// is this a mandatory metadefinition?
 		if(  (metadef != null) && 
@@ -991,10 +991,10 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser loginUser(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public CmsUser loginUser(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String password) 
 		throws CmsException { 
-   		A_CmsUser newUser = m_userRb.readUser(username, password);
+   		CmsUser newUser = m_userRb.readUser(username, password);
 		
 		// is the user enabled?
 		if( newUser.getFlags() == C_FLAG_ENABLED ) {
@@ -1023,7 +1023,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsUser readOwner(A_CmsUser currentUser, A_CmsProject currentProject, A_CmsTaskLog log) 
+	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, CmsTaskLog log) 
 		throws CmsException{
 		return( m_userRb.readUser(log.getUser()) );
 	}
@@ -1040,8 +1040,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsUser readOwner(A_CmsUser currentUser, A_CmsProject currentProject, 
-							   A_CmsResource resource) 
+	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
+							   CmsResource resource) 
 		throws CmsException {
 		return( m_userRb.readUser(resource.getOwnerId()) );
 	}
@@ -1059,8 +1059,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsUser readOwner(A_CmsUser currentUser, A_CmsProject currentProject, 
-							   A_CmsTask task) 
+	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
+							   CmsTask task) 
 		throws CmsException {
 		return( m_userRb.readUser(task.getInitiatorUser()) );
 	}
@@ -1078,8 +1078,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsUser readAgent(A_CmsUser currentUser, A_CmsProject currentProject, 
-							   A_CmsTask task) 
+	public CmsUser readAgent(CmsUser currentUser, CmsProject currentProject, 
+							   CmsTask task) 
 		throws CmsException {
 		return( m_userRb.readUser(task.getAgentUser()) );
 	}
@@ -1097,8 +1097,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsUser readOriginalAgent(A_CmsUser currentUser, A_CmsProject currentProject, 
-									   A_CmsTask task) 
+	public CmsUser readOriginalAgent(CmsUser currentUser, CmsProject currentProject, 
+									   CmsTask task) 
 		throws CmsException {
 		return( m_userRb.readUser(task.getOriginalUser()) );
 	}
@@ -1115,8 +1115,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
-							   A_CmsResource resource) 
+	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
+							   CmsResource resource) 
 		throws CmsException {
 		return( m_userRb.readGroup(resource.getGroupId()) );
 	}
@@ -1134,8 +1134,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
-							   A_CmsTask task) 
+	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
+							   CmsTask task) 
 		throws CmsException {
 		return( m_userRb.readGroup(task.getRole()) );
 	}
@@ -1152,8 +1152,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsUser readOwner(A_CmsUser currentUser, A_CmsProject currentProject, 
-							   A_CmsProject project) 
+	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
+							   CmsProject project) 
 		throws CmsException {
 		return( m_userRb.readUser(project.getOwnerId()) );
 	}
@@ -1170,8 +1170,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
-								A_CmsProject project) 
+	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
+								CmsProject project) 
 		throws CmsException {
 		return( m_userRb.readGroup(project.getGroupId()) );
 	}
@@ -1188,8 +1188,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup readManagerGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
-									   A_CmsProject project) 
+	public CmsGroup readManagerGroup(CmsUser currentUser, CmsProject currentProject, 
+									   CmsProject project) 
 		throws CmsException {
 		return( m_userRb.readGroup(project.getManagerGroupId()) );
 	}
@@ -1206,7 +1206,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * else it returns false.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	public boolean isAdmin(A_CmsUser currentUser, A_CmsProject currentProject)
+	public boolean isAdmin(CmsUser currentUser, CmsProject currentProject)
 		throws CmsException {
 		return( m_userRb.userInGroup(currentUser.getName(), C_GROUP_ADMIN) );
 	}
@@ -1224,7 +1224,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * else it returns false.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	public boolean isProjectManager(A_CmsUser currentUser, A_CmsProject currentProject) 
+	public boolean isProjectManager(CmsUser currentUser, CmsProject currentProject) 
 		throws CmsException { 
 		return( m_userRb.userInGroup(currentUser.getName(), C_GROUP_PROJECTLEADER) );
 	}
@@ -1241,7 +1241,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return true, if the may manage this project.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	public boolean isManagerOfProject(A_CmsUser currentUser, A_CmsProject currentProject) 
+	public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject) 
 		throws CmsException { 
 		// is the user owner of the project?
 		if( currentUser.getId() == currentProject.getOwnerId() ) {
@@ -1255,7 +1255,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		for(int i = 0; i < groups.size(); i++) {
 			// is this a managergroup for this project?
-			if( ((A_CmsGroup)groups.elementAt(i)).getId() == 
+			if( ((CmsGroup)groups.elementAt(i)).getId() == 
 				currentProject.getManagerGroupId() ) {
 				// this group is manager of the project
 				return true;
@@ -1278,7 +1278,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser anonymousUser(A_CmsUser currentUser, A_CmsProject currentProject) 
+	public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) 
 		throws CmsException {
 		return( m_userRb.readUser(C_USER_GUEST) );
 	}
@@ -1295,7 +1295,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser readUser(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
 							  String username)
 		throws CmsException{
 		return( m_userRb.readUser(username) );
@@ -1315,7 +1315,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	public A_CmsUser readUser(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
 							  String username, String password)
 		throws CmsException{
  		return( m_userRb.readUser(username, password) );
@@ -1333,7 +1333,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return Vector of groups
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public Vector getGroupsOfUser(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject, 
 								  String username)
 		throws CmsException {
 		return(m_userRb.getGroupsOfUser(username));
@@ -1351,7 +1351,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return Vector of groups
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public Vector getDirectGroupsOfUser(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public Vector getDirectGroupsOfUser(CmsUser currentUser, CmsProject currentProject, 
 										String username)
 		throws CmsException {
 		return(m_userRb.getDirectGroupsOfUser(username));
@@ -1370,7 +1370,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	public A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 								String groupname)
 		throws CmsException {
 		
@@ -1390,7 +1390,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	private A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+	private CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 								int groupId)
 		throws CmsException {
 		
@@ -1409,7 +1409,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return Vector of users.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public Vector getUsersOfGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public Vector getUsersOfGroup(CmsUser currentUser, CmsProject currentProject, 
 								  String groupname)
 		throws CmsException {
 		// check the security
@@ -1435,7 +1435,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public boolean userInGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public boolean userInGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String groupname)
 		throws CmsException {
 		return m_userRb.userInGroup(username, groupname);
@@ -1463,7 +1463,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	public A_CmsUser addUser(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public CmsUser addUser(CmsUser currentUser, CmsProject currentProject, 
 							 String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
@@ -1499,7 +1499,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	public void deleteUser(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void deleteUser(CmsUser currentUser, CmsProject currentProject, 
 						   String username)
 		throws CmsException{ 
 		// Check the security
@@ -1528,8 +1528,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-    public void writeUser(A_CmsUser currentUser, A_CmsProject currentProject, 
-						  A_CmsUser user)			
+    public void writeUser(CmsUser currentUser, CmsProject currentProject, 
+						  CmsUser user)			
 		throws CmsException {
 		// Check the security
 		if( isAdmin(currentUser, currentProject) || (currentUser.equals(user)) ) {
@@ -1566,7 +1566,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	public A_CmsGroup addGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public CmsGroup addGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String name, String description, int flags, String parent)
 		throws CmsException {
 		// Check the security
@@ -1594,8 +1594,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param group The group that should be written to the Cms.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	public void writeGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
-						   A_CmsGroup group)
+	public void writeGroup(CmsUser currentUser, CmsProject currentProject, 
+						   CmsGroup group)
 		throws CmsException {
 		
 		// Check the security
@@ -1619,13 +1619,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * group should be deleted.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	public void setParentGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void setParentGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String groupName, String parentGroupName)
 		throws CmsException {
 		
 		// Check the security
 		if( isAdmin(currentUser, currentProject) ) {
-			A_CmsGroup group = readGroup(currentUser, currentProject, groupName);
+			CmsGroup group = readGroup(currentUser, currentProject, groupName);
 			int parentGroupId = C_UNKNOWN_ID;
 			
 			// if the group exists, use its id, else set to unknown.
@@ -1657,7 +1657,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param delgroup The name of the group that is to be deleted.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	public void deleteGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void deleteGroup(CmsUser currentUser, CmsProject currentProject, 
 							String delgroup)
 		throws CmsException {
 		// Check the security
@@ -1683,7 +1683,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	public void addUserToGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String groupname)
 		throws CmsException {
 		// Check the security
@@ -1709,7 +1709,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	public void removeUserFromGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void removeUserFromGroup(CmsUser currentUser, CmsProject currentProject, 
 									String username, String groupname)
 		throws CmsException {
 		// Check the security
@@ -1732,7 +1732,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return users A Vector of all existing users.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public Vector getUsers(A_CmsUser currentUser, A_CmsProject currentProject)
+	public Vector getUsers(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
 		
 		// check security
@@ -1755,7 +1755,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return users A Vector of all existing groups.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public Vector getGroups(A_CmsUser currentUser, A_CmsProject currentProject)
+	public Vector getGroups(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
 		// check security
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
@@ -1778,7 +1778,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return users A Vector of all child groups or null.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public Vector getChild(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public Vector getChild(CmsUser currentUser, CmsProject currentProject, 
 						   String groupname)
         throws CmsException {
 		// check security
@@ -1803,7 +1803,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return groups A Vector of all child groups or null.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public Vector getChilds(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public Vector getChilds(CmsUser currentUser, CmsProject currentProject, 
 							String groupname)
 		throws CmsException {
 		// check security
@@ -1827,7 +1827,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return group The parent group or null.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup getParent(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, 
 								String groupname)
 		throws CmsException {
 		// check security
@@ -1856,7 +1856,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	public void setPassword(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
 							String username, String oldPassword, String newPassword)
 		throws CmsException {
 		
@@ -1867,7 +1867,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 		
 		// read the user
-		A_CmsUser user = readUser(currentUser, currentProject, username, oldPassword);
+		CmsUser user = readUser(currentUser, currentProject, username, oldPassword);
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) && 
 			( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
 			m_userRb.setPassword(username, newPassword);
@@ -1892,7 +1892,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	public void setPassword(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
 							String username, String newPassword)
 		throws CmsException {
 		
@@ -1924,8 +1924,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param connect The connectstring to access the db-system.
 	 * @param name A name to describe the mountpoint.
 	 */
-	synchronized public void addMountPoint(A_CmsUser currentUser, 
-										   A_CmsProject currentProject,
+	synchronized public void addMountPoint(CmsUser currentUser, 
+										   CmsProject currentProject,
 										   String mountpoint, String driver, 
 										   String connect, String name)
 		throws CmsException {
@@ -1938,7 +1938,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 					   mountpoint, "");
 			
 			// create the new mountpoint			
-			A_CmsMountPoint newMountPoint = new CmsMountPoint(mountpoint, driver,
+			CmsMountPoint newMountPoint = new CmsMountPoint(mountpoint, driver,
 															  connect, name);
 			
 			// read all mountpoints from propertys
@@ -1980,8 +1980,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param type The default resourcetype for this mountpoint.
 	 * @param accessFLags The access-flags for this mountpoint.
 	 */
-	synchronized public void addMountPoint(A_CmsUser currentUser, 
-										   A_CmsProject currentProject,
+	synchronized public void addMountPoint(CmsUser currentUser, 
+										   CmsProject currentProject,
 										   String mountpoint, String mountpath, 
 										   String name, String user, String group,
 										   String type, int accessFlags)
@@ -1995,11 +1995,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 					   mountpoint, "");
 			
 			// read the resource-type for this mountpoint.			
-			A_CmsResourceType resType = 
+			CmsResourceType resType = 
 				getResourceType(currentUser, currentProject, type);
 			
 			// create the new mountpoint
-			A_CmsMountPoint newMountPoint = 
+			CmsMountPoint newMountPoint = 
 				new CmsMountPoint(mountpoint, mountpath, name, 
 								  readUser(currentUser, currentProject, user), 
 								  readGroup(currentUser, currentProject, group), 
@@ -2042,8 +2042,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return the mountpoint - or null if it doesen't exists.
 	 */
-	public A_CmsMountPoint readMountPoint(A_CmsUser currentUser, 
-										  A_CmsProject currentProject, 
+	public CmsMountPoint readMountPoint(CmsUser currentUser, 
+										  CmsProject currentProject, 
 										  String mountpoint )
 		throws CmsException {
 		
@@ -2058,7 +2058,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				return(null);
 			}
 			// return the mountpoint
-			return( (A_CmsMountPoint) mountpoints.get(mountpoint));
+			return( (CmsMountPoint) mountpoints.get(mountpoint));
 			
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + mountpoint, 
@@ -2078,7 +2078,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return the mime-types.
 	 */
-	public Hashtable readMimeTypes(A_CmsUser currentUser, A_CmsProject currentProject)
+	public Hashtable readMimeTypes(CmsUser currentUser, CmsProject currentProject)
 		throws CmsException {
 		return((Hashtable) m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_MIMETYPES) );			
 	}
@@ -2096,7 +2096,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return Hashtable with file extensions as Strings
 	 */
 	
-	public Hashtable readFileExtensions(A_CmsUser currentUser, A_CmsProject currentProject)
+	public Hashtable readFileExtensions(CmsUser currentUser, CmsProject currentProject)
 		throws CmsException {
 		Hashtable res=(Hashtable) m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_EXTENSIONS);
 		return ( (res!=null)? res : new Hashtable());	
@@ -2114,7 +2114,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	
 	
-	synchronized public void writeFileExtensions(A_CmsUser currentUser, A_CmsProject currentProject,
+	synchronized public void writeFileExtensions(CmsUser currentUser, CmsProject currentProject,
 									Hashtable extensions)
 		throws CmsException {
 		if (extensions != null) {
@@ -2146,7 +2146,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param resTypeName name of the resource type associated to the extension
 	 */
 	
-	public void addFileExtension(A_CmsUser currentUser, A_CmsProject currentProject,
+	public void addFileExtension(CmsUser currentUser, CmsProject currentProject,
 								 String extension, String resTypeName)
 		throws CmsException {
 		if (extension != null && resTypeName != null) {
@@ -2181,7 +2181,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentProject The current project of the user.
 	 * @param mountpoint The mount point in the Cms filesystem.
 	 */
-	synchronized public void writeExportPath(A_CmsUser currentUser, A_CmsProject currentProject, String path)
+	synchronized public void writeExportPath(CmsUser currentUser, CmsProject currentProject, String path)
 		throws CmsException {
 		// check the security
 		if( isAdmin(currentUser, currentProject) ) {
@@ -2212,7 +2212,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentProject The current project of the user.
 	 * @return the exportpath.
 	 */
-	public String readExportPath(A_CmsUser currentUser, A_CmsProject currentProject)
+	public String readExportPath(CmsUser currentUser, CmsProject currentProject)
 		throws CmsException {
 		
 		// return the exportpath.
@@ -2230,8 +2230,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentProject The current project of the user.
 	 * @param mountpoint The mount point in the Cms filesystem.
 	 */
-	synchronized public void deleteMountPoint(A_CmsUser currentUser, 
-											  A_CmsProject currentProject, 
+	synchronized public void deleteMountPoint(CmsUser currentUser, 
+											  CmsProject currentProject, 
 											  String mountpoint )
 		throws CmsException {
 		
@@ -2266,7 +2266,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return the mountpoints - or null if they doesen't exists.
 	 */
-	public Hashtable getAllMountPoints(A_CmsUser currentUser, A_CmsProject currentProject)
+	public Hashtable getAllMountPoints(CmsUser currentUser, CmsProject currentProject)
 		throws CmsException {
 		
 		if( isAdmin(currentUser, currentProject) ) {
@@ -2293,8 +2293,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public Hashtable getAllResourceTypes(A_CmsUser currentUser, 
-										 A_CmsProject currentProject) 
+	public Hashtable getAllResourceTypes(CmsUser currentUser, 
+										 CmsProject currentProject) 
 		throws CmsException {
 		// check, if the resourceTypes were read bevore
 		if(m_resourceTypes == null) {
@@ -2324,13 +2324,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsResourceType getResourceType(A_CmsUser currentUser, 
-											 A_CmsProject currentProject,
+	public CmsResourceType getResourceType(CmsUser currentUser, 
+											 CmsProject currentProject,
 											 String resourceType) 
 		throws CmsException {
 		// try to get the resource-type
 		try { 
-			A_CmsResourceType type = (A_CmsResourceType)getAllResourceTypes(currentUser, currentProject).get(resourceType);
+			CmsResourceType type = (CmsResourceType)getAllResourceTypes(currentUser, currentProject).get(resourceType);
 			if(type == null) {
 				throw new CmsException("[" + this.getClass().getName() + "] " + resourceType, 
 					CmsException.C_NOT_FOUND);
@@ -2357,17 +2357,17 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsResourceType getResourceType(A_CmsUser currentUser, 
-											 A_CmsProject currentProject,
+	public CmsResourceType getResourceType(CmsUser currentUser, 
+											 CmsProject currentProject,
 											 int resourceType) 
 		throws CmsException {
 		// TODO: this is not very efficient.
 		// try to get the resource-type
 		Hashtable types = getAllResourceTypes(currentUser, currentProject);
 		Enumeration keys = types.keys();
-		A_CmsResourceType currentType;
+		CmsResourceType currentType;
 		while(keys.hasMoreElements()) {
-			currentType = (A_CmsResourceType) types.get(keys.nextElement());
+			currentType = (CmsResourceType) types.get(keys.nextElement());
 			if(currentType.getResourceType() == resourceType) {
 				return(currentType);
 			}
@@ -2393,8 +2393,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsResourceType addResourceType(A_CmsUser currentUser, 
-											 A_CmsProject currentProject,
+	public CmsResourceType addResourceType(CmsUser currentUser, 
+											 CmsProject currentProject,
 											 String resourceType, int launcherType, 
 											 String launcherClass) 
 		throws CmsException {
@@ -2451,13 +2451,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param resource The name of the resource.
  	 * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    public void copyResourceToProject(A_CmsUser currentUser, 
-									  A_CmsProject currentProject,
+    public void copyResourceToProject(CmsUser currentUser, 
+									  CmsProject currentProject,
                                       String resource)
         throws CmsException {
 		       
     	// read the onlineproject
-		A_CmsProject online = onlineProject(currentUser, currentProject);
+		CmsProject online = onlineProject(currentUser, currentProject);
 		
 		// is the current project the onlineproject?
 		// and is the current user the owner of the project?
@@ -2467,8 +2467,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			(currentProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
 			// is offlineproject and is owner
 			
-            A_CmsResource onlineRes= m_fileRb.readFileHeader(online, resource);
-            A_CmsResource offlineRes=null;
+            CmsResource onlineRes= m_fileRb.readFileHeader(online, resource);
+            CmsResource offlineRes=null;
             
             // walk rekursively through all parents and copy them, too
             String parent = onlineRes.getParent();
@@ -2484,7 +2484,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                 }          
                 // now create all parent folders, starting at the root folder
                 while (resources.size()>0){                
-                    onlineRes=(A_CmsResource)resources.pop();
+                    onlineRes=(CmsResource)resources.pop();
                     parent=onlineRes.getAbsolutePath();                    
 					// copy it to the offlineproject
                     try {
@@ -2518,18 +2518,18 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param resource The name of the resource.
  	 * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    private void helperCopyResourceToProject(A_CmsProject onlineProject,
-											 A_CmsProject offlineProject,
+    private void helperCopyResourceToProject(CmsProject onlineProject,
+											 CmsProject offlineProject,
 											 String resource)
         throws CmsException {
 		// read the online-resource
-		A_CmsResource onlineRes = m_fileRb.readFileHeader(onlineProject, resource);
+		CmsResource onlineRes = m_fileRb.readFileHeader(onlineProject, resource);
 		// copy it to the offlineproject
 		m_fileRb.copyResourceToProject(offlineProject, onlineProject, resource);
 		// inform about the file-system-change
 		fileSystemChanged(offlineProject.getName(), resource);
 		// read the offline-resource
-		A_CmsResource offlineRes = m_fileRb.readFileHeader(offlineProject, resource);
+		CmsResource offlineRes = m_fileRb.readFileHeader(offlineProject, resource);
 		// copy the metainfos			
 		m_metadefRb.writeMetainformations(offlineRes,
 			m_metadefRb.readAllMetainformations(onlineRes));
@@ -2540,11 +2540,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			Vector folders = m_fileRb.getSubFolders(onlineProject, resource);
 			for(int i = 0; i < files.size(); i++) {
 				helperCopyResourceToProject(onlineProject, offlineProject, 
-											((A_CmsResource)files.elementAt(i)).getAbsolutePath());
+											((CmsResource)files.elementAt(i)).getAbsolutePath());
 			}
 			for(int i = 0; i < folders.size(); i++) {
 				helperCopyResourceToProject(onlineProject, offlineProject, 
-											((A_CmsResource)folders.elementAt(i)).getAbsolutePath());
+											((CmsResource)folders.elementAt(i)).getAbsolutePath());
 			}
 		}
 	}
@@ -2567,7 +2567,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 * */
-	 public CmsFile readFile(A_CmsUser currentUser, A_CmsProject currentProject,
+	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
 							 String filename)
 		 throws CmsException {
 		 CmsFile cmsFile = null;
@@ -2589,7 +2589,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 }
 		 }
 		 
-		 if( accessRead(currentUser, currentProject, (A_CmsResource)cmsFile) ) {
+		 if( accessRead(currentUser, currentProject, (CmsResource)cmsFile) ) {
 				
 			// acces to all subfolders was granted - return the file.
 			return(cmsFile);
@@ -2620,10 +2620,10 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public A_CmsResource readFileHeader(A_CmsUser currentUser, 
-										 A_CmsProject currentProject, String filename)
+	 public CmsResource readFileHeader(CmsUser currentUser, 
+										 CmsProject currentProject, String filename)
 		 throws CmsException {
-		 A_CmsResource cmsFile;
+		 CmsResource cmsFile;
 		 // read the resource from the currentProject, or the online-project
 		 try {
 			 cmsFile = m_fileRb.readFileHeader(currentProject, filename);
@@ -2671,7 +2671,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	public CmsFolder readFolder(A_CmsUser currentUser, A_CmsProject currentProject,
+	public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
 								String folder, String folderName)
 		throws CmsException {
 		
@@ -2692,7 +2692,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 }
 		 }
 		 
-		if( accessRead(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+		if( accessRead(currentUser, currentProject, (CmsResource)cmsFolder) ) {
 				
 			// acces to all subfolders was granted - return the folder.
 			return(cmsFolder);
@@ -2732,8 +2732,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * or if the filename is not valid. The CmsException will also be thrown, if the 
 	 * user has not the rights for this resource.
 	 */
-	public CmsFolder createFolder(A_CmsUser currentUser, A_CmsGroup currentGroup, 
-                                  A_CmsProject currentProject, 
+	public CmsFolder createFolder(CmsUser currentUser, CmsGroup currentGroup, 
+                                  CmsProject currentProject, 
 								  String folder, String newFolderName, 
 								  Hashtable metainfos)
 		throws CmsException {
@@ -2748,7 +2748,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
 												  folder);
    
-		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+		if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
 				
 			// write-acces  was granted - create the folder.
        
@@ -2774,7 +2774,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                                         
             // write metainfos for the folder
          
-			m_metadefRb.writeMetainformations((A_CmsResource) newFolder, metainfos);
+			m_metadefRb.writeMetainformations((CmsResource) newFolder, metainfos);
 			// inform about the file-system-change
      
 			fileSystemChanged(currentProject.getName(), newFolder.getAbsolutePath());
@@ -2808,11 +2808,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void deleteFolder(A_CmsUser currentUser, A_CmsProject currentProject,
+	public void deleteFolder(CmsUser currentUser, CmsProject currentProject,
 							 String foldername)
 		throws CmsException {
 
-		A_CmsResource onlineFolder;
+		CmsResource onlineFolder;
 		
 		// read the folder, that shold be deleted
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
@@ -2827,7 +2827,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( accessWrite(currentUser, currentProject, cmsFolder) ) {
 				
 			// write-acces  was granted - delete the folder and metainfos.
-			m_metadefRb.deleteAllMetainformations((A_CmsResource) cmsFolder);
+			m_metadefRb.deleteAllMetainformations((CmsResource) cmsFolder);
 			if(onlineFolder == null) {
 				// the onlinefile dosent exist => remove the file realy!
 				m_fileRb.removeFolder(currentProject, foldername);
@@ -2862,7 +2862,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void copyFolder(A_CmsUser currentUser, A_CmsProject currentProject,
+	public void copyFolder(CmsUser currentUser, CmsProject currentProject,
                          String source, String destination)
         throws CmsException {
         	
@@ -2877,7 +2877,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		foldername = destination.substring(0, destination.substring(0,destination.length()-1).lastIndexOf("/")+1);
 					
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, foldername);
-		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+		if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
 				
 		    // write-acces  was granted - copy the folder and the properties
 	        m_fileRb.copyFolder(currentProject,onlineProject(currentUser,currentProject),
@@ -2915,7 +2915,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	public void moveFolder(A_CmsUser currentUser, A_CmsProject currentProject,
+	public void moveFolder(CmsUser currentUser, CmsProject currentProject,
 						 String source, String destination)
         throws CmsException {
     }
@@ -2942,11 +2942,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource (A_CmsUser callingUser, No path information allowed).
+	 * @param newname The new name of the resource (CmsUser callingUser, No path information allowed).
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */		
-	public void renameFolder(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void renameFolder(CmsUser currentUser, CmsProject currentProject, 
 					       String oldname, String newname)
         throws CmsException {
         
@@ -2954,7 +2954,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		validFilename(newname);
 		
 		// read the old file
-		A_CmsResource file = readFileHeader(currentUser, currentProject, oldname);
+		CmsResource file = readFileHeader(currentUser, currentProject, oldname);
 		
 		// has the user write-access?
 		if( accessWrite(currentUser, currentProject, file) ) {
@@ -2996,7 +2996,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public Vector getSubFolders(A_CmsUser currentUser, A_CmsProject currentProject,
+	public Vector getSubFolders(CmsUser currentUser, CmsProject currentProject,
 								String foldername)
 		throws CmsException {
 		Vector folders = new Vector();
@@ -3048,8 +3048,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// merge the online to the offline, use the correct sorting
 		while( (offline.size() != 0) && (online.size() != 0) ) {
             int compare = 
-				((A_CmsResource)offline.firstElement()).getAbsolutePath().compareTo(
-					((A_CmsResource)online.firstElement()).getAbsolutePath());
+				((CmsResource)offline.firstElement()).getAbsolutePath().compareTo(
+					((CmsResource)online.firstElement()).getAbsolutePath());
 			if( compare < 0 ) {
                	merged.addElement(offline.firstElement());
 				offline.removeElementAt(0);
@@ -3087,15 +3087,15 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	private Vector helperGetSubFolders(A_CmsUser currentUser, 
-									   A_CmsProject currentProject,
+	private Vector helperGetSubFolders(CmsUser currentUser, 
+									   CmsProject currentProject,
 									   String foldername)
 		throws CmsException{
 		
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
 												  foldername);
 
-		if( accessRead(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+		if( accessRead(currentUser, currentProject, (CmsResource)cmsFolder) ) {
 				
 			// acces to all subfolders was granted - return the sub-folders.
 			Vector folders = m_fileRb.getSubFolders(currentProject, foldername);
@@ -3104,9 +3104,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				// read the current folder
 				folder = (CmsFolder)folders.elementAt(z);
 				// check the readability for the folder
-				if( !( accessOther(currentUser, currentProject, (A_CmsResource)folder, C_ACCESS_PUBLIC_READ) || 
-					   accessOwner(currentUser, currentProject, (A_CmsResource)folder, C_ACCESS_OWNER_READ) ||
-					   accessGroup(currentUser, currentProject, (A_CmsResource)folder, C_ACCESS_GROUP_READ) ) ) {
+				if( !( accessOther(currentUser, currentProject, (CmsResource)folder, C_ACCESS_PUBLIC_READ) || 
+					   accessOwner(currentUser, currentProject, (CmsResource)folder, C_ACCESS_OWNER_READ) ||
+					   accessGroup(currentUser, currentProject, (CmsResource)folder, C_ACCESS_GROUP_READ) ) ) {
 					// access to the folder was not granted delete him
 					folders.removeElementAt(z);
 					// correct the index
@@ -3148,12 +3148,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	public void lockResource(A_CmsUser currentUser, A_CmsProject currentProject,
+	public void lockResource(CmsUser currentUser, CmsProject currentProject,
                              String resourcename, boolean force)
 		throws CmsException {
            
 		// read the resource, that shold be locked
-        A_CmsResource  cmsResource = m_fileRb.readFileHeader(currentProject,resourcename);
+        CmsResource  cmsResource = m_fileRb.readFileHeader(currentProject,resourcename);
 
 		// check, if the user may lock the resource
 		if( accessLock(currentUser, currentProject, cmsResource) ) {
@@ -3174,11 +3174,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			if(cmsResource.isFolder()) {
 				Vector files = m_fileRb.getFilesInFolder(currentProject, cmsResource.getAbsolutePath());
 				Vector folders = m_fileRb.getSubFolders(currentProject, cmsResource.getAbsolutePath());
-				A_CmsResource currentResource;
+				CmsResource currentResource;
 				
 				// lock all files in this folder
 				for(int i = 0; i < files.size(); i++ ) {
-					currentResource = (A_CmsResource)files.elementAt(i);
+					currentResource = (CmsResource)files.elementAt(i);
                     if (currentResource.getState() != C_STATE_DELETED) {
 					    lockResource(currentUser, currentProject, currentResource.getAbsolutePath(), true);
                     }
@@ -3186,7 +3186,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 
 				// lock all files in this folder
 				for(int i = 0; i < folders.size(); i++) {
-					currentResource = (A_CmsResource)folders.elementAt(i);
+					currentResource = (CmsResource)folders.elementAt(i);
                     if (currentResource.getState() != C_STATE_DELETED) {
 					    lockResource(currentUser, currentProject, currentResource.getAbsolutePath(), true);
                     }
@@ -3220,13 +3220,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void unlockResource(A_CmsUser currentUser,
-                               A_CmsProject currentProject,
+	public void unlockResource(CmsUser currentUser,
+                               CmsProject currentProject,
                                String resourcename)
         throws CmsException {
 		
 		// read the resource, that shold be locked
-        A_CmsResource  cmsResource = m_fileRb.readFileHeader(currentProject,resourcename);
+        CmsResource  cmsResource = m_fileRb.readFileHeader(currentProject,resourcename);
 
 		// check, if the user may lock the resource
 		if( accessUnlock(currentUser, currentProject, cmsResource) ) {
@@ -3243,11 +3243,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			if(cmsResource.isFolder()) {
 				Vector files = m_fileRb.getFilesInFolder(currentProject, cmsResource.getAbsolutePath());
 				Vector folders = m_fileRb.getSubFolders(currentProject, cmsResource.getAbsolutePath());
-				A_CmsResource currentResource;
+				CmsResource currentResource;
 					
 				// lock all files in this folder
 				for(int i = 0; i < files.size(); i++ ) {                    
-					currentResource = (A_CmsResource)files.elementAt(i);
+					currentResource = (CmsResource)files.elementAt(i);
                     if (currentResource.getState() != C_STATE_DELETED) {
 					    unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
                     }
@@ -3255,7 +3255,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 
 				// lock all files in this folder
 				for(int i = 0; i < folders.size(); i++) {
-					currentResource = (A_CmsResource)folders.elementAt(i);
+					currentResource = (CmsResource)folders.elementAt(i);
                     if (currentResource.getState() != C_STATE_DELETED) {
 					    unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
                     }
@@ -3282,7 +3282,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	public A_CmsUser lockedBy(A_CmsUser currentUser, A_CmsProject currentProject,
+	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
 							  String resource)
 		throws CmsException {
 		return( m_userRb.readUser(
@@ -3304,8 +3304,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	public A_CmsUser lockedBy(A_CmsUser currentUser, A_CmsProject currentProject,
-							  A_CmsResource resource)
+	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
+							  CmsResource resource)
 		throws CmsException {
 		return( m_userRb.readUser(resource.isLockedBy()) );
 	}
@@ -3340,8 +3340,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public CmsFile createFile(A_CmsUser currentUser, A_CmsGroup currentGroup, 
-                               A_CmsProject currentProject, String folder,
+	 public CmsFile createFile(CmsUser currentUser, CmsGroup currentGroup, 
+                               CmsProject currentProject, String folder,
                                String filename, byte[] contents, String type,
 							   Hashtable metainfos) 
 		 throws CmsException {
@@ -3352,7 +3352,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// checks, if the filename is valid, if not it throws a exception
 		validFilename(filename);
 		
-		/*A_CmsResource onlineResource = null;
+		/*CmsResource onlineResource = null;
 
 		// try to load the resource in the onlineproject
 		try {
@@ -3373,7 +3373,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
 												  folder);
-		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+		if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
 				
 			// write-acces was granted - create and return the file.
 			CmsFile file = m_fileRb.createFile(currentUser, currentProject, 
@@ -3399,7 +3399,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                 
             
 			// write the metainfos
-			m_metadefRb.writeMetainformations((A_CmsResource) file, metainfos );
+			m_metadefRb.writeMetainformations((CmsResource) file, metainfos );
 			// inform about the file-system-change
 			fileSystemChanged(currentProject.getName(), file.getAbsolutePath());
 			return( file );
@@ -3431,12 +3431,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void writeFile(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void writeFile(CmsUser currentUser, CmsProject currentProject, 
 						  CmsFile file)
 		throws CmsException {
 		
 		// has the user write-access?
-		if( accessWrite(currentUser, currentProject, (A_CmsResource)file) ) {
+		if( accessWrite(currentUser, currentProject, (CmsResource)file) ) {
 				
 			// write-acces  was granted - write the file.
 			m_fileRb.writeFile(currentProject, 
@@ -3471,12 +3471,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void writeFileHeader(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void writeFileHeader(CmsUser currentUser, CmsProject currentProject, 
 								CmsFile file)
 		throws CmsException {
 		
 		// has the user write-access?
-		if( accessWrite(currentUser, currentProject, (A_CmsResource)file) ) {
+		if( accessWrite(currentUser, currentProject, (CmsResource)file) ) {
 				
 			// write-acces  was granted - write the file.
 			m_fileRb.writeFileHeader(currentProject, 
@@ -3519,11 +3519,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource (A_CmsUser callingUser, No path information allowed).
+	 * @param newname The new name of the resource (CmsUser callingUser, No path information allowed).
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */		
-	public void renameFile(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void renameFile(CmsUser currentUser, CmsProject currentProject, 
 					       String oldname, String newname)
 		throws CmsException {
 		
@@ -3531,7 +3531,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		validFilename(newname);
 		
 		// read the old file
-		A_CmsResource file = readFileHeader(currentUser, currentProject, oldname);
+		CmsResource file = readFileHeader(currentUser, currentProject, oldname);
 		
 		// has the user write-access?
 		if( accessWrite(currentUser, currentProject, file) ) {
@@ -3574,13 +3574,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void deleteFile(A_CmsUser currentUser, A_CmsProject currentProject,
+	public void deleteFile(CmsUser currentUser, CmsProject currentProject,
 						   String filename)
 		throws CmsException {
 		
 		// read the file
-		A_CmsResource onlineFile;
-		A_CmsResource file = m_fileRb.readFileHeader(currentProject, filename);
+		CmsResource onlineFile;
+		CmsResource file = m_fileRb.readFileHeader(currentProject, filename);
 		try {
 			onlineFile = m_fileRb.readFileHeader(onlineProject(currentUser, currentProject), filename);
 		} catch (CmsException exc) {
@@ -3593,7 +3593,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				
 			// write-acces  was granted - delete the file.
 			// and the metainfos
-			m_metadefRb.deleteAllMetainformations((A_CmsResource)file);
+			m_metadefRb.deleteAllMetainformations((CmsResource)file);
 			if(onlineFile == null) {
 				// the onlinefile dosent exist => remove the file realy!
 				m_fileRb.removeFile(currentProject, filename);
@@ -3629,7 +3629,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void copyFile(A_CmsUser currentUser, A_CmsProject currentProject,
+	public void copyFile(CmsUser currentUser, CmsProject currentProject,
                          String source, String destination)
 		throws CmsException {
 		
@@ -3639,7 +3639,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		String foldername;
 		
 		// read the source-file, to check readaccess
-		A_CmsResource file = readFileHeader(currentUser, currentProject, source);
+		CmsResource file = readFileHeader(currentUser, currentProject, source);
 		
 		// split the destination into file and foldername
 		if (destination.endsWith("/")) {
@@ -3652,7 +3652,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 		
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, foldername);
-		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+		if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
 				
 			// write-acces  was granted - copy the file and the metainfos
 			m_fileRb.copyFile(currentProject, onlineProject(currentUser, currentProject), 
@@ -3686,7 +3686,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	public void moveFile(A_CmsUser currentUser, A_CmsProject currentProject,
+	public void moveFile(CmsUser currentUser, CmsProject currentProject,
 						 String source, String destination)
 		throws CmsException { 
 		
@@ -3724,12 +3724,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void chmod(A_CmsUser currentUser, A_CmsProject currentProject,
+	public void chmod(CmsUser currentUser, CmsProject currentProject,
 					  String filename, int flags)
 		throws CmsException {
 		
 		// read the resource to check the access
-		A_CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
+		CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
 		
 		// has the user write-access?
 		if( accessWrite(currentUser, currentProject, resource) || 
@@ -3770,15 +3770,15 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void chown(A_CmsUser currentUser, A_CmsProject currentProject,
+	public void chown(CmsUser currentUser, CmsProject currentProject,
 					  String filename, String newOwner)
 		throws CmsException {
 		// read the new owner
 		
-		A_CmsUser owner = readUser(currentUser, currentProject, newOwner);
+		CmsUser owner = readUser(currentUser, currentProject, newOwner);
 		
 		// read the resource to check the access
-		A_CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
+		CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
 		
 		// has the user write-access? and is he owner or admin?
 		if( ( (resource.getOwnerId() == currentUser.getId()) || 
@@ -3818,15 +3818,15 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void chgrp(A_CmsUser currentUser, A_CmsProject currentProject,
+	public void chgrp(CmsUser currentUser, CmsProject currentProject,
                       String filename, String newGroup)
 		throws CmsException{
 		// read the new group
 		
-		A_CmsGroup group = readGroup(currentUser, currentProject, newGroup);
+		CmsGroup group = readGroup(currentUser, currentProject, newGroup);
 		
 		// read the resource to check the access
-		A_CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
+		CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
 		
 		// has the user write-access? and is he owner or admin?
 		if( accessWrite(currentUser, currentProject, resource) &&
@@ -3868,15 +3868,15 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void chtype(A_CmsUser currentUser, A_CmsProject currentProject,
+	public void chtype(CmsUser currentUser, CmsProject currentProject,
                       String filename, String newType)
 		throws CmsException{
 		// read the new group
 		
-		A_CmsResourceType type = getResourceType(currentUser, currentProject, newType);
+		CmsResourceType type = getResourceType(currentUser, currentProject, newType);
 		
 		// read the resource to check the access
-		A_CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
+		CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
 		
 		// has the user write-access? and is he owner or admin?
 		if( accessWrite(currentUser, currentProject, resource) &&
@@ -3918,7 +3918,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public Vector getFilesInFolder(A_CmsUser currentUser, A_CmsProject currentProject,
+	public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject,
 								   String foldername)
 		throws CmsException {
 		Vector files = new Vector();
@@ -3962,15 +3962,15 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	private Vector helperGetFilesInFolder(A_CmsUser currentUser, 
-										  A_CmsProject currentProject,
+	private Vector helperGetFilesInFolder(CmsUser currentUser, 
+										  CmsProject currentProject,
 										  String foldername)
 		throws CmsException {
 		// get the folder to read from, to check access
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
 												  foldername);
 
-		if( accessRead(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+		if( accessRead(currentUser, currentProject, (CmsResource)cmsFolder) ) {
 				
 			// acces to the folder was granted - return the files.
 			Vector files = m_fileRb.getFilesInFolder(currentProject, foldername);
@@ -3979,9 +3979,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				// read the current folder
 				file = (CmsFile)files.elementAt(z);
 				// check the readability for the file
-				if( ! ( accessOther(currentUser, currentProject, (A_CmsResource)file, C_ACCESS_PUBLIC_READ) || 
-						accessOwner(currentUser, currentProject, (A_CmsResource)file, C_ACCESS_OWNER_READ) ||
-						accessGroup(currentUser, currentProject, (A_CmsResource)file, C_ACCESS_GROUP_READ) ) ) {
+				if( ! ( accessOther(currentUser, currentProject, (CmsResource)file, C_ACCESS_PUBLIC_READ) || 
+						accessOwner(currentUser, currentProject, (CmsResource)file, C_ACCESS_OWNER_READ) ||
+						accessGroup(currentUser, currentProject, (CmsResource)file, C_ACCESS_GROUP_READ) ) ) {
 					// no access, remove the file
 					files.removeElementAt(z);
 					// correct the current index
@@ -4016,10 +4016,10 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public Vector readAllFileHeaders(A_CmsUser currentUser, A_CmsProject currentProject, 
+	 public Vector readAllFileHeaders(CmsUser currentUser, CmsProject currentProject, 
 									  String filename)
          throws CmsException {
-		 A_CmsResource cmsFile = m_fileRb.readFileHeader(currentProject, filename);
+		 CmsResource cmsFile = m_fileRb.readFileHeader(currentProject, filename);
 		 if( accessRead(currentUser, currentProject, cmsFile) ) {
 				
 			// acces to all subfolders was granted - return the file-history.
@@ -4043,7 +4043,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return the number of file-system-changes.
 	 */
-	public long getFileSystemChanges(A_CmsUser currentUser, A_CmsProject currentProject) {
+	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject) {
 		return(m_fileSystemChanges);
 	}
 	
@@ -4068,7 +4068,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @exception throws Exception
 	 * 
 	 */
-	public void exportDb(A_CmsUser currentUser,  A_CmsProject currentProject, String exportFile, String exportPath, int exportType)
+	public void exportDb(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, int exportType)
 		throws Exception {
 		if(isAdmin(currentUser, currentProject) ) {
 			CmsDbExport export= new CmsDbExport(this, currentUser, currentProject, exportFile,  exportPath, exportType);
@@ -4093,7 +4093,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @exception throws Exception
 	 * 
 	 */
-	public void importDb(A_CmsUser currentUser,  A_CmsProject currentProject, String importFile, String importPath)
+	public void importDb(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath)
 	throws Exception {
 		if(isAdmin(currentUser, currentProject)) {
 			CmsDbImport cmsImport= new CmsDbImport(this, currentUser, currentProject, importFile, importPath);
@@ -4122,7 +4122,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
 	 */
-	public void importResources(A_CmsUser currentUser,  A_CmsProject currentProject, String importFile, String importPath, A_CmsObject cms)
+	public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
 		throws CmsException {
 		if(isAdmin(currentUser, currentProject)) {
 			new CmsImport(importFile, importPath, cms);
@@ -4146,7 +4146,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
 	 */
-	public void exportResources(A_CmsUser currentUser,  A_CmsProject currentProject, String exportFile, String exportPath, A_CmsObject cms)
+	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, CmsObject cms)
 		throws CmsException {
 		if(isAdmin(currentUser, currentProject)) {
 			new CmsExport(exportFile, exportPath, cms);
@@ -4170,7 +4170,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
 	 */
-	public void exportResources(A_CmsUser currentUser,  A_CmsProject currentProject, String exportFile, String exportPath, A_CmsObject cms, boolean includeSystem)
+	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, CmsObject cms, boolean includeSystem)
 		throws CmsException {
 		if(isAdmin(currentUser, currentProject)) {
 			new CmsExport(exportFile, exportPath, cms, includeSystem);
@@ -4191,8 +4191,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	public boolean accessRead(A_CmsUser currentUser, A_CmsProject currentProject,
-							   A_CmsResource resource) 
+	public boolean accessRead(CmsUser currentUser, CmsProject currentProject,
+							   CmsResource resource) 
 		throws CmsException	{
 		
 		// check the access to the project
@@ -4238,8 +4238,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	public boolean accessCreate(A_CmsUser currentUser, A_CmsProject currentProject,
-								 A_CmsResource resource) 
+	public boolean accessCreate(CmsUser currentUser, CmsProject currentProject,
+								 CmsResource resource) 
 		throws CmsException	{
 		
 		// check, if this is the onlineproject
@@ -4294,8 +4294,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	public boolean accessWrite(A_CmsUser currentUser, A_CmsProject currentProject,
-								A_CmsResource resource) 
+	public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
+								CmsResource resource) 
 		throws CmsException	{
 		
 		// check, if this is the onlineproject
@@ -4373,8 +4373,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return wether the user may lock this resource, or not.
 	 */
-	public boolean accessLock(A_CmsUser currentUser, A_CmsProject currentProject,
-							   A_CmsResource resource) 
+	public boolean accessLock(CmsUser currentUser, CmsProject currentProject,
+							   CmsResource resource) 
 		throws CmsException	{
 		
 		// check, if this is the onlineproject
@@ -4430,8 +4430,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return wether the user may unlock this resource, or not.
 	 */
-	public boolean accessUnlock(A_CmsUser currentUser, A_CmsProject currentProject,
-								A_CmsResource resource) 
+	public boolean accessUnlock(CmsUser currentUser, CmsProject currentProject,
+								CmsResource resource) 
 		throws CmsException	{
 		
 		// check, if this is the onlineproject
@@ -4488,8 +4488,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	private boolean accessOwner(A_CmsUser currentUser, A_CmsProject currentProject,
-								A_CmsResource resource, int flags) 
+	private boolean accessOwner(CmsUser currentUser, CmsProject currentProject,
+								CmsResource resource, int flags) 
 		throws CmsException {
 		// The Admin has always access
 		if( isAdmin(currentUser, currentProject) ) {
@@ -4515,8 +4515,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	private boolean accessGroup(A_CmsUser currentUser, A_CmsProject currentProject,
-								A_CmsResource resource, int flags)
+	private boolean accessGroup(CmsUser currentUser, CmsProject currentProject,
+								CmsResource resource, int flags)
 		throws CmsException {
 
 		// is the user in the group for the resource?
@@ -4543,8 +4543,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	private boolean accessOther(A_CmsUser currentUser, A_CmsProject currentProject, 
-								A_CmsResource resource, int flags)
+	private boolean accessOther(CmsUser currentUser, CmsProject currentProject, 
+								CmsResource resource, int flags)
 		throws CmsException {
 		
 		if( (resource.getAccessFlags() & flags) == flags ) {
@@ -4598,8 +4598,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	private void checkMandatoryProperties(A_CmsUser currentUser, 
-										 A_CmsProject currentProject, 
+	private void checkMandatoryProperties(CmsUser currentUser, 
+										 CmsProject currentProject, 
 										 String resourceType, 
 										 Hashtable metainfos) 
 		throws CmsException {
@@ -4664,12 +4664,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public A_CmsTask createProject(A_CmsUser currentUser, String projectname, int projectType,
+	 public CmsTask createProject(CmsUser currentUser, String projectname, int projectType,
 									String roleName, long timeout, 
 									int priority)
 		 throws CmsException {
 		 
-		 A_CmsGroup role = null;
+		 CmsGroup role = null;
 		 
 		 // read the role
 		 if(roleName!=null) {
@@ -4703,15 +4703,15 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 
-	 public A_CmsTask createTask(A_CmsUser currentUser, A_CmsProject currentProject, 
+	 public CmsTask createTask(CmsUser currentUser, CmsProject currentProject, 
 								 String agentName, String roleName, 
 								 String taskname, String taskcomment, 
 								 long timeout, int priority)
 		 throws CmsException {
 		 // read the agent
-		 A_CmsUser agent = readUser(currentUser, currentProject, agentName);
+		 CmsUser agent = readUser(currentUser, currentProject, agentName);
 		 // read the role
-		 A_CmsGroup role = readGroup(currentUser, currentProject, roleName);
+		 CmsGroup role = readGroup(currentUser, currentProject, roleName);
 		 // create the timestamp
 		 java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
 		 return m_taskRb.createTask(currentUser, currentProject, agent, role, 
@@ -4738,13 +4738,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public A_CmsTask createTask(A_CmsUser currentUser, int projectid, String agentName, String roleName, 
+	 public CmsTask createTask(CmsUser currentUser, int projectid, String agentName, String roleName, 
 								 String taskname, String taskcomment, int tasktype,
 								 long timeout, int priority)
 		 throws CmsException {
 		 
-		 A_CmsUser agent = null;
-		 A_CmsGroup role = null;
+		 CmsUser agent = null;
+		 CmsGroup role = null;
 		 
 		 // read agent
 		 if(agentName!=null) {
@@ -4792,7 +4792,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void setTaskPar(A_CmsUser currentUser, A_CmsProject currentProject, 
+	 public void setTaskPar(CmsUser currentUser, CmsProject currentProject, 
 						   int taskid, String parname, String parvalue)
 		 throws CmsException {
 		 m_taskRb.setTaskPar(taskid, parname, parvalue);
@@ -4811,7 +4811,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public String getTaskPar(A_CmsUser currentUser, A_CmsProject currentProject, 
+	 public String getTaskPar(CmsUser currentUser, CmsProject currentProject, 
 							  int taskid, String parname)
 		 throws CmsException {
 		 return m_taskRb.getTaskPar(taskid, parname);
@@ -4832,13 +4832,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTasksForUser(A_CmsUser currentUser, A_CmsProject currentProject,
+	 public Vector readTasksForUser(CmsUser currentUser, CmsProject currentProject,
 									int projectId, String userName, int tasktype, 
 									String orderBy, String sort) 
 		 throws CmsException{
-		 A_CmsProject project = null;
+		 CmsProject project = null;
 		 
-		 A_CmsUser user = null;
+		 CmsUser user = null;
 
 		 if(userName != null) {
 			 user = readUser(currentUser, currentProject, userName);
@@ -4866,11 +4866,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTasksForProject(A_CmsUser currentUser, A_CmsProject currentProject,
+	 public Vector readTasksForProject(CmsUser currentUser, CmsProject currentProject,
 									   int projectId, int tasktype, 
 									   String orderBy, String sort)
 		 throws CmsException{
-		 A_CmsProject project = null;
+		 CmsProject project = null;
 		 
 		 if(projectId != C_UNKNOWN_ID) {
 			 project = readProject(currentUser, currentProject, projectId);
@@ -4894,13 +4894,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTasksForRole(A_CmsUser currentUser, A_CmsProject currentProject,
+	 public Vector readTasksForRole(CmsUser currentUser, CmsProject currentProject,
 									int projectId, String roleName, int tasktype, 
 									String orderBy, String sort) 
 		 throws CmsException{
-		 A_CmsProject project = null;
+		 CmsProject project = null;
 		 
-		 A_CmsGroup role = null;
+		 CmsGroup role = null;
 
 		 if(roleName != null) {
 			 role = readGroup(currentUser, currentProject, roleName);
@@ -4928,13 +4928,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readGivenTasks(A_CmsUser currentUser, A_CmsProject currentProject,
+	 public Vector readGivenTasks(CmsUser currentUser, CmsProject currentProject,
 								  int projectId, String ownerName, int taskType, 
 								  String orderBy, String sort) 
 		 throws CmsException{
-		 A_CmsProject project = null;
+		 CmsProject project = null;
 		 
-		 A_CmsUser owner = null;
+		 CmsUser owner = null;
 
 		 if(ownerName != null) {
 			 owner = readUser(currentUser, currentProject, ownerName);
@@ -4959,7 +4959,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public A_CmsTask readTask(A_CmsUser currentUser, A_CmsProject currentProject, 
+	 public CmsTask readTask(CmsUser currentUser, CmsProject currentProject, 
 							   int id)
 		 throws CmsException {
 		 return m_taskRb.readTask(id);
@@ -4977,7 +4977,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void acceptTask(A_CmsUser currentUser, A_CmsProject currentProject, int taskId)
+	 public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskId)
 		 throws CmsException {
 		 m_taskRb.acceptTask(currentUser, taskId);
 	 }
@@ -4996,11 +4996,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void forwardTask(A_CmsUser currentUser, A_CmsProject currentProject, int taskid, 
+	 public void forwardTask(CmsUser currentUser, CmsProject currentProject, int taskid, 
 							 String newRoleName, String newUserName) 
 		 throws CmsException{
-		 A_CmsGroup newRole = readGroup(currentUser, currentProject, newRoleName);
-		 A_CmsUser newUser = readUser(currentUser, currentProject, newUserName);
+		 CmsGroup newRole = readGroup(currentUser, currentProject, newRoleName);
+		 CmsUser newUser = readUser(currentUser, currentProject, newUserName);
 		 
 		 m_taskRb.forwardTask(currentUser, taskid, newRole, newUser);		 
 	 }
@@ -5017,7 +5017,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void endTask(A_CmsUser currentUser, A_CmsProject currentProject, int taskid) 
+	 public void endTask(CmsUser currentUser, CmsProject currentProject, int taskid) 
 		 throws CmsException {
 		 m_taskRb.endTask(currentUser, taskid);
 	 }	
@@ -5035,7 +5035,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void writeTaskLog(A_CmsUser currentUser, A_CmsProject currentProject, 
+	 public void writeTaskLog(CmsUser currentUser, CmsProject currentProject, 
 							  int taskid, String comment)
 		 throws CmsException {
 		 m_taskRb.writeTaskLog(taskid, currentUser, comment);
@@ -5055,7 +5055,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void writeTaskLog(A_CmsUser currentUser, A_CmsProject currentProject, 
+	 public void writeTaskLog(CmsUser currentUser, CmsProject currentProject, 
 							  int taskid, String comment, int taskType)
 		 throws CmsException {
 		 m_taskRb.writeTaskLog(taskid, currentUser, comment, taskType);
@@ -5073,7 +5073,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * @return A Vector of new TaskLog objects 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTaskLogs(A_CmsUser currentUser, A_CmsProject currentProject,
+	 public Vector readTaskLogs(CmsUser currentUser, CmsProject currentProject,
 								int taskid)
 		 throws CmsException{
 		 return m_taskRb.readTaskLogs(taskid);
@@ -5090,10 +5090,10 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * @return A Vector of new TaskLog objects 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readProjectLogs(A_CmsUser currentUser, A_CmsProject currentProject,
+	 public Vector readProjectLogs(CmsUser currentUser, CmsProject currentProject,
 								   int projectId)
 		 throws CmsException {
-		 A_CmsProject project = readProject(currentUser, currentProject, projectId);
+		 CmsProject project = readProject(currentUser, currentProject, projectId);
 		 return m_taskRb.readProjectLogs(project);
 	 }
 	 
@@ -5110,7 +5110,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void setTimeout(A_CmsUser currentUser, A_CmsProject currentProject,
+	 public void setTimeout(CmsUser currentUser, CmsProject currentProject,
 							int taskId, long timeout)
 		 throws CmsException {
 		 m_taskRb.setTimeout(currentUser, taskId, new java.sql.Timestamp(timeout));
@@ -5129,7 +5129,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void setPriority(A_CmsUser currentUser, A_CmsProject currentProject,
+	 public void setPriority(CmsUser currentUser, CmsProject currentProject,
 							 int taskId, int priority)
 		 throws CmsException {
 		 m_taskRb.setPriority(currentUser, taskId, priority);
@@ -5147,7 +5147,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void reaktivateTask(A_CmsUser currentUser, A_CmsProject currentProject,
+	 public void reaktivateTask(CmsUser currentUser, CmsProject currentProject,
 								int taskId)
 		 throws CmsException {
 		 m_taskRb.reaktivateTask(currentUser, taskId);
@@ -5166,7 +5166,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public void setName(A_CmsUser currentUser, A_CmsProject currentProject, 
+	 public void setName(CmsUser currentUser, CmsProject currentProject, 
 						 int taskId, String name)
 		 throws CmsException {
 		 m_taskRb.setName(currentUser, taskId, name);

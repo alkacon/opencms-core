@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/05/19 11:19:38 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2000/06/05 13:37:54 $
+ * Version: $Revision: 1.74 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,10 +46,10 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.73 $ $Date: 2000/05/19 11:19:38 $ 
+ * @version $Revision: 1.74 $ $Date: 2000/06/05 13:37:54 $ 
  * 
  */
-public class CmsObject extends A_CmsObject implements I_CmsConstants {
+public class CmsObject implements I_CmsConstants {
 	
 	/**
 	 * The resource broker to access the cms.
@@ -59,7 +59,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	/**
 	 * The resource broker to access the cms.
 	 */
-	private A_CmsRequestContext m_context = null;
+	private CmsRequestContext m_context = null;
 
 	/**
 	 * Initialises the CmsObject with the resourceBroker. This only done ones!
@@ -95,7 +95,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @return the current request-context.
 	 */
-	public A_CmsRequestContext getRequestContext() {
+	public CmsRequestContext getRequestContext() {
 		return( m_context );
 	}
 
@@ -116,7 +116,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @return the anonymous user object.
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsUser anonymousUser() 
+	public CmsUser anonymousUser() 
 		throws CmsException {
 		return( c_rb.anonymousUser(m_context.currentUser(), 
 								   m_context.currentProject()) );
@@ -129,7 +129,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @return the onlineproject object.
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsProject onlineProject() 
+	public CmsProject onlineProject() 
 		throws CmsException {
 		return( c_rb.onlineProject(m_context.currentUser(), 
 								   m_context.currentProject()) );
@@ -156,7 +156,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsResourceType getResourceType(String resourceType) 
+	public CmsResourceType getResourceType(String resourceType) 
 		throws CmsException {
 		return( c_rb.getResourceType(m_context.currentUser(), 
 									 m_context.currentProject(), resourceType) );
@@ -171,7 +171,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsResourceType getResourceType(int resourceType) 
+	public CmsResourceType getResourceType(int resourceType) 
 		throws CmsException {
 		return( c_rb.getResourceType(m_context.currentUser(), 
 									 m_context.currentProject(), resourceType) );
@@ -191,7 +191,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsResourceType addResourceType(String resourceType, int launcherType, 
+	public CmsResourceType addResourceType(String resourceType, int launcherType, 
 											 String launcherClass) 
 		throws CmsException {
 		return( c_rb.addResourceType(m_context.currentUser(), 
@@ -219,7 +219,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsProject readProject(int id)
+	public CmsProject readProject(int id)
 		throws CmsException { 
 		return( c_rb.readProject(m_context.currentUser(), 
 								 m_context.currentProject(), id) );
@@ -232,7 +232,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsProject readProject(A_CmsResource res)
+	public CmsProject readProject(CmsResource res)
 		throws CmsException { 
 		return( c_rb.readProject(m_context.currentUser(), 
 								 m_context.currentProject(), res) );
@@ -245,7 +245,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsProject readProject(A_CmsTask task)
+	public CmsProject readProject(CmsTask task)
 		throws CmsException { 
 		return( c_rb.readProject(m_context.currentUser(), 
 								 m_context.currentProject(), task) );
@@ -261,7 +261,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject createProject(String name, String description, 
+	 public CmsProject createProject(String name, String description, 
 									   String groupname, String managergroupname)
 		 throws CmsException {
 		 return( c_rb.createProject(m_context.currentUser(), 
@@ -280,7 +280,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject createProject(int id, String name, String description, 
+	 public CmsProject createProject(int id, String name, String description, 
 									   String groupname, String managergroupname)
 		 throws CmsException {
 		 return( c_rb.createProject(m_context.currentUser(), 
@@ -463,7 +463,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	public A_CmsResource readFileHeader(String folder, String filename)
+	public CmsResource readFileHeader(String folder, String filename)
 		throws CmsException { 
      	return( c_rb.readFileHeader(m_context.currentUser(), 
 									m_context.currentProject(), 
@@ -482,7 +482,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	public A_CmsResource readFileHeader(String filename)
+	public CmsResource readFileHeader(String filename)
 		throws CmsException { 
      	return( c_rb.readFileHeader(m_context.currentUser(), 
 									m_context.currentProject(), 
@@ -946,7 +946,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	public A_CmsUser lockedBy(String resource)
+	public CmsUser lockedBy(String resource)
 		throws CmsException {
 		return( c_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), 
 							  resource) );
@@ -965,7 +965,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	public A_CmsUser lockedBy(A_CmsResource resource)
+	public CmsUser lockedBy(CmsResource resource)
 		throws CmsException {
 		return( c_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), 
 							  resource) );
@@ -1069,7 +1069,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsUser readOwner(A_CmsTaskLog log) 
+	public CmsUser readOwner(CmsTaskLog log) 
 		throws CmsException {
 		return( c_rb.readOwner(m_context.currentUser(), m_context.currentProject(), 
 							   log ) );
@@ -1082,7 +1082,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsUser readOwner(A_CmsResource resource) 
+	public CmsUser readOwner(CmsResource resource) 
 		throws CmsException {
 		return( c_rb.readOwner(m_context.currentUser(), m_context.currentProject(), 
 							   resource ) );
@@ -1096,7 +1096,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsUser readOwner(A_CmsTask task) 
+	public CmsUser readOwner(CmsTask task) 
 		throws CmsException {
 		return( c_rb.readOwner(m_context.currentUser(), m_context.currentProject(), 
 							   task ) );
@@ -1110,7 +1110,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsUser readAgent(A_CmsTask task) 
+	public CmsUser readAgent(CmsTask task) 
 		throws CmsException {
 		return( c_rb.readAgent(m_context.currentUser(), m_context.currentProject(), 
 							   task ) );
@@ -1124,7 +1124,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsUser readOriginalAgent(A_CmsTask task) 
+	public CmsUser readOriginalAgent(CmsTask task) 
 		throws CmsException {
 		return( c_rb.readOriginalAgent(m_context.currentUser(), 
 									   m_context.currentProject(), 
@@ -1138,7 +1138,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup readGroup(A_CmsResource resource) 
+	public CmsGroup readGroup(CmsResource resource) 
 		throws CmsException {
 		return( c_rb.readGroup(m_context.currentUser(), m_context.currentProject(), 
 							   resource ) );
@@ -1152,7 +1152,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup readGroup(A_CmsTask task) 
+	public CmsGroup readGroup(CmsTask task) 
 		throws CmsException {
 		return( c_rb.readGroup(m_context.currentUser(), m_context.currentProject(), 
 							   task ) );
@@ -1165,7 +1165,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsUser readOwner(A_CmsProject project) 
+	public CmsUser readOwner(CmsProject project) 
 		throws CmsException{
 		return( c_rb.readOwner(m_context.currentUser(), m_context.currentProject(), 
 							   project ) );
@@ -1178,7 +1178,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup readGroup(A_CmsProject project) 
+	public CmsGroup readGroup(CmsProject project) 
 		throws CmsException{
 		return( c_rb.readGroup(m_context.currentUser(), m_context.currentProject(), 
 							   project ) );
@@ -1191,7 +1191,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup readManagerGroup(A_CmsProject project) 
+	public CmsGroup readManagerGroup(CmsProject project) 
 		throws CmsException{
 		return( c_rb.readManagerGroup(m_context.currentUser(), 
 									  m_context.currentProject(), 
@@ -1256,7 +1256,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @return group The parent group or null.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup getParent(String groupname)
+	public CmsGroup getParent(String groupname)
 		throws CmsException {
 		return( c_rb.getParent(m_context.currentUser(), m_context.currentProject(), 
 							   groupname ) );
@@ -1270,7 +1270,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser readUser(String username) 
+	public CmsUser readUser(String username) 
 		throws CmsException { 
 		return( c_rb.readUser(m_context.currentUser(), 
 							  m_context.currentProject(), 
@@ -1287,7 +1287,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser readUser(String username, String password) 
+	public CmsUser readUser(String username, String password) 
 		throws CmsException { 
         return( c_rb.readUser(m_context.currentUser(), m_context.currentProject(),
 							  username, password) );
@@ -1305,7 +1305,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public String loginUser(String username, String password) 
 		throws CmsException { 
 		// login the user
-		A_CmsUser newUser = c_rb.loginUser(m_context.currentUser(), 
+		CmsUser newUser = c_rb.loginUser(m_context.currentUser(), 
 										   m_context.currentProject(),
 										   username, password);
 		// init the new user
@@ -1361,7 +1361,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	public A_CmsUser addUser(String name, String password, String group, 
+	public CmsUser addUser(String name, String password, String group, 
 							 String description, Hashtable additionalInfos, int flags)
 		throws CmsException { 
 		
@@ -1394,7 +1394,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeUser(A_CmsUser user)
+	public void writeUser(CmsUser user)
 		throws CmsException { 
 		c_rb.writeUser(m_context.currentUser(), m_context.currentProject(), user );
 	}
@@ -1464,7 +1464,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsGroup readGroup(String groupname) 
+	public CmsGroup readGroup(String groupname) 
 		throws CmsException { 
 		return( c_rb.readGroup(m_context.currentUser(), m_context.currentProject(), 
 							   groupname));
@@ -1483,7 +1483,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	public A_CmsGroup addGroup(String name, String description, int flags, String parent)
+	public CmsGroup addGroup(String name, String description, int flags, String parent)
 		throws CmsException { 
 		return( c_rb.addGroup(m_context.currentUser(), m_context.currentProject(),
 							  name, description, flags, parent) );
@@ -1496,7 +1496,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @param group The group that should be written to the Cms.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	public void writeGroup(A_CmsGroup group)
+	public void writeGroup(CmsGroup group)
 		throws CmsException {
 		c_rb.writeGroup(m_context.currentUser(), m_context.currentProject(),
 						group);
@@ -1606,7 +1606,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition createPropertydefinition(String name, String resourcetype, 
+	public CmsPropertydefinition createPropertydefinition(String name, String resourcetype, 
 													int type)
 		throws CmsException {
 		return( c_rb.createPropertydefinition(m_context.currentUser(), 
@@ -1625,7 +1625,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition readPropertydefinition(String name, 
+	public CmsPropertydefinition readPropertydefinition(String name, 
 												  String resourcetype)
 		throws CmsException { 
 		return( c_rb.readPropertydefinition(m_context.currentUser(), 
@@ -1641,7 +1641,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition writePropertydefinition(A_CmsPropertydefinition definition)
+	public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition definition)
 		throws  CmsException { 
 		return( c_rb.writePropertydefinition(m_context.currentUser(), 
 										 m_context.currentProject(), 
@@ -1827,7 +1827,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @return the mountpoint - or null if it doesen't exists.
 	 */
-	public A_CmsMountPoint readMountPoint(String mountpoint )
+	public CmsMountPoint readMountPoint(String mountpoint )
 		throws CmsException {
 		return( c_rb.readMountPoint(m_context.currentUser(), 
 									m_context.currentProject(),
@@ -1902,7 +1902,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public A_CmsTask createProject(String projectname, int projectType,
+	 public CmsTask createProject(String projectname, int projectType,
 									String roleName, long timeout, 
 									int priority)
 		 throws CmsException {
@@ -1927,7 +1927,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 
-	 public A_CmsTask createTask(String agentName, String roleName, 
+	 public CmsTask createTask(String agentName, String roleName, 
 								 String taskname, String taskcomment, 
 								 long timeout, int priority)
 		 throws CmsException {
@@ -1955,7 +1955,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public A_CmsTask createTask(int projectid, String agentName, String roleName, 
+	 public CmsTask createTask(int projectid, String agentName, String roleName, 
 								 String taskname, String taskcomment, int tasktype,
 								 long timeout, int priority)
 		 throws CmsException {
@@ -2083,7 +2083,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @param resource The resource to check.
 	 * @return wether the user has access, or not.
 	 */
-    public boolean accessRead(A_CmsResource resource) throws CmsException {
+    public boolean accessRead(CmsResource resource) throws CmsException {
     	try {
 			return c_rb.accessRead(m_context.currentUser(), m_context.currentProject(), resource);
 		} catch(Exception exc) {
@@ -2097,7 +2097,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @param resource The resource to check.
 	 * @return wether the user has access, or not.
 	 */
-    public boolean accessCreate(A_CmsResource resource) throws CmsException {
+    public boolean accessCreate(CmsResource resource) throws CmsException {
     	try {
 			return c_rb.accessCreate(m_context.currentUser(), m_context.currentProject(), resource);
 		} catch(Exception exc) {
@@ -2111,7 +2111,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @param currentUser The user who requested this method.
 	 * @return wether the user has access, or not.
 	 */
-    public boolean accessWrite(A_CmsResource resource) throws CmsException {
+    public boolean accessWrite(CmsResource resource) throws CmsException {
     	try {
 			return c_rb.accessWrite(m_context.currentUser(), m_context.currentProject(), resource);
 		} catch(Exception exc) {
@@ -2125,7 +2125,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @param currentUser The user who requested this method.
 	 * @return wether the user may lock this resource, or not.
 	 */
-    public boolean accessLock(A_CmsResource resource) throws CmsException {
+    public boolean accessLock(CmsResource resource) throws CmsException {
     	try {
 			return c_rb.accessLock(m_context.currentUser(), m_context.currentProject(), resource);
 		} catch(Exception exc) {
@@ -2209,7 +2209,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public A_CmsTask readTask(int id)
+	 public CmsTask readTask(int id)
 		 throws CmsException {
 		 return( c_rb.readTask(m_context.currentUser(), m_context.currentProject(), 
 							   id) );

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessTask.java,v $
- * Date   : $Date: 2000/05/30 14:19:13 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/06/05 13:37:53 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.util.*;
  * 
  * @author Ruediger Gutfleisch
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/05/30 14:19:13 $
+ * @version $Revision: 1.14 $ $Date: 2000/06/05 13:37:53 $
  */
 class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	
@@ -259,7 +259,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsTask createProject(A_CmsUser owner, String projectname, int projectType, A_CmsGroup role, java.sql.Timestamp timeout, int priority)
+	public CmsTask createProject(CmsUser owner, String projectname, int projectType, CmsGroup role, java.sql.Timestamp timeout, int priority)
 		throws CmsException {
 	
 		return this.createTask(0, owner, owner, role, projectType,projectname,timeout,priority);		
@@ -282,7 +282,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	
-	public A_CmsTask createTask(A_CmsProject project, A_CmsUser owner, A_CmsUser agent, A_CmsGroup role, 
+	public CmsTask createTask(CmsProject project, CmsUser owner, CmsUser agent, CmsGroup role, 
 								int taskType, String taskname, java.sql.Timestamp timeout, int priority)
 		
 		throws CmsException {
@@ -307,7 +307,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	
-	public A_CmsTask createTask(int projectid, A_CmsUser owner, A_CmsUser agent, A_CmsGroup role, 
+	public CmsTask createTask(int projectid, CmsUser owner, CmsUser agent, CmsGroup role, 
 								int taskType, String taskname, java.sql.Timestamp timeout, int priority)
 		
 		throws CmsException {
@@ -346,13 +346,13 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	
-	private A_CmsTask createTask(int rootId, int parentId, int tasktype, 
+	private CmsTask createTask(int rootId, int parentId, int tasktype, 
 						   int ownerId, int agentId,int  roleId, String taskname, 
 						   java.sql.Timestamp wakeuptime, java.sql.Timestamp timeout, 
 						   int priority) 
 		throws CmsException {
 		int id = C_UNKNOWN_ID;
-		A_CmsTask task = null;
+		CmsTask task = null;
 		
 		try {
 			PreparedStatement statementCreateTask = m_Con.prepareStatement(C_TASK_TYPE_COPY);
@@ -398,7 +398,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsTask writeTask(A_CmsTask task)
+	public CmsTask writeTask(CmsTask task)
 		throws CmsException {
 		try {    
 			PreparedStatement statementUpdateTask = m_Con.prepareStatement(C_TASK_UPDATE);
@@ -441,7 +441,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsTask readTask(int id)
+	public CmsTask readTask(int id)
 		throws CmsException {
 		ResultSet result;
 		
@@ -491,7 +491,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void endTask(A_CmsTask task)
+	public void endTask(CmsTask task)
 		throws CmsException {
 			endTask(task.getId());
 			task.setState(C_TASK_STATE_ENDED);
@@ -527,7 +527,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void forwardTask(A_CmsTask task, A_CmsGroup newRole, A_CmsUser newUser)
+	public void forwardTask(CmsTask task, CmsGroup newRole, CmsUser newUser)
 		throws CmsException {
 			task.setAgentUser(newUser.getId());
 			task.setRole(newRole.getId());
@@ -543,7 +543,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void forwardTask(int taskId, A_CmsGroup newRole, A_CmsUser newUser)
+	public void forwardTask(int taskId, CmsGroup newRole, CmsUser newUser)
 		throws CmsException {
 		try { 
 			String sqlstr = "UPDATE "+C_TABLE_TASK+" SET " + 
@@ -575,8 +575,8 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Vector readTasks(A_CmsProject project, A_CmsUser agent, A_CmsUser owner, 
-							A_CmsGroup role, int tasktype, 
+	public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, 
+							CmsGroup role, int tasktype, 
 							String orderBy, String sort)
 		throws CmsException {
 		boolean first = true;
@@ -735,7 +735,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	private void writeTaskLog(int taskId, A_CmsUser user, 
+	private void writeTaskLog(int taskId, CmsUser user, 
 							  java.sql.Timestamp starttime, String comment, int type)
 		throws CmsException {
 		try {
@@ -770,7 +770,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void writeTaskLog(int taskid, A_CmsUser user, String comment)
+	public void writeTaskLog(int taskid, CmsUser user, String comment)
 		throws CmsException {
 		
 		this.writeTaskLog(taskid, user, 
@@ -803,7 +803,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void writeTaskLog(int taskId, A_CmsUser user, String comment, int type)
+	public void writeTaskLog(int taskId, CmsUser user, String comment, int type)
 		throws CmsException {
 			this.writeTaskLog(taskId, user, 
 						  new java.sql.Timestamp(System.currentTimeMillis()), 
@@ -817,7 +817,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * @return A new TaskLog object 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	private A_CmsTaskLog readTaskLog(int id)
+	private CmsTaskLog readTaskLog(int id)
 		throws CmsException {
 		ResultSet result;
 		
@@ -853,7 +853,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	public Vector readTaskLogs(int taskId)
 		throws CmsException {
 		ResultSet recset;
-		A_CmsTaskLog log = null;
+		CmsTaskLog log = null;
 		Vector logs = new Vector();
 		
 		try {
@@ -890,10 +890,10 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * @return A Vector of new TaskLog objects 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Vector readProjectLogs(A_CmsProject project)
+	public Vector readProjectLogs(CmsProject project)
 		throws CmsException {
 		ResultSet recset;
-		A_CmsTaskLog log = null;
+		CmsTaskLog log = null;
 		Vector logs = new Vector();
 		
 		try {

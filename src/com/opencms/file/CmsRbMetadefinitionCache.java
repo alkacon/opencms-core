@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbMetadefinitionCache.java,v $
- * Date   : $Date: 2000/02/28 16:57:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/06/05 13:37:55 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/02/28 16:57:34 $
+ * @version $Revision: 1.3 $ $Date: 2000/06/05 13:37:55 $
  */
 
 public class CmsRbMetadefinitionCache extends CmsRbMetadefinition {
@@ -73,7 +73,7 @@ public class CmsRbMetadefinitionCache extends CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public String readMetainformation(A_CmsResource resource, String meta)
+	public String readMetainformation(CmsResource resource, String meta)
 		throws CmsException {
         String metainfo;
         String key=resource.getProjectId()+resource.getAbsolutePath()+meta;
@@ -119,7 +119,7 @@ public class CmsRbMetadefinitionCache extends CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeMetainformation(A_CmsResource resource, String meta,
+	public void writeMetainformation(CmsResource resource, String meta,
 											  String value)
 		throws CmsException {
         
@@ -157,7 +157,7 @@ public class CmsRbMetadefinitionCache extends CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteMetainformation(A_CmsResource resource, String meta)
+	public void deleteMetainformation(CmsResource resource, String meta)
 		throws CmsException {
         
         String key=resource.getProjectId()+resource.getAbsolutePath()+meta;
@@ -208,7 +208,7 @@ public class CmsRbMetadefinitionCache extends CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteAllMetainformations(A_CmsResource resource)
+	public void deleteAllMetainformations(CmsResource resource)
 		throws CmsException {
 		m_accessMetadefinition.deleteAllMetainformations(resource);
         m_metacache.clear();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskList.java,v $
- * Date   : $Date: 2000/05/18 14:35:01 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import java.lang.reflect.*;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.13 $ $Date: 2000/05/18 14:35:01 $
+ * @version $Revision: 1.14 $ $Date: 2000/06/05 13:38:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -53,14 +53,14 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
 
@@ -72,7 +72,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * Projectlists can be referenced in any workplace template by <br>
      * <CODE>&lt;TASKLIST method="methodname"/&gt;</CODE>
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;ICON&gt;</code> tag.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object <em>(not used here)</em>.
@@ -81,12 +81,12 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
          
 		
         // Get list definition values
         CmsXmlWpTemplateFile listdef = getTaskListDefinitions(cms);
-		A_CmsRequestContext context = cms.getRequestContext();
+		CmsRequestContext context = cms.getRequestContext();
 		
         String listMethod = n.getAttribute("method");
 
@@ -94,7 +94,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         Method callingMethod = null;
 		Vector list = new Vector();
         try {
-            callingMethod = callingObject.getClass().getMethod(listMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class});
+            callingMethod = callingObject.getClass().getMethod(listMethod, new Class[] {CmsObject.class, CmsXmlLanguageFile.class});
             list = (Vector)callingMethod.invoke(callingObject, new Object[] {cms, lang});
         } catch(NoSuchMethodException exc) {
             // The requested method was not found.
@@ -138,8 +138,8 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
               
         for(int i = 0; i < list.size(); i++) {
 			// get the actual project
-			A_CmsTask task = (A_CmsTask) list.elementAt(i);
-			A_CmsProject project = null;
+			CmsTask task = (CmsTask) list.elementAt(i);
+			CmsProject project = null;
 			projectname = "?";
 			try {
 				project = cms.readProject(task);
@@ -167,7 +167,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 			// making the context menus depending on the state of the task and 
 			// the role of the user
 			
-			A_CmsUser owner = null;
+			CmsUser owner = null;
 			String ownerName = "";
 			try {
 				owner = cms.readOwner(task);
@@ -176,7 +176,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 				// ignore the exception
 			}
 
-			A_CmsUser editor = null;
+			CmsUser editor = null;
 			String editorName = "";
 			try {
 				editor = cms.readAgent(task);
@@ -185,7 +185,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 				// ignore the exception
 			}
 			
-			A_CmsGroup role = null;
+			CmsGroup role = null;
 			String roleName = "";
 			try {
 				role = cms.readGroup(task);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2000/05/30 11:44:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/05/30 11:44:52 $
+ * @version $Revision: 1.16 $ $Date: 2000/06/05 13:38:00 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -61,14 +61,14 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
      /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
     
@@ -83,7 +83,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
      * @return Bytearry containing the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
 	                      
@@ -169,7 +169,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
         
                               
                     // get the selected resource and check if it is an image
-                    A_CmsResourceType type=cms.getResourceType(newtype);
+                    CmsResourceType type=cms.getResourceType(newtype);
                     if (newtype.equals(C_TYPE_IMAGE_NAME)) {
                         // the file type is an image
                         template="image";   
@@ -204,7 +204,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                 }
                 // create the new file.    
                 // todo: error handling if file already exits    
-                A_CmsResourceType type=cms.getResourceType(newtype);                                                           
+                CmsResourceType type=cms.getResourceType(newtype);                                                           
                 CmsFile file=cms.createFile(currentFolder,filename,filecontent,type.getResourceName());
                 // check if a file title was given
                 if (title!= null) {
@@ -254,7 +254,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
     * @return the number of the preselected item, -1 if none preselected 
     * @exception Throws CmsException if something goes wrong.
     */
-    public int getResources(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) 
+    public int getResources(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) 
 		throws CmsException { 
 		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
 		String filename = (String) session.getValue(C_PARA_FILE); 

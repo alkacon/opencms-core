@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
- * Date   : $Date: 2000/05/30 18:11:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.4 $ $Date: 2000/05/30 18:11:37 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/05 13:37:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFileListUsers {
@@ -50,14 +50,14 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }    
 
@@ -65,14 +65,14 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "template file is: " + templateFile);
@@ -111,7 +111,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
 				Vector galleries = cms.getSubFolders(folder);
 				if (galleries.size() > 0) {
 					// take the first gallery
-					folder = ((A_CmsResource) galleries.elementAt(0)).getAbsolutePath();
+					folder = ((CmsResource) galleries.elementAt(0)).getAbsolutePath();
 					session.putValue(C_PARA_FOLDER, folder); 
 				} else {
 					// there was a /download/ - folder but no gallery in it
@@ -163,7 +163,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
     * @return A vector of folder and file objects.
     * @exception Throws CmsException if something goes wrong.
     */
-    public Vector getFiles(A_CmsObject cms) 
+    public Vector getFiles(CmsObject cms) 
         throws CmsException {
 		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);     
         
@@ -189,14 +189,14 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
 			Vector galleries = cms.getSubFolders(folder);
 			if (galleries.size() > 0) {
 				// take the first gallery if none was chosen
-				folder = ((A_CmsResource) galleries.elementAt(0)).getAbsolutePath();
+				folder = ((CmsResource) galleries.elementAt(0)).getAbsolutePath();
 			}
             session.putValue(C_PARA_FOLDER, folder); 
         }
 		  
         // Generate the download list for all files on the selected page
         for(int i=from; i<to; i++) {
-			A_CmsResource currFile = (A_CmsResource)filteredFiles.elementAt(i); 
+			CmsResource currFile = (CmsResource)filteredFiles.elementAt(i); 
             files.addElement(currFile);   
 		}                    
         return files;
@@ -210,12 +210,12 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
      * This method returns <code>false</code> if the currently displayed page is
      * the first page.
      * 
-     * @param cms A_CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param cms CmsObject Object for accessing system resources <em>(not used here)</em>.
      * @param lang reference to the currently valid language file <em>(not used here)</em>.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return <code>true</code> if the button should be enabled, <code>false</code> otherwise.
      */
-    public Boolean showBackButton(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
+    public Boolean showBackButton(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
         
         // Get the current page number
         String pageText = (String)parameters.get(C_PARA_PAGE);
@@ -232,12 +232,12 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
      * This method returns <code>false</code> if the currently displayed page is
      * the last page.
      * 
-     * @param cms A_CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param cms CmsObject Object for accessing system resources <em>(not used here)</em>.
      * @param lang reference to the currently valid language file <em>(not used here)</em>.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return <code>true</code> if the button should be enabled, <code>false</code> otherwise.
      */
-    public Boolean showNextButton(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
+    public Boolean showNextButton(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
      
 		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);     
     
@@ -261,7 +261,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
      * @param filter Search pattern that should be used.
      * @return Vector of CmsFile objects.
      */
-    private Vector getFilteredDownList(A_CmsObject cms, String folder, String filter)  throws CmsException {
+    private Vector getFilteredDownList(CmsObject cms, String folder, String filter)  throws CmsException {
         // Get all pictures in the given folder using the cms object
         Vector allFiles = cms.getFilesInFolder(folder);
         
@@ -305,12 +305,12 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
      * @param cms Cms object for accessing system resources.
      * @param filelist Template file containing the definitions for the file list together with
      * the included customized defintions.
-     * @param res A_CmsResource Object of the current file list entry.
+     * @param res CmsResource Object of the current file list entry.
      * @param lang Current language file.
      * @exception CmsException if access to system resources failed.
      * @see I_CmsFileListUsers
      */
-    public void getCustomizedColumnValues(A_CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, A_CmsResource res, CmsXmlLanguageFile lang) 
+    public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, CmsResource res, CmsXmlLanguageFile lang) 
         throws CmsException { 
 		filelistTemplate.setData("fullpath", res.getAbsolutePath());
 		filelistTemplate.setData("name_value", res.getName()); 
@@ -327,7 +327,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
      * @return New modified bit pattern.
      * @see I_CmsFileListUsers
      */
-    public int modifyDisplayedColumns(A_CmsObject cms, int prefs) {  
+    public int modifyDisplayedColumns(CmsObject cms, int prefs) {  
 		// not display the following columns
         prefs = ((prefs & C_FILELIST_NAME) == 0) ? prefs : (prefs - C_FILELIST_NAME);
 		prefs = ((prefs & C_FILELIST_TITLE) == 0) ? prefs : (prefs - C_FILELIST_TITLE);
@@ -338,7 +338,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
         return prefs;
     }
        
-	public Integer getDownGalleryNames(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+	public Integer getDownGalleryNames(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		int ret=-1;
 		
@@ -357,7 +357,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
         int numFolders = folders.size();
 		
         for(int i=0; i<numFolders; i++) {
-            A_CmsResource currFolder = (A_CmsResource)folders.elementAt(i);  
+            CmsResource currFolder = (CmsResource)folders.elementAt(i);  
 			String name = currFolder.getName(); 
 			if (chosenFolder.equals(currFolder.getAbsolutePath())) {
 				ret = i;	

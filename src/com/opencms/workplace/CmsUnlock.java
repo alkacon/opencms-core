@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
- * Date   : $Date: 2000/05/30 14:36:05 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2000/05/30 14:36:05 $
+ * @version $Revision: 1.24 $ $Date: 2000/06/05 13:38:00 $
  */
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -56,14 +56,14 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
       /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
     
@@ -78,7 +78,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * @return Bytearre containgine the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
@@ -105,7 +105,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         //check if the unlock parameter was included in the request
         // if not, the unlock page is shown for the first time
         filename=(String)session.getValue(C_PARA_FILE);
-		A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
+		CmsResource file=(CmsResource)cms.readFileHeader(filename);
         
         // select the template to be displayed
         if (file.isFile()) {
@@ -201,7 +201,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 	 * @param cms The CmsObject, to access the XML read file.
 	 * @param file File in which the body path is stored.
 	 */
-	private String getBodyPath(A_CmsObject cms, CmsFile file)
+	private String getBodyPath(CmsObject cms, CmsFile file)
 		throws CmsException{
 		file=cms.readFile(file.getAbsolutePath());
 		CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
@@ -214,7 +214,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 	 * @param cms The CmsObject, to access the XML read file.
 	 * @param file File in which the body path is stored.
 	 */
-    private String getNewsContentPath(A_CmsObject cms, CmsFile file) throws CmsException {
+    private String getNewsContentPath(CmsObject cms, CmsFile file) throws CmsException {
 
         String newsContentFilename = null;
 

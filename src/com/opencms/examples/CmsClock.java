@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsClock.java,v $
- * Date   : $Date: 2000/03/01 15:56:33 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/06/05 13:37:51 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,21 +54,21 @@ import java.util.*;
  * also use a subset of this calls to generate e.g. only the date and not the time information.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/03/01 15:56:33 $
+ * @version $Revision: 1.2 $ $Date: 2000/06/05 13:37:51 $
  */
 public class CmsClock extends CmsXmlTemplate {
 
     /**
      * Handles any occurence of this user method.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object get(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Object get(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
 		throws CmsException {
 		
 		// get the current time
@@ -115,14 +115,14 @@ public class CmsClock extends CmsXmlTemplate {
      * <P>
      * This result is NOT cacheable, because a clock is dynamicaly.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
 		// not cacheable
 		return false;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsTemplate.java,v $
- * Date   : $Date: 2000/05/15 12:56:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/06/05 13:37:51 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,7 +56,7 @@ import javax.servlet.http.*;
  *
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/05/15 12:56:54 $
+ * @version $Revision: 1.11 $ $Date: 2000/06/05 13:37:51 $
  * @see com.opencms.examples.CmsXmlNewsTemplateFile
  */
 public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstants, I_CmsLogChannels {
@@ -80,14 +80,14 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return true;
     }
         
@@ -98,7 +98,7 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
      * <code>newsList</code> and <code>article</code> will be used
      * to display data of the content type "news article".
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName <em>not used here</em>.
      * @param parameters <em>not used here</em>.
@@ -106,7 +106,7 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
      * @return Processed content of the given template file.
      * @exception CmsException 
      */
-     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         String read = (String)parameters.get(elementName + ".read");     
         String newsNum = (String)parameters.get(elementName + ".newsnum");        
 
@@ -157,16 +157,16 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
      * <li><code>file</code></li>
      * </ul>
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return List of all articles.
      */
-    public String article(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public String article(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
 
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
         String servletPath = orgReq.getServletPath();
 
@@ -204,15 +204,15 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
      * <P>
      * Called by the template file using <code>&lt;METHOD name="newsList"&gt;</code>.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return List of all articles.
      */
-    public String newsList(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public String newsList(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
         String servletPath = orgReq.getServletPath();
 
@@ -305,13 +305,13 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
      * <P>
      * Called by the template file using <code>&lt;METHOD name="getWmlTitle"&gt;</code>.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return document title.
      */
-	public String getWmlTitle(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+	public String getWmlTitle(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
 		Hashtable parameters = (Hashtable)userObj;
         String elementName = (String)parameters.get("_ELEMENT_");
@@ -328,13 +328,13 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
      * <P>
      * Called by the template file using <code>&lt;METHOD name="newsWmlFactory"&gt;</code>.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return WML code (navigation or articles).
      */
-    public String newsWmlFactory(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public String newsWmlFactory(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
         Hashtable parameters = (Hashtable)userObj;
         String elementName = (String)parameters.get("_ELEMENT_");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessGroupMySql.java,v $
- * Date   : $Date: 2000/05/18 13:39:47 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/06/05 13:37:53 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/05/18 13:39:47 $
+ * @version $Revision: 1.23 $ $Date: 2000/06/05 13:37:53 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
@@ -184,7 +184,7 @@ import com.opencms.core.*;
 	public Vector getGroupsOfUser(int userid)
 		throws CmsException {
         Connection con=null;
-        A_CmsGroup group;
+        CmsGroup group;
         Vector groups=new Vector();
         ResultSet res = null;
         try {
@@ -221,10 +221,10 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-     public A_CmsGroup readGroup(String groupname)
+     public CmsGroup readGroup(String groupname)
          throws CmsException {
          Connection con=null;
-         A_CmsGroup group=null;
+         CmsGroup group=null;
          ResultSet res = null;
    
          try{ 
@@ -260,10 +260,10 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-     public A_CmsGroup readGroup(int id)
+     public CmsGroup readGroup(int id)
          throws CmsException {
          Connection con=null;
-         A_CmsGroup group=null;
+         CmsGroup group=null;
          ResultSet res = null;
    
          try{
@@ -375,11 +375,11 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	 public A_CmsGroup createGroup(String name, String description, int flags,String parent)
+	 public CmsGroup createGroup(String name, String description, int flags,String parent)
          throws CmsException {
          
          int parentId=C_UNKNOWN_ID;
-         A_CmsGroup group=null;
+         CmsGroup group=null;
          Connection con=null;
          try {
        
@@ -419,7 +419,7 @@ import com.opencms.core.*;
 	 * @param group The group that should be written to the Cms.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	 public void writeGroup(A_CmsGroup group)
+	 public void writeGroup(CmsGroup group)
          throws CmsException {
          Connection con=null;
          try {
@@ -567,7 +567,7 @@ import com.opencms.core.*;
      public Vector getGroups() 
       throws CmsException {
          Vector groups = new Vector();
-         A_CmsGroup group=null;
+         CmsGroup group=null;
          ResultSet res = null;
          Connection con=null;
          try {
@@ -608,8 +608,8 @@ import com.opencms.core.*;
       throws CmsException {
          
          Vector childs = new Vector();
-         A_CmsGroup group;
-         A_CmsGroup parent;
+         CmsGroup group;
+         CmsGroup parent;
          ResultSet res = null;
          Connection con=null;
          try {
@@ -656,12 +656,12 @@ import com.opencms.core.*;
 	 * @return The parent group of the actual group or null;
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup getParent(String groupname)
+	public CmsGroup getParent(String groupname)
         throws CmsException {
-        A_CmsGroup parent = null;
+        CmsGroup parent = null;
         
         // read the actual user group to get access to the parent group id.
-        A_CmsGroup group= readGroup(groupname);
+        CmsGroup group= readGroup(groupname);
         Connection con=null;        
         ResultSet res = null;
    

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
- * Date   : $Date: 2000/05/30 11:44:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/05/30 11:44:51 $
+ * @version $Revision: 1.11 $ $Date: 2000/06/05 13:37:59 $
  */
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -50,14 +50,14 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
      /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         
         return false;
     }
@@ -73,7 +73,7 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * @return Bytearre containgine the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
@@ -114,7 +114,7 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // test if the prohject paremeter was included, display the detail dialog.
         if (id != null) {
             template="detail";
-            A_CmsProject project=cms.readProject(id.intValue());
+            CmsProject project=cms.readProject(id.intValue());
             xmlTemplateDocument.setData("PROJECT",project.getName());
             String title=cms.readProperty(filename,C_PROPERTY_TITLE);
             if (title== null) {
@@ -147,14 +147,14 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    public Integer getFiles(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
@@ -171,7 +171,7 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		    for(int i = 0; i < allFiles.size(); i++) {
 			    CmsFile file = ((CmsFile)allFiles.elementAt(i));
                 if (file.getState() != C_STATE_UNCHANGED) {
-                    A_CmsProject project=cms.readProject(file);
+                    CmsProject project=cms.readProject(file);
                     if (project.getFlags() ==  this.C_PROJECT_STATE_ARCHIVE){
                     
                         String projectName="unknown Project";

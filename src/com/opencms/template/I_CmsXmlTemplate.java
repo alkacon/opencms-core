@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/03/22 10:38:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/05 13:37:58 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import java.util.*;
  * of templates (eg. type I_CmsDumpTemplate) as subtemplate.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/03/22 10:38:06 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/05 13:37:58 $
  */
 public interface I_CmsXmlTemplate extends I_CmsTemplate {
     
@@ -62,14 +62,14 @@ public interface I_CmsXmlTemplate extends I_CmsTemplate {
      * an extension of A_CmsXmlContent by the additional tag
      * "ELEMENT" this user method ist mandatory.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object templateElement(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+    public Object templateElement(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
             throws CmsException;
     
     /**
@@ -79,11 +79,11 @@ public interface I_CmsXmlTemplate extends I_CmsTemplate {
      * Every extending class not using CmsXmlTemplateFile as content type
      * should override this method.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public CmsXmlTemplateFile getOwnTemplateFile(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException;        
+    public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException;        
 }

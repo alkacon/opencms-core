@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/05/31 12:55:32 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2000/05/31 12:55:32 $
+ * @version $Revision: 1.17 $ $Date: 2000/06/05 13:38:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLogChannels {
@@ -61,7 +61,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 	 * @exception CmsException Throws CmsExceptions, that are be 
 	 * thrown in calling methods.
 	 */
-	public static void accept(A_CmsObject cms, int taskid) 
+	public static void accept(CmsObject cms, int taskid) 
 		throws CmsException {
 		cms.acceptTask(taskid);
 		String comment = "";
@@ -69,7 +69,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		
 		// send an email if "Benachrichtigung bei Annahme" was selected.
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-		A_CmsTask task = cms.readTask(taskid);
+		CmsTask task = cms.readTask(taskid);
 		if (cms.getTaskPar(task.getId(),C_TASKPARA_ACCEPTATION)!=null) {	
 			StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.accept.content"));
             contentBuf.append("\n");
@@ -95,7 +95,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 			contentBuf.append("\n\n\nhttp://"+serverName+servletPath+actionPath+"login.html?startTaskId="+taskid+"&startProjectId="+projectid);
 			
 			String subject=lang.getLanguageValue("task.email.accept.subject");
-			A_CmsUser[] users={cms.readOwner(task)};
+			CmsUser[] users={cms.readOwner(task)};
 			try {
 				CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,contentBuf.toString(),"text/plain");
 				mail.start();
@@ -115,13 +115,13 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 	 * @exception CmsException Throws CmsExceptions, that are be 
 	 * thrown in calling methods.
 	 */
-	public static void take(A_CmsObject cms, int taskid) 
+	public static void take(CmsObject cms, int taskid) 
 		throws CmsException {
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-		A_CmsRequestContext context = cms.getRequestContext();
-		A_CmsTask task = cms.readTask(taskid);
-		A_CmsUser newEditor = context.currentUser();
-		A_CmsGroup oldRole = cms.readGroup(task);
+		CmsRequestContext context = cms.getRequestContext();
+		CmsTask task = cms.readTask(taskid);
+		CmsUser newEditor = context.currentUser();
+		CmsGroup oldRole = cms.readGroup(task);
 		// has the user the correct role?
 		if(cms.userInGroup(newEditor.getName(), oldRole.getName())) {
 			cms.forwardTask(taskid, oldRole.getName(), newEditor.getName());
@@ -158,7 +158,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		String actionPath=conf.getWorkplaceActionPath();
 		contentBuf.append("\n\n\nhttp://"+serverName+servletPath+actionPath+"login.html?startTaskId="+taskid+"&startProjectId="+projectid);	
 		String subject=lang.getLanguageValue("task.email.take.subject");
-		A_CmsUser[] users={cms.readAgent(task)};
+		CmsUser[] users={cms.readAgent(task)};
 		try {
 			CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString(),"text/plain");
 			mail.start();
@@ -179,17 +179,17 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 	 * @exception CmsException Throws CmsExceptions, that are be 
 	 * thrown in calling methods.
 	 */
-	public static void forward(A_CmsObject cms, int taskid,
+	public static void forward(CmsObject cms, int taskid,
 							   String newEditorName, String newRoleName)
 		throws CmsException {
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);		
-		A_CmsUser newEditor = cms.readUser(newEditorName);
+		CmsUser newEditor = cms.readUser(newEditorName);
 		
 		if( newRoleName.equals(C_ALL_ROLES) ) {
 			newRoleName = cms.readUser(newEditorName).getDefaultGroup().getName();
 		}
 		
-		A_CmsGroup oldRole = cms.readGroup(newRoleName);
+		CmsGroup oldRole = cms.readGroup(newRoleName);
 
 		cms.forwardTask(taskid, oldRole.getName(), newEditor.getName());
 
@@ -198,7 +198,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_FORWARDED);
 		
 		// send an email if "Benachrichtigung bei Weiterleitung" was selected.
-		A_CmsTask task = cms.readTask(taskid);
+		CmsTask task = cms.readTask(taskid);
 		if (cms.getTaskPar(task.getId(),C_TASKPARA_DELIVERY)!=null) {	
 	        StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.forward.content"));
             contentBuf.append("\n");
@@ -246,7 +246,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 				}
 			} else {
 				// send a mail to user
-				A_CmsUser[] user={cms.readAgent(task)};
+				CmsUser[] user={cms.readAgent(task)};
 				try {
 					CmsMail mail1=new CmsMail(cms,cms.getRequestContext().currentUser(),user,subject,contentBuf.toString(),"text/plain");
 					mail1.start();
@@ -256,7 +256,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 					}
 				}
 				// send a mail to owner
-				A_CmsUser[] owner={cms.readOwner(task)};
+				CmsUser[] owner={cms.readOwner(task)};
 				try {
 					CmsMail mail2=new CmsMail(cms,cms.getRequestContext().currentUser(),owner,subject,contentBuf.toString(),"text/plain");
 					mail2.start();
@@ -279,11 +279,11 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 	 * @exception CmsException Throws CmsExceptions, that are be 
 	 * thrown in calling methods.
 	 */
-	public static void due(A_CmsObject cms, int taskid,
+	public static void due(CmsObject cms, int taskid,
 						   String timeoutString)
 		throws CmsException {
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-		A_CmsTask task = cms.readTask(taskid);
+		CmsTask task = cms.readTask(taskid);
 		String splittetDate[] = Utils.split(timeoutString, ".");
 		GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
 													  Integer.parseInt(splittetDate[1]) - 1,
@@ -308,11 +308,11 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 	 * @exception CmsException Throws CmsExceptions, that are be 
 	 * thrown in calling methods.
 	 */
-	public static void priority(A_CmsObject cms, int taskid, 
+	public static void priority(CmsObject cms, int taskid, 
 								String priorityString) 
 		throws CmsException {
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-		A_CmsTask task = cms.readTask(taskid);
+		CmsTask task = cms.readTask(taskid);
 		int priority = Integer.parseInt(priorityString);
 		cms.setPriority(taskid, priority);
 
@@ -344,14 +344,14 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 	 * @exception CmsException Throws CmsExceptions, that are be 
 	 * thrown in calling methods.
 	 */
-	public static void reakt(A_CmsObject cms, int taskid, 
+	public static void reakt(CmsObject cms, int taskid, 
 							 String agentName, String roleName, String taskName, 
 							 String taskcomment, String timeoutString, 
 							 String priorityString, String paraAcceptation,
 							 String paraAll, String paraCompletion, String paraDelivery) 
 		throws CmsException {
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-		A_CmsTask task = cms.readTask(taskid);
+		CmsTask task = cms.readTask(taskid);
 		if( roleName.equals(C_ALL_ROLES) ) {
 			roleName = cms.readUser(agentName).getDefaultGroup().getName();
 		}
@@ -404,7 +404,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		String actionPath=conf.getWorkplaceActionPath();
 		contentBuf.append("\n\n\nhttp://"+serverName+servletPath+actionPath+"login.html?startTaskId="+taskid+"&startProjectId="+projectid);	
 		String subject=lang.getLanguageValue("task.email.reakt.subject");
-		A_CmsUser[] users={cms.readAgent(task)};
+		CmsUser[] users={cms.readAgent(task)};
 		CmsMail mail;
 		mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString(),"text/plain");
 		// if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
@@ -427,14 +427,14 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 	 * @exception CmsException Throws CmsExceptions, that are be 
 	 * thrown in calling methods.
 	 */
-	public static void end(A_CmsObject cms, int taskid) 
+	public static void end(CmsObject cms, int taskid) 
 		throws CmsException {
 		cms.endTask(taskid);
 		String comment = "";
 		cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_OK);
 		// send an email if "Benachrichtigung bei Abhacken" was selected.
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-		A_CmsTask task = cms.readTask(taskid);
+		CmsTask task = cms.readTask(taskid);
 		if (cms.getTaskPar(task.getId(),C_TASKPARA_COMPLETION)!=null) {	
 	        StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.end.content"));
             contentBuf.append("\n");
@@ -466,7 +466,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 			String actionPath=conf.getWorkplaceActionPath();
 			contentBuf.append("\n\n\nhttp://"+serverName+servletPath+actionPath+"login.html?startTaskId="+taskid+"&startProjectId="+projectid);	
 			String subject=lang.getLanguageValue("task.email.end.subject");
-			A_CmsUser[] users={cms.readOwner(task)};
+			CmsUser[] users={cms.readOwner(task)};
 			try {
 				CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,contentBuf.toString(),"text/plain");
 				mail.start();
@@ -486,10 +486,10 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 	 * @exception CmsException Throws CmsExceptions, that are be 
 	 * thrown in calling methods.
 	 */
-	public static void message(A_CmsObject cms, int taskid, String message)
+	public static void message(CmsObject cms, int taskid, String message)
 		throws CmsException {
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-		A_CmsTask task = cms.readTask(taskid);
+		CmsTask task = cms.readTask(taskid);
 		String comment = lang.getLanguageValue("task.dialog.message.head") + " ";
 		if( (message != null) && (message.length() != 0)) {
 			comment += Utils.getFullName(cms.readAgent(task)) + "\n";
@@ -524,7 +524,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		String actionPath=conf.getWorkplaceActionPath();
 		contentBuf.append("\n\n\nhttp://"+serverName+servletPath+actionPath+"login.html?startTaskId="+taskid+"&startProjectId="+projectid);	
 		String subject=lang.getLanguageValue("task.email.message.subject");
-		A_CmsUser[] users={cms.readAgent(task)};
+		CmsUser[] users={cms.readAgent(task)};
 		try {
 			CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString(),"text/plain");
 			mail.start();
@@ -543,10 +543,10 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 	 * @exception CmsException Throws CmsExceptions, that are be 
 	 * thrown in calling methods.
 	 */
-	public static void query(A_CmsObject cms, int taskid, String message) 
+	public static void query(CmsObject cms, int taskid, String message) 
 		throws CmsException {
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-		A_CmsTask task = cms.readTask(taskid);
+		CmsTask task = cms.readTask(taskid);
 		String comment = lang.getLanguageValue("task.dialog.query.head") + " ";
 		if( (message != null) && (message.length() != 0)) {
 			comment += Utils.getFullName(cms.readOwner(task)) + "\n";
@@ -581,7 +581,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		String actionPath=conf.getWorkplaceActionPath();
 		contentBuf.append("\n\n\nhttp://"+serverName+servletPath+actionPath+"login.html?startTaskId="+taskid+"&startProjectId="+projectid);	
 		String subject=lang.getLanguageValue("task.email.query.subject");
-		A_CmsUser[] users={cms.readOwner(task)};
+		CmsUser[] users={cms.readOwner(task)};
 		try {
 			CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,contentBuf.toString(),"text/plain");
 			mail.start();
@@ -610,7 +610,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 	 * @exception CmsException Throws CmsExceptions, that are be 
 	 * thrown in calling methods.
 	 */
-	public static void create(A_CmsObject cms, 
+	public static void create(CmsObject cms, 
 							 String agentName, String roleName, String taskName, 
 							 String taskcomment, String timeoutString, 
 							 String priorityString, String paraAcceptation,
@@ -631,7 +631,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 													  Integer.parseInt(splittetDate[0]), 0, 0, 0);
 		long timeout = cal.getTime().getTime();
         
-		A_CmsTask task = cms.createTask(agentName, roleName, taskName, 
+		CmsTask task = cms.createTask(agentName, roleName, taskName, 
 										taskcomment, timeout, priority);
 		cms.setTaskPar(task.getId(),C_TASKPARA_ACCEPTATION, paraAcceptation);
 		cms.setTaskPar(task.getId(),C_TASKPARA_ALL, paraAll);
@@ -672,7 +672,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		String actionPath=conf.getWorkplaceActionPath();
 		contentBuf.append("\n\n\nhttp://"+serverName+servletPath+actionPath+"login.html?startTaskId="+task.getId()+"&startProjectId="+projectid);
 		String subject=lang.getLanguageValue("task.email.create.subject");
-		A_CmsUser[] users={cms.readAgent(task)};
+		CmsUser[] users={cms.readAgent(task)};
 		CmsMail mail = null;
         try {
             mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString(),"text/plain");
@@ -713,7 +713,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 	 * @exception CmsException Throws CmsExceptions, that are be 
 	 * thrown in calling methods.
 	 */
-	public static String getDescription(A_CmsObject cms, int taskid)
+	public static String getDescription(CmsObject cms, int taskid)
 		throws CmsException {
 		StringBuffer retValue = new StringBuffer("");
 		CmsTaskLog tasklog;

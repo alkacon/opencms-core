@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/05/29 11:24:25 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/06/05 13:37:50 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.23 $ $Date: 2000/05/29 11:24:25 $  
+* @version $Revision: 1.24 $ $Date: 2000/06/05 13:37:50 $  
 * 
 * */
 
@@ -204,11 +204,11 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
      * file's launcher id and calls the initlaunch() method to initiate the 
      * generating of the output.
      * 
-     * @param cms A_CmsObject containing all document and user information
+     * @param cms CmsObject containing all document and user information
      * @param file CmsFile object representing the selected file.
      * @exception CmsException
      */
-    public void showResource(A_CmsObject cms, CmsFile file) throws CmsException { 
+    public void showResource(CmsObject cms, CmsFile file) throws CmsException { 
         int launcherId = file.getLauncherType();
         String startTemplateClass = file.getLauncherClassname();
         I_CmsLauncher launcher = m_launcherManager.getLauncher(launcherId);
@@ -233,7 +233,7 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
      * @param file The requested document.
      * 
      */
-    void setResponse(A_CmsObject cms, CmsFile file){
+    void setResponse(CmsObject cms, CmsFile file){
         String ext=null;
         String mimetype=null;
         int lastDot=file.getName().lastIndexOf(".");
@@ -255,7 +255,7 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
 	/**
 	 * Prints a copyright information to all log-files.
 	 */
-	private void printCopyrightInformation(A_CmsObject cms) {
+	private void printCopyrightInformation(CmsObject cms) {
 		System.err.println(cms.version());
 		System.out.println(cms.version());
         if(c_servletLogging) {

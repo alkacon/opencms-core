@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMail.java,v $
- * Date   : $Date: 2000/05/31 12:04:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,8 +43,8 @@ import java.io.*;
 /**
  * This class is used to send a mail, it uses Threads to send it.
  *
- * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.6 $ $Date: 2000/05/31 12:04:01 $
+ * @author $Author: a.schouten $
+ * @version $Name:  $ $Revision: 1.7 $ $Date: 2000/06/05 13:37:59 $
  * @see java.lang.Thread
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -56,7 +56,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	private final String c_SUBJECT;
 	private final String c_CONTENT;	
 	private final String c_TYPE;
-	private final A_CmsObject c_CMS;
+	private final CmsObject c_CMS;
     
     private String m_defaultSender = null;
 	
@@ -70,7 +70,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	 * @param content Content of email.
 	 * @param type ContentType of email.
 	 */	
-	public CmsMail(A_CmsObject cms,String from, String[] to, String subject, String content, String type)
+	public CmsMail(CmsObject cms,String from, String[] to, String subject, String content, String type)
 		throws CmsException{
 		// check sender email address
 		if (from==null) {
@@ -123,7 +123,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	 * @param content Content of email.
 	 * @param type ContentType of email.
 	 */	
-	public CmsMail(A_CmsObject cms,A_CmsUser from, A_CmsUser[] to, String subject, String content, String type)
+	public CmsMail(CmsObject cms,CmsUser from, CmsUser[] to, String subject, String content, String type)
 		throws CmsException{
         // Get WORKPLACE.INI
         CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);		
@@ -182,7 +182,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	 * @param content Content of email.	
 	 * @param type ContentType of email.
 	 */	
-	public CmsMail(A_CmsObject cms,A_CmsUser from, A_CmsGroup to, String subject, String content, String type)
+	public CmsMail(CmsObject cms,CmsUser from, CmsGroup to, String subject, String content, String type)
 		throws CmsException{
 
         // Get WORKPLACE.INI
@@ -205,7 +205,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 		Vector vu=cms.getUsersOfGroup(to.getName());
 		Vector v=new Vector(vu.size());
 		for(int i=0;i<vu.size();i++) {
-			String address=((A_CmsUser)vu.elementAt(i)).getEmail();
+			String address=((CmsUser)vu.elementAt(i)).getEmail();
 			if (address==null) {
 				continue;
 			}

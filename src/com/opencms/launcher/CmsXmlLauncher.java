@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
- * Date   : $Date: 2000/05/29 16:36:25 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/06/05 13:37:57 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2000/05/29 16:36:25 $
+ * @version $Revision: 1.16 $ $Date: 2000/06/05 13:37:57 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I_CmsConstants { 	
         
@@ -66,13 +66,13 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
 	 * template class, template file and parameters. At least the 
 	 * canonical root's output must be written to the HttpServletResponse.
  	 * 
-	 * @param cms A_CmsObject Object for accessing system resources
+	 * @param cms CmsObject Object for accessing system resources
 	 * @param file CmsFile Object with the selected resource to be shown
      * @param startTemplateClass Name of the template class to start with.
 	 * @param openCms a instance of A_OpenCms for redirect-needs
      * @exception CmsException
 	 */	
-    protected void launch(A_CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) 
+    protected void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) 
 		throws CmsException {
    
         // get the CmsRequest 
@@ -89,13 +89,13 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
 
     /**
      * Internal utility method for checking and loading a given template file.
-     * @param cms A_CmsObject for accessing system resources.
+     * @param cms CmsObject for accessing system resources.
      * @param templateName Name of the requestet template file.
      * @param doc CmsXmlControlFile object containig the parsed body file.
      * @return CmsFile object of the requested template file.
      * @exception CmsException
      */
-    private CmsFile loadMasterTemplateFile(A_CmsObject cms, String templateName, com.opencms.template.CmsXmlControlFile doc) 
+    private CmsFile loadMasterTemplateFile(CmsObject cms, String templateName, com.opencms.template.CmsXmlControlFile doc) 
         throws CmsException {
         	
         CmsFile masterTemplate = null;
@@ -112,12 +112,12 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
  	 * Starts generating the output.
  	 * Calls the canonical root with the appropriate template class.
  	 * 
-	 * @param cms A_CmsObject Object for accessing system resources
+	 * @param cms CmsObject Object for accessing system resources
 	 * @param file CmsFile Object with the selected resource to be shown
      * @param startTemplateClass Name of the template class to start with.
      * @exception CmsException
 	 */	
-	protected byte[] generateOutput(A_CmsObject cms, CmsFile file, String startTemplateClass, I_CmsRequest req)
+	protected byte[] generateOutput(CmsObject cms, CmsFile file, String startTemplateClass, I_CmsRequest req)
 			throws CmsException {
 		
 		byte[] output = null;

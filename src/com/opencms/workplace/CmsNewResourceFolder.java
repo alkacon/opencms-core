@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2000/05/02 16:41:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/05/02 16:41:13 $
+ * @version $Revision: 1.8 $ $Date: 2000/06/05 13:37:59 $
  */
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -57,14 +57,14 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
      /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
     
@@ -79,7 +79,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
      * @return Bytearry containing the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         // the template to be displayed
@@ -151,7 +151,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
       * workplace.ini.
       * @exception Throws CmsException if something goes wrong.
       */
-      public Integer getTemplates(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+      public Integer getTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
 
             Vector files=cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
@@ -180,7 +180,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
       * @returns The vectors names and values are filled with data for building the navigation.
       * @exception Throws CmsException if something goes wrong.
       */
-      public Integer getNavPos(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+      public Integer getNavPos(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
 
             // get the nav information
@@ -209,7 +209,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
      * @param newfile The new file added to the nav.
      * @param navpos The file after which the new entry is sorted.
      */  
-    private void updateNavPos(A_CmsObject cms, CmsFolder newfolder, String newpos)
+    private void updateNavPos(CmsObject cms, CmsFolder newfolder, String newpos)
         throws CmsException {
         
             float newPos=0;
@@ -251,7 +251,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
       * @param nicenames Array of well formed navigation names
       * @param positions Array of navpostions
       */
-      private void sort(A_CmsObject cms, String[] filenames, String[] nicenames,
+      private void sort(CmsObject cms, String[] filenames, String[] nicenames,
                                  String[] positions,int  max){
         // Sorting algorithm
         // This method uses an bubble sort, so replace this with something more
@@ -286,7 +286,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
        * nicenames and navigation positions.
        * @exception Throws CmsException if something goes wrong.
        */
-      private Hashtable getNavData(A_CmsObject cms) 
+      private Hashtable getNavData(CmsObject cms) 
            throws CmsException {
             HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbProject.java,v $
- * Date   : $Date: 2000/04/19 10:15:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/06/05 13:37:56 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/04/19 10:15:59 $
+ * @version $Revision: 1.12 $ $Date: 2000/06/05 13:37:56 $
  */
 interface I_CmsRbProject {
 	
@@ -49,7 +49,7 @@ interface I_CmsRbProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject readProject(int id)
+	 public CmsProject readProject(int id)
 		 throws CmsException ;
 	
 	/**
@@ -59,7 +59,7 @@ interface I_CmsRbProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject readProject(A_CmsTask task)
+	 public CmsProject readProject(CmsTask task)
 		 throws CmsException ;
 	 
 	/**
@@ -76,9 +76,9 @@ interface I_CmsRbProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject createProject(int id, String name, String description, A_CmsTask task, 
-										 A_CmsUser owner, A_CmsGroup group, 
-										 A_CmsGroup managergroup, int flags)
+	 public CmsProject createProject(int id, String name, String description, CmsTask task, 
+										 CmsUser owner, CmsGroup group, 
+										 CmsGroup managergroup, int flags)
 		 throws CmsException;
 	
 	/**
@@ -94,9 +94,9 @@ interface I_CmsRbProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject createProject(String name, String description, A_CmsTask task, 
-										 A_CmsUser owner, A_CmsGroup group, 
-										 A_CmsGroup managergroup, int flags)
+	 public CmsProject createProject(String name, String description, CmsTask task, 
+										 CmsUser owner, CmsGroup group, 
+										 CmsGroup managergroup, int flags)
 		 throws CmsException;
 	 
 	/**
@@ -106,7 +106,7 @@ interface I_CmsRbProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject writeProject(A_CmsProject project)
+	 public CmsProject writeProject(CmsProject project)
 		 throws CmsException;
 
 	/**
@@ -116,7 +116,7 @@ interface I_CmsRbProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public void deleteProject(A_CmsProject project)
+	 public void deleteProject(CmsProject project)
 		 throws CmsException;
 	 
 	/**
@@ -126,7 +126,7 @@ interface I_CmsRbProject {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 public Vector getAllAccessibleProjectsByUser(A_CmsUser user)
+	 public Vector getAllAccessibleProjectsByUser(CmsUser user)
 		 throws CmsException;
 
 	/**
@@ -136,7 +136,7 @@ interface I_CmsRbProject {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 public Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
+	 public Vector getAllAccessibleProjectsByGroup(CmsGroup group)
 		 throws CmsException;
 
 	/**
@@ -146,7 +146,7 @@ interface I_CmsRbProject {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 public Vector getAllAccessibleProjectsByManagerGroup(A_CmsGroup managergroup)
+	 public Vector getAllAccessibleProjectsByManagerGroup(CmsGroup managergroup)
 		 throws CmsException;
 	 
 	/**

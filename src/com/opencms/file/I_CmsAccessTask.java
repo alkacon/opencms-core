@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessTask.java,v $
- * Date   : $Date: 2000/02/20 15:24:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/06/05 13:37:56 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/02/20 15:24:36 $
+ * @version $Revision: 1.6 $ $Date: 2000/06/05 13:37:56 $
  */
 interface I_CmsAccessTask {
 
@@ -57,7 +57,7 @@ interface I_CmsAccessTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsTask createProject(A_CmsUser owner, String projectname, int projectType, A_CmsGroup role, java.sql.Timestamp timeout, int priority)
+	public CmsTask createProject(CmsUser owner, String projectname, int projectType, CmsGroup role, java.sql.Timestamp timeout, int priority)
 		throws CmsException;
 	
 	
@@ -79,7 +79,7 @@ interface I_CmsAccessTask {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	
-	public A_CmsTask createTask(A_CmsProject project, A_CmsUser owner, A_CmsUser agent, A_CmsGroup role, 
+	public CmsTask createTask(CmsProject project, CmsUser owner, CmsUser agent, CmsGroup role, 
 								int taskType, String taskname, java.sql.Timestamp timeout, int priority)
 		
 		throws CmsException;
@@ -101,7 +101,7 @@ interface I_CmsAccessTask {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	
-	public A_CmsTask createTask(int projectid, A_CmsUser owner, A_CmsUser agent, A_CmsGroup role, 
+	public CmsTask createTask(int projectid, CmsUser owner, CmsUser agent, CmsGroup role, 
 								int taskType, String taskname, java.sql.Timestamp timeout, int priority)
 		
 		throws CmsException;
@@ -113,7 +113,7 @@ interface I_CmsAccessTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsTask writeTask(A_CmsTask task)
+	public CmsTask writeTask(CmsTask task)
 		throws CmsException;
 	
 	/**
@@ -125,7 +125,7 @@ interface I_CmsAccessTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsTask readTask(int id)
+	public CmsTask readTask(int id)
 		throws CmsException;
 
 	/**
@@ -135,7 +135,7 @@ interface I_CmsAccessTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void endTask(A_CmsTask task)
+	public void endTask(CmsTask task)
 		throws CmsException;
 	
 	/**
@@ -158,7 +158,7 @@ interface I_CmsAccessTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void forwardTask(A_CmsTask task, A_CmsGroup newRole, A_CmsUser newUser)
+	public void forwardTask(CmsTask task, CmsGroup newRole, CmsUser newUser)
 		throws CmsException;
 	
 	/**
@@ -170,7 +170,7 @@ interface I_CmsAccessTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void forwardTask(int taskid, A_CmsGroup newRole, A_CmsUser newUser)
+	public void forwardTask(int taskid, CmsGroup newRole, CmsUser newUser)
 		throws CmsException;
 	
 	
@@ -188,8 +188,8 @@ interface I_CmsAccessTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Vector readTasks(A_CmsProject project, A_CmsUser agent, A_CmsUser owner, 
-							A_CmsGroup role, int tasktype, 
+	public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, 
+							CmsGroup role, int tasktype, 
 							String orderBy, String sort)
 		throws CmsException;
 	
@@ -203,7 +203,7 @@ interface I_CmsAccessTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void writeTaskLog(int taskid, A_CmsUser user, String comment)
+	public void writeTaskLog(int taskid, CmsUser user, String comment)
 		throws CmsException;
 	
 	/**
@@ -227,7 +227,7 @@ interface I_CmsAccessTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void writeTaskLog(int taskid, A_CmsUser user, String comment, int type)
+	public void writeTaskLog(int taskid, CmsUser user, String comment, int type)
 		throws CmsException;
 	
 	/**
@@ -247,7 +247,7 @@ interface I_CmsAccessTask {
 	 * @return A Vector of new TaskLog objects 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Vector readProjectLogs(A_CmsProject project)
+	public Vector readProjectLogs(CmsProject project)
 		throws CmsException;
 	
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskDocu.java,v $
- * Date   : $Date: 2000/04/20 08:11:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TASKDOCU&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/04/20 08:11:55 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/05 13:38:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -53,14 +53,14 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_Cms
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
 
@@ -73,7 +73,7 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * // TODO: insert correct syntax here!
      * <CODE>&lt;TASKDOCU /&gt;</CODE>
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param An XML element containing the <code>&lt;TASKDOCU&gt;</code> tag.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object <em>(not used here)</em>.
@@ -82,7 +82,7 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
 	
         /** StringBuffer for the generated output */
         StringBuffer result = new StringBuffer();
@@ -109,7 +109,7 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                 java.sql.Timestamp time=tasklog.getStartTime();
                 template.setData("DATE", Utils.getNiceDate(time.getTime()));
                 // add the user
-                A_CmsUser user=cms.readOwner(tasklog);
+                CmsUser user=cms.readOwner(tasklog);
                 template.setData("USER", Utils.getFullName(user) );
                 // set the message
                 template.setData("MESSAGE", addBrTags(tasklog.getComment()));

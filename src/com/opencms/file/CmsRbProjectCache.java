@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbProjectCache.java,v $
- * Date   : $Date: 2000/04/20 10:52:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/06/05 13:37:55 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/04/20 10:52:16 $
+ * @version $Revision: 1.6 $ $Date: 2000/06/05 13:37:55 $
  */
 class CmsRbProjectCache extends CmsRbProject {
 	
@@ -67,10 +67,10 @@ class CmsRbProjectCache extends CmsRbProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject readProject(int id)
+	 public CmsProject readProject(int id)
 		 throws CmsException {
-         A_CmsProject project=null;
-         project=(A_CmsProject)m_projectcache.get(new Integer(id));
+         CmsProject project=null;
+         project=(CmsProject)m_projectcache.get(new Integer(id));
          if (project== null) {
              project=m_accessProject.readProject(id);
              m_projectcache.put(new Integer(id),project);
@@ -85,7 +85,7 @@ class CmsRbProjectCache extends CmsRbProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject writeProject(A_CmsProject project)
+	 public CmsProject writeProject(CmsProject project)
 		 throws CmsException {
          m_projectcache.put(new Integer(project.getId()),project);
 		 return( m_accessProject.writeProject(project) );
@@ -98,7 +98,7 @@ class CmsRbProjectCache extends CmsRbProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public void deleteProject(A_CmsProject project)
+	 public void deleteProject(CmsProject project)
 		 throws CmsException {
          m_projectcache.remove(new Integer(project.getId()));
          m_accessProject.deleteProject(project);

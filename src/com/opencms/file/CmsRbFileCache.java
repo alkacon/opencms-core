@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/05/30 09:41:28 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/06/05 13:37:55 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/05/30 09:41:28 $
+ * @version $Revision: 1.17 $ $Date: 2000/06/05 13:37:55 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
@@ -92,9 +92,9 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public A_CmsResource readFileHeader(A_CmsProject project, String filename)
+	 public CmsResource readFileHeader(CmsProject project, String filename)
 		 throws CmsException {
-         A_CmsResource res=null;
+         CmsResource res=null;
          String key=null;
          if (filename.endsWith("/")) {
             key=C_FOLDER+project.getId()+filename;
@@ -103,7 +103,7 @@ import com.opencms.core.*;
         } else {
             key=C_FILE+project.getId()+filename;
             // check if resource is available in cache
-            res=(A_CmsResource)m_filecache.get(key);
+            res=(CmsResource)m_filecache.get(key);
              // not found in cache, so get it from the database and add it to cache
             if (res == null) {
              res=m_accessFile.readFileHeader(project,filename);
@@ -144,11 +144,11 @@ import com.opencms.core.*;
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 *
 	 */
-	 public CmsFile readFile(A_CmsProject project,
-                             A_CmsProject onlineProject,
+	 public CmsFile readFile(CmsProject project,
+                             CmsProject onlineProject,
                              String filename)
 		throws CmsException{
-         A_CmsResource res=null;
+         CmsResource res=null;
          String key=null;
          if (filename.endsWith("/")) {
             key=C_FOLDER+project.getId()+filename;
@@ -157,7 +157,7 @@ import com.opencms.core.*;
         } else {
             key=C_FILE+project.getId()+filename;
             // check if resource is available in cache
-            res=(A_CmsResource)m_filecache.get(key);
+            res=(CmsResource)m_filecache.get(key);
              // not found in cache, so get it from the database and add it to cache
             if ((res == null) || (((CmsFile)res).getContents().length ==0)) {
                 res=m_accessFile.readFile(project,onlineProject,filename);
@@ -197,8 +197,8 @@ import com.opencms.core.*;
 	 * @param changed Flag indicating if the file state must be set to changed.
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void writeFileHeader(A_CmsProject project, 
-                                A_CmsProject onlineProject,
+	public void writeFileHeader(CmsProject project, 
+                                CmsProject onlineProject,
                                 CmsFile file,boolean changed)
 		throws CmsException{
            String key= null;
@@ -235,8 +235,8 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void writeFile(A_CmsProject project,
-                          A_CmsProject onlineProject,
+	public void writeFile(CmsProject project,
+                          CmsProject onlineProject,
                           CmsFile file, boolean changed)
 		throws CmsException{
         String key= null;
@@ -271,7 +271,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void deleteFile(A_CmsProject project, String filename)
+	public void deleteFile(CmsProject project, String filename)
 		throws CmsException{
          String key=null;
           if (filename.endsWith("/")) {
@@ -303,7 +303,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void removeFile(A_CmsProject project, String filename)
+	public void removeFile(CmsProject project, String filename)
 		throws CmsException{
          String key=null;
          if (filename.endsWith("/")) {
@@ -337,7 +337,7 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public CmsFolder readFolder(A_CmsProject project, String folder)
+	public CmsFolder readFolder(CmsProject project, String folder)
 		throws CmsException{
          CmsFolder res=null;
          String key=C_FOLDER+project.getId()+folder;
@@ -371,7 +371,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void writeFolder(A_CmsProject project, CmsFolder folder, boolean changed)
+	public void writeFolder(CmsProject project, CmsFolder folder, boolean changed)
         throws CmsException {
         String key=C_FOLDER+project.getId()+folder.getAbsolutePath();
         m_accessFile.writeFolder(project, folder,changed);
@@ -403,7 +403,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void deleteFolder(A_CmsProject project, String foldername, boolean force)
+	public void deleteFolder(CmsProject project, String foldername, boolean force)
 		throws CmsException {
         String key=C_FOLDER+project.getId()+foldername;
         m_accessFile.deleteFolder(project,foldername,force);
@@ -430,7 +430,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void removeFolder(A_CmsProject project, String foldername)
+	public void removeFolder(CmsProject project, String foldername)
 		throws CmsException {
         String key=C_FOLDER+project.getId()+foldername;
         m_accessFile.removeFolder(project,foldername);
@@ -456,7 +456,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	/*public Vector getFilesInFolder(A_CmsProject project, String foldername)
+	/*public Vector getFilesInFolder(CmsProject project, String foldername)
 		throws CmsException {
 
          Vector fof=null;
@@ -475,7 +475,7 @@ import com.opencms.core.*;
      * @param project The project to be deleted.
      * @exception CmsException  Throws CmsException if operation was not succesfull.
      */
-    public void deleteProject(A_CmsProject project)
+    public void deleteProject(CmsProject project)
         throws CmsException {
 		// delete the filecache
 		m_filecache = new CmsCache(C_FILECACHE);
@@ -501,7 +501,7 @@ import com.opencms.core.*;
 	 * @return Vector of all resource names that are published.
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    public Vector publishProject(A_CmsProject project, A_CmsProject onlineProject)
+    public Vector publishProject(CmsProject project, CmsProject onlineProject)
         throws CmsException {
         m_filecache.clear();
         return  m_accessFile.publishProject(project,onlineProject);

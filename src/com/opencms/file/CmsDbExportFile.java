@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbExportFile.java,v $
- * Date   : $Date: 2000/04/07 09:20:07 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/06/05 13:37:54 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.template.*;
  * Exports Files from database into XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.10 $ $Date: 2000/04/07 09:20:07 $
+ * @version $Revision: 1.11 $ $Date: 2000/06/05 13:37:54 $
  */
 
 class CmsDbExportFile implements I_CmsConstants {
@@ -48,9 +48,9 @@ class CmsDbExportFile implements I_CmsConstants {
 	/** ResourceBroker to access all methods and objects */
 	private I_CmsResourceBroker m_RB = null;
 	/** User to access all resourcbroker methods and objects */
-	private A_CmsUser m_user = null;
+	private CmsUser m_user = null;
 	/** Project to access all resourcbroker methods and objects */
-	private A_CmsProject m_project = null;
+	private CmsProject m_project = null;
 
 	/** need to initiate an XML object */
 	private Document m_docXml = null;
@@ -86,7 +86,7 @@ class CmsDbExportFile implements I_CmsConstants {
 	 * 
 	 */
 	
-	CmsDbExportFile(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, Document m_docXml, String lpath)
+	CmsDbExportFile(I_CmsResourceBroker eRB, CmsUser luser, CmsProject lproject, Document m_docXml, String lpath)
 		throws Exception {
 		m_RB=eRB;
 		m_user=luser;
@@ -208,7 +208,7 @@ class CmsDbExportFile implements I_CmsConstants {
 			m_newNode = m_docXml.createTextNode(String.valueOf(folder.getType()));
 			m_newElement.appendChild(m_newNode);
 			
-			A_CmsResourceType typeHelp=m_RB.getResourceType(m_user, m_project, folder.getType());
+			CmsResourceType typeHelp=m_RB.getResourceType(m_user, m_project, folder.getType());
 			m_newElement= m_docXml.createElement(C_TFTYPENAME);
 			parent.appendChild(m_newElement);
 			m_newNode = m_docXml.createTextNode(typeHelp.getResourceName());
@@ -216,12 +216,12 @@ class CmsDbExportFile implements I_CmsConstants {
 			
 			m_newElement= m_docXml.createElement(C_TFUSER);
 			parent.appendChild(m_newElement);
-			A_CmsUser hUser=m_RB.readOwner(m_user, m_project, folder);
+			CmsUser hUser=m_RB.readOwner(m_user, m_project, folder);
 			m_newNode = m_docXml.createTextNode(hUser.getName());
 			m_newElement.appendChild(m_newNode);
 			
 			m_newElement= m_docXml.createElement(C_TFGROUP);
-			A_CmsGroup hGroup=m_RB.readGroup(m_user, m_project, folder);
+			CmsGroup hGroup=m_RB.readGroup(m_user, m_project, folder);
 			parent.appendChild(m_newElement);
 			m_newNode = m_docXml.createTextNode(hGroup.getName());
 			m_newElement.appendChild(m_newNode);
@@ -265,7 +265,7 @@ class CmsDbExportFile implements I_CmsConstants {
 			m_newNode = m_docXml.createTextNode(String.valueOf(fif.getType()));
 			m_newElement.appendChild(m_newNode);
 			
-			A_CmsResourceType typeHelp=m_RB.getResourceType(m_user, m_project, fif.getType());
+			CmsResourceType typeHelp=m_RB.getResourceType(m_user, m_project, fif.getType());
 			m_newElement= m_docXml.createElement(C_TFTYPENAME);
 			parent.appendChild(m_newElement);
 			m_newNode = m_docXml.createTextNode(typeHelp.getResourceName());
@@ -273,12 +273,12 @@ class CmsDbExportFile implements I_CmsConstants {
 			
 			m_newElement= m_docXml.createElement(C_TFUSER);
 			parent.appendChild(m_newElement);
-			A_CmsUser hUser=m_RB.readOwner(m_user, m_project, fif);
+			CmsUser hUser=m_RB.readOwner(m_user, m_project, fif);
 			m_newNode = m_docXml.createTextNode(hUser.getName());
 			m_newElement.appendChild(m_newNode);
 			
 			m_newElement= m_docXml.createElement(C_TFGROUP);
-			A_CmsGroup hGroup=m_RB.readGroup(m_user, m_project, fif);
+			CmsGroup hGroup=m_RB.readGroup(m_user, m_project, fif);
 			parent.appendChild(m_newElement);
 			m_newNode = m_docXml.createTextNode(hGroup.getName());
 			m_newElement.appendChild(m_newNode);
@@ -340,7 +340,7 @@ class CmsDbExportFile implements I_CmsConstants {
 				if(groupId!=(-1)) {
 					Enumeration genum=groups.elements();
 					while (genum.hasMoreElements()) {
-						A_CmsGroup pg=(A_CmsGroup)genum.nextElement();
+						CmsGroup pg=(CmsGroup)genum.nextElement();
 						if(pg.getId()==groupId) {
 							return pg.getName();
 						}
@@ -366,7 +366,7 @@ class CmsDbExportFile implements I_CmsConstants {
 				if(userId!=(-1)) {
 					Enumeration uenum=users.elements();
 					while (uenum.hasMoreElements()) {
-						A_CmsUser pg=(A_CmsUser)uenum.nextElement();
+						CmsUser pg=(CmsUser)uenum.nextElement();
 						if(pg.getId()==userId) {
 							return pg.getName();
 						}
@@ -457,7 +457,7 @@ class CmsDbExportFile implements I_CmsConstants {
 			m_newNode = m_docXml.createTextNode(propertykey);
 			m_newElement.appendChild(m_newNode);
 			
-			A_CmsPropertydefinition mtype= m_RB.readPropertydefinition(m_user, m_project, propertykey, rtype);
+			CmsPropertydefinition mtype= m_RB.readPropertydefinition(m_user, m_project, propertykey, rtype);
 			
 			m_newElement= m_docXml.createElement(C_TFPROPERTYTYPE);
 			propertyparent.appendChild(m_newElement);

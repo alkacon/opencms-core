@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbUserGroup.java,v $
- * Date   : $Date: 2000/05/02 16:13:19 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/06/05 13:37:56 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.core.*;
 
 /**
  * This interface describes a resource broker for user and groups in the Cms.<BR/>
- * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
+ * <B>All</B> Methods get a first parameter: CmsUser. It is the current user. This 
  * is for security-reasons, to check if this current user has the rights to call the
  * method.<BR/>
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/05/02 16:13:19 $
+ * @version $Revision: 1.8 $ $Date: 2000/06/05 13:37:56 $
  */
 interface I_CmsRbUserGroup {
 
@@ -57,7 +57,7 @@ interface I_CmsRbUserGroup {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser readUser(String username)
+	public CmsUser readUser(String username)
 		throws CmsException;
 	
 	/**
@@ -72,7 +72,7 @@ interface I_CmsRbUserGroup {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	public A_CmsUser readUser(String username, String password)
+	public CmsUser readUser(String username, String password)
 		throws CmsException;
     
     /**
@@ -85,7 +85,7 @@ interface I_CmsRbUserGroup {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser readUser(int userid)
+	public CmsUser readUser(int userid)
 		throws CmsException;
 
 
@@ -126,7 +126,7 @@ interface I_CmsRbUserGroup {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	public A_CmsGroup readGroup(String groupname)
+	public CmsGroup readGroup(String groupname)
 		throws CmsException;
 
     
@@ -141,7 +141,7 @@ interface I_CmsRbUserGroup {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	public A_CmsGroup readGroup(int groupId)
+	public CmsGroup readGroup(int groupId)
 		throws CmsException;
     
 	/**
@@ -193,7 +193,7 @@ interface I_CmsRbUserGroup {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	public A_CmsUser addUser(String name, String password, 
+	public CmsUser addUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
 		throws CmsException;
@@ -225,7 +225,7 @@ interface I_CmsRbUserGroup {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-    public void writeUser(A_CmsUser user)			
+    public void writeUser(CmsUser user)			
 		throws CmsException;
 
 	/**
@@ -245,7 +245,7 @@ interface I_CmsRbUserGroup {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	public A_CmsGroup addGroup(String name, String description, int flags, String parent)
+	public CmsGroup addGroup(String name, String description, int flags, String parent)
 		throws CmsException;
 
     
@@ -257,7 +257,7 @@ interface I_CmsRbUserGroup {
 	 * @param group The group that should be written to the Cms.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	public void writeGroup(A_CmsGroup group)
+	public void writeGroup(CmsGroup group)
 		throws CmsException;
     
     
@@ -364,7 +364,7 @@ interface I_CmsRbUserGroup {
 	 * @return The parent group of the actual group or null;
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup getParent(String groupname)
+	public CmsGroup getParent(String groupname)
          throws CmsException;	
 
 	/** 

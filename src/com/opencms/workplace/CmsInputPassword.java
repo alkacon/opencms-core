@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsInputPassword.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PASSWORD&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/05 13:37:59 $
  */
 public class CmsInputPassword extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -57,7 +57,7 @@ public class CmsInputPassword extends A_CmsWpElement implements I_CmsWpElement, 
      * // TODO: insert correct syntax here!
      * <CODE>&lt;PASSWORD name="..." action="..." alt="..."/&gt;</CODE>
      * 
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;PASSWORD&gt;</code> tag.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object.
@@ -66,7 +66,7 @@ public class CmsInputPassword extends A_CmsWpElement implements I_CmsWpElement, 
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         String styleClass= n.getAttribute(C_INPUT_CLASS);
         String name=n.getAttribute(C_INPUT_NAME);
         String size=n.getAttribute(C_INPUT_SIZE);

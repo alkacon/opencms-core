@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessUserGroup.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/06/05 13:37:56 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.8 $ $Date: 2000/06/05 13:37:56 $
  */
 interface I_CmsAccessUserGroup {
 
@@ -51,7 +51,7 @@ interface I_CmsAccessUserGroup {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser readUser(String username)
+	public CmsUser readUser(String username)
 		throws CmsException;
 	
 	/**
@@ -63,7 +63,7 @@ interface I_CmsAccessUserGroup {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	public A_CmsUser readUser(String username, String password)
+	public CmsUser readUser(String username, String password)
 		throws CmsException;
     
      /**
@@ -73,7 +73,7 @@ interface I_CmsAccessUserGroup {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser readUser(int id)
+	public CmsUser readUser(int id)
 		throws CmsException;
 	
 	/**
@@ -94,7 +94,7 @@ interface I_CmsAccessUserGroup {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	public A_CmsGroup readGroup(String groupname)
+	public CmsGroup readGroup(String groupname)
 		throws CmsException;
 
      /**
@@ -105,7 +105,7 @@ interface I_CmsAccessUserGroup {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	public A_CmsGroup readGroup(int groupId)
+	public CmsGroup readGroup(int groupId)
 		throws CmsException;
     
 	/**
@@ -147,7 +147,7 @@ interface I_CmsAccessUserGroup {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	public A_CmsUser createUser(String name, String password, 
+	public CmsUser createUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
 		throws CmsException;
@@ -173,7 +173,7 @@ interface I_CmsAccessUserGroup {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeUser(A_CmsUser user)
+	public void writeUser(CmsUser user)
 		throws CmsException;
     
 	/**
@@ -190,7 +190,7 @@ interface I_CmsAccessUserGroup {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	public A_CmsGroup createGroup(String name, String description, int flags,String parent)
+	public CmsGroup createGroup(String name, String description, int flags,String parent)
 		throws CmsException;
 
      /**
@@ -201,7 +201,7 @@ interface I_CmsAccessUserGroup {
 	 * @param group The group that should be written to the Cms.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	public void writeGroup(A_CmsGroup group)
+	public void writeGroup(CmsGroup group)
 		throws CmsException;
     
 	/**
@@ -279,7 +279,7 @@ interface I_CmsAccessUserGroup {
 	 * @return The parent group of the actual group or null;
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	public A_CmsGroup getParent(String groupname)
+	public CmsGroup getParent(String groupname)
          throws CmsException;	
 
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
- * Date   : $Date: 2000/05/03 11:17:47 $
- * Version: $Revision: 1.6 $Selector
+ * Date   : $Date: 2000/06/05 13:37:58 $
+ * Version: $Revision: 1.7 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.6 $ $Date: 2000/05/03 11:17:47 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/05 13:37:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -51,14 +51,14 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }    
 
@@ -66,21 +66,21 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
-        A_CmsRequestContext reqCont = cms.getRequestContext();   	
+        CmsRequestContext reqCont = cms.getRequestContext();   	
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
     
 		boolean userYetChanged=true;
@@ -193,7 +193,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 					selectedGroups.addElement(C_GROUP_USERS); // preselect Users
 					Vector groups = cms.getGroups();
 					for(int z = 0; z < groups.size(); z++) {
-						String aName = (String) ((A_CmsGroup)groups.elementAt(z)).getName();
+						String aName = (String) ((CmsGroup)groups.elementAt(z)).getName();
 						if (!C_GROUP_USERS.equals(aName)) {
 							notSelectedGroups.addElement(aName);
 						}
@@ -243,7 +243,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 						// additionalInfo.put(C_ADDITIONAL_INFO_TOWN, town);
 	
 						 
-						A_CmsUser newUser = cms.addUser(user, pwd, defaultGroup, desc, additionalInfo, 
+						CmsUser newUser = cms.addUser(user, pwd, defaultGroup, desc, additionalInfo, 
 															C_FLAG_ENABLED);
 							 
 						newUser.setEmail(email);
@@ -332,7 +332,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 					if (groups != null) {
 						notSelectedGroups = new Vector();
 						for(int z = 0; z < groups.size(); z++) {
-							String name = ((A_CmsGroup)groups.elementAt(z)).getName();
+							String name = ((CmsGroup)groups.elementAt(z)).getName();
 							if (! selectedGroups.contains(name)){
 								notSelectedGroups.addElement(name);
 							}
@@ -515,7 +515,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
@@ -523,7 +523,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @exception CmsException
      */
 	
-    public Integer getUsers(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getUsers(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// get all users
 		Vector users = cms.getUsers();
@@ -531,7 +531,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 		
 		// fill the names and values
 		for(int z = 0; z < users.size(); z++) {
-			String name = ((A_CmsUser)users.elementAt(z)).getName();
+			String name = ((CmsUser)users.elementAt(z)).getName();
 			names.addElement(name);
 			values.addElement(name);
 		}
@@ -547,7 +547,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
@@ -555,7 +555,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @exception CmsException
      */
     
-	public Integer getGroups(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+	public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// get all groups
 		Vector groups = cms.getGroups();
@@ -563,7 +563,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 		
 		// fill the names and values
 		for(int z = 0; z < groups.size(); z++) {
-			String name = ((A_CmsGroup)groups.elementAt(z)).getName();
+			String name = ((CmsGroup)groups.elementAt(z)).getName();
 			if(C_GROUP_USERS.equals(name)) {
 				retValue = z;
 			}
@@ -580,7 +580,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
@@ -588,7 +588,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @exception CmsException
      */
     
-	public Integer getNotSelectedGroups(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+	public Integer getNotSelectedGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 	 
 		int retValue = -1;
@@ -617,7 +617,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
@@ -625,7 +625,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @exception CmsException
      */
 	
-	public Integer getSelectedGroups(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+	public Integer getSelectedGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		 
 		int retValue = -1;
@@ -659,7 +659,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
@@ -667,14 +667,14 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @exception CmsException
      */
 	
-	public Integer getIndirectGroups(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+	public Integer getIndirectGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException { 
 		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
        	
 		Vector selectedGroups =(Vector) session.getValue("selectedGroups");
 		Vector indirectGroups = new Vector();
 		String groupname, superGroupName;
-		A_CmsGroup superGroup; 
+		CmsGroup superGroup; 
 		
 		if (selectedGroups != null) { 
 			// get all parents of the groups
@@ -711,7 +711,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * be filled with the appropriate information to be used for building
      * a select box.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
@@ -719,7 +719,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @exception CmsException
      */
 	
-	public Integer getGroupsOfUser(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+	public Integer getGroupsOfUser(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {  
 		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
        	
@@ -740,14 +740,14 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * <P>
      * the Vector newGroups holds all groups, which theUser will be in afterwards
      * the amount of database access is kept small with this funcion  
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param theUser the user whose data will be changed
      * @param defaultGroupName String which holds the name of the default group theUser should get 
      * @param newGroups Vector of Strings with the names of the new groups of theUser
      * @exception CmsException
      */
 	
-	private void changeGroups(A_CmsObject cms, A_CmsUser theUser, String defaultGroupName, Vector newGroups) 
+	private void changeGroups(CmsObject cms, CmsUser theUser, String defaultGroupName, Vector newGroups) 
 		throws CmsException {
 		String username = (String) theUser.getName();
 		Vector oldGroups = cms.getGroupsOfUser(username);

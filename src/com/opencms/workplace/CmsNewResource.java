@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResource.java,v $
- * Date   : $Date: 2000/03/28 13:51:39 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/05 13:37:59 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/03/28 13:51:39 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/05 13:37:59 $
  */
 public class CmsNewResource extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -64,7 +64,7 @@ public class CmsNewResource extends CmsWorkplaceDefault implements I_CmsWpConsta
      * @return Bytearray containing the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         // TODO: check, if this is neede: HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
@@ -91,7 +91,7 @@ public class CmsNewResource extends CmsWorkplaceDefault implements I_CmsWpConsta
       * workplace.ini.
       * @exception Throws CmsException if something goes wrong.
       */
-      public void getResources(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) 
+      public void getResources(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) 
             throws CmsException {
 
            // Check if the list of available resources is not yet loaded from the workplace.ini

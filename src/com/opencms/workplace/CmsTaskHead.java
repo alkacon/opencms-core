@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskHead.java,v $
- * Date   : $Date: 2000/03/20 13:21:33 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/03/20 13:21:33 $
+ * @version $Revision: 1.10 $ $Date: 2000/06/05 13:38:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -56,14 +56,14 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
 	/**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }    
 
@@ -71,14 +71,14 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
@@ -121,14 +121,14 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
     /**
      * User method to get the checked value.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
      * @exception CmsException
      */    
-    public Object checked(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public Object checked(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
 		throws CmsException {
 		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
 		Object allProjects = session.getValue(C_SESSION_TASK_ALLPROJECTS);
@@ -153,7 +153,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
      * of these views after returning from this method.
      * <P>
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -161,11 +161,11 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
      * @return Index representing the user's current filter view in the vectors.
      * @exception CmsException
      */
-    public Integer getFilters(A_CmsObject cms, CmsXmlLanguageFile lang, Vector values, Vector names, Hashtable parameters) 
+    public Integer getFilters(CmsObject cms, CmsXmlLanguageFile lang, Vector values, Vector names, Hashtable parameters) 
 		throws CmsException {
         
         // Let's see if we have a session
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        CmsRequestContext reqCont = cms.getRequestContext();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
 		String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
 

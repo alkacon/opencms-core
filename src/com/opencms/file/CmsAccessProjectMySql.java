@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessProjectMySql.java,v $
- * Date   : $Date: 2000/04/27 15:27:48 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/06/05 13:37:53 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.util.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.23 $ $Date: 2000/04/27 15:27:48 $
+ * @version $Revision: 1.24 $ $Date: 2000/06/05 13:37:53 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -203,7 +203,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject readProject(int id)
+	 public CmsProject readProject(int id)
 		 throws CmsException {
 		 try {
 			 ResultSet result;
@@ -246,7 +246,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject readProject(A_CmsTask task)
+	 public CmsProject readProject(CmsTask task)
 		 throws CmsException {
 		 try {
 			 ResultSet result;
@@ -295,9 +295,9 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject createProject(int id, String name, String description, A_CmsTask task, 
-								A_CmsUser owner, A_CmsGroup group, 
-								A_CmsGroup managergroup, int flags)
+	 public CmsProject createProject(int id, String name, String description, CmsTask task, 
+								CmsUser owner, CmsGroup group, 
+								CmsGroup managergroup, int flags)
 		throws CmsException {
 		 try {
 			 
@@ -357,7 +357,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject writeProject(A_CmsProject project)
+	 public CmsProject writeProject(CmsProject project)
 		 throws CmsException {
 		 try {
 			 // create the statement
@@ -396,7 +396,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public void deleteProject(A_CmsProject project)
+	 public void deleteProject(CmsProject project)
 		 throws CmsException {
 		 try {
 			 // create the statement
@@ -419,7 +419,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 public Vector getAllAccessibleProjectsByUser(A_CmsUser user)
+	 public Vector getAllAccessibleProjectsByUser(CmsUser user)
 		 throws CmsException {
  		 Vector projects = new Vector();
 
@@ -461,7 +461,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 public Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
+	 public Vector getAllAccessibleProjectsByGroup(CmsGroup group)
 		 throws CmsException {		 
  		 Vector projects = new Vector();
 
@@ -504,7 +504,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 public Vector getAllAccessibleProjectsByManagerGroup(A_CmsGroup managergroup)
+	 public Vector getAllAccessibleProjectsByManagerGroup(CmsGroup managergroup)
 		 throws CmsException {		 
  		 Vector projects = new Vector();
 

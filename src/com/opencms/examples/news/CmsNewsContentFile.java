@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsContentFile.java,v $
- * Date   : $Date: 2000/05/18 13:53:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/05 13:37:51 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import org.xml.sax.*;
  * Sample content definition for news articles.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/05/18 13:53:39 $
+ * @version $Revision: 1.4 $ $Date: 2000/06/05 13:37:51 $
  */
  public class CmsNewsContentFile extends A_CmsXmlContent implements I_CmsNewsConstants {
 
@@ -58,10 +58,10 @@ import org.xml.sax.*;
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsNewsContentFile(A_CmsObject cms, CmsFile file) throws CmsException {
+    public CmsNewsContentFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
         init(cms, file);
     }
@@ -70,10 +70,10 @@ import org.xml.sax.*;
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsNewsContentFile(A_CmsObject cms, String filename) throws CmsException {
+    public CmsNewsContentFile(CmsObject cms, String filename) throws CmsException {
         super();            
         init(cms, filename);
     }
@@ -302,24 +302,24 @@ import org.xml.sax.*;
     
     /**
      * Gets a vaector of all active articles in a folder.
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param folder Name of the folder to scan for articles.
      * @return Vector of all active articles.
      * @exception CmsException when read access to the articles failed.
      */
-    public static Vector getAllArticles(A_CmsObject cms, String folder) throws CmsException {
+    public static Vector getAllArticles(CmsObject cms, String folder) throws CmsException {
         return getAllArticles(cms, folder, false);
     }
 
     /**
      * Gets a vector of all articles in a folder.
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param folder Name of the folder to scan for articles.
      * @param showInactive Idicates, if all articles (including inactive articles) should be listed
      * @return Vector of all articles.
      * @exception CmsException when read access to the articles failed.
      */
-    public static Vector getAllArticles(A_CmsObject cms, String folder, boolean showInactive) throws CmsException {
+    public static Vector getAllArticles(CmsObject cms, String folder, boolean showInactive) throws CmsException {
         Vector allFiles = null;
         
         // Read all files in the given folder
@@ -344,7 +344,7 @@ import org.xml.sax.*;
         // Scan all files and select only non-deleted files for further processin
         Vector selectedFiles = new Vector();
         for(int i=0; i<numFiles; i++) {
-            A_CmsResource fileHeader = (A_CmsResource)allFiles.elementAt(i);                                              
+            CmsResource fileHeader = (CmsResource)allFiles.elementAt(i);                                              
             if(fileHeader.getState() != CmsFile.C_STATE_DELETED) {
                 selectedFiles.addElement(fileHeader);
             }

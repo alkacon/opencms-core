@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessMetadefinitionMySql.java,v $
- * Date   : $Date: 2000/05/10 16:01:59 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/06/05 13:37:53 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -207,7 +207,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition readMetadefinition(String name, A_CmsResourceType type)
+	public CmsPropertydefinition readMetadefinition(String name, CmsResourceType type)
 		throws CmsException {
 		return( readMetadefinition(name, type.getResourceType() ) );
 	}
@@ -223,7 +223,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition readMetadefinition(String name, int type)
+	public CmsPropertydefinition readMetadefinition(String name, int type)
 		throws CmsException {
 		 try {
 			 ResultSet result;
@@ -262,7 +262,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllMetadefinitions(A_CmsResourceType resourcetype)
+	public Vector readAllMetadefinitions(CmsResourceType resourcetype)
 		throws CmsException {
 		return(readAllMetadefinitions(resourcetype.getResourceType()));
 	}
@@ -314,7 +314,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllMetadefinitions(A_CmsResourceType resourcetype, int type)
+	public Vector readAllMetadefinitions(CmsResourceType resourcetype, int type)
 		throws CmsException {
 		return(readAllMetadefinitions(resourcetype.getResourceType(), type));
 	}
@@ -368,7 +368,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition createMetadefinition(String name, A_CmsResourceType resourcetype, 
+	public CmsPropertydefinition createMetadefinition(String name, CmsResourceType resourcetype, 
 											 int type)
 		throws CmsException {
 		try {
@@ -396,7 +396,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void deleteMetadefinition(A_CmsPropertydefinition metadef)
+	public void deleteMetadefinition(CmsPropertydefinition metadef)
 		throws CmsException {
 		try {
 			if(countMetainfos(metadef) != 0) {
@@ -426,7 +426,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	private int countMetainfos(A_CmsPropertydefinition metadef)
+	private int countMetainfos(CmsPropertydefinition metadef)
 		throws CmsException {
 	
 		try {
@@ -462,7 +462,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsPropertydefinition writeMetadefinition(A_CmsPropertydefinition metadef)
+	public CmsPropertydefinition writeMetadefinition(CmsPropertydefinition metadef)
 		throws CmsException {
 		
 		try {
@@ -491,7 +491,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public String readMetainformation(A_CmsResource resource, String meta)
+	public String readMetainformation(CmsResource resource, String meta)
 		throws CmsException {
 		return( readMetainformation(meta, resource.getProjectId(), 
 									resource.getAbsolutePath(), resource.getType()) );
@@ -547,7 +547,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeMetainformation(A_CmsResource resource, String meta,
+	public void writeMetainformation(CmsResource resource, String meta,
 							  String value)
 		throws CmsException {
 		writeMetainformation(meta, value, resource.getProjectId(), 
@@ -568,7 +568,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	public void writeMetainformation(String meta, String value, int projectId, 
 									 String path, int resourceType)
 		throws CmsException {
-		A_CmsPropertydefinition metadef = readMetadefinition(meta, resourceType);
+		CmsPropertydefinition metadef = readMetadefinition(meta, resourceType);
 		
 		if( metadef == null) {
 			// there is no metadefinition for with the overgiven name for the resource
@@ -615,7 +615,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeMetainformations(A_CmsResource resource, Hashtable metainfos)
+	public void writeMetainformations(CmsResource resource, Hashtable metainfos)
 		throws CmsException {
 		writeMetainformations(metainfos, resource.getProjectId(), 
 							  resource.getAbsolutePath(), resource.getType());
@@ -657,7 +657,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public Hashtable readAllMetainformations(A_CmsResource resource)
+	public Hashtable readAllMetainformations(CmsResource resource)
 		throws CmsException {
 		return( readAllMetainformations( resource.getProjectId(), 
 										 resource.getAbsolutePath(),
@@ -713,7 +713,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteAllMetainformations(A_CmsResource resource)
+	public void deleteAllMetainformations(CmsResource resource)
 		throws CmsException {
 		deleteAllMetainformations(resource.getProjectId(), resource.getAbsolutePath());
 	}
@@ -752,7 +752,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteMetainformation(A_CmsResource resource, String meta)
+	public void deleteMetainformation(CmsResource resource, String meta)
 		throws CmsException {
 		deleteMetainformation(meta, resource.getProjectId(), resource.getAbsolutePath(), 
 							  resource.getType());
@@ -771,7 +771,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	public void deleteMetainformation(String meta, int projectId, String path, 
 									  int resourceType)
 		throws CmsException {
-		A_CmsPropertydefinition metadef = readMetadefinition(meta, resourceType);
+		CmsPropertydefinition metadef = readMetadefinition(meta, resourceType);
 		
 		if( metadef == null) {
 			// there is no metadefinition with the overgiven name for the resource
@@ -819,7 +819,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteProject(A_CmsProject project)
+	public void deleteProject(CmsProject project)
 		throws CmsException {
 		try {
 			// create statement

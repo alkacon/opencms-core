@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbUserGroupCache.java,v $
- * Date   : $Date: 2000/04/07 07:56:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/05 13:37:55 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,14 +35,14 @@ import com.opencms.core.*;
 
 /**
  * This class describes a resource broker for user and groups in the Cms.<BR/>
- * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
+ * <B>All</B> Methods get a first parameter: CmsUser. It is the current user. This 
  * is for security-reasons, to check if this current user has the rights to call the
  * method.<BR/>
  * 
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/04/07 07:56:06 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/05 13:37:55 $
  */
  class CmsRbUserGroupCache extends CmsRbUserGroup {
 
@@ -106,11 +106,11 @@ import com.opencms.core.*;
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public A_CmsUser readUser(String username)
+	 public CmsUser readUser(String username)
          throws CmsException {
-         A_CmsUser user=null;
+         CmsUser user=null;
          
-         user=(A_CmsUser)m_usercache.get(username);
+         user=(CmsUser)m_usercache.get(username);
          if (user == null) {
                user=m_accessUserGroup.readUser(username);
                m_usercache.put(user.getName(),user);
@@ -129,10 +129,10 @@ import com.opencms.core.*;
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser readUser(int userid)
+	public CmsUser readUser(int userid)
 		throws CmsException {
-         A_CmsUser user=null;
-         user=(A_CmsUser)m_usercache.get(new Integer(userid));
+         CmsUser user=null;
+         user=(CmsUser)m_usercache.get(new Integer(userid));
          if (user == null) {
                user=m_accessUserGroup.readUser(userid);
                m_usercache.put(user.getName(),user);
@@ -155,7 +155,7 @@ import com.opencms.core.*;
 	 */
 	 public void deleteUser(String username)
          throws CmsException {
-         A_CmsUser user=readUser(username);
+         CmsUser user=readUser(username);
          m_accessUserGroup.deleteUser(username);
          m_usercache.remove(user.getName());
          m_usercache.remove(new Integer(user.getId()));
@@ -175,7 +175,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public void writeUser(A_CmsUser user)
+	 public void writeUser(CmsUser user)
          throws CmsException {
          m_usercache.put(new Integer(user.getId()),user);
          m_accessUserGroup.writeUser(user);     
@@ -195,11 +195,11 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	 public A_CmsGroup readGroup(String groupname)
+	 public CmsGroup readGroup(String groupname)
          throws CmsException {
          
-         A_CmsGroup group = null;
-         group=(A_CmsGroup)m_groupcache.get(groupname);
+         CmsGroup group = null;
+         group=(CmsGroup)m_groupcache.get(groupname);
          if (group == null) {
                group=m_accessUserGroup.readGroup(groupname);
                m_groupcache.put(group.getName(),group);
@@ -220,11 +220,11 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	public A_CmsGroup readGroup(int groupId)
+	public CmsGroup readGroup(int groupId)
 		 throws CmsException {
          
-         A_CmsGroup group = null;
-         group=(A_CmsGroup)m_groupcache.get(new Integer(groupId));
+         CmsGroup group = null;
+         group=(CmsGroup)m_groupcache.get(new Integer(groupId));
          if (group == null) {
                group=m_accessUserGroup.readGroup(groupId);
                m_groupcache.put(group.getName(),group);
@@ -242,7 +242,7 @@ import com.opencms.core.*;
 	 * @param group The group that should be written to the Cms.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	 public void writeGroup(A_CmsGroup group)
+	 public void writeGroup(CmsGroup group)
          throws CmsException{
          m_accessUserGroup.writeGroup(group);
          m_groupcache.put(group.getName(),group);
@@ -263,7 +263,7 @@ import com.opencms.core.*;
 	 */	
 	 public void deleteGroup(String delgroup)
          throws CmsException {
-         A_CmsGroup group = readGroup(delgroup);
+         CmsGroup group = readGroup(delgroup);
          Vector childs=null;
 		 Vector users=null;
          // get all child groups of the group
@@ -294,8 +294,8 @@ import com.opencms.core.*;
 	 public Vector getGroupsOfUser(String username)
          throws CmsException {
          Vector allGroups;
-         A_CmsGroup subGroup;
-         A_CmsGroup group;
+         CmsGroup subGroup;
+         CmsGroup group;
          allGroups=(Vector)m_groupsofusercache.get(username);       
          if (allGroups == null) {
             // get all groups of the user
@@ -304,7 +304,7 @@ import com.opencms.core.*;
             // now get all childs of the groups
             Enumeration enu = groups.elements();
             while (enu.hasMoreElements()) {
-                 group=(A_CmsGroup)enu.nextElement();
+                 group=(CmsGroup)enu.nextElement();
                 subGroup=getParent(group.getName());
 			    while(subGroup != null) {
 				    // is the subGroup already in the vector?
@@ -339,10 +339,10 @@ import com.opencms.core.*;
          uig=(Boolean)m_useringroupcache.get(username+groupname);
          if (uig==null) {
 		    Vector groups = getGroupsOfUser(username);
-		    A_CmsGroup group;
+		    CmsGroup group;
             uig=new Boolean(false);
 		    for(int z = 0; z < groups.size(); z++) {
-			     group = (A_CmsGroup) groups.elementAt(z);
+			     group = (CmsGroup) groups.elementAt(z);
 			    if(groupname.equals(group.getName())) {
                     if (group.getName().equals(groupname)) {
                         uig=new Boolean(true);

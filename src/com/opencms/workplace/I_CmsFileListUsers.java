@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsFileListUsers.java,v $
- * Date   : $Date: 2000/03/29 16:15:50 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.util.*;
  * <code>&lt;FILELIST&gt;</code> has to implement this interface.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/03/29 16:15:50 $
+ * @version $Revision: 1.2 $ $Date: 2000/06/05 13:38:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * @see com.opencms.workplace.CmsFileList
  */
@@ -52,7 +52,7 @@ public interface I_CmsFileListUsers {
      * @return A vector of folder and file objects.
      * @exception Throws CmsException if something goes wrong.
      */
-    public Vector getFiles(A_CmsObject cms) throws CmsException;
+    public Vector getFiles(CmsObject cms) throws CmsException;
 
     /**
      * Fill all customized columns with the appropriate settings for the given file 
@@ -61,11 +61,11 @@ public interface I_CmsFileListUsers {
      * @param cms Cms object for accessing system resources.
      * @param filelist Template file containing the definitions for the file list together with
      * the included customized defintions.
-     * @param res A_CmsResource Object of the current file list entry.
+     * @param res CmsResource Object of the current file list entry.
      * @param lang Current language file.
      * @exception CmsException if access to system resources failed.
      */
-    public void getCustomizedColumnValues(A_CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, A_CmsResource res, CmsXmlLanguageFile lang)
+    public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, CmsResource res, CmsXmlLanguageFile lang)
             throws CmsException;
 
     /**
@@ -75,5 +75,5 @@ public interface I_CmsFileListUsers {
      * @param prefs Old bit pattern.
      * @return New modified bit pattern.
      */
-    public int modifyDisplayedColumns(A_CmsObject cms, int prefs);     
+    public int modifyDisplayedColumns(CmsObject cms, int prefs);     
 }

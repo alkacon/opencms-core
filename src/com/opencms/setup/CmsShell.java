@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/05/19 11:19:38 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2000/06/05 13:37:57 $
+ * Version: $Revision: 1.42 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,14 +39,14 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.41 $ $Date: 2000/05/19 11:19:38 $
+ * @version $Revision: 1.42 $ $Date: 2000/06/05 13:37:57 $
  */
 public class CmsShell implements I_CmsConstants {
 	
 	/**
 	 * The resource broker to get access to the cms.
 	 */
-	private A_CmsObject m_cms;
+	private CmsObject m_cms;
 
 	/**
 	 * The main entry point for the commandline interface to the opencms. 
@@ -268,7 +268,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			Vector users = m_cms.getUsers();
 			for( int i = 0; i < users.size(); i++ ) {
-				System.out.println( (A_CmsUser)users.elementAt(i) );
+				System.out.println( (CmsUser)users.elementAt(i) );
 			}
 		} catch( Exception exc ) {
 			printException(exc);
@@ -282,7 +282,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			Vector groups = m_cms.getGroups();
 			for( int i = 0; i < groups.size(); i++ ) {
-				System.out.println( (A_CmsGroup)groups.elementAt(i) );
+				System.out.println( (CmsGroup)groups.elementAt(i) );
 			}
 		} catch( Exception exc ) {
 			printException(exc);
@@ -320,7 +320,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			Vector groups = m_cms.getGroupsOfUser(username);
 			for( int i = 0; i < groups.size(); i++ ) {
-				System.out.println( (A_CmsGroup)groups.elementAt(i) );
+				System.out.println( (CmsGroup)groups.elementAt(i) );
 			}
 		} catch( Exception exc ) {
 			printException(exc);
@@ -379,7 +379,7 @@ public class CmsShell implements I_CmsConstants {
 						 String group, String description,
 						 String firstname, String lastname, String email) {
 		try {
-			A_CmsUser user = m_cms.addUser( name, password, group, 
+			CmsUser user = m_cms.addUser( name, password, group, 
 											description, new Hashtable(), C_FLAG_ENABLED);
 			user.setEmail(email);
 			user.setFirstname(firstname);
@@ -412,7 +412,7 @@ public class CmsShell implements I_CmsConstants {
 	public void writeUser( String name, String flags ) {
 		try {
 			// get the user, which has to be written
-			A_CmsUser user = m_cms.readUser(name);
+			CmsUser user = m_cms.readUser(name);
 			
 			if(Integer.parseInt(flags) == C_FLAG_DISABLED) {
 				user.setDisabled();
@@ -482,7 +482,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			Vector users = m_cms.getUsersOfGroup(groupname);
 			for( int i = 0; i < users.size(); i++ ) {
-				System.out.println( (A_CmsUser)users.elementAt(i) );
+				System.out.println( (CmsUser)users.elementAt(i) );
 			}
 		} catch( Exception exc ) {
 			printException(exc);
@@ -513,7 +513,7 @@ public class CmsShell implements I_CmsConstants {
 	public void writeGroup( String name, String flags ) {
 		try {
 			// get the group, which has to be written
-			A_CmsGroup group = m_cms.readGroup(name);
+			CmsGroup group = m_cms.readGroup(name);
 			
 			if(Integer.parseInt(flags) == C_FLAG_DISABLED) {
 				group.setDisabled();
@@ -579,7 +579,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			Vector groups = m_cms.getChild(groupname);
 			for( int i = 0; i < groups.size(); i++ ) {
-				System.out.println( (A_CmsGroup)groups.elementAt(i) );
+				System.out.println( (CmsGroup)groups.elementAt(i) );
 			}
 		} catch( Exception exc ) {
 			printException(exc);
@@ -785,7 +785,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			Vector projects = m_cms.getAllAccessibleProjects();
 			for( int i = 0; i < projects.size(); i++ ) {
-				System.out.println( (A_CmsProject)projects.elementAt(i) );
+				System.out.println( (CmsProject)projects.elementAt(i) );
 			}
 		} catch( Exception exc ) {
 			printException(exc);
@@ -837,7 +837,7 @@ public class CmsShell implements I_CmsConstants {
 	}
 	
 	/**
-	 * Returns a A_CmsResourceTypes.
+	 * Returns a CmsResourceTypes.
 	 * 
 	 * @param resourceType the name of the resource to get.
 	 */
@@ -891,7 +891,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			Vector propertydefs = m_cms.readAllPropertydefinitions(resourcetype);
 			for( int i = 0; i < propertydefs.size(); i++ ) {
-				System.out.println( (A_CmsPropertydefinition)propertydefs.elementAt(i) );
+				System.out.println( (CmsPropertydefinition)propertydefs.elementAt(i) );
 			}
 		} catch( Exception exc ) {
 			printException(exc);
@@ -929,7 +929,7 @@ public class CmsShell implements I_CmsConstants {
 			Vector propertydefs = m_cms.readAllPropertydefinitions(resourcetype, 
 														   Integer.parseInt(type));
 			for( int i = 0; i < propertydefs.size(); i++ ) {
-				System.out.println( (A_CmsPropertydefinition)propertydefs.elementAt(i) );
+				System.out.println( (CmsPropertydefinition)propertydefs.elementAt(i) );
 			}
 		} catch( Exception exc ) {
 			printException(exc);
@@ -964,7 +964,7 @@ public class CmsShell implements I_CmsConstants {
 									String resourcetype, 
 									String type) {
 		try {
-			A_CmsPropertydefinition propertydef = m_cms.readPropertydefinition(name, resourcetype);
+			CmsPropertydefinition propertydef = m_cms.readPropertydefinition(name, resourcetype);
 			propertydef.setPropertydefType(Integer.parseInt(type));			
 			System.out.println( m_cms.writePropertydefinition(propertydef) );
 		} catch( Exception exc ) {
@@ -1417,7 +1417,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			Vector files = m_cms.readAllFileHeaders(filename);
 			for( int i = 0; i < files.size(); i++ ) {
-				System.out.println( (A_CmsResource)files.elementAt(i) );
+				System.out.println( (CmsResource)files.elementAt(i) );
 			}
 		} catch( Exception exc ) {
 			printException(exc);
@@ -1450,7 +1450,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			Vector groups = m_cms.getChilds(groupname);
 			for( int i = 0; i < groups.size(); i++ ) {
-				System.out.println( (A_CmsGroup)groups.elementAt(i) );
+				System.out.println( (CmsGroup)groups.elementAt(i) );
 			}
 		} catch( Exception exc ) {
 			printException(exc);

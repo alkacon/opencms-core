@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
- * Date   : $Date: 2000/05/25 15:10:22 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/06/05 13:38:00 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/05/25 15:10:22 $
+ * @version $Revision: 1.20 $ $Date: 2000/06/05 13:38:00 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -58,10 +58,10 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlWpConfigFile(A_CmsObject cms, String filename) throws CmsException {
+    public CmsXmlWpConfigFile(CmsObject cms, String filename) throws CmsException {
         super();
         init(cms, filename);
     }
@@ -70,10 +70,10 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
      * Constructor for creating a new object containing the content
      * of the given CmsFile object.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
-    public CmsXmlWpConfigFile(A_CmsObject cms, CmsFile file) throws CmsException {
+    public CmsXmlWpConfigFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
         init(cms, file);
     }        
@@ -84,9 +84,9 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
      * <P>
      * The position of the workplace.ini is defined in I_CmsConstants.
      * 
-     * @param cms A_CmsObject object for accessing system resources.
+     * @param cms CmsObject object for accessing system resources.
      */        
-     public CmsXmlWpConfigFile(A_CmsObject cms) throws CmsException {
+     public CmsXmlWpConfigFile(CmsObject cms) throws CmsException {
         super();
         try {
             init(cms, C_WORKPLACE_INI);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/06/02 11:59:59 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/06/05 13:37:57 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.39 $ $Date: 2000/06/02 11:59:59 $
+ * @version $Revision: 1.40 $ $Date: 2000/06/05 13:37:57 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -97,15 +97,15 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * the parameters and the requested body document, we must
      * build a complex key using this three arguments.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return key that can be used for caching
      */
-    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
+    public Object getKey(CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
         //Vector v = new Vector();
-        A_CmsRequestContext reqContext = cms.getRequestContext();
+        CmsRequestContext reqContext = cms.getRequestContext();
         
         
    
@@ -139,14 +139,14 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * </UL>
      * Paramter names must be in "elementName.parameterName" format.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template
      * @param parameters Hashtable with all template class parameters.
      * @return Content of the template and all subtemplates.
      * @exception CmsException 
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
          
     
         
@@ -157,14 +157,14 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
          
  
         if(C_DEBUG && A_OpenCms.isLogging()) {
@@ -188,7 +188,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * Any exceptions thrown while processing the template will be caught,
      * printed and and thrown again.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param xmlTemplateDocument XML parsed document of the content type "XML template file" or
      * any derived content type.
      * @param elementName Element name of this template in our parent template.
@@ -197,7 +197,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @return Content of the template and all subtemplates.
      * @exception CmsException 
      */
-    protected byte[] startProcessing(A_CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    protected byte[] startProcessing(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
                      
         String result = null;
         // Try to process the template file
@@ -234,13 +234,13 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * Every extending class using not CmsXmlTemplateFile as content type,
      * but any derived type should override this method.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public CmsXmlTemplateFile getOwnTemplateFile(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
   
         
         CmsXmlTemplateFile xmlTemplateDocument = new CmsXmlTemplateFile(cms, templateFile);                       
@@ -255,14 +255,14 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * an extension of A_CmsXmlContent by the additional tag
      * <code>&lt;ELEMENT&gt;</code> this user method ist mandatory.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object templateElement(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Object templateElement(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
        
         
@@ -401,14 +401,14 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * for the Internet Explorer and Netscape Navigate 
      * specific stylesheets.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public String getStylesheet(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public String getStylesheet(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 
              
@@ -458,14 +458,14 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * This method can be called using <code>&lt;METHOD name="getTitle"&gt;</code>
      * in the template file.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object getTitle(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Object getTitle(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 
    
@@ -483,14 +483,14 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * This method can be called using <code>&lt;METHOD name="getTitle"&gt;</code>
      * in the template file.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object getServletPath(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Object getServletPath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 
         
@@ -499,14 +499,14 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
     }  
        
 	/** 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object getPathUri(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Object getPathUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 		
 		String path=cms.getRequestContext().getUri();
@@ -518,28 +518,28 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 	
 	
 	/** 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object getFileUri(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Object getFileUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 
       	return cms.getRequestContext().getFileUri().getBytes();
 	}
 	
 	/** 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object getUri(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Object getUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 		
       	return (((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + cms.getRequestContext().getUri()).getBytes();
@@ -552,14 +552,14 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * This method can be called using <code>&lt;METHOD name="getTitle"&gt;</code>
      * in the template file.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object getQueryString(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Object getQueryString(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
         
             
@@ -577,14 +577,14 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * This method can be called using <code>&lt;METHOD name="getCmsQueryString"&gt;</code>
      * in the template file.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object getFrameQueryString(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Object getFrameQueryString(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
         String query = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getQueryString();
 		String frame="", param="";
@@ -701,14 +701,14 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * This method can be called using <code>&lt;METHOD name="getCmsFrame"&gt;</code>
      * in the template file.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object getFrameTarget(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Object getFrameTarget(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 		
 		String target="";
@@ -734,13 +734,13 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * May be called from the template file using
      * <code>&lt;METHOD name="parameters"&gt;</code>.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return Debugging information about all parameters.
      */
-    public String parameters(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) {
+    public String parameters(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) {
             
         
         
@@ -763,13 +763,13 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * May be called from the template file using
      * <code>&lt;METHOD name="counter"&gt;</code>.
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return Actual value of <code>counter</code>.
      */
-    public Integer counter(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Integer counter(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
         counter++;
         return new Integer(counter);
@@ -781,14 +781,14 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * Checks if the templateCache is set and if all subtemplates
      * are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         if(templateSelector==null || "".equals(templateSelector)) {
             templateSelector = (String)parameters.get(C_FRAME_SELECTOR);
         }
@@ -811,27 +811,27 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * <P>
      * <em>not implemented.</em> Returns always <code>false</code>.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <code>false</code> 
      */    
-    public boolean shouldReload(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean shouldReload(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
     
     /**
      * Checks if all subtemplates are cacheable.
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <code>true</code> if all subtemplates are cacheable, <code>false</code> otherwise.
      */
-    public boolean subtemplatesCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) { 
+    public boolean subtemplatesCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) { 
         boolean cacheable = true;
         CmsXmlTemplateFile doc = null;
         Vector subtemplates = null;

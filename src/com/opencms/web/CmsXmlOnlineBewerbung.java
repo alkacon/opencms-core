@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $ 
  * Author : $Author: a.schouten $
- * Date   : $Date: 2000/02/29 16:44:47 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/06/05 13:37:58 $
+ * Version: $Revision: 1.18 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -42,7 +42,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: a.schouten $
- * @version $Name:  $ $Revision: 1.17 $ $Date: 2000/02/29 16:44:47 $
+ * @version $Name:  $ $Revision: 1.18 $ $Date: 2000/06/05 13:37:58 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -151,14 +151,14 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms A_CmsObject Object for accessing system resources
+     * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile,
+    public boolean isCacheable(CmsObject cms, String templateFile,
 							   String elementName, Hashtable parameters,
 							   String templateSelector) {
         return false;
@@ -169,13 +169,13 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
      * Reads in the template file and starts the XML parser for the expected
      * content type <class>CmsXmlWpTemplateFile</code>
      * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    public CmsXmlTemplateFile getOwnTemplateFile(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         CmsXmlOnlineBewerbungContentDefinition xmlTemplateDocument = new CmsXmlOnlineBewerbungContentDefinition(cms, templateFile);       
         return xmlTemplateDocument;
     }        
@@ -185,10 +185,10 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
      * Gets the content of a defined section in a given template file and its 
      * subtemplates with the given parameters. 
      * 
-	 * @see getContent(A_CmsObject cms, String templateFile, String elementName,   
+	 * @see getContent(CmsObject cms, String templateFile, String elementName,   
 	 * Hashtable parameters)
 	 * 
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
@@ -196,7 +196,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
      * 
      * @return It returns an array of bytes that contains the page.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String 
+    public byte[] getContent(CmsObject cms, String templateFile, String 
                              elementName, Hashtable parameters, String 
                              templateSelector) throws CmsException {
 		
@@ -978,11 +978,11 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		}
 	}
 	
-	private String startWorkflow(A_CmsObject cms, Hashtable formData)
+	private String startWorkflow(CmsObject cms, Hashtable formData)
 		throws CmsException {
 		
 		String secretkey = null;
-		A_CmsTask project = null;
+		CmsTask project = null;
 		
 		try {
 			// Connection for the DB insert
@@ -1033,7 +1033,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 			
 			int recdataid = getLastInsertId(con);
 			
-			A_CmsGroup role = cms.readGroup("Personalabt.");
+			CmsGroup role = cms.readGroup("Personalabt.");
 			long timeout = System.currentTimeMillis()+ 241920000;
 			
 			// get the tasktypes for the recruiting workflow
@@ -1050,7 +1050,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 			
 			project = cms.createProject(projname, projtyperef, null, timeout, 1);
 			
-			A_CmsTask newtask = cms.createTask(project.getId(), null, null, taskname, "", tasktyperef, timeout, 1);
+			CmsTask newtask = cms.createTask(project.getId(), null, null, taskname, "", tasktyperef, timeout, 1);
 			cms.writeTaskLog(newtask.getId(), taskcomment, 100);
 
 

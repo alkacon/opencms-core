@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsInitMySql.java,v $
- * Date   : $Date: 2000/04/03 10:48:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/06/05 13:37:54 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * It helps the core to set up all layers correctly.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/04/03 10:48:29 $
+ * @version $Revision: 1.10 $ $Date: 2000/06/05 13:37:54 $
  */
 public class CmsInitMySql extends A_CmsInit implements I_CmsConstants {
 	
@@ -104,7 +104,7 @@ public class CmsInitMySql extends A_CmsInit implements I_CmsConstants {
 		
 		// read all mountpoints from the properties.
 		Hashtable mountPoints = (Hashtable) propertyRb.readProperty(C_SYSTEMPROPERTY_MOUNTPOINT);
-		A_CmsMountPoint mountPoint;
+		CmsMountPoint mountPoint;
 		Hashtable mountedAccessModules = new Hashtable();
 		Enumeration keys = mountPoints.keys();
 		Object key;
@@ -113,7 +113,7 @@ public class CmsInitMySql extends A_CmsInit implements I_CmsConstants {
 		// walk throug all mount-points.
 		while(keys.hasMoreElements()) {
 			key = keys.nextElement();
-			mountPoint = (A_CmsMountPoint) mountPoints.get(key);
+			mountPoint = (CmsMountPoint) mountPoints.get(key);
 			
 			// select the right access-module for the mount-point
 			if( mountPoint.getMountpointType() == C_MOUNTPOINT_MYSQL ) {

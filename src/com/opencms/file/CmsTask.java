@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTask.java,v $
- * Date   : $Date: 2000/02/20 16:59:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/06/05 13:37:56 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,9 +36,9 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.9 $ $Date: 2000/02/20 16:59:00 $
+ * @version $Revision: 1.10 $ $Date: 2000/06/05 13:37:56 $
  */
-public class CmsTask extends A_CmsTask implements I_CmsConstants {
+public class CmsTask implements I_CmsConstants {
 
 	/**
 	 * The Id of the task.

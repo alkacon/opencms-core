@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlContent.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/05 13:37:58 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,37 +41,38 @@ import org.w3c.dom.*;
  * Classes for each customized content type have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.4 $ $Date: 2000/06/05 13:37:58 $
  */
 public interface I_CmsXmlContent extends Cloneable { 
 
     /**
      * Initialize the XML content class.
      * Load and parse the file given by filename,
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param filename Filename of the file to be loaded.
      * @exception CmsException
      */
-    public void init(A_CmsObject cms, String filename) throws CmsException;
+    public void init(CmsObject cms, String filename) throws CmsException;
 
     /**
      * Initialize the XML content class.
      * Load and parse the content of the given CmsFile object.
-     * @param cms A_CmsObject Object for accessing resources.
+     * @param cms CmsObject Object for accessing resources.
      * @param file CmsFile object of the file to be loaded and parsed.
      * @exception CmsException
      */    
-    public void init(A_CmsObject cms, CmsFile file) throws CmsException;
+    public void init(CmsObject cms, CmsFile file) throws CmsException;
 
     /**
      * Initialize the class with the given parsed XML DOM document.
-     * @param cms A_CmsObject Object for accessing system resources.
+     * @param cms CmsObject Object for accessing system resources.
      * @param document DOM document object containing the parsed XML file.
      * @param filename OpenCms filename of the XML file.
      * @exception CmsException
      */
-    public void init(A_CmsObject cms, Document content, String filename) throws CmsException;    
-    /**
+    public void init(CmsObject cms, Document content, String filename) throws CmsException;    
+
+    /**
      * Parses the given file and stores it in the internal list of included files and
      * appends the relevant data structures of the new file to its own structures.
      * 
@@ -110,7 +111,8 @@ public interface I_CmsXmlContent extends Cloneable {
      * @return String with XML content
      */
     public String getXmlText(Node n);
-        /**
+    
+    /**
      * Gets the absolute filename of the XML file represented by this content class
      * @return Absolute filename
      */
@@ -121,7 +123,9 @@ public interface I_CmsXmlContent extends Cloneable {
      * of the template file.
      * @return filename
      */    
-    public String getFilename();        /**
+    public String getFilename();
+    
+    /**
      * Writes the XML document back to the OpenCms system. 
      * @exception CmsException  
      */
@@ -131,6 +135,6 @@ public interface I_CmsXmlContent extends Cloneable {
      * Creates a clone of this object.
      * @return cloned object
      * @exception CloneNotSupportedException
-     */    public Object clone() throws CloneNotSupportedException;
+     */
+    public Object clone() throws CloneNotSupportedException;
 }
-
