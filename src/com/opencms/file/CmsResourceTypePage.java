@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2001/10/02 13:00:20 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/10/12 15:30:07 $
+* Version: $Revision: 1.18.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2001/10/02 13:00:20 $
+ * @version $Revision: 1.18.2.1 $ $Date: 2001/10/12 15:30:07 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -511,8 +511,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // this is a file
         // first delete the file, so it can be overwritten
         try {
-            lockResource(cms, path + name, true);
-            deleteResource(cms, path + name);
+            cms.doLockResource(path + name, true);
+            cms.doDeleteFile(path + name);
             state = C_STATE_CHANGED;
         } catch (CmsException exc) {
             state = C_STATE_NEW;
