@@ -607,7 +607,7 @@ public class CmsSetupUtils {
                    "Used JDK:            "+usedJDK+'\n'+
                    "Used Servlet Engine: "+thisEngine+'\n';
         content = newEntry.getBytes();
-        String filename = basePath+"WEB-INF/ocsetup/version.txt";
+        String filename = basePath+"WEB-INF/ocsetup/versions.txt";
 		try {
             File file = new File(filename);
             if(file.exists()){
