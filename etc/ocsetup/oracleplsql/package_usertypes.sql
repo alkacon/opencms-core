@@ -23,8 +23,9 @@ PACKAGE userTypes IS
                    resource_size cms_resources.resource_size%TYPE,
                    resource_lastmodified_by cms_resources.resource_lastmodified_by%TYPE,
                    file_content cms_files.file_content%TYPE);
-                   
+
   TYPE resourceTable IS TABLE OF cms_resources%ROWTYPE INDEX BY BINARY_INTEGER;
   TYPE nameTable IS TABLE OF VARCHAR2(32767) INDEX BY BINARY_INTEGER;
+  TYPE numberTable IS TABLE OF NUMBER INDEX BY BINARY_INTEGER;
 END ;
 /

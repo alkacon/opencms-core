@@ -1,8 +1,8 @@
 CREATE OR REPLACE
 PACKAGE BODY OpenCmsProject IS
    -- variable/funktions/procedures which are used only in this package
-   bAnyList VARCHAR2(32767) := '';
-   FUNCTION addInList(pAnyId NUMBER) RETURN BOOLEAN;
+   bList userTypes.numberTable;
+   FUNCTION addInList(pId NUMBER) RETURN BOOLEAN;
    PROCEDURE backupProject (pProjectId NUMBER, pVersionId NUMBER, pPublishDate DATE, pUserId NUMBER);
 --------------------------------------------------------------------
 -- return all project which the user has access
@@ -60,9 +60,8 @@ PACKAGE BODY OpenCmsProject IS
         END IF;
 	  END LOOP;
       CLOSE vCursor;
-      bAnyList := '';
       -- return the cursor
-
+      bList.DELETE;
       OPEN recAllAccProjects FOR 'select * from (select * from cms_projects where user_id = '||to_char(pUserID)||' and project_flags = 0 '||
                                   vQueryStr||') order by project_name';
       RETURN recAllAccProjects;
@@ -71,16 +70,23 @@ PACKAGE BODY OpenCmsProject IS
 -- funktion checks if the ID is already in list, if not it edits the list
 -- and returns boolean
 ------------------------------------------------------------------------------------
-  FUNCTION addInList(pAnyId NUMBER) RETURN BOOLEAN IS
-    vCount NUMBER;
+  FUNCTION addInList(pId NUMBER) RETURN BOOLEAN IS
+    newIndex NUMBER;
+    element NUMBER;
   BEGIN
-    vCount := nvl(Instr(bAnyList, ''''||to_char(pAnyId)||''''),0);
-    IF vCount = 0 THEN
-      bAnyList := bAnyList||','''||to_char(pAnyId)||'''';
-      RETURN TRUE;
-    ELSE
-      RETURN FALSE;
+    FOR element IN 1..bList.COUNT
+    LOOP
+      IF bList(element) = pId THEN
+        RETURN FALSE;
+      END IF;
+	END LOOP;
+	IF element > 1 THEN
+	  newIndex := element+1;
+	ELSE
+	  newIndex := 1;
 	END IF;
+    bList(newIndex) := pId;
+	RETURN TRUE;
   END addInList;
 ------------------------------------------------------------------------------------------
 -- insert a new project and return of the project-id
@@ -178,14 +184,14 @@ PACKAGE BODY OpenCmsProject IS
     recNewFile userTypes.fileRecord;
     vResourceId cms_resources.resource_id%TYPE;
     vFileId cms_resources.file_id%TYPE;
-    vDeletedFolders VARCHAR2(32767) := '';
+    vDeletedFolders userTypes.numberTable;
+    element NUMBER;
     vCurDelFolders VARCHAR2(32767) := '';
     vCurDelFiles VARCHAR2(32767) := '';
     vCurWriteFolders VARCHAR2(32767) := '';
     vCurWriteFiles VARCHAR2(32767) := '';
     vVersionId NUMBER := 1;
     vResVersionId NUMBER := 1;
-    --vPublishDate DATE := to_date(pPublishDate, 'dd.mm.yyyy hh24:mi');
   BEGIN
     ---------------------------------------
     -- get the next version id for backup
@@ -214,7 +220,7 @@ PACKAGE BODY OpenCmsProject IS
       -- is the resource marked as deleted?
       ELSIF recFolders.state = opencmsConstants.C_STATE_DELETED THEN
         -- add to list with deleted folders
-        vDeletedFolders := vDeletedFolders||'/'||to_char(recFolders.resource_id);
+        vDeletedFolders(vDeletedFolders.COUNT + 1) := recFolders.resource_id;
         IF pEnableHistory = 1 THEN
           -- backup the resource
           opencmsResource.backupFolder(pProjectId, recFolders, vVersionId, pPublishDate);
@@ -378,8 +384,6 @@ PACKAGE BODY OpenCmsProject IS
                                      recFiles.resource_name, 'FALSE', curNewFile);
           FETCH curNewFile INTO recNewFile;
           CLOSE curNewFile;
-          --recNewFile.state := opencmsConstants.C_STATE_UNCHANGED;
-          --opencmsResource.writeFile(pOnlineProjectId, recNewFile, 'FALSE');
           update cms_online_resources set state = opencmsConstants.C_STATE_UNCHANGED
                  where resource_id=recNewFile.resource_id;
         EXCEPTION
@@ -442,8 +446,6 @@ PACKAGE BODY OpenCmsProject IS
                                      vParentId, recFiles.resource_name, 'FALSE', curNewFile);
           FETCH curNewFile INTO recNewFile;
           CLOSE curNewFile;
-          --recNewFile.state := opencmsConstants.C_STATE_UNCHANGED;
-          --opencmsResource.writeFile(pOnlineProjectId, recNewFile, 'FALSE');
           update cms_online_resources set state = opencmsConstants.C_STATE_UNCHANGED
                  where resource_id=recNewFile.resource_id;
         END IF;
@@ -481,14 +483,12 @@ PACKAGE BODY OpenCmsProject IS
     END LOOP;
     CLOSE curFiles;
     -- now remove the folders
-    IF length(vDeletedFolders) > 0 THEN
+    IF vDeletedFolders.COUNT > 0 THEN
       -- get the string for the cursor of
-      vCurDelFolders := replace(substr(vDeletedFolders,2),'/',',');
-      vDeletedFolders := vDeletedFolders||'/';
+      vCurDelFolders := vDeletedFolders.COUNT;
+      FOR element IN 1..vDeletedFolders.COUNT
       LOOP
-        vResourceId := substr(vDeletedFolders, instr(vDeletedFolders, '/', 1, 1)+1,
-                       (instr(vDeletedFolders, '/', 1, 2) - (instr(vDeletedFolders, '/', 1, 1)+1)));
-        vDeletedFolders := substr(vDeletedFolders, (instr(vDeletedFolders, '/', 1, 2)));
+        vResourceId := vDeletedFolders(element);
         BEGIN
           select resource_id, file_id into vResourceId, vFileId
                  from cms_online_resources
@@ -500,11 +500,9 @@ PACKAGE BODY OpenCmsProject IS
           WHEN NO_DATA_FOUND THEN
             null;
         END;
-        IF length(vDeletedFolders) <= 1 THEN
-          EXIT;
-        END IF;
       END LOOP;
       commit;
+      vDeletedFolders.DELETE;
     END IF;
     -- build the cursors which are used in java for the discAccess
     BEGIN
@@ -641,30 +639,6 @@ PACKAGE BODY OpenCmsProject IS
     curOnlineProject cms_projects%ROWTYPE;
     vCount NUMBER;
   BEGIN
-/* for multisite now disabled
-    -- read Online Project
-    select count(*) into vCount from cms_projects p, cms_sites s
-                                     where p.project_id = pProjectId
-                                     and s.onlineproject_id = p.project_id;
-    IF vCount > 0 THEN
-      OPEN curOnlineProject FOR select p.* from cms_projects p, cms_sites s
-                                         where p.project_id = pProjectId
-                                         and s.onlineproject_id = p.project_id;
-    ELSE
-      -- read Parent Project
-      select count(*) into vCount from cms_projects pp, cms_projects cp
-                                  where cp.parent_id = pp.project_id
-                                  and cp.project_id = pProjectId;
-      IF vCount > 0 THEN
-        OPEN curOnlineProject FOR select pp.* from cms_projects pp, cms_projects cp
-                                           where cp.parent_id = pp.project_id
-                                           and cp.project_id = pProjectId;
-      ELSE
-        -- read current Project
-        OPEN curOnlineProject FOR select * from cms_projects where project_id = pProjectId;
-      END IF;
-    END IF;
-*/
     select * into curOnlineProject from cms_projects
            where project_id = openCmsConstants.C_PROJECT_ONLINE_ID
            order by project_name;
