@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2003/01/31 10:25:22 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.77 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.78 $ $Date: 2003/01/31 10:25:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -159,30 +159,24 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
     public Integer getAvailableTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
 
-        String currentFile = (String)parameters.get("filename_for_relative_template");
-        String filetype = (String)parameters.get("root.pagetype");
-        if("gemadipage".equals(filetype)){
-            return CmsNewResourceGemadipage.getRelativeTemplates(cms, names, values, (String)parameters.get("template"), currentFile);
+        Integer retValue = CmsHelperMastertemplates.getTemplates(cms, names, values, (String)parameters.get("template"), -1);
+        if(retValue.intValue() != -1) {
+            return retValue;
         } else {
-            Integer retValue = CmsHelperMastertemplates.getTemplates(cms, names, values, (String)parameters.get("template"), -1);
-            if(retValue.intValue() != -1) {
-                return retValue;
-            } else {
-                // no template found -> use the given one
-                // first clean the vectors
-                names.removeAllElements();
-                values.removeAllElements();
-                // now add the current template
-                String name = (String)parameters.get("template");
-                try { // to read the title of this template
-                    name = cms.readProperty(name, C_PROPERTY_TITLE);
-                } catch(CmsException exc) {
-                    // ignore this exception - the title for this template was not readable
-                }
-                names.add(name);
-                values.add((String)parameters.get("template"));
-                return new Integer(0);
+            // no template found -> use the given one
+            // first clean the vectors
+            names.removeAllElements();
+            values.removeAllElements();
+            // now add the current template
+            String name = (String)parameters.get("template");
+            try { // to read the title of this template
+                name = cms.readProperty(name, C_PROPERTY_TITLE);
+            } catch(CmsException exc) {
+                // ignore this exception - the title for this template was not readable
             }
+            names.add(name);
+            values.add((String)parameters.get("template"));
+            return new Integer(0);
         }
     }
 

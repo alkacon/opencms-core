@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2003/01/30 19:14:33 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/01/31 10:25:21 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.59 $ $Date: 2003/01/30 19:14:33 $
+ * @version $Revision: 1.60 $ $Date: 2003/01/31 10:25:21 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -191,14 +191,8 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                     Hashtable prop = new Hashtable();
                     prop.put(C_PROPERTY_TITLE, title);
                     CmsResource file = null;
-                    String resourceType = (String)session.getValue("resourctype_for_new_page");
-                    session.removeValue("resourctype_for_new_page");
                     if (! currentFilelist.endsWith(C_FOLDER_SEPARATOR)) currentFilelist += C_FOLDER_SEPARATOR;
-                    if(resourceType != null && "gemadipage".equals(resourceType)){
-                        file = ((CmsResourceTypePage)cms.getResourceType(resourceType)).createResourceForTemplate(cms, currentFilelist + newFile, prop, "".getBytes(), templatefile) ;
-                    }else{
-                        file = ((CmsResourceTypePage)cms.getResourceType("page")).createResourceForTemplate(cms, currentFilelist + newFile, prop, "".getBytes(), templatefile) ;
-                    }
+                    file = ((CmsResourceTypePage)cms.getResourceType("page")).createResourceForTemplate(cms, currentFilelist + newFile, prop, "".getBytes(), templatefile) ;
 
                     if( keywords != null && !keywords.equals("") ) {
                         cms.writeProperty(file.getAbsolutePath(), C_PROPERTY_KEYWORDS, keywords);
