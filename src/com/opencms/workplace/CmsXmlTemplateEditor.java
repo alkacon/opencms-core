@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2001/09/13 10:23:12 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2001/09/21 06:38:21 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.52 $ $Date: 2001/09/13 10:23:12 $
+ * @version $Revision: 1.53 $ $Date: 2001/09/21 06:38:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -243,9 +243,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         String bodyElementFilename = (String)parameters.get("bodyfile");
         String action = (String)parameters.get(C_PARA_ACTION);
 
+        String startView = (String)parameters.get("startview");
+
         // Get all session parameters
         String oldEdit = (String)session.getValue("te_oldedit");
-
         // TODO: check, if this is neede: String bodytag = (String)session.getValue("bodytag");
         String oldLayoutFilename = (String)session.getValue("te_oldlayout");
         String oldTitle = (String)session.getValue("te_title");
@@ -317,8 +318,13 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             else {
                 browserId = 1;
             }
+
             if(editor == null || "".equals(editor)) {
-                editor = this.C_SELECTBOX_EDITORVIEWS[C_SELECTBOX_EDITORVIEWS_DEFAULT[browserId]];
+                if(startView == null || "".equals(startView)){
+                    editor = this.C_SELECTBOX_EDITORVIEWS[C_SELECTBOX_EDITORVIEWS_DEFAULT[browserId]];
+                } else {
+                    editor = startView;
+                }
                 session.putValue("te_pageeditor", editor);
                 parameters.put("editor", editor);
             }
@@ -347,7 +353,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             session.putValue("te_temppagefile", tempPageFilename);
             session.putValue("te_tempbodyfile", tempBodyFilename);
         }
-
         // Get the XML parsed content of the layout file.
         // This can be done by calling the getOwnTemplateFile() method of the
         // layout's template class.
@@ -396,7 +401,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             session.putValue("te_stylesheet", style);
         }
         else {
-
             // There exists a content parameter.
 
             // We have to check all possible changes requested by the user.
