@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/13 14:22:07 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2000/06/13 16:02:23 $
+ * Version: $Revision: 1.84 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.83 $ $Date: 2000/06/13 14:22:07 $ 
+ * @version $Revision: 1.84 $ $Date: 2000/06/13 16:02:23 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1672,10 +1672,29 @@ public class CmsObject implements I_CmsConstants {
 	public Vector readAllPropertydefinitions(String resourcetype, int type)
 		throws CmsException {
 		return( c_rb.readAllPropertydefinitions(m_context.currentUser(), 
-											m_context.currentProject(), 
-											resourcetype, type ) );
+											    m_context.currentProject(), 
+											    resourcetype, type ) );
 	}
 	
+     /**
+	 * Reads all Propertydefinitions for the given resource type.
+	 * 
+	 * @param id The id of the resource type to read the  Propertydefinitions for.
+	 * @param type The type of the Propertydefinition (normal|mandatory|optional).
+	 * 
+	 * @return propertydefinitions A Vector with Propertydefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllPropertydefinitions(int id, int type)
+		throws CmsException {
+		return( c_rb.readAllPropertydefinitions(m_context.currentUser(), 
+											    m_context.currentProject(), 
+											    id, type ) );
+	}
+    
+    
 	/**
 	 * Creates the Propertydefinition for the resource type.<BR/>
 	 * 

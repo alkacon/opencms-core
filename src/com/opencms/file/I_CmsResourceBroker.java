@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/13 14:22:07 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2000/06/13 16:02:24 $
+ * Version: $Revision: 1.82 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.81 $ $Date: 2000/06/13 14:22:07 $
+ * @version $Revision: 1.82 $ $Date: 2000/06/13 16:02:24 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -389,6 +389,26 @@ public interface I_CmsResourceBroker {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
+	 * @param id The id of the resource type to read the propertydefinitions for.
+	 * @param type The type of the propertydefinition (normal|mandatory|optional).
+	 * 
+	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
+										     int id, int type)
+		throws CmsException;
+    
+     /**
+	 * Reads all propertydefinitions for the given resource type.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
 	 * @param resourcetype The name of the resource type to read the propertydefinitions for.
 	 * @param type The type of the propertydefinition (normal|mandatory|optional).
 	 * 
@@ -398,8 +418,9 @@ public interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
 	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
-										 String resourcetype, int type)
+										     String resourcetype, int type)
 		throws CmsException;
+    
     
     /**
 	 * Reads a definition for the given resource type.
