@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/10/09 16:58:57 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2003/10/23 14:49:08 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -1860,7 +1860,7 @@ public class OpenCmsCore {
      * @param res the current response 
      * @throws CmsException in case something goes wrong
      */
-    private void initStartupClasses(HttpServletRequest req, HttpServletResponse res) throws CmsException {
+    protected void initStartupClasses(HttpServletRequest req, HttpServletResponse res) throws CmsException {
         if (m_startupClassesInitialized)
             return;
 

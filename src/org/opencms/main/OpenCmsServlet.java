@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2003/10/09 15:32:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/10/23 14:49:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -84,6 +84,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String path = req.getPathInfo();
         if ((path != null) && path.startsWith(C_HANDLE)) {
+            
+            try {
+                OpenCmsCore.getInstance().initStartupClasses(req, res);
+            } catch (CmsException e) {
+                // noop
+            }
+            
             invokeHandler(req, res);                                     
         } else {
             OpenCmsCore.getInstance().showResource(req, res);
