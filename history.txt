@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/01/08 08:54:38 $
- * Version: $Revision: 1.472.2.5 $
+ * Date   : $Date: 2004/01/09 16:23:41 $
+ * Version: $Revision: 1.472.2.6 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -21,10 +21,24 @@ Legend:
 
 OpenCms 5.0.1 - January 09, 2004
 ! Added "delete" option to image and download galleries to delete resources directly in the gallery views
-* Fixed issue #28: Property definitions are now read from the correct table (online/offline)
 * Applied fix to issue #15 contributed by ulrich.rueth@gmx.de
 ! Added "getNavigationBreadCrumb()" methods to com.opencms.flex.jsp.CmsJspNavBuilder
 - Refactored JSP integration to be more standards compliant
+* Fixed issue #13: Required permissions not sufficient to browse through galleries 
+* Fixed issue #20: Misplaced context menues in IE 6 
+* Fixed issue #22: Missing localization keys in the XML template for the channel administration backoffice 
+* Fixed issue #25: Typo in the workflow preferences dialog 
+* Fixed issue #28: Property definitions are now read from the correct table (online/offline)
+* Fixed issue #32: Missing "rel" attrib. in the link tag to load the style sheet of the JSP template of the howto-template module 
+* Fixed issue #34: Malformed URI to restart the setup wizard 
+* Fixed issue #36: Unnecessary quote chars. in mystyle.css of the howto-template documentation module 
+* Fixed issue #40: Site-root gets added twice to the import path in the importFolder shell command 
+* Fixed issue #42: Leading/trailing filenames are not trimmed when new resources are created 
+* Fixed issue #70: Malformed crontab entries prevent OpenCms from starting 
+* Fixed issue #87: Possible NullPointer exception in cascading calls of getModuleParameterBoolean 
+* Fixed issue #94: Values for CATALINA_OPTS not wrapped in quote chars in the how-to install documentation page of the welcome module 
+* Fixed issue #95: Typo in the in the history "Restore Version" dialog 
+* Fixed issue #102: Typo in the empty template's meta tag
 
 OpenCms 5.0.0 - May 05, 2003
 ! Added "import.immutable.resources" setting to opencms.properties, all resources
