@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/31 09:53:21 $
- * Version: $Revision: 1.107 $
+ * Date   : $Date: 2003/07/31 12:40:36 $
+ * Version: $Revision: 1.108 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.107 $ $Date: 2003/07/31 09:53:21 $
+ * @version $Revision: 1.108 $ $Date: 2003/07/31 12:40:36 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4602,12 +4602,16 @@ public class CmsDriverManager extends Object {
             copyFolder(context, sourceName, destinationName, true, true);
             deleteFolder(context, sourceName);
         }
-        
+        // read the moved file
+        CmsResource destination = readFileHeader(context, destinationName);   
         // since the resource was copied as link, we have to update the date/user lastmodified
         // its sufficient to use source instead of dest, since there is only one resource
-        source.setDateLastModified(System.currentTimeMillis());
-        source.setUserLastModified(context.currentUser().getId());
-        m_vfsDriver.updateResourceState(context.currentProject(), source, C_UPDATE_STRUCTURE);
+        destination.setDateLastModified(System.currentTimeMillis());
+        destination.setUserLastModified(context.currentUser().getId());
+        m_vfsDriver.updateResourceState(context.currentProject(), destination, C_UPDATE_STRUCTURE);
+
+        // lock the new resource
+        lockResource(context,destinationName,false);
     }
 
     /**
