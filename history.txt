@@ -8,6 +8,14 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.41 Arakis - 04 December 2000
+
+! Added a new explorer. This is experimental, if you encounter problems please switch
+  to the odl-explorer.
+! Added chaches for filecontent and folderlists.
+- Changed the task-action class, so it uses the correct Mail-class.
+- Changed the default empty template to a real empty template.
+
 OpenCms 4.1.40 Arakis - 27 November 2000
 
 ! Added a generic backoffice for content-definitions.
