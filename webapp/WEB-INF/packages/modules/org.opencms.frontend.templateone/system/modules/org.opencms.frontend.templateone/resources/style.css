@@ -338,7 +338,7 @@ textarea.onlineform { height: 80px; }
 
 // get document styles for document management
 try {
-	out.print(cms.getContent("/system/modules/com.alkacon.documents/resources/documents.css"));
+	out.print(cms.getContent("/system/modules/org.opencms.ocee.documents/resources/documents.css"));
 } catch (Throwable t) {
 	// ignore, document style sheet not found
 }
