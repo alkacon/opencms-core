@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/02/17 11:40:29 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/02/24 13:25:22 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.file.CmsResourceTypeLink;
-import org.opencms.file.CmsResourceTypePage;
 import org.opencms.file.CmsResourceTypePlain;
 import org.opencms.file.CmsResourceTypeXmlPage;
 import org.opencms.loader.CmsXmlPageLoader;
@@ -352,6 +351,8 @@ public class CmsImportVersion2 extends A_CmsImport {
                 type = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
                 if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(type)) {
                     resType = C_RESOURCE_TYPE_NEWPAGE_ID;
+                } else if (C_RESOURCE_TYPE_PAGE_NAME.equals(type)) {
+                    resType = C_RESOURCE_TYPE_PAGE_ID;
                 } else {
                     resType = m_cms.getResourceTypeId(type);
                 }
@@ -552,7 +553,7 @@ public class CmsImportVersion2 extends A_CmsImport {
              }   
          
              if (res != null) {
-                 if (CmsResourceTypePage.C_RESOURCE_TYPE_NAME.equals(type)) {
+                 if (C_RESOURCE_TYPE_PAGE_NAME.equals(type)) {
                      m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
                  }
                  m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
@@ -635,7 +636,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             m_cms.createPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE, CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
         }
         // copy all propertydefinitions of the old page to the new page
-        Vector definitions = m_cms.readAllPropertydefinitions(CmsResourceTypePage.C_RESOURCE_TYPE_ID);
+        Vector definitions = m_cms.readAllPropertydefinitions(C_RESOURCE_TYPE_PAGE_ID);
 
         Iterator j = definitions.iterator();
 

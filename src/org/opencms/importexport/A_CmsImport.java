@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/02/22 19:14:26 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/02/24 13:25:22 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,6 +104,12 @@ public abstract class A_CmsImport implements I_CmsImport {
     
     /** The name of the legacy resource type "newpage" */
     protected static final String C_RESOURCE_TYPE_NEWPAGE_NAME = "newpage";
+    
+    /** The id of the legacy resource type "page" */
+    protected static final int C_RESOURCE_TYPE_PAGE_ID = 1;
+    
+    /** The name of the legacy resource type "page" */
+    protected static final String C_RESOURCE_TYPE_PAGE_NAME = "page";
 
     /**
      * In this vector we store the imported pages (as Strings from getAbsolutePath()),
