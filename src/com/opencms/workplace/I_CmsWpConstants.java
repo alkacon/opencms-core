@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/04/05 08:45:55 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2000/04/06 08:31:26 $
+ * Version: $Revision: 1.80 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.79 $ $Date: 2000/04/05 08:45:55 $
+ * @version $Revision: 1.80 $ $Date: 2000/04/06 08:31:26 $
  */
 public interface I_CmsWpConstants {
 
@@ -362,6 +362,9 @@ public interface I_CmsWpConstants {
     
     /** width of the button */
     public static final String C_BUTTON_WIDTH = "width";
+
+    /** method that should be used for deciding to (de)activate the button */
+    public static final String C_BUTTON_METHOD = "method";
     
     // Parameters for icons
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_piclist.js,v $
- * Date   : $Date: 2000/02/22 11:06:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/04/06 08:31:26 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ function updateSelection()
 
 function getSelection()
 {
-	document.form1.galerie.selectedIndex = top.selectedGallery;
+	//document.form1.galerie.selectedIndex = top.selectedGallery;
 }
 
 

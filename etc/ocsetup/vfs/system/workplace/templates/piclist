@@ -1,22 +1,26 @@
 <?xml version="1.0"?>
 <WORKPLACE>
-<picstartseq><![CDATA[<TR><TD colspan="5">
-<TABLE CELLPADDING=0 CELLSPACING=0 border=1>
-<tr><td background="]]><METHOD name="picsUrl">bg_grauekachel.gif</METHOD><![CDATA["><img src="]]></picstartseq>
-<picendseq><![CDATA["></td></tr></table></td></tr>]]></picendseq>
-<textstartseq><![CDATA[<TR><TD valign=top class=piclistfoot>
-<P>]]></textstartseq>
-<textendseq><![CDATA[</TD></TR>]]></textendseq>
-<titlestartseq><![CDATA[<tr><TD VALIGN="BOTTOM" nowrap class="wizardbold">]]></titlestartseq>
-<titleendseq><![CDATA[</TD>]]></titleendseq>
-<namestartseq><![CDATA[<TD VALIGN="BOTTOM" nowrap class="wizard">]]></namestartseq>
-<nameendseq><![CDATA[</TD>]]></nameendseq>
-<sizestartseq><![CDATA[<TD ALIGN="RIGHT" VALIGN="BOTTOM" nowrap class="wizard">]]></sizestartseq>
-<sizeendseq><![CDATA[</TD>]]></sizeendseq>
-<typestartseq><![CDATA[<TD VALIGN="BOTTOM" nowrap class="wizard">]]></typestartseq>
-<typeendseq><![CDATA[</TD><TD VALIGN="BOTTOM" nowrap class="wizard" width="100%">&nbsp;</TD></tr>]]></typeendseq>
 <part><![CDATA[<tr><td colspan="5"><table cellspacing=0 cellpadding=0 border=0 width="100%"><tr><td height="1" class="taskviewbackblack"><spacer type=block width=1 height=1></td></tr>
 </table></td></tr>]]></part>
+<piclistentry><![CDATA[<TR>
+  <TD colspan="5">
+    <TABLE CELLPADDING=0 CELLSPACING=0 border=1>
+    <tr>
+      <td background="]]><METHOD name="picsUrl">bg_grauekachel.gif</METHOD><![CDATA["><img src="]]><PROCESS>picsource</PROCESS><![CDATA[" alt="]]><PROCESS>title</PROCESS><![CDATA["></td>
+    </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <TD VALIGN="BOTTOM" nowrap class="wizardbold">]]><PROCESS>title</PROCESS><![CDATA[</TD>
+    <TD VALIGN="BOTTOM" nowrap class="wizard">]]><PROCESS>filename</PROCESS><![CDATA[</TD>
+    <TD ALIGN="RIGHT" VALIGN="BOTTOM" nowrap class="wizard">]]><PROCESS>size</PROCESS><![CDATA[</TD>
+    <TD VALIGN="BOTTOM" nowrap class="wizard">]]><PROCESS>type</PROCESS><![CDATA[</TD>
+	<TD VALIGN="BOTTOM" nowrap class="wizard" width="100%">&nbsp;</TD>
+</tr>
+]]></piclistentry>
+
+
 <TEMPLATE>
 <![CDATA[
 <html>

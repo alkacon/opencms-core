@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpButtonsDefFile.java,v $
- * Date   : $Date: 2000/02/15 17:51:19 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/06 08:31:26 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/02/15 17:51:19 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/06 08:31:26 $
  */
 public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent 
         implements I_CmsLogChannels, I_CmsWpConstants {
@@ -106,6 +106,19 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent
         setData("alt", alt);
         setData("href", href);
         return getProcessedDataValue("defaultbutton", callingObject);                
+    }        
+
+    /**
+     * Gets the processed data for a deactivated button.
+     * @return Processed button.
+     * @exception CmsException
+     */
+    public String getDeactivatedButton(String name, String action, String alt, String href, Object callingObject) throws CmsException {
+        setData("name", name);
+        setData("action", action);
+        setData("alt", alt);
+        setData("href", href);
+        return getProcessedDataValue("deactivatedbutton", callingObject);                
     }        
     
     /**

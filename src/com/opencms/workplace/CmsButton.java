@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButton.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/04/06 08:31:26 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,13 +36,14 @@ import com.opencms.template.*;
 import com.opencms.file.*;
 
 import java.util.*;
+import java.lang.reflect.*;
 
 /**
  * Class for building workplace buttons. <BR>
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.10 $ $Date: 2000/04/06 08:31:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsButton extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -71,16 +72,52 @@ public class CmsButton extends A_CmsWpElement implements I_CmsWpElement, I_CmsWp
         String buttonAction = n.getAttribute(C_BUTTON_ACTION);
         String buttonAlt = n.getAttribute(C_BUTTON_ALT);
         String buttonHref = n.getAttribute(C_BUTTON_HREF);
+        String buttonMethod = n.getAttribute(C_BUTTON_METHOD);
+        
         if(buttonHref == null || "".equals(buttonHref)) {
             buttonHref = "";
         }
+        
+        // call the method for activation decision
+        boolean activate=true;
+        
+        if(buttonMethod != null && ! "".equals(buttonMethod))
+        {
+            Method callMethod = null;
+            try {
+                callMethod = callingObject.getClass().getMethod(buttonMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class});
+                activate = ((Boolean)callMethod.invoke(callingObject, new Object[] {cms, lang, parameters})).booleanValue();
+            } catch(NoSuchMethodException exc) {
+            // The requested method was not found.
+            throwException("Could not find button activation method " + buttonMethod + " in calling class " + callingObject.getClass().getName() + " for generating icon.", CmsException.C_NOT_FOUND);
+            } catch(InvocationTargetException targetEx) {
+                // the method could be invoked, but throwed a exception
+                // itself. Get this exception and throw it again.              
+                Throwable e = targetEx.getTargetException();
+                if(!(e instanceof CmsException)) {
+                    // Only print an error if this is NO CmsException
+                    e.printStackTrace();
+                    throwException("Button activation method " + buttonMethod + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                } else {
+                    // This is a CmsException
+                    // Error printing should be done previously.
+                    throw (CmsException)e;
+                }
+            } catch(Exception exc2) {
+                throwException("Button activation method " + buttonMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
+            }
+        }
+        
         
         // Get button definition and language values
         CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
         buttonAlt = lang.getLanguageValue(C_LANG_BUTTON + "." + buttonAlt);
         
         // get the processed button.
-        String result = buttondef.getButton(buttonName, buttonAction, buttonAlt, buttonHref, callingObject);
-        return result; 
+        if(activate) {
+            return buttondef.getButton(buttonName, buttonAction, buttonAlt, buttonHref, callingObject);
+        } else {
+            return buttondef.getDeactivatedButton(buttonName, buttonAction, buttonAlt, buttonHref, callingObject);
+        }
     }           
 }
