@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<XMLTEMPLATE>
+
+<navtreestart>
+  <![CDATA[
+    <TABLE border=0 cellspacing=0>    
+      <TD>&nbsp &nbsp
+      </TD><TD>
+   ]]>
+</navtreestart>
+
+<navtreeend>
+   <![CDATA[
+       </TD>
+     </TABLE>
+  
+   ]]>
+</navtreeend>
+
+<NAVENTRY>
+<![CDATA[
+  <A name="]]><PROCESS>navtext</PROCESS><![CDATA["  HREF="]]>
+  <PROCESS>navlink</PROCESS>
+  <![CDATA[">]]>
+  <PROCESS>navtext</PROCESS>
+  <![CDATA[</A><br>
+]]>
+</NAVENTRY>
+
+<NAVCURRENT>
+ <PROCESS>navtext</PROCESS><![CDATA[<BR>]]>
+</NAVCURRENT>
+
+<TEMPLATE>
+ <method name="getNavCurrent">1</method>
+</TEMPLATE>
+
+</XMLTEMPLATE>
+
+ 
+ 

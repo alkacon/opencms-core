@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<XMLTEMPLATE>
+ 
+<TEMPLATE><![CDATA[
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+
+  <!-- TEMPLATE :  help_Frameset //-->
+
+
+  <HEAD><TITLE>OpenCMS Online-Hilfe</TITLE>  
+   <link rel=stylesheet type="text/css" href="/servlets/opencms/system/workplace/css/help.css">
+  </HEAD>
+
+  <FRAMESET ROWS="55,*" framespacing=0 frameborder=0>
+    <FRAME noresize NAME="topFrame" src="]]>
+  <METHOD name="getUri"/>
+      <METHOD name="getFrameQueryString">top_Frame</METHOD>
+      <![CDATA[">
+    <FRAME NAME="contentFrame" src="]]>
+      <METHOD name="getUri"/>
+      <METHOD name="getFrameQueryString">content_Frame</METHOD>
+      <![CDATA[">
+  </FRAMESET>
+</HTML>]]>
+</TEMPLATE>
+
+<TEMPLATE name="top_Frame">
+<![CDATA[
+<HTML><HEAD>
+  <link rel=stylesheet type="text/css" href="/servlets/opencms/system/workplace/css/help.css">
+  <style type="text/css">
+     body { background-color:#C0C0C0; }
+  </style>
+  </HEAD>
+  <BODY >]]><ELEMENT name="HeadFrame"/><![CDATA[
+  </BODY>
+</HTML>]]>
+</TEMPLATE>    
+
+
+<TEMPLATE name="content_Frame">
+
+<![CDATA[
+<HTML><HEAD>
+  <meta http-equiv="Page-Enter" content="revealTrans(Duration=2.0,Transition=30)">
+  <link rel=stylesheet type="text/css" href="/servlets/opencms/system/workplace/css/help.css"></HEAD>
+  <BODY>]]><ELEMENT name="ContentFrame"/><![CDATA[
+  </BODY>
+</HTML>
+]]>
+
+</TEMPLATE>
+
+
+</XMLTEMPLATE>
