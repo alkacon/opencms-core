@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/08 11:59:30 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/06/08 13:19:11 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,12 +32,17 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.19 $ $Date: 2000/06/08 11:59:30 $
+ * @version $Revision: 1.20 $ $Date: 2000/06/08 13:19:11 $
  */
 public interface I_CmsQuerys {
     
     // Common constants   
 	static String C_DATABASE_PREFIX = "CMS_";
+	
+	// Constants for Resources
+	
+	
+	
 
     // Constants for Groups table
     public static final String C_GROUPS_GROUP_ID="GROUP_ID";

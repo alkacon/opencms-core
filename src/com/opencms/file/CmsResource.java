@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2000/06/07 16:08:23 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/06/08 13:19:11 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/06/07 16:08:23 $
+ * @version $Revision: 1.21 $ $Date: 2000/06/08 13:19:11 $
  */
  public class CmsResource implements I_CmsConstants,
                                                            Cloneable,
@@ -80,12 +80,12 @@ import com.opencms.core.*;
       /**
       * The owner  of this resource.
       */
-     private CmsUser m_user;
+     private int m_user;
      
      /**
       * The group  of this resource.
       */
-     private CmsGroup m_group;
+     private int m_group;
       
      /**
       * The access flags of this resource.
@@ -164,7 +164,7 @@ import com.opencms.core.*;
      public CmsResource(int resourceId, int parentId,
 						int fileId,String resourceName,
 						int resourceType, int resourceFlags,
-                        CmsUser user, CmsGroup group, int projectId,
+                        int user, int group, int projectId,
                         int accessFlags, int state, int lockedBy,
                         int launcherType, String launcherClassname,
                         long dateCreated, long dateLastModified,
@@ -438,25 +438,16 @@ import com.opencms.core.*;
 	 * @return the userid of the resource owner.
 	 */
     public int getOwnerId() {
-         return m_user.getId();
+         return m_user;
       }
 	
 	/**
-	 * Returns the user of the resource owner.
+	 * Sets the userId of this resource.
 	 * 
-	 * @return the user of the resource owner.
+	 * @param The new userId of this resource.
 	 */
-     public CmsUser getOwner() {
-         return (CmsUser)m_user.clone();
-      }
-	
-     /**
-	 * Sets the user of the resource owner.
-	 * 
-	 * @param The user of the new resource owner.
-	 */
-      void setOwner(CmsUser user){
-          m_user=user;          
+      void setUserId(int user) {
+          m_user = user;
       }
     
 	/**
@@ -465,24 +456,15 @@ import com.opencms.core.*;
 	 * @return the groupid of this resource.
 	 */
       int getGroupId() {
-         return  m_group.getId();
+         return  m_group;
       }
-    
+          
     /**
-	 * Returns the group of this resource.
+	 * Sets the groupId of this resource.
 	 * 
-	 * @return the group of this resource.
+	 * @param The new groupId of this resource.
 	 */
-     public CmsGroup getGroup() {
-         return  (CmsGroup)m_group.clone();
-      }
-      
-      /**
-	 * Sets the group of this resource.
-	 * 
-	 * @param The new group of this resource.
-	 */
-      void setGroupId(CmsGroup group) {
+      void setGroupId(int group) {
           m_group= group;
       }
                                
@@ -665,7 +647,7 @@ import com.opencms.core.*;
     public Object clone() {
         return new CmsResource(m_resourceId, m_parentId,m_fileId, 
 							   m_resourceName, m_resourceType, m_resourceFlags,
-                               (CmsUser)m_user.clone(), (CmsGroup)m_group.clone(), m_projectId,
+                               m_user, m_group, m_projectId,
                                m_accessFlags, m_state, m_lockedBy,
                                m_launcherType, m_launcherClassname,
                                m_dateCreated, m_dateLastModified,

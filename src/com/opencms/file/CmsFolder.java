@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
- * Date   : $Date: 2000/06/06 12:58:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/06/08 13:19:11 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import java.io.*;
  * This class describes a folder in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/06/06 12:58:52 $
+ * @version $Revision: 1.10 $ $Date: 2000/06/08 13:19:11 $
  */
 public class CmsFolder extends CmsResource implements I_CmsConstants,
                                                       Cloneable,
@@ -61,7 +61,7 @@ public class CmsFolder extends CmsResource implements I_CmsConstants,
       */
      public CmsFolder(int resourceId, int parentId,int fileId,
 						String resourceName, int resourceType, int resourceFlags,
-                        CmsUser user, CmsGroup group, int projectId,
+                        int user, int group, int projectId,
                         int accessFlags, int state, int lockedBy,
                         long dateCreated, long dateLastModified
                         ,int resourceLastModifiedBy){
@@ -83,7 +83,7 @@ public class CmsFolder extends CmsResource implements I_CmsConstants,
     public Object clone() {
         return new CmsFolder(this.getResourceId(), this.getParentId(), this.getFileId(), 
 							 new String(this.getAbsolutePath()),this.getType(),
-                             this.getFlags(), this.getOwner(), this.getGroup(),
+                             this.getFlags(), this.getOwnerId(), this.getGroupId(),
                              this.getProjectId(),this.getAccessFlags(), 
                              this.getState(),this.isLockedBy(),this.getDateCreated(),
                              this.getDateLastModified(), this.getResourceLastModifiedBy());                             

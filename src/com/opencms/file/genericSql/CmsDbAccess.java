@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/08 12:25:55 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/06/08 13:19:11 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.31 $ $Date: 2000/06/08 12:25:55 $ * 
+ * @version $Revision: 1.32 $ $Date: 2000/06/08 13:19:11 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -1533,7 +1533,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		return(metadefs);
 	}
 	
-		/**
+	/**
 	 * Reads all propertydefinitions for the given resource type.
 	 * 
 	 * @param resourcetype The resource type to read the propertydefinitions for.
@@ -1672,11 +1672,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		try {
 			// create statement
 			statement = m_pool.getPreparedStatement(C_PROPERTYDEF_UPDATE_KEY);
-			
 			statement.setInt(1, metadef.getPropertydefType() );
 			statement.setInt(2, metadef.getId() );
 			statement.executeUpdate();
-			
 			returnValue = readPropertydefinition(metadef.getName(), metadef.getType());
 		 } catch( SQLException exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
@@ -1708,7 +1706,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		try {
 			// create statement
 			statement = m_pool.getPreparedStatement(C_PROPERTIES_READALL_COUNT_KEY);
-			
 			statement.setInt(1, metadef.getId());
 			result = statement.executeQuery();
 			
@@ -1748,7 +1745,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		 PreparedStatement statement = null;
 		 String returnValue = null;
 		 try {
-			 
 			 // create statement
 			 statement = m_pool.getPreparedStatement(C_PROPERTIES_READ_KEY);
 			 statement.setInt(1, resourceId);
@@ -1798,7 +1794,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 					// property exists already - use update.
 					// create statement
 					statement = m_pool.getPreparedStatement(C_PROPERTIES_UPDATE_KEY);
-					
 					statement.setString(1, value);
 					statement.setInt(2, resourceId);
 					statement.setInt(3, propdef.getId());
@@ -1807,7 +1802,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 					// property dosen't exist - use create.
 					// create statement
 					statement = m_pool.getPreparedStatement(C_PROPERTIES_CREATE_KEY);
-					
 					statement.setInt(1, nextId(C_TABLE_PROPERTIES));
 					statement.setInt(2, propdef.getId());
 					statement.setInt(3, resourceId);
@@ -1825,7 +1819,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		}
 	}
 	
-		/**
+	/**
 	 * Writes a couple of Properties for a file or folder.
 	 * 
 	 * @param propertyinfos A Hashtable with propertydefinition- property-pairs as strings.
@@ -1943,10 +1937,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 				throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 					CmsException.C_SQL_ERROR, exc);
 			}finally {
-			if( statement != null) {
-				m_pool.putPreparedStatement(C_PROPERTIES_DELETE_KEY, statement);
-			}
-		  }
+				if( statement != null) {
+					m_pool.putPreparedStatement(C_PROPERTIES_DELETE_KEY, statement);
+				}
+			 }
 		}
 	}
 	
@@ -1960,8 +1954,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	public void deleteAllProjectProperties(CmsProject project)
 		throws CmsException {
 		
-		//TODO implement this. 
-		
+		//TODO implement this. 		
 	}
 
 

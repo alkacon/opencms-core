@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
- * Date   : $Date: 2000/06/06 12:58:52 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/08 13:19:11 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import java.io.*;
  * This class describes a file in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/06/06 12:58:52 $
+ * @version $Revision: 1.9 $ $Date: 2000/06/08 13:19:11 $
  */
 public class CmsFile extends CmsResource implements Cloneable,Serializable { 	
 
@@ -69,7 +69,7 @@ public class CmsFile extends CmsResource implements Cloneable,Serializable {
       */
      public CmsFile(int resourceId, int parentId, int fileId,
 						String resourceName, int resourceType, int resourceFlags,
-                        CmsUser user, CmsGroup group, int projectId,
+                        int user, int group, int projectId,
                         int accessFlags, int state, int lockedBy,
                         int launcherType, String launcherClassname,
                         long dateCreated, long dateLastModified,
@@ -141,7 +141,7 @@ public class CmsFile extends CmsResource implements Cloneable,Serializable {
 		
         return new CmsFile(this.getResourceId(), this.getParentId(), this.getFileId(),
 							 new String(this.getAbsolutePath()),this.getType(),
-                             this.getFlags(), this.getOwner(), this.getGroup(),
+                             this.getFlags(), this.getOwnerId(), this.getGroupId(),
                              this.getProjectId(),this.getAccessFlags(), 
                              this.getState(),this.isLockedBy(), this.getLauncherType(),
                              new String(this.getLauncherClassname()), this.getDateCreated(),
