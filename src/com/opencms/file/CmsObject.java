@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/26 11:42:44 $
- * Version: $Revision: 1.178 $
+ * Date   : $Date: 2001/07/27 13:43:15 $
+ * Version: $Revision: 1.179 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.178 $ $Date: 2001/07/26 11:42:44 $
+ * @version $Revision: 1.179 $ $Date: 2001/07/27 13:43:15 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2814,6 +2814,19 @@ public CmsProject readProject(CmsResource res) throws CmsException {
  */
 public CmsProject readProject(CmsTask task) throws CmsException {
     return (m_rb.readProject(m_context.currentUser(), m_context.currentProject(), task));
+}
+
+/**
+ * Reads all file headers of a project from the Cms.
+ *
+ * @param projectId the id of the project to read the file headers for.
+ * @param filter The filter for the resources (all, new, changed, deleted, locked)
+ *
+ * @return a Vector of resources.
+ *
+ */
+public Vector readProjectView(int projectId, String filter) throws CmsException {
+    return (m_rb.readProjectView(m_context.currentUser(), m_context.currentProject(),projectId, filter));
 }
 
 /**

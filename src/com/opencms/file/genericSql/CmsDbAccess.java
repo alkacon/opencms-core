@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/26 11:38:43 $
- * Version: $Revision: 1.211 $
+ * Date   : $Date: 2001/07/27 13:42:44 $
+ * Version: $Revision: 1.212 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.211 $ $Date: 2001/07/26 11:38:43 $ *
+ * @version $Revision: 1.212 $ $Date: 2001/07/27 13:42:44 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -7316,6 +7316,92 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		}
 		return project;
 	}
+
+	/**
+	 * Reads all resource from the Cms, that are in one project.<BR/>
+	 * A resource is either a file header or a folder.
+	 *
+	 * @param project The id of the project in which the resource will be used.
+     * @param filter The filter for the resources to be read
+	 *
+	 * @return A Vecor of resources.
+	 *
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+    public Vector readProjectView(int currentProject, int project, String filter)
+		throws CmsException {
+
+		Vector resources = new Vector();
+		CmsResource file;
+		ResultSet res = null;
+		PreparedStatement statement = null;
+		Connection con = null;
+        String addStatement = filter+" ORDER BY RESOURCE_NAME";
+		try {
+			con = DriverManager.getConnection(m_poolName);
+            // read resource data from database
+			statement = con.prepareStatement(m_cq.get("C_RESOURCES_PROJECTVIEW")+addStatement);
+            statement.setInt(1,project);
+            res = statement.executeQuery();
+		    // create new resource
+			while(res.next()) {
+				int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+				int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+				String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
+				int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+				int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+				int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+				int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+				//int projectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+                int projectId=currentProject;
+				int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+				int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+				int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
+				int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
+				int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
+				String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+				long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+
+				file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
+									 userId,groupId,projectId,accessFlags,state,lockedBy,
+									 launcherType,launcherClass,created,modified,modifiedBy,
+									 resSize,lockedInProject);
+				resources.addElement(file);
+            }
+        } catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } catch (Exception ex) {
+			throw new CmsException("["+this.getClass().getName()+"]", ex);
+		} finally {
+			// close all db-resources
+			if(res != null) {
+				try {
+					res.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
+			}
+			if(statement != null) {
+				try {
+					statement.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
+			}
+			if(con != null) {
+				try {
+					con.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
+			}
+		}
+		return resources;
+    }
 
 	/**
 	 * Reads a project from the backup tables.

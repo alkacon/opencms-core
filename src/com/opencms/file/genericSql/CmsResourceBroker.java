@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/27 08:13:07 $
- * Version: $Revision: 1.260 $
+ * Date   : $Date: 2001/07/27 13:42:44 $
+ * Version: $Revision: 1.261 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.260 $ $Date: 2001/07/27 08:13:07 $
+ * @version $Revision: 1.261 $ $Date: 2001/07/27 13:42:44 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -5357,6 +5357,40 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
          return m_dbAccess.readProject(task);
      }
 
+    /**
+     * Reads all file headers of a project from the Cms.
+     *
+     * @param projectId the id of the project to read the file headers for.
+     * @param filter The filter for the resources (all, new, changed, deleted, locked)
+     *
+     * @return a Vector of resources.
+     */
+    public Vector readProjectView(CmsUser currentUser, CmsProject currentProject, int projectId, String filter)
+            throws CmsException {
+        CmsProject project = readProject(currentUser, currentProject, projectId);
+        Vector retValue = new Vector();
+        String whereClause = new String();
+        if("new".equalsIgnoreCase(filter)){
+            whereClause = " AND STATE="+C_STATE_NEW;
+        } else if ("changed".equalsIgnoreCase(filter)){
+            whereClause = " AND STATE="+C_STATE_CHANGED;
+        } else if ("deleted".equalsIgnoreCase(filter)){
+            whereClause = " AND STATE="+C_STATE_DELETED;
+        } else if ("locked".equalsIgnoreCase(filter)){
+            whereClause = " AND LOCKED_BY != "+C_UNKNOWN_ID;
+        } else {
+            whereClause = " AND STATE != "+C_STATE_UNCHANGED;
+        }
+        Vector resources = m_dbAccess.readProjectView(currentProject.getId(), projectId, whereClause);
+        // check the security
+        for(int i = 0; i < resources.size(); i++) {
+            if( accessRead(currentUser, project, (CmsResource) resources.elementAt(i)) ) {
+                retValue.addElement(resources.elementAt(i));
+            }
+        }
+
+        return retValue;
+    }
      /**
      * Reads the backupinformation of a project from the Cms.
      *
