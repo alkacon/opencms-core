@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/02/22 19:14:26 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,12 @@
 
 package org.opencms.importexport;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -43,13 +49,6 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsXmlSaxWriter;
 import org.opencms.workplace.I_CmsWpConstants;
-
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsUser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -83,7 +82,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.29 $ $Date: 2004/02/13 13:45:33 $
+ * @version $Revision: 1.30 $ $Date: 2004/02/22 19:14:26 $
  */
 public class CmsExport implements Serializable {
 
@@ -142,9 +141,7 @@ public class CmsExport implements Serializable {
     private Vector m_superFolders;
 
     /**
-     * Constructs a new uninitialized export, required for the module data export.<p>
-     * 
-     * @see CmsExportModuledata
+     * Constructs a new uninitialized export, required for special subclass data export.<p>
      */
     public CmsExport() {
         // empty constructor

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/02/21 13:10:01 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2004/02/22 19:14:26 $
+* Version: $Revision: 1.16 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.io.SAXReader;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.15 $ $Date: 2004/02/21 13:10:01 $
+ * @version $Revision: 1.16 $ $Date: 2004/02/22 19:14:26 $
  */
 public class CmsImport implements Serializable {
 
@@ -125,9 +125,7 @@ public class CmsImport implements Serializable {
 
 
     /**
-     * Constructs a new uninitialized import, required for the module data import.<p>
-     * 
-     * @see CmsImportModuledata
+     * Constructs a new uninitialized import, required for special subclass data import.<p>
      */
     public CmsImport() {
         // empty
@@ -460,7 +458,7 @@ public class CmsImport implements Serializable {
      * @return a dom4j document
      * @throws CmsException if something goes wrong
      */
-    static Document getXmlDocument(byte[] content) throws CmsException {
+    public static Document getXmlDocument(byte[] content) throws CmsException {
         ByteArrayInputStream stream = null;
         Document doc = null;
         
@@ -490,7 +488,7 @@ public class CmsImport implements Serializable {
      * @return a dom4j document
      * @throws CmsException if something goes wrong
      */
-    static Document getXmlDocument(String content) throws CmsException {
+    public static Document getXmlDocument(String content) throws CmsException {
         StringReader reader = null;
         Document doc = null;
         
@@ -522,7 +520,7 @@ public class CmsImport implements Serializable {
      * @return a dom4j document
      * @throws CmsException if something goes wrong
      */
-    static Document getXmlDocument(Reader reader) throws CmsException {
+    public static Document getXmlDocument(Reader reader) throws CmsException {
         Document doc = null;
         
         try {
@@ -550,7 +548,7 @@ public class CmsImport implements Serializable {
      * @param elementName the child element name
      * @return the value of the child node, or null if something went wrong
      */
-    static String getChildElementTextValue(Element parentElement, String elementName) {
+    public static String getChildElementTextValue(Element parentElement, String elementName) {
         try {
             // get the first child element matching the specified name
             Element childElement = (Element) parentElement.selectNodes("./" + elementName).get(0);

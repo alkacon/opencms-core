@@ -1,7 +1,7 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.20 $
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
+* Date   : $Date: 2004/02/22 19:14:26 $
+* Version: $Revision: 1.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,9 +32,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.importexport;
+package com.opencms.legacy;
 
 import org.opencms.i18n.CmsMessages;
+import org.opencms.importexport.CmsExport;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -72,7 +73,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.20 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.1 $ $Date: 2004/02/22 19:14:26 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 

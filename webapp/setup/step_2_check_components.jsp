@@ -30,7 +30,7 @@
 	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard - Check components
+OpenCms Setup Wizard - Component tests
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -46,7 +46,7 @@ function toggleContinueButton() {
 //-->
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Check components
+OpenCms Setup Wizard - Component tests
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (isSetupOk) { %>
 <form action="<%= nextPage %>" method="post" class="nomargin" name="components">
@@ -61,9 +61,9 @@ OpenCms Setup Wizard - Check components
 	} else { 	
 %>	
 		
-		<%= Bean.getHtmlPart("C_BLOCK_START", "System components") %>	
+		<%= Bean.getHtmlPart("C_BLOCK_START", "Component tests") %>	
 		<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;"><tr><td>
-		<div style="width: 100%; height:100px; overflow: auto;">
+		<div style="width: 100%; height:130px; overflow: auto;">
 		<table border="0" cellpadding="2">
 		
 <%
@@ -104,7 +104,7 @@ OpenCms Setup Wizard - Check components
 		
 		<div class="dialogspacer" unselectable="on">&nbsp;</div>
 		
-		<div style="width: 100%; height:150px; overflow: auto;">
+		<div style="width: 100%; height:120px; overflow: auto;">
 		<table border="0" cellpadding="5" cellspacing="0">
 			<tr><td align="center" valign="top">
 			<%

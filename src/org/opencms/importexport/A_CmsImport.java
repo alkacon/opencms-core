@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/02/17 11:40:29 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/02/22 19:14:26 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -136,9 +136,7 @@ public abstract class A_CmsImport implements I_CmsImport {
     protected I_CmsReport m_report = null;
     
     /**
-      * Constructs a new uninitialized import, required for the module data import.<p>
-      * 
-      * @see CmsImportModuledata
+      * Constructs a new uninitialized import, required for the special subclass data import.<p>
       */
     public A_CmsImport() {
         // empty constructor

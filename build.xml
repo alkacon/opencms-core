@@ -24,7 +24,8 @@
     <property name="opencms.inputlib.servlet"     		location="${opencms.input.libs}/servlet.jar" />
     <property name="opencms.inputlib.activation"  		location="${opencms.input.libs}/activation.jar" />
     <property name="opencms.inputlib.mail"        		location="${opencms.input.libs}/mail.jar" />
-    <property name="opencms.inputlib.xerces"      		location="${opencms.input.libs}/xerces-1_4_4.jar" />
+    <property name="opencms.inputlib.xerces"      		location="${opencms.input.libs}/xercesImpl.jar" />
+    <property name="opencms.inputlib.xml-apis"      	location="${opencms.input.libs}/xml-apis.jar" />
     <property name="opencms.inputlib.mysql"       		location="${opencms.input.libs}/mysql-connector-java-3.0.7-stable-bin.jar" />
     <property name="opencms.inputlib.oro"         		location="${opencms.input.libs}/jakarta-oro-2_0_6.jar" />
     <property name="opencms.inputlib.tidy"        		location="${opencms.input.libs}/tidy.jar" />
@@ -63,6 +64,7 @@
                 <available file="${opencms.inputlib.activation}"/>
                 <available file="${opencms.inputlib.mail}"/>
                 <available file="${opencms.inputlib.xerces}"/>
+                <available file="${opencms.inputlib.xml-apis}"/>
                 <available file="${opencms.inputlib.mysql}"/>
                 <available file="${opencms.inputlib.oro}"/>
                 <available file="${opencms.inputlib.tidy}"/>
@@ -128,6 +130,7 @@ ${opencms.inputlib.servlet}
 ${opencms.inputlib.activation}
 ${opencms.inputlib.mail}
 ${opencms.inputlib.xerces}
+${opencms.inputlib.xml-apis}
 ${opencms.inputlib.mysql}
 ${opencms.inputlib.oro}
 ${opencms.inputlib.tidy}
@@ -176,6 +179,7 @@ ${opencms.inputlib.pdfbox}
                        ${opencms.inputlib.activation}:
                        ${opencms.inputlib.mail}:
                        ${opencms.inputlib.xerces}:
+                       ${opencms.inputlib.xml-apis}:
                        ${opencms.inputlib.oracle}:
                        ${opencms.inputlib.oracle9}:
                        ${opencms.inputlib.mysql}:
@@ -255,17 +259,31 @@ ${opencms.inputlib.pdfbox}
 	   	</copy>	   	
     </target>
     		    
-    		    
+
+    <target name="jar-legacy" 
+    	depends="compile" description="Generate the legacy OpenCms .jar files">
+    	
+        <mkdir dir="${opencms.output.jars}" />
+            	
+        <jar
+            jarfile="${opencms.output.jars}/opencms-legacy.jar"
+            basedir="${opencms.output.classes}"
+            includes="com/opencms/**"
+            excludes="com/opencms/build/**,org/opencms/**" >      
+        </jar>        	            
+    </target>
+    
+        		    
     <target name="jar" 
-    	depends="compile" description="Generate the OpenCms .jar files">
+    	depends="jar-legacy, compile" description="Generate the OpenCms .jar files">
     	
         <mkdir dir="${opencms.output.jars}" />
             	
         <jar
             jarfile="${opencms.output.jars}/opencms.jar"
             basedir="${opencms.output.classes}"
-            includes="org/opencms/**,com/opencms/**,source/**"
-            excludes="com/opencms/build/**" >            
+            includes="org/opencms/**"
+            excludes="com/opencms/build/**,com/opencms/**" >      
             <metainf dir="${opencms.input.warfiles}/WEB-INF" includes="opencms.tld"/>
         </jar>        	            
     </target>

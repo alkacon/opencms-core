@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2004/02/20 17:35:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/22 19:14:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.setup;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -45,11 +46,17 @@ import java.util.List;
 import javax.servlet.ServletConfig;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.xerces.impl.Version;
+import org.apache.xerces.parsers.DOMParser;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
 /**
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2004/02/20 17:35:12 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/22 19:14:26 $
  * @since 5.3
  */
 public class CmsSetupTests extends Object implements Serializable, Cloneable {
@@ -236,6 +243,49 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
             testResult.setRed();
             testResult.setResult("Unable to test the operating system!");
             testResult.setInfo(e.toString());
+        } finally {
+            m_testResults.add(testResult);
+        }
+    }
+    
+    /**
+     * Test for the Xerces version.<p>
+     */
+    public void testXercesVersion() {
+        CmsSetupTestResult testResult = new CmsSetupTestResult();
+        testResult.setName("XML Parser");
+
+        try {
+            DOMParser parser = new DOMParser();
+            String document = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<test>test</test>\n";
+            parser.parse(new InputSource(new ByteArrayInputStream(document.getBytes("UTF-8"))));
+            Document doc = parser.getDocument();
+
+            // Xerces 1 and 2 APIs are different, let's see what we have...
+            String versionStr = null;
+            
+            try {
+                doc.getClass().getMethod("getXmlEncoding", new Class[] {}).invoke(doc, new Object[] {});
+                versionStr = Version.getVersion();
+            } catch (Throwable t) {
+                // noop
+            }
+            if (versionStr == null) {
+                try {
+                    doc.getClass().getMethod("getEncoding", new Class[] {}).invoke(doc, new Object[] {});
+                    versionStr = "Xerces version 1";
+                } catch (Throwable t) {
+                    // noop
+                }
+            }
+
+            testResult.setResult(versionStr);
+            testResult.setHelp("OpenCms requires Xerces version 1 or Xerces version 2 to run. Usually these should be available as part of the servlet environment.");
+            testResult.setGreen();
+        } catch (Exception e) {
+            testResult.setResult("Unable to test the XML parser!");
+            testResult.setInfo(e.toString());
+            testResult.setRed();
         } finally {
             m_testResults.add(testResult);
         }

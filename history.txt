@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/02/20 19:52:34 $
- * Version: $Revision: 1.525 $
+ * Date   : $Date: 2004/02/22 19:14:26 $
+ * Version: $Revision: 1.526 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -24,6 +24,7 @@ OpenCms 5.3.3 Ix - February xx, 2004
 - Moved com.opencms.core.CmsException to org.opencms.main.CmsException
 - Moved com.opencms.core.I_CmsConstants to org.opencms.main.I_CmsConstants
 - Moved several other utility classes to org.opencms.* packages
+- All remaining com.opencms.* classes are now in s separate 'opencms-legacy.jar'
 - Created package com.opencms.legacy for legacy XmlTemplate related classes
 ! Improved the CmsShell, providing direct access to the CmsObject
 - Rewrote import routines, import now uses dom4j Xml API

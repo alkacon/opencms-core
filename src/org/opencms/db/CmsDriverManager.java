@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/22 13:52:28 $
- * Version: $Revision: 1.327 $
+ * Date   : $Date: 2004/02/22 19:14:26 $
+ * Version: $Revision: 1.328 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,7 @@ package org.opencms.db;
 
 import org.opencms.file.*;
 import org.opencms.importexport.CmsExport;
-import org.opencms.importexport.CmsExportModuledata;
 import org.opencms.importexport.CmsImport;
-import org.opencms.importexport.CmsImportModuledata;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockManager;
@@ -59,6 +57,9 @@ import org.opencms.validation.CmsHtmlLinkValidator;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
+import com.opencms.legacy.CmsExportModuledata;
+import com.opencms.legacy.CmsImportModuledata;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -74,6 +75,7 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.LRUMap;
+
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 
@@ -84,7 +86,7 @@ import org.dom4j.io.SAXReader;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.327 $ $Date: 2004/02/22 13:52:28 $
+ * @version $Revision: 1.328 $ $Date: 2004/02/22 19:14:26 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
