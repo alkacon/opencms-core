@@ -2,7 +2,7 @@
 <!ELEMENT elements (element+)>	
 <!ELEMENT element (links, content)>	
    <!ATTLIST element name CDATA #REQUIRED>
-   <!ATTLIST element language CDATA "all">
+   <!ATTLIST element language CDATA #REQUIRED>
    <!ATTLIST element enabled (true|false) #IMPLIED>
 <!ELEMENT links (link*)>	
 <!ELEMENT link (target, anchor?, query?)>	
