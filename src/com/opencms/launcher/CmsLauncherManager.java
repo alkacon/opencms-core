@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLauncherManager.java,v $
- * Date   : $Date: 2000/05/10 16:46:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/08 16:38:25 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.util.*;
  * given launcher id.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/05/10 16:46:29 $
+ * @version $Revision: 1.9 $ $Date: 2000/06/08 16:38:25 $
  */
 public class CmsLauncherManager implements I_CmsLogChannels {
        
@@ -85,7 +85,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
             try {
                 launcherClass = Class.forName(launcherPackage + "." + C_KNOWN_LAUNCHERS[i]);                          
                 launcherInstance = (I_CmsLauncher)launcherClass.newInstance();
-            } catch(Exception e) {
+            } catch(Throwable e) {
                 if(e instanceof ClassNotFoundException) {
                     // The launcher class could not be loaded.
                     // This is no critical error.
@@ -99,17 +99,18 @@ public class CmsLauncherManager implements I_CmsLogChannels {
                     // I_CmsLauncher.
                     // So this class is anything, but NOT a OpenCms launcher.
                     // We have to stop the system.
-                    String errorMessage = "Loaded launcher class \"" + C_KNOWN_LAUNCHERS[i] + "\" is no OpenCms launcher (does not implement I_CmsLauncher).";
+                    String errorMessage = "Loaded launcher class \"" + C_KNOWN_LAUNCHERS[i] + "\" is no OpenCms launcher (does not implement I_CmsLauncher). Ignoring";
                     if(A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + errorMessage);
                     }
-                    throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
+                    continue;
                 } else {
-                    String errorMessage = "Unknown error while initializing launcher \"" + C_KNOWN_LAUNCHERS[i] + "\". " + e.toString();
+                    String errorMessage = "Unknown error while initializing launcher \"" + C_KNOWN_LAUNCHERS[i] + "\". Ignoring.";
                     if(A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + errorMessage);
+                        A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + e);
                     }
-                    throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
+                    continue;
                 }                
             }
             
