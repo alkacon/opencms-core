@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.31 Chusuk       - xx December 2001
+OpenCms 4.5.31 Chusuk       - 09 January 2001
 ! Modification on Explorer-View for "Gecko" support. The "Gecko-Support" is not finished yet.
 ! New property exportname used for the static export. While exporting the name is replaced
   by the value of this property if existent.
