@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/12/09 11:28:34 $
- * Version: $Revision: 1.598 $
+ * Date   : $Date: 2004/12/09 13:49:43 $
+ * Version: $Revision: 1.599 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,6 +58,7 @@ OpenCms 5.x.x Caladan - xxx, 2004
 ! Widgets for XML contents can now be configured independent from schema types
 * Fixed issue with setup wizard in JDK 5.0
 ! OpenCms now installs and runs with JDK 5.0 (please note: no exhaustive tests have been done so far)
+- Updated lucene to latest stable version 1.4.3
 
 OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 26, 2004
 ! Added 'templateone' default module as an extended template demo

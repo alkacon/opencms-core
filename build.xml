@@ -47,7 +47,7 @@
     <property name="opencms.inputlib.quartz"     		location="${opencms.input.libs}/quartz-1.4.2.jar" />
     <property name="opencms.inputlib.jaxen"     		location="${opencms.input.libs}/jaxen-1.1-beta-4.jar" />
     <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser-1.41.jar" />
-    <property name="opencms.inputlib.lucene"			location="${opencms.input.libs}/lucene-1.4.1.jar" />
+    <property name="opencms.inputlib.lucene"			location="${opencms.input.libs}/lucene-1.4.3.jar" />
     <property name="opencms.inputlib.poi"				location="${opencms.input.libs}/poi-2.5.1-final-20040804.jar" />
     <property name="opencms.inputlib.snowball"			location="${opencms.input.libs}/snowball-1.0.jar" />
     <property name="opencms.inputlib.pdfbox"			location="${opencms.input.libs}/PDFBox-0.6.6.jar" />
@@ -230,7 +230,8 @@ ${opencms.inputlib.pdfbox}
                        ${opencms.inputlib.pdfbox}"
             debug="on"
             optimize="on"
-            deprecation="on" />
+            deprecation="on">
+       	</javac>
 		
         <copy todir="${opencms.output.classes}">
             <fileset dir="${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd" excludes="${excludes}"/>
