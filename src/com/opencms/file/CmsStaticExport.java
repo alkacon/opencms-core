@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/02/05 16:34:18 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2002/02/26 16:19:45 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.18 $ $Date: 2002/02/05 16:34:18 $
+ * @version $Revision: 1.19 $ $Date: 2002/02/26 16:19:45 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -335,6 +335,8 @@ public class CmsStaticExport implements I_CmsConstants{
         String deleteFileOnError = null;
         OutputStream outStream = null;
         CmsExportLink dbLink = new CmsExportLink(link, System.currentTimeMillis(), null);
+        // remember the original link for later
+        String remLink = link;
 
         try{
             // first lets create our request and response objects for the export
@@ -463,7 +465,7 @@ public class CmsStaticExport implements I_CmsConstants{
                             outStream.close();
                         }
                         deleteMe.delete();
-                        m_cms.deleteExportLink(link);
+                        m_cms.deleteExportLink(remLink);
                     }
                 }catch(Exception e){
                 }
