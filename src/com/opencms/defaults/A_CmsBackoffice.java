@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/10/25 10:24:45 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/10/26 10:10:33 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1427,14 +1427,48 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     //show the possible cases of a lockstate in the template
     //and change lockstate in content definition (and in DB or VFS)
     if (ls == actUserId) {
-      //steal lock (userlock -> nolock)
-      try {
-        ((A_CmsContentDefinition) o).setLockstate(C_NOT_LOCKED);
-      } catch (Exception e) {
-    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-          A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
-    }
-      }
+        if(isExtendedList()){
+            // if its an extended list check if the current project is the same as the
+            // project, in which the resource is locked
+            int curProjectId = cms.getRequestContext().currentProject().getId();
+            int lockedInProject = -1;
+            try {
+                lockedInProject = ((I_CmsExtendedContentDefinition) o).getLockedInProject();
+            } catch (Exception e) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method getLockstate throwed an exception!");
+                }
+            }
+            if(curProjectId == lockedInProject){
+                //unlock project
+                try {
+                    ((A_CmsContentDefinition) o).setLockstate(C_NOT_LOCKED);
+                } catch (Exception e) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
+                    }
+                }
+            } else {
+                //steal lock
+                try {
+                    ((A_CmsContentDefinition) o).setLockstate(actUserId);
+                } catch (Exception e) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
+                    }
+                }
+            }
+        } else {
+            // this is not the extended list
+            //steal lock (userlock -> nolock)
+            try {
+                ((A_CmsContentDefinition) o).setLockstate(C_NOT_LOCKED);
+            } catch (Exception e) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
+                }
+            }
+        }
       //write to DB
       try {
         ((A_CmsContentDefinition) o).write(cms);   // reflection is not neccessary!
