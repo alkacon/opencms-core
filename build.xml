@@ -11,7 +11,7 @@
     <property name="opencms.output"						location="${basedir}/../" />    	
 
     <property name="opencms.output.classes"             location="${opencms.output}/build/classes-core" />
-    <property name="opencms.output.tests"               location="${opencms.output}/build/classes-test" />
+    <property name="opencms.output.tests"               location="${opencms.output}/build/test" />
     <property name="opencms.output.jars"                location="${opencms.output}/build/jars-core" />
     <property name="opencms.output.warfiles"            location="${opencms.output}/build/${app.name}" />
     <property name="opencms.output.distfiles"           location="${opencms.output}/zip" />    
@@ -543,7 +543,7 @@ ${opencms.inputlib.pdfbox}
 	<target name="unittests" depends="compile-tests"
 		description="Runs the core Junit test cases">
 		
-		<junit printsummary="yes" fork="yes" haltonfailure="yes">
+		<junit showoutput="no" printsummary="yes" fork="yes" haltonfailure="no" haltonerror="yes">
 			<classpath>
 				<pathelement path="${opencms.output.tests}"/>
 				<pathelement location="${opencms.output.jars}/opencms.jar"/>
@@ -575,12 +575,14 @@ ${opencms.inputlib.pdfbox}
 				<pathelement location="${opencms.inputlib.lucene}"/>
 				<pathelement location="${opencms.inputlib.poi}"/>
 				<pathelement location="${opencms.inputlib.snowball}"/>
+				<pathelement location="${opencms.inputlib.jaxen}"/>
 				<pathelement location="${opencms.inputlib.pdfbox}"/>
 			</classpath>
 			
-			<formatter type="plain"/>
+			<formatter type="plain" />
 			
-			<test name="org.opencms.test.AllTests"/>			
+			<test name="org.opencms.xml.content.AllTests" />			
+			
 		</junit>
 	</target>
 
