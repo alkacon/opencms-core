@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/05/23 12:50:59 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/05/29 16:06:27 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.16 $ $Date: 2000/05/23 12:50:59 $
+ * @version $Revision: 1.17 $ $Date: 2000/05/29 16:06:27 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 	
@@ -323,7 +323,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		// check wheather xml data blocks are defined.
 		if (xmlDataBlock.hasData("navEntry")) {
 			if (!xmlDataBlock.hasData("navCurrent")) {
-				xmlDataBlock.setData("navCurrent", xmlDataBlock.getDataValue("navEntry"));
+				xmlDataBlock.setData("navCurrent", xmlDataBlock.getData("navEntry"));
 			}
 			if (!xmlDataBlock.hasData("navTreeStart")) {
 				xmlDataBlock.setData("navTreeStart", "");
@@ -415,7 +415,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		// check wheather xml data blocks are defined.
 		if (xmlDataBlock.hasData("navEntry")) {
 			if (!xmlDataBlock.hasData("navCurrent")) {
-				xmlDataBlock.setData("navCurrent", xmlDataBlock.getDataValue("navEntry"));
+				xmlDataBlock.setData("navCurrent", xmlDataBlock.getData("navEntry"));
 			}
 			if (!xmlDataBlock.hasData("navTreeStart")) {
 				xmlDataBlock.setData("navTreeStart", "");
@@ -800,7 +800,7 @@ public class CmsXmlNav extends A_CmsNavBase {
         // Loop through all folders and generate output
 		if (xmlDataBlock.hasData("navEntry")) {
 			if (!xmlDataBlock.hasData("navCurrent")) {
-				xmlDataBlock.setData("navCurrent", xmlDataBlock.getDataValue("navEntry"));
+				xmlDataBlock.setData("navCurrent", xmlDataBlock.getData("navEntry"));
 			}
 			for(int i=0; i<max; i++) {			
 				xmlDataBlock.setData("navText", navText[i]);
@@ -970,7 +970,7 @@ public class CmsXmlNav extends A_CmsNavBase {
         // Loop through all folders and generate output
 		if (xmlDataBlock.hasData("navEntry")) {
 			if (!xmlDataBlock.hasData("navCurrent")) {
-				xmlDataBlock.setData("navCurrent", xmlDataBlock.getDataValue("navEntry"));
+				xmlDataBlock.setData("navCurrent", xmlDataBlock.getData("navEntry"));
 			}
 			for(int i=0; i<max; i++) {			
 				xmlDataBlock.setData("navText", navText[i]);
