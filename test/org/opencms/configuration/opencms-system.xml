@@ -16,16 +16,16 @@
 		</internationalization>
 		<mail>
 			<mailfrom>nobody@nowhere.com</mailfrom>
-			<mailhost name="my.smtp.server" protocol="smtp" user="username" password="secure"/>
-			<mailhost name="alternative.smtp.server"/>
-			<mailhost name="another.alternative.smtp.server"/>
+			<mailhost name="my.smtp.server" order="10" protocol="smtp" user="username" password="secure"/>
+			<mailhost name="alternative.smtp.server" order="20" protocol="smtp"/>
+			<mailhost name="another.alternative.smtp.server" order="30" protocol="smtp"/>
 		</mail>
 		<scheduler>
 			<job>
 				<name>Test job name</name>
 				<class>org.opencms.scheduler.TestScheduledJob</class>
 				<reuseinstance>false</reuseinstance>
-				<cronexpression><![CDATA[0/2 * * * * ?]]> </cronexpression>
+				<cronexpression><![CDATA[0/2 * * * * ?]]></cronexpression>
 				<context>
 					<user>Admin</user>
 					<project>Offline</project>
@@ -45,5 +45,6 @@
 		<resourceinit>
 			<resourceinithandler class="org.opencms.configuration.CmsTestDummyResourceInit" />
 		</resourceinit>
+		<requesthandlers/>
 	</system>
 </opencms>    

@@ -9,8 +9,8 @@
 			<resource uri="/system/login/"/>
 		</localizedfolders>
 		<dialoghandlers>
-			<dialoghandler class="org.opencms.workplace.commons.CmsDelete"/>
 			<dialoghandler class="org.opencms.workplace.commons.CmsLock"/>
+			<dialoghandler class="org.opencms.workplace.commons.CmsDelete"/>
 			<dialoghandler class="org.opencms.workplace.commons.CmsPropertyAdvanced"/>
 		</dialoghandlers>
 		<editorhandler class="org.opencms.workplace.editors.CmsEditorHandler"/>

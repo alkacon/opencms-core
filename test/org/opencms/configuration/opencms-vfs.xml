@@ -27,8 +27,6 @@
 					<mapping suffix=".txt" />
 					<mapping suffix=".html" />
 					<mapping suffix=".htm" />
-					<param name="test1">One</param>
-					<param name="test2">Two</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypePointer" />
 				<type class="org.opencms.file.types.CmsResourceTypeBinary">

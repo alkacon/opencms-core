@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestConfiguration.java,v $
- * Date   : $Date: 2004/07/07 18:44:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/09/22 11:54:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,10 @@
 
 package org.opencms.configuration;
 
-import java.io.IOException;
+import org.opencms.xml.CmsXmlEntityResolver;
+import org.opencms.xml.CmsXmlUtils;
+
+import java.io.FileInputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,7 +45,10 @@ import junit.framework.TestCase;
 import org.dom4j.Document;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
-import org.xml.sax.SAXException;
+import org.dom4j.util.NodeComparator;
+import org.xml.sax.InputSource;
+
+
 
 /**
  * Tests for the OpenCms configuration handling.<p>
@@ -68,40 +74,51 @@ public class TestConfiguration extends TestCase {
      * Loads the configuration using the configuration manager,
      * if anyting goes wrong an exception is thrown and the test fails.<p>
      * 
-     * @throws SAXException if something goes wrong
-     * @throws IOException if something goes wrong
+     * @throws Exception if something goes wrong
      */
-    public void testLoadXmlConfiguration() throws SAXException, IOException {
-        
+    public void testLoadXmlConfiguration() throws Exception {
+
         // get URL of test input resource
         URL inputUrl = ClassLoader.getSystemResource("org/opencms/configuration/");
         // generate the configuration manager
         CmsConfigurationManager manager = new CmsConfigurationManager(inputUrl.getFile());
         // now digest the XML
-        manager.loadXmlConfiguration();     
-        
-        
+        manager.loadXmlConfiguration();
         // generate an output XML format
         List allConfigurations = new ArrayList();
         allConfigurations.add(manager);
         allConfigurations.addAll(manager.getConfigurations());
-        
+
+        NodeComparator comparator = new NodeComparator();
         Iterator i = allConfigurations.iterator();
         while (i.hasNext()) {
             I_CmsXmlConfiguration config = (I_CmsXmlConfiguration)i.next();
+            String xmlOrigFile = inputUrl.getFile() + config.getXmlFileName();
             System.out.println("\n\nConfiguration instance: " + config + ":\n");
-            
+
             // gernerate XML document for the configuration
-            Document doc = manager.generateXml(config);
-                                   
+            Document outputDoc = manager.generateXml(config);                      
+
+            // load XML from original file and compare to generated document
+            InputSource source = new InputSource(new FileInputStream(xmlOrigFile));
+            Document inputDoc = CmsXmlUtils.unmarshalHelper(source, new CmsXmlEntityResolver(null));
+            int result = comparator.compare(outputDoc, inputDoc);
+
             // output the document
-            XMLWriter writer;        
+            XMLWriter writer;
             OutputFormat format = OutputFormat.createPrettyPrint();
             format.setIndentSize(4);
             format.setTrimText(false);
             format.setEncoding("UTF-8");
             writer = new XMLWriter(System.out, format);
-            writer.write(doc);                             
-        }         
-    }
+            writer.write("\n");
+            writer.write(outputDoc);
+
+            // triggers a failure that is recorded by JUnit when the argument are not equals            
+            if (result != 0) {
+                System.out.println("\n\nTest failed for configuration instance: " + config + ":\n");
+                fail("Generated output for configuration '" + config.getXmlFileName() + "' differs from input!");
+            }
+        }
+    }    
 }

@@ -42,8 +42,8 @@
 				<resource uri="/sites/"/>
 			</immutables>
 			<principaltranslations>
-				<principaltranslation type="user" from="Admin" to="cmsadmin" />
-				<principaltranslation type="group" from="Administrators" to="cmsadministrators" />
+				<principaltranslation type="USER" from="Admin" to="cmsadmin" />
+				<principaltranslation type="GROUP" from="Administrators" to="cmsadministrators" />
 			</principaltranslations>
         	<ignoredproperties>
         		<property name="module"/>
