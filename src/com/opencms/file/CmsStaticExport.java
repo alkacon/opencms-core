@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/01/28 17:20:45 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/01/29 15:13:32 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.13 $ $Date: 2002/01/28 17:20:45 $
+ * @version $Revision: 1.14 $ $Date: 2002/01/29 15:13:32 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -121,8 +121,6 @@ public class CmsStaticExport implements I_CmsConstants{
                      Vector projectResources, CmsPublishedResources changedResources)
                      throws CmsException{
         m_cms = cms;
-        m_servletUrl = cms.getRequestContext().getRequest().getServletUrl();
-        m_webAppUrl = cms.getRequestContext().getRequest().getWebAppUrl();
         m_startpoints = startpoints;
         m_exportPath = cms.getStaticExportPath();
         c_perlUtil = new Perl5Util();
@@ -142,6 +140,8 @@ public class CmsStaticExport implements I_CmsConstants{
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
                                     "[CmsStaticExport] Starting the static export.");
             }
+            m_servletUrl = cms.getRequestContext().getRequest().getServletUrl();
+            m_webAppUrl = cms.getRequestContext().getRequest().getWebAppUrl();
             createDynamicRules();
             checkExportPath();
             Vector exportLinks = null;
