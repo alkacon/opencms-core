@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/11/14 16:59:35 $
- * Version: $Revision: 1.137 $
+ * Date   : $Date: 2003/11/18 14:15:51 $
+ * Version: $Revision: 1.138 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.137 $ $Date: 2003/11/14 16:59:35 $
+ * @version $Revision: 1.138 $ $Date: 2003/11/18 14:15:51 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1035,6 +1035,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // publish the file content
                     newFile = m_driverManager.getProjectDriver().publishFileContent(context.currentProject(), onlineProject, offlineFileHeader, publishedContentIds);
                 } catch (CmsException e) {
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Caught error "+e.getType(), e);
+                    }
                     if (e.getType() == CmsException.C_FILE_EXISTS) {
                         try {
                             // remove the existing file and ensure that it's content is written 
@@ -1319,7 +1322,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         List deletedFolders = (List) new ArrayList();
         String currentResourceName = null;
         long publishDate = System.currentTimeMillis();
-        Iterator i = null;
+        Iterator i, j = null;
         boolean publishCurrentResource = false;
         List projectResources = null;
         Map sortedFolderMap = null;
@@ -1332,6 +1335,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         boolean directPublishFile = context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null && directPublishResource.isFile();
         List siblings = null;
         CmsResource currentSibling = null;
+        String currentSiblingName = null;
 
         try {
             if (backupEnabled) {
@@ -1474,7 +1478,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 }
             } else {
                 // a project gets published- add all unpublished offline file headers
-            offlineFiles = m_driverManager.getVfsDriver().readFiles(context.currentProject().getId());
+            offlineFiles = m_driverManager.getVfsDriver().readFiles(context.currentProject().getId());    
+            
             }
             report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
 
@@ -1534,8 +1539,38 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 if (context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null) {
                     if (directPublishResource.isFolder()) {
-                    // the resource must be a sub resource of the direct-publish-resource in case of a "direct publish"
-                    publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(directPublishResource.getRootPath());
+                        if (directPublishSiblings) {
+                            
+                            // a resource must be published if it is inside the folder which was selected 
+                            // for direct publishing, or if one of its siblings is inside the folder
+                            
+                            if (currentFileHeader.getLinkCount() == 1) {
+                                // this resource has no siblings                                                           
+                                // the resource must be a sub resource of the direct-publish-resource in 
+                                // case of a "direct publish"
+                                publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(directPublishResource.getRootPath());
+                            } else {
+                                // the resource has some siblings, so check if they are inside the folder 
+                                // to publish
+                                siblings = m_driverManager.readSiblings(context, currentResourceName, true, true);
+                                j = siblings.iterator();
+                                boolean siblingInside=false;
+                                while (j.hasNext()) {
+                                    currentSibling = (CmsResource) j.next();
+                                    currentSiblingName = m_driverManager.readPath(context, currentSibling, true);
+                                    if (currentSiblingName.startsWith(directPublishResource.getRootPath())) {
+                                        siblingInside=true;
+                                        break;
+                                    }
+                                }   
+     
+                                publishCurrentResource = publishCurrentResource && siblingInside;
+                            }
+                        } else {
+                            // the resource must be a sub resource of the direct-publish-resource in 
+                            // case of a "direct publish"
+                            publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(directPublishResource.getRootPath());
+                        }
                     }
                 } else {
                     // the resource must be in one of the paths defined for the project
@@ -1584,7 +1619,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // reset the resource state to UNCHANGED and the last-modified-in-project-ID to 0
                     internalResetResourceState(context, currentFileHeader); 
                 }
-
+ 
                 i.remove();
                 
                 // set back all vars. inside the while loop!
