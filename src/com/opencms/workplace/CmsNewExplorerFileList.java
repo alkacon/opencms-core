@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2002/05/02 07:15:07 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2002/07/30 07:42:17 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.46 $ $Date: 2002/05/02 07:15:07 $
+ * @version $Revision: 1.47 $ $Date: 2002/07/30 07:42:17 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -611,7 +611,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                             String definition = searchForm.getValue02();
                             String value = searchForm.getValue03();
                             int type = Integer.parseInt(searchForm.getValue01());
-                            resources = cms.getResourcesWithProperty(definition, value, type);
+                            resources = cms.getVisibleResourcesWithProperty(definition, value, type);
                         } else if ("filename".equals(currentFilter)){
                             String filename = searchForm.getValue01();
                             // if lucene is enabled the use lucene for searching by filename
