@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInfo.java,v $
- * Date   : $Date: 2002/11/09 12:13:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2002/11/09 20:06:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,41 +30,67 @@
 package com.opencms.flex.jsp;
 
 import com.opencms.boot.CmsBase;
+import com.opencms.core.A_OpenCms;
 import com.opencms.flex.cache.CmsFlexRequest;
 
 /**
- * Provides access to some system information like OpenCms version etc.
+ * Provides access to some system information like OpenCms version,
+ * JDK version etc.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
     
+    // member variables    
 	private String m_property = null;
 
+    /**
+     * Sets the info property name.
+     * 
+     * @param name the info property name to set
+     */
 	public void setProperty(String name) {
 		if (name != null) {
 			m_property = name.toLowerCase();
 		}
 	}
 
+    /**
+     * Returns the selected info property.
+     * 
+     * @return the selected info property 
+     */
 	public String getProperty() {
 		return m_property != null ? m_property : "";
 	}
 
+    /**
+     * Releases the tag resources.
+     */
 	public void release() {
 		super.release();
 		m_property = null;
 	}
 
+    /** Static array with allowed info property values */
 	private static final String[] m_systemProperties =
 		{
-			"opencms.version",
-            "opencms.url",
-            "opencms.uri",
-            "opencms.webapp",
-            "opencms.webbasepath" };
+			"opencms.version", // 0
+            "opencms.url", // 1
+            "opencms.uri", // 2
+            "opencms.webapp", // 3
+            "opencms.webbasepath", // 4
+            "java.vm.name", // 5 
+            "java.vm.version", // 6
+            "java.vm.info", // 7
+            "java.vm.vendor", // 8
+            "os.name",  // 9
+            "os.version", // 10
+            "os.arch" // 11  
+            };
 
+    /** array list of allowed property values for more convenient lookup */
 	private static final java.util.List m_userProperty =
 		java.util.Arrays.asList(m_systemProperties);
 
@@ -89,7 +115,15 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
         }
         return SKIP_BODY;
     }
-    
+
+    /**
+     * Returns the selected info property value based on the provided 
+     * parameters.
+     * 
+     * @param property the info property to look up
+     * @param req the currents request
+     * @return the looked up property value 
+     */    
 	public static String infoTagAction(String property, CmsFlexRequest req) {   
              
         com.opencms.file.CmsObject cms = req.getCmsObject();
@@ -114,7 +148,16 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
 			case 4 : // opencms.webbasepath
 				result = CmsBase.getWebBasePath();
 				break;
-			default :
+            case 5: // system properties
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+                result = System.getProperty(property);
+                break;
+            default :
 				result =
 					"+++ Invalid info property selected: " + property + " +++";
 		}
