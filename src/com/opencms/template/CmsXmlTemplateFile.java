@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/02/11 18:37:05 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2003/02/11 18:48:05 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,8 +49,6 @@ import java.io.StringWriter;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -60,7 +58,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.64 $ $Date: 2003/02/11 18:37:05 $
+ * @version $Revision: 1.65 $ $Date: 2003/02/11 18:48:05 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConstants {
 
