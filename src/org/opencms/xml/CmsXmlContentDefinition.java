@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/12/05 17:29:34 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -417,20 +417,14 @@ public class CmsXmlContentDefinition implements Cloneable {
             if (appinfos.size() > 0) {
                 // the first appinfo node contains the specific XML content data 
                 appInfoElement = (Element)appinfos.get(0);
-            }
-
-            if (appinfos.size() > 1) {
-                // the second appinfo node contains the name of the XML content handler class 
-                i = ((Element)appinfos.get(1)).elements().iterator();
-                while (i.hasNext()) {
-                    Element appinfo = (Element)i.next();
-                    if (appinfo.getName().equals("handler")) {
-                        String className = appinfo.attributeValue("class");
-                        if (className != null) {
-                            contentHandler = OpenCms.getXmlContentTypeManager().getContentHandler(
-                                className,
-                                schemaLocation);
-                        }
+                
+                // check for a special content handler in the appinfo node
+                Element handlerElement = appInfoElement.element("handler");
+                if (handlerElement != null) {
+                    String className = handlerElement.attributeValue("class");
+                    if (className != null) {
+                        contentHandler = OpenCms.getXmlContentTypeManager()
+                            .getContentHandler(className, schemaLocation);
                     }
                 }
             }

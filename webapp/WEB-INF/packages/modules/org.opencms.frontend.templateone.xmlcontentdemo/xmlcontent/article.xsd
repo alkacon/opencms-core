@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
@@ -24,8 +23,16 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<mapping element="Title" mapto="property:Title" />
-			<mapping element="Release" mapto="attribute:datereleased" />
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Release" mapto="attribute:datereleased" />
+			</mappings>
+			<validationrules>
+				<rule element="Title" regex="!.*[Ee]rror.*" />
+				<rule element="Title" regex="!.*[Ww]arn.*" type="warning" />
+				<rule element="Teaser" regex="!.*[Ww]arn.*" type="warning" />
+				<rule element="Text" regex="!.*[Ww]arn.*" type="warning" />
+			</validationrules>
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>

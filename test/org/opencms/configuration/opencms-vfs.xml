@@ -96,16 +96,26 @@
 				<translation>s#/content/(.*)#/system/$1#</translation>
 			</foldertranslations>
 		</translations>
-		<xmlcontents>
-			<xmlcontent class="org.opencms.xml.types.CmsXmlBooleanValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlColorValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlColorpickerWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlDateTimeValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlLocaleValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlSimpleHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlSimpleLinkValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlStringValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlVfsFileValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-		</xmlcontents>
+		<xmlcontent>
+			<widgets>
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlColorpickerWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />			
+			</widgets>
+			<schematypes>
+				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlColorValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlColorpickerWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlDateTimeValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlHtmlValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlLocaleValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlSimpleHtmlValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlSimpleLinkValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlStringValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlVfsFileValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
+			</schematypes>
+		</xmlcontent>
 	</vfs>
 </opencms>

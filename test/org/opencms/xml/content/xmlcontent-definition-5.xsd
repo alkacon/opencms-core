@@ -21,12 +21,10 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
+			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
 			<layouts>
 				<layout element="Title" widget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
 			</layouts>
-		</xsd:appinfo>
-		<xsd:appinfo>
-			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>

@@ -22,6 +22,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
+			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
 			<validationrules>
 				<rule element="Html" regex="!.*err.*" />
 				<rule element="VfsLink" regex="!/system/workplace/.*" type="warning" />
@@ -29,9 +30,6 @@
 			<defaults>					
 				<default element="Option" value="Default value from the appinfos" />
 			</defaults>
-		</xsd:appinfo>
-		<xsd:appinfo>
-			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>

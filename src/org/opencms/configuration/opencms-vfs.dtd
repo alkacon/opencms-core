@@ -13,7 +13,7 @@
 	resources,
 	defaultfiles,
 	translations?, 
-	xmlcontents?)>
+	xmlcontent?)>
 
 <!ELEMENT resources (
 	resourceloaders, 
@@ -94,13 +94,23 @@
 
 <!--
 # XML content definitions that are used to build XML content items.
-# Each XML content definition configuration requires a class that implements
+#
+# The configured widget classes must implement the interface 
+# "org.openmcms.workplace.xmlwidgets.I_CmsXmlWidget".
+#
+# Each XML content schema type configuration requires a class that implements
 # the interface "org.opencms.xml.types.I_CmsXmlSchemaType". This type defines 
 # the basic behaviour of the XML content item data. For creating the 
-# XML content editor, a widget class must be given that implements the 
+# XML content editor, a default widget class must be given that implements the 
 # interface "org.opencms.workplace.xmltypes.I_CmsXmlWidget". 
+# The configured widget class must also be listed in the "widgets" node.
 -->
-<!ELEMENT xmlcontents (xmlcontent*)>
+<!ELEMENT xmlcontent (widgets, schematypes)>
 
-<!ELEMENT xmlcontent EMPTY>
-<!ATTLIST xmlcontent class CDATA #REQUIRED widget CDATA #REQUIRED>
+<!ELEMENT widgets (widget*)>
+<!ELEMENT widget EMPTY>
+<!ATTLIST widget class CDATA #REQUIRED>
+
+<!ELEMENT schematypes (schematype*)>
+<!ELEMENT schematype EMPTY>
+<!ATTLIST schematype class CDATA #REQUIRED defaultwidget CDATA #REQUIRED>

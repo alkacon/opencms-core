@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/11/03 17:20:58 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/12/05 17:29:34 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,8 +73,8 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     public static final String N_TYPE = "type";
 
     /** The widget attribute. */
-    protected static final String A_WIDGET = "widget";
-
+    protected static final String A_DEFAULTWIDGET = "defaultwidget";
+    
     /** The collector node name. */
     protected static final String N_COLLECTOR = "collector";
 
@@ -102,6 +102,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     /** The main resource node name. */
     protected static final String N_RESOURCES = "resources";
 
+    /** The schematype node name. */
+    protected static final String N_SCHEMATYPE = "schematype";
+
+    /** The schematypes node name. */
+    protected static final String N_SCHEMATYPES = "schematypes";
+
     /** Individual translation node name. */
     protected static final String N_TRANSLATION = "translation";
 
@@ -113,10 +119,16 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The main vfs configuration node name. */
     protected static final String N_VFS = "vfs";
+    
+    /** The widget node name. */
+    protected static final String N_WIDGET = "widget";    
+
+    /** The widgets node name. */
+    protected static final String N_WIDGETS = "widgets";    
 
     /** The xmlcontent node name. */
     protected static final String N_XMLCONTENT = "xmlcontent";
-
+    
     /** The xmlcontents node name. */
     protected static final String N_XMLCONTENTS = "xmlcontents";
 
@@ -159,6 +171,23 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". VFS configuration    : initialized");
         }
+    }
+
+    /**
+     * Adds the resource type rules to the given digester.<p>
+     * 
+     * @param digester the digester to add the rules to
+     */     
+    public static void addResourceTypeXmlRules(Digester digester) {
+
+        // add rules for resource types
+        digester.addObjectCreate("*/" + N_RESOURCETYPES + "/" + N_TYPE, A_CLASS, CmsConfigurationException.class);
+        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD);
+        digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE, "addResourceType");   
+        
+        // extension mapping rules
+        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, I_CmsResourceType.C_ADD_MAPPING_METHOD, 1);
+        digester.addCallParam ("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, 0, A_SUFFIX);       
     }
 
     /**
@@ -289,30 +318,17 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addCallParam("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FOLDERTRANSLATIONS, 0, A_ENABLED);
 
         // XML content type manager creation rules
-        digester.addObjectCreate("*/" + N_VFS + "/" + N_XMLCONTENTS, CmsXmlContentTypeManager.class);
-        digester.addSetNext("*/" + N_VFS + "/" + N_XMLCONTENTS, "setXmlContentTypeManager");
+        digester.addObjectCreate("*/" + N_VFS + "/" + N_XMLCONTENT, CmsXmlContentTypeManager.class);
+        digester.addSetNext("*/" + N_VFS + "/" + N_XMLCONTENT, "setXmlContentTypeManager");
 
-        // XML content type add rules
-        digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_XMLCONTENT, "addXmlContent", 2);
-        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_XMLCONTENT, 0, A_CLASS);
-        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_XMLCONTENT, 1, A_WIDGET);
-    }
+        // XML content widgets add rules
+        digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, "addWidget", 1);
+        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, 0, A_CLASS);
 
-    /**
-     * Adds the resource type rules to the given digester.<p>
-     * 
-     * @param digester the digester to add the rules to
-     */     
-    public static void addResourceTypeXmlRules(Digester digester) {
-
-        // add rules for resource types
-        digester.addObjectCreate("*/" + N_RESOURCETYPES + "/" + N_TYPE, A_CLASS, CmsConfigurationException.class);
-        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD);
-        digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE, "addResourceType");   
-        
-        // extension mapping rules
-        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, I_CmsResourceType.C_ADD_MAPPING_METHOD, 1);
-        digester.addCallParam ("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, 0, A_SUFFIX);       
+        // XML content schema type add rules
+        digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE, "addSchemaType", 2);
+        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE, 0, A_CLASS);
+        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE, 1, A_DEFAULTWIDGET);
     }
     
     /**
@@ -397,16 +413,26 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         }
 
         // XML content configuration
-        Element xmlContentsElement = vfs.addElement(N_XMLCONTENTS);
+        Element xmlContentsElement = vfs.addElement(N_XMLCONTENT);
 
+        // XML widgets
+        Element xmlWidgetsElement = xmlContentsElement.addElement(N_WIDGETS);        
+        it = m_xmlContentTypeManager.getRegisteredWidgetNames().iterator();
+        while (it.hasNext()) {
+            String widget = (String)it.next();
+            xmlWidgetsElement.addElement(N_WIDGET)
+                .addAttribute(A_CLASS, widget);
+        }
+        
         // XML content types 
-        it = m_xmlContentTypeManager.getRegisteredContentTypes().iterator();
+        Element xmlSchemaTypesElement = xmlContentsElement.addElement(N_SCHEMATYPES);    
+        it = m_xmlContentTypeManager.getRegisteredSchemaTypes().iterator();
         while (it.hasNext()) {
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)it.next();
-            I_CmsXmlWidget widget = m_xmlContentTypeManager.getEditorWidget(type.getTypeName());
-            xmlContentsElement.addElement(N_XMLCONTENT)
+            I_CmsXmlWidget widget = m_xmlContentTypeManager.getDefaultWidget(type.getTypeName());
+            xmlSchemaTypesElement.addElement(N_SCHEMATYPE)
                 .addAttribute(A_CLASS, type.getClass().getName())
-                .addAttribute(A_WIDGET, widget.getClass().getName());
+                .addAttribute(A_DEFAULTWIDGET, widget.getClass().getName());
         }
 
         // return the vfs node

@@ -22,7 +22,6 @@
 	</xsd:complexType>
 
 	<xsd:annotation>
-		<xsd:appinfo/>
 		<xsd:appinfo>
 			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
 		</xsd:appinfo>
