@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbExportFile.java,v $
- * Date   : $Date: 2000/04/07 08:22:26 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/04/07 09:20:07 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.template.*;
  * Exports Files from database into XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.9 $ $Date: 2000/04/07 08:22:26 $
+ * @version $Revision: 1.10 $ $Date: 2000/04/07 09:20:07 $
  */
 
 class CmsDbExportFile implements I_CmsConstants {
@@ -157,21 +157,25 @@ class CmsDbExportFile implements I_CmsConstants {
 		Enumeration fifenum=filesinfolder.elements();
 		while (fifenum.hasMoreElements()) {
 			CmsFile fif=(CmsFile)fifenum.nextElement();
-			System.out.println("Exporting: " + fif.getName());
-			System.out.flush();
-			m_newElement= m_docXml.createElement(C_TFILEOBJ);
-			m_firstElement.appendChild(m_newElement);
-			m_sectionElement=m_newElement;
-			generateFileEntry(fif, m_sectionElement, parentName);
+			if(fif.getState() != C_STATE_DELETED) {
+				System.out.println("Exporting: " + fif.getName());
+				System.out.flush();
+				m_newElement= m_docXml.createElement(C_TFILEOBJ);
+				m_firstElement.appendChild(m_newElement);
+				m_sectionElement=m_newElement;
+				generateFileEntry(fif, m_sectionElement, parentName);
+			}
 		}
 		
 		Vector subfolders = m_RB.getSubFolders(m_user, m_project, m_resourcepath);
 		Enumeration sfenum=subfolders.elements();
 		while (sfenum.hasMoreElements()) {
 			CmsFolder sf=(CmsFolder)sfenum.nextElement();
-			System.out.println("Exporting: " + sf.getAbsolutePath());
-			System.out.flush();
-			fileExport(sf.getAbsolutePath(), parentName+sf.getName());
+			if(sf.getState() != C_STATE_DELETED) {
+				System.out.println("Exporting: " + sf.getAbsolutePath());
+				System.out.flush();
+				fileExport(sf.getAbsolutePath(), parentName+sf.getName());
+			}
 		}
 		
 	}
