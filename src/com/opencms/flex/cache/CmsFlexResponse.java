@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexResponse.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/12/15 14:23:44 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  * A wrapper class for a HttpServletRequest that controls the Flex cache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapper {
     
@@ -108,6 +108,9 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
     /** The cache delimiter char */
     public static final char C_FLEX_CACHE_DELIMITER = (char)0;
     
+    /** The encoding to use for the response */
+    private String m_encoding;
+    
     /** 
      * Constructor for the CmsFlexResponse.
      * This one is usually used for the "Top" response.     
@@ -115,10 +118,11 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
      * @param res The HttpServletResponse to wrap
      * @param streaming Indicates if streaming should be enabled or not
      */
-    public CmsFlexResponse(HttpServletResponse res, boolean streaming) {
+    public CmsFlexResponse(HttpServletResponse res, boolean streaming, String encoding) {
         super(res);
         m_res = res;
         m_out = null;
+        m_encoding = encoding;
         m_parentWritesOnlyToBuffer = ! streaming;
         setOnlyBuffering(m_parentWritesOnlyToBuffer);
         m_headers = new java.util.HashMap(37);
@@ -135,11 +139,21 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
         super(res);
         m_res = res;
         m_out = null;
+        m_encoding = res.getEncoding();
         m_parentWritesOnlyToBuffer = res.hasIncludeList();
         setOnlyBuffering(m_parentWritesOnlyToBuffer);
         m_headers = new java.util.HashMap(37);
         m_buffer_headers = new java.util.HashMap(17);
     }    
+    
+    /**
+     * Returns the value of the encoding used for this response.<p>
+     * 
+     * @return String the value of the encoding used for this response
+     */
+    public String getEncoding() {
+        return m_encoding;
+    }
 
     /** 
      * Returns the top wrapped response, i.e. the first response wrapped
@@ -236,7 +250,7 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
     public Map getHeaders() {
         return m_headers;
     }    
-    
+        
     /**
      * Adds some bytes to the list of include results. 
      * Should be used only in inclusion-scenarios 
@@ -727,6 +741,20 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
      * Method overlodad from the standard javax.servlet.http.HttpServletRequest.
      */
     public void setContentType(String type) {
+        if (DEBUG) System.err.println("FlexResponse: setContentType(" +type + ") called");        
+        if (type != null) {
+            // HACK: ensure that the encoding set by OpenCms is not overwritten by the default form the JSP            
+            type = type.toLowerCase();
+            int i = type.indexOf("charset");
+            if (type.startsWith("text") && (i > 0)) {
+                StringBuffer buf = new StringBuffer();
+                buf.append(type.substring(0, i));
+                buf.append("charset=");
+                buf.append(m_encoding);
+                type = new String(buf);
+                if (DEBUG) System.err.println("FlexResponse: setContentType() changed type to " +type);
+            }            
+        }
         m_res.setContentType(type);        
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2002/12/13 17:38:12 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2002/12/15 14:23:44 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourceLoader {
@@ -139,7 +139,7 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
         if (res instanceof CmsFlexResponse) {
             w_res = (CmsFlexResponse)res;              
         } else {
-            w_res = new CmsFlexResponse(res, false);
+            w_res = new CmsFlexResponse(res, false, cms.getRequestContext().getEncoding());
         }                
         service(cms, file, w_req, w_res);
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2002/12/13 17:38:12 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/12/15 14:23:44 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -521,7 +521,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         if (res instanceof CmsFlexResponse) {
             w_res = (CmsFlexResponse)res;              
         } else {
-            w_res = new CmsFlexResponse(res, streaming);
+            w_res = new CmsFlexResponse(res, streaming, cms.getRequestContext().getEncoding());
         }
         
         if (bypass) {
@@ -624,7 +624,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             if (res instanceof CmsFlexResponse) {
                 w_res = (CmsFlexResponse)res;              
             } else {
-                w_res = new CmsFlexResponse(res, false);
+                w_res = new CmsFlexResponse(res, false, cms.getRequestContext().getEncoding());
             }
             
             try {
@@ -643,6 +643,17 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                     if ((res == null) || (! res.isCommitted())) {
                         // If a JSP errorpage was triggered the response will be already committed here
                         result = w_res.getWriterBytes();
+                        // Encoding project:
+                        // The byte array will internally be encoded in the OpenCms
+                        // default encoding. In case another encoding is set
+                        // in the 'content-encoding' property of the file,
+                        // we need to re-encode the output here.
+                        String dnc = A_OpenCms.getDefaultEncoding().trim().toLowerCase();
+                        String enc = cms.getRequestContext().getEncoding().trim().toLowerCase();
+                        if (! dnc.equals(enc)) {
+                            if (DEBUG > 1) System.err.println("CmsJspLoader.loadTemplate(): Encoding result from " + dnc + " to " + enc);
+                            result = (new String(result, dnc)).getBytes(enc);
+                        }                        
                     }
                 } catch (IllegalStateException e) {
                     // Uncritical, might happen if JSP error page was used
@@ -772,7 +783,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                 contents = req.getCmsObject().readFile(file.getAbsolutePath()).getContents();
                 // Encoding project:
                 // Check the JSP "content-encoding" property
-                jspEncoding = cms.readProperty(file.getAbsolutePath(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false);
+                jspEncoding = cms.readProperty(file.getAbsolutePath(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true);
                 if (jspEncoding == null) jspEncoding = C_DEFAULT_JSP_ENCODING;
                 jspEncoding = jspEncoding.trim().toLowerCase();
             } catch (CmsException e) {
