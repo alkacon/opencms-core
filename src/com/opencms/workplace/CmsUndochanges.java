@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUndochanges.java,v $
-* Date   : $Date: 2004/05/05 12:53:19 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2004/06/07 12:44:05 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
@@ -45,7 +46,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.22 $ $Date: 2004/05/05 12:53:19 $
+ * @version $Revision: 1.23 $ $Date: 2004/06/07 12:44:05 $
  */
 
 public class CmsUndochanges extends CmsWorkplaceDefault {
@@ -133,7 +134,7 @@ public class CmsUndochanges extends CmsWorkplaceDefault {
         }
         // set the required datablocks
         if(action == null) {
-            xmlTemplateDocument.setData("CHANGEDATE", CmsMessages.getDateTimeShort(file.getDateLastModified()));
+            xmlTemplateDocument.setData("CHANGEDATE", CmsDateUtil.getDateTimeShort(file.getDateLastModified()));
             xmlTemplateDocument.setData("USER", cms.readUser(file.getUserLastModified()).getName());
             xmlTemplateDocument.setData("FILENAME", file.getName());
         }

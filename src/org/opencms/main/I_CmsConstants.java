@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/06/04 15:42:06 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/07 12:44:05 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public interface I_CmsConstants {
 
@@ -989,6 +989,16 @@ public interface I_CmsConstants {
      */
     String C_EXPORT_TAG_USERCREATED = "usercreated";
 
+    /**
+     * The "release" tag in the manifest-file.
+     */
+    String C_EXPORT_TAG_DATERELEASED = "datereleased";
+
+    /**
+     * The "expire" tag in the manifest-file.
+     */
+    String C_EXPORT_TAG_DATEEXPIRED = "dateexpired";
+    
     /**
      * The "link" tag in the manifest-file.
      */

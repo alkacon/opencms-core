@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjecthistory.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2004/06/07 12:44:05 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.workplace;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsDateUtil;
 
 import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsObject;
@@ -49,7 +50,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.14 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.15 $ $Date: 2004/06/07 12:44:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -192,9 +193,9 @@ public class CmsProjecthistory extends A_CmsWpElement {
         xmlFile.setData("resources", reslist);
         xmlFile.setData(C_PROJECTLIST_PROJECTWORKER, project.getGroupName());
         xmlFile.setData(C_PROJECTLIST_PROJECTMANAGER, project.getManagerGroupName());
-        xmlFile.setData(C_PROJECTLIST_DATECREATED, CmsMessages.getDateTimeShort(project.getCreateDate()));
+        xmlFile.setData(C_PROJECTLIST_DATECREATED, CmsDateUtil.getDateTimeShort(project.getCreateDate()));
         xmlFile.setData(C_PROJECTLIST_OWNER, project.getOwnerName());
-        xmlFile.setData("publishdate", CmsMessages.getDateTimeShort(project.getPublishingDate()));
+        xmlFile.setData("publishdate", CmsDateUtil.getDateTimeShort(project.getPublishingDate()));
         xmlFile.setData("publishedby", project.getPublishedByName());
         xmlFile.setData(C_PROJECTLIST_NAME_ESCAPED, CmsEncoder.escape(project.getName(),
             cms.getRequestContext().getEncoding()));

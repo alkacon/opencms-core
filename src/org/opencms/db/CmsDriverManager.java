@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/06 12:13:59 $
- * Version: $Revision: 1.373 $
+ * Date   : $Date: 2004/06/07 12:44:06 $
+ * Version: $Revision: 1.374 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.373 $ $Date: 2004/06/06 12:13:59 $
+ * @version $Revision: 1.374 $ $Date: 2004/06/07 12:44:06 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4126,7 +4126,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // checks, if the filename is valid, if not it throws a exception
         validFilename(resourceName);
 
-        CmsFolder parentFolder = readFolder(context, folderName);
+        CmsFolder parentFolder = readFolder(context, folderName, CmsResourceFilter.IGNORE_EXPIRATION);
 
         // check if the user has write access to the destination folder
         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL, -1);

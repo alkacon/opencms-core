@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2004/06/06 10:34:49 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/07 12:44:06 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.flex;
 
-import org.opencms.main.CmsException;
-
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -50,6 +48,9 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.opencms.main.CmsException;
+import org.opencms.util.CmsDateUtil;
+
 /**
  * Wrapper class for a HttpServletResponse.<p>
  *
@@ -57,7 +58,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -310,8 +311,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
      */
     public void addDateHeader(String name, long date) {
-        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
-        addHeader(name, format.format(new Date(date)));
+        addHeader(name, CmsDateUtil.getHeaderDate(date));
     }
 
     /**
@@ -535,9 +535,8 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
      */
-    public void setDateHeader(String name, long date) {
-        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
-        setHeader(name, format.format(new Date(date)));
+    public void setDateHeader(String name, long date) {       
+        setHeader(name, CmsDateUtil.getHeaderDate(date));
     }
     
     /**

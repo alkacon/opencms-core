@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/06/06 09:13:44 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/06/07 12:44:05 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,25 +30,13 @@
  */
 package org.opencms.importexport;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypeFolder;
-import org.opencms.file.CmsResourceTypeXmlPage;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-import org.opencms.report.I_CmsReport;
-import org.opencms.security.I_CmsPrincipal;
-import org.opencms.util.CmsUUID;
-import org.opencms.xml.page.CmsXmlPage;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.security.MessageDigest;
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -59,6 +47,19 @@ import java.util.zip.ZipFile;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.CmsResourceTypeXmlPage;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
+import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.xml.page.CmsXmlPage;
 
 /**
  * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for 
@@ -279,7 +280,7 @@ public class CmsImportVersion4 extends A_CmsImport {
     throws CmsException {
 
         String source = null, destination = null, type = null, uuidresource = null, uuidcontent = null, userlastmodified = null, usercreated = null, flags = null, timestamp = null;
-        long datelastmodified = 0, datecreated = 0;
+        long datelastmodified = 0, datecreated = 0, datereleased = 0, dateexpired = 0;
         int resType = I_CmsConstants.C_UNKNOWN_ID;
         int loaderId = I_CmsConstants.C_UNKNOWN_ID;
 
@@ -361,7 +362,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 if ((timestamp = CmsImport.getChildElementTextValue(
                     currentElement,
                     I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED)) != null) {
-                    datelastmodified = Long.parseLong(timestamp);
+                    datelastmodified = convertTimestamp(timestamp);
                 } else {
                     datelastmodified = System.currentTimeMillis();
                 }
@@ -376,7 +377,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 if ((timestamp = CmsImport.getChildElementTextValue(
                     currentElement,
                     I_CmsConstants.C_EXPORT_TAG_DATECREATED)) != null) {
-                    datecreated = Long.parseLong(timestamp);
+                    datecreated = convertTimestamp(timestamp);
                 } else {
                     datecreated = System.currentTimeMillis();
                 }
@@ -387,6 +388,24 @@ public class CmsImportVersion4 extends A_CmsImport {
                     I_CmsConstants.C_EXPORT_TAG_USERCREATED);
                 usercreated = OpenCms.getImportExportManager().translateUser(usercreated);
 
+                // <datereleased>
+                if ((timestamp = CmsImport.getChildElementTextValue(
+                    currentElement,
+                    I_CmsConstants.C_EXPORT_TAG_DATERELEASED)) != null) {
+                    datereleased = convertTimestamp(timestamp);
+                } else {
+                    datereleased = CmsResource.DATE_RELEASED_DEFAULT;
+                }
+                
+                // <dateexpired>
+                if ((timestamp = CmsImport.getChildElementTextValue(
+                    currentElement,
+                    I_CmsConstants.C_EXPORT_TAG_DATEEXPIRED)) != null) {
+                    dateexpired = convertTimestamp(timestamp);
+                } else {
+                    dateexpired = CmsResource.DATE_EXPIRED_DEFAULT;
+                }
+                
                 // <flags>              
                 flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
 
@@ -428,7 +447,9 @@ public class CmsImportVersion4 extends A_CmsImport {
                         userlastmodified,
                         datecreated,
                         usercreated,
-                        flags,
+                        datereleased,
+                        dateexpired,
+                        flags, 
                         properties);
 
                     // if the resource was imported add the access control entrys if available
@@ -511,18 +532,20 @@ public class CmsImportVersion4 extends A_CmsImport {
     * Imports a resource (file or folder) into the cms.<p>
     * 
     * @param source the path to the source-file
-    * @param destination the path to the destination-file in the cms
-    * @param resType the resource-type of the file
-    * @param loaderId the loader id of the resource
-    * @param uuidresource  the resource uuid of the resource
-    * @param uuidcontent the file uuid of the resource
-    * @param datelastmodified the last modification date of the resource
-    * @param userlastmodified the user who made the last modifications to the resource
-    * @param datecreated the creation date of the resource
-    * @param usercreated the user who created 
-    * @param flags the flags of the resource     
-    * @param properties a hashtable with properties for this resource
-    * @return imported resource
+ * @param destination the path to the destination-file in the cms
+ * @param resType the resource-type of the file
+ * @param loaderId the loader id of the resource
+ * @param uuidresource  the resource uuid of the resource
+ * @param uuidcontent the file uuid of the resource
+ * @param datelastmodified the last modification date of the resource
+ * @param userlastmodified the user who made the last modifications to the resource
+ * @param datecreated the creation date of the resource
+ * @param usercreated the user who created 
+ * @param datereleased the release date of the resource
+ * @param dateexpired the expire date of the resource
+ * @param flags the flags of the resource     
+ * @param properties a hashtable with properties for this resource
+ * @return imported resource
     */
     private CmsResource importResource(
         String source, 
@@ -535,9 +558,10 @@ public class CmsImportVersion4 extends A_CmsImport {
         String userlastmodified, 
         long datecreated, 
         String usercreated, 
+        long datereleased, 
+        long dateexpired, 
         String flags, 
-        List properties
-    ) {
+        List properties) {
 
         byte[] content = null;
         CmsResource res = null;
@@ -639,13 +663,11 @@ public class CmsImportVersion4 extends A_CmsImport {
                 newUsercreated, 
                 datelastmodified, 
                 newUserlastmodified, 
-                CmsResource.DATE_RELEASED_DEFAULT, 
-                CmsResource.DATE_EXPIRED_DEFAULT,
+                datereleased,
+                dateexpired,
                 1, 
                 size
             );
-            // TODO: must read expired / released from manifest
-            int date_warning = 0;
              
             if (C_RESOURCE_TYPE_LINK_ID == resType) {
                 // store links for later conversion
@@ -678,4 +700,32 @@ public class CmsImportVersion4 extends A_CmsImport {
     }
 
 
+    /**
+     * Copnvert a given timestamp in string format to a long value.<p>
+     * 
+     * The timestamp is either the string representation of a long value (old export format)
+     * or a user-readable string format.
+     * 
+     * @param timestamp timestamp to convert
+     * @return long value of the timestamp
+     */
+    private long convertTimestamp(String timestamp) {
+        long value = 0;
+        // try to parse the timestamp string
+        // if it successes, its an old style long value
+        try {
+            value = Long.parseLong(timestamp);
+            
+        } catch (NumberFormatException e) {           
+            // the timestamp was in in a user-readable string format, create the long value form it
+            try {
+                value = CmsDateUtil.parseHeaderDate(timestamp);
+            } catch (ParseException pe) {
+                value = System.currentTimeMillis();
+            }
+        }
+        return value;
+    }
+    
+    
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2004/02/27 15:56:15 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2004/06/07 12:44:05 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsXmlSaxWriter;
 
 import com.opencms.defaults.master.CmsMasterContent;
@@ -73,7 +74,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $ $Date: 2004/02/27 15:56:15 $
+ * @version $Revision: 1.3 $ $Date: 2004/06/07 12:44:05 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 
@@ -445,8 +446,8 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         data.addElement(C_EXPORT_TAG_MASTER_USER).addText(ownerName);
         data.addElement(C_EXPORT_TAG_MASTER_GROUP).addText(groupName);
         data.addElement(C_EXPORT_TAG_MASTER_ACCESSFLAGS).addText(Integer.toString(dataset.m_accessFlags));
-        data.addElement(C_EXPORT_TAG_MASTER_PUBLICATIONDATE).addText(CmsMessages.getDateTimeShort(dataset.m_publicationDate));
-        data.addElement(C_EXPORT_TAG_MASTER_PURGEDATE).addText(CmsMessages.getDateTimeShort(dataset.m_purgeDate));
+        data.addElement(C_EXPORT_TAG_MASTER_PUBLICATIONDATE).addText(CmsDateUtil.getDateTimeShort(dataset.m_publicationDate));
+        data.addElement(C_EXPORT_TAG_MASTER_PURGEDATE).addText(CmsDateUtil.getDateTimeShort(dataset.m_purgeDate));
         data.addElement(C_EXPORT_TAG_MASTER_FLAGS).addText(Integer.toString(dataset.m_flags));
         data.addElement(C_EXPORT_TAG_MASTER_FEEDID).addText(Integer.toString(dataset.m_feedId));
         data.addElement(C_EXPORT_TAG_MASTER_FEEDREFERENCE).addText(Integer.toString(dataset.m_feedReference));
@@ -498,7 +499,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         }
         // get the values of data_reference from the int array
         for (int i = 0; i < dataset.m_dataDate.length; i++) {
-            String value = CmsMessages.getDateTimeShort(dataset.m_dataDate[i]);
+            String value = CmsDateUtil.getDateTimeShort(dataset.m_dataDate[i]);
             data.addElement(C_EXPORT_TAG_MASTER_DATADATE + i).addText(value);
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2004/03/02 21:53:04 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/06/07 12:44:05 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.main.OpenCmsCore;
 import org.opencms.main.OpenCmsSessionManager;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsMail;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
@@ -70,7 +71,7 @@ import org.apache.commons.collections.map.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.25 $ $Date: 2004/03/02 21:53:04 $
+ * @version $Revision: 1.26 $ $Date: 2004/06/07 12:44:05 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -583,7 +584,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             // if email iterval is <= 0 status email is disabled
             return;
         }
-        String date = CmsMessages.getDateTimeShort(System.currentTimeMillis());
+        String date = CmsDateUtil.getDateTimeShort(System.currentTimeMillis());
         String subject;
         String content = "";
         if (warning) {

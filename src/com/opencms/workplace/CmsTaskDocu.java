@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskDocu.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2004/06/07 12:44:05 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.workplace;
 
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workflow.CmsTaskLog;
 
@@ -48,7 +49,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TASKDOCU&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.19 $ $Date: 2004/06/07 12:44:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -116,7 +117,7 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement {
                 
                 // add the time
                 java.sql.Timestamp time = tasklog.getStartTime();
-                template.setData("DATE", CmsMessages.getDateTimeShort(time.getTime()));
+                template.setData("DATE", CmsDateUtil.getDateTimeShort(time.getTime()));
                 
                 // add the user
                 CmsUser user = cms.readOwner(tasklog);

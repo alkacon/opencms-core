@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleProperties.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2004/06/07 12:44:05 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.file.CmsRegistry;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsDateUtil;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -158,9 +159,9 @@ public class CmsAdminModuleProperties extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("descriptiontext", reg.getModuleDescription(module));
             xmlTemplateDocument.setData("author", reg.getModuleAuthor(module));
             xmlTemplateDocument.setData("email", reg.getModuleAuthorEmail(module));
-            xmlTemplateDocument.setData("createdate", CmsMessages.getDateTimeShort(reg.getModuleCreateDate(module)));
+            xmlTemplateDocument.setData("createdate", CmsDateUtil.getDateTimeShort(reg.getModuleCreateDate(module)));
             xmlTemplateDocument.setData("uploadfrom", reg.getModuleUploadedBy(module));
-            xmlTemplateDocument.setData("uploaddate", CmsMessages.getDateTimeShort(reg.getModuleUploadDate(module)));
+            xmlTemplateDocument.setData("uploaddate", CmsDateUtil.getDateTimeShort(reg.getModuleUploadDate(module)));
             xmlTemplateDocument.setData("view", reg.getModuleViewName(module));
             String docu = reg.getModuleDocumentPath(module);
             if((docu != null) && (docu.length() > 1)) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2004/06/07 12:44:05 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.core.I_CmsSession;
@@ -50,7 +51,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.37 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.38 $ $Date: 2004/06/07 12:44:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -167,7 +168,7 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
             paraAll = cms.getTaskPar(task.getId(), C_TASKPARA_ALL);
             paraCompletion = cms.getTaskPar(task.getId(), C_TASKPARA_COMPLETION);
             paraDelivery = cms.getTaskPar(task.getId(), C_TASKPARA_DELIVERY);
-            due = CmsMessages.getDateShort(task.getTimeOut().getTime());
+            due = CmsDateUtil.getDateShort(task.getTimeOut().getTime());
 
             // preselect the old user and role in the dialog for forwarding and resurrection
             // compute the indices of the user and role

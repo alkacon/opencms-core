@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/05/13 13:58:10 $
-* Version: $Revision: 1.84 $
+* Date   : $Date: 2004/06/07 12:44:05 $
+* Version: $Revision: 1.85 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.core.I_CmsSession;
@@ -75,7 +76,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.84 $
+ * @version $Revision: 1.85 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
@@ -1141,8 +1142,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     template.setData("id", id);
                     template.setData("histid", curVersion.getId().toString());
                     template.setData("histtitle", curVersion.getTitle());
-                    template.setData("histlastmodified", CmsMessages.getDateTimeShort(curVersion.getDateLastModified()));
-                    template.setData("histpublished", CmsMessages.getDateTimeShort(curVersion.getDateCreated()));
+                    template.setData("histlastmodified", CmsDateUtil.getDateTimeShort(curVersion.getDateLastModified()));
+                    template.setData("histpublished", CmsDateUtil.getDateTimeShort(curVersion.getDateCreated()));
                     template.setData("histmodifiedby", userName);
                     template.setData("histdescription", projectDescription);
                     CmsUUID curUser = cms.getRequestContext().currentUser().getId();
@@ -1251,7 +1252,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     long updated = curCd.getDateCreated();
                     String userName = readSaveUserName(cms, curCd.getLastModifiedBy());
                     long lastModified = curCd.getDateLastModified();
-                    String output = CmsMessages.getDateTimeShort(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + CmsMessages.getDateTimeShort(updated) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + userName;
+                    String output = CmsDateUtil.getDateTimeShort(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + CmsDateUtil.getDateTimeShort(updated) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + userName;
                     names.addElement(output);
                     values.addElement(curCd.getVersionId() + "");
                 } catch (Exception e) {

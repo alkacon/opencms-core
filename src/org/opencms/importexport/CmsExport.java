@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/06/06 09:13:44 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/06/07 12:44:05 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,27 +31,6 @@
 
 package org.opencms.importexport;
 
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsUser;
-import org.opencms.i18n.CmsMessages;
-import org.opencms.main.CmsEvent;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.I_CmsEventListener;
-import org.opencms.main.OpenCms;
-import org.opencms.report.CmsShellReport;
-import org.opencms.report.I_CmsReport;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.I_CmsPrincipal;
-import org.opencms.util.CmsUUID;
-import org.opencms.util.CmsXmlSaxWriter;
-import org.opencms.workplace.I_CmsWpConstants;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -71,6 +50,27 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXWriter;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
+import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.I_CmsEventListener;
+import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
+import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.util.CmsXmlSaxWriter;
+import org.opencms.workplace.I_CmsWpConstants;
 import org.xml.sax.SAXException;
 
 /**
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.35 $ $Date: 2004/06/06 09:13:44 $
+ * @version $Revision: 1.36 $ $Date: 2004/06/07 12:44:05 $
  */
 public class CmsExport implements Serializable {
 
@@ -305,9 +305,9 @@ public class CmsExport implements Serializable {
         }
 
         // get all subFolders
-        List subFolders = getCms().getSubFolders(folderName);
+        List subFolders = getCms().getSubFolders(folderName, CmsResourceFilter.IGNORE_EXPIRATION);
         // get all files in folder
-        List subFiles = getCms().getFilesInFolder(folderName);
+        List subFiles = getCms().getFilesInFolder(folderName, CmsResourceFilter.IGNORE_EXPIRATION);
 
         // walk through all files and export them
         for (int i = 0; i < subFiles.size(); i++) {
@@ -320,7 +320,7 @@ public class CmsExport implements Serializable {
                 || state == I_CmsConstants.C_STATE_NEW 
                 || state == I_CmsConstants.C_STATE_CHANGED) {
                 if ((state != I_CmsConstants.C_STATE_DELETED) && (!file.getName().startsWith("~")) && (age >= m_contentAge)) {
-                    exportFile(getCms().readFile(getCms().readAbsolutePath(file)));
+                    exportFile(getCms().readFile(getCms().readAbsolutePath(file), CmsResourceFilter.IGNORE_EXPIRATION));
                 }
             }
             // release file header memory
@@ -682,13 +682,21 @@ public class CmsExport implements Serializable {
         }
         
         // <datelastmodified>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED).addText(String.valueOf(resource.getDateLastModified()));
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED).addText(CmsDateUtil.getHeaderDate(resource.getDateLastModified()));
         // <userlastmodified>
         fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED).addText(getCms().readUser(resource.getUserLastModified()).getName());
         // <datecreated>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATECREATED).addText(String.valueOf(resource.getDateCreated()));
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATECREATED).addText(CmsDateUtil.getHeaderDate(resource.getDateCreated()));
         // <usercreated>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERCREATED).addText(getCms().readUser(resource.getUserCreated()).getName());
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERCREATED).addText(getCms().readUser(resource.getUserCreated()).getName());                
+        // <release>
+        if (resource.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
+            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATERELEASED).addText(CmsDateUtil.getHeaderDate(resource.getDateReleased()));
+        }
+        // <expire>
+        if (resource.getDateExpired() != CmsResource.DATE_EXPIRED_DEFAULT) {
+            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATEEXPIRED).addText(CmsDateUtil.getHeaderDate(resource.getDateExpired()));
+        }
         // <flags>
         int resFlags = resource.getFlags();
         resFlags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
@@ -942,7 +950,7 @@ public class CmsExport implements Serializable {
         Element info = exportNode.addElement(I_CmsConstants.C_EXPORT_TAG_INFO);
         info.addElement(I_CmsConstants.C_EXPORT_TAG_CREATOR).addText(getCms().getRequestContext().currentUser().getName());
         info.addElement(I_CmsConstants.C_EXPORT_TAG_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionName());
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_DATE).addText(CmsMessages.getDateTimeShort(System.currentTimeMillis()));
+        info.addElement(I_CmsConstants.C_EXPORT_TAG_DATE).addText(CmsDateUtil.getDateTimeShort(System.currentTimeMillis()));
         info.addElement(I_CmsConstants.C_EXPORT_TAG_PROJECT).addText(getCms().getRequestContext().currentProject().getName());
         info.addElement(I_CmsConstants.C_EXPORT_TAG_VERSION).addText(I_CmsConstants.C_EXPORT_VERSION);
         
