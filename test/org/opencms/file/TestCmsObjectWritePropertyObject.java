@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestCmsObjectWritePropertyObject.java,v $
- * Date   : $Date: 2004/05/26 15:52:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/26 16:07:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,14 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsObjectWritePropertyObject extends OpenCmsTestCase {
         
@@ -74,9 +77,15 @@ public class TestCmsObjectWritePropertyObject extends OpenCmsTestCase {
         long timestamp = System.currentTimeMillis();
         
         CmsProperty property1 = new CmsProperty("Title","OpenCms",null);
+        CmsProperty property2 = new CmsProperty("Title","OpenCmsNav",null);
+        List propertyList = new ArrayList();
+        propertyList.add(property1);
+        propertyList.add(property2);
         
         cms.writePropertyObject(resource1, property1);
-       
+        
+        //cms.writePropertyObjects(resource1, propertyList); 
+        
         // now evaluate the result
         assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
         // project must be current project

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/05/26 15:56:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/05/26 16:07:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.5
  */
@@ -361,10 +361,42 @@ public class OpenCmsTestCase extends TestCase {
                 fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
             }   
             
+            // finally test if the values of the changed properties are correct.
+            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+            if (!resourceProperty.isIdentical(property)) {
+                fail("properties are not identical :"+property+" <-> "+ resourceProperty);              
+            }
+            
+            
         } catch (CmsException e) {
             fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
         }
     }
+     
+     /**
+     * Compares the current properties of a resource with the stored values and a list of changed property.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param property the changed property
+     */
+    protected void assertPropertyChanged(CmsObject cms, String resourceName, List excludeList) {
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);    
+            
+            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+            }   
+            
+        } catch (CmsException e) {
+            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+        }
+    } 
+     
      
     /**
      * Compares the current properties of a resource with the stored values.<p>
