@@ -2,8 +2,8 @@
 
 \section{Version of this document}
 
-This document is version $Revision: 1.2 $ \\
-It was last changed in the CVS as of $Date: 2003/02/19 08:52:54 $ \\
+This document is version $Revision: 1.3 $ \\
+It was last changed in the CVS as of $Date: 2003/02/19 12:38:56 $ \\
 
 \section{The new documentation structure of OpenCms 5.0}
 
@@ -32,10 +32,157 @@ Please send an email to {\em contributions@opencms.org} if you are interested in
 
 As of the writing of this document, the following documentation modules were available:
 
-\subsection{Introduction to JSP in OpenCms}
+\subsection{Alkacon OpenCms documentation}
+This module provides a set of JSP templates and elements that are used by
+other documentation modules published by Alkacon. {\em This module is required
+by any other Alkacon documentation modules and has to be installed first!}
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Sponsored by: & {\em Alkacon Software}\\
+\end{tabular}
 
-\subsection{Simple template development Howto}
+\subsection{OpenCms JSP basic documentation}
+A basic introduction to JSP in OpenCms: How to create, edit \& publish a JSP, options to access 
+the OpenCms system and some technical background information.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.documentation-jsp}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Sponsored by: & {\em Alkacon Software}\\
+\end{tabular}
 
-\subsection{FlexCache documentation}
+\subsection{OpenCms JSP taglib documentation}
+OpenCms includes it's own JSP taglib. This is the reference documentation (with test cases) for 
+each tag of the OpenCms Taglib.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.documentation-taglib}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Sponsored by: & {\em Alkacon Software}\\
+\end{tabular}
 
+\subsection{OpenCms JSP scriptlet documentation}
+Learn here how to use the same functionality offered by the OpenCms JSP taglib in JSP scriptlet 
+code in your JSPs.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.documentation-scriptlet}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Sponsored by: & {\em Alkacon Software}\\
+\end{tabular}
 
+\subsection{OpenCms Flexcache documentation}
+The Flexcache can cache JSP output to increase the speed of page delivery. This is the complete 
+documentation of all FlexCache configuration options and parameters to set up your page caching 
+policy using the Flexcache.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.documentation-flexcache}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Sponsored by: & {\em Alkacon Software}\\
+\end{tabular}
+
+\subsection{OpenCms module documentation}
+Get acquainted with the OpenCms module mechanism that allows you to easily bundle and distribute 
+templates and JSPs.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.documentation-modules}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Sponsored by: & {\em Alkacon Software}\\
+\end{tabular}
+
+\subsection{Flex examples set 1}
+The first set of tests and examples developed for the OpenCms / JSP Flex integration package. 
+Basic stuff dealing with inclusion, caching, headers and redirects.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.examples-flex-1}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Sponsored by: & {\em Alkacon Software}\\
+\end{tabular}
+
+\subsection{Flex examples set 2}
+The second set of tests and examples, including demos on how to build a template from JSP.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.examples-flex-2}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Sponsored by: & {\em Alkacon Software}\\
+\end{tabular}
+
+\subsection{Flex examples set 3}
+Further test cases and examples for the OpenCms/Flex JSP integration. These are rather 
+specialized as they deal with encoding and inclusion of subelements.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.examples-flex-3}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Sponsored by: & {\em Alkacon Software}\\
+\end{tabular}
+
+\subsection{Original JSTL 1.0 standard taglib examples}
+The JSTL will be part of the next JSP/Servlet specification release. These are the original 
+JSTL 1.0 examples imported into OpenCms.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.examples-jstl}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Sponsored by: & {\em Alkacon Software}\\
+\end{tabular}
+
+\subsection{Original Tomcat 4.x JSP examples}
+The original Tomcat 4.x JSP examples imported into OpenCms. Check these out to see what you can 
+and can not do with JSP in OpenCms.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.examples-tomcat}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Sponsored by: & {\em Alkacon Software}\\
+\end{tabular}
+
+\subsection{Howto: JSP template development}
+An introduction in the JSP template development with OpenCms. Learn how to create templates 
+for your web site.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.howto-template}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Sponsored by: & {\em Alkacon Software}\\
+\end{tabular}
+
+\subsection{Howto: Translating the OpenCms workplace}
+A detailed description how to translate the OpenCms workplace and the online help to another language.
+\\
+\\
+\begin{tabular}{ll}
+Package name: & {\tt com.alkacon.documentation.howto-workplace-translation}\\
+Depends on: & {\tt com.alkacon.documentation}\\
+Available from: & {\tt http://www.alkacon.com/downloads/}\\
+Sponsored by: & {\em Alkacon Software}\\
+\end{tabular}
