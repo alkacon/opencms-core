@@ -89,6 +89,7 @@
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlColorpickerWidget" alias="ColorpickerWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" alias="DateTimeWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" alias="HtmlWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlSelectorWidget" alias="SelectorWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" alias="StringWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" alias="VfsFileWidget" />			
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlImageGalleryWidget" alias="ImageGalleryWidget" /> 
