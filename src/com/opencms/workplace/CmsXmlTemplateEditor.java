@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2001/09/05 13:40:47 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2001/09/06 13:23:17 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,18 +44,23 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.48 $ $Date: 2001/09/05 13:40:47 $
+ * @version $Revision: 1.49 $ $Date: 2001/09/06 13:23:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
 
-    protected void commitTemporaryFile(CmsObject cms, String originalFilename, String temporaryFilename) throws CmsException {
-        CmsFile orgFile = cms.readFile(originalFilename);
+    protected void commitTemporaryFile(CmsObject cms, String originalFilename, String temporaryFilename,
+                   int tempProject, int curProject) throws CmsException {
+        // set current project to tempfileproject
+        cms.getRequestContext().setCurrentProject(tempProject);
         CmsFile tempFile = cms.readFile(temporaryFilename);
+        Hashtable minfos = cms.readAllProperties(temporaryFilename);
+        // set current project
+        cms.getRequestContext().setCurrentProject(curProject);
+        CmsFile orgFile = cms.readFile(originalFilename);
         orgFile.setContents(tempFile.getContents());
         cms.writeFile(orgFile);
-        Hashtable minfos = cms.readAllProperties(temporaryFilename);
         Enumeration keys = minfos.keys();
         while(keys.hasMoreElements()) {
             String keyName = (String)keys.nextElement();
@@ -63,7 +68,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         }
     }
 
-    protected String createTemporaryFile(CmsObject cms, CmsResource file) throws CmsException {
+    protected String createTemporaryFile(CmsObject cms, CmsResource file, int tempProject, int curProject) throws CmsException {
         String temporaryFilename = file.getPath() + C_TEMP_PREFIX + file.getName();
 
         // This is the code for single temporary files.
@@ -83,13 +88,14 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // TODO: check, if this is needed: CmsResource tempFile = null;
         String extendedTempFile = null;
         boolean ok = true;
+        cms.getRequestContext().setCurrentProject(tempProject);
         try {
             cms.copyFile(file.getAbsolutePath(), temporaryFilename);
             cms.chmod(temporaryFilename, 91);
         }
         catch(CmsException e) {
             if((e.getType() != e.C_FILE_EXISTS) && (e.getType() != e.C_SQL_ERROR)) {
-
+                cms.getRequestContext().setCurrentProject(curProject);
                 // This was no file exists exception.
                 // Vary bad. We should not go on here since we may run
                 // in an endless loop.
@@ -108,7 +114,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             }
             catch(CmsException e) {
                 if((e.getType() != e.C_FILE_EXISTS) && (e.getType() != e.C_SQL_ERROR)) {
-
+                    cms.getRequestContext().setCurrentProject(curProject);
                     // This was no file exists exception.
                     // Vary bad. We should not go on here since we may run
                     // in an endless loop.
@@ -120,7 +126,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 ok = false;
             }
         }
-
+        cms.getRequestContext().setCurrentProject(curProject);
         // Oh. we have found a temporary file.
         temporaryFilename = extendedTempFile;
         return temporaryFilename;
@@ -209,8 +215,15 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
         I_CmsSession session = cms.getRequestContext().getSession(true);
 
-        // TODO: check, if this is neede: CmsFile editFile = null;
+        // get the temporary file projectid
+        int tempProject = 0;
+        tempProject = Integer.parseInt((String)cms.getRegistry().getSystemValue("tempfileproject"));
+        if(tempProject == 0){
+            throw new CmsException("Can not create temporary file for editing!");
+        }
+        int curProject = cms.getRequestContext().currentProject().getId();
 
+        // TODO: check, if this is neede: CmsFile editFile = null;
         // Get the user's browser
         String browser = orgReq.getHeader("user-agent");
         String hostName = orgReq.getScheme() + "://" + orgReq.getHeader("HOST");
@@ -325,7 +338,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
             // Okay. All values are initialized. Now we can create
             // the temporary files.
-            tempPageFilename = createTemporaryFile(cms, pageFileResource);
+            tempPageFilename = createTemporaryFile(cms, pageFileResource, tempProject, curProject);
+            cms.getRequestContext().setCurrentProject(curProject);
             tempBodyFilename = "/content/bodys" + tempPageFilename;
 
             session.putValue("te_temppagefile", tempPageFilename);
@@ -364,7 +378,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             bodytitle = body.equals("(default)") ? "" : body;
             temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
             temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
+            // change the current project to temp file project
+            cms.getRequestContext().setCurrentProject(tempProject);
             temporaryControlFile.write();
+            cms.getRequestContext().setCurrentProject(curProject);
             try {
                 style = getStylesheet(cms, null, layoutTemplateFile, null);
                 if(style != null && !"".equals(style)) {
@@ -385,9 +402,12 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
                 // The user entered a new document title
                 try {
+                    cms.getRequestContext().setCurrentProject(tempProject);
                     cms.writeProperty(tempPageFilename, C_PROPERTY_TITLE, title);
+                    cms.getRequestContext().setCurrentProject(curProject);
                 }
                 catch(CmsException e) {
+                    cms.getRequestContext().setCurrentProject(curProject);
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName()
                                 + "Could not write property " + C_PROPERTY_TITLE + " for file " + file + ".");
@@ -492,8 +512,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             }
             else throw e;
             }*/
+            cms.getRequestContext().setCurrentProject(tempProject);
             bodyTemplateFile.write();
             temporaryControlFile.write();
+            cms.getRequestContext().setCurrentProject(curProject);
         }
 
         // If the user requested a preview then send a redirect
@@ -507,8 +529,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // the "save" buttons, copy all informations of the temporary
         // files to the original files.
         if(saveRequested) {
-            commitTemporaryFile(cms, bodyElementFilename, tempBodyFilename);
+            commitTemporaryFile(cms, bodyElementFilename, tempBodyFilename, tempProject, curProject);
+            cms.getRequestContext().setCurrentProject(tempProject);
             title = cms.readProperty(tempPageFilename, C_PROPERTY_TITLE);
+            cms.getRequestContext().setCurrentProject(curProject);
             if(title != null && !"".equals(title)) {
                 cms.writeProperty(file, C_PROPERTY_TITLE, title);
             }
@@ -524,7 +548,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             temporaryControlFile.removeFromFileCache();
             bodyTemplateFile.removeFromFileCache();
             // deleting the pagefile will delete the bodyfile too
+            cms.getRequestContext().setCurrentProject(tempProject);
             cms.deleteFile(tempPageFilename);
+            cms.getRequestContext().setCurrentProject(curProject);
             try {
                 cms.getRequestContext().getResponse().sendCmsRedirect("/system/workplace/action/index.html");
             }
