@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/I_CmsNewsConstants.java,v $
- * Date   : $Date: 2000/03/15 13:52:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/16 13:42:09 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.examples.news;
  * into a <code>news.ini</code> file.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/03/15 13:52:37 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/16 13:42:09 $
  */
 public interface I_CmsNewsConstants {
     
@@ -48,6 +48,12 @@ public interface I_CmsNewsConstants {
 
     /** Name of the news list definition file */
     public static final String C_NEWS_NEWSLISTDEF = "newsListDefinition";     
+
+    /** Name of the role managing news */
+    public static final String C_NEWS_ROLE = "Users";     
+
+    /** Name of the user managing news */
+    public static final String C_NEWS_USER = "a.kandzior";     
     
     
     // Names for XML elements in news file of the content type

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsAdminArticleNew.java,v $
- * Date   : $Date: 2000/03/15 13:53:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/16 13:42:09 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/03/15 13:53:07 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/16 13:42:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminArticleNew extends CmsWorkplaceDefault implements I_CmsNewsConstants, I_CmsConstants {
@@ -122,11 +122,21 @@ public class CmsAdminArticleNew extends CmsWorkplaceDefault implements I_CmsNews
         String dateText = Utils.getNiceShortDate(cal.getTime().getTime());
         
 		// is there any data? 
-        // then create the news files!
 		if( (newHeadline != null) && (newShorttext != null) &&  (newText != null) && 
     			(newExternalLink != null)) {
+            // yes! there really exist new data!
+            
             createNewsFile(cms, newsFileName, authorText, dateText, newHeadline, newShorttext, newText, newExternalLink);
             createPageFile(cms, newsFileName);
+
+            CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+            
+            // Create task
+            HttpServletRequest req = (HttpServletRequest)(cms.getRequestContext().getRequest().getOriginalRequest());
+            String taskUrl = req.getScheme() + "://" + req.getHeader("HOST") + req.getServletPath() + C_NEWS_FOLDER_PAGE + newsFileName + "/index.html";
+            String taskcomment = "<A HREF=\"javascript:openwinfull('" + taskUrl + "', 'preview', 0, 0);\"> " + taskUrl + "</A>";
+            CmsTaskAction.create(cms, C_NEWS_USER, C_NEWS_ROLE, lang.getLanguageValue("task.label.news"), taskcomment, Utils.getNiceShortDate(new Date().getTime() + 345600000), "1", "", "", "", "");
+                                             
             templateSelector = C_ARTICLENEW_DONE;                
 		}
         
@@ -268,7 +278,8 @@ public class CmsAdminArticleNew extends CmsWorkplaceDefault implements I_CmsNews
      */
     private void createPageFile(A_CmsObject cms, String newsFileName) throws CmsException {
         CmsXmlControlFile pageFile = new CmsXmlControlFile();
-        pageFile.createNewFile(cms, C_NEWS_FOLDER_PAGE + newsFileName, "page");
+        cms.createFolder(C_NEWS_FOLDER_PAGE, newsFileName);
+        pageFile.createNewFile(cms, C_NEWS_FOLDER_PAGE + newsFileName + "/index.html", "page");
         pageFile.setTemplateClass("com.opencms.template.CmsXmlTemplate");
         pageFile.setMasterTemplate("/content/templates/mfNewsTeaser");
         pageFile.setElementClass("body", "com.opencms.examples.news.CmsNewsTemplate");
@@ -276,6 +287,6 @@ public class CmsAdminArticleNew extends CmsWorkplaceDefault implements I_CmsNews
         pageFile.setParameter("body", "newsfolder", C_NEWS_FOLDER_CONTENT);
         pageFile.setParameter("body", "read", newsFileName);
         pageFile.write();
-        cms.unlockResource(C_NEWS_FOLDER_PAGE + newsFileName);
+        cms.unlockResource(C_NEWS_FOLDER_PAGE + newsFileName + "/index.html");
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsTemplate.java,v $
- * Date   : $Date: 2000/03/15 13:52:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/16 13:42:09 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,7 +56,7 @@ import javax.servlet.http.*;
  *
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/03/15 13:52:37 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/16 13:42:09 $
  * @see com.opencms.examples.CmsXmlNewsTemplateFile
  */
 public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstants, I_CmsLogChannels {
@@ -157,21 +157,23 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
         CmsNewsTemplateFile article = (CmsNewsTemplateFile)((Hashtable)userObj).get("_ARTICLE_");
         String result = null;
         
-        if(tagcontent.toLowerCase().equals("externallink")) {
-            result = article.getNewsExternalLink();
-        } else if(tagcontent.toLowerCase().equals("date")) {
-            result = Utils.getNiceShortDate(article.getNewsDate());
-        } else if(tagcontent.toLowerCase().equals("author")) {
-            result = article.getNewsAuthor();
-        } else if(tagcontent.toLowerCase().equals("headline")) {
-            result = article.getNewsHeadline();
-        } else if(tagcontent.toLowerCase().equals("shorttext")) {
-            result = article.getNewsShortText();
-        } else if(tagcontent.toLowerCase().equals("text")) {
-            result = article.getNewsText();
-        } else if(tagcontent.toLowerCase().equals("file")) {
-            result = servletPath + C_NEWS_FOLDER_PAGE + article.getFilename();
-        }
+        if(article != null) {
+            if(tagcontent.toLowerCase().equals("externallink")) {
+                result = article.getNewsExternalLink();
+            } else if(tagcontent.toLowerCase().equals("date")) {
+                result = Utils.getNiceShortDate(article.getNewsDate());
+            } else if(tagcontent.toLowerCase().equals("author")) {
+                result = article.getNewsAuthor();
+            } else if(tagcontent.toLowerCase().equals("headline")) {
+                result = article.getNewsHeadline();
+            } else if(tagcontent.toLowerCase().equals("shorttext")) {
+                result = article.getNewsShortText();
+            } else if(tagcontent.toLowerCase().equals("text")) {
+                result = article.getNewsText();
+            } else if(tagcontent.toLowerCase().equals("file")) {
+                result = servletPath + C_NEWS_FOLDER_PAGE + article.getFilename() + "/index.html";
+            }
+        }        
         return result;
     }
         
@@ -202,7 +204,7 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
             result = result + listDef.getNewsListEntry(Utils.getNiceShortDate(doc2.getNewsDate()), 
                                                        doc2.getNewsHeadline(), 
                                                        doc2.getNewsShortText(),
-                                                       doc2.getFilename());
+                                                       doc2.getFilename() + "/index.html");
         }                        
         return result;
     }    
