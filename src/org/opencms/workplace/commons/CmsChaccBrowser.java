@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/15 12:29:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -162,7 +163,7 @@ public class CmsChaccBrowser extends CmsDialog {
      * @return html code for a group list
      */
     public String buildGroupList() {
-        Vector groups = new Vector();
+        List groups = new Vector();
         StringBuffer retValue = new StringBuffer(1024);
         try {
             groups = getCms().getGroups();
@@ -174,7 +175,7 @@ public class CmsChaccBrowser extends CmsDialog {
         }
         
         for (int i=0; i<groups.size(); i++) {
-            CmsGroup curGroup = (CmsGroup)groups.elementAt(i);
+            CmsGroup curGroup = (CmsGroup)groups.get(i);
             retValue.append(buildEntryGroup(curGroup));
         }
         return retValue.toString();
@@ -186,7 +187,7 @@ public class CmsChaccBrowser extends CmsDialog {
      * @return html code for a user list
      */
     public String buildUserList() {
-        Vector users = new Vector();
+        List users = new Vector();
         StringBuffer retValue = new StringBuffer(1024);
         try {
             users = getCms().getUsers();
@@ -198,7 +199,7 @@ public class CmsChaccBrowser extends CmsDialog {
         }
 
         for (int i=0; i<users.size(); i++) {
-            CmsUser curUser = (CmsUser)users.elementAt(i);
+            CmsUser curUser = (CmsUser)users.get(i);
             retValue.append(buildEntryUser(curUser));
         }
         return retValue.toString();

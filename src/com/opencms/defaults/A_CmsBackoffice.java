@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/09/27 13:21:59 $
-* Version: $Revision: 1.92 $
+* Date   : $Date: 2004/12/15 12:29:45 $
+* Version: $Revision: 1.93 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,6 +54,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -74,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.92 $
+ * @version $Revision: 1.93 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -3639,14 +3640,14 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
      */
     private void setGroupSelectbox(CmsObject cms, CmsXmlWpTemplateFile template, CmsUUID groupId) throws CmsException {
         //get all groups
-        Vector cmsGroups = cms.getGroups();
+        List cmsGroups = cms.getGroups();
         // select box of group
         String groupOptions = "";
         // name of current group
         String groupName = readSaveGroupName(cms, groupId);
         for (int i = 0; i < cmsGroups.size(); i++) {
-            String currentGroupName = ((CmsGroup)cmsGroups.elementAt(i)).getName();
-            CmsUUID currentGroupId = ((CmsGroup)cmsGroups.elementAt(i)).getId();
+            String currentGroupName = ((CmsGroup)cmsGroups.get(i)).getName();
+            CmsUUID currentGroupId = ((CmsGroup)cmsGroups.get(i)).getId();
             template.setData("name", currentGroupName);
             template.setData("value", currentGroupId.toString());
             if (!groupId.isNullUUID() && groupName.equals(currentGroupName)) {
@@ -3671,11 +3672,11 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
     private void setOwnerSelectbox(CmsObject cms, CmsXmlWpTemplateFile template, CmsUUID ownerId) throws CmsException {
         // select box of owner
         String userOptions = "";
-        Vector cmsUsers = cms.getUsers();
+        List cmsUsers = cms.getUsers();
         String ownerName = readSaveUserName(cms, ownerId);
         for (int i = 0; i < cmsUsers.size(); i++) {
-            String currentUserName = ((CmsUser)cmsUsers.elementAt(i)).getName();
-            CmsUUID currentUserId = ((CmsUser)cmsUsers.elementAt(i)).getId();
+            String currentUserName = ((CmsUser)cmsUsers.get(i)).getName();
+            CmsUUID currentUserId = ((CmsUser)cmsUsers.get(i)).getId();
             template.setData("name", currentUserName);
             template.setData("value", currentUserId.toString());
             if (!ownerId.isNullUUID() && ownerName.equals(currentUserName)) {

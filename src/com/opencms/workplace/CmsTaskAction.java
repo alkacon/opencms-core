@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2004/11/08 15:06:43 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2004/12/15 12:29:45 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.57 $ $Date: 2004/11/08 15:06:43 $
+ * @version $Revision: 1.58 $ $Date: 2004/12/15 12:29:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -223,7 +223,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
             if(cms.getTaskPar(task.getId(), C_TASKPARA_ALL).equals("checked")) {
                 try {
                     CmsGroup group = cms.readGroup(task);
-                    Vector groupUser = cms.getUsersOfGroup(group.getName());
+                    List groupUser = cms.getUsersOfGroup(group.getName());
                     mail = createMail(cms.readOwner(task), groupUser,
                             subject, contentBuf.toString(), true);
                 }
@@ -286,7 +286,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
      * @return the mail object to send
      * @throws CmsException if creating the mail object fails
      */
-    public static CmsSimpleMail createMail(CmsUser from, Vector to, String subject, String content, boolean createAddresses) throws CmsException {
+    public static CmsSimpleMail createMail(CmsUser from, List to, String subject, String content, boolean createAddresses) throws CmsException {
         CmsSimpleMail mail = new CmsSimpleMail();
         //      check sender email address
         String fromAddress = from.getEmail();
@@ -480,7 +480,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
             if(cms.getTaskPar(task.getId(), C_TASKPARA_ALL) != null) {
                 try {
                     CmsGroup group = cms.readGroup(task);
-                    Vector users = cms.getUsersOfGroup(group.getName());
+                    List users = cms.getUsersOfGroup(group.getName());
                     CmsSimpleMail mail = createMail(cms.getRequestContext().currentUser(),
                         users, subject, contentBuf.toString(), true);
                     new CmsMailTransport(mail).send();
@@ -539,11 +539,11 @@ public class CmsTaskAction implements I_CmsWpConstants {
     public static String getDescription(CmsObject cms, int taskid) throws CmsException {
         StringBuffer retValue = new StringBuffer("");
         CmsTaskLog tasklog;
-        Vector taskdocs = cms.readTaskLogs(taskid);
+        List taskdocs = cms.readTaskLogs(taskid);
 
         // go through all tasklogs to find the comment
         for(int i = 1;i <= taskdocs.size();i++) {
-            tasklog = (CmsTaskLog)taskdocs.elementAt(taskdocs.size() - i);
+            tasklog = (CmsTaskLog)taskdocs.get(taskdocs.size() - i);
             int type = tasklog.getType();
 
             // check if this is a type "created" or "new"
@@ -785,7 +785,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
         if(cms.getTaskPar(task.getId(), C_TASKPARA_ALL) != null) {
             CmsGroup group = cms.readGroup(task);
-            Vector groupUsers = cms.getUsersOfGroup(group.getName());
+            List groupUsers = cms.getUsersOfGroup(group.getName());
             mail = createMail(cms.readOwner(task), groupUsers,
                     subject, contentBuf.toString(), true);
         }

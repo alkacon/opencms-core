@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2004/11/22 18:03:05 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import org.opencms.util.CmsUUID;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Definitions of all required backup driver methods.<p>
@@ -56,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.39 $ $Date: 2004/11/22 18:03:05 $
+ * @version $Revision: 1.40 $ $Date: 2004/12/15 12:29:45 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -219,20 +218,20 @@ public interface I_CmsBackupDriver {
      * @param dbc the current database context
      * @param tagId the version ID of the backup
      * 
-     * @return Vector all resources that belong to the given backup version ID.
+     * @return all resources that belong to the given backup version ID.
      * @throws CmsException if something goes wrong
      */
-    Vector readBackupProjectResources(CmsDbContext dbc, int tagId) throws CmsException;
+    List readBackupProjectResources(CmsDbContext dbc, int tagId) throws CmsException;
 
     /**
      * Returns all projects from the history.<p>
      *
      * @param dbc the current database context
      * 
-     * @return a Vector of projects
+     * @return a list of projects
      * @throws CmsException if an error occurs
      */
-    Vector readBackupProjects(CmsDbContext dbc) throws CmsException;
+    List readBackupProjects(CmsDbContext dbc) throws CmsException;
 
     /**
      * Gets the TagId of the first backup project after a given date.<p>

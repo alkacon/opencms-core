@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/08/19 11:26:32 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/12/15 12:29:46 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * 
  * @since 5.1
  */
@@ -304,7 +304,7 @@ public class CmsFrameset extends CmsWorkplace {
     public String getGroupSelect(String htmlAttributes) {    
 
         // get the users groups from the request context
-        Vector allGroups = new Vector();
+        List allGroups = new Vector();
         try {
             allGroups = getCms().getGroupsOfUser(getSettings().getUser().getName());
         } catch (CmsException e) {

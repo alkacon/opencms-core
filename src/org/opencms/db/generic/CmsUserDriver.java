@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/11/22 18:03:06 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,8 +58,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Hashtable;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -68,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.72 $ $Date: 2004/11/22 18:03:06 $
+ * @version $Revision: 1.73 $ $Date: 2004/12/15 12:29:45 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -179,7 +180,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#createUser(org.opencms.db.CmsDbContext, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
      */
-    public CmsUser createUser(CmsDbContext dbc, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
+    public CmsUser createUser(CmsDbContext dbc, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Map additionalInfos, String address, int type) throws CmsException {
         
         CmsUUID id = new CmsUUID();
         Connection conn = null;
@@ -439,7 +440,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int, java.lang.Object)
      */
-    public CmsUser importUser(CmsDbContext dbc, CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type, Object reservedParam) throws CmsException {
+    public CmsUser importUser(CmsDbContext dbc, CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Map additionalInfos, String address, int type, Object reservedParam) throws CmsException {
         
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -585,9 +586,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#readAccessControlEntries(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, boolean)
      */
-    public Vector readAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException {
+    public List readAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException {
 
-        Vector aceList = new Vector();
+        List aceList = new Vector();
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -668,9 +669,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#readChildGroups(org.opencms.db.CmsDbContext, java.lang.String)
      */
-    public Vector readChildGroups(CmsDbContext dbc, String groupname) throws CmsException {
+    public List readChildGroups(CmsDbContext dbc, String groupname) throws CmsException {
 
-        Vector childs = new Vector();
+        List childs = new Vector();
         CmsGroup group;
         CmsGroup parent;
         ResultSet res = null;
@@ -689,7 +690,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
                 // create new Cms group objects
                 while (res.next()) {
                     group = new CmsGroup(new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID"))), new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_PARENT_GROUP_ID"))), res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_NAME")), res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_DESCRIPTION")), res.getInt(m_sqlManager.readQuery("C_GROUPS_GROUP_FLAGS")));
-                    childs.addElement(group);
+                    childs.add(group);
                 }
             }
 
@@ -774,8 +775,8 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#readGroups(org.opencms.db.CmsDbContext)
      */
-    public Vector readGroups(CmsDbContext dbc) throws CmsException {
-        Vector groups = new Vector();
+    public List readGroups(CmsDbContext dbc) throws CmsException {
+        List groups = new Vector();
         //CmsGroup group = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -789,7 +790,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
             // create new Cms group objects
             while (res.next()) {
-                groups.addElement(internalCreateGroup(res));
+                groups.add(internalCreateGroup(res));
             }
 
         } catch (SQLException e) {
@@ -803,9 +804,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#readGroupsOfUser(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, java.lang.String)
      */
-    public Vector readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String paramStr) throws CmsException {
+    public List readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String paramStr) throws CmsException {
         //CmsGroup group;
-        Vector groups = new Vector();
+        List groups = new Vector();
 
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -821,7 +822,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             res = stmt.executeQuery();
 
             while (res.next()) {
-                groups.addElement(internalCreateGroup(res));
+                groups.add(internalCreateGroup(res));
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -951,8 +952,8 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#readUsers(org.opencms.db.CmsDbContext, int)
      */
-    public Vector readUsers(CmsDbContext dbc, int type) throws CmsException {
-        Vector users = new Vector();
+    public List readUsers(CmsDbContext dbc, int type) throws CmsException {
+        List users = new Vector();
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
@@ -964,7 +965,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             res = stmt.executeQuery();
             // create new Cms user objects
             while (res.next()) {
-                users.addElement(internalCreateUser(res));
+                users.add(internalCreateUser(res));
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -979,8 +980,8 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#readUsersOfGroup(org.opencms.db.CmsDbContext, java.lang.String, int)
      */
-    public Vector readUsersOfGroup(CmsDbContext dbc, String name, int type) throws CmsException {
-        Vector users = new Vector();
+    public List readUsersOfGroup(CmsDbContext dbc, String name, int type) throws CmsException {
+        List users = new Vector();
 
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -995,7 +996,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             res = stmt.executeQuery();
 
             while (res.next()) {
-                users.addElement(internalCreateUser(res));
+                users.add(internalCreateUser(res));
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1304,7 +1305,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         // deserialize the additional userinfo hash
         ByteArrayInputStream bin = new ByteArrayInputStream(m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_USERS_USER_INFO")));
         ObjectInputStream oin = new ObjectInputStream(bin);
-        Hashtable info = (Hashtable)oin.readObject();
+        Map info = (Map)oin.readObject();
 
         return new CmsUser(
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_ID"))),
@@ -1328,7 +1329,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @return byte[] the byte array which is written to the db
      * @throws IOException if something goes wrong
      */
-    protected byte[] internalSerializeAdditionalUserInfo(Hashtable additionalUserInfo) throws IOException {
+    protected byte[] internalSerializeAdditionalUserInfo(Map additionalUserInfo) throws IOException {
 
         // serialize the hashtable
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -1396,9 +1397,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             "The projectmanager group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName(), null);
 
         guest = importUser(dbc, CmsUUID.getConstantUUID(guestUser), guestUser, OpenCms.getPasswordHandler().digest(""), 
-            "The guest user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
+            "The guest user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, Collections.EMPTY_MAP, " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
         admin = importUser(dbc, CmsUUID.getConstantUUID(adminUser), adminUser, OpenCms.getPasswordHandler().digest("admin"), 
-            "The admin user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
+            "The admin user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, Collections.EMPTY_MAP, " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
 
         createUserInGroup(dbc, guest.getId(), guests.getId(), null);
         createUserInGroup(dbc, admin.getId(), administrators.getId(), null);
@@ -1406,7 +1407,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         if (!exportUser.equals(OpenCms.getDefaultUsers().getUserAdmin()) 
             && !exportUser.equals(OpenCms.getDefaultUsers().getUserGuest())) { 
             
-            export = importUser(dbc, CmsUUID.getConstantUUID(exportUser), exportUser, OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()), "The static export user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);            
+            export = importUser(dbc, CmsUUID.getConstantUUID(exportUser), exportUser, OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()), "The static export user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, Collections.EMPTY_MAP, " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);            
             createUserInGroup(dbc, export.getId(), guests.getId(), null);
         }
         

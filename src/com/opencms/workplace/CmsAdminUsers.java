@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2004/10/15 15:05:50 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2004/12/15 12:29:45 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -49,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.49 $ $Date: 2004/10/15 15:05:50 $
+ * @version $Revision: 1.50 $ $Date: 2004/12/15 12:29:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -70,19 +71,19 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
 
     private void changeGroups(CmsObject cms, CmsUser theUser, Vector newGroups) throws CmsException {
         String username = theUser.getName();
-        Vector oldGroups = cms.getGroupsOfUser(username);
-        Vector oldGroupnames = new Vector();
+        List oldGroups = cms.getGroupsOfUser(username);
+        List oldGroupnames = new Vector();
 
         cms.writeUser(theUser); // update in the database
         theUser = cms.readUser(username);
         if(oldGroups != null) {
             for(int z = 0;z < oldGroups.size();z++) {
-                oldGroupnames.addElement(((CmsGroup)oldGroups.elementAt(z)).getName());
+                oldGroupnames.add(((CmsGroup)oldGroups.get(z)).getName());
             }
 
             // delete the user from the groups which are not in newGroups
             for(int z = 0;z < oldGroupnames.size();z++) {
-                String groupname = (String)oldGroupnames.elementAt(z);
+                String groupname = (String)oldGroupnames.get(z);
                 if(!newGroups.contains(groupname)) {
                     try {
                         cms.removeUserFromGroup(username, groupname);
@@ -243,9 +244,9 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     selectedGroups = new Vector();
                     notSelectedGroups = new Vector();
                     selectedGroups.addElement(OpenCms.getDefaultUsers().getGroupUsers()); // preselect Users
-                    Vector groups = cms.getGroups();
+                    List groups = cms.getGroups();
                     for(int z = 0;z < groups.size();z++) {
-                        String aName = ((CmsGroup)groups.elementAt(z)).getName();
+                        String aName = ((CmsGroup)groups.get(z)).getName();
                         if(!OpenCms.getDefaultUsers().getGroupUsers().equals(aName)) {
                             notSelectedGroups.addElement(aName);
                         }
@@ -386,11 +387,11 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     zipcode = (String)theUser.getAdditionalInfo(C_ADDITIONAL_INFO_ZIPCODE);
                     town = (String)theUser.getAdditionalInfo(C_ADDITIONAL_INFO_TOWN);
                     defaultGroup = (String)theUser.getAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP);
-                    Vector groups = cms.getDirectGroupsOfUser(user);
+                    List groups = cms.getDirectGroupsOfUser(user);
                     if(groups != null) {
                         selectedGroups = new Vector();
                         for(int z = 0;z < groups.size();z++) {
-                            selectedGroups.addElement(((CmsGroup)groups.elementAt(z)).getName());
+                            selectedGroups.addElement(((CmsGroup)groups.get(z)).getName());
                         }
                     }else {
                         throw new CmsException(CmsException.C_NO_GROUP);
@@ -399,7 +400,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     if(groups != null) {
                         notSelectedGroups = new Vector();
                         for(int z = 0;z < groups.size();z++) {
-                            String name = ((CmsGroup)groups.elementAt(z)).getName();
+                            String name = ((CmsGroup)groups.get(z)).getName();
                             if(!selectedGroups.contains(name)) {
                                 notSelectedGroups.addElement(name);
                             }
@@ -626,12 +627,12 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
             Vector values, Hashtable parameters) throws CmsException {
 
         // get all groups
-        Vector groups = cms.getGroups();
+        List groups = cms.getGroups();
         int retValue = -1;
 
         // fill the names and values
         for(int z = 0;z < groups.size();z++) {
-            String name = ((CmsGroup)groups.elementAt(z)).getName();
+            String name = ((CmsGroup)groups.get(z)).getName();
             if(OpenCms.getDefaultUsers().getGroupUsers().equals(name)) {
                 retValue = z;
             }
@@ -814,7 +815,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
             Vector values, Hashtable parameters) throws CmsException {
 
         // get all users
-        Vector users = cms.getUsers();
+        List users = cms.getUsers();
         int retValue = -1;
 		String firsname;
 		String lastname;
@@ -823,10 +824,10 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
 
         // fill the names and values
         for(int z = 0;z < users.size();z++) {
-			firsname = ((CmsUser)users.elementAt(z)).getFirstname();
+			firsname = ((CmsUser)users.get(z)).getFirstname();
 			//Changed by Le (comundus GmbH)
-			lastname = ((CmsUser)users.elementAt(z)).getLastname();
-            username = ((CmsUser)users.elementAt(z)).getName();
+			lastname = ((CmsUser)users.get(z)).getLastname();
+            username = ((CmsUser)users.get(z)).getName();
 			nameToShow = username + "   -   " + firsname + " " + lastname;
 			//***
             names.addElement(nameToShow);

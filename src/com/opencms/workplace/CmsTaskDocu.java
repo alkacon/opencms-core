@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskDocu.java,v $
-* Date   : $Date: 2004/11/08 15:06:43 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2004/12/15 12:29:45 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import org.w3c.dom.Element;
@@ -49,7 +50,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TASKDOCU&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2004/11/08 15:06:43 $
+ * @version $Revision: 1.23 $ $Date: 2004/12/15 12:29:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  *
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -96,7 +97,7 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement {
         
         /** StringBuffer for the generated output */
         StringBuffer result = new StringBuffer();
-        Vector taskdocs = new Vector();
+        List taskdocs = new Vector();
         CmsTaskLog tasklog;
         
         // Get the template definition values
@@ -111,7 +112,7 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement {
         
         // go through all tasklogs
         for(int i = 1;i <= taskdocs.size();i++) {
-            tasklog = (CmsTaskLog)taskdocs.elementAt(taskdocs.size() - i);
+            tasklog = (CmsTaskLog)taskdocs.get(taskdocs.size() - i);
             int type = tasklog.getType();
             
             // check if this is a type to be displayed

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/10/31 21:30:18 $
-* Version: $Revision: 1.84 $
+* Date   : $Date: 2004/12/15 12:29:46 $
+* Version: $Revision: 1.85 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import com.opencms.defaults.I_CmsExtendedContentDefinition;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -58,8 +59,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.84 $
- * $Date: 2004/10/31 21:30:18 $
+ * $Revision: 1.85 $
+ * $Date: 2004/12/15 12:29:46 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -656,7 +657,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
     public Integer getGroups(CmsObject cms, Vector names, Vector values) throws CmsException {
 
         // get all groups
-        Vector groups = cms.getGroups();
+        List groups = cms.getGroups();
         int retValue = -1;
         String defaultGroup = OpenCms.getDefaultUsers().getGroupUsers();
         // make sure the user has a session
@@ -671,8 +672,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         // fill the names and values
         int n = 0;
         for(int z = 0;z < groups.size();z++) {
-            if(((CmsGroup)groups.elementAt(z)).getProjectCoWorker()) {
-                String name = ((CmsGroup)groups.elementAt(z)).getName();
+            if(((CmsGroup)groups.get(z)).getProjectCoWorker()) {
+                String name = ((CmsGroup)groups.get(z)).getName();
                 if(defaultGroup.equals(name)) {
                     retValue = n;
                 }

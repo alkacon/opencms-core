@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2004/07/08 15:21:06 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -191,7 +191,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
             Vector values, Hashtable parameters) throws CmsException {
 
         // get all groups
-        Vector groups = cms.getGroups();
+        List groups = cms.getGroups();
         int retValue = 0;
 
         // fill the names and values
@@ -199,7 +199,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
         names.addElement(prompt);
         values.addElement("Aufforderung"); // without significance for the user
         for(int z = 0;z < groups.size();z++) {
-            String name = ((CmsGroup)groups.elementAt(z)).getName();
+            String name = ((CmsGroup)groups.get(z)).getName();
             if(! OpenCms.getDefaultUsers().getGroupGuests().equals(name)){
                 names.addElement(name);
                 values.addElement(name);

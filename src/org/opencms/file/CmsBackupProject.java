@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupProject.java,v $
- * Date   : $Date: 2004/08/27 08:57:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,14 +36,14 @@ import org.opencms.util.CmsUUID;
 
 
 import java.sql.Timestamp;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * Describes an OpenCms backup project.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsBackupProject extends CmsProject implements Cloneable {
 
@@ -63,7 +63,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
     private String m_namePublisher;
 
     /** The resources belonging to the project. */
-    private Vector m_projectResources;
+    private List m_projectResources;
 
     /** The user id of the publisher. */
     private CmsUUID m_userPublished;
@@ -90,7 +90,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
      * @param nameOwner the name of the project owner
      * @param nameGroupUsers the name of the project user group
      * @param nameGroupManagers the name of the project manager group
-     * @param projectResources a Vector of resources that are the project "view"
+     * @param resources a list of resources that are the project "view"
      */
     public CmsBackupProject(
         int versionId, 
@@ -109,7 +109,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
         String nameOwner, 
         String nameGroupUsers, 
         String nameGroupManagers,
-        Vector projectResources
+        List projectResources
     ) {
         super(
             projectId, 
@@ -209,7 +209,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
      * 
      * @return the project resources 
      */
-    public Vector getProjectResources() {
+    public List getProjectResources() {
         return m_projectResources;
     }
 

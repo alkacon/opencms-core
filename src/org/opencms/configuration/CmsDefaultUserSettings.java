@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2004/06/17 13:33:49 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.I_CmsWpConstants;
  * user preferences.<p>
  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsDefaultUserSettings extends CmsUserSettings {
    
@@ -79,7 +79,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
             "text",
     };
 
-    /** Srray list for fast lookup of "button styles". */
+    /** Array list for fast lookup of "button styles". */
     public static final java.util.List m_buttonStyle =
         java.util.Arrays.asList(m_buttonStyles);
         

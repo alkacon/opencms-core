@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLoggedInUsers.java,v $
-* Date   : $Date: 2004/07/08 15:21:13 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2004/12/15 12:29:45 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -43,7 +44,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.5 $ $Date: 2004/07/08 15:21:13 $
+ * @version $Revision: 1.6 $ $Date: 2004/12/15 12:29:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -73,7 +74,7 @@ public class CmsAdminLoggedInUsers extends CmsWorkplaceDefault  {
             cms.sendBroadcastMessage((String)parameters.get("message"));
         }
 
-        Vector users = cms.getLoggedInUsers();
+        List users = cms.getLoggedInUsers();
         Hashtable user;
         StringBuffer ret = new StringBuffer();
         for(int i = 0; i < users.size(); i++) {

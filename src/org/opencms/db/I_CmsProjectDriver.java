@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/11/22 18:03:05 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import org.opencms.workflow.CmsTask;
 
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 /**
  * Definitions of all required project driver methods.
@@ -53,7 +52,7 @@ import java.util.Vector;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.57 $ $Date: 2004/11/22 18:03:05 $
+ * @version $Revision: 1.58 $ $Date: 2004/12/15 12:29:45 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -421,7 +420,7 @@ public interface I_CmsProjectDriver {
      * @return a Vector of projects
      * @throws CmsException if something goes wrong
      */
-    Vector readProjectsForGroup(CmsDbContext dbc, CmsGroup group) throws CmsException;
+    List readProjectsForGroup(CmsDbContext dbc, CmsGroup group) throws CmsException;
 
     /**
      * Returns all projects, which are manageable by a group.<p>
@@ -432,7 +431,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsException if something goes wrong
      */
-    Vector readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsException;
+    List readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsException;
 
     /**
      * Reads all projects which are owned by a specified user.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContent.java,v $
-* Date   : $Date: 2004/07/08 15:21:11 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2004/12/15 12:29:45 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -46,7 +47,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.33 $ $Date: 2004/07/08 15:21:11 $
+ * @version $Revision: 1.34 $ $Date: 2004/12/15 12:29:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -125,17 +126,17 @@ public class CmsTaskContent extends CmsWorkplaceDefault {
     
     private Vector readTasksForRole(CmsObject cms, int project, int taskType, String orderBy, String groupBy) throws CmsException {
         String name = cms.getRequestContext().currentUser().getName();
-        Vector groups = cms.getGroupsOfUser(name);
+        List groups = cms.getGroupsOfUser(name);
         CmsGroup group;
-        Vector tasks;
+        List tasks;
         Vector allTasks = new Vector();
         for(int i = 0;i < groups.size();i++) {
-            group = (CmsGroup)groups.elementAt(i);
+            group = (CmsGroup)groups.get(i);
             tasks = cms.readTasksForRole(project, group.getName(), taskType, orderBy, groupBy);
             
             // join the vectors
             for(int z = 0;z < tasks.size();z++) {
-                allTasks.addElement(tasks.elementAt(z));
+                allTasks.addElement(tasks.get(z));
             }
         }
         return allTasks;
@@ -149,14 +150,14 @@ public class CmsTaskContent extends CmsWorkplaceDefault {
      * @throws CmsException
      */
     
-    public Vector taskList(CmsObject cms, CmsXmlLanguageFile lang) throws CmsException {
+    public List taskList(CmsObject cms, CmsXmlLanguageFile lang) throws CmsException {
         String orderBy = "";
         String groupBy = "";
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         Object allProjects = session.getValue(C_SESSION_TASK_ALLPROJECTS);
         int project = cms.getRequestContext().currentProject().getId();
         String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
-        Vector retValue;
+        List retValue;
         
         // was the allprojects checkbox checked?
         if((allProjects != null) && (((Boolean)allProjects).booleanValue())) {

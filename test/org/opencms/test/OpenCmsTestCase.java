@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/12/05 15:35:58 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  * 
  * @since 5.3.5
  */
@@ -796,7 +796,7 @@ public class OpenCmsTestCase extends TestCase {
             }
 
             if (ace != null) {
-                Vector resAces = cms.getAccessControlEntries(resourceName);
+                List resAces = cms.getAccessControlEntries(resourceName);
                 boolean notFound = true;
                 Iterator i = resAces.iterator();
                 while (i.hasNext()) {
@@ -895,7 +895,7 @@ public class OpenCmsTestCase extends TestCase {
             //TODO: This is the code to recalculate the pemrission set if necessary. Its not completed yet!
 
             Map parents = getParents(cms, resourceName);
-            Vector aceList = cms.getAccessControlEntries(resourceName);
+            List aceList = cms.getAccessControlEntries(resourceName);
             Iterator i = aceList.iterator();
             while (i.hasNext()) {
                 CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
@@ -2393,8 +2393,8 @@ public class OpenCmsTestCase extends TestCase {
         List excludeList) throws CmsException {
 
         String noMatches = "";
-        Vector resAce = cms.getAccessControlEntries(resourceName);
-        Vector storedAce = storedResource.getAccessControlEntries();
+        List resAce = cms.getAccessControlEntries(resourceName);
+        List storedAce = storedResource.getAccessControlEntries();
         List unmatchedAce;
         unmatchedAce = compareAce(resAce, storedAce, excludeList);
         if (unmatchedAce.size() > 0) {
@@ -2446,7 +2446,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param exclude the exclude list
      * @return list of non matching access control entires 
      */
-    private List compareAce(Vector source, Vector target, List exclude) {
+    private List compareAce(List source, List target, List exclude) {
 
         List result = new ArrayList();
         Iterator i = source.iterator();

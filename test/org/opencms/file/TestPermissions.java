@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2004/12/07 17:45:11 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/12/15 12:29:46 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,6 @@ import org.opencms.util.CmsUUID;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -57,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -249,7 +248,7 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.deleteUser(username);
         
         // get all ace of this resource
-        Vector aces = cms.getAccessControlEntries(resourcename);
+        List aces = cms.getAccessControlEntries(resourcename);
         
         Iterator i = aces.iterator();
         // loop through all ace and check if the users/groups belonging to this entry still exist

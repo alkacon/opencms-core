@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/11/22 18:03:05 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,8 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Definitions of all required user driver methods.
@@ -49,7 +49,7 @@ import java.util.Vector;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.39 $ $Date: 2004/11/22 18:03:05 $
+ * @version $Revision: 1.40 $ $Date: 2004/12/15 12:29:45 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -131,7 +131,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         String email,
         long lastlogin,
         int flags,
-        Hashtable additionalInfos,
+        Map additionalInfos,
         String address,
         int type) throws CmsException;
 
@@ -263,7 +263,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         String email,
         long lastlogin,
         int flags,
-        Hashtable additionalInfos,
+        Map additionalInfos,
         String address,
         int type,
         Object reservedParam) throws CmsException;
@@ -312,7 +312,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @throws CmsException if something goes wrong
      */
-    Vector readAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource, boolean inheritedOnly)
+    List readAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource, boolean inheritedOnly)
     throws CmsException;
 
     /**
@@ -341,7 +341,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return users a Vector of all child groups or null
      * @throws CmsException if operation was not succesful
      */
-    Vector readChildGroups(CmsDbContext dbc, String groupname) throws CmsException;
+    List readChildGroups(CmsDbContext dbc, String groupname) throws CmsException;
 
     /**
      * Reads a group based on the group id.<p>
@@ -373,7 +373,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return a Vector of all existing groups
      * @throws CmsException if something goes wrong
      */
-    Vector readGroups(CmsDbContext dbc) throws CmsException;
+    List readGroups(CmsDbContext dbc) throws CmsException;
 
     /**
      * Reads all groups the given user is a member in.<p>
@@ -385,7 +385,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return all groups the given user is a member in
      * @throws CmsException if something goes wrong
      */
-    Vector readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String paramStr) throws CmsException;
+    List readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String paramStr) throws CmsException;
 
     /**
      * Reads a user based on the user id.<p>
@@ -447,7 +447,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return all existing users of the given type
      * @throws CmsException if something goes wrong
      */
-    Vector readUsers(CmsDbContext dbc, int type) throws CmsException;
+    List readUsers(CmsDbContext dbc, int type) throws CmsException;
 
     /**
      * Reads all users that are members of the given group.<p>
@@ -459,7 +459,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return all users that are members of the given group
      * @throws CmsException if something goes wrong
      */
-    Vector readUsersOfGroup(CmsDbContext dbc, String name, int type) throws CmsException;
+    List readUsersOfGroup(CmsDbContext dbc, String name, int type) throws CmsException;
 
     /**
      * Removes all access control entries belonging to a resource.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.test;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -49,7 +48,7 @@ import org.opencms.util.CmsUUID;
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class OpenCmsTestResourceStorageEntry {
 
@@ -57,7 +56,7 @@ public class OpenCmsTestResourceStorageEntry {
     protected int m_length;
     
     /** The ccess control list entries. */
-    private Vector m_accessControlEntries;
+    private List m_accessControlEntries;
     
     /** The access control list. */
     private CmsAccessControlList m_accessControlList;
@@ -180,7 +179,7 @@ public class OpenCmsTestResourceStorageEntry {
      *
      * @return  the access control entries of the resource
      */
-    public Vector getAccessControlEntries() {
+    public List getAccessControlEntries() {
         return m_accessControlEntries;
     }
     

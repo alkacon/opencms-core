@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/AllTests.java,v $
- * Date   : $Date: 2004/12/08 14:30:29 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,14 +39,14 @@ import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.0
  */
 public final class AllTests {
 
     /** Path for the test.properties file. */
-    public static String TEST_PROPERTIES_PATH = ClassLoader.getSystemResource("./").getPath() + "../test";
+    public static final String TEST_PROPERTIES_PATH = ClassLoader.getSystemResource("./").getPath() + "../test";
 
     /** Stopwatch for the time the test run. */
     private static long m_startTime;

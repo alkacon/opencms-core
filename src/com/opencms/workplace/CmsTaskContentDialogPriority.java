@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
-* Date   : $Date: 2004/07/08 15:21:06 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2004/12/15 12:29:45 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -51,7 +52,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.39 $ $Date: 2004/07/08 15:21:06 $
+ * @version $Revision: 1.40 $ $Date: 2004/12/15 12:29:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -178,11 +179,11 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
             String groupname = cms.readGroup(task).getName();
             int userindex = 0;
             int groupindex = 0;
-            Vector groups = cms.getGroups();
-            Vector users = cms.getUsersOfGroup(groupname);
+            List groups = cms.getGroups();
+            List users = cms.getUsersOfGroup(groupname);
             int n = 0;
             for(int z = 0;z < groups.size();z++) {
-                CmsGroup group = (CmsGroup)groups.elementAt(z);
+                CmsGroup group = (CmsGroup)groups.get(z);
                 if(group.getRole()) {
                     n++;
                     if(group.getName().equals(groupname)) {
@@ -191,7 +192,7 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
                 }
             }
             for(int z = 0;z < users.size();z++) {
-                if(((CmsUser)users.elementAt(z)).getName().equals(username)) {
+                if(((CmsUser)users.get(z)).getName().equals(username)) {
                     userindex = z + 1;
                 }
             }
@@ -276,14 +277,14 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
             Hashtable parameters) throws CmsException {
 
         // get all groups
-        Vector groups = cms.getGroups();
+        List groups = cms.getGroups();
         CmsGroup group;
         names.addElement(lang.getLanguageValue("task.label.emptyrole"));
         values.addElement(lang.getLanguageValue("task.label.emptyrole"));
 
         // fill the names and values
         for(int z = 0;z < groups.size();z++) {
-            group = (CmsGroup)groups.elementAt(z);
+            group = (CmsGroup)groups.get(z);
 
             // is the group a role?
             if(group.getRole()) {
@@ -317,19 +318,19 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
         String chooseUser = (new CmsXmlLanguageFile(cms)).getLanguageValue("task.label.emptyuser");
 
         // get all groups
-        Vector groups = cms.getGroups();
+        List groups = cms.getGroups();
         for(int n = 0;n < groups.size();n++) {
-            if(((CmsGroup)groups.elementAt(n)).getRole()) {
-                String groupname = ((CmsGroup)groups.elementAt(n)).getName();
+            if(((CmsGroup)groups.get(n)).getRole()) {
+                String groupname = ((CmsGroup)groups.get(n)).getName();
 
                 // get users of this group
-                Vector users = cms.getUsersOfGroup(groupname);
+                List users = cms.getUsersOfGroup(groupname);
 
                 // create entry for role
                 retValue.append(C_ROLE_1 + groupname + C_ROLE_2);
                 retValue.append(C_USER_1 + groupname + C_USER_2 + 0 + C_USER_3 + chooseUser + C_USER_4 + C_USER_5);
                 for(int m = 0;m < users.size();m++) {
-                    CmsUser user = (CmsUser)users.elementAt(m);
+                    CmsUser user = (CmsUser)users.get(m);
 
                     // create entry for user
                     retValue.append(C_USER_1 + groupname + C_USER_2 + (m + 1) + C_USER_3
@@ -341,9 +342,9 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
         // generate output for all users
         retValue.append(C_ROLE_1 + C_ALL_ROLES + C_ROLE_2);
         retValue.append(C_USER_1 + C_ALL_ROLES + C_USER_2 + 0 + C_USER_3 + chooseUser + C_USER_4 + C_USER_5);
-        Vector users = cms.getUsers();
+        List users = cms.getUsers();
         for(int m = 0;m < users.size();m++) {
-            CmsUser user = (CmsUser)users.elementAt(m);
+            CmsUser user = (CmsUser)users.get(m);
 
             // create entry for user
             retValue.append(C_USER_1 + C_ALL_ROLES + C_USER_2 + (m + 1) + C_USER_3

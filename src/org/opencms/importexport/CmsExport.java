@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/11/12 20:09:25 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.52 $ $Date: 2004/11/12 20:09:25 $
+ * @version $Revision: 1.53 $ $Date: 2004/12/15 12:29:45 $
  */
 public class CmsExport implements Serializable {
 
@@ -820,7 +820,7 @@ public class CmsExport implements Serializable {
         Element acl = fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRIES);
 
         // read the access control entries
-        Vector fileAcEntries = getCms().getAccessControlEntries(getCms().getSitePath(resource), false);
+        List fileAcEntries = getCms().getAccessControlEntries(getCms().getSitePath(resource), false);
         Iterator i = fileAcEntries.iterator();
 
         // create xml elements for each access control entry
@@ -941,9 +941,9 @@ public class CmsExport implements Serializable {
      * @throws SAXException if something goes wrong procesing the manifest.xml
      */
     private void exportGroups(Element parent) throws CmsException, SAXException {
-        Vector allGroups = getCms().getGroups();
+        List allGroups = getCms().getGroups();
         for (int i = 0, l = allGroups.size(); i < l; i++) {
-            CmsGroup group = (CmsGroup)allGroups.elementAt(i);
+            CmsGroup group = (CmsGroup)allGroups.get(i);
             getReport().print(" ( " + (i+1) + " / " + l + " ) ", I_CmsReport.C_FORMAT_NOTE);
             getReport().print(getReport().key("report.exporting_group"), I_CmsReport.C_FORMAT_NOTE);
             getReport().print(group.getName());
@@ -997,10 +997,10 @@ public class CmsExport implements Serializable {
             }
         }
         // append the node for groups of user
-        Vector userGroups = getCms().getDirectGroupsOfUser(user.getName());        
+        List userGroups = getCms().getDirectGroupsOfUser(user.getName());        
         Element g = e.addElement(I_CmsConstants.C_EXPORT_TAG_USERGROUPS);
         for (int i = 0; i < userGroups.size(); i++) {
-            String groupName = ((CmsGroup)userGroups.elementAt(i)).getName();
+            String groupName = ((CmsGroup)userGroups.get(i)).getName();
             g.addElement(I_CmsConstants.C_EXPORT_TAG_GROUPNAME).addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(groupName);
         }
         // write the XML
@@ -1015,9 +1015,9 @@ public class CmsExport implements Serializable {
      * @throws SAXException if something goes wrong procesing the manifest.xml
      */
     private void exportUsers(Element parent) throws CmsException, SAXException {
-        Vector allUsers = getCms().getUsers();
+        List allUsers = getCms().getUsers();
         for (int i = 0, l = allUsers.size(); i < l; i++) {
-            CmsUser user = (CmsUser)allUsers.elementAt(i);
+            CmsUser user = (CmsUser)allUsers.get(i);
             getReport().print(" ( " + (i+1) + " / " + l + " ) ", I_CmsReport.C_FORMAT_NOTE);
             getReport().print(getReport().key("report.exporting_user"), I_CmsReport.C_FORMAT_NOTE);
             getReport().print(user.getName());

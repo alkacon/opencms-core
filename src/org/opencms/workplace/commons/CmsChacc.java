@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2004/11/29 15:49:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/15 12:29:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -434,10 +434,10 @@ public class CmsChacc extends CmsDialog {
        
         // get the current Ace to get the current ace flags
         try {
-            Vector allEntries = getCms().getAccessControlEntries(file, false);
+            List allEntries = getCms().getAccessControlEntries(file, false);
             int flags = 0;           
             for (int k=0; k< allEntries.size(); k++) {
-                CmsAccessControlEntry curEntry = (CmsAccessControlEntry)allEntries.elementAt(k);
+                CmsAccessControlEntry curEntry = (CmsAccessControlEntry)allEntries.get(k);
                 String curType = getEntryType(curEntry.getFlags());
                 String curName = getCms().lookupPrincipal(curEntry.getPrincipal()).getName();
                 if (curName.equals(name) && curType.equals(type)) {
@@ -794,7 +794,7 @@ public class CmsChacc extends CmsDialog {
         retValue.append("</tr>\n</table>\n");
 
         // get all access control entries of the current file
-        Vector allEntries = new Vector();
+        List allEntries = new Vector();
         try {
             allEntries = getCms().getAccessControlEntries(getParamResource(), true);
         } catch (CmsException e) {
@@ -829,7 +829,7 @@ public class CmsChacc extends CmsDialog {
         ArrayList inheritedEntries = new ArrayList(0);
 
         for (int i=0; i<allEntries.size(); i++) {
-            CmsAccessControlEntry curEntry = (CmsAccessControlEntry)allEntries.elementAt(i);
+            CmsAccessControlEntry curEntry = (CmsAccessControlEntry)allEntries.get(i);
             if (curEntry.isInherited()) {
                 // add the entry to the inherited rights list for the "long" view
                 if ("long".equals(getSettings().getPermissionDetailView())) {       

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2004/07/18 16:27:12 $
-* Version: $Revision: 1.99 $
+* Date   : $Date: 2004/12/15 12:29:45 $
+* Version: $Revision: 1.100 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.99 $ $Date: 2004/07/18 16:27:12 $
+ * @version $Revision: 1.100 $ $Date: 2004/12/15 12:29:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -413,7 +413,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
             Vector values, Hashtable parameters) throws CmsException {
 
         // get all groups
-        Vector groups = cms.getGroups();
+        List groups = cms.getGroups();
         int retValue = -1;
         String defaultGroup = OpenCms.getDefaultUsers().getGroupUsers();
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
@@ -427,8 +427,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         // fill the names and values
         int n = 0;
         for(int z = 0;z < groups.size();z++) {
-            if(((CmsGroup)groups.elementAt(z)).getProjectCoWorker()) {
-                String name = ((CmsGroup)groups.elementAt(z)).getName();
+            if(((CmsGroup)groups.get(z)).getProjectCoWorker()) {
+                String name = ((CmsGroup)groups.get(z)).getName();
                 if(defaultGroup.equals(name)) {
                     retValue = n;
                 }
@@ -459,7 +459,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
             Vector values, Hashtable parameters) throws CmsException {
 
         // get all groups
-        Vector groups = cms.getGroups();
+        List groups = cms.getGroups();
         int retValue = -1;
         String defaultGroup = OpenCms.getDefaultUsers().getGroupProjectmanagers();
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
@@ -473,8 +473,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         // fill the names and values
         int n = 0;
         for(int z = 0;z < groups.size();z++) {
-            if(((CmsGroup)groups.elementAt(z)).getProjectmanager()) {
-                String name = ((CmsGroup)groups.elementAt(z)).getName();
+            if(((CmsGroup)groups.get(z)).getProjectmanager()) {
+                String name = ((CmsGroup)groups.get(z)).getName();
                 if(defaultGroup.equals(name)) {
                     retValue = n;
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/15 12:29:46 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 
+import java.util.Iterator;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.tagext.TagSupport;
 
@@ -45,7 +47,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * Provides access to the data of the currently logged in user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspTagUser extends TagSupport {
     
@@ -174,10 +176,10 @@ public class CmsJspTagUser extends TagSupport {
                 result = "";
                 break;
             case 11 : // otherstuff
-                java.util.Enumeration e = user.getAdditionalInfo().keys();
+                Iterator it = user.getAdditionalInfo().keySet().iterator();
                 result = "AdditionalInfo:";
-                while (e.hasMoreElements()) {
-                    Object o = e.nextElement();
+                while (it.hasNext()) {
+                    Object o = it.next();
                     result += " " + o + "=" + user.getAdditionalInfo((String)o);
                 }
                 break;

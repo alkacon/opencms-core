@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/12/14 13:30:18 $
- * Version: $Revision: 1.456 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.457 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.456 $ $Date: 2004/12/14 13:30:18 $
+ * @version $Revision: 1.457 $ $Date: 2004/12/15 12:29:45 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -534,7 +534,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         String lastname,
         String email,
         int flags,
-        Hashtable additionalInfos,
+        Map additionalInfos,
         String address,
         int type) throws CmsException {
 
@@ -584,7 +584,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         String password,
         String group,
         String description,
-        Hashtable additionalInfos) throws CmsException {
+        Map additionalInfos) throws CmsException {
 
         // no space before or after the name
         name = name.trim();
@@ -698,7 +698,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         String password,
         String group,
         String description,
-        Hashtable additionalInfos) throws CmsException {
+        Map additionalInfos) throws CmsException {
 
         // no space before or after the name
         name = name.trim();
@@ -774,7 +774,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         String group,
         String additionalGroup,
         String description,
-        Hashtable additionalInfos) throws CmsException {
+        Map additionalInfos) throws CmsException {
 
         // no space before or after the name
         name = name.trim();
@@ -2327,8 +2327,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public void deleteGroup(CmsDbContext dbc, String name) throws CmsException {
 
-        Vector childs = null;
-        Vector users = null;
+        List childs = null;
+        List users = null;
         CmsGroup group = readGroup(dbc, name);
         // get all child groups of the group
         childs = getChild(dbc, name);
@@ -2896,11 +2896,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @throws CmsException if something goes wrong
      */
-    public Vector getAccessControlEntries(CmsDbContext dbc, CmsResource resource, boolean getInherited)
+    public List getAccessControlEntries(CmsDbContext dbc, CmsResource resource, boolean getInherited)
     throws CmsException {
 
         // get the ACE of the resource itself
-        Vector ace = m_userDriver.readAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId(), false);
+        List ace = m_userDriver.readAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId(), false);
 
         // get the ACE of each parent folder
         String parentPath = CmsResource.getParentFolder(resource.getRootPath());
@@ -3050,9 +3050,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return Vector with all projects from history.
      * @throws CmsException if operation was not succesful.
      */
-    public Vector getAllBackupProjects(CmsDbContext dbc) throws CmsException {
+    public List getAllBackupProjects(CmsDbContext dbc) throws CmsException {
 
-        Vector projects = new Vector();
+        List projects = new Vector();
         projects = m_backupDriver.readBackupProjects(dbc);
         return projects;
     }
@@ -3140,7 +3140,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @throws CmsException if operation was not succesful.
      */
-    public Vector getChild(CmsDbContext dbc, String groupname) throws CmsException {
+    public List getChild(CmsDbContext dbc, String groupname) throws CmsException {
 
         // check security
         if (!dbc.currentUser().isGuestUser()) {
@@ -3163,13 +3163,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return a Vector of all child groups or null
      * @throws CmsException if operation was not succesful
      */
-    public Vector getChilds(CmsDbContext dbc, String groupname) throws CmsException {
+    public List getChilds(CmsDbContext dbc, String groupname) throws CmsException {
 
         // check security
         if (!dbc.currentUser().isGuestUser()) {
-            Vector childs = new Vector();
-            Vector allChilds = new Vector();
-            Vector subchilds = new Vector();
+            List childs = null;
+            List allChilds = new Vector();
+            List subchilds = new Vector();
             CmsGroup group = null;
 
             // get all child groups if the user group
@@ -3177,15 +3177,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             if (childs != null) {
                 allChilds = childs;
                 // now get all subchilds for each group
-                Enumeration enu = childs.elements();
-                while (enu.hasMoreElements()) {
-                    group = (CmsGroup)enu.nextElement();
+                Iterator it = childs.iterator();
+                while (it.hasNext()) {
+                    group = (CmsGroup)it.next();
                     subchilds = getChilds(dbc, group.getName());
                     //add the subchilds to the already existing groups
-                    Enumeration enusub = subchilds.elements();
-                    while (enusub.hasMoreElements()) {
-                        group = (CmsGroup)enusub.nextElement();
-                        allChilds.addElement(group);
+                    Iterator itsub = subchilds.iterator();
+                    while (itsub.hasNext()) {
+                        group = (CmsGroup)itsub.next();
+                        allChilds.add(group);
                     }
                 }
             }
@@ -3220,7 +3220,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return Vector of groups
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public Vector getDirectGroupsOfUser(CmsDbContext dbc, String username) throws CmsException {
+    public List getDirectGroupsOfUser(CmsDbContext dbc, String username) throws CmsException {
 
         CmsUser user = readUser(dbc, username);
         return m_userDriver.readGroupsOfUser(dbc, user.getId(), dbc.getRequestContext().getRemoteAddress());
@@ -3235,7 +3235,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return users a Vector of all existing groups
      * @throws CmsException if operation was not succesful
      */
-    public Vector getGroups(CmsDbContext dbc) throws CmsException {
+    public List getGroups(CmsDbContext dbc) throws CmsException {
 
         // check security
         if (!dbc.currentUser().isGuestUser()) {
@@ -3286,12 +3286,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             CmsGroup subGroup;
             CmsGroup group;
             // get all groups of the user
-            Vector groups = m_userDriver.readGroupsOfUser(dbc, user.getId(), remoteAddress);
+            List groups = m_userDriver.readGroupsOfUser(dbc, user.getId(), remoteAddress);
             allGroups = new Vector();
             // now get all childs of the groups
-            Enumeration enu = groups.elements();
-            while (enu.hasMoreElements()) {
-                group = (CmsGroup)enu.nextElement();
+            Iterator it = groups.iterator();
+            while (it.hasNext()) {
+                group = (CmsGroup)it.next();
 
                 subGroup = getParent(dbc, group.getName());
                 while ((subGroup != null) && (!allGroups.contains(subGroup))) {
@@ -3634,7 +3634,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return a Vector of all existing users
      * @throws CmsException if operation was not succesful.
      */
-    public Vector getUsers(CmsDbContext dbc) throws CmsException {
+    public List getUsers(CmsDbContext dbc) throws CmsException {
 
         // check security
         if (!dbc.currentUser().isGuestUser()) {
@@ -3656,7 +3656,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return a Vector of all existing users
      * @throws CmsException if operation was not succesful
      */
-    public Vector getUsers(CmsDbContext dbc, int type) throws CmsException {
+    public List getUsers(CmsDbContext dbc, int type) throws CmsException {
 
         // check security
         if (!dbc.currentUser().isGuestUser()) {
@@ -3680,7 +3680,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @throws CmsException if operation was not succesful
      */
-    public Vector getUsersOfGroup(CmsDbContext dbc, String groupname) throws CmsException {
+    public List getUsersOfGroup(CmsDbContext dbc, String groupname) throws CmsException {
 
         // check the security
         if (!dbc.currentUser().isGuestUser()) {
@@ -4997,7 +4997,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return vector of tasks
      * @throws CmsException if something goes wrong
      */
-    public Vector readGivenTasks(CmsDbContext dbc, int projectId, String ownerName, int taskType, String orderBy, String sort)
+    public List readGivenTasks(CmsDbContext dbc, int projectId, String ownerName, int taskType, String orderBy, String sort)
     throws CmsException {
 
         CmsProject project = null;
@@ -5904,7 +5904,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return a Vector of new TaskLog objects
      * @throws CmsException if something goes wrong
      */
-    public Vector readTaskLogs(CmsDbContext dbc, int taskid) throws CmsException {
+    public List readTaskLogs(CmsDbContext dbc, int taskid) throws CmsException {
 
         return m_workflowDriver.readTaskLogs(dbc, taskid);
     }
@@ -5923,7 +5923,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return a vector of tasks
      * @throws CmsException  if something goes wrong
      */
-    public Vector readTasksForProject(CmsDbContext dbc, int projectId, int tasktype, String orderBy, String sort) throws CmsException {
+    public List readTasksForProject(CmsDbContext dbc, int projectId, int tasktype, String orderBy, String sort) throws CmsException {
 
         CmsProject project = null;
 
@@ -5945,7 +5945,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return a vector of tasks
      * @throws CmsException if something goes wrong
      */
-    public Vector readTasksForRole(CmsDbContext dbc, int projectId, String roleName, int tasktype, String orderBy, String sort)
+    public List readTasksForRole(CmsDbContext dbc, int projectId, String roleName, int tasktype, String orderBy, String sort)
     throws CmsException {
 
         CmsProject project = null;
@@ -5975,7 +5975,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return a vector of tasks
      * @throws CmsException if something goes wrong
      */
-    public Vector readTasksForUser(CmsDbContext dbc, int projectId, String userName, int taskType, String orderBy, String sort)
+    public List readTasksForUser(CmsDbContext dbc, int projectId, String userName, int taskType, String orderBy, String sort)
     throws CmsException {
 
         CmsUser user = readUser(dbc, userName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);

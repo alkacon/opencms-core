@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/11/22 18:03:06 $
- * Version: $Revision: 1.114 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.115 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.114 $ $Date: 2004/11/22 18:03:06 $
+ * @version $Revision: 1.115 $ $Date: 2004/12/15 12:29:45 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -551,7 +551,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             res = stmt.executeQuery();
 
             if (res.next()) {
-                Vector projectresources = readBackupProjectResources(dbc, tagId);
+                List projectresources = readBackupProjectResources(dbc, tagId);
                 project =
                     new CmsBackupProject(
                         res.getInt("PUBLISH_TAG"),
@@ -588,11 +588,11 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProjectResources(org.opencms.db.CmsDbContext, int)
      */
-    public Vector readBackupProjectResources(CmsDbContext dbc, int tagId) throws CmsException {
+    public List readBackupProjectResources(CmsDbContext dbc, int tagId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
-        Vector projectResources = new Vector();
+        List projectResources = new Vector();
 
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -600,7 +600,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setInt(1, tagId);
             res = stmt.executeQuery();
             while (res.next()) {
-                projectResources.addElement(res.getString("RESOURCE_PATH"));
+                projectResources.add(res.getString("RESOURCE_PATH"));
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -616,8 +616,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects(org.opencms.db.CmsDbContext)
      */
-    public Vector readBackupProjects(CmsDbContext dbc) throws CmsException {
-        Vector projects = new Vector();
+    public List readBackupProjects(CmsDbContext dbc) throws CmsException {
+        List projects = new Vector();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -631,8 +631,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             int max = 300;
 
             while (res.next() && (i < max)) {
-                Vector resources = readBackupProjectResources(dbc, res.getInt("PUBLISH_TAG"));
-                projects.addElement(
+                List resources = readBackupProjectResources(dbc, res.getInt("PUBLISH_TAG"));
+                projects.add(
                     new CmsBackupProject(
                         res.getInt("PUBLISH_TAG"),
                         res.getInt("PROJECT_ID"),

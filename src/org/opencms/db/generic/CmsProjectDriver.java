@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/11/25 13:16:52 $
- * Version: $Revision: 1.202 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.203 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.202 $ $Date: 2004/11/25 13:16:52 $
+ * @version $Revision: 1.203 $ $Date: 2004/12/15 12:29:45 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1681,8 +1681,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectsForGroup(org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup)
      */
-    public Vector readProjectsForGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
-        Vector projects = new Vector();
+    public List readProjectsForGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
+        List projects = new Vector();
         ResultSet res = null;
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -1697,7 +1697,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             res = stmt.executeQuery();
 
             while (res.next()) {
-                projects.addElement(new CmsProject(res, m_sqlManager));
+                projects.add(new CmsProject(res, m_sqlManager));
             }
         } catch (Exception exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -1710,8 +1710,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectsForManagerGroup(org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup)
      */
-    public Vector readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
-        Vector projects = new Vector();
+    public List readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
+        List projects = new Vector();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1725,7 +1725,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             res = stmt.executeQuery();
 
             while (res.next()) {
-                projects.addElement(new CmsProject(res, m_sqlManager));
+                projects.add(new CmsProject(res, m_sqlManager));
             }
         } catch (Exception exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);

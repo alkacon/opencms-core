@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectHistory.java,v $
-* Date   : $Date: 2004/07/08 15:21:06 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2004/12/15 12:29:45 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -45,7 +46,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.14 $ $Date: 2004/07/08 15:21:06 $
+ * @version $Revision: 1.15 $ $Date: 2004/12/15 12:29:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -110,7 +111,7 @@ public class CmsAdminProjectHistory extends CmsWorkplaceDefault {
      * @throws CmsException
      */
 
-    public Vector projectList(CmsObject cms, CmsXmlLanguageFile lang) throws CmsException {
+    public List projectList(CmsObject cms, CmsXmlLanguageFile lang) throws CmsException {
         // get the projects from the history
         return cms.getAllBackupProjects();
     }

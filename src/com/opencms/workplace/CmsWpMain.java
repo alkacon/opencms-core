@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2004/07/08 15:21:06 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2004/12/15 12:29:45 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -53,7 +54,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.69 $ $Date: 2004/07/08 15:21:06 $
+ * @version $Revision: 1.70 $ $Date: 2004/12/15 12:29:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -209,13 +210,13 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		// Get a vector of all of the user's groups by asking the request context
 		CmsRequestContext reqCont = cms.getRequestContext();
 //		CmsGroup currentGroup = reqCont.currentGroup();
-		Vector allGroups = cms.getGroupsOfUser(reqCont.currentUser().getName());
+		List allGroups = cms.getGroupsOfUser(reqCont.currentUser().getName());
 
 		// Now loop through all groups and fill the result vectors
 		int numGroups = allGroups.size();
 //		int currentGroupNum = 0;
 		for (int i = 0; i < numGroups; i++) {
-			CmsGroup loopGroup = (CmsGroup) allGroups.elementAt(i);
+			CmsGroup loopGroup = (CmsGroup) allGroups.get(i);
 			String loopGroupName = loopGroup.getName();
 			values.addElement(loopGroupName);
 			names.addElement(loopGroupName);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/12/02 08:49:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/15 12:29:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * PostgreSql implementation of the backup driver methods.<p>
  * 
  * @author Antonio Core (antonio@starsolutions.it)
- * @version $Revision: 1.2 $ $Date: 2004/12/02 08:49:08 $
+ * @version $Revision: 1.3 $ $Date: 2004/12/15 12:29:46 $
  * @since 6.0
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -131,8 +131,8 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects(org.opencms.db.CmsDbContext)
      */
-    public Vector readBackupProjects(CmsDbContext dbc) throws CmsException {
-        Vector projects = new Vector();
+    public List readBackupProjects(CmsDbContext dbc) throws CmsException {
+        List projects = new Vector();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -144,8 +144,8 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
             while (res.next()) {
-                Vector resources = m_driverManager.getBackupDriver().readBackupProjectResources(dbc, res.getInt("PUBLISH_TAG"));
-                projects.addElement(
+                List resources = m_driverManager.getBackupDriver().readBackupProjectResources(dbc, res.getInt("PUBLISH_TAG"));
+                projects.add(
                     new CmsBackupProject(
                         res.getInt("PUBLISH_TAG"),
                         res.getInt("PROJECT_ID"),

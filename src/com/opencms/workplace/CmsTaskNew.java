@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
-* Date   : $Date: 2004/08/27 12:56:05 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2004/12/15 12:29:45 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -46,7 +47,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.43 $ $Date: 2004/08/27 12:56:05 $
+ * @version $Revision: 1.44 $ $Date: 2004/12/15 12:29:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -207,14 +208,14 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
             Hashtable parameters) throws CmsException {
 
         // get all groups
-        Vector groups = cms.getGroups();
+        List groups = cms.getGroups();
         CmsGroup group;
         names.addElement(lang.getLanguageValue("task.label.emptyrole"));
         values.addElement(lang.getLanguageValue("task.label.emptyrole"));
 
         // fill the names and values
         for(int z = 0;z < groups.size();z++) {
-            group = (CmsGroup)groups.elementAt(z);
+            group = (CmsGroup)groups.get(z);
 
             // is the group a role?
             if(group.getRole()) {
@@ -248,19 +249,19 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
         String chooseUser = (new CmsXmlLanguageFile(cms)).getLanguageValue("task.label.emptyuser");
 
         // get all groups
-        Vector groups = cms.getGroups();
+        List groups = cms.getGroups();
         for(int n = 0;n < groups.size();n++) {
-            if(((CmsGroup)groups.elementAt(n)).getRole()) {
-                String groupname = ((CmsGroup)groups.elementAt(n)).getName();
+            if(((CmsGroup)groups.get(n)).getRole()) {
+                String groupname = ((CmsGroup)groups.get(n)).getName();
 
                 // get users of this group
-                Vector users = cms.getUsersOfGroup(groupname);
+                List users = cms.getUsersOfGroup(groupname);
 
                 // create entry for role
                 retValue.append(C_ROLE_1 + groupname + C_ROLE_2);
                 retValue.append(C_USER_1 + groupname + C_USER_2 + 0 + C_USER_3 + chooseUser + C_USER_4 + C_USER_5);
                 for(int m = 0;m < users.size();m++) {
-                    CmsUser user = (CmsUser)users.elementAt(m);
+                    CmsUser user = (CmsUser)users.get(m);
 
                     // create entry for user
                     retValue.append(C_USER_1 + groupname + C_USER_2 + (m + 1) + C_USER_3 + user.getName() + C_USER_4 + user.getName() + C_USER_5);

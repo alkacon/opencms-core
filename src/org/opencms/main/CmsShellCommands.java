@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/07/18 16:33:00 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/12/15 12:29:46 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -586,9 +586,9 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @throws Exception if something goes wrong
      */
     public void lsacc(String resourceName) throws Exception {
-        Vector acList = m_cms.getAccessControlEntries(resourceName);
+        List acList = m_cms.getAccessControlEntries(resourceName);
         for (int i = 0; i < acList.size(); i++) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.elementAt(i);
+            CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.get(i);
             I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
             if (true) {
                 String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
@@ -606,9 +606,9 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void lsacc(String resourceName, String principalName) throws Exception {
         I_CmsPrincipal principal = m_cms.lookupPrincipal(principalName);
-        Vector acList = m_cms.getAccessControlEntries(resourceName);
+        List acList = m_cms.getAccessControlEntries(resourceName);
         for (int i = 0; i < acList.size(); i++) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.elementAt(i);
+            CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.get(i);
             I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
             if (acePrincipal.equals(principal)) {
                 String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();

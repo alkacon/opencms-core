@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * A user in the OpenCms system.<p>
@@ -44,12 +44,12 @@ import java.util.Hashtable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
     /** A storage for additional user information. */
-    private Hashtable m_additionalInfo;
+    private Map m_additionalInfo;
 
     /** The address of this user. */
     private String m_address;
@@ -140,7 +140,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         String email, 
         long lastlogin, 
         int flags, 
-        Hashtable additionalInfo, 
+        Map additionalInfo, 
         String address, 
         int type
     ) {
@@ -221,7 +221,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * @return additional information about the user.
      *
      */
-    public Hashtable getAdditionalInfo() {
+    public Map getAdditionalInfo() {
         return m_additionalInfo;
     }
 
@@ -408,7 +408,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * @param additionalInfo user-related additional information
      *
      */
-    void setAdditionalInfo(Hashtable additionalInfo) {
+    void setAdditionalInfo(Map additionalInfo) {
         m_additionalInfo = additionalInfo;
     }
 

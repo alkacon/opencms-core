@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2004/11/22 18:03:06 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.37 $ $Date: 2004/11/22 18:03:06 $
+ * @version $Revision: 1.38 $ $Date: 2004/12/15 12:29:45 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -375,11 +375,11 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#readTaskLogs(org.opencms.db.CmsDbContext, int)
      */
-    public Vector readTaskLogs(CmsDbContext dbc, int taskId) throws CmsException {
+    public List readTaskLogs(CmsDbContext dbc, int taskId) throws CmsException {
         Connection conn = null;
         ResultSet res = null;
         CmsTaskLog tasklog = null;
-        Vector logs = new Vector();
+        List logs = new Vector();
         PreparedStatement stmt = null;
         String comment = null;
         java.sql.Timestamp starttime = null;
@@ -399,7 +399,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
                 user = new CmsUUID(res.getString(m_sqlManager.readQuery("C_TASKLOG_USER")));
                 type = res.getInt(m_sqlManager.readQuery("C_TASKLOG_TYPE"));
                 tasklog = new CmsTaskLog(id, comment, user, starttime, type);
-                logs.addElement(tasklog);
+                logs.add(tasklog);
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -443,9 +443,9 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#readTasks(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsUser, org.opencms.file.CmsUser, org.opencms.file.CmsGroup, int, java.lang.String, java.lang.String)
      */
-    public Vector readTasks(CmsDbContext dbc, CmsProject project, CmsUser agent, CmsUser owner, CmsGroup role, int tasktype, String orderBy, String sort) throws CmsException {
+    public List readTasks(CmsDbContext dbc, CmsProject project, CmsUser agent, CmsUser owner, CmsGroup role, int tasktype, String orderBy, String sort) throws CmsException {
         boolean first = true;
-        Vector tasks = new Vector(); // vector for the return result
+        List tasks = new Vector(); // vector for the return result
         CmsTask task = null; // tmp task for adding to vector
         ResultSet res = null;
         Connection conn = null;
@@ -512,7 +512,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             // if resultset exists - return vector of tasks
             while (res.next()) {
                 task = internalCreateTask(res);
-                tasks.addElement(task);
+                tasks.add(task);
             }
 
         } catch (SQLException exc) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2004/08/27 12:12:22 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/12/15 12:29:46 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.file.CmsUser;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.Vector;
@@ -53,7 +54,7 @@ import java.util.Vector;
  * is called in each operation. This method acts as access guard and matches the required permissions for the operation
  * against the allowed and denied permissions defined for the user or groups of this user.</p>
  * 
- * @version $Revision: 1.14 $ $Date: 2004/08/27 12:12:22 $
+ * @version $Revision: 1.15 $ $Date: 2004/12/15 12:29:46 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlList {
@@ -156,7 +157,7 @@ public class CmsAccessControlList {
      * 
      * @return the summarized permission set of the user
      */
-    public CmsPermissionSetCustom getPermissions(CmsUser user, Vector groups) {
+    public CmsPermissionSetCustom getPermissions(CmsUser user, List groups) {
 
         CmsPermissionSetCustom sum = new CmsPermissionSetCustom();
         ListIterator pIterator = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/14 13:30:18 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,10 +51,8 @@ import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -72,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.91 $
+ * @version $Revision: 1.92 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1472,7 +1470,7 @@ public class CmsObject {
      * @return a vector of access control entries
      * @throws CmsException if something goes wrong
      */
-    public Vector getAccessControlEntries(String resourceName) throws CmsException {
+    public List getAccessControlEntries(String resourceName) throws CmsException {
         return getAccessControlEntries(resourceName, true);
     }
 
@@ -1484,7 +1482,7 @@ public class CmsObject {
      * @return a vector of access control entries
      * @throws CmsException if something goes wrong
      */
-    public Vector getAccessControlEntries(String resourceName, boolean getInherited) throws CmsException {
+    public List getAccessControlEntries(String resourceName, boolean getInherited) throws CmsException {
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
         return m_securityManager.getAccessControlEntries(m_context, res, getInherited);
     }
@@ -1804,7 +1802,7 @@ public class CmsObject {
      * @return a Vector of new TaskLog objects.
      * @throws CmsException if operation was not successful.
      */
-    public Vector readTaskLogs(int taskid) throws CmsException {
+    public List readTaskLogs(int taskid) throws CmsException {
         return m_securityManager.readTaskLogs(m_context, taskid);
     }
 
@@ -1819,7 +1817,7 @@ public class CmsObject {
      * 
      * @throws CmsException if operation was not successful.
      */
-    public Vector readTasksForProject(int projectId, int tasktype, String orderBy, String sort) throws CmsException {
+    public List readTasksForProject(int projectId, int tasktype, String orderBy, String sort) throws CmsException {
         return (m_securityManager.readTasksForProject(m_context, projectId, tasktype, orderBy, sort));
     }
 
@@ -1835,7 +1833,7 @@ public class CmsObject {
      * 
      * @throws CmsException if operation was not successful.
      */
-    public Vector readTasksForRole(int projectId, String roleName, int tasktype, String orderBy, String sort) throws CmsException {
+    public List readTasksForRole(int projectId, String roleName, int tasktype, String orderBy, String sort) throws CmsException {
         return m_securityManager.readTasksForRole(m_context, projectId, roleName, tasktype, orderBy, sort);
     }
 
@@ -1851,7 +1849,7 @@ public class CmsObject {
      * 
      * @throws CmsException if operation was not successful.
      */
-    public Vector readTasksForUser(int projectId, String userName, int tasktype, String orderBy, String sort) throws CmsException {
+    public List readTasksForUser(int projectId, String userName, int tasktype, String orderBy, String sort) throws CmsException {
         return m_securityManager.readTasksForUser(m_context, projectId, userName, tasktype, orderBy, sort);
     }
     
@@ -1971,7 +1969,7 @@ public class CmsObject {
       * 
       * @throws CmsException if operation was not successful.
       */
-    public Vector readGivenTasks(int projectId, String ownerName, int taskType, String orderBy, String sort) throws CmsException {
+    public List readGivenTasks(int projectId, String ownerName, int taskType, String orderBy, String sort) throws CmsException {
         return m_securityManager.readGivenTasks(m_context, projectId, ownerName, taskType, orderBy, sort);
     }        
     
@@ -2042,7 +2040,7 @@ public class CmsObject {
      * @return a vector of users that are currently logged in
      * @throws CmsException if something goes wrong
      */
-    public Vector getLoggedInUsers() throws CmsException {
+    public List getLoggedInUsers() throws CmsException {
         if (isAdmin()) {
             if (m_sessionStorage != null) {
                 return m_sessionStorage.getLoggedInUsers();
@@ -2078,7 +2076,7 @@ public class CmsObject {
         
     /**
      * Validates the HTML links in the unpublished files of the specified
-     * publish list, if a files resource type implements the interface 
+     * publish list, if a file resource type implements the interface 
      * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
      * 
      * @param publishList an OpenCms publish list
@@ -2342,7 +2340,7 @@ public class CmsObject {
      *
      * @throws CmsException if operation was not successful.
      */
-    public CmsUser addImportUser(String id, String name, String password, String description, String firstname, String lastname, String email, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
+    public CmsUser addImportUser(String id, String name, String password, String description, String firstname, String lastname, String email, int flags, Map additionalInfos, String address, int type) throws CmsException {
         return m_securityManager.addImportUser(m_context, id, name, password, description, firstname, lastname, email, flags, additionalInfos, address, type);
     }
     
@@ -2371,7 +2369,7 @@ public class CmsObject {
      * @return the newly created user
      * @throws CmsException if something goes wrong
      */
-    public CmsUser addUser(String name, String password, String group, String description, Hashtable additionalInfos) throws CmsException {
+    public CmsUser addUser(String name, String password, String group, String description, Map additionalInfos) throws CmsException {
         return m_securityManager.addUser(m_context, name, password, group, description, additionalInfos);
     }
 
@@ -2405,7 +2403,7 @@ public class CmsObject {
      * @return the newly created user
      * @throws CmsException if something goes wrong
      */
-    public CmsUser addWebUser(String name, String password, String group, String description, Hashtable additionalInfos) throws CmsException {
+    public CmsUser addWebUser(String name, String password, String group, String description, Map additionalInfos) throws CmsException {
         return m_securityManager.addWebUser(m_context, name, password, group, description, additionalInfos);
     }
     
@@ -2522,7 +2520,7 @@ public class CmsObject {
      * @return a Vector of all users.
      * @throws CmsException if operation was not successful.
      */
-    public Vector getUsers() throws CmsException {
+    public List getUsers() throws CmsException {
         return m_securityManager.getUsers(m_context);
     }
     
@@ -2613,7 +2611,7 @@ public class CmsObject {
      * @return groups a Vector of all child groups or null.
      * @throws CmsException if operation was not successful.
      */
-    public Vector getChild(String groupname) throws CmsException {
+    public List getChild(String groupname) throws CmsException {
         return (m_securityManager.getChild(m_context, groupname));
     }
 
@@ -2626,7 +2624,7 @@ public class CmsObject {
      * @return groups a Vector of all child groups or null.
      * @throws CmsException if operation was not successful.
      */
-    public Vector getChilds(String groupname) throws CmsException {
+    public List getChilds(String groupname) throws CmsException {
         return (m_securityManager.getChilds(m_context, groupname));
     }    
     
@@ -2765,7 +2763,7 @@ public class CmsObject {
      * @return vector of all users of the given type.
      * @throws CmsException if operation was not successful.
      */
-    public Vector getUsers(int type) throws CmsException {
+    public List getUsers(int type) throws CmsException {
         return (m_securityManager.getUsers(m_context, type));
     }
 
@@ -2777,7 +2775,7 @@ public class CmsObject {
      *
      * @throws CmsException if operation was not successful.
      */
-    public Vector getUsersOfGroup(String groupname) throws CmsException {
+    public List getUsersOfGroup(String groupname) throws CmsException {
         return (m_securityManager.getUsersOfGroup(m_context, groupname));
     }
     
@@ -2815,7 +2813,7 @@ public class CmsObject {
      *
      * @throws CmsException if operation was not successful.
      */
-    public Vector getDirectGroupsOfUser(String username) throws CmsException {
+    public List getDirectGroupsOfUser(String username) throws CmsException {
         return (m_securityManager.getDirectGroupsOfUser(m_context, username));
     }
     
@@ -2826,7 +2824,7 @@ public class CmsObject {
      *
      * @throws CmsException if operation was not successful
      */
-    public Vector getGroups() throws CmsException {
+    public List getGroups() throws CmsException {
         return (m_securityManager.getGroups(m_context));
     }
 
@@ -2837,7 +2835,7 @@ public class CmsObject {
      * @return a vector of Cms groups
      * @throws CmsException if operation was not succesful.
      */
-    public Vector getGroupsOfUser(String username) throws CmsException {
+    public List getGroupsOfUser(String username) throws CmsException {
         return m_securityManager.getGroupsOfUser(m_context, username);
     }
     
@@ -2849,7 +2847,7 @@ public class CmsObject {
      * @return a vector of Cms groups filtered by the specified IP address
      * @throws CmsException if operation was not succesful.
      */
-    public Vector getGroupsOfUser(String username, String remoteAddress) throws CmsException {
+    public List getGroupsOfUser(String username, String remoteAddress) throws CmsException {
         return m_securityManager.getGroupsOfUser(m_context, username, remoteAddress);
     }       
 
@@ -3223,7 +3221,7 @@ public class CmsObject {
     *
     * @throws CmsException  Throws CmsException if operation was not succesful.
     */
-    public Vector getAllBackupProjects() throws CmsException {
+    public List getAllBackupProjects() throws CmsException {
         return m_securityManager.getAllBackupProjects(m_context);
     }
 

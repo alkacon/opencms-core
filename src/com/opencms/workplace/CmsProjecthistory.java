@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjecthistory.java,v $
-* Date   : $Date: 2004/07/08 15:21:06 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2004/12/15 12:29:45 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import com.opencms.template.A_CmsXmlContent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import org.w3c.dom.Element;
@@ -50,7 +51,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.16 $ $Date: 2004/07/08 15:21:06 $
+ * @version $Revision: 1.17 $ $Date: 2004/12/15 12:29:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -184,10 +185,10 @@ public class CmsProjecthistory extends A_CmsWpElement {
         xmlFile.setData(C_PROJECTLIST_NAME, project.getName());
         xmlFile.setData(C_PROJECTLIST_DESCRIPTION, project.getDescription());
         // get the resources in the project
-        Vector resources = project.getProjectResources();
+        List resources = project.getProjectResources();
         String reslist = new String();
         for(int i=0; i < resources.size(); i++){
-            reslist = reslist+(String)resources.elementAt(i);
+            reslist = reslist+(String)resources.get(i);
             if(i < (resources.size()-1)){
                 reslist = reslist+"<br>";
             }

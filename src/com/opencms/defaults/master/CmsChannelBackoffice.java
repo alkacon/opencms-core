@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2004/07/08 15:21:14 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2004/12/15 12:29:46 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import com.opencms.workplace.CmsXmlLanguageFile;
 import com.opencms.workplace.CmsXmlWpTemplateFile;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -246,10 +247,10 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         template.setData("groups",groupOptions);
         // select box of owner
         String userOptions="";
-        Vector cmsUsers=cms.getUsers();
+        List cmsUsers=cms.getUsers();
         for (int i=0;i<cmsUsers.size();i++) {
-            String userName=((CmsUser)cmsUsers.elementAt(i)).getName();
-            CmsUUID userId=((CmsUser)cmsUsers.elementAt(i)).getId();
+            String userName=((CmsUser)cmsUsers.get(i)).getName();
+            CmsUUID userId=((CmsUser)cmsUsers.get(i)).getId();
             template.setData("name",userName);
             template.setData("value",userId.toString());
             if (!owner.equals("") && (cms.readUser(new CmsUUID(owner)).getName()).equals(userName)) {

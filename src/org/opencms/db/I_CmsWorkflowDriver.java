@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2004/11/22 18:03:05 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Definitions of all required workflow driver methods.
@@ -50,7 +49,7 @@ import java.util.Vector;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.17 $ $Date: 2004/11/22 18:03:05 $
+ * @version $Revision: 1.18 $ $Date: 2004/12/15 12:29:45 $
  * @since 5.1
  */
 public interface I_CmsWorkflowDriver {
@@ -204,7 +203,7 @@ public interface I_CmsWorkflowDriver {
      * @return A Vector of new TaskLog objects
      * @throws CmsException if something goes wrong
      */
-    Vector readTaskLogs(CmsDbContext dbc, int taskId) throws CmsException;
+    List readTaskLogs(CmsDbContext dbc, int taskId) throws CmsException;
 
     /**
      * Get a parameter value for a task.<p>
@@ -232,7 +231,7 @@ public interface I_CmsWorkflowDriver {
      * @return a vector with the tasks read
      * @throws CmsException if something goes wrong
      */
-    Vector readTasks(
+    List readTasks(
         CmsDbContext dbc,
         CmsProject project,
         CmsUser agent,

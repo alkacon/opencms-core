@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/14 13:30:18 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/12/15 12:29:45 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,10 +53,8 @@ import org.opencms.workflow.CmsTaskLog;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -72,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -210,7 +208,7 @@ public final class CmsSecurityManager {
         String lastname,
         String email,
         int flags,
-        Hashtable additionalInfos,
+        Map additionalInfos,
         String address,
         int type) throws CmsException {
 
@@ -271,7 +269,7 @@ public final class CmsSecurityManager {
         String password,
         String group,
         String description,
-        Hashtable additionalInfos) throws CmsException {
+        Map additionalInfos) throws CmsException {
 
         if (!isAdmin(context)) {
             throw new CmsSecurityException(
@@ -330,7 +328,7 @@ public final class CmsSecurityManager {
      * @return the new user will be returned
      * @throws CmsException if operation was not succesfull.
      */
-    public CmsUser addWebUser(CmsRequestContext context, String name, String password, String group, String description, Hashtable additionalInfos)
+    public CmsUser addWebUser(CmsRequestContext context, String name, String password, String group, String description, Map additionalInfos)
     throws CmsException {
 
         CmsUser result = null;
@@ -369,7 +367,7 @@ public final class CmsSecurityManager {
         String group,
         String additionalGroup,
         String description,
-        Hashtable additionalInfos) throws CmsException {
+        Map additionalInfos) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsUser result = null;
@@ -1457,11 +1455,11 @@ public final class CmsSecurityManager {
      * @return a vector of access control entries defining all permissions for the given resource
      * @throws CmsException if something goes wrong
      */
-    public Vector getAccessControlEntries(CmsRequestContext context, CmsResource resource, boolean getInherited)
+    public List getAccessControlEntries(CmsRequestContext context, CmsResource resource, boolean getInherited)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.getAccessControlEntries(dbc, resource, getInherited);
         } catch (Exception e) {
@@ -1532,10 +1530,10 @@ public final class CmsSecurityManager {
      * @return Vector with all projects from history.
      * @throws CmsException if operation was not succesful.
      */
-    public Vector getAllBackupProjects(CmsRequestContext context) throws CmsException {
+    public List getAllBackupProjects(CmsRequestContext context) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.getAllBackupProjects(dbc);
         } catch (Exception e) {
@@ -1598,10 +1596,10 @@ public final class CmsSecurityManager {
      * @return groups a Vector of all child groups or null
      * @throws CmsException if operation was not succesful.
      */
-    public Vector getChild(CmsRequestContext context, String groupname) throws CmsException {
+    public List getChild(CmsRequestContext context, String groupname) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.getChild(dbc, groupname);
         } catch (Exception e) {
@@ -1624,10 +1622,10 @@ public final class CmsSecurityManager {
      * @return a Vector of all child groups or null
      * @throws CmsException if operation was not succesful
      */
-    public Vector getChilds(CmsRequestContext context, String groupname) throws CmsException {
+    public List getChilds(CmsRequestContext context, String groupname) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.getChilds(dbc, groupname);
         } catch (Exception e) {
@@ -1660,10 +1658,10 @@ public final class CmsSecurityManager {
      * @return Vector of groups
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public Vector getDirectGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
+    public List getDirectGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.getDirectGroupsOfUser(dbc, username);
         } catch (Exception e) {
@@ -1683,10 +1681,10 @@ public final class CmsSecurityManager {
      * @return users a Vector of all existing groups
      * @throws CmsException if operation was not succesful
      */
-    public Vector getGroups(CmsRequestContext context) throws CmsException {
+    public List getGroups(CmsRequestContext context) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.getGroups(dbc);
         } catch (Exception e) {
@@ -1705,10 +1703,10 @@ public final class CmsSecurityManager {
      * @return a vector of Cms groups filtered by the specified IP address
      * @throws CmsException if operation was not succesful
      */
-    public Vector getGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
+    public List getGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.getGroupsOfUser(dbc, username);
         } catch (Exception e) {
@@ -1728,10 +1726,10 @@ public final class CmsSecurityManager {
      * @return a vector of Cms groups
      * @throws CmsException if operation was not succesful
      */
-    public Vector getGroupsOfUser(CmsRequestContext context, String username, String remoteAddress) throws CmsException {
+    public List getGroupsOfUser(CmsRequestContext context, String username, String remoteAddress) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.getGroupsOfUser(dbc, username, remoteAddress);
         } catch (Exception e) {
@@ -1964,10 +1962,10 @@ public final class CmsSecurityManager {
      * @return a Vector of all existing users
      * @throws CmsException if operation was not succesful.
      */
-    public Vector getUsers(CmsRequestContext context) throws CmsException {
+    public List getUsers(CmsRequestContext context) throws CmsException {
         
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.getUsers(dbc);
         } catch (Exception e) {
@@ -1988,10 +1986,10 @@ public final class CmsSecurityManager {
      * @return a Vector of all existing users
      * @throws CmsException if operation was not succesful
      */
-    public Vector getUsers(CmsRequestContext context, int type) throws CmsException {
+    public List getUsers(CmsRequestContext context, int type) throws CmsException {
         
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.getUsers(dbc, type);
         } catch (Exception e) {
@@ -2012,10 +2010,10 @@ public final class CmsSecurityManager {
      * @return vector of users
      * @throws CmsException if operation was not succesful
      */
-    public Vector getUsersOfGroup(CmsRequestContext context, String groupname) throws CmsException {
+    public List getUsersOfGroup(CmsRequestContext context, String groupname) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.getUsersOfGroup(dbc, groupname);
         } catch (Exception e) {
@@ -2794,11 +2792,11 @@ public final class CmsSecurityManager {
      * @return vector of tasks
      * @throws CmsException if something goes wrong
      */
-    public Vector readGivenTasks(CmsRequestContext context, int projectId, String ownerName, int taskType, String orderBy, String sort)
+    public List readGivenTasks(CmsRequestContext context, int projectId, String ownerName, int taskType, String orderBy, String sort)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.readGivenTasks(dbc, projectId, ownerName, taskType, orderBy, sort);
         } catch (Exception e) {
@@ -3517,10 +3515,10 @@ public final class CmsSecurityManager {
      * @return a Vector of new TaskLog objects
      * @throws CmsException if something goes wrong
      */
-    public Vector readTaskLogs(CmsRequestContext context, int taskid) throws CmsException {
+    public List readTaskLogs(CmsRequestContext context, int taskid) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.readTaskLogs(dbc, taskid);
         } catch (Exception e) {
@@ -3545,10 +3543,10 @@ public final class CmsSecurityManager {
      * @return a vector of tasks
      * @throws CmsException  if something goes wrong
      */
-    public Vector readTasksForProject(CmsRequestContext context, int projectId, int tasktype, String orderBy, String sort) throws CmsException {
+    public List readTasksForProject(CmsRequestContext context, int projectId, int tasktype, String orderBy, String sort) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.readTasksForProject(dbc, projectId, tasktype, orderBy, sort);
         } catch (Exception e) {
@@ -3572,11 +3570,11 @@ public final class CmsSecurityManager {
      * @return a vector of tasks
      * @throws CmsException if something goes wrong
      */
-    public Vector readTasksForRole(CmsRequestContext context, int projectId, String roleName, int tasktype, String orderBy, String sort)
+    public List readTasksForRole(CmsRequestContext context, int projectId, String roleName, int tasktype, String orderBy, String sort)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.readTasksForRole(dbc, projectId, roleName, tasktype, orderBy, sort);
         } catch (Exception e) {
@@ -3600,11 +3598,11 @@ public final class CmsSecurityManager {
      * @return a vector of tasks
      * @throws CmsException if something goes wrong
      */
-    public Vector readTasksForUser(CmsRequestContext context, int projectId, String userName, int taskType, String orderBy, String sort)
+    public List readTasksForUser(CmsRequestContext context, int projectId, String userName, int taskType, String orderBy, String sort)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        Vector result = null;
+        List result = null;
         try {
             result = m_driverManager.readTasksForUser(dbc, projectId, userName, taskType, orderBy, sort);
         } catch (Exception e) {
