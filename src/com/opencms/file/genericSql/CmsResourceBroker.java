@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/21 16:16:46 $
- * Version: $Revision: 1.199 $
+ * Date   : $Date: 2000/11/22 17:07:33 $
+ * Version: $Revision: 1.200 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.199 $ $Date: 2000/11/21 16:16:46 $
+ * @version $Revision: 1.200 $ $Date: 2000/11/22 17:07:33 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1217,7 +1217,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 							  currentUser.getId(),source,cmsFolder.getResourceId(), foldername + filename);
 			
 			// copy the metainfos
-		   				
+			lockResource(currentUser, currentProject, destination, true); 		   				
 			writeProperties(currentUser,currentProject, destination,
 							readAllProperties(currentUser,currentProject,file.getAbsolutePath()));
 										
@@ -1268,7 +1268,8 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 			CmsFolder folder=readFolder(currentUser,currentProject,source);
 			m_dbAccess.createFolder(currentUser,currentProject,onlineProject(currentUser, currentProject),folder,cmsFolder.getResourceId(),destination);        
 
-			// copy the properties  
+			// copy the properties
+			lockResource(currentUser, currentProject, destination, true); 
 			writeProperties(currentUser,currentProject, destination,
 							readAllProperties(currentUser,currentProject,folder.getAbsolutePath()));
 			
@@ -5194,74 +5195,79 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 			}
 		}
 	}
-	/**
-	 * Renames the file to a new name. <br>
-	 * 
-	 * Rename can only be done in an offline project. To rename a file, the following
-	 * steps have to be done:
-	 * <ul>
-	 * <li> Copy the file with the oldname to a file with the new name, the state 
-	 * of the new file is set to NEW (2). 
-	 * <ul>
-	 * <li> If the state of the original file is UNCHANGED (0), the file content of the 
-	 * file is read from the online project. </li>
-	 * <li> If the state of the original file is CHANGED (1) or NEW (2) the file content
-	 * of the file is read from the offline project. </li>
-	 * </ul>
-	 * </li>
-	 * <li> Set the state of the old file to DELETED (3). </li> 
-	 * </ul>
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
-	 * <li>the resource is locked by the callingUser</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource (CmsUser callingUser, No path information allowed).
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */		
-	public void renameFile(CmsUser currentUser, CmsProject currentProject, 
-					       String oldname, String newname)
-		throws CmsException {
-						
-		
-		String path=oldname.substring(0,oldname.lastIndexOf("/")+1);
-		copyFile(currentUser,currentProject,oldname,path+newname);
-		deleteFile(currentUser,currentProject,oldname);
-		/*
-		// check, if the new name is a valid filename
-		validFilename(newname);
-		
-		// read the old file
-		CmsResource file = readFileHeader(currentUser, currentProject, oldname);
-		
-		// has the user write-access?
-		if( accessWrite(currentUser, currentProject, file) ) {
-				
-			// write-acces  was granted - rename the file.
-			m_dbAccess.renameFile(currentProject, 
-								  onlineProject(currentUser, currentProject), 
-								  currentUser.getId(),
-								  file.getResourceId(), file.getPath() + newname );
-			// copy the metainfos
-			writeProperties(currentUser,currentProject, file.getPath() + newname, 
-							readAllProperties(currentUser,currentProject,file.getAbsolutePath()));
-											  	
-			// inform about the file-system-change
-			fileSystemChanged();
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + oldname, 
-				CmsException.C_NO_ACCESS);
-		}
-		*/
+/**
+ * Renames the file to a new name. <br>
+ * 
+ * Rename can only be done in an offline project. To rename a file, the following
+ * steps have to be done:
+ * <ul>
+ * <li> Copy the file with the oldname to a file with the new name, the state 
+ * of the new file is set to NEW (2). 
+ * <ul>
+ * <li> If the state of the original file is UNCHANGED (0), the file content of the 
+ * file is read from the online project. </li>
+ * <li> If the state of the original file is CHANGED (1) or NEW (2) the file content
+ * of the file is read from the offline project. </li>
+ * </ul>
+ * </li>
+ * <li> Set the state of the old file to DELETED (3). </li> 
+ * </ul>
+ * 
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user can write the resource</li>
+ * <li>the resource is locked by the callingUser</li>
+ * </ul>
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param oldname The complete path to the resource which will be renamed.
+ * @param newname The new name of the resource (CmsUser callingUser, No path information allowed).
+ * 
+ * @exception CmsException  Throws CmsException if operation was not succesful.
+ */
+public void renameFile(CmsUser currentUser, CmsProject currentProject, String oldname, String newname) throws CmsException {
+
+	// read the old file
+	CmsResource file = readFileHeader(currentUser, currentProject, oldname);
+
+	// has the user write-access?
+	if (accessWrite(currentUser, currentProject, file)) {
+		String path = oldname.substring(0, oldname.lastIndexOf("/") + 1);
+		copyFile(currentUser, currentProject, oldname, path + newname);
+		deleteFile(currentUser, currentProject, oldname);
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + oldname, CmsException.C_NO_ACCESS);
 	}
+	/*
+	// check, if the new name is a valid filename
+	validFilename(newname);
+	
+	// read the old file
+	CmsResource file = readFileHeader(currentUser, currentProject, oldname);
+	
+	// has the user write-access?
+	if( accessWrite(currentUser, currentProject, file) ) {
+	
+	// write-acces  was granted - rename the file.
+	m_dbAccess.renameFile(currentProject, 
+	  onlineProject(currentUser, currentProject), 
+	  currentUser.getId(),
+	  file.getResourceId(), file.getPath() + newname );
+	// copy the metainfos
+	writeProperties(currentUser,currentProject, file.getPath() + newname, 
+	readAllProperties(currentUser,currentProject,file.getAbsolutePath()));
+	  	
+	// inform about the file-system-change
+	fileSystemChanged();
+	} else {
+	throw new CmsException("[" + this.getClass().getName() + "] " + oldname, 
+	CmsException.C_NO_ACCESS);
+	}
+	*/
+}
 	/**
 	 * This method loads old sessiondata from the database. It is used 
 	 * for sessionfailover.
