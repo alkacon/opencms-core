@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/15 19:08:18 $
  */
  class CmsRbUserGroup extends A_CmsRbUserGroup implements I_CmsConstants {
 
@@ -94,7 +94,9 @@ import com.opencms.core.*;
 	 */
 	 A_CmsUser readUser(A_CmsUser callingUSer, String username)
          throws CmsException {
-         return null;
+         A_CmsUser user=null;
+         user=m_accessUserGroup.readUser(username);
+         return user;
      }
 	
 	/**
@@ -112,7 +114,9 @@ import com.opencms.core.*;
 	 */		
 	 A_CmsUser readUser(A_CmsUser callingUser, String username, String password)
          throws CmsException {
-         return null;
+         A_CmsUser user=null;
+         user=m_accessUserGroup.readUser(username,password);
+         return user;
      }
 	
 	/**
@@ -257,6 +261,7 @@ import com.opencms.core.*;
 	 */
 	 void deleteUser(A_CmsUser callingUser, String username)
          throws CmsException {
+         m_accessUserGroup.deleteUser(username);
      }
 
 	/**

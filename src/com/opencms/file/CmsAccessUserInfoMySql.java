@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/15 19:08:18 $
  */
  class CmsAccessUserInfoMySql extends A_CmsAccessUserInfo {
 
@@ -32,12 +32,17 @@ import com.opencms.core.*;
      * SQL Command for updating additional user information.
      */   
     private static final String C_USERINFO_UPDATE="UPDATE USERS_ADDITIONALINFO SET USER_INFO = ? WHERE USER_ID = ? ";
-        
+       
+     /**
+     * SQL Command for deleting properties.
+     */   
+    private static final String C_USERINFO_DELETE="DELETE FROM  USERS_ADDITIONALINFO WHERE USER_ID = ?"; 
+    
     /**
      * Name of the column USER_INFO in the SQL table USERS_ADDITIONALINFOS.
      */
     private static final String C_USER_INFO="USER_INFO";
-      
+ 
     /**
     * This is the connection object to the database
     */
@@ -162,6 +167,16 @@ import com.opencms.core.*;
 	 */
 	 void deleteUserInformation(int id)
          throws CmsException {
+               
+		try	{			
+            PreparedStatement s = getConnection().prepareStatement(C_USERINFO_DELETE);
+            s.setEscapeProcessing(false);
+            s.setInt(1,id);
+          	s.executeUpdate();
+		
+		}catch (SQLException e){
+            throw new CmsException(CmsException.C_SQL_ERROR, e);			
+		}
          
      }
      

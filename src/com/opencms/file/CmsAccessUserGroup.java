@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/15 19:08:18 $
  */
  class CmsAccessUserGroup extends A_CmsAccessUserGroup implements I_CmsConstants {
 
@@ -42,9 +42,6 @@ import com.opencms.core.*;
          m_accessGroup = accessGroup;         
      }
      
-     
-     
-     
 	/**
 	 * Returns a user object.<P/>
 	 * 
@@ -54,7 +51,20 @@ import com.opencms.core.*;
 	 */
 	 A_CmsUser readUser(String username)
          throws CmsException {
-     return null; 
+         A_CmsUser user=null;
+         Hashtable infos=null;
+         A_CmsGroup defaultGroup=null;
+         
+         user=m_accessUser.readUser(username);
+         if (user!= null){
+             infos=m_accessUserInfo.readUserInformation(user.getId());             
+             user.setAdditionalInfo(infos);
+             defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
+             user.setDefaultGroup(defaultGroup);
+         } else {
+             throw new CmsException(CmsException.C_NOT_FOUND);
+         }
+         return user;
      }
 	
 	/**
@@ -68,7 +78,21 @@ import com.opencms.core.*;
 	 */		
 	 A_CmsUser readUser(String username, String password)
          throws CmsException {
-         return null;
+         
+         A_CmsUser user=null;
+         Hashtable infos=null;
+         A_CmsGroup defaultGroup=null;
+         
+         user=m_accessUser.readUser(username,password);
+         if (user!= null){
+             infos=m_accessUserInfo.readUserInformation(user.getId());
+             user.setAdditionalInfo(infos);
+             defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
+             user.setDefaultGroup(defaultGroup);
+         } else {
+             throw new CmsException(CmsException.C_NO_ACCESS);
+         }
+         return user;
      }
 	
 	/**
@@ -163,6 +187,7 @@ import com.opencms.core.*;
         //combine user object and additional information to the complete user object.
         user.setAdditionalInfo(additionalInfos);
         user.setDefaultGroup(defaultGroup);
+        
         return user;
     }
 
@@ -177,6 +202,18 @@ import com.opencms.core.*;
 	 */
 	 void deleteUser(String username)
 		throws CmsException {
+         A_CmsUser user =null;
+         int userId=C_UNKNOWN_ID;
+         user=m_accessUser.readUser(username);
+         if (user!= null){
+             userId=user.getId();
+             m_accessUser.deleteUser(username);
+             m_accessUserInfo.deleteUserInformation(userId);
+         } else {
+             throw new CmsException(CmsException.C_NOT_FOUND);
+         }
+             
+             
         }
          
 

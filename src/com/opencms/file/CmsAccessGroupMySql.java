@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/15 19:08:18 $
  */
  class CmsAccessGroupMySql extends A_CmsAccessGroup implements I_CmsConstants  {
      
@@ -25,7 +25,12 @@ import com.opencms.core.*;
     * SQL Command for reading groups.
     */   
     private static final String C_GROUP_READ = "SELECT * FROM GROUPS WHERE GROUP_NAME = ?";
-    
+  
+    /**
+    * SQL Command for reading groups.
+    */   
+    private static final String C_GROUP_READID = "SELECT * FROM GROUPS WHERE GROUP_ID = ?";
+        
     /**
     * SQL Command for deleting groups.
     */   
@@ -135,6 +140,39 @@ import com.opencms.core.*;
          return group;
      }
   
+     /**
+	 * Returns a group object.<P/>
+	 * 
+	 * @param groupname The id of the group that is to be read.
+	 * @return Group.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */
+     A_CmsGroup readGroup(int id)
+         throws CmsException {
+  
+         A_CmsGroup group=null;
+   
+         try{
+             // read the group from the database
+             PreparedStatement s = getConnection().prepareStatement(C_GROUP_READID);
+             s.setEscapeProcessing(false);       
+             s.setInt(1,id);
+             ResultSet res = s.executeQuery();
+             // create new Cms group object
+			 if(res.next()) {
+                group=new CmsGroup(res.getInt(C_GROUP_ID),
+                                   res.getInt(C_PARENT_GROUP_ID),
+                                   res.getString(C_GROUP_NAME),
+                                   res.getString(C_GROUP_DESCRIPTION),
+                                   res.getInt(C_GROUP_FLAGS));                                
+             }
+       
+         } catch (SQLException e){
+            throw new CmsException(CmsException.C_SQL_ERROR, e);			
+		}
+         return group;
+     }
 
 	/**
 	 * Returns a list of users in a group.<P/>

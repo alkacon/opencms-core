@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/15 19:08:18 $
  */
  public class CmsAccessUserMySql extends A_CmsAccessUser implements I_CmsConstants  {
      
@@ -25,11 +25,22 @@ import com.opencms.core.*;
     private static final String C_USER_WRITE = "INSERT INTO USERS VALUES(?,?,?,?)";
     
      /**
-     * SQL Command for writing users.
+     * SQL Command for reading users.
      */   
     private static final String C_USER_READ = "SELECT * FROM USERS WHERE USER_NAME = ?";
     
-      /**
+     /**
+     * SQL Command for reading users.
+     */   
+    private static final String C_USER_READPWD = "SELECT * FROM USERS WHERE USER_NAME = ? AND USER_PASSWORD = ?";
+    
+     /**
+    * SQL Command for deleting users.
+    */   
+    private static final String C_USER_DELETE = "DELETE FROM USERS WHERE USER_NAME = ?";
+    
+    
+    /**
      * Name of the column USER_ID in the SQL table USER.
      */
     private static final String C_USER_ID="USER_ID";
@@ -113,7 +124,27 @@ import com.opencms.core.*;
 	 */		
 	 A_CmsUser readUser(String username, String password)
          throws CmsException {
-         return null;
+         
+         A_CmsUser user=null;
+   
+         try{
+             // read the user from the database
+             PreparedStatement s = getConnection().prepareStatement(C_USER_READPWD);
+             s.setEscapeProcessing(false);       
+             s.setString(1,username);
+             s.setString(2,password);
+             ResultSet res = s.executeQuery();
+             // create new Cms user object
+			 if(res.next()) {
+                user=new CmsUser(res.getInt(C_USER_ID),
+                                 res.getString(C_USER_NAME),
+                                 res.getString(C_USER_DESCRIPTION));                                                        
+             }
+       
+         } catch (SQLException e){
+            throw new CmsException(CmsException.C_SQL_ERROR, e);			
+		}
+         return user;
      }
 
 	/** 
@@ -171,6 +202,15 @@ import com.opencms.core.*;
 	 */
 	 void deleteUser(String username)
          throws CmsException {
+          try {
+            PreparedStatement s = getConnection().prepareStatement(C_USER_DELETE);
+            s.setEscapeProcessing(false);       
+            s.setString(1,username);
+            s.executeUpdate();
+         } catch (SQLException e){
+            throw new CmsException(CmsException.C_SQL_ERROR, e);			
+		}
+ 
      }
 
 	/**

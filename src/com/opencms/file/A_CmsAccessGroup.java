@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/15 19:08:18 $
  */
 abstract class A_CmsAccessGroup {
 		
@@ -34,6 +34,17 @@ abstract class A_CmsAccessGroup {
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
 	abstract A_CmsGroup readGroup(String groupname)
+		throws CmsException;
+
+    /**
+	 * Returns a group object.<P/>
+	 * 
+	 * @param groupname The id of the group that is to be read.
+	 * @return Group.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */
+	abstract A_CmsGroup readGroup(int id)
 		throws CmsException;
 
 	/**
