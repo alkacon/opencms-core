@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/22 12:40:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -345,17 +345,23 @@ public class CmsChnav extends CmsDialog {
                 values.add("-1");
             } else {
                 options.add(CmsEncoder.escapeHtml(navText+" ["+ne.getFileName()+"]"));
-                values.add(newPos+"");
+                values.add(newPos + "");
             }
         }
         
         // add the entry: at the last position
         options.add(messages.key("input.lastelement"));
-        values.add((maxValue+1)+"");
+        values.add((maxValue + 1) + "");
         
         // add the entry: no change
         options.add(messages.key("input.nochange"));
-        values.add("-1");
+        if (curNav.getNavPosition() == Float.MAX_VALUE) {
+            // current resource has no valid position, use "last position"
+            values.add((maxValue + 1) + "");
+        } else {
+            // current resource has valid position, use "-1" for no change
+            values.add("-1");
+        }
         
         if (attributes != null && !"".equals(attributes.trim())) {
             attributes = " " + attributes;
