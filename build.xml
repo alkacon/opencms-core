@@ -11,6 +11,7 @@
     <property name="app.name"                   value="opencms"/>
     <property name="build.home"                 value="../build"/>
     <property name="zip.home"                   value="../zip"/>
+    <property name="pdf.home"                   value="../pdf"/>
     <property name="tomcat.home"                value="${env.TOMCAT_HOME}" />
     <property name="build.classes"              value="${build.home}/classes"/>
     <property name="build.inputlib"             value="../ExternalComponents"/>
@@ -46,6 +47,7 @@
         <mkdir dir="${build.lib}"/>
         <mkdir dir="${build.oclib}"/>
         <mkdir dir="${zip.home}"/>
+        <mkdir dir="${pdf.home}"/>
     </target>
 
     <target name="clean">
@@ -199,6 +201,31 @@
 
     <target name="cvs.update">
         <cvs command="update"/>
+    </target>
+    
+    <target name="tex.clean">
+        <delete>
+            <fileset dir="doc/documentation" includes="*.aux,*.toc,*.ind,*.ilg,*.idx"/>
+        </delete>        
+    </target>
+    
+    <target name="tex" depends="prepare">
+        <exec dir="doc/documentation" executable="pdflatex">
+          <arg line="OpenCmsDoc"/>
+        </exec>
+        <exec dir="doc/documentation" executable="makeindex">
+          <arg line="OpenCmsDoc"/>
+        </exec>
+        <exec dir="doc/documentation" executable="pdflatex">
+          <arg line="OpenCmsDoc"/>
+        </exec>
+        <tstamp>
+            <format property="timestamp" pattern="ddMMyy"/>
+        </tstamp>
+        <move file="doc/documentation/OpenCmsDoc.pdf" tofile="${pdf.home}/OpenCmsDoc${timestamp}.pdf">        
+        </move>
+        <move file="doc/documentation/OpenCmsDoc.log" tofile="${pdf.home}/OpenCmsDoc${timestamp}.log">        
+        </move>
     </target>
 
 </project>
