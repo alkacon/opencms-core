@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/04/03 13:21:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/04/04 07:31:29 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.1 $ $Date: 2000/04/03 13:21:40 $
+ * @version $Revision: 1.2 $ $Date: 2000/04/04 07:31:29 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 	
@@ -200,7 +200,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			resources.addElement(e.nextElement());
 		}
 		
-		return buildNavTree(cms,doc,resources,currentFolder).getBytes();
+		return buildNav(cms,doc,resources,currentFolder).getBytes();
 	}
 	
 	
@@ -436,52 +436,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		return result.toString();
 		
 	}
-	
-	
-	/**
-	 * Builds the navigation.
-	 * 
-	 * @param cms A_CmsObject Object for accessing system resources.    
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-	 * @param resources a vector that contains the elements of navigation.
-	 * @param currentFolder the currenet folder.
-	 * @return String that contains the navigation.
-	 */	
-	private String buildNavTree(A_CmsObject cms, A_CmsXmlContent doc, Vector resources,String currentFolder)
-		throws CmsException {
-			
-		String requestedUri = cms.getRequestContext().getUri();
-		String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
-		CmsXmlTemplateFile xmlDataBlock=(CmsXmlTemplateFile)doc;
-		StringBuffer result = new StringBuffer();
 		
-		int size = resources.size();
-		
-		String navLink[] = new String[size];
-        String navText[] = new String[size];
-        float navPos[] = new float[size];
-        
-		int max=extractNav(cms,resources,navLink,navText,navPos);
-		        
-        // The arrays folderNames and folderTitles now contain all folders
-        // that should appear in the nav.
-        // Loop through all folders and generate output
-        for(int i=0; i<max; i++) {
-			xmlDataBlock.setData("navText", navText[i]);
-			xmlDataBlock.setData("count", new Integer(i+1).toString());
-			xmlDataBlock.setData("navLink", servletPath + navLink[i] );
-			// Check if nav is current nav
-			if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
-				result.append(xmlDataBlock.getProcessedDataValue("navCurrent"));
-			} else {
-				result.append(xmlDataBlock.getProcessedDataValue("navEntry"));
-			}
-        }
-		
-		return result.toString();
-		
-	}
-	
 	
 	/**
 	 * Builds the link to folder determined by level.
@@ -529,21 +484,18 @@ public class CmsXmlNav extends A_CmsNavBase {
 		throws CmsException {
 		
 		String requestedUri = cms.getRequestContext().getUri();
-		String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
 		
 		int size = resources.size();
         int max = 0;
-		
-		System.err.println("Resources: " + size);
-		
+				
         // First scan all subfolders of the root folder
         // for any navigation metainformations and store
         // the maximum position found
         for(int i=0; i<size; i++) {
             A_CmsResource currentResource = (A_CmsResource)resources.elementAt(i);
             String path = currentResource.getAbsolutePath();
-            String pos = cms.readMetainformation(path, C_METAINFO_NAVPOS);
-            String text = cms.readMetainformation(path, C_METAINFO_NAVTEXT);
+            String pos = cms.readProperty(path, C_PROPERTY_NAVPOS);
+            String text = cms.readProperty(path, C_PROPERTY_NAVTEXT);
 			System.err.println("Path: " +path+ "Position: " +pos+ "Text: "+text); 
 			// Only list folders in the nav bar if they are not deleted!
             if (currentResource.getState() != C_STATE_DELETED) { 
@@ -551,6 +503,7 @@ public class CmsXmlNav extends A_CmsNavBase {
                 if (pos != null && text != null && (!"".equals(pos)) && (!"".equals(text))
                      && ((!currentResource.getName().startsWith(C_TEMP_PREFIX)) || path.equals(requestedUri))) {
                     navLink[max] = path;
+					navText[max] = text;
                     navPos[max] = new Float(pos).floatValue();
                     max++;
                 }
