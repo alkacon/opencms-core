@@ -12,33 +12,40 @@ understand all tags and functions that are used at the beginning, they will all 
 later in this document in detail. Right at the beginning, you should try to find out how they
 work and behave by working with them.
 
-We will now create a first master template of a very simple kind.  Our first master template
-will not include any sub templates (that means no body template as well) and will not define
-a special layout, but it should give a little insight in the template mechanism.
+We will now create a first template set of a very simple kind. Our
+first template set will not include any special sub templates and
+will not define a special layout, but it should give a little
+insight in the template mechanism.
 
-The first example will show how to create a template that displays the string
-{\name Hello, world!}.
-To create a template you must first create a new text file in the project's
-{\dir content/templates}.
-Go to the {\dir /content/templates} directory in the Explorer view of the new project and
-start the
-wizard that creates the new files by clicking on the icon with the magic wand. Select {\name
-Other Type} for the type of the file from the New dialog box (Figure~\ref{createOtherType}).
+The first example will show how to create a template set that
+displays the string {\name Hello, world!}. A template set consists
+of three templates. The frametemplate contains the design of the
+Frame. The contenttemplate contains the elements and the bodies.
+The master template only defines which frametemplate and which
+contenttemplate should be used by the page. We will create a
+template set of {\dir /content/templates/template1} (the master
+template), {\dir /content/frametemplates/frametemplate1} and {\dir
+/content/contenttemplates/contenttemplate1}. To create a template
+you must first create a new text file in the project's {\dir
+content/templates}. Go to the {\dir /content/templates} directory
+in the Explorer view of the new project and start the wizard that
+creates the new files by clicking on the icon with the magic wand.
+Select {\name Text} for the type of the file from the New dialog
+box (Figure~\ref{createOtherType}).
 
 \begin{figure}[hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/templateMech/createOT}
 \caption[Creation of a new template]
-           {Select other Type for the new file}
+           {Select Text for the new file}
 \label{createOtherType}
 \end{center}
 \end{figure}
 
 Enter the name and title for the new template in the Create a new
-File of other type dialog box. Select {\name Text} as the type for
-your new template file, and click on {\name Finish} to end the
-creation of the new text file (Figure~\ref{createOT2}).
+File dialog box and click on {\name Finish} to end the creation of
+the new text file (Figure~\ref{createOT2}).
 
 \begin{figure}[t]
 
@@ -65,31 +72,66 @@ creation of the new text file (Figure~\ref{createOT2}).
 \end{center}
 \end{figure}
 
-Select {\name Edit Code} from the file's context menu to edit the new file. The context menu is
-accessed by clicking on the new file's icon (Figure~\ref{editcode}).
-This will start the Editor. A template file is simply an XML file that contains XML and HTML
-tags. The first template contains static text that will be displayed on the screen. To
-accomplish this the template must contain the following text :
+Select {\name Edit Code} from the file's context menu to edit the
+new file. The context menu is accessed by clicking on the new
+file's icon (Figure~\ref{editcode}). This will start the Editor. A
+template file is simply an XML file that contains XML and HTML
+tags. The master template contains the definition of the frame-
+and the contenttemplate. To accomplish this the template must
+contain the following text :
 
-\begin{xml}
-<?xml version="1.0"?>\\
-<XMLTEMPLATE>\\
-\xtaba  <TEMPLATE><![CDATA[\\
-\xtabb     <HTML>\\
-\xtabc         <HEAD>\\
-\xtabd           <TITLE>The first template</TITLE>\\
-\xtabc         </HEAD>\\
-\xtabc         <BODY>\\
-\xtabd           Hello, world!\\
-\xtabc         </BODY>\\
-\xtabb       </HTML>]]>\\
-\xtaba   </TEMPLATE>\\
-</XMLTEMPLATE>\\
-\end{xml}
+% this should be used to include the examples but it didn't work :-(
+%\begin{alltt}
+%\input{examples/templateMechanism/template1}
+%\end{alltt}
+\begin{verbatim}
+<?xml version="1.0"?> <XMLTEMPLATE>
+    <ELEMENTDEF name="contenttemplate">
+        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
+        <TEMPLATE>/content/contenttemplates/contenttemplate1</TEMPLATE>
+    </ELEMENTDEF>
+    <ELEMENTDEF name="frametemplate">
+        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
+        <TEMPLATE>/content/frametemplates/frametemplate1</TEMPLATE>
+    </ELEMENTDEF>
+<TEMPLATE> <ELEMENT name="frametemplate"/> </TEMPLATE>
+</XMLTEMPLATE>
+\end{verbatim}
 
-You can either type in this text or copy and paste it into the Editor. Exit the Editor and
-save the file by clicking on the icon to the left that shows a floppy disk and a cross. The
-next step is to create a web page that uses the template you just created. As mentioned before,
+You can either type in this text or copy and paste it into the
+Editor. Exit the Editor and save the file by clicking on the icon
+to the left that shows a floppy disk and a cross. Now create the
+frametemplate1 in the directory {\dir /content/frametemplates}
+with the text:
+%\input{examples/templateMechanism/frametemplate1}
+\begin{verbatim}
+<?xml version="1.0"?> <XMLTEMPLATE>
+    <TEMPLATE><![CDATA[
+        <html>
+            <head>
+                <title>The first templates</title>
+            </head>
+            <BODY >
+                ]]><ELEMENT name="contenttemplate"/><![CDATA[
+            </BODY>
+        </html>]]>
+    </TEMPLATE>
+</XMLTEMPLATE>
+\end{verbatim}
+
+At last create the contenttemplate1 in {\dir
+/content/contenttemplates} with this text:
+%\input{examples/templateMechanism/contenttemplate1}
+\begin{verbatim}
+<?xml version="1.0"?> <XMLTEMPLATE>
+    <TEMPLATE><![CDATA[
+            Hello World! <br>
+        ]]><ELEMENT name="body"/>
+    </TEMPLATE>
+</XMLTEMPLATE>
+\end{verbatim}
+
+ The next step is to create a web page that uses the template set you just created. As mentioned before,
 the page control file is the one that has to be clicked on to view a page in the Browser.
 This file has to be created now. To do so, change to the Explorer view, go to the root folder
 and use the wizard to create a new file. Select {\name Page} as the new file type. Enter the web
@@ -112,48 +154,71 @@ on the {\name Finish} button to create the new page.
 \end{center}
 \end{figure}
 
-You can now view the page by clicking on it. A new browser window will be opened in which the
-new page is displayed. The page shows the {\name Hello, world!} text. The title of the page is the
-title that was defined in the template.
+You can now view the page by clicking on it. A new browser window
+will be opened in which the new page is displayed. The page shows
+the {\name Hello, world!} text from the contenttemplate. The title
+of the page is the title that was defined in the frametemplate.
 
 \section{The body element}
 %============================================================================
-\subsection{A new master template}
+\subsection{A new frametemplate}
 
-To achieve a separation of content and layout of a web site, the content is normally inserted
-in a body element. So in this example, we will modify the first template and insert a body
-element in the HTML body tag. A body element is a subtemplate, the output of which is inserted
-in the master template in the space where you have placed the body element. The template also
-uses a method of the OpenCms system to set the title in the template. To create the template
-you have to create a new text file (a new master template) in the
-{\dir /content/templates} directory.
-Follow the steps to create a new template that are described in the first example, and add the
-following text to your (master) template:
+To achieve a separation of content and layout of a web site, the
+content is normally inserted in a body element. So in this
+example, we will modify the first frametemplate and use the body
+element in the contenttemplate. A body element is a subtemplate,
+the output of which is inserted in the contenttemplate in the
+space where  the body element is placed. The frametemplate now
+uses a method of the OpenCms system to set the title in the
+template. To create the frametemplate you have to create a new
+text file (frametemplate2) in the {\dir /content/frametemplates}
+directory. Follow the steps to create a new template that are
+described in the first example, and insert the following text in
+your frametemplate:
 
-\begin{xml}
-<?xml version="1.0"?>\\
-<XMLTEMPLATE>\\
-<TEMPLATE><![CDATA[\\
-\xtaba  <HTML>\\
-\xtabb    <HEAD>\\
-\xtabc     <TITLE>]]><method name="getTitle"/><![CDATA[</TITLE>\\
-\xtabb     </HEAD>\\
-\xtabb     <BODY>\\
-\xtabc     Hello, world!<br>\\
-\xtabc     ]]><ELEMENT name="body"/><![CDATA[\\
-\xtabb     </BODY>\\
-\xtaba   </HTML>]]>\\
-</TEMPLATE>\\
-
-</XMLTEMPLATE>\\
-\end{xml}
+%\input{examples/templateMechanism/frametemplate2}
+\begin{verbatim}
+<?xml version="1.0"?> <XMLTEMPLATE>
+    <TEMPLATE><![CDATA[
+        <html>
+            <head>
+                <title>]]><method name="getTitle"/><![CDATA[</title>
+            </head>
+                <BODY >
+                    ]]><ELEMENT name="contenttemplate"/><![CDATA[
+                </BODY>
+        </html>]]>
+    </TEMPLATE>
+</XMLTEMPLATE>
+\end{verbatim}
 \index{getTitle}
 
+Now you also need a new master template which uses the new
+frametemplate2 and the old contenttemplate. Create it in {\dir
+/content/templates} as described in the first example:
+
+%\input{examples/templateMechanism/template2}
+\begin{verbatim}
+<?xml version="1.0"?> <XMLTEMPLATE>
+    <ELEMENTDEF name="contenttemplate">
+        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
+        <TEMPLATE>/content/contenttemplates/contenttemplate1</TEMPLATE>
+    </ELEMENTDEF>
+    <ELEMENTDEF name="frametemplate">
+        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
+        <TEMPLATE>/content/frametemplates/frametemplate2</TEMPLATE>
+    </ELEMENTDEF>
+<TEMPLATE> <ELEMENT name="frametemplate"/> </TEMPLATE>
+</XMLTEMPLATE>
+\end{verbatim}
+
 \subsection{The body template}
-Create a new page in the root folder and select the title of the new template from the drop-down
-list. For example, if you have defined the title of the template as example 2, this text should
-appear in the drop-down list. Enter a title and name for your new page, and select
-{\name Finish} to create the page (Figure~\ref{selectTitle}).
+Create a new page in the root folder and select the title of the
+new template from the drop-down list. For example, if you have
+defined the title of the template as template2, this text should
+appear in the drop-down list. Enter a title and name for your new
+page, and select {\name Finish} to create the page
+(Figure~\ref{selectTitle}).
 
 \begin{figure}[hbt]
 \begin{center}
@@ -165,9 +230,10 @@ appear in the drop-down list. Enter a title and name for your new page, and sele
 \end{center}
 \end{figure}
 
-Before we take a look at the new page, we will use the HTML Editor to add text to the body
-element. To edit the page with the HTML Editor select {\name Edit Page} from the new page's context
-menu.
+Before we take a look at the new page, we will use the HTML Editor
+to add text to the body element. To edit the page with the HTML
+Editor select {\name Edit Page} from the new page's context
+menu.(Figure~\ref{EditPage})
 
 \begin{figure}[hbt]
 \begin{center}
@@ -179,9 +245,10 @@ menu.
 \end{center}
 \end{figure}
 
-The Editor is a WYSIWYG editor that provides standard HTML file editing functionality. You can
-select the font style and size, insert pictures, and so on. Entering text in the editor inserts
-it in the new template's body element.
+The Editor is a WYSIWYG editor that provides standard HTML file
+editing functionality. You can select the font style and size,
+insert pictures, and so on. Entering text in the editor inserts it
+in the new page's body element.(Figure~\ref{EditBody})
 
 \begin{figure}[hbt]
 \begin{center}
@@ -208,28 +275,29 @@ the above example, the page will look like Figure~\ref{ThisOutp}
 \end{figure}
 
 \subsection{The element-tag}
-As you can see, the first part of the text ({\name Hello, world!}) still comes from the master
-template, but the second part, wich was created with the help of the WYSIWYG-editor, comes
-from the body template. You can see in the master template, that the body template is inserted
-via the ELEMENT-tag:
+As you can see, the first part of the text ({\name Hello, world!})
+still comes from the contenttemplate, but the second part, witch
+was created with the help of the WYSIWYG-editor, comes from the
+body element. You can see in the contenttemplate, that the body
+template is inserted via the ELEMENT-tag:
 
 \begin{xml}
 ...\\
-<BODY>\\
 \xtaba Hello, world!<br>\\
-\xtaba ]]><ELEMENT name="body"/><![CDATA[\\
-</BODY>\\
+\xtaba ]]><ELEMENT name="body"/>\\
 ...\\
 \end{xml}
 
-Here, an element with the name {\name body} is inserted after the  {\name Hello, world!} text. The assignment
-of the element  {\name body} to the body template in the {\dir /content/bodys} directory is made
-in the page control file.
+Here, the element with the name {\name body} is inserted after the
+{\name Hello, world!} text. The assignment of the element  {\name
+body} to the body template in the {\dir /content/bodys} directory
+is made in the page control file.
 
-Another difference to the earlier example is the fact, that the title which was typed in when
-creating the page, is now correct shown in the Browser. This is because of the usage of the
-{\it getTitle()}-method. OpenCms provides a number of standard methods that can be used when
-creating
+Another difference to the earlier example is the fact, that the
+title which was typed in when creating the page, is now correct
+shown in the Browser. This is because of the usage of the {\it
+getTitle()}-method in the frametemplate. OpenCms provides a number
+of standard methods that can be used when creating
 a template. The methods are defined in the\\
 \textit{com.opencms.template.CmsXmlTmplate} class which is
 assigned to the master template per default in the page control file.
@@ -261,46 +329,69 @@ Figure~\ref{MasterAndElems}.
 \end{center}
 \end{figure}
 
-A head-section for logos and things like that, an element for the navigation and a body template
-for the content. This layout can for example be realized with a table defined in the master
-template and three elements which are inserted.
-To  create a page with this layout, you should first create the master template with the table
-in the {\dir /content/template} directory.  The creation can be done similar to the way we did it
-before. You can then add the following code to the master template:
-\begin{xml}
-<?xml version="1.0"?>\\
-<XMLTEMPLATE>\\
-<TEMPLATE><![CDATA[\\
-\xtaba <HTML>\\
-\xtabb <HEAD>\\
-\xtabc <TITLE>]]><method name="getTitle"/><![CDATA[</TITLE>\\
-\xtabb </HEAD>\\
-\xtabb <BODY>\\
-\xtabc <TABLE border width="100\%" height="100\%">\\
-\xtabd   <TR height="30\%">\\
-\xtabe     <TH colspan=2 width="100\%" align="center"> \\
-\xtabe       The Head section</TH>\\
-\xtabd   </TR>\\
-\xtabd   <TR height="70\%">\\
-\xtabe     <TD width="20\%" align="center" valign="top"> \\
-\xtabf       Navigation\\
-\xtabe     </TD>\\
-\xtabe     <TD width="80\%" align="center">]]> \\
-\xtabf       <element name="body"/> <![CDATA[\\
-\xtabe     </TD>\\
-\xtabd   </TR>\\
-\xtabc </TABLE>\\
-\xtabb </BODY>\\
-\xtaba </HTML>]]>\\
-</TEMPLATE>\\
+A head-section for logos and things like that, an element for the
+navigation and a content area for the content. This layout can for
+example be realized with a table defined in the frametemplate and
+three elements which are inserted. To  create a page with this
+layout, you should first create the frametemplate3 with the table
+in the {\dir /content/frametemplate} directory.  The creation can
+be done similar to the way we did it before. You can then add the
+following code to the frametemplate3:
+%\input{examples/templateMechanism/frametemplate3}
+\begin{verbatim}
+<XMLTEMPLATE>
+<TEMPLATE><![CDATA[
+    <HTML>
+        <HEAD>
+            <TITLE>]]><method name="getTitle"/><![CDATA[</TITLE>
+        </HEAD>
+        <BODY>
+            <TABLE border width="100%" height="100%">
+                <TR height="30%">
+                    <TH colspan=2 width="100%" align="center">
+                        The Head section
+                    </TH>
+                </TR>
+                <TR height="70%">
+                    <TD width="20%" align="center" valign="top">
+                        Navigation
+                    </TD>
+                    <TD width="80%" align="center">
+                        ]]><ELEMENT name="contenttemplate"/><![CDATA[
+                    </TD>
+                </TR>
+            </TABLE>
+        </BODY>
+    </HTML>]]>
+</TEMPLATE>
+</XMLTEMPLATE>
+\end{verbatim}
 
-</XMLTEMPLATE>\\
-\end{xml}
+You also need a new mastertemplate in {\dir /content/templates}
+where you use the new frametemplate and an empty contenttemplate:
+%\input{examples/templateMechanism/template3}
+\begin{verbatim}
+<?xml version="1.0"?> <XMLTEMPLATE>
+    <ELEMENTDEF name="contenttemplate">
+        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
+        <TEMPLATE>/content/contenttemplates/empty</TEMPLATE>
+    </ELEMENTDEF>
+    <ELEMENTDEF name="frametemplate">
+        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
+        <TEMPLATE>/content/frametemplates/frametemplate3</TEMPLATE>
+    </ELEMENTDEF>
+<TEMPLATE> <ELEMENT name="frametemplate"/> </TEMPLATE>
+</XMLTEMPLATE>
+\end{verbatim}
 
-As you can see, the text for the head-section and the navigation-section is just inserted
-dircetly in the master template, but the body is inserted as an element. Please create a new
-page wich uses this master template with the wizard and edit the body with the WYSIWYG-editor
-so that you can see some output. Afterwards the output could look like Figure~\ref{MasterEl}.
+
+As you can see, the text for the head-section and the
+navigation-section is just inserted dircetly in the frametemplate,
+but the content is inserted as an element. The empty
+contenttemplate just inserts the body element. Please create a new
+page witch uses the new master template with the wizard and edit
+the body with the WYSIWYG-editor so that you can see some output.
+Afterwards the output could look like Figure~\ref{MasterEl}.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -312,104 +403,129 @@ so that you can see some output. Afterwards the output could look like Figure~\r
 \end{center}
 \end{figure}
 
-This example should also give a little insight in how to handle standard HTML features as e.g.
-tables and the XML tags together. You can now try to change the layout of the page and edit the
-master template.
-Another thing that you should try is to "insert" a second body in you web site. This is very
-easy to do. You simply have to create a second page with the wizard and choose the same master
-template. You might have noticed that you can specify wether or not your page should included
-in the navigation, and at what position this should be.
+This example should also give a little insight in how to handle
+standard HTML features as e.g. tables and the XML tags together.
+You can now try to change the layout of the page and edit the
+frametemplate and the contenttemplate. Another thing that you
+should try is to "insert" a second body in you web site. This is
+very easy to do. You simply have to create a second page with the
+wizard and choose the same master template. You might have noticed
+that you can specify wether or not your page should included in
+the navigation, and at what position this should be.
 
 \subsection{The default navigation class in opencms}
 
-The navigation concept is based on a representation of files and folders of the VFS of OpenCms. To show a file or a folder in the navigation two properties must be added to the resource, the navigation position and the navigation text.
+The navigation concept is based on a representation of files and
+folders of the VFS of OpenCms. To show a file or a folder in the
+navigation two properties must be added to the resource, the
+navigation position and the navigation text.
 
-To build a dynamic navigation you need to define some files or folders, by entering the position of Navigation and navigation text in dialog box, while creating a file or folder. If there is a group of Navigation entries belonging together then a folder must be defined in which the Navigation entries are represented by HTML files.
+To build a dynamic navigation you need to define some files or
+folders, by entering the position of Navigation and navigation
+text in dialog box, while creating a file or folder. If there is a
+group of Navigation entries belonging together then a folder must
+be defined in which the Navigation entries are represented by HTML
+files.
 
-Per default a link of a folder of navigation is consisting of the folder path with index.html file, e.g if there is a folder as navigation entry {\dir /news/sport/} then the link of this entry in navigation is {\dir /news/sport/index.html}. It means that the required index.html file must not be included in the navigation, because it is automatically added via the folder itself. If index.html file is not existing in this folder then the link of naviagtion would be the current url. If the default name schould be changed index.html to another name (e.g. news.html) then a property {\name NavIndex} must be add to the folder that is used as navigation entry.
+Per default a link of a folder of navigation is consisting of the
+folder path with index.html file, e.g if there is a folder as
+navigation entry {\dir /news/sport/} then the link of this entry
+in navigation is {\dir /news/sport/index.html}. It means that the
+required index.html file must not be included in the navigation,
+because it is automatically added via the folder itself. If
+index.html file is not existing in this folder then the link of
+naviagtion would be the current url. If the default name schould
+be changed index.html to another name (e.g. news.html) then a
+property {\name NavIndex} must be add to the folder that is used
+as navigation entry.
 
-There are some methods in CmsXmlNav class that are used to build a simple navigation. If there is another design of navigation that cannot be build with this navigation class then a new class must be written and CmsXmlNav must be extended.
+There are some methods in the CmsXmlNav class that are used to
+build a simple navigation. If there is another design of
+navigation that cannot be build with this navigation class then a
+new class must be written and CmsXmlNav must be extended.
 
-To display the navigation, an element {\name nav} must be defined in the master template of the files. In the element definition of this element, the class CmsXmlNav and a template file {\name navigation} must be defined. The template of this element is used to define the required HTML-code to build the Navigation. Example:
+To display the navigation, an element {\name nav} must be defined
+in the frametemplate of the files. In the element definition of
+this element, the class CmsXmlNav and a template file {\name
+navigation} must be defined. The template of this element is used
+to define the required HTML-code to build the Navigation. Example:
+First the frametemplate:
 
-\begin{xml}
-<?xml version="1.0"?> \\
-<XMLTEMPLATE> \\
+%\input{examples/templateMechanism/navigation/frametemplateNav}
+\begin{verbatim}
+<?xml version="1.0"?> <XMLTEMPLATE> <TEMPLATE><![CDATA[
+    <HTML>
+    <HEAD>
+        <TITLE>]]><method name="getTitle"/><![CDATA[</TITLE>
+    </HEAD>
+    <BODY>
+    <TABLE border width="100\%" height="100\%">
+        <TR height="30\%">
+        <TH colspan=2 width="100\%" align="center">
+            The Head section
+        </TH>
+        </TR>
+        <TR height="70\%">
+        <TD width="20\%" align="center" valign="top">
+            ]]><element name="nav"/><![CDATA[
+        </TD>
+        <TD width="80\%" align="center">
+            ]]><element name="contenttemplate"/><![CDATA[
+        </TD>
+    </TR>
+    </TABLE>
+    </BODY>
+    </HTML>]]>
+</TEMPLATE>
 
-<TEMPLATE><![CDATA[ \\
-\xtaba <HTML> \\
-\xtabb <HEAD> \\
-\xtabc    <TITLE>]]><method name="getTitle"/><![CDATA[</TITLE> \\
-\xtabb </HEAD> \\
-\xtabb <BODY> \\
-\xtabc <TABLE border width="100\%" height="100\%"> \\
-\xtabd    <TR height="30\%"> \\
-\xtabe       <TH colspan=2 width="100\%" align="center"> \\
-\xtabf          The Head section \\
-\xtabe       </TH> \\
-\xtabd    </TR> \\
-\xtabd    <TR height="70\%"> \\
-\xtabe      <TD width="20\%" align="center" valign="top"> \\
-\xtabf         ]]><element name="nav"/><![CDATA[ \\
-\xtabe      </TD> \\
-\xtabe      <TD width="80\%" align="center"> \\
-\xtabf         ]]><element name="body"/><![CDATA[ \\
-\xtabe      </TD> \\
-\xtabd   </TR> \\
-\xtabc </TABLE> \\
-\xtabb </BODY> \\
-\xtaba </HTML>]]> \\
-</TEMPLATE> \\
+<ELEMENTDEF name="nav">
+    <CLASS>com.opencms.defaults.CmsXmlNav</CLASS>
+    <TEMPLATE>/content/elements/navigation</TEMPLATE>
+</ELEMENTDEF>
 
-<ELEMENTDEF name="nav"> \\
-    <CLASS>com.opencms.defaults.CmsXmlNav</CLASS> \\
-    <TEMPLATE>/content/internal/navigation</TEMPLATE> \\
-</ELEMENTDEF> \\
-
-</XMLTEMPLATE> \\
-\end{xml}
+</XMLTEMPLATE>
+\end{verbatim}
 \index{ELEMENTDEF}
 \index{element}
 \index{getTitle}
 
-Now the definition of the navigation in {\dir /content/internal/}
+Now the definition of the navigation element in {\dir
+/content/elements/}
 
-\begin{xml}
-<?xml version="1.0"?> \\
-<XMLTEMPLATE> \\
+%\input{examples/templateMechanism/navigation/navigation}
+\begin{verbatim}
+<?xml version="1.0"?> <XMLTEMPLATE>
 
-<naventry> \\
-<![CDATA[ \\
-<tr> \\
-\xtaba <td> \\
-\xtabb  <a href="]]><process>navlink</process><![CDATA["> \\
-\xtabc     ]]><process>navtext</process><![CDATA[ \\
-\xtabb  </a> \\
-\xtaba</td> \\
-</tr> \\
-]]> \\
-</naventry> \\
+<naventry>
+    <![CDATA[
+    <tr>
+     <td>
+      <a href="]]><process>navlink</process><![CDATA[">
+             ]]><process>navtext</process><![CDATA[
+      </a>
+     </td>
+    </tr>
+    ]]>
+</naventry>
 
-<navcurrent> \\
-<![CDATA[ \\
-<tr>\\
-\xtaba <td> \\
-\xtabb   ]]><process>navtext</process><![CDATA[ \\
-\xtaba </td> \\
-</tr>\\
-]]>\\
-</navcurrent> \\
-
-<TEMPLATE> \\
-<![CDATA[ \\
-<TABLE border width="100\%" height="100\%"> \\
-\xtaba  ]]><method name="getNavCurrent"/><![CDATA[ \\
-</TABLE> \\
-]]> \\
-</TEMPLATE> \\
-
-</XMLTEMPLATE> \\
-\end{xml}
+<navcurrent>
+    <![CDATA[
+    <tr>
+     <td>
+       ]]><process>navtext</process><![CDATA[
+     </td>
+    </tr>
+    ]]>
+</navcurrent>
+<TEMPLATE>
+    <![CDATA[
+    <TABLE border width="100\%" height="100\%">
+      ]]><method name="getNavCurrent"/><![CDATA[
+    </TABLE>
+    ]]>
+</TEMPLATE>
+</XMLTEMPLATE>
+\end{verbatim}
 \index{ELEMENTDEF}
 \index{element}
 \index{getNavCurrent}
@@ -428,7 +544,7 @@ Data blocks that must be defined in the tamplates that is managed by CmsXmlNav: 
 - navstart \index{navstart} \\
 - navend \index{navend} \\
 
-Additional data blcoks that could be used as a useful data blocks in a navigation structure: \\
+Additional data blocks that could be used as useful data blocks in a navigation structure: \\
 
 - navlevel \index{navlevel} \\
 - navcount \index{navcount} \\
@@ -442,7 +558,7 @@ Methods that are defined in CmsXmlNav: \\
 - getNavRoot \index{getNavRoot} \\
 
 
-Additional methods that can be used as a helpful tools in template: \\
+Additional methods that can be used as helpful tools in template: \\
 
 - getFolderCurrent \index{getFolderCurrent} \\
 - getFolderParent \index{getFolderParent} \\
@@ -491,7 +607,7 @@ Additional methods that can be used as a helpful tools in template: \\
   \end{xml}
 
 \subsubsection{- navstart and navend:} \index{navstart} \index{navend}
-  These data blocks are used in nested navigation system, so if the method {\name getNavFold} or {\name getNavTree} is used then these data blocks could be used to format the navigation. The methods mentioned above are working recursive and after each call these datablocks are used to format the navigation entries, e.g. a definition of the data block {\tag <navstart>} as a {\tag <ul>} tag and the {\tag <navend>} data block as a {\tag </ul>} tag, so by recursive call of the methed then a nested {\tag <ul>} ... {\tag </ul>} list is created. Example: \\
+  These data blocks are used in nested navigation system, so if the method {\name getNavFold} or {\name getNavTree} is used then these data blocks could be used to format the navigation. The methods mentioned above are working recursive and after each call these datablocks are used to format the navigation entries, e.g. a definition of the data block {\tag <navstart>} as a {\tag <ul>} tag and the {\tag <navend>} data block as a {\tag </ul>} tag, so by recursive call of the method then a nested {\tag <ul>} ... {\tag </ul>} list is created. Example: \\
 
   \begin{xml}
   <navstart><![CDATA[<ul>]]></navstart> \\
@@ -563,10 +679,10 @@ Additional methods that can be used as a helpful tools in template: \\
   The depth parameter defines how many levels of folders must be displayed in the navigation tree. For example if the current Folder is {\dir /news/sport/football/liga/first/} and the method definition is {\tag <method name="getNavTree>1,3</method>} then the starting point of navigation would be {\dir /news/} and it ends in folder {\dir /news/sport/football/}. \\
 
 \subsubsection{- getNavParent:} \index{getNavParent}
-  This method gets the navigation from parent folder depending on the given parameter. For example if the current Folder is {\dir /news/sport/football/liga/first/} and the method definition is {\tag <method name="getNavParent>2</method>} then the navigation in folder {\dir /news/sport/football/} would be displayed (two level back). This method gets only one parameter, if there is no given parameter then the navigation in current folder is displayed. If the number given as parameter exceeded from the sum of the folders then the root folder is choosen. \\
+  This method gets the navigation from parent folder depending on the given parameter. For example if the current Folder is {\dir /news/sport/football/liga/first/} and the method definition is {\tag <method name="getNavParent>2</method>} then the navigation in folder {\dir /news/sport/football/} would be displayed (two level back). This method gets only one parameter, if there is no given parameter then the navigation in current folder is displayed. If the number given as parameter exceeded from the sum of the folders then the root folder is chosen. \\
 
 \subsubsection{- getNavRoot:} \index{getNavRoot}
-  This method gets the navigation starting from root folder depending on the given parameter. For example if the current folder is {\dir /news/sport/football/liga/first/} and the method definition is {\tag <method name="getNavRoot>2</method>} then the navigation in folder {\dir /news/sport/} would be displayed (second level starting from root). This method gets only one parameter, if there is no given parameter then the navigation in current folder is choosen. If the number given as parameter exceeded from sum of the folders then the current folder is choosen. \\
+  This method gets the navigation starting from root folder depending on the given parameter. For example if the current folder is {\dir /news/sport/football/liga/first/} and the method definition is {\tag <method name="getNavRoot>2</method>} then the navigation in folder {\dir /news/sport/} would be displayed (second level starting from root). This method gets only one parameter, if there is no given parameter then the navigation in current folder is choosen. If the number given as parameter exceeded from sum of the folders then the current folder is chosen. \\
 
 \subsubsection{- getFolderCurrent:} \index{getFolderCurrent}
   This method gets the current folder, this method has the same functionality of method {\name getPathUri} in CmsXmlTemplate class. \\
@@ -649,7 +765,7 @@ It is very usual to use an image instead of Text in navigation, therefore here i
 \end{xml}
 
 
-To build a navigation using images instead of text, an image name must be written in {\name NavText} property. To have the mouse over effect and mouse out effect, it is needed to have another pictures with the same name but with a suffix, so the picture would be find and substitue with javascript. In the above example first of all the image name would be constructed with the count data block (so image\_1, image\_2,.... would be generated) then by mouse over the corresponding image would be substitue with the image with the same name but with the suffix of {\name \_light}, so if the picture name is {\name nav.gif} then by mouse over picture would be substitue with nav\_light.gif and by mouse out nav.gif. \\
+To build a navigation using images instead of text, an image name must be written in {\name NavText} property. To have the mouse over effect and mouse out effect, it is needed to have another pictures with the same name but with a suffix, so the picture would be found and replaced with javascript. In the above example first of all the image name would be constructed with the count data block (so image\_1, image\_2,.... would be generated) then by mouse over the corresponding image would be replaced with the image with the same name but with the suffix of {\name \_light}, so if the picture name is {\name nav.gif} then by mouse over picture would be replaced with nav\_light.gif and by mouse out nav.gif. \\
 
 
 \section{Templates and directories}
@@ -707,15 +823,68 @@ or element definitions.
 
 \subsection{Directory structure}
 
-The OpenCms system creates a standard directory structure for every new project in the virtual
-file system. The templates, body templates, page control files etc. are stored in separate
-directories. If you create a new file of the type {\name Page} within a project, only the page control
-file is created in the directory you are actually in. At the same time there is  automatically a
-body-template with the same name created in the {\dir /content/bodys directory}.
-If you click on the page control file and choose {\name Edit Page} from the context menue, you
-actually edit the body in the {\dir /content/bodys directory} with the WYSIWYG-editor. You can
-check
-this out by looking at both files with the source-code-editor after you have changed something.
+The OpenCms system creates a standard directory structure for
+every new project in the virtual file system. The templates, body
+templates, page control files etc. are stored in separate
+directories. If you create a new file of the type {\name Page}
+within a project, only the page control file is created in the
+directory you are actually in. At the same time there is
+automatically a body-template with the same name created in the
+{\dir /content/bodys directory}. If you click on the page control
+file and choose {\name Edit Page} from the context menue, you
+actually edit the body in the {\dir /content/bodys directory} with
+the WYSIWYG-editor. You can check this out by looking at both
+files with the source-code-editor after you have changed
+something, but you should never change the files in body directory
+directly.
+
+\subsection{The subdirectorys of the content folder}
+\index{content}
+
+\subsubsection{- templates:} \index{templates}
+
+In the directory {\dir /content/templates} are the definitions for
+the different combinations of frame- and contenttemplates. These
+files have always the same structure as you have seen in the
+examples so far. The only things that can be changed are the names
+of the two templates (only names not the path!). Never add any
+other html or xml stuff here.
+
+\subsubsection{- frametemplates:} \index{frametemplates}
+
+In the frametemplates the design of the frame is build. e.g. it
+can contain the navigation and an head element. There is always
+the area where the contenttemplate is included which was defined
+in the master template.
+
+\subsubsection{- contenttemplates:} \index{contenttemplates}
+
+The contenttemplates are subframes which include the body element
+and maybe other elements.
+
+\subsubsection{- bodys:} \index{bodys}
+
+This folder is for internal use only. It contains the above
+mentioned body elements.
+
+\subsubsection{- default\_bodies:} \index{defaultbodies}
+
+In this folder you can store some bodies which you use often. When
+you create a new page you can chose one of these bodies to be
+copied in your new pagebody.
+
+\subsubsection{- internal:} \index{internal}
+
+This directory is not used any more. It is still there for
+compatibility reasons and its job is now taken over by the
+elements folder.
+
+\subsubsection{- elements:} \index{elements}
+
+Here you can store your dynamic elements. A element is dynamic if
+it don't use the standard class CmsXmlTemplate. For Example the
+navigation element.
+
 
 \begin{figure}[hbt]
 \begin{center}
@@ -736,13 +905,6 @@ Directory &
 Files stored in the Directory \\
 /content &
 Parent directory for the directories that take up the template files.\\
-/content/bodys&
-Body templates are stored in this directory or a subdirectory hereof. They are
-stored in a directory with the same name as the directory in which the web site is located.\\
-/content/internal&
-Templates (subtemplates) that are not body or master templates.\\
-/content/templates&
-The master templates that define the general layout of a web site.\\
 /download&
 Files that can be downloaded.\\
 /pics&
@@ -776,32 +938,26 @@ Up to here, you got an overview over the templatemechanism, but many things whic
 been used have not been explained. We will now go one step back and take a look at some earlier
 examples and the basic structures of the template mechanism.
 
-In this example you will learn how to use data blocks in a template. A data block is a named
-block of text that can contain XML and HTML code. We will change the earlier example by putting
-the {\name Hello, world!} text into a data block with the name {\name message.} To create the new
-template, create a new text file in the {\dir /content/templates} directory with the
-following text:
+In this example you will learn how to use data blocks in a
+template. A data block is a named block of text that can contain
+XML and HTML code. We will change the earlier example by putting
+the {\name Hello, world!} text into a data block with the name
+{\name message.} To create the new contenttemplate, create a new
+text file named contenttemplate2 in the {\dir
+/content/contenttemplates} directory with the following text:
 \index{data blocks}
 
-\begin{xml}
-<?xml version="1.0"?>\\
-<XMLTEMPLATE>\\
-<MESSAGE><![CDATA[Hello world!]]></MESSAGE>\\
-<TEMPLATE>\\
-\xtaba   <![CDATA[\\
-\xtaba   <HTML>\\
-\xtaba     <HEAD>\\
-\xtabb     <TITLE>]]><method name="getTitle"/><![CDATA[</TITLE>\\
-\xtaba     </HEAD>\\
-\xtaba     <BODY>\\
-\xtabb     ]]><PROCESS>message</PROCESS><![CDATA[<br>\\
-\xtabb     ]]><ELEMENT name="body"/><![CDATA[\\
-\xtaba     </BODY>\\
-\xtaba   </HTML>\\
-\xtaba   ]]>\\
-</TEMPLATE>\\
-</XMLTEMPLATE>\\
-\end{xml}
+%\input{examples/templateMechanism/datablocks/contenttemplate2}
+\begin{verbatim}
+<?xml version="1.0"?>
+<XMLTEMPLATE>
+    <MESSAGE><![CDATA[Hello world!]]></MESSAGE>
+    <TEMPLATE><![CDATA[
+            ]]><PROCESS>message</PROCESS><![CDATA[ <br>
+        ]]><ELEMENT name="body"/>
+    </TEMPLATE>
+</XMLTEMPLATE>
+\end{verbatim}
 
 Note the changes that have been made in the template. The {\name Hello, world!} text is now
 enclosed between {\tag <MESSAGE>} and {\tag </MESSAGE>}, which are the start and end tags for
@@ -825,93 +981,87 @@ first example, providing you haven't added text to the body in the HTML Editor.
 
 
 
-You can of course edit the body if you want to insert additional text or pictures in the
-document. Data blocks can be used to insert blocks of XML or HTML code in your document. The
-content of these blocks can also be defined dynamically in Java classes. The next example will
-show how this is done.
-Here the Text is directly set into the datablock message within the template. But the text can
-also be set by a Java method.
-In this case, the controlling Java class has to be determied within the page control file.
-Select {\name Edit ControlCode} to edit the page control file (Figure~\ref{EditC}).
-\index{page control file}
+You can of course edit the body if you want to insert additional
+text or pictures in the document. Data blocks can be used to
+insert blocks of XML or HTML code in your document. The content of
+these blocks can also be defined dynamically in Java classes. The
+next example will show how this is done. Here the Text is directly
+set into the datablock message within the template. But the text
+can also be set by a Java method. In this case you should define
+and include an dynamic element in your contenttemplate. The
+controlling Java class has to be determied within the
+elementdefinition. Change your contenttemplate to this:
 
-\begin{figure}[hbt]
-\begin{center}
-\includegraphics[width=\sgw]
-                   {pics/templateMech/EditControlCode}
-\caption[Edit Control Code]
-           {[Edit Control Code}
-\label{EditC}
-\end{center}
-\end{figure}
+%\input{examples/templateMechanism/datablocks/contenttemplate3}
+\begin{verbatim}
+<?xml version="1.0"?>
+<XMLTEMPLATE>
+    <MESSAGE><![CDATA[Hello world!]]></MESSAGE>
+    <TEMPLATE><![CDATA[
+        ]]><ELEMENT name="dynamicelement"/><![CDATA[ <br>
+        ]]><ELEMENT name="body"/>
+    </TEMPLATE>
 
-The page will contain text that looks like this:
+    <ELEMENTDEF name="dynamicelement">
+        <CLASS>CmsExample4</CLASS>
+        <TEMPLATE>/content/elements/element1</TEMPLATE>
+    </ELEMENTDEF>
 
-\begin{xml}
-<?xml version= "1.0 " encoding= "ISO-8859-1 "?>\\
-<page>\\
-\xtaba  <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\\
-\xtaba  <MASTERTEMPLATE>/content/templates/template4</MASTERTEMPLATE>\\
-\xtaba  <ELEMENTDEF name="body">\\
-\xtabb  <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\\
-\xtabb  <TEMPLATE>/content/bodys/page4.html</TEMPLATE>\\
-\xtaba  </ELEMENTDEF>\\
-</page>\\
-\end{xml}
+</XMLTEMPLATE>
+\end{verbatim}
 \index{CLASS}
-\index{MASTERTEMPLATE}
 \index{ELEMENTDEF}
-You can see two {\tag <CLASS>} tags that define which Java classes will be used to control the
-templates. The first entry is the one for the master template and should always use the default
-{\name com.opencms.template.CmsXmlTemplate} class. The second entry for a class defines the
-class that
-controls the body template. This entry must be changed, and the name of our new class
-({\name CmsExample4}) should be placed inside the {\tag <CLASS>} tag. If the class is located
-inside a package, you have to type the fully qualified class name inside the {\tag <CLASS>} tag.
-The page control file should look like this:
 
+The elementdefinition (ELEMENTDEF) consist of three parts. The
+name of the element. This is used to include it in the template
+with the <ELEMENT> tag. The template file is the text file in the
+element directory and the javaclass which process the template. In
+this class tag we insert our new javaclass CmsExample4. If the
+class is located inside a package, you have to type the fully
+qualified class name inside the {\tag <CLASS>} tag.
+
+Create the element1 in the folder {\dir /content/elements} with
+this text:
 \begin{xml}
-<?xml version= "1.0 " encoding= "ISO-8859-1 "?>\\
-<page>\\
-\xtaba  <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\\
-\xtaba  <MASTERTEMPLATE>/content/templates/template4</MASTERTEMPLATE>\\
-\xtaba  <ELEMENTDEF name="body">\\
-\xtabb  <CLASS>CmsExample4</CLASS>\\
-\xtabb  <TEMPLATE>/content/bodys/page4.html</TEMPLATE>\\
-\xtaba  </ELEMENTDEF>\\
-</page>\\
-\end{xml}
-
-Note that the name of the master template file and the body template file will be different
-if you entered different names for your files. When you have adjusted the page control file
-you can save it and leave the editor.
-
-\subsection{Using user-defined Methods}
-
-Another way to insert dynamic content is to use user-defined methods in the template. You have
-already seen how to use the {\it getTitle()} method in a template in the second example.
-The master template should contain the following text:
-
-\begin{xml}
-<TEMPLATE> \\
-  <![CDATA[
-  <HTML> \\
-    <HEAD> \\
-\xtaba     <TITLE>]]><method name="getTitle"/><![CDATA[</TITLE>\\
-    </HEAD>\\
-    <BODY>\\
-\xtaba     ]]><ELEMENT name="body"/><![CDATA[\\
-    </BODY>\\
-  </HTML>]]>\\
+<?xml version="1.0"?>\\
+<XMLTEMPLATE>\\
+<TEMPLATE>\\
+\xtaba <PROCESS>greeting</PROCESS>\\
 </TEMPLATE>\\
 </XMLTEMPLATE>\\
 \end{xml}
 
-This template defines the title of the page and inserts a body element. The method tag can be
-placed in the body template. We will use a method that returns the string {\name Hello, World from
-Java} and give it the name {\meth getHello()}. The result will be the same as that of the previous
-example: the text will be inserted in the output of the page. The body template should contain
-the following:
+Then program your class like this:
+%\input{examples/templateMechanism/datablocks/CmsExample3}
+\begin{verbatim}
+ import com.opencms.template.*;
+import com.opencms.core.*;
+import com.opencms.file.*;
+
+public class CmsExample7 extends CmsXmlTemplate {
+
+
+public byte[] getContent(CmsObject cms, String templateFile,
+String elementName, Hashtable parameters, String templateSelector)
+throws CmsException {
+
+    CmsXmlTemplateFile template = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+    template.setData("greetings", "Hello from Java Class!");
+    return startProcessing(cms, template, elementName, parameters, templateSelector);
+    }
+}
+\end{verbatim}
+
+This class sets in the datablock greeting the string "Hello from
+Java Class".
+
+
+\subsection{Using user-defined Methods}
+
+Another way to insert dynamic content is to use user-defined
+methods in the template. You have already seen how to use the {\it
+getTitle()} method in a frametemplate in the second example. The
+element template should contain the following text:
 
 \begin{xml}
 <?xml version="1.0"?>\\
@@ -922,10 +1072,30 @@ the following:
 </XMLTEMPLATE>\\
 \end{xml}
 
-The output of the new template will be the same as that of the previous example: it displays
-the string {\name Hello, World from Java!} on the screen. The only difference is the procedure we
-followed to accomplished the task of inserting something in the document. In the previous
-example the process tag was replaced and now we used the entirely new method {\name getHello()}.
+This template contains the method tag . We will use a method that
+returns the string {\name Hello, World from Java} and give it the
+name {\meth getHello()}:
+
+%\input{examples/templateMechanism/datablocks/CmsExample4}
+\begin{verbatim}
+ import com.opencms.template.*;
+import com.opencms.core.*;
+import com.opencms.file.*;
+
+public class CmsExample4 extends CmsXmlTemplate {
+    public Object getHello(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+                         throws CmsException {
+        return "Hello World from java!";
+    }
+}
+\end{verbatim}
+
+The output of the new template will be the same as that of the
+previous example: it displays the string {\name Hello, World from
+Java!} on the screen. The only difference is the procedure we
+followed to accomplished the task of inserting something in the
+document. In the previous example the process tag was replaced and
+now we used the entirely new method {\name getHello()}.
 
 \subsection{Details of OpenCms Template Programming}
 
@@ -944,39 +1114,41 @@ Below is the page control file for an earlier example:
  <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\\
  <MASTERTEMPLATE>/content/templates/template5</MASTERTEMPLATE>\\
  <ELEMENTDEF name="body">\\
-\xtaba  <CLASS>CmsExample5</CLASS>\\
+\xtaba  <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\\
 \xtaba  <TEMPLATE>/content/bodys/page5.html</TEMPLATE>\\
  </ELEMENTDEF>\\
 </page>\\
 \end{xml}
 
-As can be seen in the first line this file is an XML document. There are two {\tag <CLASS>}
-entries and two entries for templates. The first template entry is the one for the master
-template and
-the second is for the body template. The name of the master template file is enclosed between
-{\tag <MASTERTEMPLATE>} tags. The <CLASS> tag above it determines the Java class that controls the
-master template. This class is the generic {\name com.opencms.template.CmsXmlTemplate}
-class and should
-always be used to control the master template. The {\tag <ELEMENTDEF>} tag defines an element
-with the name {\name body}. An element definition must be provided for every subelement
-(subtemplate) that is
-inserted in the document. The body element can be placed in the master template with the element
-tag as follows:
-{\tag <ELEMENT name="body"/>}
-You can place other subtemplates in your document in the same way you placed the body template
-in it, by inserting a
-{\tag <ELEMENT name="aNewName"/>} tag and element definition in your document. The name for the
-new element can be freely defined.
-The controlling Java class for the body template can be one of the existing template classes or
-one that is derived from these classes and defined by you. In the example above we used the
-{\name CmsExample5} class, which defined the new method {\meth getHello()}.
-\index{body element}
+As can be seen in the first line this file is an XML document.
+There are two {\tag <CLASS>} entries and two entries for
+templates. The first template entry is the one for the master
+template and the second is for the body template. The name of the
+master template file is enclosed between {\tag <MASTERTEMPLATE>}
+tags. The <CLASS> tag above it determines the Java class that
+controls the master template. This class is the generic {\name
+com.opencms.template.CmsXmlTemplate} class and should always be
+used to control the master template. The {\tag <ELEMENTDEF>} tag
+defines an element with the name {\name body}. An element
+definition must be provided for every subelement (subtemplate)
+that is inserted in the document. The body element can be placed
+in the contenttemplate with the element tag as follows: {\tag
+<ELEMENT name="body"/>} You can place other subtemplates in your
+document in the same way you placed the body template in it, by
+inserting a {\tag <ELEMENT name="aNewName"/>} tag and element
+definition in your document. The name for the new element can be
+freely defined. The controlling Java class for the body template
+can be one of the existing template classes or one that is derived
+from these classes and defined by you. In the example above we
+used the {\name CmsExample5} class, which defined the new method
+{\meth getHello()}. \index{body element}
 
-\subsubsection{The Difference between the Master and the Body Template}
-The master template is the template that holds the body template and all of its subtemplates.
-The master template mainly defines the layout of the whole page
-and the gaps in which the templates are inserted.
-Figure~\ref{MasterEl2} shows the structure of a typical web site created with OpenCms.
+\subsubsection{The Difference between the Content and the Body Template}
+The Contenttemplate is the template that holds the body template
+and all of its subtemplates. The Frametemplate mainly defines the
+layout of the whole page and the gaps in which the templates are
+inserted. Figure~\ref{MasterEl2} shows the structure of a typical
+web site created with OpenCms.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -988,22 +1160,25 @@ Figure~\ref{MasterEl2} shows the structure of a typical web site created with Op
 \end{center}
 \end{figure}
 
-The master template in this graphic contains a body template and an element template
-(subtemplate) that creates the navigation. The body template and all of the other element
-templates are also capable of containing subtemplates. This enables you to structure your
-document in any imaginable way. The master template and the subtemplates can easily be reused
-for the design of other web sites.
-\index{master template}
-\index{body template}
-\index{subtemplate}
+The frametemplate in this graphic contains a contenttemplate and
+an element template (subtemplate) that creates the navigation. The
+contenttemplate and all of the other element templates are also
+capable of containing subtemplates. This enables you to structure
+your document in any imaginable way. The frametemplate and the
+contenttemplates can easily be reused for the design of other web
+sites. \index{contenttemplate} \index{frametemplate} \index{body
+template} \index{subtemplate}
+
 \subsubsection{Process, Method and Element Tags}
-The process, method and element tags enable you to insert dynamic content in your web site.
-They have already been used in the first examples. Their syntax and their usage will be
-discussed in the following sections.
-The process tag can be used to insert the content of data blocks in your document. The data
-blocks can be defined in the document or set by Java classes. We will explain how a process
-tag works by taking a look at a further example.
-Here is the content of the master template of this example:
+
+The process, method and element tags enable you to insert dynamic
+content in your web site. They have already been used in the first
+examples. Their syntax and their usage will be discussed in the
+following sections. The process tag can be used to insert the
+content of data blocks in your document. The data blocks can be
+defined in the document or set by Java classes. We will explain
+how a process tag works by taking a look at a further example.
+Here is the content of dynamic element template of this example:
 
 \begin{xml}
 <?xml version= "1.0 "?>\\
@@ -1020,18 +1195,21 @@ Here is the content of the master template of this example:
 \end{xml}
 \index{PROCESS}
 
-There are two process tags in this template: the first inside the data block {\name message}
-and the second inside the template tag. The text inside the process tag defines the data block
-that will be processed. In this example two data blocks will be processed, one named
-{\name greeting} and one
-named {\name message}. The {\name message} data block is defined in the template document.
-The data block {\name greeting} is not defined in the document, but set in the Java class
-that is associated with the template.
+There are two process tags in this template: the first inside the
+data block {\name message} and the second inside the template tag.
+The text inside the process tag defines the data block that will
+be processed. In this example two data blocks will be processed,
+one named {\name greeting} and one named {\name message}. The
+{\name message} data block is defined in the template document.
+The data block {\name greeting} is not defined in the document,
+but set in the Java class that is associated with the template
+(see the example above).
 
-This way the data block can be set dynamically in the Java classes. To show that it is possible
-to set the data block randomly inside a Java class, the next examples insert a randomly selected
-link to a web site.
-This is the content of the body template file:
+This way the data block can be set dynamically in the Java
+classes. To show that it is possible to set the data block
+randomly inside a Java class, the next examples insert a randomly
+selected link to a web site. This is the content of the element
+file:
 \begin{xml}
 <?xml version="1.0"?>\\
 <XMLTEMPLATE>\\
@@ -1045,32 +1223,30 @@ This is the content of the body template file:
 </XMLTEMPLATE>\\
 \end{xml}
 
-The master template creates a web site with a body element:
-\begin{xml}
-<?xml version="1.0"?>\\
-<XMLTEMPLATE>\\
-<TEMPLATE>\\
- <![CDATA[\\
- <HTML>\\
- <HEAD>\\
-\xtaba  <TITLE>]]><method name="getTitle"/><![CDATA[</TITLE>\\
- </HEAD>\\
-<BODY>\\
-\xtaba  ]]><ELEMENT name="body"/><![CDATA[\\
- </BODY>\\
- </HTML>]]>\\
-</TEMPLATE>\\
-</XMLTEMPLATE>\\
-\end{xml}
+Here is the getContent method of the associated class:
+\begin{verbatim}
+public byte[] getContent(CmsObject cms, String templateFile,
+String elementName, Hashtable parameters, String templateSelector)
+throws CmsException {
+    CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+    String linkTarget;
+    linkTarget = "link" + String.valueOf((int) (Math.random() * 2 + 1));
+    templateDocument.setData("link", templateDocument.getDataValue(linkTarget));
+    return startProcessing(cms, templateDocument, elementName, parameters, templateFile);
+}
+\end{verbatim}
 
 The target of the link will be set randomly in a Java class.
 
-The next example will show how to create tables or lists using the process tag. You can use the
-process tag to set the data entries in tables in Java classes. The table will be dynamically
-built in the Java class by producing a string that concatenates the table rows. The layout of
-the table is defined in the template. For this example, we can use the master template that was
-used in the previous example: an empty site with a body element. The whole layout will be
-defined in the body template. This is the content of the body template:
+The next example will show how to create tables or lists using the
+process tag. You can use the process tag to set the data entries
+in tables in Java classes. The table will be dynamically built in
+the Java class by producing a string that concatenates the table
+rows. The layout of the table is defined in the template. For this
+example, we can use the template that was used in the previous
+example: an empty site with a body element. The whole layout will
+be defined in the element template. This is the content of the
+element template:
 
 \begin{xml}
 <?xml version="1.0"?>\\
@@ -1103,12 +1279,35 @@ defined in the body template. This is the content of the body template:
 </XMLTEMPLATE>\\
 \end{xml}
 
-The template defines a table and two data blocks. The data block {\name tablehead} defines
-a static heading for every column and will be inserted in the table by the process tag.
-The content of the table will be created in a Java class and will be set as the data block
-{\name list.} The layout table's rows is defined by the data block {\name row}. The Java
-class will set the content of every row, concatenate the results and insert them in the
-document as the data block {\name list}.
+The template defines a table and two data blocks. The data block
+{\name tablehead} defines a static heading for every column and
+will be inserted in the table by the process tag. The content of
+the table will be created in a Java class and will be set as the
+data block {\name list.} The layout table's rows is defined by the
+data block {\name row}. The Java class will set the content of
+every row, concatenate the results and insert them in the document
+as the data block {\name list}. Here again the getContent method:
+\begin{verbatim}
+public byte[] getContent(CmsObject cms, String templateFile,
+String elementName, Hashtable parameters, String templateSelector)
+throws CmsException {
+    String[] owners = {"Martin", "Thomas", "Andreas", "Bill", "Michael", "Doris"};
+    String[] animals = {"cat", "dog", "mouse", "rat", "bird", "snake"};
+    CmsXmlTemplateFile template = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+    String list = "";
+    for (int i = 0; i < animals.length; i++) {
+        template.setData("number", i + "");
+        template.setData("name", animals[i]);
+        template.setData("owner", owners[i]);
+        String row = template.getProcessedDataValue("row");
+        list += row;
+    }
+    template.setData("list", list);
+    return startProcessing(cms, template, elementName, parameters, templateSelector);
+}
+\end{verbatim}
+
+
 
 The last example can be modified to produce a list instead of a table. The Java class can be
 left unchanged and reused to create the list. This shows that it is possible to change the
@@ -1200,8 +1399,30 @@ new method {\meth getTable()}. Here is the body template:
 \end{xml}
 
 
-The names of the owners and the animals have been changed to emphasize that this table is not
-the same as the one that was produced by using the process tag.
+The names of the owners and the animals have been changed to
+emphasize that this table is not the same as the one that was
+produced by using the process tag:
+
+\begin{verbatim}
+public class CmsExample9 extends CmsXmlTemplate {
+
+public Object getTable(CmsObject cms, String tagcontent,
+A_CmsXmlContent doc, Object userObject) throws CmsException {
+    String[] owners = {"Elmar", "Randolf", "Sandra", "Geoffrey", "Claudia", "Doris"};
+    String[] animals = {"spider", "eagle", "lion", "cheetah", "scorpion", "snake"};
+    CmsXmlTemplateFile template = (CmsXmlTemplateFile) doc;
+    String list = "";
+    for (int i = 0; i < animals.length; i++) {
+        template.setData("number", i + "");
+        template.setData("name", animals[i]);
+        template.setData("owner", owners[i]);
+        String row = template.getProcessedDataValue("row");
+        list += row;
+    }
+    return list;
+}
+}
+\end{verbatim}
 
 \subsubsection{Element Tag and Element Definition}
 
@@ -1226,21 +1447,23 @@ following structure:
 \end{xml}
 \index{ELEMENTDEF}
 
-In the element definition, the template file and the controlling Java class are specified in
-the template and the class tag. It is also possible to pass parameters to the controlling Java
-class. Parameters that are specified in the element definition are accessible in the Java class.
-They are stored in a hash table together with the parameters that are appended to a URL.
-The element definition is defined either in the document in which the element is inserted, or
-in the page control file. If the element definition is missing, the element definition of the
-element {\name body} will be used. This element definition is automatically generated by the system
-when a new page is created, but can be modified, for example, to change the controlling Java
-classes. The element definition can also be overridden in the page control file. If an element
-definition is specified in both the file in which the element is inserted and in the page
-control file, the element definition stored in the page control file takes precedence. This
-means that the page control file can be used to modify a default element definition.
-The next example will show the effect of overriding element definitions. First we need to
-create a template that contains elements that consist of templates using data from the
-previous examples. This is the master template for the new page:
+In the element definition, the template file and the controlling
+Java class are specified in the template and the class tag. It is
+also possible to pass parameters to the controlling Java class.
+Parameters that are specified in the element definition are
+accessible in the Java class. They are stored in a hash table
+together with the parameters that are appended to a URL. The
+element definition is defined either in the document in which the
+element is inserted, or in the page control file. The element
+definition can also be overridden in the page control file. If an
+element definition is specified in both the file in which the
+element is inserted and in the page control file, the element
+definition stored in the page control file takes precedence. This
+means that the page control file can be used to modify a default
+element definition. The next example will show the effect of
+overriding element definitions. First we need to create a template
+that contains elements that consist of templates using data from
+the previous examples. This is the frametemplate for the new page:
 \begin{xml}
 
 <?xml version="1.0"?>\\
@@ -1267,7 +1490,7 @@ previous examples. This is the master template for the new page:
 \xtaba                   ]]><element name="random"/><![CDATA[\\
 \xtaba           </TD>\\
 \xtaba           <TD width="80\%" align="center">\\
-\xtaba                   ]]><element name="body"/><![CDATA[\\
+\xtaba                   ]]><element name="contenttemplate"/><![CDATA[\\
 \xtaba           </TD>\\
 \xtaba   </TR>\\
 \xtaba </TABLE>\\
@@ -1276,26 +1499,28 @@ previous examples. This is the master template for the new page:
 </TEMPLATE>\\
 
 <ELEMENTDEF name="hello">\\
-\xtaba <TEMPLATE>/content/bodys/page4.html</TEMPLATE>\\
+\xtaba <TEMPLATE>/content/elements/element1</TEMPLATE>\\
 \xtaba <CLASS>CmsExample4</CLASS>\\
 </ELEMENTDEF>\\
 
 <ELEMENTDEF name="random">\\
-\xtaba <TEMPLATE>/content/bodys/page6.html</TEMPLATE>\\
+\xtaba <TEMPLATE>/content/elements/element2.html</TEMPLATE>\\
 \xtaba <CLASS>CmsExample6</CLASS>\\
 </ELEMENTDEF>\\
 
 </XMLTEMPLATE>\\
 \end{xml}
-\index{ELEMENTDEF}
-The template defines a table with two rows and two columns. A picture of the  OpenCms logo is
-placed in the first row of the first column. An element called {\name hello} is placed in the
-second
-column of the first row. The corresponding element definition specifies this element as the one
-we used before: it displays the string {\name Hello, World from Java!} on the screen.
-The second row in the first column contains an element called {\name random}. This element is the
-random link that we created before. The body element is inserted in the second column of
-row 2. This is the content of the body template:
+\index{ELEMENTDEF} The template defines a table with two rows and
+two columns. A picture of the  OpenCms logo is placed in the first
+row of the first column. An element called {\name hello} is placed
+in the second column of the first row. The corresponding element
+definition specifies this element as the one we used before: it
+displays the string {\name Hello, World from Java!} on the screen.
+The second row in the first column contains an element called
+{\name random}. This element is the random link that we created
+before. The contentelement is inserted in the second column of row
+2. This is the content of the element included in the
+contenttemplate:
 
 \begin{xml}
 <?xml version="1.0"?>\\
@@ -1314,12 +1539,12 @@ row 2. This is the content of the body template:
 \xtaba </TABLE>]]>\\
 </TEMPLATE>\\
 <ELEMENTDEF name="animaltable">\\
-\xtaba <TEMPLATE>/content/bodys/page7.html</TEMPLATE>\\
+\xtaba <TEMPLATE>/content/elements/element7.html</TEMPLATE>\\
 \xtaba <CLASS>CmsExample7</CLASS>\\
 </ELEMENTDEF>\\
 
 <ELEMENTDEF name="animallist">\\
-\xtaba <TEMPLATE>/content/bodys/page8.html</TEMPLATE>\\
+\xtaba <TEMPLATE>/content/elements/element8.html</TEMPLATE>\\
 \xtaba <CLASS>CmsExample7</CLASS>\\
 </ELEMENTDEF>\\
 
@@ -1327,13 +1552,15 @@ row 2. This is the content of the body template:
 \end{xml}
 
 
-The body template defines a table with two elements that contain data form previous examples:
-the table and a list of the animals and their owners. When you look at the page you will see
-that the elements are all placed in the document in the positions that are defined in the
-template.
-The effect of overriding an element definition will be shown in the next example. An element
-definition is overridden by adding another element definition in the page control file. This
-is the content of the original page control file:
+The template defines a table with two elements that contain data
+from previous examples: the table and a list of the animals and
+their owners. When you look at the page you will see that the
+elements are all placed in the document in the positions that are
+defined in the template. The effect of overriding an element
+definition will be shown in the next example. An element
+definition is overridden by adding another element definition in
+the page control file. This is the content of the original page
+control file:
 \begin{xml}
 <?xml version= "1.0 " encoding= "ISO-8859-1 "?>\\
 <page>\\
@@ -1359,7 +1586,7 @@ To change the content of the {\name hello} element you can add a definition for 
 \xtaba  <TEMPLATE>/content/bodys/page\_12.html</TEMPLATE>\\
  </ELEMENTDEF>\\
  <ELEMENTDEF name="hello">\\
-\xtaba  <TEMPLATE>/content/bodys/page6.html</TEMPLATE>\\
+\xtaba  <TEMPLATE>/content/elements/element2.html</TEMPLATE>\\
 \xtaba  <CLASS>CmsExample6</CLASS>\\
  </ELEMENTDEF>\\
 
@@ -1367,26 +1594,27 @@ To change the content of the {\name hello} element you can add a definition for 
 \end{xml}
 
 
-Because this element definition will be used instead of the one that is defined in the master
-template, the random link (body template of example 6) will be displayed instead of the
-{\name Hello, World from Java!} text (see example 12).
-If an element definition is missing, the element definition for the body element in the page
-control file is used. This definition will also be used for missing parts of an element
-definition. If the element's class or template is not specified, it will be taken from the
-body element definition in the page control file.
-You can see this by deleting the definition for the {\name hello} element in the master template.
-Doing this will display the content of the body element instead of the
-{\name Hello, World from Java!}
-text (see example 13).
-Example 14 will show how parameters that are specified in an element definition are used.
-Example 13 has been modified and parameters added to the definition of the element
-{\name hello.}
-The Java class and the element's template have been modified to insert the parameters. The
-parameters are used to specify the element's foreground and background colors. This is the
-new definition of the {\name hello} element:
+Because this element definition will be used instead of the one
+that is defined in the template, the random link (element template
+of example 6) will be displayed instead of the {\name Hello, World
+from Java!} text (see example 12). For missing parts of the
+element definition the element definition for the body element in
+the page control file is used. If the element's class or template
+is not specified, it will be taken from the body element
+definition in the page control file. You can see this by deleting
+the definition for the {\name hello} element in the master
+template. Doing this will display the content of the body element
+instead of the {\name Hello, World from Java!} text (see example
+13). Example 14 will show how parameters that are specified in an
+element definition are used. Example 13 has been modified and
+parameters added to the definition of the element {\name hello.}
+The Java class and the element's template have been modified to
+insert the parameters. The parameters are used to specify the
+element's foreground and background colors. This is the new
+definition of the {\name hello} element:
 \begin{xml}
 <ELEMENTDEF name="hello">\\
-\xtaba <TEMPLATE>/content/bodys/page\_14\_param.html</TEMPLATE>\\
+\xtaba <TEMPLATE>/content/elemetns/page\_14\_param.html</TEMPLATE>\\
 \xtaba <CLASS>CmsExample14</CLASS>\\
 \xtaba <PARAMETER name="foreground">blue</PARAMETER>\\
 \xtaba <PARAMETER name="background">green</PARAMETER>\\
@@ -1394,65 +1622,10 @@ new definition of the {\name hello} element:
 \end{xml}
 \index{PARAMETER}
 
-This element definition is located in the master template. Two parameters, {\name foreground}
-and  {\name background}, define the colors of the element. These colors are defined in the Java
-class that controls the element's template.
-
-\subsubsection{Javascript Blocks}
-\index{Javascript Blocks}
-With OpenCms, Javascript code is easily inserted in templates, in particular the master
-template. Although one shouldn't rely on Javascript when creating a web site, it is handy to
-know how it can be used in documents. Javascript blocks are inserted in the master template by
-defining a template with the key name {\name script}. This template can be inserted as an element
-in the header section of the master template. Because the master template defines a layout for
-multiple body templates that can be displayed in the master template, it is impossible to
-distinguish the name and the class of the body's template file that contains the Javascript
-code.
-However, the OpenCms system uses the body element's class and template file if they are not
-specified in the element definition. All you virtually have to do is specify the template
-selector in the element definition in order to select the right Javascript template. The next
-example template will show how to insert Javascript code in the master template:
-
-\begin{xml}
-<?xml version="1.0"?>\\
-<XMLTEMPLATE>\\
-
-<TEMPLATE>\\
-<![CDATA[\\
-<HTML>\\
-<HEAD>\\
-\xtaba <TITLE>]]><method name="getTitle"/><![CDATA[</TITLE>\\
-\xtaba ]]><element name="javascript"/><![CDATA[\\
-</HEAD>\\
-<BODY>\\
-\xtaba ]]><element name="body"/><![CDATA[\\
-</BODY>\\
-</HTML>]]>\\
-</TEMPLATE>\\
-<ELEMENTDEF name="javascript">\\
-\xtaba <TEMPLATESELECTOR>script</TEMPLATESELECTOR>\\
-</ELEMENTDEF>\\
-</XMLTEMPLATE>\\
-\end{xml}
-\index{TEMPLATESELECTOR}
-\index{script}
-
-The Javascript code is defined in one file together with the body template as a template with
-the special name {\name script} as follows:
-
-\begin{xml}
-<?xml version="1.0"?>\\
-<XMLTEMPLATE>\\
-<TEMPLATE>\\
-\xtaba <!-- body template -->\\
-</TEMPLATE>\\
-<TEMPLATE name="script">\\
-\xtaba <!-- Javascript code ... -->\\
-</TEMPLATE>\\
-</XMLTEMPLATE>\\
-\end{xml}
-
-
+This element definition is located in the frametemplate. Two
+parameters, {\name foreground} and  {\name background}, define the
+colors of the element. These colors are defined in the Java class
+that controls the element's template.
 
 
 \subsubsection{Standard Methods of the OpenCms Template Mechanism}
@@ -1533,17 +1706,21 @@ version of a web site.\\ \hline
 
 \section{Multiple templates in one XML-file}
 %============================================================================
-\subsection{Multiple content-areas in one master template}
+\subsection{Multiple content-areas in one content template}
 
-You already noticed that the entry-point of every page is the page control file. From there,
-the master template is choosen and the then the content-area (the one body element) is inserted.
-Every other element which is inserted and defined in the master template is kind of static and
-is shown on every page which uses this master template.
-But what if someone wants that the dynamic content of his page is not shown in one single block,
-but in several blocks which might be separated by advertising banners or something like that?
-OpenCms provides a way to handle this. Multiple templates (content areas) can be defined within
-one XML file (in this case the body file in the {\dir content/bodys} directory). Each template
-can be given a different  name.
+You already noticed that the entry-point of every page is the page
+control file. From there, the combination of frame and
+contenttemplate  is chosen and in the contenttemplate the
+content-area (the one body element) is inserted. Every other
+element which is inserted and defined in the content or
+frametemplate is kind of static and is shown on every page which
+uses this template. But what if someone wants that the dynamic
+content of his page is not shown in one single block, but in
+several blocks which might be separated by advertising banners or
+something like that? OpenCms provides a way to handle this.
+Multiple templates (content areas) can be defined within one XML
+file (in this case the body file in the {\dir content/bodys}
+directory). Each template can be given a different name.
 \begin{xml}
 <TEMPLATE>\\
 ...\\
@@ -1557,8 +1734,9 @@ can be given a different  name.
 \end{xml}
 
 
-The default template doesn't need a name.  Now we have two templates, which both have to be
-inserted in master template. This can be done by an element definition in the master template:
+The default template doesn't need a name.  Now we have two
+templates, which both have to be inserted in content template.
+This can be done by an element definition in the content template:
 \begin{xml}
 <ELEMENTDEF name="elementName">\\
   <TEMPLATESELECTOR>aName</TEMPLATESELECTOR>\\
@@ -1569,13 +1747,15 @@ inserted in master template. This can be done by an element definition in the ma
 The trick is that this elementdefinition neither specifies an XML file (with the
 {\tag <template>} tag),
  nor a controlling java class. If both are not determined, OpenCms uses the file and the class
-from the body element in the page control file. The templateselector tells that in this case the
-second template has to be choosen and displayed.  If a template selector is not defined, the
-default template will be displayed (the template without a name). This selection can be
-overridden in the Java class that controls the template file.
+from the body element in the page control file. The
+templateselector tells that in this case the second template has
+to be chosen and displayed.  If a template selector is not
+defined, the default template will be displayed (the template
+without a name). This selection can be overridden in the Java
+class that controls the template file.
 
-You can also use the WYSIWYG-Editor to create an OpenCms-generated file that contains multiple
-templates Figure~\ref{NewBody}.
+You can also use the WYSIWYG-Editor to create an OpenCms-generated
+body file that contains multiple templates Figure~\ref{NewBody}.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -1587,24 +1767,20 @@ templates Figure~\ref{NewBody}.
 \end{center}
 \end{figure}
 
-All you have to do is click on the new body icon and a template with the name {\it body1}
-({\name body2} for
-the next and so on...) is inserted in the template file. You can change the name after you
-have finished creating the new template. Afterwards, you can edit your master template and
-insert the further templates.
-Here is complete sourcecode for a mastertemplate that inserts the elements {\name body}
-and {\name second} which both are stored in the same file:
+All you have to do is click on the new body icon and a template
+with the name {\it body1} ({\name body2} for the next and so
+on...) is inserted in the template file. You can change the name
+after you have finished creating the new template. Afterwards, you
+can edit your content template and insert the further templates.
+Here is complete sourcecode for a contenttemplate that inserts the
+elements {\name body} and {\name second} which both are stored in
+the same file:
 
 \begin{xml}
 <?xml version="1.0"?>\\
 <XMLTEMPLATE>\\
 <TEMPLATE>\\
 <![CDATA[\\
-<HTML>\\
-<HEAD>\\
-\xtaba <TITLE>]]><method name="getTitle"/><![CDATA[</TITLE>\\
-</HEAD>\\
-<BODY>\\
 \xtaba <TABLE border width="100\%" height="100\%">\\
 \xtaba   <TR height="30\%">\\
 \xtabb             <TH colspan=3 width="100\%" align="center"> \\
@@ -1621,8 +1797,6 @@ and {\name second} which both are stored in the same file:
 \xtabb </TD>\\
 \xtaba   </TR>\\
 \xtaba </TABLE>\\
-</BODY>\\
-</HTML>]]>\\
 </TEMPLATE>\\
 
 <ELEMENTDEF name="second">\\
@@ -1632,11 +1806,14 @@ and {\name second} which both are stored in the same file:
 </XMLTEMPLATE>\\
 \end{xml}
 
-This mastertemplate inserts two content templates into two independent cells of a table. After
-creating a template like that, you can create a page that uses this master.  Then create a
-second body with the WYSIWYG-editor, and insert content in the two bodys. The body can be
-choosen in the body-list in the head section of the WYSIWYG-editor. The page control does not
-have to be changed. Afterwards, the output could look like Figure~\ref{2Bodies}.
+This contenttemplate inserts two elements into two independent
+cells of a table. After creating a template like that, you can
+create a page that uses a template containing this
+contenttemplate. Then create a second body with the
+WYSIWYG-editor, and insert content in the two bodys. The body can
+be chosen in the body-list in the head section of the
+WYSIWYG-editor. The page control does not have to be changed.
+Afterwards, the output could look like Figure~\ref{2Bodies}.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -1648,15 +1825,18 @@ have to be changed. Afterwards, the output could look like Figure~\ref{2Bodies}.
 \end{center}
 \end{figure}
 
-The way of processing is now the following: The template mechanism processes the master template
-and comes to the body element. It is known from the page control file where this element can be
-found. Because no special templateselector is specified, the default one is used. After that,
-the template mechanism comes to the element second. Because nothing else is specified, the
-template mechanism knows to look in the file which was used before. But now a template selector
-is specified, and not the default, and because of this the second template {\name body1} is
-inserted.
-It is important to realize that of course every page that wants to use this master template
-now has to define a second template with the name {\name body1}.
+The way of processing is now the following: The template mechanism
+processes the content template and comes to the body element. It
+is known from the page control file where this element can be
+found. Because no special templateselector is specified, the
+default one is used. After that, the template mechanism comes to
+the element second. Because nothing else is specified, the
+template mechanism knows to look in the file which was used
+before. But now a template selector is specified, and not the
+default, and because of this the second template {\name body1} is
+inserted. It is important to realize that of course every page
+that wants to use this content template now has to define a second
+template with the name {\name body1}.
 
 \subsection{Dynamic insertion of templates}
 
@@ -1809,11 +1989,13 @@ preset an imput field with the name of the current user or the actual date for e
 %============================================================================
 \subsection{Framsets in OpenCms}
  \index{frames}
-The usage of frames is quite easy with OpenCms. One big difference to the usage of frames in
-standard HTML is that in OpenCms, everything is stored together in one file.  In this part, we
-will create a simple page with two frames to show the basic structure. The frameset and the
-inserted parts (templates) are defined in the mastertemplate. The complete code for a
-mastertemplate with 2 frames is shown here:
+The usage of frames is quite easy with OpenCms. One big difference
+to the usage of frames in standard HTML is that in OpenCms,
+everything is stored together in one file.  In this part, we will
+create a simple page with two frames to show the basic structure.
+The frameset and the inserted parts (templates) are defined in the
+frametemplate. The complete code for a frametemplate with 2 frames
+is shown here:
 \begin{xml}
 <?xml version="1.0"?>\\
 <XMLTEMPLATE>\\
@@ -1853,7 +2035,7 @@ mastertemplate with 2 frames is shown here:
 \xtaba   <HEAD><TITLE>Seite mit Frames</TITLE></HEAD>\\
 \xtaba   <BODY>\\
 \xtabb     <P ALIGN="center">\\
-\xtabb       ]]><ELEMENT name="body"/><![CDATA[\\
+\xtabb       ]]><ELEMENT name="contenttemplate"/><![CDATA[\\
 \xtabb     </P>\\
 \xtaba   </BODY>\\
 \xtaba </HTML>]]>\\
@@ -1861,33 +2043,36 @@ mastertemplate with 2 frames is shown here:
 
 <ELEMENTDEF name="nav\_head">\\
 \xtaba <CLASS>com.opencms.defaults.CmsXmlNav</CLASS>\\
-\xtaba <TEMPLATE>/content/internal/nav\_head</TEMPLATE> \\
+\xtaba <TEMPLATE>/content/elements/nav\_head</TEMPLATE> \\
 </ELEMENTDEF>\\
 
 </XMLTEMPLATE>\\
 \end{xml}
 
 
-The frameset is here defined within the default template (the one without a name) with the
-normal {\tag <FRAMESET>}-tag.  The difference to the standard HTML way is now that is has to be
-determined what template has to be inserted. This is done by the method
-{\meth getFrameQueryString()}.
-The method gets the name of the template that should be inserted as a parameter. The right
-template is then choosen by the templateselector. The mechanism evaluates the parameter
-{\name cmsframe},  which is returned from the method {\meth getFrameQueryString()}. It would be
-possible to
-simply add the parameter by hand ( {\tag <![CDATA[ ?cmsframe=temp\_head} ), but this would
-cause problems if further parameters are appended from somewhere. The method
-{\meth getFrameQueryString()}
-solves this problem and handles further parameters. Thus it is recommended to use the method
-always.
-\index{cmsframe}
-The method {\meth getUri()} returns the URI including the filename of the actual file. The templates
-which have to be inserted in the frames are defined afterwards. The certain elementes that
-should be inserted are specified within the templates. Here are two elementes inserted, one
-for the navigation (nav\_head) and one body element. Of course, there has to be an
-elementdefinition for the navigation element at the end of the XML-file.  The navigation
-template for this example looks like this:
+The frameset is here defined within the default template (the one
+without a name) with the normal {\tag <FRAMESET>}-tag.  The
+difference to the standard HTML way is now that is has to be
+determined what template has to be inserted. This is done by the
+method {\meth getFrameQueryString()}. The method gets the name of
+the template that should be inserted as a parameter. The right
+template is then choosen by the templateselector. The mechanism
+evaluates the parameter {\name cmsframe},  which is returned from
+the method {\meth getFrameQueryString()}. It would be possible to
+simply add the parameter by hand ( {\tag <![CDATA[
+?cmsframe=temp\_head} ), but this would cause problems if further
+parameters are appended from somewhere. The method {\meth
+getFrameQueryString()} solves this problem and handles further
+parameters. Thus it is recommended to use the method always.
+\index{cmsframe} The method {\meth getUri()} returns the URI
+including the filename of the actual file. The templates which
+have to be inserted in the frames are defined afterwards. The
+certain elements that should be inserted are specified within the
+templates. Here are two elements inserted, one for the navigation
+(nav\_head) and one content element. Of course, there has to be an
+elementdefinition for the navigation element at the end of the
+XML-file.  The navigation template for this example looks like
+this:
 
 \begin{xml}
 <?xml version="1.0"?>\\
@@ -1977,12 +2162,15 @@ above master template. The output for three inserted pages could for example loo
 
 \subsection{Frames- and non-frames-versions}
 
-Often a web site has to be build in two versions, one with frames, and one without frames. This
-way users with older browsers are able to visit the site as well. These two versions can be
-achieved with one master in OpenCms. All you have to do is to extend the master template by one
-further template. This template should be named {\name plain}. It defines the layout for the site
-without frames. The other templates that are already defined are inserted in
-the {\name plain}-template as well. One implementation of the {\name plain}-template is shown now:
+Often a web site has to be build in two versions, one with frames,
+and one without frames. This way users with older browsers are
+able to visit the site as well. These two versions can be achieved
+with one frametemplate in OpenCms. All you have to do is to extend
+the frame template by one further template. This template should
+be named {\name plain}. It defines the layout for the site without
+frames. The other templates that are already defined are inserted
+in the {\name plain}-template as well. One implementation of the
+{\name plain}-template is shown now:
 
 \begin{xml}
 <?xml version="1.0"?>\\
