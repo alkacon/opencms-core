@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/12/21 11:12:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2001/02/01 15:37:21 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -134,8 +134,7 @@ public Vector getAllConnections() {
 	 * use the version of registerOutParameter that accepts a scale value
 	 */
 	public void initRegisterOutParameter(Integer key, int parameterIndex, int sqlType) throws CmsException {
-		Connection conn = null;
-		
+				
 		for (int i = 0; i < m_maxConn; i++) {
 			Hashtable tmp = (Hashtable) m_prepStatements.elementAt(i);
 			CallableStatement cstmt = (CallableStatement) tmp.get(key);
@@ -158,8 +157,7 @@ public Vector getAllConnections() {
 	 * @param scale - a value greater than or equal to zero representing the desired number of digits to the right of the decimal point 
 	 */
 	public void initRegisterOutParameter(Integer key, int parameterIndex, int sqlType, int scale) throws CmsException {
-		Connection conn = null;
-		
+				
 		for (int i = 0; i < m_maxConn; i++) {
 			Hashtable tmp = (Hashtable) m_prepStatements.elementAt(i);
 			CallableStatement cstmt = (CallableStatement) tmp.get(key);

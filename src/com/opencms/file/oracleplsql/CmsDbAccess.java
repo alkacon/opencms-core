@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/01/05 12:57:27 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2001/02/01 15:37:20 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.15 $ $Date: 2001/01/05 12:57:27 $ * 
+ * @version $Revision: 1.16 $ $Date: 2001/02/01 15:37:20 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -66,489 +66,621 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 
 		super(config);
 	}
-/*
-* Checks, if the user may create this resource.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The resource to check.
- * 
- * @return wether the user has access, or not.
-*/
-public boolean accessCreate(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
-	//System.out.println("PL/SQL: accessCreate");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CallableStatement statement = null;
-	try {
-		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSCREATE_KEY);
-		statement.setInt(2, currentUser.getId());
-		statement.setInt(3, currentProject.getId());
-		statement.setInt(4, resource.getResourceId());
-		statement.execute();
-		if (statement.getInt(1) == 1) {
-			return true;
-		} else {
-			return false;
-		}
-	} catch (SQLException sqlexc) {
-		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
-		throw cmsException;
-	} catch (Exception e) {
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSCREATE_KEY, statement);
-		}
-	}
-}
-/*
-* Checks, if the user may lock this resource.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The resource to check.
- * 
- * @return wether the user has access, or not.
-*/
-public boolean accessLock(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
-	//System.out.println("PL/SQL: accessLock");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CallableStatement statement = null;
-	try {
-		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSLOCK_KEY);
-		statement.setInt(2, currentUser.getId());
-		statement.setInt(3, currentProject.getId());
-		statement.setInt(4, resource.getResourceId());
-		statement.execute();
-		if (statement.getInt(1) == 1) {
-			return true;
-		} else {
-			return false;
-		}
-	} catch (SQLException sqlexc) {
-		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
-		throw cmsException;
-	} catch (Exception e) {
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSLOCK_KEY, statement);
-		}
-	}
-}
-/*
-* Checks, if the user may read this resource.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The resource to check.
- * 
- * @return wether the user has access, or not.
-*/
-public boolean accessProject(CmsUser currentUser, int projectId) throws CmsException {
-	//System.out.println("PL/SQL: accessProject");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CallableStatement statement = null;
-	try {
-		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSPROJECT_KEY);
-		statement.setInt(2, currentUser.getId());
-		statement.setInt(3, projectId);
-		statement.execute();
-		if (statement.getInt(1) == 1) {
-			return true;
-		} else {
-			return false;
-		}
-	} catch (SQLException sqlexc) {
-		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
-		throw cmsException;
-	} catch (Exception e) {
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSPROJECT_KEY, statement);
-		}
-	}
-}
-/*
-* Checks, if the user may read this resource.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The resource to check.
- * 
- * @return wether the user has access, or not.
-*/
-public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
-	//System.err.println("PL/SQL: accessRead " + resource);
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CallableStatement statement = null;
-	try {
-		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSREAD_KEY);
-		statement.setInt(2, currentUser.getId());
-		statement.setInt(3, currentProject.getId());
-		statement.setInt(4, resource.getResourceId());
-		statement.execute();
-		if (statement.getInt(1) == 1) {
-			return true;
-		} else {
-			return false;
-		}
-	} catch (SQLException sqlexc) {
-		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
-		throw cmsException;
-	} catch (Exception e) {
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSREAD_KEY, statement);
-		}
-	}
-}
-/*
-* Checks, if the user may write this resource.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The resource to check.
- * 
- * @return wether the user has access, or not.
-*/
-public boolean accessWrite(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
-	//System.out.println("PL/SQL: accessWrite");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CallableStatement statement = null;
-	try {
-		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSWRITE_KEY);
-		statement.setInt(2, currentUser.getId());
-		statement.setInt(3, currentProject.getId());
-		statement.setInt(4, resource.getResourceId());
-		statement.execute();
-		if (statement.getInt(1) == 1) {
-			return true;
-		} else {
-			return false;
-		}
-	} catch (SQLException sqlexc) {
-		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
-		throw cmsException;
-	} catch (Exception e) {
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_ACCESS_ACCESSWRITE_KEY, statement);
-		}
-	}
-}
-/**
- * Creates a serializable object in the systempropertys.
- * 
- * @param name The name of the property.
- * @param object The property-object.
- * 
- * @return object The property-object.
- * 
- * @exception CmsException Throws CmsException if something goes wrong.
- */
-public Serializable addSystemProperty(String name, Serializable object) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	byte[] value;
-	PreparedStatement statement = null;
-	PreparedStatement statement2 = null;
-	PreparedStatement nextStatement = null;
-	Connection conn = null;
-	ResultSet res = null;
-	try {
-		int id = nextId(C_TABLE_SYSTEMPROPERTIES);
-		// serialize the object	
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		ObjectOutputStream oout = new ObjectOutputStream(bout);
-		oout.writeObject(object);
-		oout.close();
-		value = bout.toByteArray();
-
-		// create the object
-		// first insert the new systemproperty with empty systemproperty_value, then update
-		// the systemproperty_value. These two steps are necessary because of using Oracle BLOB
-		statement = pool.getPreparedStatement(cq.C_PLSQL_SYSTEMPROPERTIES_FORINSERT_KEY);
-		statement.setInt(1, id);
-		statement.setString(2, name);
-		//statement.setBytes(3,value);
-		statement.executeUpdate();
-		// now update the systemproperty_value
-		statement2 = pool.getNextPreparedStatement(statement,cq.C_PLSQL_SYSTEMPROPERTIES_FORUPDATE_KEY);
-		statement2.setInt(1, id);
-		conn = pool.getConnectionOfStatement(statement);
-		conn.setAutoCommit(false);	
-		res = statement2.executeQuery();
-		while (res.next()) {
-			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
-			ByteArrayInputStream instream = new ByteArrayInputStream(value);
-			OutputStream outstream = blob.getBinaryOutputStream();
-			byte[] chunk = new byte[blob.getChunkSize()];
-			int i = -1;
-			while ((i = instream.read(chunk)) != -1) {
-				outstream.write(chunk, 0, i);
+	
+	/**
+	 *  Checks, if the user may create this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * @return wether the user has access, or not.
+	 */
+	public boolean accessCreate(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
+		//System.out.println("PL/SQL: accessCreate");
+		com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+		CallableStatement statement = null;
+		Connection con = null;
+		try {
+			// create the statement
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareCall(cq.C_PLSQL_ACCESS_ACCESSCREATE);
+			statement.registerOutParameter(1, Types.INTEGER);
+			statement.setInt(2, currentUser.getId());
+			statement.setInt(3, currentProject.getId());
+			statement.setInt(4, resource.getResourceId());
+			statement.execute();
+			if (statement.getInt(1) == 1) {
+				return true;
+			} else {
+				return false;
 			}
-			instream.close();
-			outstream.close();
+		} catch (SQLException sqlexc) {
+			CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
+			throw cmsException;
+		} catch (Exception e) {
+			throw new CmsException("[" + this.getClass().getName() + "]", e);
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc){
+					// nothing to do here
+				}	
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException exc){
+					// nothing to do here
+				}			
+			}	
 		}
-		// for the oracle-driver commit or rollback must be executed manually
-		// because setAutoCommit = false
-		nextStatement = pool.getNextPreparedStatement(statement, cq.C_COMMIT_KEY);
-		nextStatement.execute();
-		conn.setAutoCommit(true);
-	} catch (SQLException e) {
-		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
-	} catch (IOException e) {
-		throw new CmsException("[" + this.getClass().getName() + "]" + CmsException.C_SERIALIZATION, e);
-	} finally {
-		if (statement != null) {
-			try {
-				nextStatement = pool.getNextPreparedStatement(statement, cq.C_ROLLBACK_KEY);
-				nextStatement.execute();
-			} catch (SQLException se) {
+	}
+	
+	/**
+	 * Checks, if the user may lock this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * @return wether the user has access, or not.
+	 */
+	public boolean accessLock(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
+		//System.out.println("PL/SQL: accessLock");
+		com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+		CallableStatement statement = null;
+		Connection con = null;
+		try {
+			// create the statement
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareCall(cq.C_PLSQL_ACCESS_ACCESSLOCK);
+			statement.registerOutParameter(1, Types.INTEGER);
+			statement.setInt(2, currentUser.getId());
+			statement.setInt(3, currentProject.getId());
+			statement.setInt(4, resource.getResourceId());
+			statement.execute();
+			if (statement.getInt(1) == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException sqlexc) {
+			CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
+			throw cmsException;
+		} catch (Exception e) {
+			throw new CmsException("[" + this.getClass().getName() + "]", e);
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc){
+					// nothing to do here
+				}	
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException exc){
+					// nothing to do here
+				}			
+			}
+		}
+	}
+	
+	/**
+	 * Checks, if the user may read this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * @return wether the user has access, or not
+	 */
+	public boolean accessProject(CmsUser currentUser, int projectId) throws CmsException {
+		//System.out.println("PL/SQL: accessProject");
+		com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+		CallableStatement statement = null;
+		Connection con = null;
+		try {
+			// create the statement
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareCall(cq.C_PLSQL_ACCESS_ACCESSPROJECT);
+			statement.registerOutParameter(1, Types.INTEGER);
+			statement.setInt(2, currentUser.getId());
+			statement.setInt(3, projectId);
+			statement.execute();
+			if (statement.getInt(1) == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException sqlexc) {
+			CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
+			throw cmsException;
+		} catch (Exception e) {
+			throw new CmsException("[" + this.getClass().getName() + "]", e);
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc){
+					// nothing to do here
+				}	
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException exc){
+					// nothing to do here
+				}			
+			}
+		}
+	}
+	
+	/**
+	 * Checks, if the user may read this resource.
+	 *  
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * @return wether the user has access, or not.
+	 */
+	public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
+		//System.out.println("PL/SQL: accessRead");
+		com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+		CallableStatement statement = null;
+		Connection con = null;
+		try {
+			// create the statement
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareCall(cq.C_PLSQL_ACCESS_ACCESSREAD);
+			statement.registerOutParameter(1, Types.INTEGER);
+			statement.setInt(2, currentUser.getId());
+			statement.setInt(3, currentProject.getId());
+			statement.setInt(4, resource.getResourceId());
+			statement.execute();
+			if (statement.getInt(1) == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException sqlexc) {
+			CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
+			throw cmsException;
+		} catch (Exception e) {
+			throw new CmsException("[" + this.getClass().getName() + "]", e);
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc){
+					// nothing to do here
+				}	
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException exc){
+					// nothing to do here
+				}			
+			}
+		}
+	}
+	
+	/**
+	 * Checks, if the user may write this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * @return wether the user has access, or not.
+	 */
+	public boolean accessWrite(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
+		//System.out.println("PL/SQL: accessWrite");
+		com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+		CallableStatement statement = null;
+		Connection con = null;
+		try {
+			// create the statement
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareCall(cq.C_PLSQL_ACCESS_ACCESSWRITE);
+			statement.registerOutParameter(1, Types.INTEGER);
+			statement.setInt(2, currentUser.getId());
+			statement.setInt(3, currentProject.getId());
+			statement.setInt(4, resource.getResourceId());
+			statement.execute();
+			if (statement.getInt(1) == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException sqlexc) {
+			CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
+			throw cmsException;
+		} catch (Exception e) {
+			throw new CmsException("[" + this.getClass().getName() + "]", e);
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc){
+					// nothing to do here
+				}	
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException exc){
+					// nothing to do here
+				}			
+			}
+		}
+	}
+	
+	/**
+	 * Creates a serializable object in the systempropertys.
+	 *  
+	 * @param name The name of the property.
+	 * @param object The property-object.
+	 * @return object The property-object.
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public Serializable addSystemProperty(String name, Serializable object) throws CmsException {
+		//System.out.println("PL/SQL: addSystemProperty");
+		com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+		byte[] value;
+		PreparedStatement statement = null;
+		PreparedStatement statement2 = null;
+		PreparedStatement nextStatement = null;
+		Connection con = null;
+		ResultSet res = null;
+		try {
+			int id = nextId(C_TABLE_SYSTEMPROPERTIES);
+			// serialize the object	
+			ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			ObjectOutputStream oout = new ObjectOutputStream(bout);
+			oout.writeObject(object);
+			oout.close();
+			value = bout.toByteArray();
+
+			// create the object
+			// first insert the new systemproperty with empty systemproperty_value, then update
+			// the systemproperty_value. These two steps are necessary because of using Oracle BLOB
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareStatement(cq.C_PLSQL_SYSTEMPROPERTIES_FORINSERT);
+			statement.setInt(1, id);
+			statement.setString(2, name);
+			//statement.setBytes(3,value);
+			statement.executeUpdate();
+			statement.close();
+			// now update the systemproperty_value
+			statement2 = con.prepareStatement(cq.C_PLSQL_SYSTEMPROPERTIES_FORUPDATE);
+			statement2.setInt(1, id);
+			con.setAutoCommit(false);	
+			res = statement2.executeQuery();
+			while (res.next()) {
+				oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
+				ByteArrayInputStream instream = new ByteArrayInputStream(value);
+				OutputStream outstream = blob.getBinaryOutputStream();
+				byte[] chunk = new byte[blob.getChunkSize()];
+				int i = -1;
+				while ((i = instream.read(chunk)) != -1) {
+					outstream.write(chunk, 0, i);
+				}
+				instream.close();
+				outstream.close();
+			}
+			statement2.close();
+			res.close();
+			// for the oracle-driver commit or rollback must be executed manually
+			// because setAutoCommit = false
+			nextStatement = con.prepareStatement(cq.C_COMMIT);
+			nextStatement.execute();
+			nextStatement.close();
+			con.setAutoCommit(true);
+		} catch (SQLException e) {
+			throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+		} catch (IOException e) {
+			throw new CmsException("[" + this.getClass().getName() + "]" + CmsException.C_SERIALIZATION, e);
+		} finally {
+			if (res != null) {
+				try {
+					res.close();
+				} catch (SQLException se) {
+				}
+			}			
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc){
+				}				
+			}	
+			if (statement2 != null) {
+				try {
+					statement2.close();
+				} catch (SQLException exc){
+				}
+				try {
+					nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+					nextStatement.execute();
+				} catch (SQLException exc){
+					// nothing to do here
+				} 	
+			}
+			if (nextStatement != null) {
+				try {
+					nextStatement.close();
+				} catch (SQLException exc){
+				}
+			}	
+			if (con != null) {
+				try {
+					con.setAutoCommit(true);
+				} catch (SQLException exc){
+					// nothing to do here
+				} 
+				try {
+					con.close();
+				} catch (SQLException e){
+				}	
+			}
+		}	
+		return readSystemProperty(name);
+	}
+	/**
+	 * Adds a user to the database.
+	 * 
+	 * @param name username
+	 * @param password user-password
+	 * @param description user-description
+	 * @param firstname user-firstname
+	 * @param lastname user-lastname
+	 * @param email user-email
+	 * @param lastlogin user-lastlogin
+	 * @param lastused user-lastused
+	 * @param flags user-flags
+	 * @param additionalInfos user-additional-infos
+	 * @param defaultGroup user-defaultGroup
+	 * @param address user-defauladdress
+	 * @param section user-section
+	 * @param type user-type
+	 *
+	 * @return the created user.
+	 * @exception thorws CmsException if something goes wrong.
+	 */
+	public CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+		//System.out.println("PL/SQL: addUser");
+		com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+		int id = nextId(C_TABLE_USERS);
+		byte[] value = null;
+		PreparedStatement statement = null;
+		PreparedStatement statement2 = null;
+		PreparedStatement nextStatement = null;
+		Connection con = null;
+		ResultSet res = null;
+		try {
+			// serialize the hashtable
+			ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			ObjectOutputStream oout = new ObjectOutputStream(bout);
+			oout.writeObject(additionalInfos);
+			oout.close();
+			value = bout.toByteArray();
+
+			// write data to database
+			// first insert the data without user_info
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareStatement(cq.C_PLSQL_USERSFORINSERT);
+			statement.setInt(1, id);
+			statement.setString(2, name);
+			// crypt the password with MD5
+			statement.setString(3, digest(password));
+			statement.setString(4, digest(""));
+			statement.setString(5, checkNull(description));
+			statement.setString(6, checkNull(firstname));
+			statement.setString(7, checkNull(lastname));
+			statement.setString(8, checkNull(email));
+			statement.setTimestamp(9, new Timestamp(lastlogin));
+			statement.setTimestamp(10, new Timestamp(lastused));
+			statement.setInt(11, flags);
+			//statement.setBytes(12,value);
+			statement.setInt(12, defaultGroup.getId());
+			statement.setString(13, checkNull(address));
+			statement.setString(14, checkNull(section));
+			statement.setInt(15, type);
+			statement.executeUpdate();
+			statement.close();
+			// now update user_info of the new user
+			statement2 = con.prepareStatement(cq.C_PLSQL_USERSFORUPDATE);
+			statement2.setInt(1, id);
+			con.setAutoCommit(false);
+			res = statement2.executeQuery();
+			while (res.next()) {
+				oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("USER_INFO");
+				ByteArrayInputStream instream = new ByteArrayInputStream(value);
+				OutputStream outstream = blob.getBinaryOutputStream();
+				byte[] chunk = new byte[blob.getChunkSize()];
+				int i = -1;
+				while ((i = instream.read(chunk)) != -1) {
+					outstream.write(chunk, 0, i);
+				}
+				instream.close();
+				outstream.close();
+			}
+			statement2.close();
+			res.close();
+			// for the oracle-driver commit or rollback must be executed manually
+			// because setAutoCommit = false in CmsDbPool.CmsDbPool
+			nextStatement = con.prepareStatement(cq.C_COMMIT);
+			nextStatement.execute();
+			nextStatement.close();
+			con.setAutoCommit(true);
+		} catch (SQLException e) {
+			throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+		} catch (IOException e) {
+			throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
+		} finally {
+			if (res != null) {
+				try {
+					res.close();
+				} catch (SQLException se) {
+				}
 			}		
-			pool.putPreparedStatement(cq.C_PLSQL_SYSTEMPROPERTIES_FORINSERT_KEY, statement);
-		}
-		if (conn != null) {
-			try {
-				conn.setAutoCommit(true);
-			} catch (SQLException se) {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc){
+				}
+			}
+			if (statement2 != null) {
+				try {
+					statement2.close();
+				} catch (SQLException exc){
+				}
+				try {
+					nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+					nextStatement.execute();
+				} catch (SQLException se) {
+				}
+			}
+			if (nextStatement != null) {
+				try {
+					nextStatement.close();
+				} catch (SQLException exc){
+				}
+			}	
+			if (con != null) {
+				try {
+					con.setAutoCommit(true);
+				} catch (SQLException se) {
+				}	
+				try {
+					con.close();
+				} catch (SQLException e) {
+				}	
 			}
 		}
-		if (res != null) {
-			try {
-				res.close();
-			} catch (SQLException se) {
-			}
-		}
-	}	
-	return readSystemProperty(name);
-}
-/**
- * Adds a user to the database.
- * 
- * @param name username
- * @param password user-password
- * @param description user-description
- * @param firstname user-firstname
- * @param lastname user-lastname
- * @param email user-email
- * @param lastlogin user-lastlogin
- * @param lastused user-lastused
- * @param flags user-flags
- * @param additionalInfos user-additional-infos
- * @param defaultGroup user-defaultGroup
- * @param address user-defauladdress
- * @param section user-section
- * @param type user-type
- * 
- * @return the created user.
- * @exception thorws CmsException if something goes wrong.
- */
-public CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	int id = nextId(C_TABLE_USERS);
-	byte[] value = null;
-	PreparedStatement statement = null;
-	PreparedStatement statement2 = null;
-	PreparedStatement nextStatement = null;
-	OraclePreparedStatement trimStatement = null;
-	Connection conn = null;
-	ResultSet res = null;
-	try {
-		// serialize the hashtable
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		ObjectOutputStream oout = new ObjectOutputStream(bout);
-		oout.writeObject(additionalInfos);
-		oout.close();
-		value = bout.toByteArray();
-
-		// write data to database
-		// first insert the data without user_info 
-		statement = pool.getPreparedStatement(cq.C_PLSQL_USERSFORINSERT_KEY);
-		statement.setInt(1, id);
-		statement.setString(2, name);
-		// crypt the password with MD5
-		statement.setString(3, digest(password));
-		statement.setString(4, digest(""));
-		statement.setString(5, checkNull(description));
-		statement.setString(6, checkNull(firstname));
-		statement.setString(7, checkNull(lastname));
-		statement.setString(8, checkNull(email));
-		statement.setTimestamp(9, new Timestamp(lastlogin));
-		statement.setTimestamp(10, new Timestamp(lastused));
-		statement.setInt(11, flags);
-		//statement.setBytes(12,value);
-		statement.setInt(12, defaultGroup.getId());
-		statement.setString(13, checkNull(address));
-		statement.setString(14, checkNull(section));
-		statement.setInt(15, type);
-		statement.executeUpdate();
-
-		// now update user_info of the new user
-		statement2 = pool.getNextPreparedStatement(statement, cq.C_PLSQL_USERSFORUPDATE_KEY);
-		statement2.setInt(1, id);
-		conn = pool.getConnectionOfStatement(statement);
-		conn.setAutoCommit(false);
-		res = statement2.executeQuery();
-		while (res.next()) {
-			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("USER_INFO");
-			ByteArrayInputStream instream = new ByteArrayInputStream(value);
-			OutputStream outstream = blob.getBinaryOutputStream();
-			byte[] chunk = new byte[blob.getChunkSize()];
-			int i = -1;
-			while ((i = instream.read(chunk)) != -1) {
-				outstream.write(chunk, 0, i);
-			}
-			instream.close();
-			outstream.close();
-		}
-		// for the oracle-driver commit or rollback must be executed manually
-		// because setAutoCommit = false in CmsDbPool.CmsDbPool
-		nextStatement = pool.getNextPreparedStatement(statement, cq.C_COMMIT_KEY);
-		nextStatement.execute();
-		conn.setAutoCommit(true);
-	} catch (SQLException e) {
-		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
-	} catch (IOException e) {
-		throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
-	} finally {
-		if (statement != null) {
-			try {
-				nextStatement = pool.getNextPreparedStatement(statement, cq.C_ROLLBACK_KEY);
-				nextStatement.execute();
-			} catch (SQLException se) {
-			}
-			pool.putPreparedStatement(cq.C_PLSQL_USERSFORINSERT_KEY, statement);
-		}
-		if (conn != null) {
-			try {
-				conn.setAutoCommit(true);
-			} catch (SQLException se) {
-			}
-		}
-		if (res != null) {
-			try {
-				res.close();
-			} catch (SQLException se) {
-			}
-		}
+		return readUser(id);
 	}
-	return readUser(id);
-}
-/**
- * Copies the file.
- * 
- * @param project The project in which the resource will be used.
- * @param onlineProject The online project of the OpenCms.
- * @param userId The id of the user who wants to copy the file.
- * @param source The complete path of the sourcefile.
- * @param parentId The parentId of the resource.
- * @param destination The complete path of the destinationfile.
- * 
- * @exception CmsException Throws CmsException if operation was not succesful.
- */
-public void copyFile(CmsProject project, int userId, String source, String destination) throws CmsException {
-
-	if (destination.length() > C_MAX_LENGTH_RESOURCE_NAME){
-	   throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
-	}
+	/**
+	 * Copies the file.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param userId The id of the user who wants to copy the file.
+	 * @param source The complete path of the sourcefile.
+	 * @param parentId The parentId of the resource.
+	 * @param destination The complete path of the destinationfile.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public void copyFile(CmsProject project, int userId, String source, String destination) throws CmsException {
+		//System.out.println("PL/SQL: copyFile");
+		if (destination.length() > C_MAX_LENGTH_RESOURCE_NAME){
+			throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
+		}
 		
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CallableStatement statement = null;
-	String exceptionMessage = null;
-	try {
-		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_RESOURCES_COPYFILE_KEY);
-		statement.setInt(1, project.getId());
-		statement.setInt(2, userId);
-		statement.setString(3, source);
-		statement.setString(4, destination);
-		statement.execute();
-	} catch (SQLException sqlexc) {
-		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
-		throw cmsException;
-	} catch (Exception e) {
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_RESOURCES_COPYFILE_KEY, statement);
+		com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+		CallableStatement statement = null;
+		Connection con = null;
+		try {
+			// create the statement
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareCall(cq.C_PLSQL_RESOURCES_COPYFILE);
+			statement.setInt(1, project.getId());
+			statement.setInt(2, userId);
+			statement.setString(3, source);
+			statement.setString(4, destination);
+			statement.execute();
+		} catch (SQLException sqlexc) {
+			CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
+			throw cmsException;
+		} catch (Exception e) {
+			throw new CmsException("[" + this.getClass().getName() + "]", e);
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc) {
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+				}	
+			}	
 		}
 	}
-}
-// methods working with resources
+	// methods working with resources
 
-/**
- * Copies a resource from the online project to a new, specified project.<br>
- *
- * @param project The project to be published.
- * @param onlineProject The online project of the OpenCms.
- * @param resource The resource to be copied to the offline project.
- * @exception CmsException  Throws CmsException if operation was not succesful.
- */
-public void copyResourceToProject(CmsUser currentUser, CmsProject currentProject, String resource) throws CmsException {
-	//	System.out.println("PL/SQL: copyResourceToProject");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CallableStatement statement = null;
-	try {
-		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_PROJECTS_COPYRESOURCETOPROJECT_KEY);
-		statement.setInt(1, currentUser.getId());
-		statement.setInt(2, currentProject.getId());
-		statement.setString(3, resource);
-		statement.execute();
-	} catch (SQLException sqlexc) {
-		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
-		throw cmsException;
-	} catch (Exception e) {
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_PROJECTS_COPYRESOURCETOPROJECT_KEY, statement);
+	/**
+	 * Copies a resource from the online project to a new, specified project.<br>
+	 *
+	 * @param project The project to be published.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param resource The resource to be copied to the offline project.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public void copyResourceToProject(CmsUser currentUser, CmsProject currentProject, String resource) throws CmsException {
+		//System.out.println("PL/SQL: copyResourceToProject");
+		com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+		CallableStatement statement = null;
+		Connection con = null;
+		try {
+			// create the statement
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareCall(cq.C_PLSQL_PROJECTS_COPYRESOURCETOPROJECT);
+			statement.setInt(1, currentUser.getId());
+			statement.setInt(2, currentProject.getId());
+			statement.setString(3, resource);
+			statement.execute();
+		} catch (SQLException sqlexc) {
+			CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
+			throw cmsException;
+		} catch (Exception e) {
+			throw new CmsException("[" + this.getClass().getName() + "]", e);
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc){
+				}	
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e){
+				}
+			}	
 		}
 	}
-}
-/**
- * Create a new Connection guard.
- * This method should be overloaded if another connectionguard should be used.
- * Creation date: (06-09-2000 14:33:30)
- * @return com.opencms.file.genericSql.CmsConnectionGuard
- * @param m_pool com.opencms.file.genericSql.I_CmsDbPool
- * @param sleepTime long
- */
-public com.opencms.file.genericSql.CmsConnectionGuard createCmsConnectionGuard(I_CmsDbPool m_pool, long sleepTime) {
-	return new com.opencms.file.oracleplsql.CmsConnectionGuard(m_pool, sleepTime);
-}
-/**
- * Creates a CmsDbPool
- * Creation date: (06-09-2000 14:08:10)
- * @return com.opencms.file.genericSql.CmsDbPool
- * @param driver java.lang.String
- * @param url java.lang.String
- * @param user java.lang.String
- * @param passwd java.lang.String
- * @param maxConn int
- * @exception com.opencms.core.CmsException The exception description.
- */
-public I_CmsDbPool createCmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws com.opencms.core.CmsException {
-	return new com.opencms.file.oracleplsql.CmsDbPool(driver,url,user,passwd,maxConn);
-}
+	
+	/**
+	 * Create a new Connection guard.
+	 * This method should be overloaded if another connectionguard should be used.
+	 * Creation date: (06-09-2000 14:33:30)
+	 * @return com.opencms.file.genericSql.CmsConnectionGuard
+	 * @param m_pool com.opencms.file.genericSql.I_CmsDbPool
+	 * @param sleepTime long
+	 */
+	public com.opencms.file.genericSql.CmsConnectionGuard createCmsConnectionGuard(I_CmsDbPool m_pool, long sleepTime) {
+		return new com.opencms.file.oracleplsql.CmsConnectionGuard(m_pool, sleepTime);
+	}
+	
+	/**
+	 * Creates a CmsDbPool
+	 * Creation date: (06-09-2000 14:08:10)
+	 * @return com.opencms.file.genericSql.CmsDbPool
+	 * @param driver java.lang.String
+	 * @param url java.lang.String
+	 * @param user java.lang.String
+	 * @param passwd java.lang.String
+	 * @param maxConn int
+	 * @exception com.opencms.core.CmsException The exception description.
+	 */
+	public I_CmsDbPool createCmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws com.opencms.core.CmsException {
+		return new com.opencms.file.oracleplsql.CmsDbPool(driver,url,user,passwd,maxConn);
+	}
+	
 /**
  * Creates a new file with the given content and resourcetype.
  *
@@ -566,12 +698,11 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, int parentId, byte[] contents, CmsResourceType resourceType) throws CmsException {
-
+	//System.out.println("PL/SQL: createFile");
 	if (filename.length() > C_MAX_LENGTH_RESOURCE_NAME){
 		throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
 	}
 	
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	// it is not allowed, that there is no content in the file
 	// TODO: check if this can be done in another way:
@@ -597,10 +728,11 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 	PreparedStatement statementFileIns = null;
 	PreparedStatement statementFileUpd = null;
 	PreparedStatement nextStatement = null;
-	Connection conn = null;
+	Connection con = null;
 	ResultSet res = null;
 	try {
-		statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareStatement(m_cq.C_RESOURCES_WRITE);
 		// write new resource to the database
 		statement.setInt(1, resourceId);
 		statement.setInt(2, parentId);
@@ -621,18 +753,17 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 		statement.setInt(17, contents.length);
 		statement.setInt(18, user.getId());
 		statement.executeUpdate();
-
+		statement.close();
 		// first insert new file without file_content, then update the file_content
 		// these two steps are necessary because of using BLOBs	in the Oracle DB
-		statementFileIns = pool.getNextPreparedStatement(statement, cq.C_PLSQL_FILESFORINSERT_KEY);
+		statementFileIns = con.prepareStatement(cq.C_PLSQL_FILESFORINSERT);
 		statementFileIns.setInt(1, fileId);
 		statementFileIns.executeUpdate();
-
+		statementFileIns.close();
 		// update the file content in the FILES database.
-		statementFileUpd = pool.getNextPreparedStatement(statement, cq.C_PLSQL_FILESFORUPDATE_KEY);
+		statementFileUpd = con.prepareStatement(cq.C_PLSQL_FILESFORUPDATE);
 		statementFileUpd.setInt(1, fileId);
-		conn = pool.getConnectionOfStatement(statement);
-		conn.setAutoCommit(false);
+		con.setAutoCommit(false);
 		res = statementFileUpd.executeQuery();
 		try {
 			while (res.next()) {
@@ -649,34 +780,62 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 			}
 			// for the oracle-driver commit or rollback must be executed manually
 			// because setAutoCommit = false
-			nextStatement = pool.getNextPreparedStatement(statement, cq.C_COMMIT_KEY);
+			nextStatement = con.prepareStatement(cq.C_COMMIT);
 			nextStatement.execute();
-			conn.setAutoCommit(true);
+			nextStatement.close();
+			con.setAutoCommit(true);
 		} catch (IOException e) {
 			throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), e);
 		}
+		statementFileUpd.close();
+		res.close();
 	} catch (SQLException e) {
 		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
 	} finally {
-		if (statement != null) {
-			try {
-				nextStatement = pool.getNextPreparedStatement(statement, cq.C_ROLLBACK_KEY);
-				nextStatement.execute();
-			} catch (SQLException se) {
-			}
-			m_pool.putPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY, statement);
-		}
-		if (conn != null) {
-			try {
-				conn.setAutoCommit(true);
-			} catch (SQLException se) {
-			}
-		}
 		if (res != null) {
 			try {
 				res.close();
 			} catch (SQLException se) {
 			}
+		}
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exc){
+			}
+		}
+		if (statementFileIns != null) {
+			try {
+				statementFileIns.close();
+			} catch (SQLException exc) {
+			}
+		}
+		if (statementFileUpd != null) {
+			try {
+				statementFileUpd.close();
+			} catch (SQLException exc) {
+			}
+			try {
+				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+				nextStatement.execute();
+			} catch (SQLException se) {
+			} 	
+		}
+		if (nextStatement != null) {
+			try {
+				nextStatement.close();
+			} catch (SQLException exc) {
+			}
+		}
+		if (con != null) {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException se) {
+			} 
+			try {
+				con.close();
+			} catch (SQLException e){
+			}	
 		}
 	}
 	return readFile(user.getId(), project.getId(), onlineProject.getId(), filename);
@@ -691,13 +850,13 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
  * @return data the sessionData.
  */
 public void createSession(String sessionId, Hashtable data) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	//System.out.println("PL/SQL: createSession");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	byte[] value = null;
 	PreparedStatement statement = null;
 	PreparedStatement statement2 = null;
 	PreparedStatement nextStatement = null;
-	Connection conn = null;
+	Connection con = null;
 	ResultSet res = null;	
 	try {
 		// serialize the hashtable
@@ -707,15 +866,16 @@ public void createSession(String sessionId, Hashtable data) throws CmsException 
 		oout.close();
 		value = bout.toByteArray();
 
-		// write data to database     
-		statement = pool.getPreparedStatement(cq.C_PLSQL_SESSION_FORINSERT_KEY);
+		// write data to database
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareStatement(cq.C_PLSQL_SESSION_FORINSERT);
 		statement.setString(1, sessionId);
 		statement.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
 		statement.executeUpdate();
-		statement2 = pool.getNextPreparedStatement(statement, cq.C_PLSQL_SESSION_FORUPDATE_KEY);
+		statement.close();
+		statement2 = con.prepareStatement(cq.C_PLSQL_SESSION_FORUPDATE);
 		statement2.setString(1, sessionId);
-		conn = pool.getConnectionOfStatement(statement);
-		conn.setAutoCommit(false);
+		con.setAutoCommit(false);
 		res = statement2.executeQuery();
 		while (res.next()) {
 			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SESSION_DATA");
@@ -729,35 +889,57 @@ public void createSession(String sessionId, Hashtable data) throws CmsException 
 			instream.close();
 			outstream.close();
 		}
+		statement2.close();
+		res.close();
 		// for the oracle-driver commit or rollback must be executed manually
 		// because setAutoCommit = false
-		nextStatement = pool.getNextPreparedStatement(statement, cq.C_COMMIT_KEY);
+		nextStatement = con.prepareStatement(cq.C_COMMIT);
 		nextStatement.execute();
-		conn.setAutoCommit(true);
+		nextStatement.close();
+		con.setAutoCommit(true);
 	} catch (SQLException e) {
 		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
 	} catch (IOException e) {
 		throw new CmsException("[" + this.getClass().getName() + "]:" + CmsException.C_SERIALIZATION, e);
 	} finally {
-		if (statement != null) {
-			try {
-				nextStatement = pool.getNextPreparedStatement(statement, cq.C_ROLLBACK_KEY);
-				nextStatement.execute();
-			} catch (SQLException se) {
-			}	
-			pool.putPreparedStatement(cq.C_PLSQL_SESSION_FORINSERT_KEY, statement);
-		}
-		if (conn != null) {
-			try {
-				conn.setAutoCommit(true);
-			} catch (SQLException se) {
-			}
-		}
 		if (res != null) {
 			try {
 				res.close();
 			} catch (SQLException se) {
 			}
+		}		
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}
+		}
+		if (statement2 != null) {
+			try {
+				statement2.close();
+			} catch (SQLException exc) {
+			}
+			try {
+				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+				nextStatement.execute();
+			} catch (SQLException se) {
+			} 	
+		}
+		if (nextStatement != null) {
+			try {
+				nextStatement.close();
+			} catch (SQLException exc) {
+			}
+		}
+		if (con != null) {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException se) {
+			} 
+			try {
+				con.close();
+			} catch (SQLException e) {
+			}	
 		}
 	}
 }
@@ -770,14 +952,16 @@ public void createSession(String sessionId, Hashtable data) throws CmsException 
  */
 public Vector getAllAccessibleProjects(CmsUser user) throws CmsException {
 	//System.out.println("PL/SQL: getAllAccessibleProjects");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CallableStatement statement = null;
+	Connection con = null;
 	Vector projects = new Vector();
 	ResultSet res = null;
 	try {
 		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_PROJECTS_GETALLACCESS_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareCall(cq.C_PLSQL_PROJECTS_GETALLACCESS);
+		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.setInt(2, user.getId());
 		statement.execute();
 		res = (ResultSet) statement.getObject(1);
@@ -790,15 +974,24 @@ public Vector getAllAccessibleProjects(CmsUser user) throws CmsException {
 	} catch (Exception e) {
 		throw new CmsException("[" + this.getClass().getName() + "]", e);
 	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_PROJECTS_GETALLACCESS_KEY, statement);
-		}
 		if (res != null) {
 			try {
 				res.close();
 			} catch (SQLException se) {
 			}
 		}
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}	
+		}
+		if (con != null) {
+			try {
+				con.close();
+			} catch (SQLException e) {
+			}	
+		}	
 	}
 	return (projects);
 }
@@ -810,17 +1003,18 @@ public Vector getAllAccessibleProjects(CmsUser user) throws CmsException {
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public Vector getAllGroupsOfUser(String username) throws CmsException {
-	//	System.out.println("PL/SQL: getGroupsOfUser");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	//System.out.println("PL/SQL: getAllGroupsOfUser");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CmsUser user = readUser(username, 0);
 	CmsGroup group;
 	Vector groups = new Vector();
 	CallableStatement statement = null;
+	Connection con = null;
 	ResultSet res = null;
 	try {
 		//  get all all groups of the user
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_GROUPS_GETGROUPSOFUSER_KEY);
+		statement = con.prepareCall(cq.C_PLSQL_GROUPS_GETGROUPSOFUSER);
+		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.setInt(2, user.getId());
 		statement.execute();
 		res = (ResultSet) statement.getObject(1);
@@ -834,15 +1028,24 @@ public Vector getAllGroupsOfUser(String username) throws CmsException {
 	} catch (Exception e) {
 		throw new CmsException("[" + this.getClass().getName() + "]", e);
 	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_GROUPS_GETGROUPSOFUSER_KEY, statement);
-		}
 		if (res != null) {
 			try {
 				res.close();
 			} catch (SQLException se) {
 			}
 		}
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}	
+		}
+		if (con != null) {
+			try {
+				con.close();
+			} catch (SQLException e){
+			}	
+		}	
 	}
 	return groups;
 }
@@ -954,6 +1157,7 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 {
 	return new com.opencms.file.oracleplsql.CmsQueries();
 }
+
 	/**
 	 * Gets all users of a type.
 	 * 
@@ -962,12 +1166,14 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 	 */ 
 	public Vector getUsers(int type) 
 		throws CmsException {
+		//System.out.println("PL/SQL: getUsers");
 		Vector users = new Vector();
 		PreparedStatement statement = null;
+		Connection con = null;
 		ResultSet res = null;
 		
 		try	{			
-			statement = m_pool.getPreparedStatement(m_cq.C_USERS_GETUSERS_KEY);
+			statement = con.prepareStatement(m_cq.C_USERS_GETUSERS);
 			statement.setInt(1,type);
 			res = statement.executeQuery();
 			// create new Cms user objects
@@ -1010,18 +1216,28 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 		} catch (Exception e) {
 			throw new CmsException("["+this.getClass().getName()+"]", e);			
 		} finally {
-			if( statement != null) {
-				m_pool.putPreparedStatement(m_cq.C_USERS_GETUSERS_KEY, statement);
-			}
 			if (res != null) {
 				try {
 					res.close();
 				} catch (SQLException se) {
 				}
 			}
+			if( statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc) {
+				}	
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException se) {
+				}	
+			}	
 		}
 		return users;
 	}
+	
 	 /**
 	 * Gets all users of a type and namefilter.
 	 * 
@@ -1031,12 +1247,15 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 	 */ 
 	public Vector getUsers(int type, String namefilter) 
 		throws CmsException {
+		//System.out.println("PL/SQL: getUsers");
 		Vector users = new Vector();
 	    Statement statement = null;
+		Connection con = null;
 		ResultSet res = null;
 		
-		try	{			
-			statement = m_pool.getStatement();
+		try	{
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.createStatement();
 			
 			/*statement.setInt(1,type);
 			statement.setString(2,namefilter+"%");
@@ -1085,15 +1304,24 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 		} catch (Exception e) {
 			throw new CmsException("["+this.getClass().getName()+"]", e);			
 		} finally {
-			if (statement != null) {
-			( (com.opencms.file.genericSql.CmsDbPool)m_pool ).putStatement(statement);
-			} 
 			if (res != null) {
 				try {
 					res.close();
 				} catch (SQLException se) {
 				}
 			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc) {
+				}	
+			} 
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException se) {
+				}	
+			}	
 		}
 		return users;
 	}
@@ -1106,15 +1334,17 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public Vector getUsersOfGroup(CmsUser currentUser, String name, int type) throws CmsException {
-	//	System.out.println("PL/SQL: getUsersOfGroup");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	//System.out.println("PL/SQL: getUsersOfGroup");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CmsGroup group;
 	Vector users = new Vector();
 	CallableStatement statement = null;
+	Connection con = null;
 	ResultSet res = null;
 	try {
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_GROUPS_GETUSERSOFGROUP_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareCall(cq.C_PLSQL_GROUPS_GETUSERSOFGROUP);
+		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.setInt(2, currentUser.getId());
 		statement.setString(3, name);
 		statement.setInt(4, type);
@@ -1138,104 +1368,28 @@ public Vector getUsersOfGroup(CmsUser currentUser, String name, int type) throws
 	} catch (Exception e) {
 		throw new CmsException("[" + this.getClass().getName() + "]", e);
 	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_GROUPS_GETUSERSOFGROUP_KEY, statement);
-		}
 		if (res != null) {
 			try {
 				res.close();
 			} catch (SQLException se) {
 			}
 		}
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}	
+		}
+		if (con != null) {
+			try {
+				con.close();
+			} catch (SQLException se) {
+			}	
+		}	
 	}
 	return users;
 }
-/**
- * Private method to init all statements in the pool.
- */
-protected void initStatements() throws CmsException {
-	super.initStatements();
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 
-	// init statements for commit and rollback
-	// must be executed manually with getNextPreparedStatement 
-	// because of setAutoCommit = false in CmsDbPool.CmsDbPool
-	pool.initCallableStatement(cq.C_COMMIT_KEY, cq.C_COMMIT);
-	pool.initCallableStatement(cq.C_ROLLBACK_KEY, cq.C_ROLLBACK);
-	pool.initOracleCallableStatement(cq.C_TRIMBLOB_KEY, cq.C_TRIMBLOB);
-		
-	// init statements for resources
-	pool.initCallableStatement(cq.C_PLSQL_RESOURCES_LOCKRESOURCE_KEY, cq.C_PLSQL_RESOURCES_LOCKRESOURCE);
-	pool.initRegisterOutParameter(cq.C_PLSQL_RESOURCES_LOCKRESOURCE_KEY, 5, oracle.jdbc.driver.OracleTypes.CURSOR);
-	pool.initCallableStatement(cq.C_PLSQL_RESOURCES_UNLOCKRESOURCE_KEY, cq.C_PLSQL_RESOURCES_UNLOCKRESOURCE);
-	pool.initRegisterOutParameter(cq.C_PLSQL_RESOURCES_UNLOCKRESOURCE_KEY, 4, oracle.jdbc.driver.OracleTypes.CURSOR);
-	
-	pool.initCallableStatement(cq.C_PLSQL_RESOURCES_READFOLDER_KEY, cq.C_PLSQL_RESOURCES_READFOLDER);
-	pool.initRegisterOutParameter(cq.C_PLSQL_RESOURCES_READFOLDER_KEY, 1, oracle.jdbc.driver.OracleTypes.CURSOR);
-	pool.initCallableStatement(cq.C_PLSQL_RESOURCES_READFILEHEADER_KEY, cq.C_PLSQL_RESOURCES_READFILEHEADER);
-	pool.initRegisterOutParameter(cq.C_PLSQL_RESOURCES_READFILEHEADER_KEY, 1, oracle.jdbc.driver.OracleTypes.CURSOR);		
-	pool.initCallableStatement(cq.C_PLSQL_RESOURCES_READFILE_KEY, cq.C_PLSQL_RESOURCES_READFILE);
-	pool.initRegisterOutParameter(cq.C_PLSQL_RESOURCES_READFILE_KEY, 1, oracle.jdbc.driver.OracleTypes.CURSOR);
-	pool.initCallableStatement(cq.C_PLSQL_RESOURCES_READFILEACC_KEY, cq.C_PLSQL_RESOURCES_READFILE);
-	pool.initRegisterOutParameter(cq.C_PLSQL_RESOURCES_READFILEACC_KEY, 1, oracle.jdbc.driver.OracleTypes.CURSOR);
-	
-	pool.initCallableStatement(cq.C_PLSQL_RESOURCES_WRITEFILEHEADER_KEY, cq.C_PLSQL_RESOURCES_WRITEFILEHEADER);
-	pool.initCallableStatement(cq.C_PLSQL_RESOURCES_COPYFILE_KEY, cq.C_PLSQL_RESOURCES_COPYFILE);
-		
-	// init statements for projects
-	pool.initCallableStatement(cq.C_PLSQL_PROJECTS_GETALLACCESS_KEY, cq.C_PLSQL_PROJECTS_GETALLACCESS);
-	pool.initRegisterOutParameter(cq.C_PLSQL_PROJECTS_GETALLACCESS_KEY, 1, oracle.jdbc.driver.OracleTypes.CURSOR);
-	pool.initCallableStatement(cq.C_PLSQL_PROJECTS_COPYRESOURCETOPROJECT_KEY, cq.C_PLSQL_PROJECTS_COPYRESOURCETOPROJECT);
-	pool.initCallableStatement(cq.C_PLSQL_PROJECTS_PUBLISHPROJECT_KEY, cq.C_PLSQL_PROJECTS_PUBLISHPROJECT);
-	pool.initRegisterOutParameter(cq.C_PLSQL_PROJECTS_PUBLISHPROJECT_KEY, 4, oracle.jdbc.driver.OracleTypes.CURSOR);
-	pool.initRegisterOutParameter(cq.C_PLSQL_PROJECTS_PUBLISHPROJECT_KEY, 5, oracle.jdbc.driver.OracleTypes.CURSOR);
-	pool.initRegisterOutParameter(cq.C_PLSQL_PROJECTS_PUBLISHPROJECT_KEY, 6, oracle.jdbc.driver.OracleTypes.CURSOR);
-	pool.initRegisterOutParameter(cq.C_PLSQL_PROJECTS_PUBLISHPROJECT_KEY, 7, oracle.jdbc.driver.OracleTypes.CURSOR);		
-	
-	// init statements for access
-	pool.initCallableStatement(cq.C_PLSQL_ACCESS_ACCESSCREATE_KEY, cq.C_PLSQL_ACCESS_ACCESSCREATE);
-	pool.initRegisterOutParameter(cq.C_PLSQL_ACCESS_ACCESSCREATE_KEY, 1, Types.INTEGER);	
-	pool.initCallableStatement(cq.C_PLSQL_ACCESS_ACCESSLOCK_KEY, cq.C_PLSQL_ACCESS_ACCESSLOCK);
-	pool.initRegisterOutParameter(cq.C_PLSQL_ACCESS_ACCESSLOCK_KEY, 1, Types.INTEGER);	
-	pool.initCallableStatement(cq.C_PLSQL_ACCESS_ACCESSPROJECT_KEY, cq.C_PLSQL_ACCESS_ACCESSPROJECT);
-	pool.initRegisterOutParameter(cq.C_PLSQL_ACCESS_ACCESSPROJECT_KEY, 1, Types.INTEGER);	
-	pool.initCallableStatement(cq.C_PLSQL_ACCESS_ACCESSREAD_KEY, cq.C_PLSQL_ACCESS_ACCESSREAD);
-	pool.initRegisterOutParameter(cq.C_PLSQL_ACCESS_ACCESSREAD_KEY, 1, Types.INTEGER);
-	pool.initCallableStatement(cq.C_PLSQL_ACCESS_ACCESSWRITE_KEY, cq.C_PLSQL_ACCESS_ACCESSWRITE);
-	pool.initRegisterOutParameter(cq.C_PLSQL_ACCESS_ACCESSWRITE_KEY, 1, Types.INTEGER);
-
-	// init statements for groups
-	pool.initCallableStatement(cq.C_PLSQL_GROUPS_USERINGROUP_KEY, cq.C_PLSQL_GROUPS_USERINGROUP);
-	pool.initRegisterOutParameter(cq.C_PLSQL_GROUPS_USERINGROUP_KEY, 1, Types.INTEGER);		
-	pool.initCallableStatement(cq.C_PLSQL_GROUPS_GETGROUPSOFUSER_KEY, cq.C_PLSQL_GROUPS_GETGROUPSOFUSER);
-	pool.initRegisterOutParameter(cq.C_PLSQL_GROUPS_GETGROUPSOFUSER_KEY, 1, oracle.jdbc.driver.OracleTypes.CURSOR);
-	pool.initCallableStatement(cq.C_PLSQL_GROUPS_ISMANAGEROFPROJECT_KEY, cq.C_PLSQL_GROUPS_ISMANAGEROFPROJECT);
-	pool.initRegisterOutParameter(cq.C_PLSQL_GROUPS_ISMANAGEROFPROJECT_KEY, 1, Types.INTEGER);
-	pool.initCallableStatement(cq.C_PLSQL_GROUPS_GETUSERSOFGROUP_KEY, cq.C_PLSQL_GROUPS_GETUSERSOFGROUP);
-	pool.initRegisterOutParameter(cq.C_PLSQL_GROUPS_GETUSERSOFGROUP_KEY, 1, oracle.jdbc.driver.OracleTypes.CURSOR);	
-
-	// init statements for files
-	pool.initCallableStatement(cq.C_PLSQL_FILESFORUPDATE_KEY, cq.C_PLSQL_FILESFORUPDATE);
-	pool.initCallableStatement(cq.C_PLSQL_FILESFORINSERT_KEY, cq.C_PLSQL_FILESFORINSERT);
-
-	// init statements for users
-	pool.initCallableStatement(cq.C_PLSQL_USERSWRITE_KEY, cq.C_PLSQL_USERSWRITE);
-	pool.initCallableStatement(cq.C_PLSQL_USERSFORUPDATE_KEY, cq.C_PLSQL_USERSFORUPDATE);
-	pool.initCallableStatement(cq.C_PLSQL_USERSFORINSERT_KEY, cq.C_PLSQL_USERSFORINSERT);	
-
-	// init statements for systemproperties
-	pool.initCallableStatement(cq.C_PLSQL_SYSTEMPROPERTIES_FORUPDATE_KEY, cq.C_PLSQL_SYSTEMPROPERTIES_FORUPDATE);
-	pool.initCallableStatement(cq.C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE_KEY, cq.C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE);
-	pool.initCallableStatement(cq.C_PLSQL_SYSTEMPROPERTIES_FORINSERT_KEY, cq.C_PLSQL_SYSTEMPROPERTIES_FORINSERT);	
-		
-	// init statements for sessions
-	pool.initCallableStatement(cq.C_PLSQL_SESSION_FORINSERT_KEY, cq.C_PLSQL_SESSION_FORINSERT);	
-	pool.initCallableStatement(cq.C_PLSQL_SESSION_FORUPDATE_KEY, cq.C_PLSQL_SESSION_FORUPDATE);		
-	pool.initCallableStatement(cq.C_PLSQL_SESSION_UPDATE_KEY, cq.C_PLSQL_SESSION_UPDATE);	
-		
-	pool.initLinkConnections();
-	}
 /**
  * Determines, if the users may manage a project.<BR/>
  * Only the manager of a project may publish it.
@@ -1248,13 +1402,15 @@ protected void initStatements() throws CmsException {
  * @return true, if the may manage this project.
  */
 public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject) throws CmsException {
-	//	System.out.println("PL/SQL: isManagerOfProject");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	//System.out.println("PL/SQL: isManagerOfProject");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CallableStatement statement = null;
+	Connection con = null;
 	try {
 		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_GROUPS_ISMANAGEROFPROJECT_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareCall(cq.C_PLSQL_GROUPS_ISMANAGEROFPROJECT);
+		statement.registerOutParameter(1, Types.INTEGER);
 		statement.setInt(2, currentUser.getId());
 		statement.setInt(3, currentProject.getId());
 		statement.execute();
@@ -1270,8 +1426,17 @@ public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject
 		throw new CmsException("[" + this.getClass().getName() + "]", e);
 	} finally {
 		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_GROUPS_ISMANAGEROFPROJECT_KEY, statement);
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}	
 		}
+		if (con != null) {
+			try {
+				con.close();
+			} catch (SQLException se) {
+			}	
+		}	
 	}
 }
 /**
@@ -1283,16 +1448,16 @@ public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject
   */
 public Vector lockResource(CmsUser currentUser, CmsProject currentProject, String resourcename, boolean force) throws CmsException {
 	//System.out.println("PL/SQL: lockResource");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CallableStatement statement = null;
-	String exceptionMessage = null;
+	Connection con = null;
 	ResultSet res = null;
 	Vector resources = new Vector();
 	CmsResource resource = null;
 	try {
 		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_RESOURCES_LOCKRESOURCE_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareCall(cq.C_PLSQL_RESOURCES_LOCKRESOURCE);
 		statement.setInt(1, currentUser.getId());
 		statement.setInt(2, currentProject.getId());
 		statement.setString(3, resourcename);
@@ -1301,6 +1466,7 @@ public Vector lockResource(CmsUser currentUser, CmsProject currentProject, Strin
 		} else {
 			statement.setString(4, "FALSE");
 		}
+		statement.registerOutParameter(5, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.execute();
 		res = (ResultSet) statement.getObject(5);
 		while (res.next()) {
@@ -1327,6 +1493,8 @@ public Vector lockResource(CmsUser currentUser, CmsProject currentProject, Strin
 										launcherClass, created, modified, modifiedBy, resSize);
 			resources.addElement(resource);
 		}
+		res.close();
+		statement.close();
 		return resources;
 	} catch (SQLException sqlexc) {
 		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
@@ -1334,15 +1502,24 @@ public Vector lockResource(CmsUser currentUser, CmsProject currentProject, Strin
 	} catch (Exception e) {
 		throw new CmsException("[" + this.getClass().getName() + "]", e);
 	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_RESOURCES_LOCKRESOURCE_KEY, statement);
-		}
 		if (res != null) {
 			try {
 				res.close();
 			} catch (SQLException se) {
 			}
 		}
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}	
+		}
+		if (con != null) {
+			try {
+				con.close();
+			} catch (SQLException se) {
+			}	
+		}	
 	}
 }
 /**
@@ -1359,21 +1536,26 @@ public Vector lockResource(CmsUser currentUser, CmsProject currentProject, Strin
  * @exception CmsException Throws CmsException if something goes wrong.
  */
 public void publishProject(CmsUser currentUser, int id, CmsProject onlineProject) throws CmsException {
-	//	System.out.println("PL/SQL: publishProject");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	//System.out.println("PL/SQL: publishProject");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CmsAccessFilesystem discAccess = new CmsAccessFilesystem(m_exportpointStorage);
 	CallableStatement statement = null;
+	Connection con = null;
 	ResultSet res1 = null;
 	ResultSet res2 = null;
 	ResultSet res3 = null;
 	ResultSet res4 = null;
 	try {
 		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_PROJECTS_PUBLISHPROJECT_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareCall(cq.C_PLSQL_PROJECTS_PUBLISHPROJECT);
 		statement.setInt(1, currentUser.getId());
 		statement.setInt(2, id);
 		statement.setInt(3, onlineProject.getId());
+		statement.registerOutParameter(4, oracle.jdbc.driver.OracleTypes.CURSOR);
+		statement.registerOutParameter(5, oracle.jdbc.driver.OracleTypes.CURSOR);
+		statement.registerOutParameter(6, oracle.jdbc.driver.OracleTypes.CURSOR);
+		statement.registerOutParameter(7, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.execute();
 		// now export to filesystem if necessary
 		// for deleted folder		
@@ -1414,9 +1596,6 @@ public void publishProject(CmsUser currentUser, int id, CmsProject onlineProject
 	} catch (Exception e) {
 		throw new CmsException("[" + this.getClass().getName() + "]", e);
 	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_RESOURCES_LOCKRESOURCE_KEY, statement);
-		}
 		if (res1 != null) {
 			try {
 				res1.close();
@@ -1441,6 +1620,18 @@ public void publishProject(CmsUser currentUser, int id, CmsProject onlineProject
 			} catch (SQLException se) {
 			}
 		}
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}	
+		}
+		if (con != null) {
+			try {
+				con.close();
+			} catch (SQLException se) {
+			}	
+		}	
 	}
 }
 /**
@@ -1455,13 +1646,16 @@ public void publishProject(CmsUser currentUser, int id, CmsProject onlineProject
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public CmsFile readFile(int currentUserId, int currentProjectId, int onlineProjectId, String filename) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	//System.out.println("PL/SQL: readFile");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CmsFile file = null;
 	CallableStatement statement = null;
+	Connection con = null;
 	ResultSet res = null;
 	try {
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_RESOURCES_READFILE_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareCall(cq.C_PLSQL_RESOURCES_READFILE);
+		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.setInt(2, currentUserId);
 		statement.setInt(3, currentProjectId);
 		statement.setInt(4, onlineProjectId);
@@ -1505,15 +1699,24 @@ public CmsFile readFile(int currentUserId, int currentProjectId, int onlineProje
 	} catch (Exception exc) {
 		throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_RESOURCES_READFILE_KEY, statement);
-		}
 		if (res != null) {
 			try {
 				res.close();
 			} catch (SQLException se) {
 			}
 		}
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}	
+		}
+		if (con != null) {
+			try {
+				con.close();
+			} catch (SQLException se) {
+			}	
+		}	
 	}
 	return file;
 }
@@ -1529,13 +1732,16 @@ public CmsFile readFile(int currentUserId, int currentProjectId, int onlineProje
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public CmsFile readFile(int currentUserId, int currentProjectId, String filename) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	//System.out.println("PL/SQL: readFile");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CmsFile file = null;
 	CallableStatement statement = null;
+	Connection con = null;
 	ResultSet res = null;
 	try {
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_RESOURCES_READFILEACC_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareCall(cq.C_PLSQL_RESOURCES_READFILEACC);
+		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.setInt(2, currentUserId);
 		statement.setInt(3, currentProjectId);
 		statement.setString(4, filename);
@@ -1581,15 +1787,24 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 	} catch (Exception exc) {
 		throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_RESOURCES_READFILEACC_KEY, statement);
-		}
 		if (res != null) {
 			try {
 				res.close();
 			} catch (SQLException se) {
 			}
 		}
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}	
+		}
+		if (con != null) {
+			try {
+				con.close();
+			} catch (SQLException se) {
+			}	
+		}	
 	}
 	return file;
 }
@@ -1602,12 +1817,15 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 	 */
 	protected byte[] readFileContent(int fileId)
 		throws CmsException {
+		//System.out.println("PL/SQL: readFileContent");
 		PreparedStatement statement = null;
+		Connection con = null;
 		ResultSet res = null;
 		byte[] returnValue = null;
 		try {  
 			// read fileContent from database
-			statement = m_pool.getPreparedStatement(m_cq.C_FILE_READ_KEY);
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareStatement(m_cq.C_FILE_READ);
 			statement.setInt(1,fileId);
 			res = statement.executeQuery();
 			if (res.next()) {
@@ -1624,15 +1842,24 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 		} catch (SQLException e){
 			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}finally {
-			if( statement != null) {
-				m_pool.putPreparedStatement(m_cq.C_FILE_READ_KEY, statement);
-			}
 			if (res != null) {
 				try {
 					res.close();
 				} catch (SQLException se) {
 				}
 			}
+			if( statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc) {
+				}	
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException se) {
+				}	
+			}	
 		}
 		return returnValue;
 	}
@@ -1644,11 +1871,14 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
  * @exception thorws CmsException if something goes wrong.
  */
 public Hashtable readSession(String sessionId) throws CmsException {
+	//System.out.println("PL/SQL: readSession");
 	PreparedStatement statement = null;
+	Connection con = null;
 	ResultSet res = null;
 	Hashtable session = null;
 	try {
-		statement = m_pool.getPreparedStatement(m_cq.C_SESSION_READ_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareStatement(m_cq.C_SESSION_READ);
 		statement.setString(1, sessionId);
 		statement.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT));
 		res = statement.executeQuery();
@@ -1671,15 +1901,24 @@ public Hashtable readSession(String sessionId) throws CmsException {
 	} catch (Exception e) {
 		throw new CmsException("[" + this.getClass().getName() + "]", e);
 	} finally {
-		if (statement != null) {
-			m_pool.putPreparedStatement(m_cq.C_SESSION_READ_KEY, statement);
-		}
 		if (res != null) {
 			try {
 				res.close();
 			} catch (SQLException se) {
 			}
 		}
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}	
+		}
+		if (con != null) {
+			try {
+				con.close();
+			} catch (SQLException se) {
+			}	
+		}	
 	}
 	return session;
 }
@@ -1694,19 +1933,21 @@ public Hashtable readSession(String sessionId) throws CmsException {
 	 */
 	public Serializable readSystemProperty(String name)
 		throws CmsException {
-		
+		//System.out.println("PL/SQL: readSystemProperty");
 		Serializable property=null;
 
 		ResultSet res = null;
 		PreparedStatement statement = null;
+		Connection con = null;
 			
 		// create get the property data from the database
 		try {
-		  statement=m_pool.getPreparedStatement(m_cq.C_SYSTEMPROPERTIES_READ_KEY);
-		  statement.setString(1,name);
-		  res = statement.executeQuery();
-		  if(res.next()) {
-			    oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_SYSTEMPROPERTY_VALUE);
+			con = DriverManager.getConnection(m_poolName);	
+			statement = con.prepareStatement(m_cq.C_SYSTEMPROPERTIES_READ);
+			statement.setString(1,name);
+			res = statement.executeQuery();
+			if(res.next()) {
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_SYSTEMPROPERTY_VALUE);
 				byte[] value = new byte[(int) blob.length()];			    
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
@@ -1724,15 +1965,24 @@ public Hashtable readSession(String sessionId) throws CmsException {
 	    catch (ClassNotFoundException e){
 			throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
 		}finally {
-			if( statement != null) {
-				m_pool.putPreparedStatement(m_cq.C_SYSTEMPROPERTIES_READ_KEY, statement);
-			}
 			if (res != null) {
 				try {
 					res.close();
 				} catch (SQLException se) {
 				}
 			}
+			if( statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc) {
+				}	
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException se) {
+				}	
+			}	
 		}	
 		return property;
 	}
@@ -1746,12 +1996,15 @@ public Hashtable readSession(String sessionId) throws CmsException {
 	 */
 	public CmsUser readUser(int id) 
 		throws CmsException {
+		//System.out.println("PL/SQL: readUser");
 		PreparedStatement statement = null;
+		Connection con = null;
 		ResultSet res = null;
 		CmsUser user = null;
 
-		try	{			
-			statement = m_pool.getPreparedStatement(m_cq.C_USERS_READID_KEY);
+		try	{
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareStatement(m_cq.C_USERS_READID);
 			statement.setInt(1,id);
 			res = statement.executeQuery();
 			
@@ -1804,15 +2057,24 @@ public Hashtable readSession(String sessionId) throws CmsException {
 		catch (Exception e) {
 			throw new CmsException("["+this.getClass().getName()+"]", e);			
 		} finally {
-			if( statement != null) {
-				m_pool.putPreparedStatement(m_cq.C_USERS_READID_KEY, statement);
-			}
 			if (res != null) {
 				try {
 					res.close();
 				} catch (SQLException se) {
 				}
 			}
+			if( statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc) {
+				}	
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException se) {
+				}
+			}	
 		}
 	}
 	/**
@@ -1825,12 +2087,15 @@ public Hashtable readSession(String sessionId) throws CmsException {
 	 */
 	public CmsUser readUser(String name, int type) 
 		throws CmsException {
+		//System.out.println("PL/SQL: readUser");
 		PreparedStatement statement = null;
+		Connection con = null;
 		ResultSet res = null;
 		CmsUser user = null;
 		
-		try	{			
-			statement = m_pool.getPreparedStatement(m_cq.C_USERS_READ_KEY);
+		try	{
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareStatement(m_cq.C_USERS_READ);
 			statement.setString(1,name);
 			statement.setInt(2,type);
    
@@ -1885,15 +2150,24 @@ public Hashtable readSession(String sessionId) throws CmsException {
 		catch (Exception e) {
 			throw new CmsException("["+this.getClass().getName()+"]", e);			
 		} finally {
-			if( statement != null) {
-				m_pool.putPreparedStatement(m_cq.C_USERS_READ_KEY, statement);
-			}
 			if (res != null) {
 				try {
 					res.close();
 				} catch (SQLException se) {
 				}
 			}
+			if( statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc) {
+				}	
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException se) {
+				}	
+			}	
 		}
 	}
 	/**
@@ -1907,12 +2181,15 @@ public Hashtable readSession(String sessionId) throws CmsException {
 	 */
 	public CmsUser readUser(String name, String password, int type) 
 		throws CmsException {
+		//System.out.println("PL/SQL: readUser");
 		PreparedStatement statement = null;
+		Connection con = null;
 		ResultSet res = null;
 		CmsUser user = null;
 
-		try	{			
-			statement = m_pool.getPreparedStatement(m_cq.C_USERS_READPW_KEY);
+		try	{
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareStatement(m_cq.C_USERS_READPW);
 			statement.setString(1,name);
 			statement.setString(2,digest(password));
 			statement.setInt(3,type);
@@ -1968,15 +2245,24 @@ public Hashtable readSession(String sessionId) throws CmsException {
 		catch (Exception e) {
 			throw new CmsException("["+this.getClass().getName()+"]", e);			
 		} finally {
-			if( statement != null) {
-				m_pool.putPreparedStatement(m_cq.C_USERS_READPW_KEY, statement);
-			}
 			if (res != null) {
 				try {
 					res.close();
 				} catch (SQLException se) {
 				}
 			}
+			if( statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc) {
+				}	
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException se) {
+				}
+			}	
 		}
 	}
 	/**
@@ -1989,15 +2275,17 @@ public Hashtable readSession(String sessionId) throws CmsException {
 	 */
 	public CmsUser readUserAgent(int roleId) 
 		throws CmsException {
-			
+		//System.out.println("PL/SQL: readUserAgent");	
 		int agentId = this.findAgent(roleId);
 		
 		PreparedStatement statement = null;
+		Connection con = null;
 		ResultSet res = null;
 		CmsUser user = null;
 
-		try	{			
-			statement = m_pool.getPreparedStatement(m_cq.C_USERS_READID_KEY);
+		try	{
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareStatement(m_cq.C_USERS_READID);
 			statement.setInt(1,agentId);
 			res = statement.executeQuery();
 			
@@ -2050,15 +2338,24 @@ public Hashtable readSession(String sessionId) throws CmsException {
 		catch (Exception e) {
 			throw new CmsException("["+this.getClass().getName()+"]", e);			
 		} finally {
-			if( statement != null) {
-				m_pool.putPreparedStatement(m_cq.C_USERS_READID_KEY, statement);
-			}
 			if (res != null) {
 				try {
 					res.close();
 				} catch (SQLException se) {
 				}
 			}
+			if( statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc) {
+				}	
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException se) {
+				}
+			}	
 		}
 	}
 /**
@@ -2070,18 +2367,20 @@ public Hashtable readSession(String sessionId) throws CmsException {
   */
 public Vector unlockResource(CmsUser currentUser, CmsProject currentProject, String resourcename) throws CmsException {
 	//System.out.println("PL/SQL: unlockResource");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CallableStatement statement = null;
+	Connection con = null;
 	ResultSet res = null;
 	CmsResource resource = null;
 	Vector resources = new Vector();
 	try {
+		con = DriverManager.getConnection(m_poolName);
 		// create the statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_RESOURCES_UNLOCKRESOURCE_KEY);
+		statement = con.prepareCall(cq.C_PLSQL_RESOURCES_UNLOCKRESOURCE);
 		statement.setInt(1, currentUser.getId());
 		statement.setInt(2, currentProject.getId());
 		statement.setString(3, resourcename);
+		statement.registerOutParameter(4, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.execute();
 		res = (ResultSet) statement.getObject(4);
 		while (res.next()) {
@@ -2115,15 +2414,24 @@ public Vector unlockResource(CmsUser currentUser, CmsProject currentProject, Str
 	} catch (Exception e) {
 		throw new CmsException("[" + this.getClass().getName() + "]", e);
 	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_RESOURCES_UNLOCKRESOURCE_KEY, statement);
-		}
 		if (res != null) {
 			try {
 				res.close();
 			} catch (SQLException se) {
 			}
 		}
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}	
+		}
+		if (con != null) {
+			try {
+				con.close();
+			} catch (SQLException se) {
+			}
+		}	
 	}
 }
 /**
@@ -2134,16 +2442,16 @@ public Vector unlockResource(CmsUser currentUser, CmsProject currentProject, Str
  * @return data the sessionData.
  */
 public int updateSession(String sessionId, Hashtable data) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	//System.out.println("PL/SQL: updateSession");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	byte[] value = null;
 	PreparedStatement statement = null;
 	PreparedStatement statement2 = null;
 	PreparedStatement nextStatement = null;
 	OraclePreparedStatement trimStatement = null;
+	Connection con = null;
 	int retValue;
 	ResultSet res = null;
-	Connection conn = null;
 	try {
 		// serialize the hashtable
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -2153,22 +2461,23 @@ public int updateSession(String sessionId, Hashtable data) throws CmsException {
 		value = bout.toByteArray();
 
 		// write data to database in two steps because of using Oracle BLOB
-		// first update the session_time 
-		statement = pool.getPreparedStatement(cq.C_PLSQL_SESSION_UPDATE_KEY);
+		// first update the session_time
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareStatement(cq.C_PLSQL_SESSION_UPDATE);
 		statement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
 		statement.setString(2, sessionId);
 		retValue = statement.executeUpdate();
+		statement.close();
 		// now update the session_data	
-		statement2 = pool.getNextPreparedStatement(statement, cq.C_PLSQL_SESSION_FORUPDATE_KEY);
+		statement2 = con.prepareStatement(cq.C_PLSQL_SESSION_FORUPDATE);
 		statement2.setString(1, sessionId);
-		conn = pool.getConnectionOfStatement(statement);
-		conn.setAutoCommit(false);
+		con.setAutoCommit(false);
 		res = statement2.executeQuery();
 		while (res.next()) {
 			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SESSION_DATA");
 			// first trim the blob to 0 bytes, otherwise there could be left some bytes
 			// of the old content
-			trimStatement = (OraclePreparedStatement) pool.getNextPreparedStatement(statement, cq.C_TRIMBLOB_KEY);
+			trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
 			trimStatement.setBLOB(1, blob);
 			trimStatement.setInt(2, 0);
 			trimStatement.execute();
@@ -2182,35 +2491,63 @@ public int updateSession(String sessionId, Hashtable data) throws CmsException {
 			instream.close();
 			outstream.close();
 		}
+		statement2.close();
+		res.close();
 		// for the oracle-driver commit or rollback must be executed manually
 		// because setAutoCommit = false in CmsDbPool.CmsDbPool
-		nextStatement = pool.getNextPreparedStatement(statement, cq.C_COMMIT_KEY);
+		nextStatement = con.prepareStatement(cq.C_COMMIT);
 		nextStatement.execute();
-		conn.setAutoCommit(true);
+		nextStatement.close();
+		con.setAutoCommit(true);
 	} catch (SQLException e) {
 		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
 	} catch (IOException e) {
 		throw new CmsException("[" + this.getClass().getName() + "]:" + CmsException.C_SERIALIZATION, e);
 	} finally {
-		if (statement != null) {
-			try {
-				nextStatement = pool.getNextPreparedStatement(statement, cq.C_ROLLBACK_KEY);
-				nextStatement.execute();
-			} catch (SQLException se) {
-			}
-			pool.putPreparedStatement(cq.C_PLSQL_SESSION_UPDATE_KEY, statement);
-		}
-		if (conn != null) {
-			try {
-				conn.setAutoCommit(true);
-			} catch (SQLException se) {
-			}
-		}
 		if (res != null) {
 			try {
 				res.close();
 			} catch (SQLException se) {
 			}
+		}
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}
+		}
+		if (statement2 != null) {
+			try {
+				statement2.close();
+			} catch (SQLException exc) {
+			}
+			try {
+				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+				nextStatement.execute();
+			} catch (SQLException se) {
+			}
+		}
+		if (nextStatement != null) {
+			try {
+				nextStatement.close();
+			} catch (SQLException exc) {
+			}
+		}
+		if (trimStatement != null) {
+			try {
+				trimStatement.close();
+			} catch (SQLException exc) {
+			}
+		}
+		if (con != null) {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException se) {
+			} 
+			try {
+				con.close();
+			} catch (SQLException se) {
+			}	
 		}
 	}
 	return retValue;
@@ -2226,13 +2563,15 @@ public int updateSession(String sessionId, Hashtable data) throws CmsException {
  */
 public boolean userInGroup(int userid, int groupid) throws CmsException {
 	//System.out.println("PL/SQL: userInGroup");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	boolean userInGroup = false;
 	CallableStatement statement = null;
+	Connection con = null;
 	try {
 		// create statement
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_GROUPS_USERINGROUP_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareCall(cq.C_PLSQL_GROUPS_USERINGROUP);
+		statement.registerOutParameter(1, Types.INTEGER);
 		statement.setInt(2, userid);
 		statement.setInt(3, groupid);
 		statement.execute();
@@ -2246,8 +2585,17 @@ public boolean userInGroup(int userid, int groupid) throws CmsException {
 		throw new CmsException("[" + this.getClass().getName() + "]", e);
 	} finally {
 		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_GROUPS_USERINGROUP_KEY, statement);
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}	
 		}
+		if (con != null) {
+			try {
+				con.close();
+			} catch (SQLException se) {
+			}	
+		}	
 	}
 	return userInGroup;
 }
@@ -2262,28 +2610,28 @@ public boolean userInGroup(int userid, int groupid) throws CmsException {
  * @exception CmsException Throws CmsException if operation was not succesful.
  */
 public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file, boolean changed) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	//System.out.println("PL/SQL: writeFile");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	PreparedStatement statement = null;
 	PreparedStatement nextStatement = null;
 	OraclePreparedStatement trimStatement = null;
-	Connection conn = null;
+	Connection con = null;
 	ResultSet res = null;	
 	try {
 		// update the file header in the RESOURCE database.
 		writeFileHeader(project, file, changed);
 		// update the file content in the FILES database.
-		statement = pool.getPreparedStatement(cq.C_PLSQL_FILESFORUPDATE_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareStatement(cq.C_PLSQL_FILESFORUPDATE);
 		statement.setInt(1, file.getFileId());
-		conn = pool.getConnectionOfStatement(statement);
-		conn.setAutoCommit(false);
+		con.setAutoCommit(false);
 		res = statement.executeQuery();
 		try {
 			while (res.next()) {
 				oracle.sql.BLOB blobnew = ((OracleResultSet) res).getBLOB("FILE_CONTENT");
 				// first trim the blob to 0 bytes, otherwise ther could be left some bytes
 				// of the old content
-				trimStatement = (OraclePreparedStatement) pool.getNextPreparedStatement(statement, cq.C_TRIMBLOB_KEY);
+				trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
 				trimStatement.setBLOB(1, blobnew);
 				trimStatement.setInt(2, 0);
 				trimStatement.execute();
@@ -2299,34 +2647,56 @@ public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file
 			}
 			// for the oracle-driver commit or rollback must be executed manually
 			// because setAutoCommit = false in CmsDbPool.CmsDbPool
-			nextStatement = pool.getNextPreparedStatement(statement, cq.C_COMMIT_KEY);
+			nextStatement = con.prepareStatement(cq.C_COMMIT);
 			nextStatement.execute();
-		    conn.setAutoCommit(true);			
+			nextStatement.close();
+		    con.setAutoCommit(true);			
 		} catch (IOException e) {
 			throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), e);
 		}
+		statement.close();
+		res.close();
 	} catch (SQLException e) {
 		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
 	} finally {
-		if (statement != null) {
-			try {
-				nextStatement = pool.getNextPreparedStatement(statement, cq.C_ROLLBACK_KEY);
-				nextStatement.execute();
-			} catch (SQLException se) {
-			}
-			pool.putPreparedStatement(cq.C_PLSQL_FILESFORUPDATE_KEY, statement);
-		}
-		if (conn != null) {
-			try {
-				conn.setAutoCommit(true);
-			} catch (SQLException se) {
-			}
-		}
 		if (res != null) {
 			try {
 				res.close();
 			} catch (SQLException se) {
 			}
+		}
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}
+			try {
+				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+				nextStatement.execute();
+			} catch (SQLException se) {
+			}
+		}
+		if (nextStatement != null) {
+			try {
+				nextStatement.close();
+			} catch (SQLException exc) {
+			}
+		}
+		if (trimStatement != null) {
+			try {
+				trimStatement.close();
+			} catch (SQLException exc) {
+			}
+		}
+		if (con != null) {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException se) {
+			} 
+			try {
+				con.close();
+			} catch (SQLException se) {	
+			}	
 		}
 	}
 }
@@ -2341,7 +2711,7 @@ public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file
  * @exception CmsException Throws CmsException if operation was not succesful.
  */
 public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	//System.out.println("PL/SQL: writeFileHeader");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	ResultSet res = null;
 	ResultSet resUpd = null;
@@ -2351,14 +2721,15 @@ public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) t
 	PreparedStatement statementFileIns = null;
 	PreparedStatement statementFileUpd = null;
 	PreparedStatement commitStatement = null;
-	Connection conn = null;
+	Connection con = null;
 	try {
 		// check if the file content for this file is already existing in the
 		// offline project. If not, load it from the online project and add it
 		// to the offline project.
+		con = DriverManager.getConnection(m_poolName);
 		if ((file.getState() == C_STATE_UNCHANGED) && (changed == true)) {
 			// read file content form the online project
-			statementFileRead = m_pool.getPreparedStatement(m_cq.C_FILE_READ_KEY);
+			statementFileRead = con.prepareStatement(m_cq.C_FILE_READ);
 			statementFileRead.setInt(1, file.getFileId());
 			res = statementFileRead.executeQuery();
 			if (res.next()) {
@@ -2369,20 +2740,21 @@ public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) t
 			} else {
 				throw new CmsException("[" + this.getClass().getName() + "]" + file.getAbsolutePath(), CmsException.C_NOT_FOUND);
 			}
+			statementFileRead.close();
+			res.close();
 			// add the file content to the offline project.
 			// first insert new file without file_content, then update the file_content
 			// these two steps are necessary because of using BLOBs	in the Oracle DB
 			file.setFileId(nextId(C_TABLE_FILES));
-			statementFileIns = pool.getPreparedStatement(cq.C_PLSQL_FILESFORINSERT_KEY);
+			statementFileIns = con.prepareStatement(cq.C_PLSQL_FILESFORINSERT);
 			statementFileIns.setInt(1, file.getFileId());
 			statementFileIns.executeUpdate();
-
+			statementFileIns.close();
 			// update the file content in the FILES database.
 			try {
-				statementFileUpd = pool.getNextPreparedStatement(statementFileIns, cq.C_PLSQL_FILESFORUPDATE_KEY);
+				statementFileUpd = con.prepareStatement(cq.C_PLSQL_FILESFORUPDATE);
 				statementFileUpd.setInt(1, file.getFileId());
-				conn = pool.getConnectionOfStatement(statementFileIns);
-				conn.setAutoCommit(false);
+				con.setAutoCommit(false);
 				resUpd = statementFileUpd.executeQuery();
 				while (resUpd.next()) {
 					oracle.sql.BLOB blobnew = ((OracleResultSet) resUpd).getBLOB("FILE_CONTENT");
@@ -2396,17 +2768,20 @@ public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) t
 					instream.close();
 					outstream.close();
 				}
+				statementFileUpd.close();
+				resUpd.close();
 				// for the oracle-driver commit or rollback must be executed manually
 				// because setAutoCommit = false in CmsDbPool.CmsDbPool
-				commitStatement = pool.getNextPreparedStatement(statementFileIns, cq.C_COMMIT_KEY);
+				commitStatement = con.prepareStatement(cq.C_COMMIT);
 				commitStatement.execute();
-				conn.setAutoCommit(true);
+				commitStatement.close();
+				con.setAutoCommit(true);
 			} catch (IOException e) {
 				throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), e);
 			}
 		}
 		// update resource in the database
-		statementResourceUpdate = m_pool.getPreparedStatement(m_cq.C_RESOURCES_UPDATE_KEY);
+		statementResourceUpdate = con.prepareStatement(m_cq.C_RESOURCES_UPDATE);
 		statementResourceUpdate.setInt(1, file.getType());
 		statementResourceUpdate.setInt(2, file.getFlags());
 		statementResourceUpdate.setInt(3, file.getOwnerId());
@@ -2433,29 +2808,10 @@ public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) t
 		statementResourceUpdate.setInt(14, file.getFileId());
 		statementResourceUpdate.setInt(15, file.getResourceId());
 		statementResourceUpdate.executeUpdate();
+		statementResourceUpdate.close();
 	} catch (SQLException e) {
 		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
 	} finally {
-		if (statementFileRead != null) {
-			m_pool.putPreparedStatement(m_cq.C_FILE_READ_KEY, statementFileRead);
-		}
-		if (statementFileIns != null) {
-			try {
-				commitStatement = pool.getNextPreparedStatement(statementFileIns, cq.C_ROLLBACK_KEY);
-				commitStatement.execute();
-			} catch (SQLException se) {
-			}
-			pool.putPreparedStatement(cq.C_PLSQL_FILESFORINSERT_KEY, statementFileIns);
-		}
-		if (statementResourceUpdate != null) {
-			m_pool.putPreparedStatement(m_cq.C_RESOURCES_UPDATE_KEY, statementResourceUpdate);
-		}
-		if (conn != null) {
-			try {
-				conn.setAutoCommit(true);
-			} catch (SQLException se) {
-			}
-		}
 		if (res != null) {
 			try {
 				res.close();
@@ -2467,6 +2823,52 @@ public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) t
 				resUpd.close();
 			} catch (SQLException se) {
 			}
+		}
+		if (statementFileRead != null) {
+			try {
+				statementFileRead.close();
+			} catch (SQLException exc) {
+			}	
+		}
+		if (statementFileIns != null) {
+			try {
+				statementFileIns.close();
+			} catch (SQLException exc) {
+			}
+			try {
+				commitStatement = con.prepareStatement(cq.C_ROLLBACK);
+				commitStatement.execute();
+			} catch (SQLException se) {
+			} 	
+		}
+		if (statementFileUpd != null) {
+			try {
+				statementFileUpd.close();
+			} catch (SQLException exc) {
+			}	
+		}
+		if (statementResourceUpdate != null) {
+			try {
+				statementResourceUpdate.close();
+			} catch (SQLException exc) {
+			}	
+		}
+		if (commitStatement != null) {
+			try {
+				commitStatement.close();
+			} catch (SQLException exc) {
+			}	
+		}
+		if (con != null) {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException se) {
+			} finally {
+				try {
+					con.close();
+				} catch (SQLException se) {
+				}	
+			}	
 		}
 	}
 }
@@ -2481,13 +2883,13 @@ public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) t
  * @exception CmsException Throws CmsException if something goes wrong.
  */
 public Serializable writeSystemProperty(String name, Serializable object) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	//System.out.println("PL/SQL: writeSystemProperty");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	PreparedStatement statement = null;
 	PreparedStatement nextStatement = null;
 	OraclePreparedStatement trimStatement = null;
 	ResultSet res = null;
-	Connection conn = null;
+	Connection con = null;
 	byte[] value = null;
 	try {
 		// serialize the object	
@@ -2496,19 +2898,20 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 		oout.writeObject(object);
 		oout.close();
 		value = bout.toByteArray();
-		statement = pool.getPreparedStatement(cq.C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareStatement(cq.C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE);
 		statement.setString(1, name);
-		conn = pool.getConnectionOfStatement(statement);
-		conn.setAutoCommit(false);
+		con.setAutoCommit(false);
 		res = statement.executeQuery();	
 		while (res.next()) {
 			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
 			// first trim the blob to 0 bytes, otherwise ther could be left some bytes
 			// of the old content
-			trimStatement = (OraclePreparedStatement) pool.getNextPreparedStatement(statement, cq.C_TRIMBLOB_KEY);
+			trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
 			trimStatement.setBLOB(1, blob);
 			trimStatement.setInt(2, 0);
 			trimStatement.execute();
+			trimStatement.close();
 			ByteArrayInputStream instream = new ByteArrayInputStream(value);
 			OutputStream outstream = blob.getBinaryOutputStream();
 			byte[] chunk = new byte[blob.getChunkSize()];
@@ -2519,35 +2922,57 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 			instream.close();
 			outstream.close();
 		}
+		statement.close();
+		res.close();
 		// for the oracle-driver commit or rollback must be executed manually
 		// because setAutoCommit = false in CmsDbPool.CmsDbPool
-		nextStatement = pool.getNextPreparedStatement(statement, cq.C_COMMIT_KEY);
+		nextStatement = con.prepareStatement(cq.C_COMMIT);
 		nextStatement.execute();
-		conn.setAutoCommit(true);
+		nextStatement.close();
+		con.setAutoCommit(true);
 	} catch (SQLException e) {
 		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
 	} catch (IOException e) {
 		throw new CmsException("[" + this.getClass().getName() + "]" + CmsException.C_SERIALIZATION, e);
 	} finally {
-		if (statement != null) {
-			try {
-				nextStatement = pool.getNextPreparedStatement(statement, cq.C_ROLLBACK_KEY);
-				nextStatement.execute();
-			} catch (SQLException se) {
-			}
-			pool.putPreparedStatement(cq.C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE_KEY, statement);
-		}
-		if (conn != null) {
-			try {
-				conn.setAutoCommit(true);
-			} catch (SQLException se) {
-			}
-		}
 		if (res != null) {
 			try {
 				res.close();
 			} catch (SQLException se) {
 			}
+		}
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException se) {
+			}
+			try {
+				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+				nextStatement.execute();
+			} catch (SQLException exc){
+			}	
+		}
+		if (nextStatement != null) {
+			try {
+				nextStatement.close();
+			} catch (SQLException exc) {
+			}
+		}
+		if (trimStatement != null) {
+			try {
+				trimStatement.close();
+			} catch (SQLException exc) {
+			}
+		}
+		if (con != null) {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException se) {
+			}
+			try {
+				con.close();
+			} catch (SQLException se) {
+			}	
 		}
 	}
 	return readSystemProperty(name);
@@ -2559,7 +2984,7 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
  * @exception thorws CmsException if something goes wrong.
  */
 public void writeUser(CmsUser user) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	//System.out.println("PL/SQL: writeUser");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	byte[] value = null;
 	PreparedStatement statement = null;
@@ -2567,7 +2992,7 @@ public void writeUser(CmsUser user) throws CmsException {
 	PreparedStatement nextStatement = null;
 	OraclePreparedStatement trimStatement = null;
 	ResultSet res = null;
-	Connection conn = null;
+	Connection con = null;
 	try {
 		// serialize the hashtable
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -2576,8 +3001,9 @@ public void writeUser(CmsUser user) throws CmsException {
 		oout.close();
 		value = bout.toByteArray();
 
-		// write data to database     
-		statement = pool.getPreparedStatement(cq.C_PLSQL_USERSWRITE_KEY);
+		// write data to database
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareStatement(cq.C_PLSQL_USERSWRITE);
 		statement.setString(1, checkNull(user.getDescription()));
 		statement.setString(2, checkNull(user.getFirstname()));
 		statement.setString(3, checkNull(user.getLastname()));
@@ -2592,21 +3018,22 @@ public void writeUser(CmsUser user) throws CmsException {
 		statement.setInt(11, user.getType());
 		statement.setInt(12, user.getId());
 		statement.executeUpdate();
+		statement.close();
 		// update user_info in this special way because of using blob
-		statement2 = pool.getPreparedStatement(cq.C_PLSQL_USERSFORUPDATE_KEY);
+		statement2 = con.prepareStatement(cq.C_PLSQL_USERSFORUPDATE);
 		statement2.setInt(1, user.getId());
-		conn = pool.getConnectionOfStatement(statement2);
-		conn.setAutoCommit(false);
+		con.setAutoCommit(false);
 		res = statement2.executeQuery();
 		try {
 			while (res.next()) {
 				oracle.sql.BLOB blobnew = ((OracleResultSet) res).getBLOB("USER_INFO");
 				// first trim the blob to 0 bytes, otherwise ther could be left some bytes
 				// of the old content
-				trimStatement = (OraclePreparedStatement) pool.getNextPreparedStatement(statement2, cq.C_TRIMBLOB_KEY);
+				trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
 				trimStatement.setBLOB(1, blobnew);
 				trimStatement.setInt(2, 0);
 				trimStatement.execute();
+				trimStatement.close();
 				ByteArrayInputStream instream = new ByteArrayInputStream(value);
 				OutputStream outstream = blobnew.getBinaryOutputStream();
 				byte[] chunk = new byte[blobnew.getChunkSize()];
@@ -2619,33 +3046,58 @@ public void writeUser(CmsUser user) throws CmsException {
 			}
 			// for the oracle-driver commit or rollback must be executed manually
 			// because setAutoCommit = false in CmsDbPool.CmsDbPool
-			nextStatement = pool.getNextPreparedStatement(statement2, cq.C_COMMIT_KEY);
+			nextStatement = con.prepareStatement(cq.C_COMMIT);
 			nextStatement.execute();
-			conn.setAutoCommit(true);
+			nextStatement.close();
+			con.setAutoCommit(true);
 		} catch (IOException e) {
 			throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), e);
 		}
+		statement2.close();
+		res.close();
 	} catch (SQLException e) {
 		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
 	} catch (IOException e) {
 		throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
 	} finally {
 		if (statement != null) {
-			m_pool.putPreparedStatement(m_cq.C_USERS_WRITE_KEY, statement);
+			try {
+				statement.close();
+			} catch (SQLException exc) {
+			}	
 		}
 		if (statement2 != null) {
 			try {
-				nextStatement = pool.getNextPreparedStatement(statement2, cq.C_ROLLBACK_KEY);
+				statement2.close();
+			} catch (SQLException exc) {
+			}
+			try {
+				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
 				nextStatement.execute();
 			} catch (SQLException se) {
-			}
-			pool.putPreparedStatement(cq.C_PLSQL_USERSFORUPDATE_KEY, statement2);
+			}	
 		}
-		if (conn != null) {
+		if (nextStatement != null) {
 			try {
-				conn.setAutoCommit(true);
+				nextStatement.close();
+			} catch (SQLException exc) {
+			}
+		}
+		if (trimStatement != null) {
+			try {
+				trimStatement.close();
+			} catch (SQLException exc) {
+			}
+		}
+		if (con != null) {
+			try {
+				con.setAutoCommit(true);
 			} catch (SQLException se) {
 			}
+			try {
+				con.close();
+			} catch (SQLException se) {
+			}	
 		}
 		if (res != null) {
 			try {
