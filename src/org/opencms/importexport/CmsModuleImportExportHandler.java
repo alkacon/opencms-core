@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2004/02/25 15:35:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/25 16:42:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.dom4j.Document;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2004/02/25 15:35:21 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/25 16:42:06 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler extends Object implements I_CmsImportExportHandler {
@@ -216,9 +216,9 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
     }
 
     /**
-     * Returns the VFS resources to exported additionally with the module as a list.<p>
+     * Returns the VFS resources to be exported additionally with the module as a list.<p>
      * 
-     * @return the VFS resources to exported additionally with the module as a list
+     * @return the VFS resources to be exported additionally with the module as a list
      */
     public List getResourcesAsList() {
         return m_additionalResources;

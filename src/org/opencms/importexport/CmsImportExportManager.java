@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2004/02/25 16:32:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/25 16:42:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.dom4j.io.SAXReader;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2004/02/25 16:32:06 $
+ * @version $Revision: 1.7 $ $Date: 2004/02/25 16:42:06 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */
@@ -345,6 +345,7 @@ public class CmsImportExportManager extends Object {
      * @param report a Cms report to print log messages
      * @throws CmsSecurityException if the current user is not a member of the administrators group
      * @throws CmsException if operation was not successful
+     * @see I_CmsImportExportHandler
      */
     public void exportData(CmsObject cms, I_CmsImportExportHandler handler, I_CmsReport report) throws CmsException, CmsSecurityException {
         if (cms.isAdmin()) {
@@ -364,6 +365,7 @@ public class CmsImportExportManager extends Object {
      * @param report a Cms report to print log messages
      * @throws CmsSecurityException if the current user is not a member of the administrators group
      * @throws CmsException if operation was not successful
+     * @see I_CmsImportExportHandler
      */
     public void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException, CmsSecurityException {
         I_CmsImportExportHandler handler = null;
