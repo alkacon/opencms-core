@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/27 13:17:44 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2003/02/27 14:18:56 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.77 $ $Date: 2003/02/27 13:17:44 $
+ * @version $Revision: 1.78 $ $Date: 2003/02/27 14:18:56 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -937,7 +937,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         } else {
             // encoding not found, set encoding of xml files to default
             if (C_DEBUG > 0){
-                System.err.println("["+this.getClass().getName()+".convertFile()]: Encoding not set, using default encoding and setting it in <?XML...?>.");
+                System.err.println("["+this.getClass().getName()+".convertFile()]: Encoding not set, using default encoding and setting it in <?xml...?>.");
             }
             encoding = OpenCms.getDefaultEncoding();
             fileContent = setEncoding(fileContent, encoding);
