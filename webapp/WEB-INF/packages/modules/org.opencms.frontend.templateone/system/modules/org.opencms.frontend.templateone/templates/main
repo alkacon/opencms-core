@@ -178,7 +178,7 @@ if (cms.template("head")) {
 }
 
 if (cms.template("content")) {
-	cms.includeOldElements("oldbody","oldbody2");
+	cms.includeOldElements("body","body2");
 	cms.includeElements();	
 }
 

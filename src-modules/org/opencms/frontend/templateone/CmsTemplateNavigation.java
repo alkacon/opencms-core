@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/08 14:36:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
     
@@ -302,7 +302,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                     if (nav.isFolderLink()) { 
                         // check folders
                         if (! (CmsResource.getParentFolder(target).equals(getStartFolder()))) {
-                            target = link(target + "index.html");
+                            target = link(target);
                         } else {
                             target = null;
                         }
