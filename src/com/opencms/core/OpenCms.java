@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/10/31 13:11:24 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2001/01/19 14:08:12 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.42 $ $Date: 2000/10/31 13:11:24 $  
+* @version $Revision: 1.43 $ $Date: 2001/01/19 14:08:12 $  
 * 
 * */
 
@@ -247,7 +247,7 @@ public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, S
 	 * Prints a copyright information to all log-files.
 	 */
 	private void printCopyrightInformation(CmsObject cms) {
-//		System.err.println(cms.version());
+		System.err.println(cms.version());
 		if(c_servletLogging) {
 			this.log(C_OPENCMS_INFO, cms.version());
 		}
