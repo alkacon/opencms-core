@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/11/30 14:54:55 $
- * Version: $Revision: 1.173 $
+ * Date   : $Date: 2000/12/04 16:22:25 $
+ * Version: $Revision: 1.174 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.173 $ $Date: 2000/11/30 14:54:55 $ * 
+ * @version $Revision: 1.174 $ $Date: 2000/12/04 16:22:25 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -2253,7 +2253,7 @@ public Vector getFolderTree(int projectId) throws CmsException {
 			String resName = res.getString(m_cq.C_RESOURCES_RESOURCE_NAME);
 
 			// only add this folder, if it was not in the last offline-project already
-			if (!resName.equals(lastfile)) {
+//			if (!resName.equals(lastfile)) {
 				int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
 				int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
 				int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
@@ -2271,7 +2271,7 @@ public Vector getFolderTree(int projectId) throws CmsException {
 				int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
 				folder = new CmsFolder(resId, parentId, fileId, resName, resType, resFlags, userId, groupId, projectID, accessFlags, state, lockedBy, created, modified, modifiedBy);
 				folders.addElement(folder);
-			}
+//			}
 			lastfile = resName;
 		}
 	} catch (SQLException e) {
