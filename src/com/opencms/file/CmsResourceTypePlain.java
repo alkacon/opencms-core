@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2002/10/18 16:54:59 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/10/23 14:07:04 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -212,6 +212,17 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
     public void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException{
         cms.doChown(filename, newOwner);
     }
+    
+    /**
+     * Change the timestamp of a resource.
+     * 
+     * @param resourceName the name of the resource to change
+     * @param timestamp timestamp the new timestamp of the changed resource
+     * @param boolean flag to touch recursively all sub-resources in case of a folder
+     */  
+    public void touch( CmsObject cms, String resourceName, long timestamp, boolean touchRecursive ) throws CmsException{
+        cms.doTouch( resourceName, timestamp );
+    }      
 
     /**
     * Changes the resourcetype of a resource.

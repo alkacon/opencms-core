@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/10/22 12:40:53 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2002/10/23 14:07:04 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.33 $ $Date: 2002/10/22 12:40:53 $
+ * @version $Revision: 1.34 $ $Date: 2002/10/23 14:07:04 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -271,6 +271,30 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             }
         }
     }
+    
+    /**
+     * Change the timestamp of a page.
+     * 
+     * @param resourceName the name of the resource to change
+     * @param timestamp timestamp the new timestamp of the changed resource
+     * @param boolean flag to touch recursively all sub-resources in case of a folder
+     */  
+    public void touch( CmsObject cms, String resourceName, long timestamp, boolean touchRecursive ) throws CmsException{
+        // create a valid resource
+        CmsFile file = cms.readFile( resourceName );
+        
+        // check the access rights
+        if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))) {
+            // touch the page itself
+            cms.doTouch( resourceName, timestamp );
+            
+            // touch its counterpart under content/bodies
+            String bodyPath = this.checkBodyPath( cms, (CmsFile)file );
+            if (bodyPath!=null) {
+                cms.doTouch( resourceName, timestamp );
+            }            
+        }
+    }    
 
     /**
     * Changes the resourcetype of a resource.

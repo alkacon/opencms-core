@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/10/22 15:23:58 $
-* Version: $Revision: 1.245 $
+* Date   : $Date: 2002/10/23 14:07:05 $
+* Version: $Revision: 1.246 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.245 $ $Date: 2002/10/22 15:23:58 $
+ * @version $Revision: 1.246 $ $Date: 2002/10/23 14:07:05 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -4231,4 +4231,27 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
     public Vector getVisibleResourcesWithProperty(String propertyDefinition, String propertyValue, int resourceType) throws CmsException{
         return m_rb.getVisibleResourcesWithProperty(m_context.currentUser(), m_context.currentProject(), propertyDefinition, propertyValue, resourceType);
     }
+    
+    /**
+     * Change the timestamp of a resource.
+     * 
+     * @param resourceName the name of the resource to change
+     * @param timestamp timestamp the new timestamp of the changed resource
+     * @param boolean flag to touch recursively all sub-resources in case of a folder
+     */
+    public void touch( String resourceName, long timestamp, boolean touchRecursive ) throws CmsException {
+        CmsResource resource = readFileHeader( resourceName );
+        I_CmsResourceType resourceType = this.getResourceType( resource.getType() );
+        resourceType.touch( this, resourceName, timestamp, touchRecursive );
+    }
+        
+    /**
+     * Access the resource broker underneath to change the timestamp of a resource.
+     * 
+     * @param resourceName the name of the resource to change
+     * @param timestamp timestamp the new timestamp of the changed resource
+     */
+    protected void doTouch( String resourceName, long timestamp ) throws CmsException {
+        m_rb.touch( m_context.currentUser(), m_context.currentProject(), getSiteRoot(resourceName), timestamp );
+    }    
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/10/18 16:56:12 $
-* Version: $Revision: 1.187 $
+* Date   : $Date: 2002/10/23 14:07:04 $
+* Version: $Revision: 1.188 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.187 $ $Date: 2002/10/18 16:56:12 $
+ * @version $Revision: 1.188 $ $Date: 2002/10/23 14:07:04 $
  *
  */
 
@@ -387,6 +387,17 @@ public interface I_CmsResourceBroker {
     public void chown(CmsUser currentUser, CmsProject currentProject,
                       String filename, String newOwner)
         throws CmsException;
+        
+    /**
+     * Access the resource broker underneath to change the timestamp of a resource.
+     * 
+     * @param currentUser the currentuser who requested this method
+     * @param currentProject the current project of the user 
+     * @param resourceName the name of the resource to change
+     * @param timestamp timestamp the new timestamp of the changed resource
+     */
+    public void touch(CmsUser currentUser, CmsProject currentProject, String resourceName, long timestamp ) throws CmsException;    
+            
      /**
      * Changes the state for this resource<BR/>
      *

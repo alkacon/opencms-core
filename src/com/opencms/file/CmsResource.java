@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2001/10/16 09:00:35 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2002/10/23 14:07:04 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2001/10/16 09:00:35 $
+ * @version $Revision: 1.38 $ $Date: 2002/10/23 14:07:04 $
  */
  public class CmsResource implements I_CmsConstants,
                                                            Cloneable,
@@ -101,6 +101,9 @@ import com.opencms.core.*;
       * The date of the last modification of this resource.
       */
      private long m_dateLastModified;
+     
+      /** Boolean flag whether the timestamp of this resource was modified by a touch command. */
+      private boolean m_isTouched;
 
       /**
       * The size of the file content.
@@ -192,6 +195,7 @@ import com.opencms.core.*;
         m_resourceLastModifiedBy = resourceLastModifiedBy;
         m_size=size;
         m_lockedInProject=lockedInProject;
+        m_isTouched = false;
      }
     /**
      * Clones the CmsResource by creating a new CmsObject.
@@ -275,6 +279,15 @@ import com.opencms.core.*;
      public long getDateLastModified() {
          return m_dateLastModified;
      }
+     
+     /**
+      * Sets the date of the last modification for this resource.
+      */
+     public void setDateLastModified( long time ) {
+        m_isTouched = true;
+        m_dateLastModified = time;
+     }
+          
     /**
      * Gets the File id for this resource.
      *
@@ -666,4 +679,12 @@ import com.opencms.core.*;
         output.append(getState());
         return output.toString();
       }
+	/**
+	 * Returns the isTouched.
+	 * @return boolean
+	 */
+	public boolean isTouched() {
+		return m_isTouched;
+	}
+
 }

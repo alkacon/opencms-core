@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/10/17 14:28:19 $
-* Version: $Revision: 1.257 $
+* Date   : $Date: 2002/10/23 14:07:05 $
+* Version: $Revision: 1.258 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -54,7 +54,7 @@ import com.opencms.launcher.*;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.257 $ $Date: 2002/10/17 14:28:19 $ *
+ * @version $Revision: 1.258 $ $Date: 2002/10/23 14:07:05 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -11366,14 +11366,13 @@ public CmsTask readTask(int id) throws CmsException {
         String usedPool;
         String usedStatement;
         int modifiedBy = userId;
-        long dateModified = System.currentTimeMillis();
-        //int onlineProject = getOnlineProject(project.getId()).getId();
+        long dateModified = file.isTouched() ? file.getDateLastModified() : System.currentTimeMillis();
+        
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (project.getId() == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
             modifiedBy = file.getResourceLastModifiedBy();
-            dateModified = file.getDateLastModified();
         } else {
             usedPool = m_poolName;
             usedStatement = "";
@@ -11468,14 +11467,13 @@ public CmsTask readTask(int id) throws CmsException {
         String usedPool;
         String usedStatement;
         int modifiedBy = userId;
-        long dateModified = System.currentTimeMillis();
-        //int onlineProject = getOnlineProject(project.getId()).getId();
+        long dateModified = folder.isTouched() ? folder.getDateLastModified() : System.currentTimeMillis();
+
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (project.getId() == onlineProject) {
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
             modifiedBy = folder.getResourceLastModifiedBy();
-            dateModified = folder.getDateLastModified();
         } else {
             usedPool = m_poolName;
             usedStatement = "";
@@ -11547,8 +11545,9 @@ public CmsTask readTask(int id) throws CmsException {
         String usedPool;
         String usedStatement;
         int modifiedBy = userId;
-        long dateModified = System.currentTimeMillis();
+        long dateModified = resource.isTouched() ? resource.getDateLastModified() : System.currentTimeMillis();
         boolean isFolder = false;
+        
         if(resource.getType() == C_TYPE_FOLDER){
         	isFolder = true;
         }
@@ -11561,11 +11560,11 @@ public CmsTask readTask(int id) throws CmsException {
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
             modifiedBy = resource.getResourceLastModifiedBy();
-            dateModified = resource.getDateLastModified();
         } else {
             usedPool = m_poolName;
             usedStatement = "";
         }
+        
         try {
             con = DriverManager.getConnection(usedPool);
             // update resource in the database

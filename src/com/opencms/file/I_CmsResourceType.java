@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
-* Date   : $Date: 2002/10/18 16:56:13 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/10/23 14:07:04 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -154,6 +154,15 @@ public interface I_CmsResourceType
     * @exception CmsException if operation was not successful.
     */
     public void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException;
+    
+    /**
+     * Change the timestamp of a resource.
+     * 
+     * @param resourceName the name of the resource to change
+     * @param timestamp timestamp the new timestamp of the changed resource
+     * @param boolean flag to touch recursively all sub-resources in case of a folder
+     */
+    public void touch( CmsObject cms, String resourceName, long timestamp, boolean touchRecursive ) throws CmsException;
 
     /**
     * Changes the resourcetype of a resource.

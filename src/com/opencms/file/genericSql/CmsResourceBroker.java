@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/10/21 15:31:02 $
-* Version: $Revision: 1.338 $
+* Date   : $Date: 2002/10/23 14:07:05 $
+* Version: $Revision: 1.339 $
 
 *
 * This library is part of OpenCms -
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.338 $ $Date: 2002/10/21 15:31:02 $
+ * @version $Revision: 1.339 $ $Date: 2002/10/23 14:07:05 $
 
  *
  */
@@ -1304,6 +1304,57 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
         throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NO_ACCESS);
     }
 }
+
+    /**
+     * Access the resource broker underneath to change the timestamp of a resource.
+     * 
+     * @param currentUser the currentuser who requested this method
+     * @param currentProject the current project of the user 
+     * @param resourceName the name of the resource to change
+     * @param timestamp timestamp the new timestamp of the changed resource
+     */
+    public void touch(CmsUser currentUser, CmsProject currentProject, String resourceName, long timestamp ) throws CmsException {
+        CmsResource resource = null;
+        boolean isFolder = false;
+        
+        // read the resource to check the access
+        if (resourceName.endsWith("/")) {
+            resource = (CmsFolder)readFolder( currentUser, currentProject, resourceName );
+            isFolder = true;
+        } 
+        else {
+            resource = (CmsFile)readFileHeader( currentUser, currentProject, resourceName );
+        }
+        
+        // check the access rights
+        if (((resource.getOwnerId()==currentUser.getId()) || isAdmin(currentUser,currentProject)) && (resource.isLockedBy()==currentUser.getId() && resource.getLockedInProject()==currentProject.getId())) {  
+            resource.setDateLastModified( timestamp );
+            
+            if (isFolder) {
+                if (resource.getState()==C_STATE_UNCHANGED) {
+                    resource.setState(C_STATE_CHANGED);
+                }
+                
+                m_dbAccess.writeFolder( currentProject, (CmsFolder)resource, true, currentUser.getId() );
+                this.clearResourceCache( resourceName );
+            } 
+            else {
+                m_dbAccess.writeFileHeader (currentProject, (CmsFile)resource, true, currentUser.getId() );
+                if (resource.getState()==C_STATE_UNCHANGED) {
+                    resource.setState(C_STATE_CHANGED);
+                }
+                
+                this.clearResourceCache( resourceName );
+            }
+                 
+            m_accessCache.clear();
+            fileSystemChanged( false );
+        } 
+        else {
+            throw new CmsException("[" + this.getClass().getName() + "] " + resourceName, CmsException.C_NO_ACCESS);
+        }
+    }
+    
      /**
      * Changes the state for this resource<BR/>
      *
