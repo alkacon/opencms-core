@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/10/05 09:53:49 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2000/10/09 15:53:32 $
+ * Version: $Revision: 1.50 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.49 $ $Date: 2000/10/05 09:53:49 $
+ * @version $Revision: 1.50 $ $Date: 2000/10/09 15:53:32 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -150,9 +150,12 @@ public CmsShell(String args[])
 
 			//log in default user.
 			m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
-			CmsSite site = m_cms.getSite(args[1]);
-			System.out.println("Multisite name: " + site.getName() + ", Description: " + site.getDescription());
-			m_openCms.initUser(m_cms, null, null, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
+			if (args.length >= 2)
+			{
+				CmsSite site = m_cms.getSite(args[1]);
+				System.out.println("Multisite name: " + site.getName() + ", Description: " + site.getDescription());
+				m_openCms.initUser(m_cms, null, null, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
+			}
 		}
 		else
 		{
