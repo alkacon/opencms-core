@@ -8,7 +8,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/allgemeineAktionen/copy.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/copy.html';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
@@ -112,7 +112,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/allgemeineAktionen/copy.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/copy.html';
 //-->
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>

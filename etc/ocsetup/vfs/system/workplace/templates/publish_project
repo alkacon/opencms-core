@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-
+top.help_url='ExplorerAnsicht/header.html';
 //-->
 </script>
 
@@ -85,6 +85,7 @@
 <HTML>
 <script language=JavaScript>
 <!--
+top.help_url='ExplorerAnsicht/header.html';
 //-->
 </script>
 <head>

@@ -10,7 +10,7 @@
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
-top.help_url='ExplorerAnsicht/allgemeineAktionen/Verschieben.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
 //-->
 </script>
 
@@ -107,7 +107,7 @@ top.help_url='ExplorerAnsicht/allgemeineAktionen/Verschieben.html';
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/allgemeineAktionen/Verschieben.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
 
 function SubmitIfCR(form, key){
   if (key == 13 || key == 65293) {

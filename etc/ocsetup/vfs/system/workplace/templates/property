@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html';
 //-->
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
@@ -93,7 +93,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html';
 //-->
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>
@@ -199,7 +199,7 @@ function checkSelect()
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html';
 //-->
 </script>
 
@@ -293,7 +293,7 @@ top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html';
 //-->
 </script>
 
@@ -423,7 +423,7 @@ top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html';
 //-->
 </script>
 

@@ -11,7 +11,7 @@
 var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
-top.help_url='ExplorerAnsicht/allgemeineAktionen/delete.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/delete.html';
 //-->
 </script>
 
@@ -108,7 +108,7 @@ top.help_url='ExplorerAnsicht/allgemeineAktionen/delete.html';
 //for the filename to delete
 var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
 
-top.help_url='ExplorerAnsicht/allgemeineAktionen/delete.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/delete.html';
 //-->
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>

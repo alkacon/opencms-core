@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/zugriffsAktionen/eigentuemeraender.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/zugriffsAktionen/eigentuemeraender.html';
 
 var selectedowner=null;
 
@@ -106,7 +106,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/zugriffsAktionen/eigentuemeraender.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/zugriffsAktionen/eigentuemeraender.html';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 

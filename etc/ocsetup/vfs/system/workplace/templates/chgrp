@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/zugriffsAktionen/ChGroup.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/zugriffsAktionen/ChGroup.html';
 
 var selectedowner=null;
 
@@ -117,7 +117,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/zugriffsAktionen/ChGroup.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/zugriffsAktionen/ChGroup.html';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 

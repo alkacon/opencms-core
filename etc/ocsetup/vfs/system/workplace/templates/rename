@@ -5,7 +5,7 @@
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/allgemeineAktionen/rename.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/rename.html';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
@@ -94,7 +94,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/allgemeineAktionen/rename.html';
+top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/rename.html';
 //-->
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>
