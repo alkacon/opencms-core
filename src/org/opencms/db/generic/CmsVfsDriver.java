@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/21 11:25:13 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2003/07/21 12:45:17 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.42 $ $Date: 2003/07/21 11:25:13 $
+ * @version $Revision: 1.43 $ $Date: 2003/07/21 12:45:17 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1261,44 +1261,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }
     }    
 
-    /**
-     * Fetch all VFS links pointing to other VFS resources.
-     * 
-     * @param theProject the resources in this project are updated
-     * @param theResourceIDs reference to an ArrayList where the ID's of the fetched links are stored
-     * @param theLinkContents reference to an ArrayList where the contents of the fetched links (= VFS resource names of the targets) are stored
-     * @param theResourceTypeLinkID the ID of the link resource type
-     * @return the count of affected rows
-     */
-    public int fetchAllVfsLinks(CmsProject theProject, ArrayList theResourceIDs, ArrayList theLinkContents, ArrayList theLinkResources, int theResourceTypeLinkID) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        int rowCount = 0;
-        ResultSet res = null;
-
-        try {
-            // execute the query
-            conn = m_sqlManager.getConnection(theProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, theProject, "C_SELECT_VFS_LINK_RESOURCES");
-            stmt.setInt(1, theResourceTypeLinkID);
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                theResourceIDs.add((String) res.getString(1));
-                theLinkContents.add((String) new String(m_sqlManager.getBytes(res, m_sqlManager.get("C_FILE_CONTENT"))));
-                theLinkResources.add((String) res.getString(3));
-                rowCount++;
-            }
-        } catch (SQLException e) {
-            rowCount = 0;
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return rowCount;
-    }
-
     public long fetchDateFromResource(int theProjectId, int theResourceId, long theDefaultDate) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1367,57 +1329,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     }
 
     /**
-     * Fetch the ID for a given VFS link target.
-     * 
-     * @param theProject the CmsProject where the resource is fetched
-     * @param theResourceName the name of the resource for which we fetch it's ID
-     * @param skipResourceTypeID targets of this resource type are ignored
-     * @return the ID of the resource, or -1
+     * @see org.opencms.db.I_CmsVfsDriver#getVfsLinksForResource(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
      */
-    public int fetchResourceID(CmsProject theProject, String theResourceName, int skipResourceTypeID) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        int resourceID = 0;
-        ResultSet res = null;
-
-        try {
-            // execute the query
-            conn = m_sqlManager.getConnection(theProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, theProject, "C_SELECT_RESOURCE_ID");
-            stmt.setString(1, theResourceName);
-            res = stmt.executeQuery();
-
-            if (res.next()) {
-                int resourceTypeID = res.getInt(2);
-
-                if (resourceTypeID != skipResourceTypeID) {
-                    resourceID = res.getInt(1);
-                } else {
-                    resourceID = -1;
-                }
-            } else {
-                resourceID = 0;
-            }
-        } catch (SQLException e) {
-            resourceID = 0;
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return resourceID;
-    }
-
-    /**
-     * Fetches all VFS links pointing to a given resource ID.
-     * 
-     * @param theProject the current project
-     * @param theResourceID the ID of the resource of which the VFS links are fetched
-     * @param theResourceTypeLinkID the resource type ID of VFS links
-     * @return an ArrayList with the resource names of the fetched VFS links
-     * @throws CmsException
-     */
-    public List fetchVfsLinksForResourceID(CmsProject currentProject, CmsResource resource) throws CmsException {
+    public List getVfsLinksForResource(CmsProject currentProject, CmsResource resource) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -2919,32 +2833,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     }
 
     /**
-     * Update the resources flag attribute of all resources.
-     * 
-     * @param theProject the resources in this project are updated
-     * @param theValue the new int value of the resource fags attribute
-     * @return the count of affected rows
-     */
-    public int updateAllResourceFlags(CmsProject theProject, int theValue) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        int rowCount = 0;
-        try {
-            // execute the query
-            conn = m_sqlManager.getConnection(theProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, theProject, "C_UPDATE_ALL_RESOURCE_FLAGS");
-            stmt.setInt(1, theValue);
-            rowCount = stmt.executeUpdate();
-        } catch (SQLException e) {
-            rowCount = 0;
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
-        return rowCount;
-    }
-    /**
      * Updates the LOCKED_BY state of a Resource.
      * Creation date: (29.08.00 15:01:55)
      * @param res com.opencms.file.CmsResource
@@ -2968,34 +2856,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }
     }
 
-    /**
-     * Update the resource flag attribute for a given resource.
-     * 
-     * @param theProject the CmsProject where the resource is updated
-     * @param theResourceID the ID of the resource which is updated
-     * @param theValue the new value of the resource flag attribute
-     * @return the count of affected rows (should be 1, unless an error occurred)
-     */
-    public int updateResourceFlags(CmsProject theProject, int theResourceID, int theValue) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        int rowCount = 0;
-        try {
-            // execute the query
-            conn = m_sqlManager.getConnection(theProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, theProject, "C_UPDATE_RESOURCE_FLAGS");
-            stmt.setInt(1, theValue);
-            stmt.setInt(2, theResourceID);
-            rowCount = stmt.executeUpdate();
-        } catch (SQLException e) {
-            rowCount = 0;
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
-        return rowCount;
-    }
     /**
      * Updates the state of a Resource.
      *

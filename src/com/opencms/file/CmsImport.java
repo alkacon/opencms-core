@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/18 19:03:49 $
-* Version: $Revision: 1.114 $
+* Date   : $Date: 2003/07/21 12:45:17 $
+* Version: $Revision: 1.115 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.114 $ $Date: 2003/07/18 19:03:49 $
+ * @version $Revision: 1.115 $ $Date: 2003/07/21 12:45:17 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -974,7 +974,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 m_report.println(m_report.key("report.check_links_begin"), I_CmsReport.C_FORMAT_HEADLINE);
                 updatePageLinks();
                 m_report.println(m_report.key("report.check_links_end"), I_CmsReport.C_FORMAT_HEADLINE);
-                m_cms.joinLinksToTargets(m_report);
             }
 
         } catch (Exception exc) {
@@ -1132,7 +1131,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 m_report.println(m_report.key("report.check_links_begin"), I_CmsReport.C_FORMAT_HEADLINE);
                 updatePageLinks();
                 m_report.println(m_report.key("report.check_links_end"), I_CmsReport.C_FORMAT_HEADLINE);
-                m_cms.joinLinksToTargets(m_report);
             }
 
             // now merge the body and page control files. this only has to be done if the import

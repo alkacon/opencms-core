@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2003/07/15 12:17:05 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/07/21 12:45:17 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.zip.ZipInputStream;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.24 $ $Date: 2003/07/15 12:17:05 $
+ * @version $Revision: 1.25 $ $Date: 2003/07/21 12:45:17 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -111,10 +111,7 @@ public class CmsImportFolder implements I_CmsConstants {
             }
 
             // all is done, unlock the resources
-            m_cms.unlockResource(m_importPath, false);
-
-            // clean-up the link management
-            cms.joinLinksToTargets( new CmsShellReport() );             
+            m_cms.unlockResource(m_importPath, false);           
         } catch( Exception exc ) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
@@ -138,10 +135,7 @@ public class CmsImportFolder implements I_CmsConstants {
             m_cms.readFolder(importPath);
             
             // import the resources
-            importZipResource(m_zipStreamIn, m_importPath, noSubFolder);
-
-            // clean-up the link management
-            cms.joinLinksToTargets( new CmsShellReport() );            
+            importZipResource(m_zipStreamIn, m_importPath, noSubFolder);          
         } catch( Exception exc ) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }

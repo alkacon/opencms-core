@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminVfsLinkManagementThread.java,v $
- * Date   : $Date: 2003/03/05 18:43:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/21 12:45:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,6 @@
  
 package com.opencms.workplace;
 
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.report.CmsHtmlReport;
@@ -43,7 +40,7 @@ import com.opencms.report.I_CmsReport;
  * A thread to join all VFS links with their target resources.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsAdminVfsLinkManagementThread extends Thread implements I_CmsConstants {
 
@@ -58,14 +55,7 @@ public class CmsAdminVfsLinkManagementThread extends Thread implements I_CmsCons
     }
     
     public void run() {
-        try {
-            m_cms.joinLinksToTargets(m_report);            
-        } catch(CmsException e) {
-            m_report.println(e);
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());                
-            }
-        }
+        m_report.println( "Disabled" );
     }    
 
     /**

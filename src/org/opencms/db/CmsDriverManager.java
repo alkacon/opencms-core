@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/21 11:25:13 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2003/07/21 12:45:17 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.73 $ $Date: 2003/07/21 11:25:13 $
+ * @version $Revision: 1.74 $ $Date: 2003/07/21 12:45:17 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1057,6 +1057,7 @@ public class CmsDriverManager extends Object {
         String destinationFileName = null;
         String destinationFolderName = null;
         CmsResource newResource = null;
+        Map newResourceProps = null;
 
         if (destination.endsWith("/")) {
             copyFolder(context, source, destination, lockCopy);
@@ -1085,8 +1086,8 @@ public class CmsDriverManager extends Object {
         clearResourceCache();
 
         // copy the metainfos/properties
-        //newResource = lockResource(context, destination, true);
-        writeProperties(context, destination, readProperties(context, source, null, false));
+        newResourceProps = readProperties(context, source, null, false);
+        writeProperties(context, destination, newResourceProps);
 
         // copy the access control entries
         ListIterator aceList = m_userDriver.getAccessControlEntries(context.currentProject(), sourceFile.getResourceAceId(), false).listIterator();
@@ -1758,30 +1759,6 @@ public class CmsDriverManager extends Object {
         clearResourceCache();
 
         return linkResource;
-    }
-
-    /**
-     * Decrement the VFS link counter for a resource. 
-     * 
-     * @param context.currentProject() the current project
-     * @param theResourceName the name of the resource for which the link count is decremented
-     * @throws CmsException
-     * @return the current link count of the specified resource
-     */
-    public int decrementLinkCountForResource(CmsRequestContext context, String theResourceName) throws CmsException {
-        if (theResourceName == null || "".equals(theResourceName))
-            return 0;
-
-        int resourceID = m_vfsDriver.fetchResourceID(context.currentProject(), theResourceName, -1);
-        int currentLinkCount = 0;
-
-        if (resourceID > 0) {
-            currentLinkCount = m_vfsDriver.fetchResourceFlags(context.currentProject(), theResourceName);
-            currentLinkCount--;
-            m_vfsDriver.updateResourceFlags(context.currentProject(), resourceID, currentLinkCount);
-        }
-
-        return currentLinkCount;
     }
 
     /**
@@ -2514,7 +2491,7 @@ public class CmsDriverManager extends Object {
         }
         
         CmsResource resource = readFileHeader(context, resourcename);
-        return m_vfsDriver.fetchVfsLinksForResourceID(context.currentProject(), resource);
+        return m_vfsDriver.getVfsLinksForResource(context.currentProject(), resource);
     }
 
     /**
@@ -4146,33 +4123,6 @@ public class CmsDriverManager extends Object {
 
 
     /**
-     * Increment the VFS link counter for a resource. 
-     * 
-     * @param context.currentProject() the current project
-     * @param theResourceName the name of the resource for which the link count is incremented
-     * @throws CmsException
-     * @return the current link count of the specified resource
-     */
-    public int incrementLinkCountForResource(CmsRequestContext context, String theResourceName) throws CmsException {
-        if (theResourceName == null || "".equals(theResourceName))
-            return 0;
-
-        int resourceID = m_vfsDriver.fetchResourceID(context.currentProject(), theResourceName, -1);
-        int currentLinkCount = 0;
-
-        if (resourceID > 0) {
-            currentLinkCount = m_vfsDriver.fetchResourceFlags(context.currentProject(), theResourceName);
-            currentLinkCount++;
-
-            if (currentLinkCount >= 0) {
-                m_vfsDriver.updateResourceFlags(context.currentProject(), resourceID, currentLinkCount);
-            }
-        }
-
-        return currentLinkCount;
-    }
-
-    /**
      * Initializes the driver and sets up all required modules and connections.
      * 
      * @param config The OpenCms configuration.
@@ -4369,193 +4319,6 @@ public class CmsDriverManager extends Object {
             throw e;
         }
         return true;
-    }
-
-    /**
-     * Rebuilds the internal datastructure to join links with their targets. Each target saves the 
-     * total count of links pointing to itself. Each links saves the ID of it's target.
-     * 
-     * @param cms the current user's CmsObject instance
-     * @param theUser the current user
-     * @param context.currentProject() the current project
-     * @param theReport the report to print the output
-     * @return an ArrayList with the resource names that were identified as broken links
-     * @see org.opencms.db.generic.CmsProjectDriver#updateResourceFlags
-     * @see org.opencms.db.generic.CmsProjectDriver#fetchAllVfsLinks
-     * @see org.opencms.db.generic.CmsProjectDriver#fetchResourceID
-     * @see org.opencms.db.generic.CmsProjectDriver#updateAllResourceFlags
-     * @throws CmsException
-     */
-    public ArrayList joinLinksToTargets(CmsObject cms, CmsRequestContext context, I_CmsReport theReport) throws CmsException {
-        if (CmsAdminVfsLinkManagement.DEBUG) {
-            System.err.println("[" + getClass().getName() + ".joinLinksToTargets()] enter");
-        }
-
-        ArrayList brokenLinks = new ArrayList(0);
-
-        // get the current site root
-        String siteRoot = cms.getRequestContext().addSiteRoot("");
-        int siteRootLen = siteRoot.length();
-
-        //////////////////////////
-
-        // 1) reset the internal data structure 
-
-        // set the RESOURCE_FLAGS attribute of all resource back to 0
-        m_vfsDriver.updateAllResourceFlags(context.currentProject(), 0);
-
-        //////////////////////////
-
-        // 2) fetch all VFS links
-
-        // ID's of the link resources
-        ArrayList linkIDs = new ArrayList();
-        // content of the link resources
-        ArrayList linkContents = new ArrayList();
-        // names of the link resources
-        ArrayList linkResources = new ArrayList();
-
-        int fetchedLinkCount = m_vfsDriver.fetchAllVfsLinks(context.currentProject(), linkIDs, linkContents, linkResources, CmsResourceTypePointer.C_RESOURCE_TYPE_ID);
-
-        if (CmsAdminVfsLinkManagement.DEBUG) {
-            System.err.println("[" + getClass().getName() + "] found " + fetchedLinkCount + " VFS links in project " + context.currentProject().getName());
-        }
-
-        // skip any further actions if no VFS links were fetched
-        if (fetchedLinkCount == 0) {
-            return new ArrayList(0);
-        }
-
-        // add the site root to the link content (= resources of the targets)
-        for (int i = 0; i < fetchedLinkCount; i++) {
-            linkContents.set(i, siteRoot + linkContents.get(i));
-            if (CmsAdminVfsLinkManagement.DEBUG) {
-                System.err.println("link " + i + ": " + linkResources.get(i) + " -> " + linkContents.get(i));
-            }
-        }
-
-        //////////////////////////
-
-        // 3) sort duplicate VFS links out
-
-        // # links per target
-        int[] linksPerTarget = new int[fetchedLinkCount];
-        // target resources
-        ArrayList targetResources = new ArrayList();
-        targetResources.ensureCapacity(fetchedLinkCount);
-
-        for (int i = 0; i < fetchedLinkCount; i++) {
-            linksPerTarget[i] = 0;
-        }
-
-        for (int i = 0; i < fetchedLinkCount; i++) {
-            String currentResource = (String) linkContents.get(i);
-
-            if (!targetResources.contains(currentResource)) {
-                targetResources.add((String) currentResource);
-            }
-
-            linksPerTarget[targetResources.indexOf((String) currentResource)] += 1;
-        }
-
-        //////////////////////////
-
-        // 4) fetch all resources with VFS links
-
-        // resource ID's of the targets
-        int targetCount = targetResources.size();
-        int dummy = 0;
-        int[] targetIDs = new int[targetCount];
-
-        for (int i = 0; i < targetCount; i++) {
-            String currentTarget = (String) targetResources.get(i);
-            int targetID = m_vfsDriver.fetchResourceID(context.currentProject(), currentTarget, CmsResourceTypePointer.C_RESOURCE_TYPE_ID);
-            targetIDs[i] = targetID;
-
-            if (targetID > 0) {
-                dummy++;
-            }
-        }
-
-        if (CmsAdminVfsLinkManagement.DEBUG) {
-            System.err.println("[" + getClass().getName() + "] found " + dummy + " resources with VFS links in project " + context.currentProject().getName());
-        }
-
-        //////////////////////////
-
-        // 5) update the VFS link count per target resource
-
-        for (int i = 0; i < fetchedLinkCount; i++) {
-            if (linksPerTarget[i] > 0 && targetIDs[i] > 0) {
-                m_vfsDriver.updateResourceFlags(context.currentProject(), targetIDs[i], linksPerTarget[i]);
-
-                if (CmsAdminVfsLinkManagement.DEBUG) {
-                    System.err.println(i + ": updating link count for " + ((String) targetResources.get(i)).substring(siteRootLen) + " (" + targetIDs[i] + "/" + linksPerTarget[i] + ")");
-                }
-            }
-        }
-
-        //////////////////////////
-
-        // 6) update the target resource ID's in each VFS link
-
-        for (int i = 0; i < fetchedLinkCount; i++) {
-            String linkTarget = (String) linkContents.get(i);
-            int linkID = ((Integer) linkIDs.get(i)).intValue();
-            int targetID = targetIDs[targetResources.indexOf(linkTarget)];
-
-            String currentVfsLink = ((String) linkResources.get(i)).substring(siteRootLen);
-            String currentVfsLinkTarget = linkTarget.substring(siteRootLen);
-
-            if (targetID > 0) {
-                m_vfsDriver.updateResourceFlags(context.currentProject(), linkID, targetID);
-                if (CmsAdminVfsLinkManagement.DEBUG) {
-                    System.err.println(i + ": updating target ID for " + ((String) linkResources.get(i)).substring(siteRootLen) + " (" + linkID + "->" + targetID + ")");
-                }
-            } else if (!linkTarget.substring(siteRootLen).startsWith("/")) {
-                // theReport.println(theReport.key("report.link_check_vfs_external_link") + ": " + currentVfsLink + " -> " + currentVfsLinkTarget, I_CmsReport.C_FORMAT_NOTE);
-                if (CmsAdminVfsLinkManagement.DEBUG) {
-                    System.err.println(i + ": skipping " + currentVfsLink + " -> " + currentVfsLinkTarget + " (external link)");
-                }
-            } else if (targetID == 0) {
-                theReport.println(theReport.key("report.link_check_vfs_broken_link") + ": " + currentVfsLink + " -> " + currentVfsLinkTarget, I_CmsReport.C_FORMAT_WARNING);
-                brokenLinks.add(linkTarget.substring(siteRootLen));
-                if (CmsAdminVfsLinkManagement.DEBUG) {
-                    System.err.println(i + ": skipping " + currentVfsLink + " -> " + currentVfsLinkTarget + " (broken link)");
-                }
-            } else if (targetID < 0) {
-                theReport.println(theReport.key("report.link_check_vfs_link2link") + ": " + currentVfsLink + " -> " + currentVfsLinkTarget, I_CmsReport.C_FORMAT_WARNING);
-                if (CmsAdminVfsLinkManagement.DEBUG) {
-                    System.err.println(i + ": skipping " + currentVfsLink + " ->" + currentVfsLinkTarget + " (link -> link)");
-                }
-            }
-        }
-
-        if (CmsAdminVfsLinkManagement.DEBUG) {
-            System.err.println("[" + getClass().getName() + ".joinLinksToTargets()] exit");
-        }
-
-        return brokenLinks;
-    }
-
-    /**
-     * Save the ID of the target resource for a VFS link.
-     * The target ID is saved in the RESOURCE_FLAGS table attribute.
-     * 
-     * @param context.currentProject() the current project
-     * @param theLinkResourceName the resource name of the VFS link
-     * @param theTargetResourceName the name of the link's target resource
-     * @throws CmsException
-     */
-    public void linkResourceToTarget(CmsRequestContext context, String theLinkResourceName, String theTargetResourceName) throws CmsException {
-        int linkID = m_vfsDriver.fetchResourceID(context.currentProject(), theLinkResourceName, -1);
-        int targetID = m_vfsDriver.fetchResourceID(context.currentProject(), theTargetResourceName, -1);
-
-        if (linkID > 0 && targetID > 0) {
-            m_vfsDriver.updateResourceFlags(context.currentProject(), linkID, targetID);
-        } else if (linkID > 0) {
-            m_vfsDriver.updateResourceFlags(context.currentProject(), linkID, 0);
-        }
     }
 
     /**

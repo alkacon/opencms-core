@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/21 11:25:13 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/21 12:45:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Map;
  * re-initialize itself while the app. with a clear cache event.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/07/21 11:25:13 $
+ * @version $Revision: 1.6 $ $Date: 2003/07/21 12:45:17 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -146,13 +146,14 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
         CmsLock parentLock = null;
         String lockedPath = null;
         Iterator i = null;
+        CmsLock lock = CmsLock.getNullLock();
 
         if (context.currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             // resource cannot be locked in the online project
-            return CmsLock.getNullLock();
+            lock = CmsLock.getNullLock();
         } else if (m_lockedResources.containsKey(resourcename)) {
             // try to find an existing lock for the resource
-            return (CmsLock) m_lockedResources.get(resourcename);
+            lock = (CmsLock) m_lockedResources.get(resourcename);
         } else {
             // check if a parent folder is locked 
             i = m_lockedResources.keySet().iterator();
@@ -163,14 +164,15 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
                 if (resourcename.startsWith(lockedPath)) {
                     // create a new indirect lock
                     parentLock = (CmsLock) m_lockedResources.get(lockedPath);
-                    return addResource(resourcename, parentLock.getUserId(), parentLock.getProjectId(), CmsLock.C_HIERARCHY_INDIRECT_LOCKED);
+                    lock = addResource(resourcename, parentLock.getUserId(), parentLock.getProjectId(), CmsLock.C_HIERARCHY_INDIRECT_LOCKED);
+                    break;
                 }
             }
         }
 
         // we are in an offline project, and neither the resource itself 
         // nor one of its parent folders is locked
-        return CmsLock.getNullLock();
+        return lock;
     }
 
     /**

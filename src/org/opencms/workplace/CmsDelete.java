@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2003/07/11 12:38:54 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/21 12:45:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -146,4 +146,15 @@ public class CmsDelete extends CmsDialog {
         getCms().deleteResource(getParamFile());
         return true;
     }
+    
+    /**
+     * Checks if VFS links are pointing to this resource.
+     * 
+     * @return true if a one or more VFS links are pointing to this resource
+     * @throws CmsException if something goes wrong
+     */
+    public boolean hasVfsLinks() throws CmsException {
+        return getCms().fetchVfsLinksForResource(getParamFile()).size() > 0;
+    }
+    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePointer.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/21 12:45:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * All resource types are created by the factory getResourceType() in CmsObject.
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsResourceTypePointer extends A_CmsResourceType {
 
@@ -135,11 +135,6 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
             }
         }
 
-        // update the link management
-        String targetResourceName = new String(contents);
-        cms.linkResourceToTarget(resourcename, targetResourceName);
-        cms.doIncrementLinkCountForResource(targetResourceName);
-
         return res;
     }
 
@@ -147,11 +142,7 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#deleteResource(com.opencms.file.CmsObject, java.lang.String)
      */
     public void deleteResource(CmsObject cms, String resourcename) throws CmsException {
-        String targetResourceName = new String(cms.readFile(resourcename).getContents());
         super.deleteResource(cms, resourcename);
-
-        // update the link management
-        cms.doDecrementLinkCountForResource(targetResourceName);
     }
 
     /**
@@ -159,11 +150,6 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
      */
     public void undeleteResource(CmsObject cms, String resourcename) throws CmsException {
         super.undeleteResource(cms, resourcename);
-        String targetResourceName = new String(cms.readFile(resourcename).getContents());
-
-        // update the link management
-        cms.doIncrementLinkCountForResource(targetResourceName);
-        cms.linkResourceToTarget(resourcename, targetResourceName);
     }
 
     /**
@@ -171,11 +157,6 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
      */
     public void copyResource(CmsObject cms, String theSourceResourceName, String theDestinationResourceName, boolean keepFlags, boolean lockCopy) throws CmsException {
         super.copyResource(cms, theSourceResourceName, theDestinationResourceName, keepFlags, lockCopy);
-
-        // update the link management
-        String targetResourceName = new String(cms.readFile(theDestinationResourceName).getContents());
-        cms.doIncrementLinkCountForResource(targetResourceName);
-        cms.linkResourceToTarget(theDestinationResourceName, targetResourceName);
     }
 
     /**
@@ -183,10 +164,6 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
      */
     public void moveResource(CmsObject cms, String theSourceResourceName, String theDestinationResourceName) throws CmsException {
         super.moveResource(cms, theSourceResourceName, theDestinationResourceName);
-
-        // update the link management
-        String targetResourceName = new String(cms.readFile(theDestinationResourceName).getContents());
-        cms.linkResourceToTarget(theDestinationResourceName, targetResourceName);
     }
 
     /**
@@ -194,27 +171,13 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
      */
     public void renameResource(CmsObject cms, String theOldResourceName, String theNewResourceName) throws CmsException {
         super.renameResource(cms, theOldResourceName, theNewResourceName);
-
-        // update the link management
-        String folder = theOldResourceName.substring(0, theOldResourceName.lastIndexOf("/") + 1);
-        theNewResourceName = folder + theNewResourceName;
-        String targetResourceName = new String(cms.readFile(theNewResourceName).getContents());
-        cms.linkResourceToTarget(theNewResourceName, targetResourceName);
     }
 
     /**
      * @see com.opencms.file.I_CmsResourceType#undoChanges(com.opencms.file.CmsObject, java.lang.String)
      */
     public void undoChanges(CmsObject cms, String theResourceName) throws CmsException {
-        String oldTargetResourceName = new String(cms.readFile(theResourceName).getContents());
         super.undoChanges(cms, theResourceName);
-        String newTargetResourceName = new String(cms.readFile(theResourceName).getContents());
-
-        // update the link management
-        if (!oldTargetResourceName.equals(newTargetResourceName)) {
-            cms.doDecrementLinkCountForResource(oldTargetResourceName);
-            cms.doIncrementLinkCountForResource(newTargetResourceName);
-            cms.linkResourceToTarget(theResourceName, newTargetResourceName);
-        }
     }
+    
 }

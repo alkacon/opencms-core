@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/21 11:25:13 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/07/21 12:45:17 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import com.opencms.report.I_CmsReport;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $ $Date: 2003/07/21 11:25:13 $
+ * @version $Revision: 1.16 $ $Date: 2003/07/21 12:45:17 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -161,11 +160,19 @@ public interface I_CmsVfsDriver {
      */      
     void destroy() throws Throwable;
     
-    int fetchAllVfsLinks(CmsProject theProject, ArrayList theResourceIDs, ArrayList theLinkContents, ArrayList theLinkResources, int theResourceTypeLinkID) throws CmsException;
     long fetchDateFromResource(int theProjectId, int theResourceId, long theDefaultDate) throws CmsException;
     int fetchResourceFlags(CmsProject theProject, String theResourceName) throws CmsException;
-    int fetchResourceID(CmsProject theProject, String theResourceName, int skipResourceTypeID) throws CmsException;
-    List fetchVfsLinksForResourceID(CmsProject theProject, CmsResource resource) throws CmsException;
+    
+    /**
+     * Returns a List with the fileheaders of all VFS links pointing to the specified resource.<p> 
+     * 
+     * @param currentProject the current project
+     * @param resource the specified resource
+     * @return a List with the fileheaders
+     * @throws CmsException if something goes wrong
+     */
+    List getVfsLinksForResource(CmsProject currentProject, CmsResource resource) throws CmsException;
+    
     void getBrokenLinks(I_CmsReport report, Vector changed, Vector deleted, Vector newRes) throws CmsException;
     Vector getFilesWithProperty(int projectId, String propertyDefinition, String propertyValue) throws CmsException;
     
@@ -307,9 +314,7 @@ public interface I_CmsVfsDriver {
     
     void removeTemporaryFile(CmsFile file) throws CmsException;
     int renameResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, String newResourceName) throws CmsException;
-    int updateAllResourceFlags(CmsProject theProject, int theValue) throws CmsException;
     void updateLockstate(CmsResource res, int projectId) throws CmsException;
-    int updateResourceFlags(CmsProject theProject, int theResourceID, int theValue) throws CmsException;
     void updateResourcestate(CmsResource res, int changed) throws CmsException;
     void writeFile(CmsProject project, CmsFile file, int changed) throws CmsException;
     void writeFile(CmsProject project, CmsFile file, int changed, CmsUUID userId) throws CmsException;
