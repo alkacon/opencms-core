@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 09:51:02 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2000/06/09 11:47:58 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.42 $ $Date: 2000/06/09 09:51:02 $ * 
+ * @version $Revision: 1.43 $ $Date: 2000/06/09 11:47:58 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -1713,11 +1713,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             value=bout.toByteArray();
             
             // create the object
-                statement=m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY);
-                statement.setInt(1,nextId(C_TABLE_SYSTEMPROPERTIES));
-                statement.setString(2,name);
-                statement.setBytes(3,value);
-                statement.executeUpdate();
+            statement=m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY);
+            statement.setInt(1,nextId(C_TABLE_SYSTEMPROPERTIES));
+            statement.setString(2,name);
+            statement.setBytes(3,value);
+            statement.executeUpdate();
         } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} catch (IOException e){
@@ -3037,24 +3037,38 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	 */
 	private void fillDefaults() 
 		throws CmsException {
-		// TODO: init all default-resources
 		
+		// the resourceType "folder" is needed always - so adding it
+		Hashtable resourceTypes = new Hashtable(1);
+		resourceTypes.put(C_TYPE_FOLDER_NAME, new CmsResourceType(C_TYPE_FOLDER, 0, 
+																  C_TYPE_FOLDER_NAME, ""));
+			
+		// sets the last used index of resource types.
+		resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
+			
+        // add the resource-types to the database
+		addSystemProperty( C_SYSTEMPROPERTY_RESOURCE_TYPE, resourceTypes );
+
 		// set the mimetypes
 		addSystemProperty(C_SYSTEMPROPERTY_MIMETYPES,initMimetypes());
-        
+
+		// set the groups
 		CmsGroup guests = createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
         CmsGroup administrators = createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER, null);            
 		CmsGroup projectleader = createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group",C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER|C_FLAG_GROUP_PROJECTCOWORKER|C_FLAG_GROUP_ROLE,null);
         createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED|C_FLAG_GROUP_ROLE|C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
                
+		// add the users
         CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, "", "", C_USER_TYPE_SYSTEMUSER); 
 		CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, "", "", C_USER_TYPE_SYSTEMUSER); 
-		
 		addUserToGroup(guest.getId(), guests.getId());
 		addUserToGroup(admin.getId(), administrators.getId());
 
 		// TODO: use real task here-when available!
 		createProject(admin, guests, projectleader, new CmsTask(), C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
+		
+		// create the root-folder
+		// TODO: createFolder(admin, project, C_ROOT, 0);
 	}
 	
 	/**
