@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
-* Date   : $Date: 2003/06/13 15:13:13 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.38 $ $Date: 2003/06/13 15:13:13 $
+ * @version $Revision: 1.39 $ $Date: 2003/07/12 12:49:02 $
  */
 
 public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
@@ -113,13 +113,13 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
                     CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
                     if(e.getType() == CmsException.C_ACCESS_DENIED) {
                         template = "erroraccessdenied";
-                        xmlTemplateDocument.setData("details", file.getName());
+                        xmlTemplateDocument.setData("details", file.getResourceName());
                     }else {
                         xmlTemplateDocument.setData("details", e.toString());
                         template = "error";
                     }
                     xmlTemplateDocument.setData("lasturl", lasturl);
-                    xmlTemplateDocument.setData("FILENAME", file.getName());
+                    xmlTemplateDocument.setData("FILENAME", file.getResourceName());
                     // process the selected template
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
                 }
@@ -144,7 +144,7 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,
                 templateFile);
-        xmlTemplateDocument.setData("FILENAME", file.getName());
+        xmlTemplateDocument.setData("FILENAME", file.getResourceName());
 
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);

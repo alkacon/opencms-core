@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/12 11:29:23 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2003/07/12 12:49:03 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.54 $ $Date: 2003/07/12 11:29:23 $
+ * @version $Revision: 1.55 $ $Date: 2003/07/12 12:49:03 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -306,36 +306,47 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         // TODO: Check this with new site management
         return getPath(getAbsolutePath(getFullResourceName()));
     }
+    
+    /**
+     * Returns the absolute parent folder name of this resource.<p>
+     * 
+     * The parent resource of a file is the folder of the file.
+     * The parent resource of a folder is the parent folder.
+     * The parent resource of the root folder is <code>null</code>.<p>
+     * 
+     * Example: <code>/system/workplace/</code> has the parent <code>/system/</code>.
+     * 
+     * @return the calculated parent absolute folder path, or <code>null</code> for the root folder 
+     */
+    public String getParent() {
+        // TODO: Check this with new site management
+        return getParent(getAbsolutePath(getFullResourceName()));
+    }    
 
     /**
-     * Returns the resource name of this resource without path information,
-     * e.g. <code>index.html</code><p>
+     * Returns the name of this resource, e.g. <code>index.html</code>.<p>
      *
-     * @return the resource name for this resource.
+     * @return the name of this resource
+     * @deprecated use {@link #getResourceName()} instead
      */
-    public String getResourceName() {
-        // TODO: unify getResourceName() and getName()
-        return m_resourceName;
+    public String getName() {
+        return getResourceName();
     }
 
     /**
      * Returns the name of this resource, e.g. <code>index.html</code>.<p>
      *
      * @return the name of this resource
-     * 
      */
-    public String getName() {
-        // TODO: unify getResourceName() and getName()
-        return getResourceName();
+    public String getResourceName() {
+        return m_resourceName;
     }
     
     /**
      * Returns the full resource name of this resource including the path,
+     * also including the current site context 
      * e.g. <code>/default/vfs/system/workplace/action/index.html</code>.<p>
      * 
-     * Use this method with caution. In the worst case scenario, the complete
-     * path of this resources has to be calculated first!
-     *
      * @return the resource name including it's path
      */
     public String getFullResourceName() {
@@ -440,21 +451,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public CmsUUID getOwnerId() {
         return m_userId;
-    }
-
-    /**
-     * Returns the absolute parent folder name of this resource.<p>
-     * 
-     * The parent resource of a file is the folder of the file.
-     * The parent resource of a folder is the parent folder.
-     * The parent resource of the root folder is <code>null</code>.<p>
-     * 
-     * Example: <code>/system/workplace/</code> has the parent <code>/system/</code>.
-     * 
-     * @return the calculated parent absolute folder path, or <code>null</code> for the root folder 
-     */
-    public String getParent() {
-        return getParent(getAbsolutePath(getFullResourceName()));
     }
 
     /**

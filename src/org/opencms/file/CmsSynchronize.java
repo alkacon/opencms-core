@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/12 11:29:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/12 12:49:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import com.opencms.file.CmsResource;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/07/12 11:29:23 $
+ * @version $Revision: 1.6 $ $Date: 2003/07/12 12:49:03 $
  */
 public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
@@ -490,7 +490,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             CmsSynchronizeList parentSync = (CmsSynchronizeList)m_newSyncList.get(parent);
             // use the non-translated pathname
             if (parentSync != null) {
-                resourcename = parentSync.getResName() + res.getName();
+                resourcename = parentSync.getResName() + res.getResourceName();
             }
         }
         if ((res.isFolder()) && (!resourcename.endsWith("/"))) {

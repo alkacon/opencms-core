@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/07/12 11:29:22 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.76 $ $Date: 2003/07/12 11:29:22 $
+ * @version $Revision: 1.77 $ $Date: 2003/07/12 12:49:02 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -345,7 +345,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             content.append("top.aF(");
             // the name
             content.append("\"");
-            content.append(res.getName());
+            content.append(res.getResourceName());
             content.append("\",");
             // the path
             if(projectView || vfslinkView){
@@ -489,7 +489,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                     content.append("\", ");
                     // name
                     content.append("\"");
-                    content.append(folder.getName());
+                    content.append(folder.getResourceName());
                     content.append("\", \"");
                     // parentId
                     content.append(folder.getParentId());
@@ -549,7 +549,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                         content.append("\", ");
                         // name
                         content.append("\"");
-                        content.append(folder.getName());
+                        content.append(folder.getResourceName());
                         content.append("\", \"");
                         // parentId
                         content.append(parentId);

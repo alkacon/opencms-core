@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.57 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.58 $ $Date: 2003/07/12 12:49:02 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -274,7 +274,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
             xmlTemplateDocument.setData("STATE", getState(cms, source, lang));
             xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(owner) */);
             xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);
-            xmlTemplateDocument.setData("FILENAME", source.getName());
+            xmlTemplateDocument.setData("FILENAME", source.getResourceName());
         }
 
         // process the selected template

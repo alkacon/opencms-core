@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2003/07/12 12:49:03 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.70 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.71 $ $Date: 2003/07/12 12:49:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -451,7 +451,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     if((filelist & C_FILELIST_NAME) != 0) {
 
                         // set the folder name
-                        template.fastSetXmlData(C_FILELIST_NAME_VALUE, res.getName());
+                        template.fastSetXmlData(C_FILELIST_NAME_VALUE, res.getResourceName());
                     }
                     if((filelist & C_FILELIST_TITLE) != 0) {
 
@@ -555,7 +555,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     if((filelist & C_FILELIST_NAME) != 0) {
 
                         // set the filename
-                        template.fastSetXmlData(C_FILELIST_NAME_VALUE, file.getName());
+                        template.fastSetXmlData(C_FILELIST_NAME_VALUE, file.getResourceName());
                     }
                     if((filelist & C_FILELIST_TITLE) != 0) {
 

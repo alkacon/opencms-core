@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.48 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.49 $ $Date: 2003/07/12 12:49:02 $
  */
 
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -121,7 +121,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         //if (newFile == null) {
         if(newFile == null || session.getValue(C_PARA_NAME) == null) {
             if(newFile == null) {
-                session.putValue(C_PARA_NAME, file.getName());
+                session.putValue(C_PARA_NAME, file.getResourceName());
             }
             else {
                 session.putValue(C_PARA_NAME, newFile);
@@ -205,7 +205,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
             xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
             xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(owner) */);
             xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);
-            xmlTemplateDocument.setData("FILENAME", file.getName());
+            xmlTemplateDocument.setData("FILENAME", file.getResourceName());
         }
 
         // process the selected template

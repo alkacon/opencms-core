@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.52 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.53 $ $Date: 2003/07/12 12:49:02 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
@@ -636,10 +636,10 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         // output vectors
         for(int i = 0;i < allLangFolders.size();i++) {
             CmsFolder folder = (CmsFolder)allLangFolders.get(i);
-            CmsXmlLanguageFile langFile = new CmsXmlLanguageFile(cms, folder.getName());
+            CmsXmlLanguageFile langFile = new CmsXmlLanguageFile(cms, folder.getResourceName());
             names.addElement(langFile.getLanguageValue("name"));
-            values.addElement(folder.getName());
-            if(folder.getName().equals(langName)) {
+            values.addElement(folder.getResourceName());
+            if(folder.getResourceName().equals(langName)) {
                 select = i;
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/11 14:06:43 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/07/12 12:49:03 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.18 $ $Date: 2003/07/11 14:06:43 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/12 12:49:03 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1345,7 +1345,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 // do not publish files that are locked in another project
                 if (currentFile.isLocked()) {
                     //in this case do nothing
-                } else if (currentFile.getName().startsWith(I_CmsConstants.C_TEMP_PREFIX)) {
+                } else if (currentFile.getResourceName().startsWith(I_CmsConstants.C_TEMP_PREFIX)) {
                     m_driverManager.getVfsDriver().deleteAllProperties(publishProjectId, currentFile);
                     m_driverManager.getVfsDriver().removeFile(publishProject, currentFile.getId());
                 } else if (currentFile.getState() == I_CmsConstants.C_STATE_DELETED) {

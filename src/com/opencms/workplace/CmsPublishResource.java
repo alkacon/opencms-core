@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/07/10 14:38:59 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/07/12 12:49:03 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.20 $ $Date: 2003/07/10 14:38:59 $
+ * @version $Revision: 1.21 $ $Date: 2003/07/12 12:49:03 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -107,7 +107,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
 
             xmlTemplateDocument.setData("CHANGEDATE", Utils.getNiceDate(file.getDateLastModified()));
             xmlTemplateDocument.setData("USER", cms.readUser(file.getResourceLastModifiedBy()).getName());
-            xmlTemplateDocument.setData("FILENAME", file.getName());
+            xmlTemplateDocument.setData("FILENAME", file.getResourceName());
             
         } else if("showResult".equals(action)){
             A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_PUBLISH_LINKCHECK_THREAD);

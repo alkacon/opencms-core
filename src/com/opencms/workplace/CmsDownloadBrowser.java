@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.25 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.26 $ $Date: 2003/07/12 12:49:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -178,7 +178,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
         String servletPath = cms.getRequestContext().getRequest().getServletUrl();
         String downloadPath = servletPath + cms.readAbsolutePath(res);
         filelistTemplate.setData("fullpath", downloadPath);
-        filelistTemplate.setData("name_value", res.getName());
+        filelistTemplate.setData("name_value", res.getResourceName());
         String title = "";
         try {
             title = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_TITLE);
@@ -209,7 +209,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
         int numFolders = folders.size();
         for(int i = 0;i < numFolders;i++) {
             CmsResource currFolder = (CmsResource)folders.get(i);
-            String name = currFolder.getName();
+            String name = currFolder.getResourceName();
             if(chosenFolder.equals(cms.readAbsolutePath(currFolder))) {
                 ret = i;
             }
@@ -284,7 +284,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
         Vector filteredFiles = new Vector();
         for(int i = 0;i < allFiles.size();i++) {
             CmsFile file = (CmsFile)allFiles.get(i);
-            String filename = file.getName();
+            String filename = file.getResourceName();
             String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
             boolean filenameFilter = inFilter(filename, filter);
             boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);

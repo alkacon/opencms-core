@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2003/07/10 12:28:51 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Vector;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.17 $ $Date: 2003/07/10 12:28:51 $
+ * @version $Revision: 1.18 $ $Date: 2003/07/12 12:49:02 $
  */
 
 public class CmsHelperMastertemplates {
@@ -127,7 +127,7 @@ public class CmsHelperMastertemplates {
             if(file.getState() != I_CmsConstants.C_STATE_DELETED && checkVisible(cms, file)) {
                 String nicename = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_TITLE);
                 if(nicename == null) {
-                    nicename = file.getName();
+                    nicename = file.getResourceName();
                 }
                 names.addElement(nicename);
                 values.addElement(cms.readAbsolutePath(file));

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/07/12 12:49:03 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.22 $ $Date: 2003/07/12 12:49:03 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -530,7 +530,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
                         + "=" + cms.readAbsolutePath(res));
                 template.setData(C_TREELIST, C_WP_EXPLORER_TREE + "?" + C_PARA_FILELIST
                         + "=" + cms.readAbsolutePath(res));
-                template.setData(C_TREEENTRY, res.getName());
+                template.setData(C_TREEENTRY, res.getResourceName());
                 template.setData(C_TREEVAR, cms.readAbsolutePath(res));
                 template.setData(C_TREETAB, tab);
                 template.setData(C_TREEFOLDER, folderimg);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/07/09 10:58:09 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2003/07/12 12:49:03 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.60 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.61 $ $Date: 2003/07/12 12:49:03 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -460,7 +460,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
                 String fileName = (String) fileNames.elementAt(i);
                 try {
                     CmsFile file = m_cms.readFile(fileName);
-                    if((file.getState() != C_STATE_DELETED) && (!file.getName().startsWith("~"))) {
+                    if((file.getState() != C_STATE_DELETED) && (!file.getResourceName().startsWith("~"))) {
                         addSuperFolders(fileName);
                         exportResource(file);
                         m_exportedResources.add(fileName);
@@ -641,7 +641,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
             long age = file.getDateLastModified();
 
             if (m_isOnlineProject || (!m_excludeUnchanged) || state == C_STATE_NEW || state == C_STATE_CHANGED) {
-                if ((state != C_STATE_DELETED) && (!file.getName().startsWith("~")) && (age >= m_contentAge)) {
+                if ((state != C_STATE_DELETED) && (!file.getResourceName().startsWith("~")) && (age >= m_contentAge)) {
                     exportResource(m_cms.readFile(m_cms.readAbsolutePath(file)));
                 }
             }

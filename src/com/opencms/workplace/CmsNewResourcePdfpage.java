@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePdfpage.java,v $
-* Date   : $Date: 2003/07/11 21:35:49 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2003/07/11 21:35:49 $
+ * @version $Revision: 1.30 $ $Date: 2003/07/12 12:49:02 $
  */
 
 public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -338,7 +338,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
                     if(navpos != null) {
                         nicename = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVTEXT);
                         if(nicename == null) {
-                            nicename = res.getName();
+                            nicename = res.getResourceName();
                         }
 
                         // add this file/folder to the storage.
@@ -446,7 +446,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
             if((file.getState() != C_STATE_DELETED) && (C_PDFTEMPLATE.equals(templateType))) {
                 String nicename = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
                 if(nicename == null) {
-                    nicename = file.getName();
+                    nicename = file.getResourceName();
                 }
                 names.addElement(nicename);
                 values.addElement(cms.readAbsolutePath(file));

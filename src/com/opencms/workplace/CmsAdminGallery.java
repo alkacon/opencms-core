@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2003/07/09 10:58:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/12 12:49:02 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.*;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
      
@@ -276,7 +276,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
         getConfigFile(cms);
         filelistTemplate.fastSetXmlData(C_FILELIST_ICON_VALUE,          
             cms.getRequestContext().getRequest().getServletUrl() + getGalleryIconPath(cms) );
-        filelistTemplate.setData(C_FILELIST_NAME_VALUE, res.getName());
+        filelistTemplate.setData(C_FILELIST_NAME_VALUE, res.getResourceName());
         filelistTemplate.setData(C_FILELIST_TITLE_VALUE, cms.readProperty(cms.readAbsolutePath(res),
                 C_PROPERTY_TITLE));
     }    

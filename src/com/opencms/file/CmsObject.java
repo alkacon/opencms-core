@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/11 19:42:40 $
-* Version: $Revision: 1.312 $
+* Date   : $Date: 2003/07/12 12:49:03 $
+* Version: $Revision: 1.313 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.312 $
+ * @version $Revision: 1.313 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1525,7 +1525,7 @@ public Vector getFilesWithProperty(String propertyDefinition, String propertyVal
     * @throws CmsException if operation was not succesful
     */
     public List getResourcesWithProperty(String folder, String propertyDefinition) throws CmsException {
-        return m_driverManager.getResourcesWithProperty(m_context.currentUser(), m_context.currentProject(), addSiteRoot(folder), propertyDefinition);
+        return m_driverManager.getResourcesWithProperty(m_context, addSiteRoot(folder), propertyDefinition);
     }
 
     /**
@@ -1545,7 +1545,7 @@ public Vector getFilesWithProperty(String propertyDefinition, String propertyVal
     * @throws CmsException if operation was not succesful 
     */
     public List getResourcesInTimeRange(String folder, long starttime, long endtime) throws CmsException {
-        return m_driverManager.getResourcesInTimeRange(m_context.currentUser(), m_context.currentProject(), addSiteRoot(folder), starttime, endtime);
+        return m_driverManager.getResourcesInTimeRange(m_context, addSiteRoot(folder), starttime, endtime);
     }
 
 /**
@@ -1581,8 +1581,9 @@ public long getFileSystemFolderChanges() {
      */
     public List getFolderTree() throws CmsException {
         CmsFolder rootFolder = readFolder(I_CmsConstants.C_ROOT);
-        return m_driverManager.getFolderTree(m_context.currentUser(), m_context.currentProject(), rootFolder);
+        return m_driverManager.getFolderTree(m_context, rootFolder);
     }
+    
 /**
  * Returns all groups in the Cms.
  *

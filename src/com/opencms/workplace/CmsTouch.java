@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/12 12:49:03 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * This class is invoked for the workplace "touch" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public final class CmsTouch extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
 
@@ -174,7 +174,7 @@ public final class CmsTouch extends CmsWorkplaceDefault implements I_CmsWpConsta
 		// prepare the XML template data    
 		m_XmlTemplateDocument.setData("TITLE", Encoder.escapeXml(resourceTitle));
 		m_XmlTemplateDocument.setData("STATE", currentState);
-		m_XmlTemplateDocument.setData("FILENAME", m_Resource.getName());
+		m_XmlTemplateDocument.setData("FILENAME", m_Resource.getResourceName());
 	}
 
 	/**

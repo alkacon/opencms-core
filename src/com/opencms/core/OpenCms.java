@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/07/11 06:25:23 $
-* Version: $Revision: 1.131 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.132 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.131 $ $Date: 2003/07/11 06:25:23 $
+ * @version $Revision: 1.132 $ $Date: 2003/07/12 12:49:02 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -920,10 +920,10 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      */
     void setResponse(CmsObject cms, CmsFile file) {
         String mimetype = null;
-        int lastDot = file.getName().lastIndexOf(".");
+        int lastDot = file.getResourceName().lastIndexOf(".");
         // check if there was a file extension
-        if((lastDot > 0) && (lastDot < (file.getName().length()-1))) {
-            String ext = file.getName().substring(lastDot + 1, file.getName().length());
+        if((lastDot > 0) && (lastDot < (file.getResourceName().length()-1))) {
+            String ext = file.getResourceName().substring(lastDot + 1, file.getResourceName().length());
             mimetype = (String)m_mt.get(ext);
             // was there a mimetype fo this extension?
             if(mimetype == null) {
@@ -954,7 +954,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         String startTemplateClass = file.getLauncherClassname();
         I_CmsLauncher launcher = m_launcherManager.getLauncher(launcherId);
         if(launcher == null) {
-            String errorMessage = "Could not launch file " + file.getName() + ". Launcher for requested launcher ID "
+            String errorMessage = "Could not launch file " + file.getResourceName() + ". Launcher for requested launcher ID "
                     + launcherId + " could not be found.";
             if(C_LOGGING && isLogging(C_OPENCMS_INFO)) {
                 log(C_OPENCMS_INFO, "[OpenCms] " + errorMessage);

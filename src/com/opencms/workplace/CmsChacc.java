@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/11 14:01:12 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/12 12:49:02 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2003/07/11 14:01:12 $
+ * @version $Revision: 1.10 $ $Date: 2003/07/12 12:49:02 $
  */
 
 public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -201,7 +201,7 @@ public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
 		xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(owner) */);
 		xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);
-		xmlTemplateDocument.setData("FILENAME", file.getName());
+		xmlTemplateDocument.setData("FILENAME", file.getResourceName());
 
 		// build the permission table 
 		String permissionTable = "";

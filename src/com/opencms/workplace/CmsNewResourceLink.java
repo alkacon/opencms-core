@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.40 $ $Date: 2003/07/12 12:49:02 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -177,7 +177,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             try{
                 CmsFile currentFile = cms.readFile(filename);
                 String content = new String(currentFile.getContents());
-                xmlTemplateDocument.setData("LINKNAME", currentFile.getName());
+                xmlTemplateDocument.setData("LINKNAME", currentFile.getResourceName());
                 xmlTemplateDocument.setData("LINK", cms.readAbsolutePath(currentFile));
                 xmlTemplateDocument.setData("LINKVALUE", content);
                 templateSelector = "change";
@@ -463,7 +463,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                     if(navpos != null) {
                         nicename = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVTEXT);
                         if(nicename == null) {
-                            nicename = res.getName();
+                            nicename = res.getResourceName();
                         }
 
                         // add this file/folder to the storage.

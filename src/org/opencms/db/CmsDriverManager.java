@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/12 11:29:23 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2003/07/12 12:49:03 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.36 $ $Date: 2003/07/12 11:29:23 $
+ * @version $Revision: 1.37 $ $Date: 2003/07/12 12:49:03 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -2992,18 +2992,17 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      * <li>the user can read this resource</li>
      * </ul>
      *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param rootName The name of the root, e.g. /default/vfs
+     * @param context the current request context
      * @return subfolders A Vector with the complete folder-tree for this project.
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public List getFolderTree(CmsUser currentUser, CmsProject currentProject, CmsResource parentResource) throws CmsException {
+    public List getFolderTree(CmsRequestContext context, CmsResource parentResource) throws CmsException {      
+        CmsUser currentUser = context.currentUser();
+        CmsProject currentProject = context.currentProject();        
         // try to read from cache
         String cacheKey = getCacheKey(currentUser.getName() + "_tree", currentUser, currentProject, parentResource.getFullResourceName());
-        List retValue = (List) m_resourceListCache.get(cacheKey);
-        
+        List retValue = (List) m_resourceListCache.get(cacheKey);        
         if (retValue == null || retValue.size() == 0) {
             List resources = m_vfsDriver.getFolderTree(currentProject, parentResource);
             retValue = (List) new ArrayList();
@@ -3012,12 +3011,11 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
             // make sure that we have access to all these.
             for (Iterator e = resources.iterator(); e.hasNext();) {
                 CmsResource res = (CmsResource) e.next();
-                if (!CmsResource.getAbsolutePath(readPath(currentUser,currentProject,res, true)).startsWith(lastcheck)) {
+                if (!context.removeSiteRoot(readPath(currentUser, currentProject, res, true)).startsWith(lastcheck)) {
                     if (hasPermissions(currentUser, currentProject, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                         retValue.add(res);
-
                     } else {
-                        lastcheck = CmsResource.getAbsolutePath(readPath(currentUser,currentProject,res, false));
+                        lastcheck = context.removeSiteRoot(readPath(currentUser, currentProject, res, false));
                     }
                 }
             }
@@ -3321,13 +3319,13 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
     *
     * @throws CmsException if operation was not succesful
     */
-    public List getResourcesWithProperty(CmsUser currentUser, CmsProject currentProject, String folder, String propertyDefinition) throws CmsException {
+    public List getResourcesWithProperty(CmsRequestContext context, String folder, String propertyDefinition) throws CmsException {
         // get the folder tree
-        Set storage = getFolderIds(currentUser, currentProject, folder);
+        Set storage = getFolderIds(context, folder);
         //now get all resources which contain the selected property
-        List resources = m_vfsDriver.getResourcesWithProperty(currentProject.getId(), propertyDefinition);
+        List resources = m_vfsDriver.getResourcesWithProperty(context.currentProject().getId(), propertyDefinition);
         // filter the resources inside the tree
-        return extractResourcesInTree(currentUser, currentProject, storage, resources);
+        return extractResourcesInTree(context.currentUser(), context.currentProject(), storage, resources);
     }
 
     /**
@@ -3337,8 +3335,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
     * <B>Security:</B>
     * All users are granted.
     *
-    * @param currentUser the user who requested this method
-    * @param currentProject the current project of the user
+    * @param context the current request context
     * @param folder the folder to get the subresources from
     * @param starttime the begin of the time range
     * @param endtime the end of the time range
@@ -3346,13 +3343,13 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
     *
     * @throws CmsException if operation was not succesful
     */
-    public List getResourcesInTimeRange(CmsUser currentUser, CmsProject currentProject, String folder, long starttime, long endtime) throws CmsException {
+    public List getResourcesInTimeRange(CmsRequestContext context, String folder, long starttime, long endtime) throws CmsException {
         // get the folder tree
-        Set storage = getFolderIds(currentUser, currentProject, folder);
+        Set storage = getFolderIds(context, folder);
         //now get all resources which contain the selected property
-        List resources = m_vfsDriver.getResourcesInTimeRange(currentProject.getId(), starttime, endtime);
+        List resources = m_vfsDriver.getResourcesInTimeRange(context.currentProject().getId(), starttime, endtime);
         // filter the resources inside the tree
-        return extractResourcesInTree(currentUser, currentProject, storage, resources);
+        return extractResourcesInTree(context.currentUser(), context.currentProject(), storage, resources);
     }
       
              
@@ -7374,7 +7371,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         }
         
         public CacheId(CmsResource resource) {
-        	m_name = resource.getName();
+        	m_name = resource.getResourceName();
         	m_uuid = resource.getResourceId();
         }
         
@@ -8545,16 +8542,15 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      * 
      * This HashSet can be used to test if a resource is inside a subtree of the given folder. 
      *  
-     * @param currentUser the user who requested this method
-     * @param currentProject the current project of the user
+     * @param context the current request context
      * @param folder the folder to get the subresources from
      * @return HahsMap with CmsUUIDs
      * @throws CmsException if operation was not succesful
      */
-    private Set getFolderIds(CmsUser currentUser, CmsProject currentProject, String folder) throws CmsException {
+    private Set getFolderIds(CmsRequestContext context, String folder) throws CmsException {
         Set storage = new HashSet();
         // get the folder tree of the given folder
-        List folders = getFolderTree(currentUser, currentProject, readFolder(currentUser, currentProject, folder));
+        List folders = getFolderTree(context, readFolder(context.currentUser(), context.currentProject(), folder));
         // extract all id's in a hashset. 
         Iterator j = folders.iterator();
         while (j.hasNext()) {
@@ -8562,7 +8558,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
             // check if this folder is not marked as deleted
             if (fold.getState() != I_CmsConstants.C_STATE_DELETED) {
                 // check the read access to the folder
-                if (hasPermissions(currentUser, currentProject, fold, I_CmsConstants.C_READ_ACCESS, false)) {
+                if (hasPermissions(context.currentUser(), context.currentProject(), fold, I_CmsConstants.C_READ_ACCESS, false)) {
                     // this is a valid folder, add it to the compare list 
                     CmsUUID id = fold.getId();
                     storage.add(id);

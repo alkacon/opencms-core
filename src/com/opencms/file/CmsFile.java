@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/07/12 12:49:03 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.20 $ $Date: 2003/07/12 12:49:03 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -126,7 +126,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         String extension="";
         int dot;
 
-        name=this.getName();
+        name=this.getResourceName();
         // check if this file has an extension.
         dot=name.lastIndexOf(".");
         if (dot> 0) {

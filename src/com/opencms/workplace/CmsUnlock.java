@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2003/07/10 14:38:59 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.44 $ $Date: 2003/07/10 14:38:59 $
+ * @version $Revision: 1.45 $ $Date: 2003/07/12 12:49:02 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -138,7 +138,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
                     if(e.getType() == CmsException.C_NO_ACCESS) {
                         template = "erroraccessdenied";
-                        xmlTemplateDocument.setData("details", file.getName());
+                        xmlTemplateDocument.setData("details", file.getResourceName());
                     }
                     else {
                         template = "error";
@@ -166,7 +166,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
             return null;
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-        xmlTemplateDocument.setData("FILENAME", file.getName());
+        xmlTemplateDocument.setData("FILENAME", file.getResourceName());
 
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/07/11 06:22:37 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/07/12 12:49:03 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -91,8 +91,8 @@ public class Utils {
     private static boolean compare(int sorting, CmsFile fileA, CmsFile fileB)
             throws CmsException {
         boolean cmp = false;
-        String titleA = fileA.getName();
-        String titleB = fileB.getName();
+        String titleA = fileA.getResourceName();
+        String titleB = fileB.getResourceName();
         long lastModifiedA = fileA.getDateLastModified();
         long lastModifiedB = fileB.getDateLastModified();
         switch(sorting) {

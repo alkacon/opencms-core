@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2003/07/12 11:29:22 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/07/12 12:49:03 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Hashtable;
  * </UL>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.42 $ $Date: 2003/07/12 11:29:22 $
+ * @version $Revision: 1.43 $ $Date: 2003/07/12 12:49:03 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsConstants {
 
@@ -105,7 +105,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsCo
             return root.getMasterTemplate(cms, templateClass, masterTemplate, m_templateCache, parameters);
         } catch (Exception e) {
             // no document we could show...
-            handleException(cms, e, "Received error while calling canonical root for requested file " + masterTemplate.getName() + ". ");
+            handleException(cms, e, "Received error while calling canonical root for requested file " + masterTemplate.getResourceName() + ". ");
         }
         return null;
     }
@@ -239,7 +239,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsCo
 
         // first some debugging output.
         if (DEBUG && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Launcher started for " + file.getName());
+            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Launcher started for " + file.getResourceName());
         }
 
         // check all values to be valid

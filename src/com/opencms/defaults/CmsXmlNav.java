@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/07/12 12:49:03 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * @author Alexander Kandzior
  * @author Waruschan Babachan
  * @author Thomas Weckert
- * @version $Revision: 1.49 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.50 $ $Date: 2003/07/12 12:49:03 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -444,7 +444,7 @@ public class CmsXmlNav extends A_CmsNavBase {
             if (currentResource.getState() != C_STATE_DELETED) {
                 // don't list the temporary folders in the nav bar!
                 if (pos != null && text != null && (!"".equals(pos)) && (!"".equals(text))
-                     && ((!currentResource.getName().startsWith(C_TEMP_PREFIX)) || path.equals(requestedUri))) {
+                     && ((!currentResource.getResourceName().startsWith(C_TEMP_PREFIX)) || path.equals(requestedUri))) {
                     navLink[max] = path;
                     navText[max] = text;
                     navPos[max] = new Float(pos).floatValue();

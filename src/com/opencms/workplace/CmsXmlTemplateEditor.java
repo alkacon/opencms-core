@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/07/11 21:35:49 $
-* Version: $Revision: 1.103 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.104 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.103 $ $Date: 2003/07/11 21:35:49 $
+ * @version $Revision: 1.104 $ $Date: 2003/07/12 12:49:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -94,7 +94,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
     }
 
     protected String createTemporaryFile(CmsObject cms, CmsResource file, int tempProject, int curProject) throws CmsException {
-        String temporaryFilename = file.getPath() + C_TEMP_PREFIX + file.getName();
+        String temporaryFilename = file.getPath() + C_TEMP_PREFIX + file.getResourceName();
         boolean ok = true;
         
         cms.getRequestContext().setCurrentProject(tempProject);

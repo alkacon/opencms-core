@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUndochanges.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.10 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.11 $ $Date: 2003/07/12 12:49:02 $
  */
 
 public class CmsUndochanges extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -135,7 +135,7 @@ public class CmsUndochanges extends CmsWorkplaceDefault implements I_CmsWpConsta
         if(action == null) {
             xmlTemplateDocument.setData("CHANGEDATE", Utils.getNiceDate(file.getDateLastModified()));
             xmlTemplateDocument.setData("USER", cms.readUser(file.getResourceLastModifiedBy()).getName());
-            xmlTemplateDocument.setData("FILENAME", file.getName());
+            xmlTemplateDocument.setData("FILENAME", file.getResourceName());
         }
 
         // process the selected template

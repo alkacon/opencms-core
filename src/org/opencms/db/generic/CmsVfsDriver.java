@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/11 13:53:07 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/07/12 12:49:03 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.26 $ $Date: 2003/07/11 13:53:07 $
+ * @version $Revision: 1.27 $ $Date: 2003/07/12 12:49:03 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1757,10 +1757,10 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
             while (res.next()) {
                 CmsResource resource = createCmsResourceFromResultSet(res, projectId);
-                if (!resource.getName().equalsIgnoreCase(lastResourcename)) {
+                if (!resource.getResourceName().equalsIgnoreCase(lastResourcename)) {
                     resources.addElement(resource);
                 }
-                lastResourcename = resource.getName();
+                lastResourcename = resource.getResourceName();
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -3679,10 +3679,10 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
             while (res.next()) {
                 CmsResource resource = createCmsResourceFromResultSet(res, projectId);
-                if (!resource.getName().equalsIgnoreCase(lastResourcename)) {
+                if (!resource.getResourceName().equalsIgnoreCase(lastResourcename)) {
                     result.add(resource);
                 }
-                lastResourcename = resource.getName();
+                lastResourcename = resource.getResourceName();
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);

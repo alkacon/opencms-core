@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/12 12:49:03 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -322,7 +322,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("top.aF(");
             // position 1: name
             content.append("\"");
-            content.append(res.getName());
+            content.append(res.getResourceName());
             content.append("\",");
             // position 2: path
             if (projectView || vfslinkView) {
@@ -484,7 +484,7 @@ public class CmsExplorer extends CmsWorkplace {
                     content.append("\", ");
                     // name
                     content.append("\"");
-                    content.append(folder.getName());
+                    content.append(folder.getResourceName());
                     content.append("\", \"");
                     // parentId
                     content.append(folder.getParentId().hashCode());
@@ -548,7 +548,7 @@ public class CmsExplorer extends CmsWorkplace {
                         content.append("\", ");
                         // name
                         content.append("\"");
-                        content.append(folder.getName());
+                        content.append(folder.getResourceName());
                         content.append("\", \"");
                         // parentId
                         content.append(parentId.hashCode());

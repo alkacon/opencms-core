@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.26 $ $Date: 2003/07/12 12:49:02 $
  */
 
 public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -385,7 +385,7 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
                         + cms.readAbsolutePath(folder));
                 template.setData(C_TREELIST, C_WP_EXPLORER_TREE + "?" + C_PARA_FILELIST + "=" 
                         + cms.readAbsolutePath(folder));
-                template.setData(C_TREEENTRY, folder.getName());
+                template.setData(C_TREEENTRY, folder.getResourceName());
                 template.setData(C_TREETAB, tab);
                 template.setData(C_TREEFOLDER, folderimg);
                 template.setData(C_TREESWITCH, treeswitch);

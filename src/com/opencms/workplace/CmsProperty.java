@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.38 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.39 $ $Date: 2003/07/12 12:49:02 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -277,7 +277,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
         xmlTemplateDocument.setData("OWNER", "" /* owner.getFirstname() + " " + owner.getLastname() + "(" + owner.getName() + ")" */);
         xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);
-        xmlTemplateDocument.setData("FILENAME", file.getName());
+        xmlTemplateDocument.setData("FILENAME", file.getResourceName());
         xmlTemplateDocument.setData("lasturl", lasturl);
 
         // process the selected template

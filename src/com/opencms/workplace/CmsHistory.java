@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2003/07/08 14:35:29 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/07/12 12:49:02 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2003/07/08 14:35:29 $
+ * @version $Revision: 1.29 $ $Date: 2003/07/12 12:49:02 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -97,11 +97,11 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
             id = new Integer(Integer.parseInt(versionId));
             session.putValue("version", versionId);
             backupFile = (CmsBackupResource)cms.readBackupFileHeader(filename, id.intValue());
-            theFileName = backupFile.getName();
+            theFileName = backupFile.getResourceName();
         }
         else {
             CmsFile offlineFile = (CmsFile)cms.readFileHeader(filename);
-            theFileName = offlineFile.getName();
+            theFileName = offlineFile.getResourceName();
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
