@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/05/14 10:31:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,8 +92,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The name of the autolock node */
     protected static final String N_AUTOLOCK = "autolock";
     
+    /** The node name of the buttonstyle node */
+    public static final String N_BUTTONSTYLE = "buttonstyle";
+    
     /** The name of the context menu node */
     protected static final String N_CONTEXTMENU = "contextmenu";
+
+    /** The node name of the datecreated column node */
+    protected static final String N_DATECREATED = "show-datecreated";
+    
+    /** The node name of the datelastmodified column node */
+    protected static final String N_DATELASTMODIFIED = "show-datelastmodified";
     
     /** The name of the node for the default locale */
     protected static final String N_DEFAULTLOCALE = "defaultlocale";
@@ -110,14 +119,38 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The main workplace handler node name */
     protected static final String N_DIALOGHANDLERS = "dialoghandlers";
     
+    /** The node name of the dialogs defaultsettings node */
+    public static final String N_DIALOGSDEFAULTSETTINGS = "dialogs-defaultsettings";
+    
+    /** The node name of the dialogs preferences node */
+    protected static final String N_DIALOGSPREFERENCES = "dialogs-preferences";
+    
+    /** The node name of the directeditstyle node */
+    public static final String N_DIRECTEDITSTYLE = "directeditstyle";
+    
+    /** The node name of the directpublish node */
+    public static final String N_DIRECTPUBLISH = "directpublish";
+    
     /** The name of the edit options node */
     protected static final String N_EDITOPTIONS = "editoptions";
+    
+    /** The node name of the editor node */
+    public static final String N_EDITOR = "editor";    
     
     /** The name of the editor action node */
     protected static final String N_EDITORACTION = "editoraction";
     
+    /** The node name of the editor generaloptions node */
+    public static final String N_EDITORGENERALOPTIONS = "editors-generaloptions";
+    
     /** The name of the editor handler node */
     protected static final String N_EDITORHANDLER = "editorhandler";
+        
+    /** The node name of the editor preferences node */
+    protected static final String N_EDITORPREFERENCES = "editors-preferences";
+    
+    /** The node name of the editor preferrededitors node */
+    public static final String N_EDITORPREFERREDEDITORS = "editors-preferrededitors";
     
     /** The name of the "enable advanced property tabs" node */
     protected static final String N_ENABLEADVANCEDPROPERTYTABS = "enableadvancedpropertytabs";
@@ -125,95 +158,89 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The name of the "user management enabled" node */
     protected static final String N_ENABLEUSERMGMT = "enableusermanagement";
     
+    /** The node name of the fileentries node */
+    public static final String N_ENTRIES = "entries";
+    
     /** The name of the entry node */
     protected static final String N_ENTRY = "entry";
+
+    /** The node name of the explorer displayoptions node */
+    public static final String N_EXPLORERDISPLAYOPTIONS = "explorer-displayoptions";
+    
+    /** The node name of the explorer generaloptions node */
+    public static final String N_EXPLORERGENERALOPTIONS = "explorer-generaloptions";
+   
+    /** The node name of the explorer preferences node */
+    protected static final String N_EXPLORERPREFERENCES = "explorer-preferences";
     
     /** The name of the explorer type node */
     protected static final String N_EXPLORERTYPE = "explorertype";
     
     /** The name of the explorer types node */
     protected static final String N_EXPLORERTYPES = "explorertypes";
+
+    /** The node name of the filecopy node */
+    public static final String N_FILECOPY = "filecopy";
+    
+    /** The node name of the filedeletion node */
+    public static final String N_FILEDELETION = "filedeletion";
+    
+    /** The node name of the foldercopy node */
+    public static final String N_FOLDERCOPY = "foldercopy";
+    
+    /** The node name of the informrolemembers node */
+    public static final String N_INFORMROLEMEMBERS = "informrolemembers";    
     
     /** The name of the "labeled folders" node */
     protected static final String N_LABELEDFOLDERS = "labeledfolders";    
     
+    /** The node name of the locale node */
+    public static final String N_LOCALE = "locale";
+    
+    /** The node name of the lockedby column node */
+    protected static final String N_LOCKEDBY = "show-lockedby";
+    
     /** The name of the "max file upload size" node */
     protected static final String N_MAXUPLOADSIZE = "maxfileuploadsize";
+    
+    /** The node name of the message-accepted node */
+    public static final String N_MESSAGEACCEPTED = "message-accepted";    
+    
+    /** The node name of the message-completed node */
+    public static final String N_MESSAGECOMPLETED = "message-completed";    
+    
+    /** The node name of the message-forwarded node */
+    public static final String N_MESSAGEFORWARDED = "message-forwarded";
     
     /** The name of the new resource node */
     protected static final String N_NEWRESOURCE = "newresource";
     
-    /** The name of the separator node */
-    protected static final String N_SEPARATOR = "separator";
+    /** The node name of the permissions column node */
+    protected static final String N_PERMISSIONS = "show-permissions";
     
-    /** The node name of the master workplace node */       
-    protected static final String N_WORKPLACE = "workplace";
-    
-    /** The node name of the default preferences node */
-    protected static final String N_USER = "default-preferences";
-
-    /** The node name of the workplace preferences node */
-    protected static final String N_WORKPLACEPREFERENCES = "workplace-preferences";
-    
-    /** The node name of the workplace general options node */
-    public static final String N_WORKPLACEGENERALOPTIONS = "workplace-generaloptions";
-
-    /** The node name of the workplace startupsettings node */
-    public static final String N_WORKPLACESTARTUPSETTINGS = "workplace-startupsettings";
-   
-    /** The node name of the explorer preferences node */
-    protected static final String N_EXPLORERPREFERENCES = "explorer-preferences";
-    
-    /** The node name of the explorer generaloptions node */
-    public static final String N_EXPLORERGENERALOPTIONS = "explorer-generaloptions";
-
-    /** The node name of the explorer displayoptions node */
-    public static final String N_EXPLORERDISPLAYOPTIONS = "explorer-displayoptions";
-    
-    /** The node name of the dialogs preferences node */
-    protected static final String N_DIALOGSPREFERENCES = "dialogs-preferences";
-    
-    /** The node name of the dialogs defaultsettings node */
-    public static final String N_DIALOGSDEFAULTSETTINGS = "dialogs-defaultsettings";
-        
-    /** The node name of the editor preferences node */
-    protected static final String N_EDITORPREFERENCES = "editors-preferences";
-    
-    /** The node name of the editor generaloptions node */
-    public static final String N_EDITORGENERALOPTIONS = "editors-generaloptions";
-    
-    /** The node name of the editor preferrededitors node */
-    public static final String N_EDITORPREFERREDEDITORS = "editors-preferrededitors";
-    
-    /** The node name of the workflow preferences node */
-    protected static final String N_WORKFLOWPREFERENCES = "workflow-preferences";
-    
-    /** The node name of the workflow generaloptions node */
-    public static final String N_WORKFLOWGENERALOPTIONS = "workflow-generaloptions";
-
-    /** The node name of the workflow defaultsettings node */
-    public static final String N_WORKFLOWDEFAULTSETTINGS = "workflow-defaultsettings";
-    
-    /** The node name of the buttonstyle node */
-    public static final String N_BUTTONSTYLE = "buttonstyle";
+    /** The node name of the project node */
+    public static final String N_PROJECT = "project";
 
     /** The node name of the reporttype node */
     public static final String N_REPORTTYPE = "reporttype";
     
-    /** The node name of the uploadapplet node */
-    public static final String N_UPLOADAPPLET = "uploadapplet";
+    /** The name of the separator node */
+    protected static final String N_SEPARATOR = "separator";
     
-    /** The node name of the locale node */
-    public static final String N_LOCALE = "locale";
+    /** The node name of the filecopy node */
+    public static final String N_SHOWLOCK = "showlock";
     
-    /** The node name of the project node */
-    public static final String N_PROJECT = "project";
+    /** The node name of the showprojects node */
+    public static final String N_SHOWPROJECTS = "showprojects";    
     
-    /** The node name of the view node */
-    public static final String N_WORKPLACEVIEW = "workplaceview";
+    /** The node name of the size column node */
+    protected static final String N_SIZE = "show-size";
+   
+    /** The node name of the startupfilter node */
+    public static final String N_STARTUPFILTER = "startupfilter";    
     
-    /** The node name of the fileentries node */
-    public static final String N_ENTRIES = "entries";
+    /** The node name of the state column node */
+    protected static final String N_STATE = "show-state";
 
     /** The node name of the title column node */
     protected static final String N_TITLE = "show-title";
@@ -221,68 +248,41 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the type column node */
     protected static final String N_TYPE = "show-type";
     
-    /** The node name of the datelastmodified column node */
-    protected static final String N_DATELASTMODIFIED = "show-datelastmodified";
+    /** The node name of the uploadapplet node */
+    public static final String N_UPLOADAPPLET = "uploadapplet";
+    
+    /** The node name of the default preferences node */
+    protected static final String N_USER = "default-preferences";
 
-    /** The node name of the datecreated column node */
-    protected static final String N_DATECREATED = "show-datecreated";
-    
-    /** The node name of the lockedby column node */
-    protected static final String N_LOCKEDBY = "show-lockedby";
-    
-    /** The node name of the permissions column node */
-    protected static final String N_PERMISSIONS = "show-permissions";
-    
-    /** The node name of the size column node */
-    protected static final String N_SIZE = "show-size";
-    
-    /** The node name of the state column node */
-    protected static final String N_STATE = "show-state";
+    /** The node name of the usercreated node */
+    protected static final String N_USERCREATED = "show-usercreated";
     
     /** The node name of the userlastmodified node */
     protected static final String N_USERLASTMODIFIED = "show-userlastmodified";
 
-    /** The node name of the usercreated node */
-    protected static final String N_USERCREATED = "show-usercreated";
+    /** The node name of the workflow defaultsettings node */
+    public static final String N_WORKFLOWDEFAULTSETTINGS = "workflow-defaultsettings";
+    
+    /** The node name of the workflow generaloptions node */
+    public static final String N_WORKFLOWGENERALOPTIONS = "workflow-generaloptions";
+    
+    /** The node name of the workflow preferences node */
+    protected static final String N_WORKFLOWPREFERENCES = "workflow-preferences";
+    
+    /** The node name of the master workplace node */       
+    protected static final String N_WORKPLACE = "workplace";
+    
+    /** The node name of the workplace general options node */
+    public static final String N_WORKPLACEGENERALOPTIONS = "workplace-generaloptions";
 
-    /** The node name of the filecopy node */
-    public static final String N_FILECOPY = "filecopy";
+    /** The node name of the workplace preferences node */
+    protected static final String N_WORKPLACEPREFERENCES = "workplace-preferences";
+
+    /** The node name of the workplace startupsettings node */
+    public static final String N_WORKPLACESTARTUPSETTINGS = "workplace-startupsettings";
     
-    /** The node name of the foldercopy node */
-    public static final String N_FOLDERCOPY = "foldercopy";
-    
-    /** The node name of the filedeletion node */
-    public static final String N_FILEDELETION = "filedeletion";
-    
-    /** The node name of the directpublish node */
-    public static final String N_DIRECTPUBLISH = "directpublish";
-    
-    /** The node name of the filecopy node */
-    public static final String N_SHOWLOCK = "showlock";
-    
-    /** The node name of the directeditstyle node */
-    public static final String N_DIRECTEDITSTYLE = "directeditstyle";
-    
-    /** The node name of the editor node */
-    public static final String N_EDITOR = "editor";    
-   
-    /** The node name of the startupfilter node */
-    public static final String N_STARTUPFILTER = "startupfilter";    
-    
-    /** The node name of the showprojects node */
-    public static final String N_SHOWPROJECTS = "showprojects";    
-    
-    /** The node name of the message-accepted node */
-    public static final String N_MESSAGEACCEPTED = "message-accepted";    
-    
-    /** The node name of the message-forwarded node */
-    public static final String N_MESSAGEFORWARDED = "message-forwarded";
-    
-    /** The node name of the message-completed node */
-    public static final String N_MESSAGECOMPLETED = "message-completed";    
-    
-    /** The node name of the informrolemembers node */
-    public static final String N_INFORMROLEMEMBERS = "informrolemembers";    
+    /** The node name of the view node */
+    public static final String N_WORKPLACEVIEW = "workplaceview";
     
 
     /** The configured workplace manager */
@@ -610,6 +610,112 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             }            
         }
         
+        // add the <default-preferences> user settings main node
+        Element defaultPreferences = workplaceElement.addElement(N_USER);
+        // add the <workplace-preferences> node
+        Element workplacePreferences = defaultPreferences.addElement(N_WORKPLACEPREFERENCES);
+        // add the <workplace-generaloptions> node
+        Element workplaceGeneraloptions = workplacePreferences.addElement(N_WORKPLACEGENERALOPTIONS);
+        // add the <buttonstyle> node
+        workplaceGeneraloptions.addElement(N_BUTTONSTYLE).setText(m_workplaceManager.getDefaultUserSettings().getWorkplaceButtonStyleString());
+        // add the <reporttype> node
+        workplaceGeneraloptions.addElement(N_REPORTTYPE).setText(m_workplaceManager.getDefaultUserSettings().getWorkplaceReportType());
+        // add the <uploadapplet> node
+        workplaceGeneraloptions.addElement(N_UPLOADAPPLET).setText(m_workplaceManager.getDefaultUserSettings().getUploadAppletString());
+        // add the <workplace-startupsettings> node
+        Element workplaceStartupsettings = workplacePreferences.addElement(N_WORKPLACESTARTUPSETTINGS);
+        // add the <locale> node
+        workplaceStartupsettings.addElement(N_LOCALE).setText(m_workplaceManager.getDefaultUserSettings().getLocale().toString());
+        // add the <project> node
+        workplaceStartupsettings.addElement(N_PROJECT).setText(m_workplaceManager.getDefaultUserSettings().getStartProject());
+        // add the <view> node
+        workplaceStartupsettings.addElement(N_WORKPLACEVIEW).setText(m_workplaceManager.getDefaultUserSettings().getStartView());
+       
+        // add the <explorer-prefernces> node
+        Element explorerPreferences = defaultPreferences.addElement(N_EXPLORERPREFERENCES);
+        // add the <explorer-generaloptions> node
+        Element explorerGeneraloptions = explorerPreferences.addElement(N_EXPLORERPREFERENCES);
+        //  add the <buttonstyle> node
+        explorerGeneraloptions.addElement(N_BUTTONSTYLE).setText(m_workplaceManager.getDefaultUserSettings().getExplorerButtonStyleString());
+        // add the <reporttype> node
+        explorerGeneraloptions.addElement(N_ENTRIES).setText("" + m_workplaceManager.getDefaultUserSettings().getExplorerFileEntries());
+        // add the <explorer-displayoption> node
+        Element explorerDisplayoptions = explorerPreferences.addElement(N_EXPLORERDISPLAYOPTIONS);
+        //  add the <show-title> node
+        explorerDisplayoptions.addElement(N_TITLE).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileTitle());
+        //  add the <show-type> node
+        explorerDisplayoptions.addElement(N_TYPE).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileType());
+        //  add the <show-datelastmodified> node
+        explorerDisplayoptions.addElement(N_DATELASTMODIFIED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateLastModified());
+        //  add the <show-datecreated> node
+        explorerDisplayoptions.addElement(N_DATECREATED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateCreated());
+        //  add the <show-lockedby> node
+        explorerDisplayoptions.addElement(N_LOCKEDBY).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileLockedBy());
+        //  add the <show-permissions> node
+        explorerDisplayoptions.addElement(N_PERMISSIONS).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFilePermissions());
+        //  add the <show-size> node
+        explorerDisplayoptions.addElement(N_SIZE).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileSize());
+        //  add the <show-state> node
+        explorerDisplayoptions.addElement(N_STATE).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileState());
+        //  add the <show-userlastmodified> node
+        explorerDisplayoptions.addElement(N_USERLASTMODIFIED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileUserLastModified());
+        //  add the <show-usercreated> node
+        explorerDisplayoptions.addElement(N_USERCREATED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileUserCreated());
+      
+        //  add the <dialog-prefernces> node
+        Element dialogPreferences = defaultPreferences.addElement(N_DIALOGSPREFERENCES);
+        // add the <dialog-defaultsettings> node
+        Element dialogDefaultSettings = dialogPreferences.addElement(N_DIALOGSDEFAULTSETTINGS);
+        //  add the <filecopy> node
+        dialogDefaultSettings.addElement(N_FILECOPY).setText(m_workplaceManager.getDefaultUserSettings().getDialogCopyFileModeString());
+        //  add the <foldercopy> node
+        dialogDefaultSettings.addElement(N_FOLDERCOPY).setText(m_workplaceManager.getDefaultUserSettings().getDialogCopyFolderModeString());
+        //  add the <filedeletion> node
+        dialogDefaultSettings.addElement(N_FILEDELETION).setText(m_workplaceManager.getDefaultUserSettings().getDialogDeleteFileModeString());
+        //  add the <directpublish> node
+        dialogDefaultSettings.addElement(N_DIRECTPUBLISH).setText(m_workplaceManager.getDefaultUserSettings().getDialogPublishSiblingsString());
+        //  add the <showlock> node
+        dialogDefaultSettings.addElement(N_SHOWLOCK).setText(m_workplaceManager.getDefaultUserSettings().getDialogShowLockString());
+        
+        // add the <editors-prefernces> node
+        Element editorsPreferences = defaultPreferences.addElement(N_EDITORPREFERENCES);
+        // add the <editors-generaloptions> node
+        Element editorGeneraloptions = editorsPreferences.addElement(N_EDITORGENERALOPTIONS);
+        //  add the <buttonstyle> node
+        editorGeneraloptions.addElement(N_BUTTONSTYLE).setText(m_workplaceManager.getDefaultUserSettings().getEditorButtonStyleString());
+        //  add the <directedit> node
+        editorGeneraloptions.addElement(N_DIRECTEDITSTYLE).setText(m_workplaceManager.getDefaultUserSettings().getDirectEditButtonStyleString());
+        // add the <editors-preferrededitors> node
+        Element editorPreferrededitors = editorsPreferences.addElement(N_EDITORPREFERREDEDITORS);
+        // add the <editor> nodes
+        Iterator editors = m_workplaceManager.getDefaultUserSettings().getEditorSettings().keySet().iterator();
+        while (editors.hasNext()) {
+            String type = (String)editors.next();
+            String value = m_workplaceManager.getDefaultUserSettings().getPreferredEditor(type);
+            Element editor = editorPreferrededitors.addElement(N_EDITOR);
+            editor.addAttribute(A_TYPE, type);
+            editor.addAttribute(A_VALUE, value);
+        }
+
+        // add the <workflow-prefernces> node
+        Element workflowPreferences = defaultPreferences.addElement(N_WORKFLOWPREFERENCES);
+        // add the <workflow-generaloptions> node
+        Element workflowGeneraloptions = workflowPreferences.addElement(N_WORKFLOWGENERALOPTIONS);
+        // add the <startupfilter> node
+        workflowGeneraloptions.addElement(N_STARTUPFILTER).setText(m_workplaceManager.getDefaultUserSettings().getTaskStartupFilterDefault());
+        // add the <showprojects> node
+        workflowGeneraloptions.addElement(N_SHOWPROJECTS).setText(m_workplaceManager.getDefaultUserSettings().getTaskShowAllProjectsString()); 
+        // add the <workflow-defaultsettings> node
+        Element workflowDefaultsettings = workflowPreferences.addElement(N_WORKFLOWDEFAULTSETTINGS);
+        // add the <message-accepted> node
+        workflowDefaultsettings.addElement(N_MESSAGEACCEPTED).setText(m_workplaceManager.getDefaultUserSettings().getTaskMessageAcceptedString()); 
+        // add the <message-forwarded> node
+        workflowDefaultsettings.addElement(N_MESSAGECOMPLETED).setText(m_workplaceManager.getDefaultUserSettings().getTaskMessageCompletedString()); 
+        // add the <message-completed> node
+        workflowDefaultsettings.addElement(N_MESSAGEFORWARDED).setText(m_workplaceManager.getDefaultUserSettings().getTaskMessageForwardedString()); 
+        // add the <informrolemembers> node
+        workflowDefaultsettings.addElement(N_INFORMROLEMEMBERS).setText(m_workplaceManager.getDefaultUserSettings().getTaskMessageMembersString()); 
+    
         // return the configured node
         return workplaceElement;
     }

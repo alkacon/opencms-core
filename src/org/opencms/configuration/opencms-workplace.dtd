@@ -327,7 +327,8 @@
 
 <!--
 # The default user preferences of the OpenCms workplace contains the default data 
-# for the user workplace preferences
+# for the user workplace preferences. The xml data is subdifeded into five major knots,
+# representing the different tabs in the preferences screen in the workplace.
 -->
 <!ELEMENT default-preferences (workplace-preferences,
 				explorer-preferences,
@@ -335,29 +336,80 @@
 				editors-preferences,
 				workflow-preferences)>
 
+<!--
+# The workplace preferences define the preferences of the workplace itself.
+-->
 <!ELEMENT workplace-preferences (workplace-generaloptions,
 								 workplace-startupsettings)>
+
+<!--
+# The workplace generaloptions describes the general settings for the workplace.
+-->								 
 <!ELEMENT workplace-generaloptions (buttonstyle,
 									reporttype,
 									uploadapplet)>
-<!ELEMENT buttonstyle (#PCDATA)>									
+<!--
+# The buttonstyle controls the appearence of the buttons on the workplace.
+# Possible values are [image|textimage|text].
+-->										
+<!ELEMENT buttonstyle (#PCDATA)>
+
+<!--
+# By setting this element, the default for all repoets (e.g. publishing, importing) can be 
+# set. Possible values are [simple|extended].
+-->										
 <!ELEMENT reporttype (#PCDATA)>
+
+<!--
+# If this element is set to "true", the upload applet is used for file uploads in the 
+# workplace explorer.
+-->	
 <!ELEMENT uploadapplet (#PCDATA)>									
-									
+	
+<!--
+# The workplace startupsettings are used to define locale, project and view used directly
+# after the login.
+-->										
 <!ELEMENT workplace-startupsettings (locale,
 									 project,
 									 workplaceview)>
-<!ELEMENT locale (#PCDATA)>									
+<!--
+# A locale for the default workplace language (e.g. "en" or "de").
+-->	
+<!ELEMENT locale (#PCDATA)>	
+
+<!--
+# The name of the start project (e.g. "Online" or "Offline").
+-->									
 <!ELEMENT project (#PCDATA)>
+
+<!--
+# The complete URI to the startup view (e.g. /system/workplace/jsp/explorer_fs.html
+# for the explorer view).
+-->	
 <!ELEMENT workplaceview (#PCDATA)>										 
 						
-						
+<!--
+# The explorer preferences define the preferences workplace explorer.
+-->						
 <!ELEMENT explorer-preferences (explorer-generaloptions,
 								explorer-displayoptions)>	
+								
+<!--
+# The explorer generaloptions describes the general layout settings for the explorer.
+-->										
 <!ELEMENT explorer-generaloptions (buttonstyle,
 								   entries)>
+								   
+<!--
+# The number of entries shown on one page of the the explorer filelist.
+-->									   
 <!ELEMENT entries (#PCDATA)>	
 
+<!--
+# The explorer displayoption define which columns are show nin the explorer fillist.
+# Each of the sub elements can either have the values "true" or "false".
+-->	
 <!ELEMENT explorer-displayoptions (show-title,
 								   show-type,
 								   show-datelastmodified,
@@ -368,8 +420,7 @@
 								   show-state,
 								   show-userlastmodified,
 								   show-usercreated
-								   )>									
-									
+								   )>																		
 <!ELEMENT show-title (#PCDATA)>	
 <!ELEMENT show-type (#PCDATA)>	
 <!ELEMENT show-datelastmodified (#PCDATA)>	
@@ -381,34 +432,107 @@
 <!ELEMENT show-userlastmodified (#PCDATA)>	
 <!ELEMENT show-usercreated (#PCDATA)>
 
+<!--
+# The dialogs preferences define the default settings for several workplace dialogs.
+-->	
 <!ELEMENT dialogs-preferences (dialogs-defaultsettings)>
 <!ELEMENT dialogs-defaultsettings (filecopy,
 								   foldercopy,
 								   filedeletion,
 								   directpublish,
 								   showlock)>
-<!ELEMENT filecopy (#PCDATA)>									 
+<!--
+# The default setting of the file copy dialog. This dialog displays different options how
+# a file should be copied. Possible values are: [createsibling|createresource]
+-->									   
+<!ELEMENT filecopy (#PCDATA)>		
+
+<!--
+# The default setting of the folder copy dialog. This dialog displays different options how
+# a folder and its subresources should be copied. 
+# Possible values are: [createsibling|createresource|preservesiblings]
+-->									 
 <!ELEMENT foldercopy (#PCDATA)>	
+
+<!--
+# The default setting of the file delete dialog. This dialog displays different options how
+# siblings of a file should be handled. Possible values are: [deletesiblings|preservesiblings]
+-->	
 <!ELEMENT filedeletion (#PCDATA)>	
+
+<!--
+# The default setting of the direct publish dialog. This dialog displays different options how
+# siblings of a file should be handled. Possible values are: [allsiblings|onlyresource]
+-->	
 <!ELEMENT directpublish (#PCDATA)>	
+
+<!--
+# If this element is set to "true", the lock dialog is shonw on each lock operation.
+-->	
 <!ELEMENT showlock (#PCDATA)>	
 
+<!--
+# The editor preferences define the default appareance and seletion of the editors used in the
+# system.
+-->	
 <!ELEMENT editors-preferences (editors-generaloptions,
 							   editors-preferrededitors)>
+
+<!--
+# The explorer generaloptions describes the general layout settings for the editors
+-->								   
 <!ELEMENT editors-generaloptions (buttonstyle,
 								 directeditstyle)>	
+								 
+<!--
+# The directeditstyle controls the appearence of the direct edit button.
+# Possible values are [image|textimage|text].
+-->									 
 <!ELEMENT directeditstyle (#PCDATA)>	
-<!ELEMENT editors-preferrededitors (editor*) >		
+
+<!-- 
+# Here the default	editors for different resource types in OpenCms are set.
+-->	
+<!ELEMENT editors-preferrededitors (editor*) >	
+
+<!-- 
+# The editor element constirs of two attributes:
+# type: The resource type in OpenCms (e.g. "plain" or "xmlpage")
+# value: The path to the editor or the string "bestavailable"  (e.g. "/system/workplace/jsp/editors/ledit/editor.html")
+-->		
 <!ELEMENT editor EMPTY >	
 <!ATTLIST editor type CDATA #REQUIRED>
 <!ATTLIST editor value CDATA #REQUIRED>	
 
+<!--
+# The workflow preferences define the default workflow options.
+-->		
 <!ELEMENT workflow-preferences (workflow-generaloptions,
 								workflow-defaultsettings)>
+
+<!--
+# The workflow general options define the general workflow options.
+-->	
 <!ELEMENT workflow-generaloptions (startupfilter,
 								   showprojects)>	
+<!--
+# The startupfileter sets the default filter which is shown when opening the task view.
+# Possible values are: [mynewtasks|mytasksformyroles|alltasks|myactivetasks|
+						myactivetasksformyroles|allactivetask|mycompletedtasks|
+						mycompletedtasksformyroles|allcompletedtasks|newtaskscreatedbyme|
+						activetaskscreatedbyme|completedtaskscreatedbyme]
+-->	
 <!ELEMENT startupfilter (#PCDATA)>	
-<!ELEMENT showprojects (#PCDATA)>		
+
+<!--
+# Flag to set if tasks of all projects shoudl be shown. Values are [true|false]
+-->
+<!ELEMENT showprojects (#PCDATA)>	
+
+<!--
+# The workflow default setting. 
+# Each of the sub elements can either have the values "true" or "false".
+-->		
 <!ELEMENT workflow-defaultsettings (message-accepted,
 								    message-forwarded,
 								    message-completed,

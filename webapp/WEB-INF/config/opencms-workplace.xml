@@ -396,8 +396,8 @@
 			</dialogs-preferences>	
 			<editors-preferences>
 				<editors-generaloptions>
-					<buttonstyle>textimage</buttonstyle>
-					<directeditstyle>textimage</directeditstyle>
+					<buttonstyle>image</buttonstyle>
+					<directeditstyle>image</directeditstyle>
 				</editors-generaloptions>
    				<editors-preferrededitors>
 					<editor type="plain" value="bestavailable" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/05/14 10:31:00 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import org.opencms.i18n.I_CmsLocaleHandler;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.editor.CmsEditorHandler;
@@ -66,7 +65,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.3.1
  */
@@ -137,7 +136,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     private List m_views;
     
     /** The default user seetings */
-    private CmsUserSettings m_defaultUserSettings;
+    private CmsDefaultUserSettings m_defaultUserSettings;
     
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
@@ -162,7 +161,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         // TODO: Set workplace encoding independent from main system (use UTF-8 as default)
         m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
         // m_defaultEncoding = C_DEFAULT_WORKPLACE_ENCODING;
-        m_defaultUserSettings = new CmsUserSettings();
+        m_defaultUserSettings = new CmsDefaultUserSettings();
         
         // register this object as event listener
         OpenCms.addCmsEventListener(this, new int[] {
@@ -298,42 +297,10 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * 
      * @return  the Workplace default user settings
      */
-    public CmsUserSettings getDefaultUserSettings() {
+    public CmsDefaultUserSettings getDefaultUserSettings() {
         return m_defaultUserSettings;
     }      
-    
-    /**
-     * Returns the additional infos of the default user.<p>
-     * 
-     * @return  the additional infos of the user
-     */
-    public Hashtable getDefaultUserAdditionalInfos() {
-        Hashtable startSettings = new Hashtable();
-        startSettings.put(I_CmsConstants.C_START_LOCALE, m_defaultUserSettings.getLocale().toString());
-        startSettings.put(I_CmsConstants.C_START_PROJECT, new Integer(m_defaultUserSettings.getStartProject()));
-        startSettings.put(I_CmsConstants.C_START_VIEW,  m_defaultUserSettings.getStartView());
-        startSettings.put(CmsUserSettings.C_WORKPLACE_REPORTTYPE, m_defaultUserSettings.getWorkplaceReportType());
         
-        String applet = "";
-        if (m_defaultUserSettings.useUploadApplet()) {
-            applet = "on";    
-        } 
-        startSettings.put(I_CmsConstants.C_START_UPLOADAPPLET, applet);
-        
-        startSettings.put(CmsUserSettings.C_DIALOG_COPY_FILE_MODE,  new Integer(m_defaultUserSettings.getDialogCopyFileMode()));
-        startSettings.put(CmsUserSettings.C_DIALOG_COPY_FOLDER_MODE,  new Integer(m_defaultUserSettings.getDialogCopyFolderMode()));        
-        startSettings.put(CmsUserSettings.C_DIALOG_DELETE_MODE,  new Integer(m_defaultUserSettings.getDialogDeleteFileMode()));
-        startSettings.put(CmsUserSettings.C_DIALOG_PUBLISH_SIBLINGS,  new Boolean(m_defaultUserSettings.getDialogPublishSiblings()));
-        
-        String showLock = "";
-        if (m_defaultUserSettings.getDialogShowLock()) {
-            showLock = "on";    
-        }        
-        startSettings.put(I_CmsConstants.C_START_LOCKDIALOG, showLock);
-                     
-        return startSettings;
-    }
-    
     
     /**
      * Returns all instanciated dialog handlers for the workplace.<p>

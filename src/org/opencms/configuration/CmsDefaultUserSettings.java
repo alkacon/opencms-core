@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/14 10:31:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,13 +34,14 @@ package org.opencms.configuration;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.workplace.I_CmsWpConstants;
 
 /**
  * Default user workplace settings, used as default values for worklace settings in the
  * user preferences.<p>
  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsDefaultUserSettings extends CmsUserSettings {
    
@@ -50,18 +51,28 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /** value for preserving siblings in copy dialog settings */
     private static String C_COPYMODE_PRESERVE = "preservesiblings";
 
+    /** value for creating a resource in copy dialog settings */
+    private static String C_COPYMODE_RESOURCE = "createresource";
+
     /** value for creating a sibling in copy dialog settings */
     private static String C_COPYMODE_SIBLING = "createsibling";
-
+    
     /** value for deleteing siblings in delete dialog settings */
     private static String C_DELETEMODE_DELETE = "deletesiblings";
+    
+    /** value for preserving siblings in delete dialog settings */
+    private static String C_DELETEMODE_PRESERVE = "preservesiblings";
+
+    /** value for publishing only resources in publish dialog settings */
+    private static String C_PUBLISHMODE_ONLYRESOURCE = "onlyresource"; 
     
     /** value for publishing siblings in publish dialog settings */
     private static String C_PUBLISHMODE_SIBLINGS = "allsiblings"; 
     
     /** value for "true" */
     private static String C_TRUEVALUE = "true";
-    
+
+   
     /**  array of the possible "button styles */
     public  static final String[] m_buttonStyles = {
             "image",
@@ -72,7 +83,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /** array list for fast lookup */
     public static final java.util.List m_buttonStyle =
         java.util.Arrays.asList(m_buttonStyles);   
-
+    
     /**  array of the "task startupfilter" nicenames */
     public  static final String[] m_startupFilterNames = {
             "mynewtasks",
@@ -91,9 +102,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     
     /** array list for fast lookup */
     public static final java.util.List m_startupFilterName =
-        java.util.Arrays.asList(m_startupFilterNames);  
+        java.util.Arrays.asList(m_startupFilterNames); 
     
-        /**  array of the "task startupfilter" values */
+   /**  array of the "task startupfilter" values */
     public  static final String[] m_startupFilterValues = {
             "a1",
             "b1",
@@ -108,7 +119,269 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
             "d2",
             "d3"
     };
+   
+      
+    /** array list for fast lookup */
+    public static final java.util.List m_startupFilterValue =
+        java.util.Arrays.asList(m_startupFilterValues);  
         
+   /**
+    * Gets the default copy mode when copying a file of the user.<p>
+    * 
+    * @return the default copy mode when copying a file of the user
+    */
+   public String getDialogCopyFileModeString() {
+       if (getDialogCopyFileMode() == I_CmsConstants.C_COPY_AS_NEW) {
+            return C_COPYMODE_RESOURCE; 
+       } else {
+            return C_COPYMODE_SIBLING; 
+       }
+       
+   }
+   
+   /**
+    * Gets the default copy mode when copying a folder of the user.<p>
+    * 
+    * @return the default copy mode when copying a folder of the user
+    */
+   public String getDialogCopyFolderModeString() {
+        if (getDialogCopyFolderMode() == I_CmsConstants.C_COPY_AS_NEW) {
+            return C_COPYMODE_RESOURCE;
+        } else if (getDialogCopyFolderMode() == I_CmsConstants.C_COPY_AS_SIBLING) {
+            return C_COPYMODE_SIBLING;
+        } else {
+            return C_COPYMODE_PRESERVE;
+        }
+   }
+   
+   /**
+    * Returns the default setting for file deletion.<p>
+    * 
+    * @return the default setting for file deletion
+    */
+   public String getDialogDeleteFileModeString() {
+       if (getDialogDeleteFileMode() == I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS) {
+            return C_DELETEMODE_DELETE;
+       } else {
+            return C_DELETEMODE_PRESERVE;
+       }
+   }
+   
+   /**
+    * Returns the default setting for direct publishing.<p>
+    * 
+    * @return the default setting for direct publishing
+    */
+   public String getDialogPublishSiblingsString() {
+       if (getDialogPublishSiblings()) {
+            return C_PUBLISHMODE_SIBLINGS;
+       } else {
+            return C_PUBLISHMODE_ONLYRESOURCE;
+       }
+   }
+   
+   /**
+    * Determines if the lock dialog should be shown.<p>
+    * 
+    * @return true if the lock dialog is shown, otherwise false
+    */
+   public String getDialogShowLockString() {
+       return getBoolRepresentation(getDialogShowLock());
+   }
+    
+    
+    /**
+     * Returns a string representation of the direct edit button style.<p>
+     * 
+     * @return string representation of the direct edit button style
+     */
+    public String getDirectEditButtonStyleString() {
+        return m_buttonStyles[getDirectEditButtonStyle()];
+    }
+    
+    
+    /**
+     * Returns a string representation of the editor button style.<p>
+     * 
+     * @return string representation of the editor button style
+     */
+    public String getEditorButtonStyleString() {
+        return m_buttonStyles[getEditorButtonStyle()];
+    }
+    
+    /**
+     * Returns a string representation of the explorer button style.<p>
+     * 
+     * @return string representation of the explorer button style
+     */
+    public String getExplorerButtonStyleString() {
+        return m_buttonStyles[getExplorerButtonStyle()];
+    }
+    
+    /**
+     * Gets if the file creation date should be shown in explorer view.<p>
+     * 
+     * @return "true" if the file creation date should be shown, otherwise "false"
+     */
+    public String getShowExplorerFileDateCreated() {
+        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_DATE_CREATED);
+    }
+
+    /**
+     * Gets if the file last modified date should be shown in explorer view.<p>
+     * 
+     * @return "true" if the file last modified date should be shown, otherwise "false"
+     */
+    public String getShowExplorerFileDateLastModified() {
+        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED);
+    }
+
+    /**
+     * Gets if the file locked by should be shown in explorer view.<p>
+     * 
+     * @return "true" if the file locked by should be shown, otherwise "false"
+     */
+    public String getShowExplorerFileLockedBy() {
+        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_LOCKEDBY);
+    }
+
+    /**
+     * Gets if the file permissions should be shown in explorer view.<p>
+     * 
+     * @return "true" if the file permissions should be shown, otherwise "false"
+     */
+    public String getShowExplorerFilePermissions() {
+        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_PERMISSIONS);
+    }
+    
+    /**
+     * Gets if the file size should be shown in explorer view.<p>
+     * 
+     * @return "true" if the file size should be shown, otherwise "false"
+     */
+    public String getShowExplorerFileSize() {
+        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_SIZE);
+    }
+
+    /**
+     * Gets  if the file state should be shown in explorer view.<p>
+     * 
+     * @return "true" if the file state should be shown, otherwise "false"
+     */
+    public String getShowExplorerFileState() {
+        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_STATE);
+    }
+
+    /**
+     * Gets if the file title should be shown in explorer view.<p>
+     * 
+     * @return  "true" if the file title should be shown, otherwise "false"
+     */
+    public String getShowExplorerFileTitle() {
+        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_TITLE);
+    }
+
+    /**
+     * Gets if the file type should be shown in explorer view.<p>
+     * 
+     * @return  "true" if the file type should be shown, otherwise "false"
+     */
+    public String getShowExplorerFileType() {
+        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_TYPE);
+    }
+
+    /**
+     * Gets if the file creator should be shown in explorer view.<p>
+     * 
+     * @return "true" if the file creator should be shown, otherwise "false"
+     */
+    public String getShowExplorerFileUserCreated() {
+        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_USER_CREATED);
+    }
+
+   /**
+    * Gets if the file last modified by should be shown in explorer view.<p>
+    * 
+    * @return "true" if the file last modified by should be shown, otherwise "false"
+    */
+   public String getShowExplorerFileUserLastModified() {
+       return getExplorerSetting(I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED);
+   }
+    
+    /**
+     * Determines if a message should be sent if the task is accepted.<p>
+     * 
+     * @return "true" if a message should be sent if the task is accepted, otherwise "false"
+     */
+    public String getTaskMessageAcceptedString() {
+        return getBoolRepresentation(getTaskMessageAccepted());
+    }
+    
+    /**
+     * Determines if a message should be sent if the task is completed.<p>
+     * 
+     * @return "true" if a message should be sent if the task is completed, otherwise "false"
+     */
+    public String getTaskMessageCompletedString() {
+        return getBoolRepresentation(getTaskMessageCompleted());
+    }
+    
+    /**
+     * Determines if a message should be sent if the task is forwarded.<p>
+     * 
+     * @return "true" if a message should be sent if the task is forwarded, otherwise "false"
+     */
+    public String getTaskMessageForwardedString() {
+        return getBoolRepresentation(getTaskMessageForwarded());
+    }
+    
+    /**
+     * Determines if all role members should be informed about the task.<p>
+     * 
+     * @return "true" if all role members should be informed about the task, otherwise "false"
+     */
+    public String getTaskMessageMembersString() {
+        return getBoolRepresentation(getTaskMessageMembers());
+    }
+  
+    /**
+     * Determines if all projects should be shown in tasks view.<p>
+     * 
+     * @return "true" if all projects should be shown in tasks view, otherwise "false"
+     */
+    public String getTaskShowAllProjectsString() {
+          return getBoolRepresentation(getTaskShowAllProjects());
+    }
+   
+   /**
+    * Gets the startup filter for the tasks view.<p>
+    * 
+    * @return the startup filter for the tasks view
+    */
+    public String getTaskStartupFilterDefault() {
+        int defaultFilter = m_startupFilterValue.indexOf(getTaskStartupFilter());
+        return m_startupFilterNames[defaultFilter];
+    }   
+    
+    
+    /**
+     * Returns a string representation of the upload Applet flag.<p>
+     * 
+     * @return string representation of the uploadApplet flag
+     */
+    public String getUploadAppletString() {
+      return getBoolRepresentation(useUploadApplet());
+    }
+    
+    /**
+     * Returns a string representation of the workplace button style.<p>
+     * 
+     * @return string representation of the workplace button style
+     */
+    public String getWorkplaceButtonStyleString() {
+        return m_buttonStyles[getWorkplaceButtonStyle()];
+    }
+    
     /**
      * Sets the default copy mode when copying a file of the user.<p>
      * 
@@ -459,4 +732,35 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
         setWorkplaceButtonStyle(buttonstyleValue);
     }
+    
+    /**
+     * Returns a string representaion of a boolean value.<p>
+     * 
+     * @param value the boolean value to get the string from
+     * @return string representaion of a boolean value
+     */
+    private String getBoolRepresentation(boolean value) {
+        if (value) {
+            return "true";
+        } else {
+            return "false";
+        }
+    }
+
+   /**
+    * Checks if  a specific explorer setting depending is set.<p>
+    * 
+    * @param setting the settings constant value for the explorer settings
+    * @return "true" if the explorer setting is set, otherwise "false"
+    */
+   private String getExplorerSetting(int setting) {
+       if ((getExplorerSettings() & setting) > 0) {
+           return "true";
+       } else {
+        return "false";
+       }
+   }
+    
+    
+   
 }

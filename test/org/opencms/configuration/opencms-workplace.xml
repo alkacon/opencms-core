@@ -366,7 +366,7 @@
 				</workplace-generaloptions>
 				<workplace-startupsettings>
 					<locale>de</locale>
-					<project>4</project>
+					<project>online</project>
 					<workplaceview>/system/workplace/jsp/explorer_fs.html</workplaceview>
 				</workplace-startupsettings>
 			</workplace-preferences>

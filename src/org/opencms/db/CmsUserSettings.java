@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/05/14 10:31:00 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,51 +48,19 @@ import java.util.Map;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1.12
  */
 public class CmsUserSettings {
     
-    /** Identifier for the users additional editor settings information */
-    public static final String C_ADDITIONAL_INFO_EDITORSETTINGS = "USER_EDITORSETTINGS";
     private static final int C_BUTTONSTYLE_DEFAULT = 1;
-    
-    /** Identifier for the workplace file siblings copy setting key */
-    public static final String C_DIALOG_COPY_FILE_MODE = "DIALOG_COPY_FILE_MODE";
-    
-    /** Identifier for the workplace folder siblings copy setting key */
-    public static final String C_DIALOG_COPY_FOLDER_MODE = "DIALOG_COPY_FOLDER_MODE";
-    
-    /** Identifier for the workplace sibling deletion setting key */
-    public static final String C_DIALOG_DELETE_MODE = "DIALOG_DELETE_MODE";
-    
-    /** Identifier for the workplace publish siblings setting key */
-    public static final String C_DIALOG_PUBLISH_SIBLINGS = "DIALOG_PUBLISH_SIBLINGS";
-    
-    /** Identifier for the direct editing button style setting key */
-    public static final String C_DIRECT_EDIT_BUTTONSTYLE = "DIRECT_EDIT_BUTTONSTYLE";
-    
-    /** Identifier for the editor button style setting key */
-    public static final String C_EDITOR_BUTTONSTYLE = "EDITOR_BUTTONSTYLE";
-    
-    /** Identifier for the preferred editor setting key (prefix) */
-    public static final String C_EDITOR_PREFERRED_PREFIX = "EDITOR_PREFERRED_";
     
     private static final int C_ENTRYS_PER_PAGE_DEFAULT = 50;
     
-    /** Identifier for the explorer button style setting key */
-    public static final String C_EXPLORER_BUTTONSTYLE = "EXPLORER_BUTTONSTYLE";
-    
-    /** Identifier for the explorer number of file entries per page setting key */
-    public static final String C_EXPLORER_FILEENTRIES = "USER_EXPLORER_FILEENTRIES";
-    
     /** Identifierprefix for all keys in the user additional info table */
-    public static final String C_PREFERENCES = "USERPREFERENCES_";
-    
-    /** Identifier for the workplace button style setting key */
-    public static final String C_WORKPLACE_BUTTONSTYLE = "WORKPLACE_BUTTONSTYLE";
-    
+    private static final String C_PREFERENCES = "USERPREFERENCES_";
+        
     /** Identifier for the workplace report type setting key */
     public static final String C_WORKPLACE_REPORTTYPE = "WORKPLACE_REPORTTYPE";
     private boolean m_dialogDirectpublish;
@@ -131,8 +99,7 @@ public class CmsUserSettings {
         m_explorerSettings = I_CmsWpConstants.C_FILELIST_NAME;
         m_editorSettings = new HashMap();
         m_taskMessages = 0;
-        m_user = null;
-      
+        m_user = null;      
     }
     
     /**
@@ -260,7 +227,7 @@ public class CmsUserSettings {
      * @return the preferred editor for the resource type or null, if not specified
      */
     public String getPreferredEditor(String resourceType) {
-        return (String)m_editorSettings.get(C_EDITOR_PREFERRED_PREFIX + resourceType.toUpperCase());
+        return (String)m_editorSettings.get(resourceType);
     }
     
     /** 
@@ -767,9 +734,9 @@ public class CmsUserSettings {
      */
     public void setPreferredEditor(String resourceType, String editorUri) {
         if (editorUri == null) {
-            m_editorSettings.remove(C_EDITOR_PREFERRED_PREFIX + resourceType.toUpperCase());
+            m_editorSettings.remove(resourceType);
         }
-        m_editorSettings.put(C_EDITOR_PREFERRED_PREFIX + resourceType.toUpperCase(), editorUri);
+        m_editorSettings.put(resourceType, editorUri);
     }
 
     /**
