@@ -12,6 +12,7 @@ import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 
 import com.opencms.file.*;
+import com.opencms.launcher.*;
 
 
 /**
@@ -19,7 +20,7 @@ import com.opencms.file.*;
 * <p>
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.6 $ $Date: 2000/01/13 12:13:39 $  
+* @version $Revision: 1.7 $ $Date: 2000/01/13 13:41:03 $  
 * 
 */
 
@@ -34,7 +35,12 @@ class OpenCms implements I_CmsConstants
       * The reference to the resource broker
       */
      private I_CmsResourceBroker m_rb;
- 
+
+     /**
+      * Reference to the OpenCms launcer manager
+      */
+     private CmsLauncherManager m_launcherManager;
+     
      /**
       * Constructor, creates a new OpenCms object.
       * It connects to the poerty database to read all requred data to set up the
@@ -54,6 +60,13 @@ class OpenCms implements I_CmsConstants
         } catch (Exception e) {
             System.err.println(e.getMessage());    
         }
+        
+        // try to initialize the launchers.
+        try {
+            m_launcherManager = new CmsLauncherManager();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());    
+        }            
      }
      
      /**
