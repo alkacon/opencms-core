@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/08 13:46:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/11/16 13:12:54 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.5 $ $Date: 2000/11/08 13:46:25 $
+ * @version $Revision: 1.6 $ $Date: 2000/11/16 13:12:54 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 	
@@ -888,34 +888,40 @@ public CmsUser loginWebUser(CmsUser currentUser, CmsProject currentProject, Stri
  * @exception CmsException Throws CmsException if something goes wrong.
  */
 public void publishProject(CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject));
+	CmsProject publishProject = readProject(currentUser, currentProject, id);
 
-	m_subresCache.clear();
-	// inform about the file-system-change
-	fileSystemChanged();
+	// check the security	
+	if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) && (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
+		com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+		dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject));
+		m_subresCache.clear();
+		// inform about the file-system-change
+		fileSystemChanged();
 
-	// the project-state will be set to "published", the date will be set.
-	// the project must be written to the cms.
+		// the project-state will be set to "published", the date will be set.
+		// the project must be written to the cms.
 
-	CmsProject project = readProject(currentUser, currentProject, id);
-	project.setFlags(C_PROJECT_STATE_ARCHIVE);
-	project.setPublishingDate(new Date().getTime());
-	project.setPublishedBy(currentUser.getId());
-	m_dbAccess.writeProject(project);
-	m_projectCache.put(project.getId(), project);
+		CmsProject project = readProject(currentUser, currentProject, id);
+		project.setFlags(C_PROJECT_STATE_ARCHIVE);
+		project.setPublishingDate(new Date().getTime());
+		project.setPublishedBy(currentUser.getId());
+		m_dbAccess.writeProject(project);
+		m_projectCache.put(project.getId(), project);
 
-	// finally set the refrish signal to another server if nescessary
-	if (m_refresh.length() > 0) {
-		try {
-			URL url = new URL(m_refresh);
-			URLConnection con = url.openConnection();
-			con.connect();
-			InputStream in = con.getInputStream();
-			in.close();
-		} catch (Exception ex) {
-			throw new CmsException(0, ex);
+		// finally set the refrish signal to another server if nescessary
+		if (m_refresh.length() > 0) {
+			try {
+				URL url = new URL(m_refresh);
+				URLConnection con = url.openConnection();
+				con.connect();
+				InputStream in = con.getInputStream();
+				in.close();
+			} catch (Exception ex) {
+				throw new CmsException(0, ex);
+			}
 		}
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_ACCESS_DENIED);
 	}
 }
 // Methods working with system properties

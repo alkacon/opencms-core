@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/16 10:05:15 $
- * Version: $Revision: 1.191 $
+ * Date   : $Date: 2000/11/16 13:12:53 $
+ * Version: $Revision: 1.192 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.191 $ $Date: 2000/11/16 10:05:15 $
+ * @version $Revision: 1.192 $ $Date: 2000/11/16 13:12:53 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3794,53 +3794,56 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
 	}
 	return project;
 }
-	/**
-	 * Publishes a project.
-	 * 
-	 * <B>Security</B>
-	 * Only the admin or the owner of the project can do this.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param id The id of the project to be published.
-	 * @return a vector of changed resources.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void publishProject(CmsUser currentUser, CmsProject currentProject,
-								 int id)
-		throws CmsException {
-		 m_dbAccess.publishProject(currentUser,id,onlineProject(currentUser, currentProject));  
-		 
-		 m_subresCache.clear();
-		 // inform about the file-system-change
-		 fileSystemChanged();
-			 
-		 // the project-state will be set to "published", the date will be set.
-		 // the project must be written to the cms.
-			 
-		 CmsProject project=readProject(currentUser,currentProject,id);
-			 
-	     project.setFlags(C_PROJECT_STATE_ARCHIVE);
-		 project.setPublishingDate(new Date().getTime());
-		 project.setPublishedBy(currentUser.getId());
-		 m_dbAccess.writeProject(project);
-		 m_projectCache.put(project.getId(),project);
-		 
-		 // finally set the refrish signal to another server if nescessary
-		 if (m_refresh.length()>0) {
+/**
+ * Publishes a project.
+ * 
+ * <B>Security</B>
+ * Only the admin or the owner of the project can do this.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param id The id of the project to be published.
+ * @return a vector of changed resources.
+ * 
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public void publishProject(CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
+
+	CmsProject publishProject = readProject(currentUser, currentProject, id);
+
+	// check the security	
+	if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) && (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
+		m_dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject));
+		m_subresCache.clear();
+		// inform about the file-system-change
+		fileSystemChanged();
+
+		// the project-state will be set to "published", the date will be set.
+		// the project must be written to the cms.
+
+		CmsProject project = readProject(currentUser, currentProject, id);
+		project.setFlags(C_PROJECT_STATE_ARCHIVE);
+		project.setPublishingDate(new Date().getTime());
+		project.setPublishedBy(currentUser.getId());
+		m_dbAccess.writeProject(project);
+		m_projectCache.put(project.getId(), project);
+
+		// finally set the refrish signal to another server if nescessary
+		if (m_refresh.length() > 0) {
 			try {
-				URL url=new URL(m_refresh);
-				URLConnection con=url.openConnection();
+				URL url = new URL(m_refresh);
+				URLConnection con = url.openConnection();
 				con.connect();
-				InputStream in=con.getInputStream();
-				in.close();      
+				InputStream in = con.getInputStream();
+				in.close();
+			} catch (Exception ex) {
+				throw new CmsException(0, ex);
 			}
-			catch (Exception ex) {               
-				throw new CmsException(0,ex);                       
-			}
-		 }
+		}
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_ACCESS_DENIED);
 	}
+}
 	/**
 	 * Reads the agent of a task from the OpenCms.
 	 * 
