@@ -156,7 +156,7 @@ function addText(input, insText) {
 	input.focus();
 	if (input.createTextRange) {
 		document.selection.createRange().text += insText;
-	} else if (Input.setSelectionRange) {
+	} else if (input.setSelectionRange) {
 		var len = input.selectionEnd;
 		input.value = input.value.substr(0, len)
 			+ insText + input.value.substr(len);
