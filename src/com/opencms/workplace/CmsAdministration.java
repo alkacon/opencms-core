@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
- * Date   : $Date: 2000/09/27 14:09:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/10/12 12:03:31 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * 
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.3 $ $Date: 2000/09/27 14:09:34 $
+ * @version $Name:  $ $Revision: 1.4 $ $Date: 2000/10/12 12:03:31 $
  */
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
 
@@ -196,8 +196,8 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 			}
 		}
 		session.putValue(C_SESSION_ADMIN_POS, sendBy);
-		Vector iconVector = cms.getSubFolders(sendBy);
-		Vector iconVector2 = cms.getFilesInFolder(sendBy);
+		Vector iconVector = cms.getSubFoldersRecursively(sendBy);
+		Vector iconVector2 = cms.getFilesInFolderRecursively(sendBy);
 		int numFolders = iconVector.size();
 		if (numFolders > 0){
 			String iconNames[] = new String[numFolders];
