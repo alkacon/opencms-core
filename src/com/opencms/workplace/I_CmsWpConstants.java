@@ -6,10 +6,27 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/01/28 11:42:01 $
+ * @version $Revision: 1.13 $ $Date: 2000/01/28 13:46:37 $
  */
 public interface I_CmsWpConstants {
 
+    // Parameters that are used in html requests
+    
+    /**
+     * Parameter for foldername
+     */
+    public static final String C_PARA_FOLDER="FOLDER";
+    
+    
+    
+    // Filenames of workplace files
+    
+    /**
+     * The explorer tree.
+     */
+    public static final String C_WP_EXPLORER_TREE="explorer_tree.html";
+    
+    
     // Filenames of special templates
     
     /** Name of the template containing button definitions */
