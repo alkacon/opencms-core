@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/01/24 20:39:27 $
-* Version: $Revision: 1.105 $
+* Date   : $Date: 2003/01/31 10:02:21 $
+* Version: $Revision: 1.106 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.105 $ $Date: 2003/01/24 20:39:27 $
+ * @version $Revision: 1.106 $ $Date: 2003/01/31 10:02:21 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
 
@@ -277,6 +277,13 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         setRuntimeProperty(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, flexErrorPageCommit);
         if(C_LOGGING && isLogging(C_OPENCMS_INIT))
             log(C_OPENCMS_INIT, "[OpenCms] setting JSP error page commit value to: " + flexErrorPageCommit);      
+
+        // read old (proprietary XML-style) locale backward compatibily support flag
+        Boolean supportOldLocales = (Boolean)conf.getBoolean("compatibility.support.oldlocales", new Boolean(false));
+        setRuntimeProperty("compatibility.support.oldlocales", supportOldLocales);
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT))
+            log(C_OPENCMS_INIT, "[OpenCms] Supporting deprecated module locales: " + supportOldLocales);      
+
         
         // try to initialize directory translations
         try {
@@ -332,7 +339,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         } catch(Exception e) {
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.toString());
         }        
-
+        
         // try to initialize the launchers.
         try {
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initialize launchers...");
