@@ -781,6 +781,7 @@ A new task was reactivated for you or your role.</content>
 			<property>Properties of</property>
 			<propinuse>Property definition already in use</propinuse>
 			<rename>Rename File</rename>
+			<renamefolder>Rename Folder</renamefolder>
 			<rootfolder>(Root Folder)</rootfolder>
 			<size>Size</size>
 			<state>State</state>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/13 21:31:01 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2000/04/13 21:45:08 $
+ * Version: $Revision: 1.61 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.60 $ $Date: 2000/04/13 21:31:01 $
+ * @version $Revision: 1.61 $ $Date: 2000/04/13 21:45:08 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -1422,6 +1422,56 @@ interface I_CmsResourceBroker {
 							 String foldername)
 		throws CmsException;
 
+    
+    /**
+	 * Moves the folder.
+	 * 
+	 * This operation includes a copy and a delete operation. These operations
+	 * are done with their security-checks.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param source The complete path of the sourcefolder.
+	 * @param destination The complete path of the destinationfolder.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be moved. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */	
+	public void moveFolder(A_CmsUser currentUser, A_CmsProject currentProject,
+						 String source, String destination)
+		throws CmsException;
+    
+     /**
+	 * Renames the folder to a new name. <br>
+	 * 
+	 * Rename can only be done in an offline project. To rename a folder, the following
+	 * steps have to be done:
+	 * <ul>
+	 * <li> Copy the folder with the oldname to a folder with the new name, the state 
+	 * of the new folder is set to NEW (2). 
+	 * <li> Set the state of the old file to DELETED (3). </li> 
+	 * </ul>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param oldname The complete path to the resource which will be renamed.
+	 * @param newname The new name of the resource (A_CmsUser callingUser, No path information allowed).
+	 * 
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */		
+	public void renameFolder(A_CmsUser currentUser, A_CmsProject currentProject, 
+					       String oldname, String newname)
+		throws CmsException;
+    
      /**
 	 * Copies a folder in the Cms. <br>
 	 * 

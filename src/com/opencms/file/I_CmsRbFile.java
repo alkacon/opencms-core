@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbFile.java,v $
- * Date   : $Date: 2000/04/13 19:48:08 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/04/13 21:45:08 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/04/13 19:48:08 $
+ * @version $Revision: 1.17 $ $Date: 2000/04/13 21:45:08 $
  */
  interface I_CmsRbFile {
 	
@@ -525,7 +525,38 @@ import com.opencms.core.*;
                            String source,String destination)
 		throws CmsException ;
 	
-    
+     /**
+	 * Renames the folder to a new name. <br>
+	 * 
+	 * Rename can only be done in an offline project. To rename a folder, the following
+	 * steps have to be done:
+	 * <ul>
+	 * <li> Copy the folder with the oldname to a folder with the new name, the state 
+	 * of the new folder is set to NEW (2). 
+	 * </li>
+	 * <li> Set the state of the old folder to DELETED (3). </li> 
+	 * </ul>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param oldname The complete path to the resource which will be renamed.
+	 * @param newname The new name of the resource (A_CmsUser callingUser, No path information allowed).
+	 * 
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */		
+	public void renameFolder(A_CmsProject project, 
+                           A_CmsProject onlineProject,
+					       String oldname, String newname)
+		throws CmsException;
+ 	
     
 	/**
 	 * Returns a Vector with all subfolders.<br>

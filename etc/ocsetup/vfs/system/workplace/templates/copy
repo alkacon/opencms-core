@@ -208,6 +208,84 @@ function show_help()
 ]]>
 </TEMPLATE>
 
+<TEMPLATE name="update">
+<![CDATA[
+<HTML>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+
+<SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
+	updateFrame('body.explorer_content.explorer_files','explorer_files.html');
+	updateFrame('body.explorer_tree','explorer_tree.html');
+</SCRIPT>
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload>
+<CENTER>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+	<tr>
+		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
+</tr>
+</table>
+<!-- End please wait text -->
+</CENTER>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="wait">
+<![CDATA[
+<HTML>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+
+<BODY onload="updateFrame('body.explorer_content.explorer_files', 'copy.html?action=ok');">
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload>
+<CENTER>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+	<tr>
+		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
+</tr>
+</table>
+<!-- End please wait text -->
+</CENTER>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+
 <TEMPLATE name="error">
 <ERRORPAGE title="error.title.copy" message="error.message.copy" reason="error.reason.copy" suggestion="error.suggestion.copy" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
 </TEMPLATE>

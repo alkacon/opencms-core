@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/04/13 19:48:07 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/04/13 21:45:08 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2000/04/13 19:48:07 $
+ * @version $Revision: 1.25 $ $Date: 2000/04/13 21:45:08 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -956,6 +956,24 @@ import com.opencms.core.*;
          
      // todo: Implement this
      }
+     
+     /**
+	 * Renames the folder to the new name.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param oldname The complete path to the resource which will be renamed.
+	 * @param newname The new name of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */		
+	 public void renameFolder(A_CmsProject project,
+                            A_CmsProject onlineProject,
+                            String oldname, String newname)
+         throws CmsException{
+         // todo: Implement this            
+     }
+     
      
 	 /**
 	 * Returns a Vector with all subfolders.<BR/>

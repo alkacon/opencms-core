@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessFile.java,v $
- * Date   : $Date: 2000/04/13 19:48:08 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/04/13 21:45:08 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/04/13 19:48:08 $
+ * @version $Revision: 1.18 $ $Date: 2000/04/13 21:45:08 $
  */
 interface I_CmsAccessFile {
 
@@ -338,6 +338,21 @@ interface I_CmsAccessFile {
 	 public void copyFolder(A_CmsProject project,
                             A_CmsProject onlineProject,
                             String source, String destination)
+		throws CmsException;
+     
+     /**
+	 * Renames the folder to the new name.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param oldname The complete path to the resource which will be renamed.
+	 * @param newname The new name of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */		
+	 public void renameFolder(A_CmsProject project,
+                            A_CmsProject onlineProject,
+                            String oldname, String newname)
 		throws CmsException;
      
 	/**

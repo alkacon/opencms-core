@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/04/13 21:30:48 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2000/04/13 21:45:08 $
+ * Version: $Revision: 1.67 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.66 $ $Date: 2000/04/13 21:30:48 $ 
+ * @version $Revision: 1.67 $ $Date: 2000/04/13 21:45:08 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -707,6 +707,43 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		c_rb.copyFolder(m_context.currentUser(), m_context.currentProject(), 
 					  source, destination);
 	}
+    
+            
+	/**
+	 * Renames the folder to the new name.
+	 * 
+	 * @param oldname The complete path to the resource which will be renamed.
+	 * @param newname The new name of the resource (No path information allowed).
+	 * 
+	 * @exception CmsException will be thrown, if the folder couldn't be renamed. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */		
+	 public void renameFolder(String oldname, String newname)
+         throws CmsException {
+         c_rb.renameFolder(m_context.currentUser(), m_context.currentProject(), 
+					       oldname, newname);
+     }
+    
+    	
+	/**
+	 * Moves the folder.
+	 * 
+	 * @param source The complete path of the sourcefile.
+	 * @param destination The complete path of the destinationfile.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be moved. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 * @exception CmsDuplikateKeyException if there is already a resource with 
+	 * the destination foldername.
+	 */	
+	 public void moveFolder(String source, String destination)
+        throws CmsException {
+        c_rb.moveFolder(m_context.currentUser(), m_context.currentProject(), 
+					    source, destination );
+     }
+             
 
 	/**
 	 * Returns a Vector with all subfolders.<BR/>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <WORKPLACE>
-<TEMPLATE>
+<TEMPLATE name="file">
 <![CDATA[
 <HTML>
 <script language=JavaScript>
@@ -85,6 +85,172 @@ function show_help()
 </td></tr>
 </table>
 </body>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="folder">
+<![CDATA[
+<HTML>
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '2_2_2_2_4_1.html';
+}
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+<!-- tabele to center box-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<!-- build dialog -->
+<form id=RENAME name=RENAME>
+<table cellspacing=0 cellpadding=0 border=2 width=300px>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Begin tablehead blue -->
+			<tr> 
+           		<td colspan=2 class="head">]]><LABEL value="title.renamefolder" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
+			</tr>
+			<!-- End tablehead blue -->
+			
+			<!-- Begin empty row -->
+			<tr> 
+           		<td colspan=2 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende empty row -->
+			
+			<tr>
+				<td class=dialogtxt colspan=2>
+					]]><LABEL value="input.title" /><![CDATA[: ]]><PROCESS>TITLE</PROCESS><![CDATA[<br>
+					]]><LABEL value="input.state" /><![CDATA[: ]]><PROCESS>STATE</PROCESS><![CDATA[<br>
+					]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>OWNER</PROCESS><![CDATA[<br>
+					]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[
+				</td>
+			</tr>
+			
+			<!-- Begin Textfield -->
+			<tr>
+				<td class=formular width=10%>
+					]]><LABEL value="input.name" /><![CDATA[:</td>
+				<td class=dialogtxt>]]><INPUTFIELD name="name" class="textfeld" size="31" length="50" method="setValue" /><![CDATA[</td>				
+				</tr>
+			<!-- End Textfield -->
+
+			<!-- Begin empty row -->
+			<tr> 
+           		<td colspan=2 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- End empty row -->
+			
+			<!-- Begin buttons -->
+			<tr><td class=dialogtxt colspan=2>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='rename.html?name='+document.RENAME.name.value;"></td>
+					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='explorer_files.html'"></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			<!-- End buttons -->
+			
+			</table>
+	</td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="update">
+<![CDATA[
+<HTML>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+
+<SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
+	updateFrame('body.explorer_content.explorer_files','explorer_files.html');
+	updateFrame('body.explorer_tree','explorer_tree.html');
+</SCRIPT>
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload>
+<CENTER>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+	<tr>
+		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
+</tr>
+</table>
+<!-- End please wait text -->
+</CENTER>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="wait">
+<![CDATA[
+<HTML>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+
+<BODY onload="updateFrame('body.explorer_content.explorer_files', 'rename.html?action=ok');">
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload>
+<CENTER>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+	<tr>
+		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
+</tr>
+</table>
+<!-- End please wait text -->
+</CENTER>
+</BODY>
 </html>
 ]]>
 </TEMPLATE>

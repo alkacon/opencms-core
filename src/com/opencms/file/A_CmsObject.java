@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/04/13 19:48:07 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2000/04/13 21:45:08 $
+ * Version: $Revision: 1.65 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.64 $ $Date: 2000/04/13 19:48:07 $ 
+ * @version $Revision: 1.65 $ $Date: 2000/04/13 21:45:08 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -574,6 +574,35 @@ public abstract class A_CmsObject {
 	 */	
 	abstract public void copyFolder(String source, String destination)
 		throws CmsException ;
+            
+	/**
+	 * Renames the folder to the new name.
+	 * 
+	 * @param oldname The complete path to the resource which will be renamed.
+	 * @param newname The new name of the resource (No path information allowed).
+	 * 
+	 * @exception CmsException will be thrown, if the folder couldn't be renamed. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */		
+	abstract public void renameFolder(String oldname, String newname)
+		throws CmsException;
+    
+    	
+	/**
+	 * Moves the folder.
+	 * 
+	 * @param source The complete path of the sourcefile.
+	 * @param destination The complete path of the destinationfile.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be moved. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 * @exception CmsDuplikateKeyException if there is already a resource with 
+	 * the destination foldername.
+	 */	
+	abstract public void moveFolder(String source, String destination)
+		throws CmsException;
     
 	/**
 	 * Returns a Vector with all subfolders.<BR/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/04/13 19:39:23 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/04/13 21:45:09 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.14 $ $Date: 2000/04/13 19:39:23 $
+  * @version $Revision: 1.15 $ $Date: 2000/04/13 21:45:09 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -87,12 +87,20 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
                         
-        String delete=(String)parameters.get(C_PARA_DELETE);
+        String delete=(String)parameters.get(C_PARA_DELETE);          
+        if (delete != null) {
+            session.putValue(C_PARA_DELETE,delete);        
+        }
+        delete=(String)session.getValue(C_PARA_DELETE); 
+        
         String filename=(String)parameters.get(C_PARA_FILE);
         if (filename != null) {
             session.putValue(C_PARA_FILE,filename);        
         }
         filename=(String)session.getValue(C_PARA_FILE);
+        
+        String action = (String)parameters.get("action");
+        
 		A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
 
         if (file.isFile()) {
@@ -104,73 +112,59 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
         //check if the name parameter was included in the request
         // if not, the delete page is shown for the first time
     
-        boolean hDelete = true;
+
         if (delete != null) {
+            if (action== null) {
+                template="wait";                
+            } else {
             
             // check if the resource is a file or a folder
             if (file.isFile()) {            
-			    //check if the file type name is page
-			    //if so delete the file body and content
-			    // else delete only file
-			    if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
-				    String bodyPath=getBodyPath(cms, (CmsFile)file);
-					try {
-	    			    int help = C_CONTENTBODYPATH.lastIndexOf("/");
-    	          	    String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
-				        if (hbodyPath.equals(bodyPath)){
-					        cms.deleteFile(hbodyPath);
-				        }
-    				}catch (CmsException e){
-	    				//TODO: ErrorHandling
-		    		}
-			    } else if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_NEWSPAGE_NAME) ){
-					String newsContentPath = getNewsContentPath(cms, (CmsFile) file);
-					try {
-						CmsFile newsContentFile=(CmsFile)cms.readFileHeader(newsContentPath);
-						if((newsContentFile.isLocked()) && (newsContentFile.isLockedBy()==cms.getRequestContext().currentUser().getId()) ){
-							cms.deleteFile(newsContentPath);
-						}
-					}catch (CmsException e){
-						//TODO: ErrorHandling
-					}
-
-                    try {
-                        cms.deleteFile(filename);
-                        hDelete = false;
-					}catch (CmsException e){
-						//TODO: ErrorHandling
-					}
-                        
-                    try {
-                        String parentFolderName = file.getParent();
-                        CmsFolder parentFolder = cms.readFolder(parentFolderName);
-
-                        if((!parentFolder.isLocked()) || (parentFolder.isLockedBy()!=cms.getRequestContext().currentUser().getId()) ){
-                            cms.lockResource(parentFolderName);
-                        }
-                        cms.deleteFolder(parentFolderName);                                                                       
-					}catch (CmsException e){
-						//TODO: ErrorHandling
-                    }                    
-                }
-
-                if(hDelete) {
-                    cms.deleteFile(filename);
-                }
+                // its a file, so delete it
+                deleteFile(cms,file,false);
+            
                 session.removeValue(C_PARA_FILE);
                 try {
-                if(lasturl == null || "".equals(lasturl)) {
-                    cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
-                } else {
-                    ((HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse())).sendRedirect(lasturl);                       
-                }                            
+                    if(lasturl == null || "".equals(lasturl)) {
+                        cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                    } else {
+                        ((HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse())).sendRedirect(lasturl);                       
+                    }                            
                 } catch (Exception e) {
-                  throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
+                    throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
                 } 
+                
             } else {               
+                // its a folder, so try to delete the folder and its subfolders
+                // get all subfolders and files
+                Vector allFolders=new Vector();
+                Vector allFiles=new Vector();
+                getAllResources(cms,filename,allFiles,allFolders);
+                
+                // unlock the folder, otherwise the subflders and files could not be
+                // deleted.
+                cms.unlockResource(filename);
+                
+                // now delete all files in the subfolders
+                for (int i=0;i<allFiles.size();i++) {
+                    CmsFile newfile=(CmsFile)allFiles.elementAt(i);  
+                    cms.lockResource(newfile.getAbsolutePath());
+                    deleteFile(cms,newfile,true);
+                }    
+                
+                // now delete all subfolders
+                for (int i=0;i<allFolders.size();i++) {
+                    CmsFolder folder=(CmsFolder)allFolders.elementAt(allFolders.size()-i-1);  
+                    cms.lockResource(folder.getAbsolutePath());
+                    cms.deleteFolder(folder.getAbsolutePath());
+                }
+                
+                // finally delete the selected folder
+                cms.lockResource(filename);
                 cms.deleteFolder(filename);
                 session.removeValue(C_PARA_FILE);
                 template="update";
+            }
             }
             
           
@@ -235,6 +229,110 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
         }
         return newsContentFilename;
     }    
+
+    
+    /** 
+     * Deletes a file.
+     * If the file is a page file, its content will be deleted, too.
+     * If the file is a news file, the content and folder will be deleted, too.
+     * @param cms The CmsObject.
+     * @param file The file to be deleted.
+     * @param lock Flag showing if the resource has to locked.
+     * @exception Throws CmsException if something goes wrong.
+     */
+    private void deleteFile (A_CmsObject cms, A_CmsResource file,boolean lock) 
+        throws CmsException {
+        
+        boolean hDelete = true;
+	    //check if the file type name is page
+		//if so delete the file body and content
+		if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+		    String bodyPath=getBodyPath(cms, (CmsFile)file);
+			try {
+	    	    int help = C_CONTENTBODYPATH.lastIndexOf("/");
+    	        String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
+				if (hbodyPath.equals(bodyPath)){
+                   // this method was called during the process of deleting a folder,
+                   // so lock the content file
+                   if (lock) {
+                        cms.lockResource(hbodyPath);
+                    }
+				    cms.deleteFile(hbodyPath);
+               				}
+    		}catch (CmsException e){
+	    	    //TODO: ErrorHandling
+		    }
+        //
+		} else if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_NEWSPAGE_NAME) ){
+		    String newsContentPath = getNewsContentPath(cms, (CmsFile) file);
+			try {
+			    CmsFile newsContentFile=(CmsFile)cms.readFileHeader(newsContentPath);
+				if((newsContentFile.isLocked()) && (newsContentFile.isLockedBy()==cms.getRequestContext().currentUser().getId()) ){
+				    cms.deleteFile(newsContentPath);
+				}
+			}catch (CmsException e){
+		    	//TODO: ErrorHandling
+			}
+            
+            try {
+                cms.deleteFile(file.getAbsolutePath());
+                hDelete = false;
+			}catch (CmsException e){
+			    //TODO: ErrorHandling
+			}
+                        
+            try {
+                String parentFolderName = file.getParent();
+                CmsFolder parentFolder = cms.readFolder(parentFolderName);
+
+                if((!parentFolder.isLocked()) || (parentFolder.isLockedBy()!=cms.getRequestContext().currentUser().getId()) ){
+                    cms.lockResource(parentFolderName);
+                }
+                cms.deleteFolder(parentFolderName);                                                                       
+			}catch (CmsException e){
+			    //TODO: ErrorHandling
+            }                    
+          }
+
+          if(hDelete) {
+            cms.deleteFile(file.getAbsolutePath());
+          }
+      
+    }
+    
+             
+    /**
+     * Gets all resources - files and subfolders - of a given folder.
+     * @param cms The CmsObject.
+     * @param rootFolder The name of the given folder.
+     * @param allFiles Vector containing all files found so far. All files of this folder
+     * will be added here as well.
+     * @param allolders Vector containing all folders found so far. All subfolders of this folder
+     * will be added here as well.
+     * @exception Throws CmsException if something goes wrong.
+     */
+    private void getAllResources(A_CmsObject cms, String rootFolder,
+                                 Vector allFiles, Vector allFolders) 
+     throws CmsException {
+        Vector folders=new Vector();
+        Vector files=new Vector();
+        
+        // get files and folders of this rootFolder
+        folders=cms.getSubFolders(rootFolder);
+        files=cms.getFilesInFolder(rootFolder);
+        
+        
+        //copy the values into the allFiles and allFolders Vectors
+        for (int i=0;i<folders.size();i++) {
+            allFolders.addElement((CmsFolder)folders.elementAt(i));
+            getAllResources(cms,((CmsFolder)folders.elementAt(i)).getAbsolutePath(),
+                            allFiles,allFolders);
+        }
+        for (int i=0;i<files.size();i++) {
+            allFiles.addElement((CmsFile)files.elementAt(i));
+        } 
+    }
+
     
      /**
      * Gets a formated file state string.
@@ -256,4 +354,5 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
          }
          return output.toString();
      }    
+
 }

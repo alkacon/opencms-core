@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2000/04/03 10:48:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/04/13 21:45:09 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.8 $ $Date: 2000/04/03 10:48:32 $
+ * @version $Revision: 1.9 $ $Date: 2000/04/13 21:45:09 $
  */
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -110,54 +110,8 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			 // check if the file type name is page
 			 // if so move the file body and content and change the content of content
 			 // else move only file
-			 if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
-				String bodyPath = getBodyPath(cms, file);
-				int help = C_CONTENTBODYPATH.lastIndexOf("/");
-				String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
-				if (hbodyPath.equals(bodyPath)){
-					checkFolders(cms, newFolder);
-					cms.moveFile((C_CONTENTBODYPATH.substring(0,help))+file.getAbsolutePath(),(C_CONTENTBODYPATH.substring(0,help))+newFolder+file.getName());
-					if (flags.equals("false")) {
-						 // set access flags of the new file to the default flags
-						CmsFile newfile=cms.readFile(newFolder,file.getName());
-				
-                        Hashtable startSettings=null;
-                        Integer accessFlags=null;
-                        startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
-                        if (startSettings != null) {
-                            accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
-                            if (accessFlags == null) {
-                                accessFlags=new Integer(C_ACCESS_DEFAULT_FLAGS);
-                            }
-                        }                           
-                        newfile.setAccessFlags(accessFlags.intValue());  
-				 
-				 		cms.writeFile(newfile);
-				    }
-					changeContent(cms, file, (C_CONTENTBODYPATH.substring(0,help))+newFolder+file.getName());
-				}
-				
-			}
-             // moves the file and set the access flags if nescessary
-			 cms.moveFile(file.getAbsolutePath(),newFolder+file.getName());
-			 
-             if (flags.equals("false")) {
-                 // set access flags of the new file to the default flags
-				 CmsFile newfile=cms.readFile(newFolder,file.getName());
-                 
-                 Hashtable startSettings=null;
-                 Integer accessFlags=null;
-                 startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
-                 if (startSettings != null) {
-                    accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
-                        if (accessFlags == null) {
-                            accessFlags=new Integer(C_ACCESS_DEFAULT_FLAGS);
-                        }
-                 }                           
-                 newfile.setAccessFlags(accessFlags.intValue());  
-                 cms.writeFile(newfile);
-			   }
-				 
+             moveFile(cms,file,newFolder,flags);
+			
              // TODO: Error handling
              try {
                cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
@@ -326,5 +280,65 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
             output.append(lang.getLanguageValue("explorer.statenip"));
          }
          return output.toString();
+     }
+     
+     /**
+      * Move a file to another folder.
+      * If the file is a page, the content will be moved too.
+      * @param cms The CmsObject.
+      * @param file The file to be moved.
+      * @param newFolder The folder the file has to be moved to.
+      * @param flags Flags that indicate if the access flags have to be set to the default values.
+      */
+     private void moveFile(A_CmsObject cms, CmsFile file, String newFolder, String flags) 
+        throws CmsException {
+        if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+		    String bodyPath = getBodyPath(cms, file);
+    	    int help = C_CONTENTBODYPATH.lastIndexOf("/");
+			String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
+			if (hbodyPath.equals(bodyPath)){
+				checkFolders(cms, newFolder);
+				cms.moveFile((C_CONTENTBODYPATH.substring(0,help))+file.getAbsolutePath(),(C_CONTENTBODYPATH.substring(0,help))+newFolder+file.getName());
+				if (flags.equals("false")) {
+					 // set access flags of the new file to the default flags
+					CmsFile newfile=cms.readFile(newFolder,file.getName());
+				
+                    Hashtable startSettings=null;
+                    Integer accessFlags=null;
+                    startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+                    if (startSettings != null) {
+                        accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
+                        if (accessFlags == null) {
+                            accessFlags=new Integer(C_ACCESS_DEFAULT_FLAGS);
+                        }
+                    }                           
+                    newfile.setAccessFlags(accessFlags.intValue());  
+				 
+				 	cms.writeFile(newfile);
+                }
+            changeContent(cms, file, (C_CONTENTBODYPATH.substring(0,help))+newFolder+file.getName());
+			}
+				
+		}
+        // moves the file and set the access flags if nescessary
+	    cms.moveFile(file.getAbsolutePath(),newFolder+file.getName());
+			 
+       if (flags.equals("false")) {
+        // set access flags of the new file to the default flags
+		CmsFile newfile=cms.readFile(newFolder,file.getName());
+                
+        Hashtable startSettings=null;
+        Integer accessFlags=null;
+        startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+            if (startSettings != null) {
+                accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
+                    if (accessFlags == null) {
+                        accessFlags=new Integer(C_ACCESS_DEFAULT_FLAGS);
+                    }
+            }                           
+         newfile.setAccessFlags(accessFlags.intValue());  
+         cms.writeFile(newfile);
+	    }
+				 
      }
 }

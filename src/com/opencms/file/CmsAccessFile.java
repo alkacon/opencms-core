@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFile.java,v $
- * Date   : $Date: 2000/04/13 19:48:07 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/04/13 21:45:08 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/04/13 19:48:07 $
+ * @version $Revision: 1.18 $ $Date: 2000/04/13 21:45:08 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -446,6 +446,35 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
          destinationFs.createFolder(project,folder,destination);        
      }
           
+     /**
+	 * Renames the folder to the new name.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param oldname The complete path to the resource which will be renamed.
+	 * @param newname The new name of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */		
+	 public void renameFolder(A_CmsProject project,
+                            A_CmsProject onlineProject,
+                            String oldname, String newname)
+         throws CmsException{
+          
+         // get the file systems for the source and the destination.
+         I_CmsAccessFile oldFs=getFilesystem(oldname);
+         I_CmsAccessFile newFs=getFilesystem(newname);
+         
+         // todo: implement a more effective method to copy folders within a single
+         // access module
+         
+         CmsFolder folder=oldFs.readFolder(project,oldname);
+         newFs.createFolder(project,folder,newname);
+         oldFs.deleteFolder(project,oldname,true);         
+         
+     }
+     
+     
 	/**
 	 * Returns a Vector with all subfolders.<BR/>
 	 * 
