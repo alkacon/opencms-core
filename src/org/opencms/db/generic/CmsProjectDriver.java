@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/10/28 11:07:27 $
- * Version: $Revision: 1.193 $
+ * Date   : $Date: 2004/10/29 17:26:23 $
+ * Version: $Revision: 1.194 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsRuntimeInfo;
-import org.opencms.db.I_CmsRuntimeInfoFactory;
 import org.opencms.file.*;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsEvent;
@@ -74,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.193 $ $Date: 2004/10/28 11:07:27 $
+ * @version $Revision: 1.194 $ $Date: 2004/10/29 17:26:23 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -205,7 +204,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            conn = m_sqlManager.getConnection(runtimeInfo, project);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_DELETE");
             // create the statement
             stmt.setInt(1, project.getId());
@@ -245,7 +244,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         PreparedStatement stmt = null;
         
         try {
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            conn = m_sqlManager.getConnection(runtimeInfo, project);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_DELETEALL");
             stmt.setInt(1, project.getId());
             stmt.executeUpdate();
@@ -480,9 +479,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager, org.opencms.db.I_CmsRuntimeInfoFactory)
+     * @see org.opencms.db.I_CmsDriver#init(org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager)
      */
-    public void init(CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) {
+    public void init(CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager) {
         
         ExtendedProperties configuration = configurationManager.getConfiguration();
         String poolUrl = configuration.getString("db.project.pool");
@@ -1931,7 +1930,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            conn = m_sqlManager.getConnection(runtimeInfo, project);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_UNMARK");
             // create the statement
             stmt.setInt(1, project.getId());
@@ -1951,7 +1950,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            conn = m_sqlManager.getConnection(runtimeInfo, currentProject);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_PUBLISH_HISTORY");
             stmt.setInt(1, tagId);
             stmt.setString(2, resource.getStructureId().toString());

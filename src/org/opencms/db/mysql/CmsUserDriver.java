@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/10/29 17:26:24 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.19 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.20 $ $Date: 2004/10/29 17:26:24 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -64,7 +64,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
 
-        if (existsUser(runtimeInfo, name, type)) {
+        if (existsUser(runtimeInfo, name, type, null)) {
             throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
         }
         

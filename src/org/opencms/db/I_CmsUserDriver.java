@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/10/29 17:26:24 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.36 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.37 $ $Date: 2004/10/29 17:26:24 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -480,22 +480,24 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @param runtimeInfo the current runtime info
      * @param username the user name to be checked
-     * @param usertype TODO:
+     * @param usertype the type of the user
+     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * 
      * @return true, if a user with the specified name exists, false otherwise
      * @throws CmsException if something goes wrong
      */
-    boolean existsUser(I_CmsRuntimeInfo runtimeInfo, String username, int usertype) throws CmsException;
+    boolean existsUser(I_CmsRuntimeInfo runtimeInfo, String username, int usertype, Object reservedParam) throws CmsException;
     
     /**
      * Tests if a group with the specified name exists.<p>
      * 
      * @param runtimeInfo the current runtime info
      * @param groupname the user name to be checked
+     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * 
      * @return true, if a group with the specified name exists, false otherwise
      * @throws CmsException if something goes wrong
      */
-    boolean existsGroup(I_CmsRuntimeInfo runtimeInfo, String groupname) throws CmsException;
+    boolean existsGroup(I_CmsRuntimeInfo runtimeInfo, String groupname, Object reservedParam) throws CmsException;
     
 }

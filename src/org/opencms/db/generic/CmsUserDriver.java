@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/10/28 11:07:27 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2004/10/29 17:26:24 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsRuntimeInfo;
-import org.opencms.db.I_CmsRuntimeInfoFactory;
 import org.opencms.db.I_CmsUserDriver;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
@@ -70,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.66 $ $Date: 2004/10/28 11:07:27 $
+ * @version $Revision: 1.67 $ $Date: 2004/10/29 17:26:24 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -112,7 +111,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            conn = m_sqlManager.getConnection(runtimeInfo, project);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_CREATE");
 
             stmt.setString(1, resource.toString());
@@ -140,7 +139,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         Connection conn = null;
         PreparedStatement stmt = null;
 
-        if (existsGroup(runtimeInfo, groupName)) {
+        if (existsGroup(runtimeInfo, groupName, reservedParam)) {
             throw new CmsException("Group " + groupName + " already exists", CmsException.C_GROUP_ALREADY_EXISTS);
         }
         
@@ -187,7 +186,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         Connection conn = null;
         PreparedStatement stmt = null;
         
-        if (existsUser(runtimeInfo, name, type)) {
+        if (existsUser(runtimeInfo, name, type, null)) {
             throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
         }
 
@@ -264,7 +263,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            conn = m_sqlManager.getConnection(runtimeInfo, project);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_SETFLAGS_ALL");
 
             stmt.setInt(1, I_CmsConstants.C_ACCESSFLAGS_DELETED);
@@ -373,7 +372,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         Connection conn = null;
         PreparedStatement stmt = null;
         
-        if (existsUser(runtimeInfo, name, type)) {
+        if (existsUser(runtimeInfo, name, type, reservedParam)) {
             throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
         }
 
@@ -413,9 +412,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager, org.opencms.db.I_CmsRuntimeInfoFactory)
+     * @see org.opencms.db.I_CmsDriver#init(org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager)
      */
-    public void init(CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) {
+    public void init(CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager) {
         
         ExtendedProperties configuration = configurationManager.getConfiguration();
         String poolUrl = configuration.getString("db.user.pool");
@@ -1058,7 +1057,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            conn = m_sqlManager.getConnection(runtimeInfo, project);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL");
 
             stmt.setString(1, resource.toString());
@@ -1081,7 +1080,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            conn = m_sqlManager.getConnection(runtimeInfo, project);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE");
 
             stmt.setString(1, resource.toString());
@@ -1172,7 +1171,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         ResultSet res = null;
 
         try {
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            conn = m_sqlManager.getConnection(runtimeInfo, project);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRY");
 
             stmt.setString(1, acEntry.getResource().toString());
@@ -1315,16 +1314,23 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
     
     /**
-     * @see org.opencms.db.I_CmsUserDriver#existsUser(I_CmsRuntimeInfo, java.lang.String, int)
+     * @see org.opencms.db.I_CmsUserDriver#existsUser(I_CmsRuntimeInfo, java.lang.String, int, Object)
      */
-    public boolean existsUser(I_CmsRuntimeInfo runtimeInfo, String username, int usertype) throws CmsException {
+    public boolean existsUser(I_CmsRuntimeInfo runtimeInfo, String username, int usertype, Object reservedParam) throws CmsException {
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
         boolean result = false;
 
         try {
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            if (reservedParam == null) {
+                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
+                conn = m_sqlManager.getConnection(runtimeInfo);
+            } else {
+                // get a JDBC connection from the reserved JDBC pools
+                conn = m_sqlManager.getConnection(runtimeInfo, ((Integer) reservedParam).intValue());
+            }
+            
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ");
             stmt.setString(1, username);
             stmt.setInt(2, usertype);
@@ -1348,16 +1354,23 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
     
     /**
-     * @see org.opencms.db.I_CmsUserDriver#existsGroup(I_CmsRuntimeInfo, java.lang.String)
+     * @see org.opencms.db.I_CmsUserDriver#existsGroup(I_CmsRuntimeInfo, java.lang.String, Object)
      */
-    public boolean existsGroup(I_CmsRuntimeInfo runtimeInfo, String groupName) throws CmsException {
+    public boolean existsGroup(I_CmsRuntimeInfo runtimeInfo, String groupName, Object reservedParam) throws CmsException {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
         boolean result = false;
 
         try {
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            if (reservedParam == null) {
+                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
+                conn = m_sqlManager.getConnection(runtimeInfo);
+            } else {
+                // get a JDBC connection from the reserved JDBC pools
+                conn = m_sqlManager.getConnection(runtimeInfo, ((Integer) reservedParam).intValue());
+            }
+            
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READGROUP");
 
             stmt.setString(1, groupName);

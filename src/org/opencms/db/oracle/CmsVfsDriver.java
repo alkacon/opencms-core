@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/10/29 17:26:23 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.23 $ $Date: 2004/10/29 17:26:23 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
@@ -66,7 +66,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         Connection conn = null;
         
         try {            
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            conn = m_sqlManager.getConnection(runtimeInfo, project);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_ADD");
             
             // first insert new file without file_content, then update the file_content
@@ -105,7 +105,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         ResultSet res = null;
         
         try {            
-            conn = m_sqlManager.getConnection(runtimeInfo);
+            conn = m_sqlManager.getConnection(runtimeInfo, project);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_UPDATECONTENT");
             
             if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {

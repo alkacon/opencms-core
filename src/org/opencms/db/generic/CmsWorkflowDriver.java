@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2004/10/28 11:07:27 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/10/29 17:26:24 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
-import org.opencms.db.I_CmsRuntimeInfoFactory;
 import org.opencms.db.I_CmsWorkflowDriver;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
@@ -64,7 +63,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.35 $ $Date: 2004/10/28 11:07:27 $
+ * @version $Revision: 1.36 $ $Date: 2004/10/29 17:26:24 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -183,9 +182,9 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager, org.opencms.db.I_CmsRuntimeInfoFactory)
+     * @see org.opencms.db.I_CmsDriver#init(org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager)
      */
-    public void init(CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) {
+    public void init(CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager) {
         
         ExtendedProperties configuration = configurationManager.getConfiguration();
         String poolUrl = configuration.getString("db.workflow.pool");

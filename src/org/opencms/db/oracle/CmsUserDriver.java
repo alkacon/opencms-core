@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/10/29 17:26:23 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.31 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.32 $ $Date: 2004/10/29 17:26:23 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -68,7 +68,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
     
-        if (existsUser(runtimeInfo, name, type)) {
+        if (existsUser(runtimeInfo, name, type, null)) {
             throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
         }
         
@@ -111,7 +111,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
      
-        if (existsUser(runtimeInfo, name, type)) {
+        if (existsUser(runtimeInfo, name, type, reservedParam)) {
             throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
         }
         
