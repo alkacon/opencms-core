@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2001/08/22 14:22:23 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2002/04/05 13:05:06 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.30 $ $Date: 2001/08/22 14:22:23 $
+ * @version $Revision: 1.31 $ $Date: 2002/04/05 13:05:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -316,7 +316,10 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
 
         //String picsUrl = getConfigFile(cms).getCommonPictureUrl();
         HttpServletRequest req = (HttpServletRequest)(cms.getRequestContext().getRequest().getOriginalRequest());
-        String hostName = req.getScheme() + "://" + req.getHeader("HOST");
+        //// This is commented out - because we don't need absolute urls anymore. /////////
+        // String hostName = req.getScheme() + "://" + req.getHeader("HOST");            //
+        ///////////////////////////////////////////////////////////////////////////////////
+        String hostName = "";
         String picsUrl = cms.getRequestContext().getRequest().getServletUrl() + folder;
 
         // Generate the picture list for all pictures on the selected page
