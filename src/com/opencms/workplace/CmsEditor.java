@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/07/29 09:34:14 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/07/29 10:43:47 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.49 $ $Date: 2003/07/29 09:34:14 $
+ * @version $Revision: 1.50 $ $Date: 2003/07/29 10:43:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -174,7 +174,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
             if (lock.isNullLock()) {
                 throw new CmsLockException("Resource is unlocked", CmsLockException.C_RESOURCE_UNLOCKED);
             }
-            if (lock.getType() != CmsLock.C_TYPE_EXCLUSIVE || lock.getType() != CmsLock.C_TYPE_SHARED_EXCLUSIVE) {
+            if (lock.getType() != CmsLock.C_TYPE_EXCLUSIVE) {
                 throw new CmsLockException("Insufficient lock to edit content of resource", CmsLockException.C_RESOURCE_LOCKED_NON_EXCLUSIVE);
             }
             if (!lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {

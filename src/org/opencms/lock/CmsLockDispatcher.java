@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/29 09:34:14 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/07/29 10:43:47 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2003/07/29 09:34:14 $
+ * @version $Revision: 1.18 $ $Date: 2003/07/29 10:43:47 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -99,18 +99,22 @@ public final class CmsLockDispatcher extends Object {
      * @param hierachy flag indicating how the resource is locked
      * @return the new CmsLock object for the added resource
      */
-    public void addResource(String resourcename, CmsUUID userId, int projectId) {
+    public void addResource(CmsDriverManager driverManager, CmsRequestContext context, String resourcename, CmsUUID userId, int projectId) throws CmsException {
+        if (!getLock(driverManager, context, resourcename).isNullLock()) {
+            throw new CmsLockException("Resource is already locked", CmsLockException.C_RESOURCE_LOCKED);
+        }
+
         CmsLock newLock = new CmsLock(resourcename, userId, projectId, CmsLock.C_TYPE_EXCLUSIVE);
         m_exclusiveLocks.put(resourcename, newLock);
-        
+
         // handle collisions with exclusive locked sub-resources in case of a folder
         if (resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
             Iterator i = m_exclusiveLocks.keySet().iterator();
             String lockedPath = null;
-            
+
             while (i.hasNext()) {
                 lockedPath = (String) i.next();
-                
+
                 if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
                     i.remove();
                 }
@@ -129,7 +133,6 @@ public final class CmsLockDispatcher extends Object {
         CmsLock parentFolderLock = null;
         CmsLock siblingLock = null;
         CmsResource sibling = null;
-        List siblings = null;
 
         if (context.currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             // resources are never locked in the online project
@@ -142,15 +145,15 @@ public final class CmsLockDispatcher extends Object {
         }
 
         // fetch all siblings of the resource to the same content record
-        siblings = driverManager.getAllSiblings(context, resourcename);
+        List siblings = driverManager.getAllSiblings(context, resourcename);
 
         if ((parentFolderLock = getParentFolderLock(resourcename)) == null) {
             // all parent folders are unlocked
-            
+
             for (int i = 0; i < siblings.size(); i++) {
                 sibling = (CmsResource) siblings.get(i);
                 siblingLock = (CmsLock) m_exclusiveLocks.get(sibling.getFullResourceName());
-                
+
                 if (siblingLock != null) {
                     // a sibling is already exclusive locked
                     return new CmsLock(resourcename, siblingLock.getUserId(), siblingLock.getProjectId(), CmsLock.C_TYPE_SHARED_EXCLUSIVE);
@@ -161,10 +164,10 @@ public final class CmsLockDispatcher extends Object {
             return CmsLock.getNullLock();
         } else {
             // a parent folder is locked
-            
+
             for (int i = 0; i < siblings.size(); i++) {
                 sibling = (CmsResource) siblings.get(i);
-                
+
                 if (m_exclusiveLocks.containsKey(sibling.getFullResourceName())) {
                     // a sibling is already exclusive locked
                     return new CmsLock(resourcename, parentFolderLock.getUserId(), parentFolderLock.getProjectId(), CmsLock.C_TYPE_SHARED_INHERITED);
@@ -195,8 +198,8 @@ public final class CmsLockDispatcher extends Object {
         }
 
         return null;
-    }   
-    
+    }
+
     /**
      * Counts the exclusive locked resources in a specified project.<p>
      * 
@@ -240,8 +243,37 @@ public final class CmsLockDispatcher extends Object {
      * @param resourcename the full resource name including the site root
      * @throws CmsLockException if the user tried to unlock a resource in a locked folder
      */
-    public CmsLock removeResource(String resourcename) throws CmsLockException {
-        return (CmsLock) m_exclusiveLocks.remove(resourcename);
+    public CmsLock removeResource(CmsDriverManager driverManager, CmsRequestContext context, String resourcename, boolean forceUnlock) throws CmsException {
+        CmsLock lock = getLock(driverManager, context, resourcename);
+        CmsResource sibling = null;
+
+        if (lock.isNullLock()) {
+            return null;
+        } else if (!forceUnlock && (lock.getUserId() != context.currentUser().getId() || lock.getProjectId() != context.currentProject().getId())) {
+            throw new CmsLockException("Unable to unlock resource, resource is locked by another user and/or in another project", CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER);
+        } else if (lock.getType() == CmsLock.C_TYPE_EXCLUSIVE) {
+            return (CmsLock) m_exclusiveLocks.remove(resourcename);
+        } else if (lock.getType() == CmsLock.C_TYPE_SHARED_EXCLUSIVE) {
+            // fetch all siblings of the resource to the same content record
+            // to identify the exclusive locked sibling
+            List siblings = driverManager.getAllSiblings(context, resourcename);
+
+            for (int i = 0; i < siblings.size(); i++) {
+                sibling = (CmsResource) siblings.get(i);
+
+                if (m_exclusiveLocks.containsKey(sibling.getFullResourceName())) {
+                    // remove the exclusive locked sibling
+                    m_exclusiveLocks.remove(sibling.getFullResourceName());
+                    break;
+                }
+            }
+
+            return lock;
+        } else if (lock.getType() == CmsLock.C_TYPE_INHERITED || lock.getType() == CmsLock.C_TYPE_SHARED_INHERITED) {
+            throw new CmsLockException("Unable to unlock resource due to an inherited lock of a parent folder", CmsLockException.C_RESOURCE_LOCKED_INHERITED);
+        }
+
+        return null;
     }
 
     /**
