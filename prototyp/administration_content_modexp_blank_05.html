@@ -1,0 +1,178 @@
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '5_2_5_1.html';
+}
+
+function deleteAnItem(theList,itemNo) {
+   var n=theList.length;
+   if ((n > 0) && (itemNo > -1)) {
+	   for (i=itemNo; i<n-1; i++) {
+		  theList.options[i]=theList.options[i+1];
+	   }
+	   theList.options[n-1]=null; 
+   }
+}
+
+function addFolder(theList, item) {  
+	if (item != null && item != "") {
+		newOption = new Option(item, item, false, false); 
+		theList.options[theList.length] = newOption;
+	}
+}
+
+function copySelection() { 
+	addFolder(document.MODEXP.new_ressources, document.MODEXP.tempFolder.value);
+}
+
+function selectAll(theList) {
+	var n=theList.length;
+	for (i=0; i<n; i++) {
+		theList.options[i].selected=true;
+	}
+	// umgehe das Problem mit Silverstream
+	var allResources="";
+	if (n>0) {
+		for (i=0; i<n; i++) {
+			allResources = allResources + theList.options[i].value + ';';
+		} 
+	} 
+	document.MODEXP.ALLRES.value=allResources;
+}
+
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+<link rel=stylesheet type="text/css" href="css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+
+</HEAD>
+<BODY bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.admincontenturl='administration_content_modules.html';">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<form id=MODEXP name=MODEXP>
+<table cellspacing=0 cellpadding=0 border=2 width=450>
+	<tr>
+		<td>
+			<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+				
+				<!-- Beginn Tabellenkopf blau-->
+				<tr> 
+    	       		<td class="head">Modul exportieren</td>
+				</tr>
+				<!-- Ende Tabellenkopf blau-->
+				<!-- Beginn Inhalt-->
+				<tr>
+					<td class=formular>
+						<table border=0 cellpadding=0 cellspacing=5>
+							<tr>
+								<td class=formular>Repositories</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class=dialogtxt>
+						<table border=1 width=100%>
+							<tr>
+								<td class=dialogtxt>
+									<table border=0 width=100%>
+										<tr>
+											<td>
+												<input type="text" class="textfeld5" name="EINGABE" id="EINGABE" style="width='400px'" width="400px" size="43">
+											</td>		
+											<td>
+											&nbsp;
+											</td>
+											<td class=formular valign=middle align=right>
+												<a href="javascript:addFolder(document.MODEXP.REP, document.MODEXP.EINGABE.value);" >
+													<img src="pics/ic_admin_enter.gif" alt="Hinzufügen" border=0 width=16 heigth=16>
+												</a>
+											</td>
+										</tr>										
+										<tr>
+											<td class=dialogtxt> 
+												<select name="REP" id="REP" size="5" style="width='400px'" width="400px" multiple></select>
+											</td>								
+											<td> 
+												<a href="javascript:treewin=opensmallwin('administration_explorer_tree.html', 'explorer_viewer', 180, 300),treewin.focus()"><img src="pics/ic_file_folder.gif" border="0" alt="Ordner auswählen..."></a>
+											</td>										
+											<td> 
+												<a href="javascript:deleteAnItem(document.MODEXP.REP , document.MODEXP.REP.selectedIndex);"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a>
+											</td>																		
+										</tr>
+										
+									</table>
+								</td>
+							</tr>
+						</table>	
+					</td>
+				</tr>
+				<!-- Beginn Leerzeile-->
+				<tr> 
+					<td class="leerzeile">&nbsp;</td>
+				</tr>
+				<!-- Ende Leerzeile-->
+				<tr>
+					<td class=dialogtxt>
+						<table border=0 width="100%">
+							<tr>
+								<td class=dialogtxt>
+									<table border=0 width="100%">
+										<tr>
+											<td class=formular>
+												Ereignis-Verarbeitungsklasse:
+											</td>
+										</tr>
+										<tr>
+											<td class=dialogtxt>
+												<input type="text" class="textfeld5" name="EREIGNIS" id="EREIGNIS" style="width='400px'" width="400px" size="43">
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<!-- Beginn Leerzeile-->
+				<tr> 
+				    <td class="leerzeile">&nbsp;</td>
+				</tr>
+				<!-- Ende Leerzeile-->
+				<!-- Beginn Buttonleisete-->
+				<tr>
+					<td class=dialogtxt>
+						<table cellspacing=0 cellpadding=5 width=100%>
+							<tr>
+								<td class=formular align=right width=50%><input type="button" class="button" width=100 value="Zur&uuml;ck" name="BACK" id="BACK" onClick="location.href='administration_content_modexp_blank_04.html'"></td>
+								<td class=formular align=left width=50%><input type="button" class="button" width=100 value="Weiter" name="CONTINUE" id="CONTINUE" onClick="location.href='administration_content_modexp_blank_06.html'"></td>
+								<td class=formular align=left width=50%><input type="button" class="button" width=100 value="Abbrechen" name="CANCEL" id="CANCEL" onClick="location.href='administration_content_modules.html'"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<!-- Ende Buttonleisete-->			
+			</table>
+		</td>
+	</tr>
+</table>
+</form>
+</td></tr>
+</table>
+
+</BODY>
+</html>
+

@@ -1,0 +1,156 @@
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '5_2_5_1.html';
+}
+
+//-->
+</script>
+
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+<link rel=stylesheet type="text/css" href="css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+
+</HEAD>
+<BODY bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.admincontenturl='administration_content_modules.html';">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<form id=MODEXP name=MODEXP>
+<table cellspacing=0 cellpadding=0 border=2 width=450>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td class="head">Modul exportieren</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			<!-- Beginn Inhalt-->
+			<tr><td class=dialogtxt>
+				<table border=1 width=100%>
+					<tr><td class=dialogtxt>
+						<table border=0 width=100%>
+							<tr>
+								<td class=formular>Name</td>
+								<td class=dialogtxt align="left"> 
+								<input type="text" name="NAME"  class="textfeld5" style="width=200" width=200 size=20 value="" onSubmit="" onfocus="MODEXP.CONTINUE.disabled=false;">	
+								</td> 
+								<td class=formular> Version </td>
+								<td class=dialogtxt align="left">
+								<input type="text" name="VERSION" class="textfeld5" style="width=50" width="50" size="5" value="" onfocus="MODEXP.CONTINUE.disabled=false;">
+								</td>
+							</tr>
+							<!-- Beginn Leerzeile-->
+							<tr> 
+								<td class="leerzeile" colspan=3>&nbsp;</td>
+							</tr>
+							<!-- Ende Leerzeile-->
+							<tr> 
+								<td class=formular>Beschreibung</td>
+							</tr>
+							<tr>
+								<td class=dialogtxt colspan="4" align="center">
+									<textarea name="BESCHREIBUNG" id="BESCHREIBUNG" style="width=400" width=400 cols="40" rows="5" onfocus="MODEXP.CONTINUE.disabled=false;"></textarea>
+								</td>
+							<tr>
+							<tr>
+								<td colspan="4">
+									<table border=0 width="100%">
+										<tr>
+											<td class=formular>Autor</td>
+											<td class="dialogtxt">
+												<input type="text" name="AUTOR" id="AUTOR" class="textfeld3" style="width=300" width="300" size="30" value="" onfocus="MODEXP.CONTINUE.disabled=false;">
+											</td>
+										</tr>
+										<tr>
+											<td class=formular>Email-Adresse</td>
+											<td class="dialogtxt">
+												<input type="text" name="EMAIL" id="EMAIL" class="textfeld3" style="width=300" width="300" size="30" value="" onfocus="MODEXP.CONTINUE.disabled=false;">
+											</td>
+										</tr>
+										<tr>
+											<td class=formular>Erstellungsdatum</td>
+											<td class="dialogtxt">
+												<input type="text" name="DATUM" id="DATUM" class="textfeld3" style="width=300" width="300" size="30" readonly>
+											</td>
+										</tr>
+										<tr>
+											<td class=formular>Dokumentationspfad</td>
+											<td class="dialogtxt">
+												<input type="text" name="PFAD" id="PFAD" class="textfeld3" style="width=300" width="300" size="30" value="" >
+											</td>
+										</tr>
+										
+									</table>
+								</td>
+							</tr>
+						
+
+							<!-- Beginn Leerzeile-->
+							<tr> 
+           						<td class="leerzeile" colspan=3>&nbsp;</td>
+							</tr>
+							<!-- Ende Leerzeile-->
+							</table>
+					</td></tr>
+				</table>
+			</td></tr>
+			
+			<!-- Beginn Buttonleisete-->
+			<tr><td class=dialogtxt>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=right width=50%><input type="button" class="button" width=100 value="Zur&uuml;ck" name="back" id="back" onClick="location.href='administration_content_modexp_blank.html'"></td>
+					<td class=formular align=left width=50%><input disabled type="button" class="button" width=100 value="Weiter" name=CONTINUE id=CONTINUE onClick="location.href='administration_content_modexp_blank_04.html'"></td>
+					<td class=formular align=left width=50%><input type="button" class="button" width=100 value="Abbrechen" name=CANCEL id=CANCEL onClick="location.href='administration_content_modules.html'"></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			<!-- Ende Buttonleisete-->
+			
+			</table>
+	</td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+
+<script language=JavaScript>
+<!--
+ns = (document.layers)? true:false;
+ie = (document.all)? true:false;
+
+
+var datum = new Date();
+var tag = datum.getDate();
+var monat = datum.getMonth();
+if (monat<10)monat ="0"+monat;
+var jahr = datum.getYear();
+if(ns)jahr=jahr+1900;
+var gesamt = monat + "." + tag + "." + jahr;
+document.MODEXP.DATUM.value = gesamt;
+//-->
+</script>
+
+</BODY>
+</html>
+
