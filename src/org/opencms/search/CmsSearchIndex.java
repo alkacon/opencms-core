@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/07/07 14:12:30 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/07/07 15:18:10 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.21 $ $Date: 2004/07/07 14:12:30 $
+ * @version $Revision: 1.22 $ $Date: 2004/07/07 15:18:10 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -413,7 +413,7 @@ public class CmsSearchIndex {
                 // add the search root to the search query to make Lucene
                 // return only documents with a path value starting with
                 // the specified search root
-                searchQuery = searchQuery + " " + I_CmsDocumentFactory.DOC_PATH + ":" + searchRoot + "*";
+                searchQuery = searchQuery + " AND " + I_CmsDocumentFactory.DOC_PATH + ":" + searchRoot + "*";
                 
                 // a query search- return the documents in the index matching the query expr.
                 if (fields != null) {
