@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/07/06 08:39:39 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/07/07 11:21:08 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
@@ -61,7 +62,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.19 $ $Date: 2004/07/06 08:39:39 $
+ * @version $Revision: 1.20 $ $Date: 2004/07/07 11:21:08 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -310,12 +311,16 @@ public class CmsSearchIndex {
      */
     public List search(CmsObject cms, String searchRoot, String searchQuery, String fields) throws CmsException {
 
-        ArrayList result = null;
+        List searchResult = null;
         Query query = null;
         Searcher searcher = null;
+        IndexReader reader = null;
         Hits hits = null;
         Document doc = null;
         A_CmsIndexResource resource = null;
+        List foundDocuments = null;
+        double maxScore = -1.0;
+        double[] scores = null;
 
         Map searchCache = OpenCms.getSearchManager().getResultCache();
         String key = cms.getRequestContext().currentUser().getName()
@@ -330,10 +335,13 @@ public class CmsSearchIndex {
             + "_"
             + fields;
 
-        result = (ArrayList)searchCache.get(key);
-        if (result != null) {
-            return result;
-        }
+        // try to find the search result in the cache if we are in the Online project
+        //if (cms.getRequestContext().currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            searchResult = (ArrayList)searchCache.get(key);
+            if (searchResult != null) {
+                return searchResult;
+            }
+        //}
 
         // change the project     
         CmsRequestContext context = cms.getRequestContext();
@@ -356,42 +364,78 @@ public class CmsSearchIndex {
 
         try {
 
-            if (fields != null) {
-
-                BooleanQuery fieldsQuery = new BooleanQuery();
-                String fList[] = org.opencms.util.CmsStringSubstitution.split(fields, " ");
-                for (int i = 0; i < fList.length; i++) {
-                    fieldsQuery.add(QueryParser.parse(searchQuery, fList[i], OpenCms.getSearchManager().getAnalyzer(
-                        m_locale)), false, false);
+            if (!"*".equals(searchQuery)) {
+                
+                // a query search- return the documents in the index matching the query expr.
+                if (fields != null) {
+    
+                    BooleanQuery fieldsQuery = new BooleanQuery();
+                    String fList[] = org.opencms.util.CmsStringSubstitution.split(fields, " ");
+                    for (int i = 0; i < fList.length; i++) {
+                        fieldsQuery.add(QueryParser.parse(searchQuery, fList[i], OpenCms.getSearchManager().getAnalyzer(
+                            m_locale)), false, false);
+                    }
+    
+                    query = fieldsQuery;
+    
+                } else {
+                    query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, OpenCms.getSearchManager()
+                        .getAnalyzer(m_locale));
                 }
-
-                query = fieldsQuery;
-
+    
+                searcher = new IndexSearcher(m_path);
+                hits = searcher.search(query);
+                
+                foundDocuments = new ArrayList(hits.length());
+                scores = new double[hits.length()];
+                
+                for (int i = 0, n = hits.length(); i < n; i++) {
+                    
+                    doc = hits.doc(i);
+                    foundDocuments.add(doc);
+                    scores[i] = hits.score(i);
+                }
             } else {
-                query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, OpenCms.getSearchManager()
-                    .getAnalyzer(m_locale));
+                
+                // a non-query search- return all documents in the index
+                try {
+                    reader = IndexReader.open(m_path);
+                    foundDocuments = new ArrayList(reader.numDocs());
+                    scores = new double[reader.numDocs()];
+                    
+                    for (int i = 0, n = reader.numDocs(); i < n; i++) {
+                        
+                        if (!reader.isDeleted(i)) {
+                            doc = reader.document(i);
+                            foundDocuments.add(doc);
+                            scores[i] = 0;
+                        }
+                    }
+                } finally {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                }
             }
 
-            searcher = new IndexSearcher(m_path);
-            hits = searcher.search(query);
-            double maxScore = -1.0;
-
-            result = new ArrayList(hits.length());
-            for (int i = 0, n = hits.length(); i < n; i++) {
+            // filter resource out from the search result where the current user has no read permissions
+            // or that are not subresources of the search root folder
+            searchResult = new ArrayList(foundDocuments.size());
+            for (int i = 0, n = foundDocuments.size(); i < n; i++) {
 
                 try {
 
-                    doc = hits.doc(i);
+                    doc = (Document)foundDocuments.get(i);
                     resource = getIndexResource(cms, searchRoot, doc);
 
                     if (resource != null) {
-                        maxScore = (maxScore < hits.score(i)) ? hits.score(i) : maxScore;
-                        result.add(new CmsSearchResult(
+                        maxScore = (maxScore < scores[i]) ? scores[i] : maxScore;
+                        searchResult.add(new CmsSearchResult(
                             this,
                             searchQuery,
                             resource,
                             doc,
-                            (int)((hits.score(i) / maxScore) * 100.0)));
+                            (int)((scores[i] / maxScore) * 100.0)));
                     }
                 } catch (Exception exc) {
                     // happens if resource was deleted or current user has not the right to view the current resource at least
@@ -414,8 +458,8 @@ public class CmsSearchIndex {
             context.setCurrentProject(currentProject);
         }
 
-        searchCache.put(key, result);
-        return result;
+        searchCache.put(key, searchResult);
+        return searchResult;
     }
 
     /**
