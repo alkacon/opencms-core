@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsAcceptLanguageHeaderParser.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/17 09:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Daniel Rall (dlr@collab.net)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsAcceptLanguageHeaderParser implements Iterator {
 
@@ -128,59 +128,69 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
      * Parses the <code>Accept-Language</code> header from the provided request.<p>
      * 
      * @param req the request to parse
+     * @param defaultLocale the default locale to use
      */    
-    public CmsAcceptLanguageHeaderParser(HttpServletRequest req) {
-        this(req.getHeader(ACCEPT_LANGUAGE));
+    public CmsAcceptLanguageHeaderParser(HttpServletRequest req, Locale defaultLocale) {
+        this(req.getHeader(ACCEPT_LANGUAGE), defaultLocale);
     }    
     
     /**
      * Parses the <code>Accept-Language</code> header.<p>
      * 
      * @param header the <code>Accept-Language</code> header (i.e. <code>en, es;q=0.8, zh-TW;q=0.1</code>)
+     * @param defaultLocale the default locale to use
      */
-    public CmsAcceptLanguageHeaderParser(String header) {
-        StringTokenizer tok = new StringTokenizer(header, LOCALE_SEPARATOR);
-        while (tok.hasMoreTokens()) {
-            AcceptLanguage acceptLang = new AcceptLanguage();
-            String element = tok.nextToken().trim();
-            int index;
-
-            // Record and cut off any quality value that comes after a semi-colon.
-            if ((index = element.indexOf(QUALITY_SEPARATOR)) != -1) {
-                String q = element.substring(index);
-                element = element.substring(0, index);
-                if ((index = q.indexOf('=')) != -1) {
-                    try {
-                        acceptLang.m_quality = Float.valueOf(q.substring(index + 1));
-                    } catch (NumberFormatException useDefault) {
-                        // noop
+    public CmsAcceptLanguageHeaderParser(String header, Locale defaultLocale) {
+        // check if there was a locale foud in the HTTP header.
+        // if not, use the default locale.
+        if (header== null) {
+            m_locales = new ArrayList();
+            m_locales.add(defaultLocale);  
+        } else {        
+            StringTokenizer tok = new StringTokenizer(header, LOCALE_SEPARATOR);
+            while (tok.hasMoreTokens()) {
+                AcceptLanguage acceptLang = new AcceptLanguage();
+                String element = tok.nextToken().trim();
+                int index;
+    
+                // Record and cut off any quality value that comes after a semi-colon.
+                if ((index = element.indexOf(QUALITY_SEPARATOR)) != -1) {
+                    String q = element.substring(index);
+                    element = element.substring(0, index);
+                    if ((index = q.indexOf('=')) != -1) {
+                        try {
+                            acceptLang.m_quality = Float.valueOf(q.substring(index + 1));
+                        } catch (NumberFormatException useDefault) {
+                            // noop
+                        }
                     }
                 }
+    
+                element = element.trim();
+    
+                // Create a Locale from the language. A dash may separate the language from the country.
+                if ((index = element.indexOf('-')) == -1) {
+                    // No dash means no country.
+                    acceptLang.m_locale = new Locale(element, "");
+                } else {
+                    acceptLang.m_locale = new Locale(element.substring(0, index), element.substring(index + 1));
+                }
+                
+                m_acceptLanguage.add(acceptLang);
             }
-
-            element = element.trim();
-
-            // Create a Locale from the language. A dash may separate the language from the country.
-            if ((index = element.indexOf('-')) == -1) {
-                // No dash means no country.
-                acceptLang.m_locale = new Locale(element, "");
-            } else {
-                acceptLang.m_locale = new Locale(element.substring(0, index), element.substring(index + 1));
-            }
+    
+            // sort by quality in descending order
+            Collections.sort(m_acceptLanguage, Collections.reverseOrder());
             
-            m_acceptLanguage.add(acceptLang);
+            // store all calculated Locales in a List
+            m_locales = new ArrayList(m_acceptLanguage.size());
+            Iterator i = m_acceptLanguage.iterator();
+            while (i.hasNext()) {
+                AcceptLanguage lang = (AcceptLanguage)i.next();
+                m_locales.add(lang.m_locale);
+            }
         }
-
-        // sort by quality in descending order
-        Collections.sort(m_acceptLanguage, Collections.reverseOrder());
-        
-        // store all calculated Locales in a List
-        m_locales = new ArrayList(m_acceptLanguage.size());
-        Iterator i = m_acceptLanguage.iterator();
-        while (i.hasNext()) {
-            AcceptLanguage lang = (AcceptLanguage)i.next();
-            m_locales.add(lang.m_locale);
-        }
+  
     }
     
     /**

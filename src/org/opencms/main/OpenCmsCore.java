@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2004/03/17 09:41:01 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.importexport.CmsImportExportManager;
@@ -74,7 +73,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
-import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.io.File;
@@ -107,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.103 $
+ * @version $Revision: 1.104 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1658,7 +1656,6 @@ public final class OpenCmsCore {
      * @param req the current http request
      * @param res the current http response
      * @throws IOException in case of errors reading from the streams
-     * @throws CmsException if user information was not correct
      */
     private void checkBasicAuthorization(CmsObject cms, HttpServletRequest req, HttpServletResponse res) throws IOException {
         // no user identified from the session and basic authentication is enabled
@@ -1724,34 +1721,10 @@ public final class OpenCmsCore {
             if (getLog(this).isErrorEnabled()) {
                 getLog(this).error("Could not load " + C_FILE_HTML_MESSAGES, thr);
             }
-        }
-        
-        Locale locale = null;
-        
-        // check if this is a workplace user, if so use workplace loacale
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
-            if (settings != null) {
-                locale = settings.getUserSettings().getLocale();
-            }
-        }
-        
-        if (locale == null) {
-            // determine language of the browser to display localized messages
-            CmsAcceptLanguageHeaderParser headerParser = new CmsAcceptLanguageHeaderParser(request);
-            List locales = headerParser.getAcceptedLocales();
-            if (locales != null && locales.size() > 0) {
-                // get first locale of accepted locales list
-                locale = (Locale)locales.get(0);
-            } else {
-                // no accepted locales found, use english locale for messages
-                locale = Locale.ENGLISH;
-            }
-        }
+        }      
         
         // get localized message bundle
-        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.C_BUNDLE_NAME, locale);
+        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.C_BUNDLE_NAME, cms.getRequestContext().getLocale());
         
         // try to get the exception root cause
         Throwable cause = CmsFlexController.getThrowable(request);
@@ -1988,7 +1961,7 @@ public final class OpenCmsCore {
             sessionId = session.getId();
         } else {
             // special case for acessing a session from "outside" requests (e.g. upload applet)
-            sessionId = req.getParameter("jsessionid");
+            sessionId = req.getParameter("JSESSIONID");
         }
         if (sessionId != null) {
             user = m_sessionInfoManager.getUserName(sessionId);
