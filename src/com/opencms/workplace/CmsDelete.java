@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/05/11 10:18:40 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/05/30 11:44:51 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.23 $ $Date: 2000/05/11 10:18:40 $
+  * @version $Revision: 1.24 $ $Date: 2000/05/30 11:44:51 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -84,18 +84,19 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
 
         // the template to be displayed
         String template=null;
-        
-        // get the lasturl parameter
-        String lasturl = getLastUrl(cms, parameters);
                       
         // clear session values on first load
         String initial=(String)parameters.get(C_PARA_INITIAL);
         if (initial!= null) {
             // remove all session values
             session.removeValue(C_PARA_DELETE);
-            session.removeValue(C_PARA_FILE);   
+            session.removeValue(C_PARA_FILE);  
+            session.removeValue("lasturl");
         }
         
+                
+        // get the lasturl parameter
+        String lasturl = getLastUrl(cms, parameters);
         
         String delete=(String)parameters.get(C_PARA_DELETE);          
         if (delete != null) {

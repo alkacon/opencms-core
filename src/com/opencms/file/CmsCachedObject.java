@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCachedObject.java,v $
- * Date   : $Date: 2000/05/30 09:41:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/05/30 11:44:51 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -33,7 +33,7 @@ package com.opencms.file;
  * 
  * @author Michael Emmerich
  * @author Andreas Schoutem
- * @version $Revision: 1.3 $ $Date: 2000/05/30 09:41:28 $
+ * @version $Revision: 1.4 $ $Date: 2000/05/30 11:44:51 $
  */
 public class CmsCachedObject implements Cloneable
 {
@@ -96,6 +96,7 @@ public class CmsCachedObject implements Cloneable
 	 * This is needed to return only clones of the objects stored in the cache
 	 * @param content Flag for cloning the file content, too.
 	 */
+
 	public  Object clone() {		// spceial clone-method for each content		// if there is an easy way to do this - it may be replaced
 		if(m_contents == null) {			return new CmsCachedObject(null);
 		} else if(m_contents instanceof Boolean) {			return new CmsCachedObject(new Boolean(((Boolean)m_contents).booleanValue()));
@@ -109,6 +110,7 @@ public class CmsCachedObject implements Cloneable
 		} else if(m_contents instanceof String) {			return new CmsCachedObject( new String((String)m_contents));
 		} else {
 			System.err.println( m_contents.getClass().getName() );			throw new InternalError();
+
 		}
 	}}
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
- * Date   : $Date: 2000/05/25 09:37:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/05/30 11:44:51 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/05/25 09:37:48 $
+ * @version $Revision: 1.6 $ $Date: 2000/05/30 11:44:51 $
  */
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -89,8 +89,6 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
 		// get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
     
-		getLastUrl(cms, parameters);
-		
         // clear session values on first load
         String initial=(String)parameters.get(C_PARA_INITIAL);
         if (initial!= null) {
@@ -98,7 +96,10 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             session.removeValue(C_PARA_FILE); 
             session.removeValue(C_PARA_LINK);    
             session.removeValue(C_PARA_VIEWFILE); 
+            session.removeValue("lasturl");
         }
+        
+        getLastUrl(cms, parameters);
 			
 		link=cms.getRequestContext().getRequest().getParameter(C_PARA_LINK);
         if (link!= null) {

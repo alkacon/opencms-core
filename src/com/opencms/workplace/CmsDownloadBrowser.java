@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
- * Date   : $Date: 2000/05/30 10:06:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/05/30 11:44:51 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2000/05/30 10:06:09 $
+ * @version $Revision: 1.3 $ $Date: 2000/05/30 11:44:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFileListUsers {
@@ -97,6 +97,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
 				session.removeValue("_DOWNLIST_");
 				session.removeValue(C_PARA_FILTER);
 				session.removeValue("numfiles"); 
+                session.removeValue("lasturl");
 			}
 		
 			// most parameters have to be stored in the session because 'getFiles' needs them

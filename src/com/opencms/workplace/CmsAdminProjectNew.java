@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/05/29 12:04:01 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/05/30 11:44:51 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.24 $ $Date: 2000/05/29 12:04:01 $
+ * @version $Revision: 1.25 $ $Date: 2000/05/30 11:44:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -115,6 +115,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             session.removeValue(C_NEWMANAGERGROUP); 
 			session.removeValue(C_NEWFOLDER);  
 			session.removeValue(C_NEWRESOURCES);
+            session.removeValue("lasturl");
         }
 		
 		String newName, newGroup, newDescription, newManagerGroup, newFolder;

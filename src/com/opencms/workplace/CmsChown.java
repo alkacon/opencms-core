@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
- * Date   : $Date: 2000/05/29 12:24:26 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/05/30 11:44:51 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/05/29 12:24:26 $
+ * @version $Revision: 1.17 $ $Date: 2000/05/30 11:44:51 $
  */
 public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -78,16 +78,18 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
         
-        // get the lasturl parameter
-        String lasturl = getLastUrl(cms, parameters);
+ 
         
         // clear session values on first load
         String initial=(String)parameters.get(C_PARA_INITIAL);
         if (initial!= null) {
             // remove all session values
             session.removeValue(C_PARA_FILE);
+            session.removeValue("lasturl");
         }
 
+         // get the lasturl parameter
+        String lasturl = getLastUrl(cms, parameters);
         
         // the template to be displayed
         String template=null;

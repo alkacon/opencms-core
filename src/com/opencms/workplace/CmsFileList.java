@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/05/30 10:06:09 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/05/30 11:44:51 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import javax.servlet.http.*;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.39 $ $Date: 2000/05/30 10:06:09 $
+ * @version $Revision: 1.40 $ $Date: 2000/05/30 11:44:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -203,6 +203,13 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 			
             String servlets=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
             
+            HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+           
+            String currentFilelist=(String)session.getValue(C_PARA_FILELIST);
+            if ((currentFilelist==null) ||(currentFilelist.length()==0)) {
+                currentFilelist="/";
+            }
+            
             //get the template
             CmsXmlWpTemplateFile template=(CmsXmlWpTemplateFile)doc;
                       
@@ -242,6 +249,8 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                 
                 if (checkAccess(cms,res)) {
                 
+                template.setData("PREVIOUS",currentFilelist);  
+               
                 if (res.isFolder()) {
                     folder=(CmsFolder)res; 
             

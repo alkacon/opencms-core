@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/05/18 15:31:30 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/05/30 11:44:50 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2000/05/18 15:31:30 $
+ * @version $Revision: 1.32 $ $Date: 2000/05/30 11:44:50 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -369,10 +369,10 @@ import com.opencms.core.*;
          // Since the files in the filesystem all belong to the same project, this method only
          // only returnes a fector which contains one or no file header. It is the same
          // file header that is returnes by the readFileHeader method.
-         CmsFile file=readFileHeader(null,filename);
+         /*CmsFile file=readFileHeader(null,filename);
          if (file != null){
              files.addElement(file);
-         }
+         }*/
          return files;
      }
 	

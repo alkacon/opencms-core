@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
- * Date   : $Date: 2000/05/30 09:39:33 $
+ * Date   : $Date: 2000/05/30 11:44:51 $
  * Version: $ $
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2000/05/30 09:39:33 $
+ * @version $Revision: 1.3 $ $Date: 2000/05/30 11:44:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -82,6 +82,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
         if (initial != null) {
             // remove all session values
             session.removeValue(C_PARA_FOLDER); 
+            session.removeValue("lasturl");
         }
 		// getting the URL to which we need to return when we're done
 		String lasturl = getLastUrl(cms, parameters); 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/05/29 09:44:23 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2000/05/30 11:44:51 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.28 $ $Date: 2000/05/29 09:44:23 $
+ * @version $Revision: 1.29 $ $Date: 2000/05/30 11:44:51 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -82,9 +82,6 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // the template to be displayed
         String template=null;
       
-        // get the lasturl parameter
-        String lasturl = getLastUrl(cms, parameters);
-
         // clear session values on first load
         String initial=(String)parameters.get(C_PARA_INITIAL);
         if (initial!= null) {
@@ -94,7 +91,11 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
             session.removeValue(C_PARA_NEWFOLDER);
             session.removeValue(C_PARA_FLAGS);
             session.removeValue(C_PARA_NAME);
+            session.removeValue("lasturl");
         }
+ 
+        // get the lasturl parameter
+        String lasturl = getLastUrl(cms, parameters);
         
         // get the file to be copied
         String filename=(String)parameters.get(C_PARA_FILE);

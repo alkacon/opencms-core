@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/05/30 11:44:51 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/04/20 08:11:54 $
+ * @version $Revision: 1.16 $ $Date: 2000/05/30 11:44:51 $
  */
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                      I_CmsConstants {
@@ -173,7 +173,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
                     currentFilelist=(String)session.getValue(C_PARA_FILELIST);
                     if (currentFilelist == null) {
                          currentFilelist=cms.rootFolder().getAbsolutePath();
-                    }
+                    }                   
                     session.putValue(C_PARA_PREVIOUSLIST,currentFilelist);   
                     session.putValue(C_PARA_FILELIST,url);
                     session.putValue(C_PARA_FOLDER,url);
