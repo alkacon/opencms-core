@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/09/29 17:27:32 $
- * Version: $Revision: 1.507 $
+ * Date   : $Date: 2003/09/29 19:14:09 $
+ * Version: $Revision: 1.508 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,8 @@ Legend:
 - General comment
 
 OpenCms 5.1.11 Salusa Secundus - September xx, 2003
+! All files published in a project are now written to a DB table, so it's easy to get
+  a list of all files that where published for that project
 ! Implemented improved behaviour for folder rename in Offline project
 * Rewrote VFS, COS and module export to use the dom4j API,
   this should take care of the dreaded "out-of-memory" error when exporting a large data set
