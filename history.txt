@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.2.1 Giedi Prime - 03 April 2001
+
+* Corrected a bug in the pool. There was a deadlock-situation in getting 
+  connections concurrent to creating a new original connection.
+
 OpenCms 4.2 Giedi Prime - 05 March 2001
 
 - Updates for Major Release.
