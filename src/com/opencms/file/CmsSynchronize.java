@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
-* Date   : $Date: 2001/10/18 07:03:04 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/09/02 07:44:42 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import source.org.apache.java.util.*;
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.11 $ $Date: 2001/10/18 07:03:04 $
+ * @version $Revision: 1.12 $ $Date: 2002/09/02 07:44:42 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 
@@ -245,7 +245,7 @@ public class CmsSynchronize implements I_CmsConstants{
                 if (hashFolder == null){
                     // the folder does not exist in the VFS, so add it from SFS
                     try {
-                        m_cms.createFolder(sfsAbsolutePath,currentFile.getName());
+                        m_cms.createResource(sfsAbsolutePath, currentFile.getName(), C_TYPE_FOLDER_NAME);
                         m_cms.lockResource(sfsAbsolutePath+currentFile.getName()+"/");
                     } catch (CmsException e){
                         // if the folder already exists do nothing
@@ -278,7 +278,7 @@ public class CmsSynchronize implements I_CmsConstants{
                             (!currentFile.getName().startsWith("~")) &&
                             (!currentFile.getName().equals(CmsSynchronizeList.C_SYNCLIST_FILE))){
                             try {
-                                CmsFile newFile = m_cms.createFile(sfsAbsolutePath, currentFile.getName(), content, type);
+                                CmsFile newFile = (CmsFile)m_cms.createResource(sfsAbsolutePath, currentFile.getName(), type, null, content);
                                 m_cms.lockResource(sfsAbsolutePath+currentFile.getName());
                                 m_synchronizeList.putDates(sfsAbsolutePath+currentFile.getName(), newFile.getDateLastModified(), currentFile.lastModified());
                             } catch (CmsException e) {

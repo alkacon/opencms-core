@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2002/08/26 13:00:41 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2002/09/02 07:46:58 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2002/08/26 13:00:41 $
+ * @version $Revision: 1.32 $ $Date: 2002/09/02 07:46:58 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -216,7 +216,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                             return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
                         }
                         // create the folder
-                        CmsFolder folder = cms.createFolder(currentFilelist, newFolder);
+                        CmsFolder folder = (CmsFolder)cms.createResource(currentFilelist, newFolder, C_TYPE_FOLDER_NAME);
                         try{
                             cms.lockResource(folder.getAbsolutePath());
                         }catch(CmsException e){
@@ -225,7 +225,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                         cms.writeProperties(folder.getAbsolutePath(), allProperties);
                         // create the folder in content bodys
                         try{
-                            CmsFolder bodyFolder = cms.createFolder(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1)+currentFilelist, newFolder);
+                            CmsFolder bodyFolder = (CmsFolder)cms.createResource(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1)+currentFilelist, newFolder, C_TYPE_FOLDER_NAME);
                             cms.lockResource(bodyFolder.getAbsolutePath());
                             cms.writeProperty(bodyFolder.getAbsolutePath(), C_PROPERTY_TITLE, title);
                         } catch (CmsException ce){

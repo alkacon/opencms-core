@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2002/08/26 13:00:40 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2002/09/02 07:47:51 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.66 $ $Date: 2002/08/26 13:00:40 $
+ * @version $Revision: 1.67 $ $Date: 2002/09/02 07:47:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -94,7 +94,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         boolean ok = true;
         cms.getRequestContext().setCurrentProject(tempProject);
         try {
-            cms.copyFile(file.getAbsolutePath(), temporaryFilename);
+            cms.copyResource(file.getAbsolutePath(), temporaryFilename);
             cms.chmod(temporaryFilename, 91);
         }
         catch(CmsException e) {
@@ -114,7 +114,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             ok = true;
             extendedTempFile = temporaryFilename + loop;
             try {
-                cms.copyFile(file.getAbsolutePath(), extendedTempFile);
+                cms.copyResource(file.getAbsolutePath(), extendedTempFile);
                 cms.chmod(extendedTempFile, 91);
             }
             catch(CmsException e) {
@@ -649,7 +649,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             bodyTemplateFile.removeFromFileCache();
             // deleting the pagefile will delete the bodyfile too
             cms.getRequestContext().setCurrentProject(tempProject);
-            cms.deleteFile(tempPageFilename);
+            cms.deleteResource(tempPageFilename);
             cms.getRequestContext().setCurrentProject(curProject);
             try {
                 cms.getRequestContext().getResponse().sendCmsRedirect("/system/workplace/action/index.html");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2001/12/20 08:32:13 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2002/09/02 07:46:41 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.44 $ $Date: 2001/12/20 08:32:13 $
+ * @version $Revision: 1.45 $ $Date: 2002/09/02 07:46:41 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -121,7 +121,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                 // the folder could not be read, so create it.
                 String orgFolder = completePath + foldername + "/";
                 orgFolder = orgFolder.substring(C_CONTENTBODYPATH.length() - 1);
-                CmsFolder newfolder = cms.createFolder(completePath, foldername);
+                CmsFolder newfolder = (CmsFolder)cms.createResource(completePath, foldername, C_TYPE_FOLDER_NAME);
                 CmsFolder folder = cms.readFolder(orgFolder);
                 cms.lockResource(newfolder.getAbsolutePath());
                 cms.chown(newfolder.getAbsolutePath(), cms.readOwner(folder).getName());

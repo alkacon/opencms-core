@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2002/08/28 14:55:38 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2002/09/02 07:45:09 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.19 $ $Date: 2002/08/28 14:55:38 $
+ * @version $Revision: 1.20 $ $Date: 2002/09/02 07:45:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -140,7 +140,7 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
 
                 // get the path from the workplace.ini
                 String superfolder = getConfigFile(cms).getDownGalleryPath();
-                CmsFolder folder = cms.createFolder(superfolder, galleryname);
+                CmsFolder folder = (CmsFolder)cms.createResource(superfolder, galleryname, C_TYPE_FOLDER_NAME);
                 cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_TITLE, title);
                 cms.chgrp(folder.getAbsolutePath(), group);
                 int flag = folder.getAccessFlags();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/08/12 12:49:56 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2002/09/02 07:44:15 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.48 $ $Date: 2002/08/12 12:49:56 $
+ * @version $Revision: 1.49 $ $Date: 2002/09/02 07:44:15 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -485,7 +485,7 @@ public synchronized void deleteModule(String module, Vector exclusion) throws Cm
                     m_cms.deleteEmptyFolder(currentResource);
                 } else {
                     // this is a file
-                    m_cms.deleteFile(currentResource);
+                    m_cms.deleteResource(currentResource);
                 }
             }
         } catch (CmsException exc) {

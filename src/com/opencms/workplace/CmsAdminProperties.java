@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/09/02 07:46:27 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.12 $ $Date: 2001/07/31 15:50:17 $
+ * @version $Revision: 1.13 $ $Date: 2002/09/02 07:46:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -112,7 +112,7 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
             }
             else {
                 try {
-                    cms.createPropertydefinition(name, resTypeName, 0); //TODO: type
+                    cms.createPropertydefinition(name, resTypeName);
                     templateSelector = "";
                 }
                 catch(CmsException e) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/09/02 07:43:50 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.10 $ $Date: 2002/09/02 07:43:50 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -234,14 +234,14 @@ public class CmsImportFolder implements I_CmsConstants {
 
             if(currentFile.isDirectory()) {
                 // create directory in cms
-                m_cms.createFolder(importPath, currentFile.getName());
+                m_cms.createResource(importPath, currentFile.getName(), C_TYPE_FOLDER_NAME);
                 importResources(currentFile, importPath + currentFile.getName() + "/");
             } else {
                 // import file into cms
                 String type = getFileType( currentFile.getName() );
                 byte[] content = getFileBytes(currentFile);
                 // create the file
-                m_cms.createFile(importPath, currentFile.getName(), content, type);
+                m_cms.createResource(importPath, currentFile.getName(), type, null, content);
             }
         }
     }
@@ -298,7 +298,7 @@ public class CmsImportFolder implements I_CmsConstants {
             // now write the folders ...
             for(r=0; r < stop; r++) {
                 try {
-                    m_cms.createFolder(actImportPath, path[r] );
+                    m_cms.createResource(actImportPath, path[r], C_TYPE_FOLDER_NAME);
                 } catch(CmsException e) {
                     // of course some folders did already exist!
                 }
@@ -363,14 +363,13 @@ public class CmsImportFolder implements I_CmsConstants {
                 try { // check if file exists ...
                     //file = m_cms.readFile(actImportPath, path[path.length-1]);
                     m_cms.lockResource(actImportPath + path[path.length-1], true);
-                    m_cms.deleteFile(actImportPath + path[path.length-1]);
+                    m_cms.deleteResource(actImportPath + path[path.length-1]);
                 } catch(CmsException e) {
                     // ignore the exception (did not exist)
                 }
                 try {
                     // new file ...
-                    m_cms.createFile(actImportPath, path[path.length-1],
-                                                            buffer, type);
+                    m_cms.createResource(actImportPath, path[path.length-1], type, null, buffer);                                                            
                 } catch(CmsException e) {
                     // ignore the exception
                     throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);

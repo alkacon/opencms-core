@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2001/11/15 10:40:15 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/09/02 07:46:05 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.25 $ $Date: 2001/11/15 10:40:15 $
+ * @version $Revision: 1.26 $ $Date: 2002/09/02 07:46:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -129,7 +129,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
 
                     // get the path from the workplace.ini
                     String superfolder = getConfigFile(cms).getPicGalleryPath();
-                    CmsFolder folder = cms.createFolder(superfolder, galleryname);
+                    CmsFolder folder = (CmsFolder)cms.createResource(superfolder, galleryname, C_TYPE_FOLDER_NAME);
                     if(title != null) {
                         cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_TITLE, title);
                     }
@@ -261,8 +261,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
                                 filename = newname;
                             }
                             try {
-                                CmsFile file = cms.createFile(foldername, filename,
-                                       filecontent, C_TYPE_IMAGE_NAME);
+                                CmsFile file = (CmsFile)cms.createResource(foldername, filename, C_TYPE_IMAGE_NAME, null, filecontent);
                                 if(title != null) {
                                     String filepath = file.getAbsolutePath();
                                     cms.writeProperty(filepath, C_PROPERTY_TITLE, title);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2002/08/12 12:50:24 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/09/02 07:45:46 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -296,7 +296,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
      */
     private void tryToCreateFolder(CmsObject cms, String folder, String newFolder) {
         try {
-            cms.createFolder(folder, newFolder);
+            cms.createResource(folder, newFolder, C_TYPE_FOLDER_NAME);
         }catch(Exception e) {
         }
     }
@@ -325,7 +325,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             if("".equals((String)table.get(C_VIEW))) {
                 if(!"".equals(getStringValue(reg.getModuleViewName(name)))) {
                     try {
-                        cms.deleteFolder(modulePath + "view/");
+                        cms.deleteResource(modulePath + "view/");
                     }catch(Exception e) {
                     }
                     reg.deleteModuleView(name);
@@ -340,7 +340,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             // the adminpoint
             if("".equals((String)table.get(C_ADMINPOINT))) {
                 try { // does not work when folder is not empty
-                    cms.deleteFolder(modulePath + "administration/");
+                    cms.deleteResource(modulePath + "administration/");
                 }catch(Exception e) {
                 }
             }else {
