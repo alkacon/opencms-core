@@ -40,11 +40,11 @@ this version depends on what your goals are:</p>
   current websites, modules and functions can be ported to the new release. Even 
   though changes on the Java API level and changes on the DB schema are to be 
   expected until we reach the beta or even release candidate state of the 
-  development, most of the big changes have already been made.</li><li>If you start a new project that is expected to go 
-  live in about 3 months, you may use this version to build your project - but 
-  be prepared for some extra work to update when new releases become available, 
-  and also for some time figuring out the so far undocumented features if these 
-  are required.</li><li>If you are working on a project with OpenCms 5.0.x 
+  development, most of the big changes have already been made.</li><li>If you start a new project that is expected to go live 
+  in about 3 months, you may use this version to build your project - but be 
+  prepared for some extra work to update when new releases become available, and 
+  also for some time figuring out the so far undocumented features if these are 
+  required.</li><li>If you are working on a project with OpenCms 5.0.x 
   that has a delivery date soon, you should stick to the 5.0.x version unless 
   you absolutely require a feature of the 6.0 version.</li><li>If you are running a website based on OpenCms, and you plan to
 implement some new features in the not so far future, you should
@@ -68,21 +68,16 @@ compared to the alpha 2 version:</strong></p>
   <LI>Support for Java 5.0 / 1.5 and PostgreSQL: 
   <UL>
     <LI>Fixed issue with setup wizard in JDK 5.0</LI><LI>OpenCms now installs and runs with JDK 5.0 (please 
-    note: no exhaustive tests have been done so far)</LI><LI>Added support for the PostgeSQL database (thanks to 
-    Antonio Core for his contribution)</LI><LI>Optimized DB queries and index generation for MySQL 
-
-    </LI><LI>Improved DB performance on MySQL after heavy testing</LI></UL></LI><LI>JSP based re-implementation of the "Galleries" with 
+    note: no exhaustive tests have been done so far)</LI><LI>Added support for the PostgreSQL database (thanks to 
+    Antonio Core for his contribution)</LI><LI>Optimized DB queries and index generation for MySQL</LI><LI>Improved DB performance on MySQL after heavy testing</LI></UL></LI><LI>JSP based re-implementation of the "Galleries" with 
   new features: 
   <UL><li>Added new "Image gallery" dialog for WYSIWYG editor 
     (also available as XML content widget)</li><li>Added new "Download gallery" dialog for WYSIWYG 
-    editor (also available as XML content widget)</li><li>Added new "External link gallery" dialog for 
-    WYSIWYG editor (also available as XML content widget)</li><li>Added new "HTML gallery" dialog for WYSIWYG editor 
-    (also available as XML content widget)</li><LI>All galleries are now available on the (optional) 
-    HTMLArea editor</LI><LI>Modified VFS to allow multiple folder resource 
-    types 
-    </LI><LI>Added new resource types for image, download, link 
-    and html galleries 
-    </LI><LI>Resource "type change" dialog can now also change the type of a folder 
+    editor (also available as XML content widget)</li><li>Added new "External link gallery" dialog for WYSIWYG 
+    editor (also available as XML content widget)</li><li>Added new "HTML gallery" dialog for WYSIWYG editor 
+    (also available as XML content widget)</li><LI>All galleries are now available&nbsp;for the 
+    (optional) HTMLArea editor</LI><LI>Modified VFS to allow multiple folder resource types</LI><LI>Added new resource types for image, download, link 
+    and html galleries</LI><LI>Resource "type change" dialog can now also change the type of a folder 
     (e.g. to a gallery type)</LI></UL></LI><li>XML content improvements and new features: 
   <UL>
     <LI>Added XML content handler interface for special 
@@ -91,19 +86,19 @@ compared to the alpha 2 version:</strong></p>
     org.opencms.xml.content.CmsDefaultXmlContentHandler</li><li>XML content now allows variable mapping of XML 
     content widgets to schema types</li><li>XML content editor can now handle optional elements 
     (min occurs = 0) from the XML schema</li><li>XML content editor can now handle multiple elements 
-    (max occurs &gt; 1) from the XML schema</li><li>XML content now allows validation and error 
-    handling in editor with customizable validation rules</li><li>Widgets for XML contents can now be configured 
+    (max occurs &gt; 1) from the XML schema</li><li>XML content now allows validation and error handling 
+    in editor with customizable validation rules</li><li>Widgets for XML contents can now be configured 
     independent from schema types</li><li>Removed "index" attribute from "contentshow" tag 
-    (use "element=name[0]") to directly access an element index value &gt; 0</li><li>Added support for nesting XML content definitions</li><li>Added internal caching for XML content definitions</li></UL></li><li>Further improvements: 
+    (use "element=name[1]") to directly access an element index value &gt; 0</li><li>Added support for nesting XML content definitions</li><li>Added internal caching for XML content definitions</li></UL></li><li>Further improvements: 
   <UL>
     <LI>Source code for the 'templateone' default module is 
     now available in the src-modules CVS subfolder</LI><li>VFS resource types and Workplace context menus can 
-    now be added by a module</li><li>Configuration of default VFS files (e.g. 
-    index.html) has been moved to opencms-vfs.xml</li><li>Added GUI to modify property values and delete 
+    now be added by a module</li><li>Configuration of default VFS files (e.g. index.html) 
+    has been moved to opencms-vfs.xml</li><li>Added GUI to modify property values and delete 
     definitions in Administration view</li><li>Property definitions can be deleted from Admin GUI 
     even if resources still use the property</li><li>Added support for language - country based locales 
     in the Workplace</li><li>Updated Lucene to latest stable version 1.4.3, plus an
-additional patch to preven NPE in the Lucene index
+additional patch to prevent NPE in the Lucene index
 manager</li></UL></li><li>Resolved Issues: 
   <UL>
     <LI>Fixed issue with deleted users or groups causing 
@@ -111,8 +106,8 @@ manager</li></UL></li><li>Resolved Issues:
     site "/"</li><li>Fixed issue with HTML comments in editor causing 
     invalid HTML documents</li><li>Fixed issue with shutDown() method of modules not 
     being called</li><li>Fixed issue with Lucene search engine not correctly 
-    indexing pages based on non-ISO encoding</li><li>Fixed issue with password change being broken in 
-    the user administration</li><li>Fixed issue with "https" scheme not correctly working in site
+    indexing pages based on non-ISO encoding</li><li>Fixed issue with password change being broken in the 
+    user administration</li><li>Fixed issue with "https" scheme not correctly working in site
 configuration</li></UL> </li></UL>
 <p><strong>The most important new features in this release compared
 to the 5.0.x version:</strong></p>
@@ -145,8 +140,8 @@ to the 5.0.x version:</strong></p>
   Exlorer with the context menu manually, this is done automatically if the 
   "autolock" feature is enabled (this is also the default)</li><li>The static export has been fully rewritten, is also 
   features a new "on demand" mode for export of resources</li><li>Implement new, cleaned up XmlPage API that replaces 
-  the old XmlTemplate for page data storage</li><li>The XmlPage structure is always validated by a W3C 
-  XML Schema, to prevent creation of invalid content</li><li>The edited pages are now stored directly in the 
+  the old XmlTemplate for page data storage</li><li>The XmlPage structure is always validated by a W3C XML 
+  Schema, to prevent creation of invalid content</li><li>The edited pages are now stored directly in the 
   location where they have been edited, the /system/bodies/ folder is not longer 
   required</li><li>The OpenCms VFS has been made much more scalable, 
   bottlenecks like the slow Exlorer tree have been removed</li><li>The OpenCms user management has been made independent 
