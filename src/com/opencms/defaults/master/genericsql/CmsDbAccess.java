@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/03/28 14:42:00 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/04/09 14:13:02 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -359,7 +359,7 @@ public class CmsDbAccess {
             if(res.next()) {
                 sqlFillValues(res, cms, dataset);
             } else {
-                throw new CmsException("Row not found: " + masterId + " " + content.getSubId(), CmsException.C_NOT_FOUND);
+                throw new CmsException( "[" + this.getClass().getName() + ".read] no content found for CID:" + masterId + ", SID: " + content.getSubId() + ", statement: " + statement_key, CmsException.C_NOT_FOUND);
             }
             if(!checkAccess(content, false)) {
                 throw new CmsException("Not readable", CmsException.C_NO_ACCESS);
