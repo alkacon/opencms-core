@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2001/09/21 06:27:39 $
-* Version: $Revision: 1.154 $
+* Date   : $Date: 2001/10/02 13:00:59 $
+* Version: $Revision: 1.155 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.154 $ $Date: 2001/09/21 06:27:39 $
+ * @version $Revision: 1.155 $ $Date: 2001/10/02 13:00:59 $
  *
  */
 
@@ -650,16 +650,7 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
                                                     String name,
                                                     String resourcetype)
         throws CmsException;
-/**
- * Insert the method's description here.
- * Creation date: (09-10-2000 11:35:40)
- * @param project com.opencms.file.CmsProject
- * @param onlineProject com.opencms.file.CmsProject
- * @param resource com.opencms.file.CmsResource
- * @exception com.opencms.core.CmsException The exception description.
- * author Martin Langelund
- */
-public void createResource(CmsProject project, CmsProject onlineProject, CmsResource resource) throws com.opencms.core.CmsException;
+
      /**
       * Creates a new task.
       *
