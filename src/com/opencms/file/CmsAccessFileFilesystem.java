@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/04/11 13:38:08 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/04/12 13:06:29 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/04/11 13:38:08 $
+ * @version $Revision: 1.23 $ $Date: 2000/04/12 13:06:29 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -104,18 +104,15 @@ import com.opencms.core.*;
                // Test if the file is already there and marked as deleted.
            // If so, delete it
            try {
-            System.err.println("Testing file "+filename);
-            CmsFile testfile=readFileHeader(project,filename);   
+             CmsFile testfile=readFileHeader(project,filename);   
             System.err.println("got file "+testfile);
             if (testfile.getState()==C_STATE_DELETED) {
-                System.err.println("remove file");
                 // if the file is maked as deleted remove it!
                 removeFile(project,filename);
                 state=C_STATE_CHANGED;
             }
            } catch (CmsException e) {
-               System.err.println(e);
-             // do nothing here
+              // do nothing here
            }
         
          // create new file              
@@ -172,9 +169,8 @@ import com.opencms.core.*;
            // Test if the file is already there and marked as deleted.
            // If so, delete it
            try {
-            System.err.println("Testing file "+filename);
             CmsFile testfile=readFileHeader(project,filename);   
-            System.err.println("got file "+testfile);
+
             if (testfile.getState()==C_STATE_DELETED) {
                 System.err.println("remove file");
                 // if the file is maked as deleted remove it!

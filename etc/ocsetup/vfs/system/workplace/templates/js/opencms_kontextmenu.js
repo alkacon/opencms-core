@@ -23,6 +23,7 @@ var DO_LOCKUSER=2;
 var DO_UNLOCK=3; 
 
 var DO_COPY=4;
+var DO_COPYFOLDER=42;
 var DO_MOVE=5;
 var DO_RENAME=6;
 var DO_DELETE=7;
@@ -276,6 +277,9 @@ function doAction(action) {
 		case 41:
 		{
 			location.href='explorer_files_historyshow.html';
+			break;
+		} case 42: {
+			location.href='copy.html?file='+ kontextparam;
 			break;
 		}
 	}

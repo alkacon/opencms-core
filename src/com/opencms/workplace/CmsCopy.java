@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/04/11 13:38:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/04/12 13:06:30 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.15 $ $Date: 2000/04/11 13:38:09 $
+ * @version $Revision: 1.16 $ $Date: 2000/04/12 13:06:30 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -119,60 +119,9 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
             
             // now check if the resource is a file or a folder            
             if (file.isFile()) {
-                // this is a file, so copy it                
-                // copy the file and set the access flags if nescessary
-                cms.copyFile(file.getAbsolutePath(),newFolder+newFile);
-			    //is file type plain
-			    if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
-				    String bodyPath = getBodyPath(cms, (CmsFile)file);
-				    int help = C_CONTENTBODYPATH.lastIndexOf("/");
-				    String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
-				    if (hbodyPath.equals(bodyPath)){
-					    checkFolders(cms, newFolder);
-					    String newbodyPath=(C_CONTENTBODYPATH.substring(0,help))+newFolder+newFile;
-					    CmsFile newContent = cms.readFile(newFolder+newFile);
-					    changeContent(cms, newContent, newbodyPath);
-					    cms.copyFile(bodyPath,newbodyPath);
-					    if (flags.equals("false")) {
-						    // set access flags of the new file to the default flags
-						    CmsFile newfile=cms.readFile(newFolder,file.getName());
-				
-                            Hashtable startSettings=null;
-                            Integer accessFlags=null;
-                            startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
-                            if (startSettings != null) {
-                                    accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
-                                    if (accessFlags == null) {
-                                        accessFlags=new Integer(C_ACCESS_DEFAULT_FLAGS);
-                                    }
-                                }           
-                        
-						    newfile.setAccessFlags(accessFlags.intValue());  
-				 		    cms.writeFile(newfile);
-				            }
-				    }else{
-					    // unlock the template file, to prevent access errors, because
-					    // new template file will automatically be locked to the user
-					    cms.unlockResource(file.getAbsolutePath());
-				    }
-			    }
-	
-                if (flags.equals("false")) {
-                     // set access flags of the new file to the default flags
-                    CmsFile newfile=cms.readFile(newFolder,newFile);
-                      
-                    Hashtable startSettings=null;
-                    Integer accessFlags=null;
-                    startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
-                    if (startSettings != null) {
-                        accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
-                            if (accessFlags == null) {
-                                accessFlags=new Integer(C_ACCESS_DEFAULT_FLAGS);
-                            }
-                     }                           
-                     newfile.setAccessFlags(accessFlags.intValue());  
-                    cms.writeFile(newfile);
-                }
+                // this is a file, so copy it         
+                copyFile(cms,(CmsFile)file,newFolder,newFile,flags);
+                         
             } else {
                 // the selected resource is a folder, so copy it and all its subresources
                 // get all subfolders and files
@@ -181,13 +130,24 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 getAllResources(cms,filename,allFiles,allFolders);
               
                 //copy the selected folder
-                cms.copyFolder(filename, newFolder+newFile+"/");
+                cms.copyFolder(filename, newFolder+newFile+"/");                
+                checkFlags(cms, newFolder+newFile+"/",flags);                                           
                 
                 // now copy all subfolders
                 for (int i=0;i<allFolders.size();i++) {
                     CmsFolder folder=(CmsFolder)allFolders.elementAt(i);  
                     cms.copyFolder(folder.getAbsolutePath(), newFolder+newFile+"/"+folder.getAbsolutePath().substring(file.getAbsolutePath().length()));
+                 
+                    checkFlags(cms,newFolder+newFile+"/"+folder.getAbsolutePath().substring(file.getAbsolutePath().length()),flags);
+                    
+                 }
+                
+                // now copy all files in the subfolders
+                for (int i=0;i<allFiles.size();i++) {
+                    CmsFile newfile=(CmsFile)allFiles.elementAt(i);  
+                    copyFile(cms,newfile,newFolder+newFile+"/",newfile.getAbsolutePath().substring(file.getAbsolutePath().length()),flags);
                 }    
+
             }
 			session.removeValue(C_PARA_FILE);
 			session.removeValue(C_PARA_NAME);
@@ -324,9 +284,12 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
               String foldername=t.nextToken();
                try {
                 // try to read the folder. if this fails, an exception is thrown  
+                  
                 cms.readFolder(completePath+foldername+"/");
+                
               } catch (CmsException e) {
                   // the folder could not be read, so create it.
+                 
                   cms.createFolder(completePath,foldername);                              
               }
               completePath+=foldername+"/";        
@@ -353,10 +316,11 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
        * @param cms The CmsObject
        * @param file The XML content file
        * @param bodypath the new XML content entry
-       * @exception Exception if something goes wrong.
+       * @exception Throws CmsException if something goes wrong.
        */
 	  private void changeContent(A_CmsObject cms, CmsFile file, String bodypath)
 		  throws CmsException {
+
 		  file=cms.readFile(file.getAbsolutePath());
 		  CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
 		  hXml.setElementTemplate("body", bodypath);
@@ -369,6 +333,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * @param file The CmsResource.
      * @param lang The content definition language file.
      * @return Formated state string.
+     * @exception Throws CmsException if something goes wrong.
      */
      private String getState(A_CmsObject cms, A_CmsResource file,CmsXmlLanguageFile lang)
          throws CmsException {
@@ -392,6 +357,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * will be added here as well.
      * @param allolders Vector containing all folders found so far. All subfolders of this folder
      * will be added here as well.
+     * @exception Throws CmsException if something goes wrong.
      */
     private void getAllResources(A_CmsObject cms, String rootFolder,
                                  Vector allFiles, Vector allFolders) 
@@ -415,4 +381,75 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
         } 
     }
  
+    /**
+     * Check if the access flags of the copied resource must be set to the default values.
+     * @param cms The CmsObject.
+     * @param filename The name of the file.
+     * @param flags The flag to change the access flags.
+     * @exception Throws CmsException if something goes wrong.
+     */
+    private void checkFlags(A_CmsObject cms,String filename,String flags) 
+        throws CmsException {
+        
+        if (flags.equals("false")) {
+            // set access flags of the new file to the default flags
+                        
+            Hashtable startSettings=null;
+            Integer accessFlags=null;
+            startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+            if (startSettings != null) {
+                accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
+                if (accessFlags == null) {
+                    accessFlags=new Integer(C_ACCESS_DEFAULT_FLAGS);
+                }
+            }         
+            cms.chmod(filename,accessFlags.intValue());
+        }
+        cms.unlockResource(filename);                    
+    }
+    
+    
+    /**
+     * Copies a file.
+     * If the file is a of the file type "page", its body file is copied as well.
+     * @param cms The CmsObject.
+     * @param file The fiel to be copied.
+     * @param newFolder The destination folder.
+     * @param newFile The destination filename.
+     * @param flags The given flags of the CmsRequest. Needed to decide if the access flags of the
+     * destination has to be modified.
+     * @exception Throws CmsException if something goes wrong.
+     */
+    private void copyFile(A_CmsObject cms,CmsFile file, String newFolder, String newFile,String flags) 
+        throws CmsException {
+
+        // copy the file and set the access flags if nescessary
+        cms.copyFile(file.getAbsolutePath(),newFolder+newFile);
+	    //is file type plain
+		if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+ 	        String bodyPath = getBodyPath(cms, (CmsFile)file);
+			int help = C_CONTENTBODYPATH.lastIndexOf("/");
+			String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
+  			if (hbodyPath.equals(bodyPath)){                
+			        checkFolders(cms, newFolder);
+				    String newbodyPath=(C_CONTENTBODYPATH.substring(0,help))+newFolder+newFile;
+				    
+                    CmsFile newContent = cms.readFile(newFolder+newFile);
+                   
+                    cms.lockResource(newContent.getAbsolutePath());
+                    
+			        changeContent(cms, newContent, newbodyPath);
+                  
+				    cms.copyFile(bodyPath,newbodyPath);
+                    cms.unlockResource(newContent.getAbsolutePath());
+                                   
+			}else{
+			    // unlock the template file, to prevent access errors, because
+				// new template file will automatically be locked to the user
+				cms.unlockResource(file.getAbsolutePath());
+		    }
+		}
+	    CmsFile newfile=cms.readFile(newFolder,newFile);    
+        checkFlags(cms,newfile.getAbsolutePath(),flags);   
+    }
 }

@@ -5,6 +5,7 @@
 <contextmenue name="folder">
 	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
 	<contextspacer/>
+	<contextdisabled name="explorer.context.copy"/>
 	<contextdisabled name="explorer.context.delete"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.chown"/>
@@ -17,6 +18,7 @@
 <contextmenue name="folderlock">
 	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
 	<contextspacer/>
+	<contextdisabled name="explorer.context.copy"/>
 	<contextdisabled name="explorer.context.delete"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.chown"/>
@@ -29,6 +31,7 @@
 <contextmenue name="folderlockuser">
 	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
 	<contextspacer/>
+    <contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
