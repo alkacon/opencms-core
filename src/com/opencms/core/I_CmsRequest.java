@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsRequest.java,v $
-* Date   : $Date: 2002/10/30 10:10:11 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/12/19 15:33:29 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.11 $ $Date: 2002/10/30 10:10:11 $
+ * @version $Revision: 1.12 $ $Date: 2003/12/19 15:33:29 $
  */
 public interface I_CmsRequest {
 
@@ -53,7 +53,7 @@ public interface I_CmsRequest {
      * @param name The name of the uploaded file.
      * @return The selected uploaded file content.
      */
-    public byte[] getFile(String name);
+    byte[] getFile(String name);
 
     /**
      * Returns the names of all uploaded files in this request.
@@ -61,19 +61,21 @@ public interface I_CmsRequest {
      *
      * @return An Enumeration of file names.
      */
-    public Enumeration getFileNames();
+    Enumeration getFileNames();
 
     /**
      * Returns the original request that was used to create the CmsRequest.
      *
      * @return The original request of the CmsRequest.
      */
-    public Object getOriginalRequest();
+    Object getOriginalRequest();
     
     /**
-     * Sets the original request to another value 
+     * Sets the original request to another value
+     * 
+     * @param request the request 
      */
-    public void setOriginalRequest(Object request);
+    void setOriginalRequest(Object request);
 
     /**
      * Returns the type of the request that was used to create the CmsRequest.
@@ -81,7 +83,7 @@ public interface I_CmsRequest {
      *
      * @return The type of the CmsRequest.
      */
-    public int getOriginalRequestType();
+    int getOriginalRequestType();
 
     /**
      * Returns the value of a named parameter as a String.
@@ -91,7 +93,7 @@ public interface I_CmsRequest {
      * @param name The name of the parameter.
      * @return The value of the parameter.
      */
-    public String getParameter(String name);
+    String getParameter(String name);
 
     /**
      * Returns all parameter names as an Enumeration of String objects.
@@ -99,14 +101,15 @@ public interface I_CmsRequest {
      *
      * @return Enumeration of parameter names.
      */
-    public Enumeration getParameterNames();
+    Enumeration getParameterNames();
 
     /**
      * Returns all parameter values of a parameter key.
      *
+     * @param key the parameter key
      * @return Aarray of String containing the parameter values.
      */
-    public String[] getParameterValues(String key);
+    String[] getParameterValues(String key);
 
     /**
      * This funtion returns the name of the requested resource.
@@ -120,7 +123,7 @@ public interface I_CmsRequest {
      *
      * @return The path to the requested resource.
      */
-    public String getRequestedResource();
+    String getRequestedResource();
     
     /**
      * Set the name returned by getRequestedResource().
@@ -129,26 +132,44 @@ public interface I_CmsRequest {
      * 
      * @param resourceName The name to set the requested resource name to 
      */
-    public void setRequestedResource(String resourceName);
+    void setRequestedResource(String resourceName);
 
     /**
      * Returns the part of the Url that descibes the Web-Application.
      *
      * E.g: http://www.myserver.com/opencms/engine/index.html returns
      * http://www.myserver.com/opencms
+     * 
+     * @return the webapp url
      */
-    public String getWebAppUrl();
+    String getWebAppUrl();
 
     /**
      * Gets the part of the Url that describes the current servlet of this
      * Web-Application.
+     * 
+     * @return the servlet url
      */
-    public String getServletUrl();
+    String getServletUrl();
 
     /**
      * Methods to get the data from the original request.
+     * 
+     * @return the server name
      */
-    public String getServerName();
-    public String getScheme();
-    public int getServerPort();
+    String getServerName();
+    
+    /**
+     * Methods to get the data from the original request.
+     * 
+     * @return the scheme
+     */    
+    String getScheme();
+    
+    /**
+     * Methods to get the data from the original request.
+     * 
+     * @return the server port
+     */
+    int getServerPort();
 }

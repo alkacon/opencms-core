@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartInputStreamHandler.java,v $
-* Date   : $Date: 2003/11/13 17:32:25 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/12/19 15:33:12 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ class CmsMultipartInputStreamHandler {
     ServletInputStream m_in;
     String m_boundary;
     int m_totalExpected;
-    int totalRead = 0;
+    int m_totalRead = 0;
     int m_newLine = 0;
 
     /**
@@ -69,13 +69,12 @@ class CmsMultipartInputStreamHandler {
      * @throws IOException Throws IOException if any error with the input stream occurs.
      */
     public int read() throws IOException {
-        if(totalRead >= m_totalExpected) {
+        if (m_totalRead >= m_totalExpected) {
             return -1;
-        }
-        else {
+        } else {
             int result = m_in.read();
-            if(result > -1) {
-                totalRead++;
+            if (result > -1) {
+                m_totalRead++;
             }
             return result;
         }
@@ -97,16 +96,16 @@ class CmsMultipartInputStreamHandler {
 
             // this.readLine() does +=
             result = this.readLine(buf, 0, buf.length);
-            if(result != -1) {
+            if (result != -1) {
                 sbuf.append(new String(buf, 0, result, "ISO-8859-1"));
             }
-        }while(result == buf.length);
-        if(sbuf.length() == 0) {
+        } while(result == buf.length);
+        if (sbuf.length() == 0) {
             // nothing read, must be at the end of stream
             return null;
         }
         // cut off the trailing newline
-        if(m_newLine == 0) {
+        if (m_newLine == 0) {
             m_newLine = (result > 1 && (buf[result - 2] == '\r' || buf[result - 2] == '\n')) ? 2 : 1;
         }
         buf = null;
@@ -118,20 +117,19 @@ class CmsMultipartInputStreamHandler {
      * how many bytes have been read and stops reading when the
      * Content-Length limit has been reached.
      *
-     * @param b[] Array of bytes.
+     * @param b Array of bytes.
      * @param off Read offset.
      * @param len Length of byte buffer.
      * @return Number of bytes read.
      * @throws IOException Throws IOException if any error with the input stream occurs.
      */
     public int readLine(byte b[], int off, int len) throws IOException {
-        if(totalRead >= m_totalExpected) {
+        if (m_totalRead >= m_totalExpected) {
             return -1;
-        }
-        else {
+        } else {
             int result = m_in.readLine(b, off, len);
-            if(result > 0) {
-                totalRead += result;
+            if (result > 0) {
+                m_totalRead += result;
             }
             return result;
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2003/09/19 14:42:53 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/12/19 15:33:20 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.36 $ $Date: 2003/09/19 14:42:53 $
+ * @version $Revision: 1.37 $ $Date: 2003/12/19 15:33:20 $
  */
 public class CmsResponseHttpServlet implements I_CmsResponse {
 
@@ -97,15 +97,15 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
         java.lang.reflect.Method m = null;
         try {
             m = rc.getMethod("addHeader", new Class[] {String.class, String.class});
-        } catch(Exception e) {
+        } catch (Exception e) {
             m = null;
         }
 
         // If m != null, the method could be found.
         boolean result = (m != null);
 
-        if(OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            if(result) {
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            if (result) {
                 // We have JSDK 2
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Compatibility check  : JSDK 2 detected. ");
             } else {
@@ -142,7 +142,7 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      * @throws IOException if an error occurs
      */
     public OutputStream getOutputStream() throws IOException {
-        if(m_orgOutputStream == null) {
+        if (m_orgOutputStream == null) {
             m_orgOutputStream = m_res.getOutputStream();
         }
         return m_orgOutputStream;
@@ -174,24 +174,27 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      * about the servlets location is taken from the original HttpServletRequest.
      *
      * @param location The location the response is send to.
-     * @param msg Additional error message.
-     * @throws IOException if an error occurs
+     * // throws IOException if an error occurs
      */
-    public void sendCmsRedirect(String location) throws IOException {
-        if (DEBUG) System.err.println("CmsResponse.sendCmsRedirect(" + location + ")");          
+    public void sendCmsRedirect(String location) /* throws IOException */ {
+
+        if (DEBUG) {
+            System.err.println("CmsResponse.sendCmsRedirect(" + location + ")");          
+        }
+        
         String hostName = m_req.getScheme() + "://" + m_req.getServerName() + ":" + m_req.getServerPort();
         m_redir = true;
         String servlet = m_req.getServletPath();
         String contextPath = "";
         try {
             contextPath = m_req.getContextPath();
-        } catch(NoSuchMethodError err) {
+        } catch (NoSuchMethodError err) {
             // ignore this error - old servlet-api
         }
         try {
             m_res.sendRedirect(hostName + contextPath + servlet + location);
-        } catch(IOException exc) {
-            if(OpenCms.getLog(this).isWarnEnabled()) {
+        } catch (IOException exc) {
+            if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn("Couldn't redirect http response to: " + hostName + contextPath + servlet + location);
             }
         }
@@ -205,7 +208,11 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      * @throws IOException if an error occurs
      */
     public void sendError(int code) throws IOException {
-        if (DEBUG) System.err.println("CmsResponse.sendError(" + code + ")");           
+
+        if (DEBUG) {
+            System.err.println("CmsResponse.sendError(" + code + ")");           
+        }
+        
         m_res.sendError(code);
     }
 
@@ -218,7 +225,11 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      * @throws IOException if an error occurs
      */
     public void sendError(int code, String msg) throws IOException {
-        if (DEBUG) System.err.println("CmsResponse.sendError(" + code + "," + msg + ")");              
+
+        if (DEBUG) {
+            System.err.println("CmsResponse.sendError(" + code + "," + msg + ")");              
+        }
+        
         m_res.sendError(code, msg);
     }
 
@@ -230,30 +241,33 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      * @throws IOException if an error occurs
      */
     public void sendRedirect(String location) throws IOException {
-        if (DEBUG) System.err.println("CmsResponse.sendRedirect(" + location + ")");        
+        
+        if (DEBUG) {
+            System.err.println("CmsResponse.sendRedirect(" + location + ")");        
+        }
+        
         String shortLocation = location;
         String hostName = m_req.getServerName() + ":" + m_req.getServerPort();
         // remove 'http', '://', servername and '/servlets/opencms' and send CmsRedirect
-        if(shortLocation.startsWith(m_req.getScheme())) {
+        if (shortLocation.startsWith(m_req.getScheme())) {
             shortLocation = shortLocation.substring(m_req.getScheme().length());
         }
-        if(shortLocation.startsWith("://")) {
+        if (shortLocation.startsWith("://")) {
             shortLocation = shortLocation.substring(3);
         }
-        if(shortLocation.startsWith(hostName)) {
+        if (shortLocation.startsWith(hostName)) {
             shortLocation = shortLocation.substring(hostName.length());
             String contextPath = "";
             try {
                 contextPath = m_req.getContextPath();
-            } catch(NoSuchMethodError err) {
+            } catch (NoSuchMethodError err) {
                 // ignore this error - old servlet-api
             }
-            if(shortLocation.startsWith(contextPath  + m_req.getServletPath())) {
+            if (shortLocation.startsWith(contextPath  + m_req.getServletPath())) {
                 shortLocation = shortLocation.substring((contextPath + m_req.getServletPath()).length());
             }
             sendCmsRedirect(shortLocation);
-        }
-        else {
+        } else {
 
             // wanted to redirect on another site, don't use the cluster url
             m_res.sendRedirect(location);
@@ -266,7 +280,11 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      * @param len Number of bytes to be returned by the response.
      */
     public void setContentLength(int len) {
-        if (DEBUG) System.err.println("CmsResponse.setContentLength(" + len + ")");
+
+        if (DEBUG) {
+            System.err.println("CmsResponse.setContentLength(" + len + ")");
+        }
+        
         m_res.setContentLength(len);
     }
 
@@ -276,7 +294,11 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      * @param type The contnent type of the response.
      */
     public void setContentType(String type) {        
-        if (DEBUG) System.err.println("CmsResponse.setContentType(" + type + ")");     
+        
+        if (DEBUG) {
+            System.err.println("CmsResponse.setContentType(" + type + ")");     
+        }
+        
         m_contentType = type;
         m_res.setContentType(type);
     }
@@ -288,7 +310,11 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      * @return the content type of the response.
      */
     public String getContentType() {
-        if (DEBUG) System.err.println("CmsResponse.getContentType()");        
+        
+        if (DEBUG) { 
+            System.err.println("CmsResponse.getContentType()");        
+        }
+        
         return m_contentType;
     }    
 
@@ -299,7 +325,11 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      * @param value The value for the header.
      */
     public void setHeader(String key, String value) {
-        if (DEBUG) System.err.println("CmsResponse.setHeader(" + key + "," + value + ")");                
+        
+        if (DEBUG) {
+            System.err.println("CmsResponse.setHeader(" + key + "," + value + ")");                
+        }
+        
         m_res.setHeader(key, value);
     }
 
@@ -310,8 +340,12 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      * @param value The value for the header.
      */
     public void addHeader(String key, String value) {
-        if (DEBUG) System.err.println("CmsResponse.addHeader(" + key + "," + value + ")");                
-        if(jsdk2) {
+        
+        if (DEBUG) {
+            System.err.println("CmsResponse.addHeader(" + key + "," + value + ")");                
+        }
+        
+        if (jsdk2) {
             m_res.addHeader(key, value);
         } else {
             m_res.setHeader(key, value);
@@ -324,17 +358,25 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      * @param time The last-modified time.
      */
     public void setLastModified(long time) {
-        if (DEBUG) System.err.println("CmsResponse.setLastModified(" + time + ")");                        
+        
+        if (DEBUG) {
+            System.err.println("CmsResponse.setLastModified(" + time + ")");                        
+        }
+        
         m_res.setDateHeader(C_LAST_MODIFIED, time);
     }
 
     /**
      * Checks, if the header was set already.
-     * @param key, the header-key to check.
-     * @return true, if the header was set before else false.
+     * @param key the header-key to check.
+     * @return true if the header was set before else false.
      */
     public boolean containsHeader(String key) {
-        if (DEBUG) System.err.println("CmsResponse.containsHeader(" + key + ")");          
+        
+        if (DEBUG) {
+            System.err.println("CmsResponse.containsHeader(" + key + ")");          
+        }
+
         return m_res.containsHeader(key);
     }
 }
