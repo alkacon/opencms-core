@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/05/02 16:41:13 $
- * Version: $Revision: 1.115 $
+ * Date   : $Date: 2000/05/03 08:41:38 $
+ * Version: $Revision: 1.116 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.115 $ $Date: 2000/05/02 16:41:13 $
+ * @version $Revision: 1.116 $ $Date: 2000/05/03 08:41:38 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3157,13 +3157,17 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 
 		// check, if the user may lock the resource
 		if( accessLock(currentUser, currentProject, cmsResource) ) {
+			
+			if(!cmsResource.isLocked()) {
+				// increment the counter, only if the resource wasn't locked before.
+				currentProject.incrementCountLockedResources();
+			}
 				
 			// write-acces  was granted - lock the folder.
 			m_fileRb.lockResource(currentUser, currentProject, 
 								  onlineProject(currentUser, currentProject), 
 								  resourcename, force);
 			// update counter of locked resources for the project.
-			currentProject.incrementCountLockedResources();
 			m_projectRb.writeProject(currentProject);
 			
 			// if this resource is a folder -> lock all subresources, too
