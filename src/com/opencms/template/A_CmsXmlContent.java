@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/04/03 15:57:27 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/04/04 10:00:40 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -72,7 +72,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2000/04/03 15:57:27 $
+ * @version $Revision: 1.20 $ $Date: 2000/04/04 10:00:40 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -142,9 +142,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     /** Cache for parsed documents */
     static private Hashtable m_filecache = new Hashtable();
 
-    /** Cache for user methods called by "METHOD" */
-    static private Hashtable m_processTagMethodcache = new Hashtable();
-
  	/** XML parser */   
     private static I_CmsXmlParser parser = new CmsXmlXercesParser();
 
@@ -208,7 +205,24 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 
         parsedContent = loadCachedDocument(filename);
         if(parsedContent == null) {            
-            parsedContent = parse(new String(file.getContents()));                
+            byte[] fileContent = file.getContents();
+            if(fileContent == null || "".equals(fileContent)) {
+                // The file content is empty. Possibly the file object is only
+                // a file header. Re-read the file object and try again
+                file = cms.readFile(filename);
+                fileContent = file.getContents();
+            }
+            if(fileContent == null || "".equals(fileContent)) {
+                // The file content is still emtpy.
+                // Start with an empty XML document.
+                try {
+                    parsedContent = getXmlParser().createEmptyDocument(getXmlDocumentTagName());
+                } catch(Exception e) {
+                    throwException("Could not initialize now XML document " + filename + ". " + e, CmsException.C_XML_PARSING_ERROR );
+                }
+            } else {
+                parsedContent = parse(new String(file.getContents()));                
+            }
             m_filecache.put(currentProject + ":" + filename, parsedContent.cloneNode(true));
         }    
         init(cms, parsedContent, filename);
@@ -372,7 +386,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     public A_CmsXmlContent readIncludeFile(String filename) throws CmsException {
 
         A_CmsXmlContent include = null;
-        if(A_OpenCms.isLogging()) {
+        if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Including File: " + filename);       
         }
 
@@ -1625,22 +1639,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
    	private Method getUserMethod(String methodName, Object callingObject)
 		throws NoSuchMethodException {
 		if(methodName == null || "".equals(methodName)) {
-			// no valid method-name!
+			// no valid user method name
 			throw(new NoSuchMethodException("method name is null or empty"));
-		}
-		
-        //TODO: remove method cache
-        
-		// build the array with all classes for the parameters
-		//if(! m_processTagMethodcache.containsKey(methodName)) {
-			// method not in cache
-            if(C_DEBUG && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() +"User method " + methodName + " is not in cache... getting it.");
-            }
-            m_processTagMethodcache.put(methodName, 
-                    callingObject.getClass().getMethod(methodName, C_PARAMTYPES_USER_METHODS));
-		//}
-		return (Method)m_processTagMethodcache.get(methodName);
+		}		
+        return callingObject.getClass().getMethod(methodName, C_PARAMTYPES_USER_METHODS);
 	}
 
     /**
