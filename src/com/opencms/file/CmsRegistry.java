@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/09/19 07:29:00 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/09/28 13:30:38 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/09/19 07:29:00 $
+ * @version $Revision: 1.14 $ $Date: 2000/09/28 13:30:38 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -582,7 +582,17 @@ public int getModuleFiles(String modulename, Vector retNames, Vector retCodes) {
  */
 public Class getModuleMaintenanceEventClass(String modulname) {
 	try {
-		return java.lang.Class.forName(getModuleData(modulname, "maintenance_class"));
+
+		Vector repositories = new Vector();
+		String[] reposNoVector = getRepositories();
+		for (int i=0; i<reposNoVector.length; i++){
+			repositories.addElement(reposNoVector[i]);
+		}
+		CmsClassLoader loader = new CmsClassLoader(m_cms, repositories, null);
+		
+		return loader.loadClass(getModuleData(modulname, "maintenance_class")); 
+		
+		//return java.lang.Class.forName(getModuleData(modulname, "maintenance_class"));
 	} catch(Exception exc) {
 		return null;
 	}
@@ -1410,7 +1420,6 @@ public void setModuleParameter(String modulename, String parameter, String value
 
 		// try to invoke the event-method for setting parameters on this class.
 		Class eventClass = getModuleMaintenanceEventClass(modulename);
-
 		try {
 			Class declaration[] = {CmsObject.class};
 			Object arguments[] = {m_cms};
