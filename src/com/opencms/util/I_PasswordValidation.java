@@ -14,6 +14,7 @@ public interface I_PasswordValidation {
      * @param cms The CmsObject
      * @param password the password to check
      * @param oldPassword the old password.
+     * @throws CmsException if something goes wrong
      */
-    public void checkNewPassword(CmsObject cms, String password, String oldPassword)throws CmsException;
+    void checkNewPassword(CmsObject cms, String password, String oldPassword) throws CmsException;
 }

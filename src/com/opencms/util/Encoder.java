@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2003/05/16 11:52:57 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/07/15 16:04:01 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
-public class Encoder {
+public final class Encoder {
     
     /** Default encoding for JavaScript decodeUriComponent methods is UTF-8 by w3c standard */
     public static final String C_UTF8_ENCODING = "UTF-8";
@@ -60,7 +60,7 @@ public class Encoder {
     /**
      * Constructor
      */
-    public Encoder() {}
+    private Encoder() { }
     
     /**
      * This method is a substitute for <code>URLEncoder.encode()</code>.
@@ -87,7 +87,7 @@ public class Encoder {
         // fallback to default encoding
         try {
             return URLEncoder.encode(source, C_UTF8_ENCODING); 
-        } catch (java.io.UnsupportedEncodingException e) {}
+        } catch (java.io.UnsupportedEncodingException e) { }
         return source;
     }
     
@@ -127,7 +127,7 @@ public class Encoder {
         // fallback to default decoding
         try {
             return URLDecoder.decode(source, C_UTF8_ENCODING); 
-        } catch (java.io.UnsupportedEncodingException e) {}
+        } catch (java.io.UnsupportedEncodingException e) { }
         return source;     
     }
     
@@ -145,7 +145,8 @@ public class Encoder {
     /**
      * Encodes a String in a way that is compatible with the JavaScript escape function.
      * 
-     * @param Source The textstring to be encoded.
+     * @param source The textstring to be encoded.
+     * @param encoding the encoding type
      * @return The JavaScript escaped string.
      */
     public static String escape(String source, String encoding) {
@@ -155,9 +156,9 @@ public class Encoder {
         // encoding, except the blank which is not encoded into a %20.
         String enc = encode(source, encoding);
         StringTokenizer t = new StringTokenizer(enc, "+");
-        while(t.hasMoreTokens()) {
+        while (t.hasMoreTokens()) {
             ret.append(t.nextToken());
-            if(t.hasMoreTokens()) {
+            if (t.hasMoreTokens()) {
                 ret.append("%20");
             }
         }
@@ -168,11 +169,12 @@ public class Encoder {
      * Encodes a String in a way that is compatible with the JavaScript escape function.
      * Muliple blanks are encoded _multiply _with %20.
      * 
-     * @param Source The textstring to be encoded.
+     * @param source The textstring to be encoded.
+     * @param encoding the encoding type
      * @return The JavaScript escaped string.
      */
     public static String escapeWBlanks(String source, String encoding) {
-        if(source == null) {
+        if (source == null) {
             return null;
         }
         StringBuffer ret = new StringBuffer();
@@ -180,11 +182,10 @@ public class Encoder {
         // URLEncode the text string. This produces a very similar encoding to JavaSscript
         // encoding, except the blank which is not encoded into a %20.
         String enc = encode(source, encoding);
-        for(int z = 0;z < enc.length();z++) {
-            if(enc.charAt(z) == '+') {
+        for (int z = 0; z < enc.length(); z++) {
+            if (enc.charAt(z) == '+') {
                 ret.append("%20");
-            }
-            else {
+            } else {
                 ret.append(enc.charAt(z));
             }
         }
@@ -212,7 +213,7 @@ public class Encoder {
         if (source == null) return null;
         StringBuffer result = new StringBuffer(source.length()*2);
         int terminatorIndex;
-        for(int i = 0;i < source.length(); ++i) {
+        for (int i = 0; i < source.length(); ++i) {
             char ch = source.charAt(i);
             switch (ch) {
                 case '<' :
@@ -223,8 +224,8 @@ public class Encoder {
                     break;
                 case '&' :
                     // Don't escape already escaped international and special characters
-                    if ((terminatorIndex = source.indexOf(";",i)) > 0)
-                        if(source.substring(i + 1, terminatorIndex).matches("#[0-9]+"))
+                    if ((terminatorIndex = source.indexOf(";", i)) > 0)
+                        if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+"))
                             result.append(ch);
                         else 
                             result.append("&amp;");
@@ -257,23 +258,22 @@ public class Encoder {
         int terminatorIndex;
         if (source == null) return null;
         StringBuffer result = new StringBuffer(source.length()*2);
-        for(int i = 0;i < source.length();i++) {
+        for (int i = 0; i < source.length(); i++) {
             int ch = source.charAt(i);
             // Avoid escaping already escaped characters;
-            if((ch == 38) && ((terminatorIndex = source.indexOf(";",i)) > 0)) {
-                if(source.substring(i + 1, terminatorIndex).matches("#[0-9]+|lt|gt|amp|quote")) {
+            if ((ch == 38) && ((terminatorIndex = source.indexOf(";", i)) > 0)) {
+                if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+|lt|gt|amp|quote")) {
                     result.append(source.substring(i, terminatorIndex + 1));
                     // Skip remaining chars up to (and including) ";"
                     i = terminatorIndex;
                     continue;
                 }
             }
-            if((ch !=  32) && ((ch > 122) || (ch < 48) || (ch == 60) || (ch == 62))) {
+            if ((ch !=  32) && ((ch > 122) || (ch < 48) || (ch == 60) || (ch == 62))) {
                 result.append("&#");
                 result.append(ch);
                 result.append(";");
-            }
-            else {
+            } else {
                 result.append((char)ch);
             }
         }
@@ -295,14 +295,13 @@ public class Encoder {
     public static String escapeNonAscii(String source) {
         if (source == null) return null;
         StringBuffer result = new StringBuffer(source.length()*2);
-        for(int i = 0;i < source.length();i++) {
+        for (int i = 0; i < source.length(); i++) {
             int ch = source.charAt(i);
-            if(ch > 255) {
+            if (ch > 255) {
                 result.append("&#");
                 result.append(ch);
                 result.append(";");
-            }
-            else {
+            } else {
                 result.append((char)ch);
             }
         }
@@ -313,11 +312,12 @@ public class Encoder {
      * Decodes a String in a way that is compatible with the JavaScript 
      * unescape function.
      * 
-     * @param Source The String to be decoded.
+     * @param source The String to be decoded.
+     * @param encoding the encoding type
      * @return The JavaScript unescaped String.
      */
     public static String unescape(String source, String encoding) {
-        if(source == null){
+        if (source == null) {
             return null;
         }
         int len = source.length();

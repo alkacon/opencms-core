@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/CmsByteArrayDataSource.java,v $
-* Date   : $Date: 2003/06/25 13:51:03 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/07/15 16:04:01 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,9 +41,9 @@ import javax.activation.DataSource;
  * This class implements a DataSource from an InputStream, a byte array or a 
  * String and is most often used to create a mail message with the CmsMail object.<p>
  * 
- * @author $Author: a.kandzior $
+ * @author $Author: c.weinholz $
  * 
- * @version $Revision: 1.4 $ $Date: 2003/06/25 13:51:03 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/15 16:04:01 $
  * 
  * @see com.opencms.defaults.CmsMail
  * @see <a href="http://java.sun.com/products/javamail/index.html">http://java.sun.com/products/javamail/index.html</a>
@@ -52,32 +52,48 @@ public class CmsByteArrayDataSource implements DataSource {
     private byte[] m_data; // data
     private String m_type; // content-type
     
-    /* Create a DataSource from a byte array */
+
+    /**
+     * Constructor to create a DataSource from a byte array.<p>
+     * 
+     * @param data the data
+     * @param type the type of the data
+     */
     public CmsByteArrayDataSource(byte[] data, String type) {
         m_data = data;
         m_type = type;
     }
     
-    /* Create a DataSource from an input stream */
+    /**
+     * Constructor to create a DataSource from an input stream.<p>
+     * 
+     * @param is the data as input stream
+     * @param type the type of the data
+     */
     public CmsByteArrayDataSource(InputStream is, String type) {
         m_type = type;
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int ch;
-            while((ch = is.read()) != -1) {
+            while ((ch = is.read()) != -1) {
                 
                 // XXX - must be made more efficient by                
                 // doing buffered reads, rather than one byte reads
                 os.write(ch);
             }
             m_data = os.toByteArray();
-        }
-        catch(IOException ioex) {
+        } catch (IOException ioex) {
             
         }
     }
-    
-    /* Create a DataSource from a String */
+
+    /**
+     * Constructor to create a DataSource from a String.<p>
+     * 
+     * @param data the data as string
+     * @param type the type of the data
+     * @param encoding the encoding
+     */
     public CmsByteArrayDataSource(String data, String type, String encoding) {
         try {
             
@@ -85,31 +101,40 @@ public class CmsByteArrayDataSource implements DataSource {
             // characters!  Otherwise just pass a charset into this            
             // constructor and use it in getBytes()
             m_data = data.getBytes(encoding);
-        }
-        catch(UnsupportedEncodingException uex) {
+        } catch (UnsupportedEncodingException uex) {
             m_data = data.getBytes();
         }
         m_type = type;
     }
+  
+    /**
+     * @see javax.activation.DataSource#getContentType()
+     */
     public String getContentType() {
         return m_type;
     }
-    
+
     /**
-     * Return an InputStream for the data.
-     * Note - a new stream must be returned each time.
+     * @see javax.activation.DataSource#getInputStream()
      */
     public InputStream getInputStream() throws IOException {
-        if(m_data == null) {
+        if (m_data == null) {
             throw new IOException("no data");
         }
         return new ByteArrayInputStream(m_data);
     }
+    
+    /**
+     * @see javax.activation.DataSource#getName()
+     */
     public String getName() {
         return "dummy";
     }
+    
+    /**
+     * @see javax.activation.DataSource#getOutputStream()
+     */
     public OutputStream getOutputStream() throws IOException {
         throw new IOException("cannot do this");
     }
 }
-

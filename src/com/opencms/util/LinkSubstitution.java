@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2003/07/15 08:43:10 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/07/15 16:04:01 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @version 1.0
  */
 
-public class LinkSubstitution {
+public final class LinkSubstitution {
 
     /**
      * Reference to the CmsElementCache object containing locators for all
@@ -69,48 +69,54 @@ public class LinkSubstitution {
     /**
      * String to configure the CmsHtmlConverter
      */
-    private static String m_converterConfiguration = "<?xml version=\"1.0\"?>"+
-            "<converterconfig>"+
-            "   <defaults>"+
-            "       <xhtmloutput value=\"false\"/>"+
-            "       <globalprefix value=\"\"/>"+
-            "       <globalsuffix value=\"\"/>"+
-            "       <globaladdeveryline value=\"false\"/>"+
-            "       <usebrackets value=\"true\" openbracket=\"#(\" closebracket=\")#\"/>"+
-            "       <encodequotationmarks value=\"false\"/>"+
-            "   </defaults>"+
-            "   <replacecontent>"+
-            "       <string content=\"&amp;mdash;\" replace=\"$mdash$\"/>"+
-            "       <string content=\"&amp;ndash;\" replace=\"$ndash$\"/>"+
-            "       <string content=\"&amp;bull;\" replace=\"$bull$\"/>"+
-            "       <string content=\"&#\" replace=\"$Sonder$\"/>"+
-            "   </replacecontent>"+
-            "   <replacestrings usedefaults=\"true\">"+
-            "       <string content=\"$Sonder$\" replace=\"&#\"/>"+
-            "       <string content=\"$mdash$\" replace=\"&amp;mdash;\"/>"+
-            "       <string content=\"$ndash$\" replace=\"&amp;ndash;\"/>"+
-            "       <string content=\"$bull$\" replace=\"&amp;bull;\"/>"+
-            "   </replacestrings>"+
-            "   <inlinetags>"+
-            "       <tag name=\"img\"/>"+
-            "       <tag name=\"br\"/>"+
-            "       <tag name=\"hr\"/>"+
-            "       <tag name=\"input\"/>"+
-            "       <tag name=\"frame\"/>"+
-            "       <tag name=\"meta\"/>"+
-            "   </inlinetags>"+
-            "   <replacetags usedefaults=\"true\">"+
-            "       <tag name=\"img\" attrib=\"src\" replacestarttag=\"]]&gt;&lt;LINK&gt;&lt;![CDATA[$parameter$]]&gt;&lt;/LINK&gt;&lt;![CDATA[\" parameter=\"src\" replaceparamattr=\"true\"/>"+
-            "       <tag name=\"a\" attrib=\"href\" replacestarttag=\"]]&gt;&lt;LINK&gt;&lt;![CDATA[$parameter$]]&gt;&lt;/LINK&gt;&lt;![CDATA[\" replaceendtag=\"&lt;/a&gt;\" parameter=\"href\" replaceparamattr=\"true\"/>"+
-            "   </replacetags>"+
-            "</converterconfig>";
+    private static String m_converterConfiguration = 
+            "<?xml version=\"1.0\"?>"
+            +"<converterconfig>"
+            +"   <defaults>"
+            +"       <xhtmloutput value=\"false\"/>"
+            +"       <globalprefix value=\"\"/>"
+            +"       <globalsuffix value=\"\"/>"
+            +"       <globaladdeveryline value=\"false\"/>"
+            +"       <usebrackets value=\"true\" openbracket=\"#(\" closebracket=\")#\"/>"
+            +"       <encodequotationmarks value=\"false\"/>"
+            +"   </defaults>"
+            +"   <replacecontent>"
+            +"       <string content=\"&amp;mdash;\" replace=\"$mdash$\"/>"
+            +"       <string content=\"&amp;ndash;\" replace=\"$ndash$\"/>"
+            +"       <string content=\"&amp;bull;\" replace=\"$bull$\"/>"
+            +"       <string content=\"&#\" replace=\"$Sonder$\"/>"
+            +"   </replacecontent>"
+            +"   <replacestrings usedefaults=\"true\">"
+            +"       <string content=\"$Sonder$\" replace=\"&#\"/>"
+            +"       <string content=\"$mdash$\" replace=\"&amp;mdash;\"/>"
+            +"       <string content=\"$ndash$\" replace=\"&amp;ndash;\"/>"
+            +"       <string content=\"$bull$\" replace=\"&amp;bull;\"/>"
+            +"   </replacestrings>"
+            +"   <inlinetags>"
+            +"       <tag name=\"img\"/>"
+            +"       <tag name=\"br\"/>"
+            +"       <tag name=\"hr\"/>"
+            +"       <tag name=\"input\"/>"
+            +"       <tag name=\"frame\"/>"
+            +"       <tag name=\"meta\"/>"
+            +"   </inlinetags>"
+            +"   <replacetags usedefaults=\"true\">"
+            +"       <tag name=\"img\" attrib=\"src\" replacestarttag=\"]]&gt;&lt;LINK&gt;&lt;![CDATA[$parameter$]]&gt;&lt;/LINK&gt;&lt;![CDATA[\" parameter=\"src\" replaceparamattr=\"true\"/>"
+            +"       <tag name=\"a\" attrib=\"href\" replacestarttag=\"]]&gt;&lt;LINK&gt;&lt;![CDATA[$parameter$]]&gt;&lt;/LINK&gt;&lt;![CDATA[\" replaceendtag=\"&lt;/a&gt;\" parameter=\"href\" replaceparamattr=\"true\"/>"
+            +"   </replacetags>"
+            +"</converterconfig>";
     
     /**
      * Parses the content of the body tag of a html page. It is the same as
      * substituteEditorContent except that it expects only the part of the
-     * html page between the body tags.
+     * html page between the body tags.<p>
+     * 
+     * @param cms the cms object
+     * @param body body content
+     * @return the substituted content
+     * @throws CmsException if something goes wrong
      */
-    public static String substituteEditorContentBody(CmsObject cms, String body) throws CmsException{
+    public static String substituteEditorContentBody(CmsObject cms, String body) throws CmsException {
 
         // we have to prepare the content for the tidy
         body = "<html><head></head><body>" + body + "</body></html>";
@@ -120,28 +126,37 @@ public class LinkSubstitution {
         int startIndex = result.indexOf("<body");
         startIndex = result.indexOf(">", startIndex + 1) + 1;
         int endIndex = result.lastIndexOf("</body>");
-        if(startIndex > 0) {
+        if (startIndex > 0) {
             result = result.substring(startIndex, endIndex);
         }
         return result;
     }
 
-     /**
-     * Parses the html content for the editor. It replaces the links in <a href=""
-     * and in &lt;image src="". They will be replaced with ]]&gt;&lt;LINK&gt; path in opencms &lt;LINK&gt;&lt;![CDATA[.<p>
-     * 
-     * This method is used for database imports of OpenCms versions &lt; 5.0<p>
+
+    /**
+     * Parses the html content for the editor.
      * 
      * @param cms the CmsObject
      * @param content the html content fragment
-     * @param webappUrl the old web app URL, e.g. http://localhost:8080/opencms/opencms/
-     * @param fileName the path and name of current file
-     * @return String the converted content
+     * @return the substituted content
+     * @throws CmsException if something goes wrong
      */
-    public static String substituteEditorContent(CmsObject cms, String content)throws CmsException{
+    public static String substituteEditorContent(CmsObject cms, String content) throws CmsException {
         return substituteEditorContent(cms, content, null, null);
     }
 
+    /**
+    * Parses the html content for the editor. It replaces the links in <a href=""
+    * and in &lt;image src="". They will be replaced with ]]&gt;&lt;LINK&gt; path in opencms &lt;LINK&gt;&lt;![CDATA[.<p>
+    * 
+    * This method is used for database imports of OpenCms versions &lt; 5.0<p>
+    * 
+    * @param body the html content fragment
+    * @param webappUrl the old web app URL, e.g. http://localhost:8080/opencms/opencms/
+    * @param fileName the path and name of current file
+    * @return String the converted content
+    * @throws CmsException if something goes wrong
+    */
     public static String substituteContentBody(String body, String webappUrl, String fileName) throws CmsException {
         
         // prepare the content for the JTidy
