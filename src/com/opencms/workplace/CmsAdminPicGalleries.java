@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2001/11/06 12:57:38 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/11/15 10:40:15 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.24 $ $Date: 2001/11/06 12:57:38 $
+ * @version $Revision: 1.25 $ $Date: 2001/11/15 10:40:15 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -287,6 +287,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
                                 throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() +
                                         lasturl, CmsException.C_UNKNOWN_EXCEPTION, ex);
                             }
+                            return null;
                         }
                     }
                 }
