@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/02/11 18:59:59 $
+ * @version $Revision: 1.16 $ $Date: 2000/02/15 07:48:29 $
  */
  class CmsRbUserGroup implements I_CmsRbUserGroup, I_CmsConstants {
 
@@ -101,7 +101,7 @@ import com.opencms.core.*;
 	 public Vector getGroupsOfUser(String username)
          throws CmsException {
          Vector allGroups;
-         Vector subGroups;
+         A_CmsGroup subGroup;
          A_CmsGroup group;
          // get all groups of the user
          Vector groups=m_accessUserGroup.getGroupsOfUser(username);
@@ -110,13 +110,16 @@ import com.opencms.core.*;
          Enumeration enu = groups.elements();
          while (enu.hasMoreElements()) {
              group=(A_CmsGroup)enu.nextElement();
-             subGroups=getChilds(group.getName());
-             //add the subchilds to the already existing groups
-             Enumeration enusub=subGroups.elements();
-            while (enusub.hasMoreElements()) {
-                group=(A_CmsGroup)enusub.nextElement();
-                allGroups.addElement(group);
-            }    
+             subGroup=getParent(group.getName());
+			 while(subGroup != null) {
+				 // is the subGroup already in the vector?
+				 if(!allGroups.contains(subGroup)) {
+					 // no! add it
+					 allGroups.addElement(subGroup);
+				 }
+				 // read next sub group
+				 subGroup = getParent(subGroup.getName());
+			 }   
          }
          return allGroups;
        }

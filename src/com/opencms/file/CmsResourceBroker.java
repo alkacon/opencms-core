@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.54 $ $Date: 2000/02/14 17:43:37 $
+ * @version $Revision: 1.55 $ $Date: 2000/02/15 07:48:29 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -2026,9 +2026,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							 String filename)
 		 throws CmsException {
 		 // TODO: delete the following debug message
-		 System.err.println(">>> readFile() for\n" +
-							currentUser.toString() + "in project\n" +
-							currentProject.toString());
 		 CmsFile cmsFile;
 		 // read the resource from the currentProject, or the online-project
 		 try {
@@ -2039,6 +2036,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 // the resource was not readable
 			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
 				 // this IS the onlineproject - throw the exception
+System.err.println(">>> readFile(1) error for\n" +
+				   currentUser.toString() + "\n" +
+				   currentProject.toString());
 				 throw exc;
 			 } else {
 				 // try to read the resource in the onlineproject
@@ -2053,6 +2053,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// acces to all subfolders was granted - return the file.
 			return(cmsFile);
 		} else {
+System.err.println(">>> readFile(2) error for\n" +
+				   currentUser.toString() + "\n" +
+				   currentProject.toString());
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				 CmsException.C_ACCESS_DENIED);
 		}

@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/02/08 09:51:35 $
+ * @version $Revision: 1.14 $ $Date: 2000/02/15 07:48:29 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -42,7 +42,7 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			userRb.addGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
 			userRb.addGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED, null);
 			userRb.addGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED, null);
-			userRb.addGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED, null);
+			userRb.addGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED, C_GROUP_GUEST);
 			
 			A_CmsUser user = userRb.addUser(C_USER_GUEST, "", C_GROUP_GUEST, 
 											"the guest-user", new Hashtable(), 
