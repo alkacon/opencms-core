@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2002/09/05 12:47:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2002/09/12 08:57:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,9 +52,11 @@ import com.opencms.flex.util.I_CmsFlexLruCacheObject;
  * that his entry will become invalid and should thus be cleared from the cache.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
+ * @version $Revision: 1.5 $
  */
-public class CmsFlexCacheEntry implements I_CmsFlexLruCacheObject {
+public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject {
     
     /** Initial size for lists */
     public static final int C_INITIAL_CAPACITY_LISTS = 7;
@@ -70,7 +72,7 @@ public class CmsFlexCacheEntry implements I_CmsFlexLruCacheObject {
     private String m_redirectTarget;
     
     /** Debug switch */
-    private static int DEBUG = 0;
+    private static final int DEBUG = 0;
     
     /** Age for timeout */
     private long m_timeout = -1;
@@ -355,7 +357,7 @@ public class CmsFlexCacheEntry implements I_CmsFlexLruCacheObject {
      */
     public void addToLruCache() {
         // do nothing here...
-        if (DEBUG>0) System.out.println( "Added cache entry with ID: " + this.ID + " to CmsFlexLruCache" );
+        if (DEBUG>0) System.out.println( "Added cache entry with ID: " + this.ID + " to the LRU cache" );
     }
     
     /** 
@@ -364,7 +366,7 @@ public class CmsFlexCacheEntry implements I_CmsFlexLruCacheObject {
     public void removeFromLruCache() {
         if (m_VariationMap!=null && this.m_VariationKey!=null) {
             this.m_VariationMap.remove( this.m_VariationKey );
-            if (DEBUG>0) System.err.println( "Removed cache entry with ID: " + this.ID + " from CmsFlexLruCache" );
+            if (DEBUG>0) System.err.println( "Removed cache entry with ID: " + this.ID + " from the LRU cache" );
         }
     }
     
@@ -377,6 +379,9 @@ public class CmsFlexCacheEntry implements I_CmsFlexLruCacheObject {
     
     // methods to clean-up/finalize the object instance
     
+    /**
+     * Finalize this instance.
+     */
     protected void finalize() throws java.lang.Throwable {
         if (DEBUG>0) System.err.println( "Finalizing cache entry with ID: " + this.ID );
         
@@ -391,9 +396,14 @@ public class CmsFlexCacheEntry implements I_CmsFlexLruCacheObject {
         this.setNextLruObject( null );
         this.setPreviousLruObject( null );
         
-        this.m_ByteSize = 0;        
+        this.m_ByteSize = 0;  
+        
+        super.finalize();      
     }
     
+    /**
+     * Clears the elements and headers HashMaps.
+     */
     public void clear() {
         m_elements.clear();
         m_headers.clear();
