@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.0  XXXXXXXXXX   - XX XXXXXX 2001
+* if elementcache aktiv and workplace classes are used for a 
+  page file, the elementdefinitions wasent found. 
+
+
 OpenCms 4.4.0  Gom Jabbar   - 03 August 2001
 - Added credits.html
 - Updated install.html
