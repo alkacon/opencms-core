@@ -17,7 +17,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/02/07 10:46:45 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/08 15:31:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -57,7 +57,27 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * from workplace.ini)
      */
     protected static String m_workplaceElementPath = null;
-        
+    
+    
+    /** Reference to the config file */
+    private static CmsXmlWpConfigFile m_configFile = null;    
+
+     /**
+     * Gets a reference to the default config file.
+     * The path to this file ist stored in <code>C_WORKPLACE_INI</code>
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @return Reference to the config file.
+     * @exception CmsException
+     */
+    public CmsXmlWpConfigFile getConfigFile(A_CmsObject cms) throws CmsException {
+        if(m_configFile == null) {
+            m_configFile = new CmsXmlWpConfigFile(cms);
+        }
+        return m_configFile;
+    }
+    
+    
     /**
      * Reads the buttons definition file.
      * @param cms The actual cms object

@@ -14,7 +14,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/08 13:21:04 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/08 15:31:21 $
  */
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                      I_CmsConstants {
@@ -124,6 +124,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
                     }
                     session.putValue(C_PARA_PREVIOUSLIST,currentFilelist);   
                     session.putValue(C_PARA_FILELIST,url);
+                    session.putValue(C_PARA_FOLDER,url);
                 } else {
                     // the url is a file, so show the requested document
                     xmlTemplateDocument.setXmlData(C_LINK_VALUE,servlets+url); 

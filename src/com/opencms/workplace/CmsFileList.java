@@ -16,7 +16,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/02/03 14:36:08 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/08 15:31:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -72,6 +72,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
     
     /** The title value column */
     private final static String C_TITLE_VALUE="TITLE_VALUE";
+
+    /** The icon value column */
+    private final static String C_ICON_VALUE="ICON_VALUE";
     
     /** The type value column */
     private final static String C_TYPE_VALUE="TYPE_VALUE";
@@ -133,6 +136,18 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
     /** The style for changed files or folders */
     private final static String C_STYLE_CHANGED="dateigeaendert";
     
+    /** The prefix for the icon images */
+    private final static String C_ICON_PREFIX="ic_file_";                  
+    
+    /** The extension for the icon images */
+    private final static String C_ICON_EXTENSION=".gif";        
+
+    /** The default icon */
+    private final static String C_ICON_DEFAULT="ic_file_othertype.gif";
+
+    /** Storage for caching icons */
+    private Hashtable m_iconCache=new Hashtable();
+    
     /**
      * Handling of the special workplace <CODE>&lt;FILELIST&gt;</CODE> tags.
      * <P>
@@ -156,7 +171,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         String template=n.getAttribute(C_FILELIST_TEMPLATE);
         
         CmsXmlWpTemplateFile filelistTemplate = new CmsXmlWpTemplateFile(cms,template);
-            
+        
+        CmsXmlWpConfigFile configFile = this.getConfigFile(cms);
+        
         Vector filelist=new Vector();
         
         Method groupsMethod=null;
@@ -182,7 +199,8 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         } catch(Exception exc2) {
             throwException("User method " + method + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
         }
-       return getFilelist(cms,filelist,filelistTemplate,lang,parameters,callingObject);
+       return getFilelist(cms,filelist,filelistTemplate,lang,parameters,callingObject,
+                          configFile);
     }          
     
      /**
@@ -193,11 +211,13 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
       * @param lang The language defintion template.
       * @param parameters  Hashtable containing all user parameters.
       * @param callingObject The object calling this class.
+      * @param config The config file.
       * @return HTML-Code of the file list. 
       */
      private Object getFilelist(A_CmsObject cms, Vector list,
                                 A_CmsXmlContent doc, CmsXmlLanguageFile lang,
-                                Hashtable parameters,Object callingObject) 
+                                Hashtable parameters,Object callingObject,
+                                CmsXmlWpConfigFile config) 
             throws CmsException {
             Hashtable preferences=new Hashtable();
             StringBuffer output=new StringBuffer();  
@@ -243,6 +263,10 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     folder=(CmsFolder)res; 
                     // Set output style class according to the project and state of the file.
                     template.setXmlData(C_CLASS_VALUE,getStyle(cms,folder));   
+                     // set the icon
+                    A_CmsResourceType type=cms.getResourceType(folder.getType());
+                    String icon=icon=getIcon(cms,type,config);
+                    template.setXmlData(C_ICON_VALUE,config.getPictureUrl()+icon);
                     // set the link
                     template.setXmlData(C_LINK_VALUE,folder.getAbsolutePath());                      
                     // set the lock icon if nescessary
@@ -256,8 +280,6 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                         title="";
                     }
                     template.setXmlData(C_TITLE_VALUE,title);   
-                    // set the folder type 
-                    A_CmsResourceType type=cms.getResourceType(folder.getType());
                     template.setXmlData(C_TYPE_VALUE,type.getResourceName());   
                     // get the folder date
                     long time=folder.getDateLastModified();
@@ -289,8 +311,13 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                 } else {        
                     file=(CmsFile)res; 
                     // Set output style class according to the project and state of the file.
-                    template.setXmlData(C_CLASS_VALUE,getStyle(cms,file));        
-                    // set the link
+                    template.setXmlData(C_CLASS_VALUE,getStyle(cms,file));                   
+                    // set the icon
+                    A_CmsResourceType type=cms.getResourceType(file.getType());
+                    String icon=getIcon(cms,type,config);
+                    //String icon="ic_file_"+type.getResourceName().toLowerCase()+".gif";
+                    template.setXmlData(C_ICON_VALUE,config.getPictureUrl()+icon);
+                    // set the link         
                     template.setXmlData(C_LINK_VALUE,servlets+file.getAbsolutePath());  
                     // set the lock icon if nescessary
                     template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,file,template,lang),this));                      
@@ -306,7 +333,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     }
                     template.setXmlData(C_TITLE_VALUE,title);   
                     // set the file type 
-                    A_CmsResourceType type=cms.getResourceType(file.getType());
+                    type=cms.getResourceType(file.getType());
                     template.setXmlData(C_TYPE_VALUE,type.getResourceName());   
                     // get the file date
                     long time=file.getDateLastModified();
@@ -570,7 +597,43 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             }
          }
          return output.toString();
+     }     
+     
+     /**
+      * Selects the icon that is displayed in the file list.<br>
+      * This method includes cache to prevent to look up in the filesystem for each
+      * icon to be displayed
+      * @param cms The CmsObject.
+      * @param type The resource type of the file entry.
+      * @param config The configuration file.
+      * @return String containing the complete name of the iconfile.
+      * @exception Throws CmsException if something goes wrong.
+      */
+     private String getIcon(A_CmsObject cms,A_CmsResourceType type, CmsXmlWpConfigFile config)
+     throws CmsException {
+        String icon=null;
+        String filename=config.getPicturePath()+C_ICON_PREFIX+type.getResourceName().toLowerCase()+C_ICON_EXTENSION;
+        A_CmsResource iconFile;
+        
+        // check if this icon is in the cache already
+        icon=(String)m_iconCache.get(type.getResourceName());
+        // no icon was found, so check if there is a icon file in the filesystem
+        if (icon==null) {
+            try {
+                 // read the icon file
+                 iconFile=cms.readFileHeader(filename);
+                 // add the icon to the cache
+                 icon=C_ICON_PREFIX+type.getResourceName().toLowerCase()+C_ICON_EXTENSION;
+                 m_iconCache.put(type.getResourceName(),icon);
+            } catch (CmsException e) {                
+              // no icon was found, so use the default 
+              icon=C_ICON_DEFAULT;
+              m_iconCache.put(type.getResourceName(),icon);
+            }            
+        }             
+        return icon;
      }
+     
      
      
      /**
