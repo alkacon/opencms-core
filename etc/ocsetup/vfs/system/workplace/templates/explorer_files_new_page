@@ -16,23 +16,6 @@ function simpleEscape(text) {
 	if(text)return text.replace(/\//g, "%2F");
 }
 
-
-function checkForValue(){
-	if(document.NEU.NEUNAME.value==""){
-	    document.NEU.WEITER.disabled=true;
-	}
-	else {
-	    document.NEU.WEITER.disabled=false;
-	}
-	
-	if((document.LINK.NEUNAME.value=="")||(document.LINK.LINKNAME.value=="")){
-	    document.LINK.WEITER.disabled=true;
-	}
-	else {
-	    document.LINK.WEITER.disabled=false;
-	}
-}
-
 function checkinputfield(nr){
     if(nr==1){
         if(document.LINK.LINKNAME.value!=""){
@@ -46,7 +29,26 @@ function checkinputfield(nr){
          }
          else document.LINK.WEITER.disabled=true;
     }
-} 
+}
+
+function checkIt(wasdenn){
+	
+	if(wasdenn==1){
+		if(document.LINK.NEUNAME.value=="" || document.LINK.LINKNAME.value=="")
+		{
+			alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
+		} else location='explorer_files_new_page.html?step=1&newfile='+document.LINK.NEUNAME.value+'&title='+document.LINK.NEUTITEL.value+'&template='+simpleEscape(document.LINK.TEMPLATE.value)+'&navtitle='+simpleEscape(document.LINK.LINKNAME.value)+'&navpos='+ document.LINK.LINKPOS.value;
+	}
+	
+	if(wasdenn==2){
+		if(document.NEU.NEUNAME.value=="" )
+		{
+				alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
+		} else location='explorer_files_new_page.html?step=1&newfile='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value+'&template='+simpleEscape(document.NEU.TEMPLATE.value);
+	}
+}
+
+
 
 //-->
 </script>
@@ -104,7 +106,7 @@ function checkinputfield(nr){
 									<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
 								</tr>
      							<tr>
-									<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData2('NEU','LINK','NEWWITHOUTLINK','NEWLINK');switchlyr('NEWLINK','NEWWITHOUTLINK');this.checked=false;checkForValue();"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
+									<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData2('NEU','LINK','NEWWITHOUTLINK','NEWLINK');switchlyr('NEWLINK','NEWWITHOUTLINK');this.checked=false;"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
 								</tr>
 								<tr>
 									<td colspan=2 class="leerzeile"><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=70px></td>
@@ -114,7 +116,7 @@ function checkinputfield(nr){
 										<table cellspacing=0 cellpadding=5 width=100%>
 											<tr>
 												<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-												<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="location='explorer_files_new_page.html?step=1&newfile='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value+'&template='+simpleEscape(document.NEU.TEMPLATE.value);"></td>
+												<td class=formular align=center width=20%><INPUT  class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="javascript:checkIt(2)"></td>
 												<td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
 											</tr>
 										</table>
@@ -150,7 +152,7 @@ function checkinputfield(nr){
 										</tr>
 										<tr>
 											<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-											<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100"  action="onfocus='checkinputfield(1)'"/><![CDATA[</td>
+											<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100" /><![CDATA[</td>
 										</tr>
 										<tr>
 											<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
@@ -161,14 +163,14 @@ function checkinputfield(nr){
 											<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
 										</tr>
 										<tr>
-											<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData2('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;checkForValue();"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
+											<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData2('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
 										</tr>
 										<tr>
 											<td colspan=2 class=leerzeile><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=10px</td>
 										</tr>
 										<tr>
 											<td class=formular>]]><LABEL value="input.navtitle" /><![CDATA[:</td>
-											<td class=dialogtxt>]]><INPUTFIELD name="LINKNAME" class="textfeld2" size="40" length="100" action="onFocus='checkinputfield(2)'" /><![CDATA[</td>
+											<td class=dialogtxt>]]><INPUTFIELD name="LINKNAME" class="textfeld2" size="40" length="100"  /><![CDATA[</td>
 										</tr>
 										<tr>
 											<td class=formular>]]><LABEL value="input.insert" /><![CDATA[</td>
@@ -179,7 +181,7 @@ function checkinputfield(nr){
 												<table cellspacing=0 cellpadding=5 width=100%>
 													<tr>
 														<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-														<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="location='explorer_files_new_page.html?step=1&newfile='+document.LINK.NEUNAME.value+'&title='+document.LINK.NEUTITEL.value+'&template='+simpleEscape(document.LINK.TEMPLATE.value)+'&navtitle='+simpleEscape(document.LINK.LINKNAME.value)+'&navpos='+ document.LINK.LINKPOS.value;"></td>
+														<td class=formular align=center width=20%><INPUT  class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER  onClick="javascript:checkIt(1)">
 														<td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
 													</tr>
 												</table>
