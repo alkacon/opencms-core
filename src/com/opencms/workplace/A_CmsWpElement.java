@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
- * Date   : $Date: 2000/09/19 07:45:27 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/10/31 13:11:29 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2000/09/19 07:45:27 $
+ * @version $Revision: 1.28 $ $Date: 2000/10/31 13:11:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -401,16 +401,6 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 	/**
 	 * Help method that handles any occuring exception by writing
 	 * an error message to the OpenCms logfile and throwing a 
-	 * CmsException of the type "unknown".
-	 * @param errorMessage String with the error message to be printed.
-	 * @exception CmsException
-	 */
-	protected void throwException(String errorMessage) throws CmsException {
-		throwException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
-	}
-	/**
-	 * Help method that handles any occuring exception by writing
-	 * an error message to the OpenCms logfile and throwing a 
 	 * CmsException of the given type.
 	 * @param errorMessage String with the error message to be printed.
 	 * @param type Type of the exception to be thrown.
@@ -420,5 +410,15 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
 		}        throw new CmsException(errorMessage, type);
+	}
+	/**
+	 * Help method that handles any occuring exception by writing
+	 * an error message to the OpenCms logfile and throwing a 
+	 * CmsException of the type "unknown".
+	 * @param errorMessage String with the error message to be printed.
+	 * @exception CmsException
+	 */
+	protected void throwException(String errorMessage) throws CmsException {
+		throwException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
 	}
 }

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/09/19 07:45:27 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2000/10/11 19:25:06 $
+ * Version: $Revision: 1.50 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,59 +42,14 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.49 $ $Date: 2000/09/19 07:45:27 $
+ * @version $Revision: 1.50 $ $Date: 2000/10/11 19:25:06 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
 																		I_CmsWpConstants {
 
 	private Hashtable m_wpTags = new Hashtable();
 	
-	private static Hashtable m_langFiles = new Hashtable();
 
-	/** Reference to the actual language file. */
-	private CmsXmlLanguageFile m_languageFile = null;
-
-	/**
-	 * Default constructor.
-	 */
-	public CmsXmlWpTemplateFile() throws CmsException {
-		super();
-		registerMyTags();
-	}
-	/**
-	 * Constructor for creating a new object containing the content
-	 * of the given filename.
-	 * 
-	 * @param cms CmsObject object for accessing system resources.
-	 * @param filename Name of the body file that shoul be read.
-	 */        
-	public CmsXmlWpTemplateFile(CmsObject cms, CmsFile file) throws CmsException {
-		super();
-		registerMyTags();
-		init(cms, file);
-	}
-	/**
-	 * Constructor for creating a new object containing the content
-	 * of the given filename.
-	 * 
-	 * @param cms CmsObject object for accessing system resources.
-	 * @param filename Name of the body file that shoul be read.
-	 */        
-	public CmsXmlWpTemplateFile(CmsObject cms, String filename) throws CmsException {
-		super();
-		registerMyTags();
-		init(cms, filename);
-	}
-	/**
-	* Clears the internal language cache
-	**/
-	public static void clearcache() {
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(C_OPENCMS_INFO,"clear language file cache");
-		}
-	    m_langFiles = new Hashtable();
-	    
-	}
 	/**
 	 * Clears the startup tag that can be used in workplace documents.
 	 */
@@ -121,38 +76,6 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 		fastSetData(tag, data);
 		//setXmlData(tag,data);
 	}
-	/**
-	 * Gets the actual instance of the language file.
-	 * @return Language file.
-	 */
-	public CmsXmlLanguageFile getLanguageFile() {
-		return m_languageFile; 
-	}
-  	/**
-	 * Gets the text and CDATA content of a processed datablock from the 
-	 * datablock hashtable.
-	 * 
-	 * @param tag Key for the datablocks hashtable.
-	 * @return Processed datablock for the given key.
-	 * @deprecated Use getProcessedDataValue instead.
-	 * @exception CmsException
-	 */
-	public String getProcessedXmlDataValue(String tag) throws CmsException {
-		return getProcessedDataValue(tag);
-	}
-  	/**
-	 * Gets the text and CDATA content of a processed datablock from the 
-	 * datablock hashtable.
-	 * 
-	 * @param tag Key for the datablocks hashtable.
-	 * @param callingObject Object that should be used to look up user methods.
-	 * @return Processed datablock for the given key.
-	 * @deprecated Use getProcessedDataValue instead.
-	 * @exception CmsException
-	 */
-	public String getProcessedXmlDataValue(String tag, Object callingObject) throws CmsException {
-		return getProcessedDataValue(tag, callingObject);
-	}
   	/**
 	 * Gets the text and CDATA content of a processed datablock from the 
 	 * datablock hashtable.
@@ -170,6 +93,31 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 	public String getProcessedXmlDataValue(String tag, Object callingObject, Object userObj) 
 			throws CmsException {
 		return getProcessedDataValue(tag, callingObject, userObj);
+	}
+  	/**
+	 * Gets the text and CDATA content of a processed datablock from the 
+	 * datablock hashtable.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @param callingObject Object that should be used to look up user methods.
+	 * @return Processed datablock for the given key.
+	 * @deprecated Use getProcessedDataValue instead.
+	 * @exception CmsException
+	 */
+	public String getProcessedXmlDataValue(String tag, Object callingObject) throws CmsException {
+		return getProcessedDataValue(tag, callingObject);
+	}
+  	/**
+	 * Gets the text and CDATA content of a processed datablock from the 
+	 * datablock hashtable.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @return Processed datablock for the given key.
+	 * @deprecated Use getProcessedDataValue instead.
+	 * @exception CmsException
+	 */
+	public String getProcessedXmlDataValue(String tag) throws CmsException {
+		return getProcessedDataValue(tag);
 	}
 	/**
 	 * Gets the text and CDATA content of a datablock from the 
@@ -247,38 +195,26 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 		return hasData(tag);
 	}
 	/**
-	 * Overridden init method of A_CmsXmlContent.
-	 * This method is now extended to get an actual instance of the
-	 * language file.
-	 * @param cms CmsObject Object for accessing resources.
-	 * @param file CmsFile object of the file to be loaded and parsed.
-	 * @exception CmsException
-	 */
-	public void init(CmsObject cms, CmsFile file) throws CmsException {
-		String currentLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-		if(!m_langFiles.containsKey(currentLanguage)) {
-			m_langFiles.put(currentLanguage, new CmsXmlLanguageFile(cms));
-		}
-
-		m_languageFile = (CmsXmlLanguageFile)m_langFiles.get(currentLanguage);        
+	 * Constructor for creating a new object containing the content
+	 * of the given filename.
+	 * 
+	 * @param cms CmsObject object for accessing system resources.
+	 * @param filename Name of the body file that shoul be read.
+	 */        
+	public CmsXmlWpTemplateFile(CmsObject cms, CmsFile file) throws CmsException {
+		this();
 		super.init(cms, file);
 	}
 	/**
-	 * Overridden init method of A_CmsXmlContent.
-	 * This method is now extended to get an actual instance of the
-	 * language file.
-	 * @param cms CmsObject Object for accessing resources.
-	 * @param file CmsFile object of the file to be loaded and parsed.
-	 * @exception CmsException
+	 * Constructor for creating a new object containing the content
+	 * of the given filename.
+	 * 
+	 * @param cms CmsObject object for accessing system resources.
+	 * @param filename Name of the body file that shoul be read.
 	 */
-	public void init(CmsObject cms, String filename) throws CmsException {
-		String currentLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-		if(!m_langFiles.containsKey(currentLanguage)) {
-			m_langFiles.put(currentLanguage, new CmsXmlLanguageFile(cms));
-		}
-
-		m_languageFile = (CmsXmlLanguageFile)m_langFiles.get(currentLanguage);        
-
+	public CmsXmlWpTemplateFile(CmsObject cms, String filename) throws CmsException
+	{
+		this();
 		super.init(cms, filename);
 	}
 	/**
@@ -348,5 +284,12 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 	*/
 	public void setXmlData(String tag, String data) {
 		setData(tag, data);
+	}
+	/**
+	 * Default constructor.
+	 */
+	public CmsXmlWpTemplateFile() throws CmsException {
+		super();
+		registerMyTags();
 	}
 }
