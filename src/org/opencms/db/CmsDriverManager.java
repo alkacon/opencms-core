@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/02/17 12:43:46 $
- * Version: $Revision: 1.475 $
+ * Date   : $Date: 2005/03/04 15:10:29 $
+ * Version: $Revision: 1.476 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.475 $ $Date: 2005/02/17 12:43:46 $
+ * @version $Revision: 1.476 $ $Date: 2005/03/04 15:10:29 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -378,8 +378,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // set the security manager
         driverManager.m_securityManager = securityManager;
 
-        // set the sql manager
-        driverManager.m_sqlManager = new CmsSqlManager();
+        // create and set the sql manager
+        driverManager.m_sqlManager = new CmsSqlManager(driverManager);
             
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver manager init  : phase 2 - initializing pools");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/03/04 15:10:30 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  */
 public final class OpenCms {
 
@@ -116,27 +116,7 @@ public final class OpenCms {
     public static void fireCmsEvent(int type, Map data) {
         
         OpenCms.fireCmsEvent(new CmsEvent(type, data));
-    }
-    
-    /**
-     * Returns a list of available database pool names.<p>
-     * 
-     * @return a list of database pool names
-     */
-    public static List getDbPoolNames() {
-    
-        return OpenCmsCore.getInstance().getDbPoolNames();
-    }
-
-    /**
-     * Returns the name of the default pool.<p>
-     * 
-     * @return the name of the default pool
-     */
-    public static String getDefaultDbPoolName() {
-        
-        return OpenCmsCore.getInstance().getDefaultDbPoolName();
-    }
+    }   
     
     /**
      * Returns the configured list of default directory file names.<p>

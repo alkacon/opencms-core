@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/03/04 15:10:30 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,10 +51,14 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * Various methods to create DBCP pools.<p>
  * 
  * Only JDBC Driver based pools are supported currently. JNDI DataSource 
- * based pools might be added probably later.
+ * based pools might be added probably later.<p>
+ * 
+ * <b>Please note:</b> This class is subject to change in later versions.
+ * To obtain information about the connections, please use the
+ * {@link org.opencms.db.CmsSqlManager}.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.26 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.27 $ $Date: 2005/03/04 15:10:30 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -216,9 +220,9 @@ public final class CmsDbPool extends Object {
     }
     
     /**
-     * Returns the default database pool name.<p>
+     * Returns the name of the default database connection pool.<p>
      * 
-     * @return the default pool name
+     * @return the name of the default database connection pool
      */
     public static String getDefaultDbPoolName() {
 
