@@ -57,6 +57,8 @@ createPropertydefinition export jsp
 createPropertydefinition cache jsp
 createPropertydefinition stream jsp
 createPropertydefinition content-encoding jsp
+createPropertydefinition NavText jsp
+createPropertydefinition NavPos jsp
 addFileExtension doc binary
 addFileExtension pdf binary
 addFileExtension zip binary
