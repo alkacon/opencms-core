@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupLoggingThread.java,v $
- * Date   : $Date: 2004/02/20 19:52:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/22 14:14:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.io.*;
  * the getMessages() method.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsSetupLoggingThread extends Thread {
     private static Vector messages;
@@ -75,6 +75,7 @@ public class CmsSetupLoggingThread extends Thread {
      */
     public void run() {
         int lineNr = 0;
+        int lastLineNr = -1;
         String line = null;
         while (!m_stopThread) {
             lineNr = m_lineReader.getLineNumber();
@@ -84,7 +85,11 @@ public class CmsSetupLoggingThread extends Thread {
                 // "Write end dead" IO exceptions can be ignored                
             }
             if (line != null) {
-                messages.addElement(lineNr + ":\t" + line);
+                if (lineNr > lastLineNr) {
+                    // supress multiple output of the same line after "Write end dead" IO exception      
+                    messages.addElement(lineNr + ":\t" + line);
+                    lastLineNr = lineNr;
+                }
             }          
         }
         try {
