@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/10/15 15:08:05 $
- * Version: $Revision: 1.423 $
+ * Date   : $Date: 2004/10/18 18:09:28 $
+ * Version: $Revision: 1.424 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.423 $ $Date: 2004/10/15 15:08:05 $
+ * @version $Revision: 1.424 $ $Date: 2004/10/18 18:09:28 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2487,7 +2487,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         checkPermissions(context, parent, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
 
         // try to get the sub resources from the cache
-        String cacheKey = getCacheKey(context.currentUser().getName() + filter.getCacheId(), context.currentProject(), parent.getRootPath());
+        String cacheKey = getCacheKey(context.currentUser().getName() + filter.getCacheId() + readTree, context.currentProject(), parent.getRootPath());
         List subResources = (List)m_resourceListCache.get(cacheKey);        
 
         if (subResources != null && subResources.size() > 0) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/10/14 08:21:39 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2004/10/18 18:09:37 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.76 $
+ * @version $Revision: 1.77 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1112,12 +1112,17 @@ public class CmsObject {
     }
 
     /**
-     * Reads all resources below the given path matching the filter criteria.<p>
+     * Reads all resources below the given path matching the filter criteria, 
+     * including the full tree below the path.<p>
      * 
      * @param resourcename the parent path to read the resources from
      * @param filter the filter
+     * 
      * @return a list of CmsResource objects matching the filter criteria
+     * 
      * @throws CmsException if something goes wrong
+     * 
+     * @see #readResources(String, CmsResourceFilter, boolean)
      */
     public List readResources(String resourcename, CmsResourceFilter filter) throws CmsException {
         
