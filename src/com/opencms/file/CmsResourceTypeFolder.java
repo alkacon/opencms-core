@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/03/04 17:26:28 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/03/05 18:46:13 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -957,58 +957,73 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     */
     public void undoChanges(CmsObject cms, String resource) throws CmsException{
         // we have to undo changes of the folder and all resources in the folder
-        Vector allSubFolders = new Vector();
-        Vector allSubFiles   = new Vector();
-        getAllResources(cms, resource, allSubFiles, allSubFolders);
+//        Vector allSubFolders = new Vector();
+//        Vector allSubFiles   = new Vector();
+//        getAllResources(cms, resource, allSubFiles, allSubFolders);
+        
         if(!cms.accessWrite(resource)){
             throw new CmsException("[" + this.getClass().getName() + "]"+resource, CmsException.C_NO_ACCESS);
         }
         // first undo changes of the folder
         cms.doUndoChanges(resource);
-        // undo changes in the corresponding folder in C_VFS_PATH_BODIES
-        cms.doUndoChanges(C_VFS_PATH_BODIES  + resource.substring(1));
+        
+        // check if there is a corrosponding body folder
+        String bodyPath = C_VFS_PATH_BODIES  + resource.substring(1);
+        boolean hasBodyFolder = false;
+        try {
+            cms.readFileHeader(bodyPath);
+            hasBodyFolder = true;
+        } catch (CmsException e) {
+            // body folder not found or no access, so ignore it
+        }
+        // undo changes in the corresponding folder in C_VFS_PATH_BODIES          
+        if (hasBodyFolder) {
+            cms.doUndoChanges(bodyPath);
+        }
+        
+        // TODO: Implement optional "recurse" function 
         // now undo changes of the subfolders
-        for (int i=0; i<allSubFolders.size(); i++){
-            CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
-            if(curFolder.getState() != C_STATE_NEW){
-                if(curFolder.getState() == C_STATE_DELETED){
-                    undeleteResource(cms, curFolder.getAbsolutePath());
-                    lockResource(cms, curFolder.getAbsolutePath(), true);
-                }
-                undoChanges(cms, curFolder.getAbsolutePath());
-            } else {
-                // if it is a new folder then delete the folder
-                try{
-                    deleteResource(cms, curFolder.getAbsolutePath());
-                } catch (CmsException ex){
-                    // do not throw exception when resource not exists
-                    if(ex.getType() != CmsException.C_NOT_FOUND){
-                        throw ex;
-                    }
-                }
-            }
-        }
-        // now undo changes in the files
-        for (int i=0; i<allSubFiles.size(); i++){
-            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
-            if(curFile.getState() != C_STATE_NEW){
-                if(curFile.getState() == C_STATE_DELETED){
-                    cms.undeleteResource(curFile.getAbsolutePath());
-                    cms.lockResource(curFile.getAbsolutePath(), true);
-                }
-                cms.undoChanges(curFile.getAbsolutePath());
-            } else {
-                // if it is a new file then delete the file
-                try{
-                    cms.deleteResource(curFile.getAbsolutePath());
-                } catch (CmsException ex){
-                    // do not throw exception when resource not exists
-                    if(ex.getType() != CmsException.C_NOT_FOUND){
-                        throw ex;
-                    }
-                }
-            }
-        }
+//        for (int i=0; i<allSubFolders.size(); i++){
+//            CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
+//            if(curFolder.getState() != C_STATE_NEW){
+//                if(curFolder.getState() == C_STATE_DELETED){
+//                    undeleteResource(cms, curFolder.getAbsolutePath());
+//                    lockResource(cms, curFolder.getAbsolutePath(), true);
+//                }
+//                undoChanges(cms, curFolder.getAbsolutePath());
+//            } else {
+//                // if it is a new folder then delete the folder
+//                try{
+//                    deleteResource(cms, curFolder.getAbsolutePath());
+//                } catch (CmsException ex){
+//                    // do not throw exception when resource not exists
+//                    if(ex.getType() != CmsException.C_NOT_FOUND){
+//                        throw ex;
+//                    }
+//                }
+//            }
+//        }
+//        // now undo changes in the files
+//        for (int i=0; i<allSubFiles.size(); i++){
+//            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
+//            if(curFile.getState() != C_STATE_NEW){
+//                if(curFile.getState() == C_STATE_DELETED){
+//                    cms.undeleteResource(curFile.getAbsolutePath());
+//                    cms.lockResource(curFile.getAbsolutePath(), true);
+//                }
+//                cms.undoChanges(curFile.getAbsolutePath());
+//            } else {
+//                // if it is a new file then delete the file
+//                try{
+//                    cms.deleteResource(curFile.getAbsolutePath());
+//                } catch (CmsException ex){
+//                    // do not throw exception when resource not exists
+//                    if(ex.getType() != CmsException.C_NOT_FOUND){
+//                        throw ex;
+//                    }
+//                }
+//            }
+//        }
     }
 
     /**
