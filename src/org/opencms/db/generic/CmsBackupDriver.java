@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/03/31 14:01:10 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2004/04/01 04:49:40 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.80 $ $Date: 2004/03/31 14:01:10 $
+ * @version $Revision: 1.81 $ $Date: 2004/04/01 04:49:40 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -747,13 +747,14 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProperties(org.opencms.file.CmsBackupResource)
      */
     public List readBackupProperties(CmsBackupResource resource) throws CmsException {
+
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
         String propertyKey = null;
         String propertyValue = null;
         int mappingType = -1;
-        Map propertyMap = (Map) new HashMap();
+        Map propertyMap = (Map)new HashMap();
         CmsProperty property = null;
 
         try {
@@ -766,11 +767,11 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             while (res.next()) {
                 propertyKey = res.getString(1);
                 propertyValue = res.getString(2);
-                mappingType = res.getInt(3); 
-                
-                if ((property = (CmsProperty) propertyMap.get(propertyKey)) != null ) {
+                mappingType = res.getInt(3);
+
+                if ((property = (CmsProperty)propertyMap.get(propertyKey)) != null) {
                     // there exists already a property for this key in the result
-                    
+
                     if (mappingType == CmsProperty.C_STRUCTURE_RECORD_MAPPING) {
                         // this property value is mapped to a structure record
                         property.setStructureValue(propertyValue);
@@ -778,13 +779,15 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                         // this property value is mapped to a resource record
                         property.setResourceValue(propertyValue);
                     } else {
-                        throw new CmsException("Unknown property value mapping type found: " + mappingType, CmsException.C_UNKNOWN_EXCEPTION);
-            		}
+                        throw new CmsException(
+                            "Unknown property value mapping type found: " + mappingType,
+                            CmsException.C_UNKNOWN_EXCEPTION);
+                    }
                 } else {
                     // there doesn't exist a property for this key yet
                     property = new CmsProperty();
                     property.setKey(propertyKey);
-                    
+
                     if (mappingType == CmsProperty.C_STRUCTURE_RECORD_MAPPING) {
                         // this property value is mapped to a structure record
                         property.setStructureValue(propertyValue);
@@ -792,11 +795,13 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                     } else if (mappingType == CmsProperty.C_RESOURCE_RECORD_MAPPING) {
                         // this property value is mapped to a resource record
                         property.setStructureValue(null);
-                        property.setResourceValue(propertyValue);                        
+                        property.setResourceValue(propertyValue);
                     } else {
-                        throw new CmsException("Unknown property value mapping type found: " + mappingType, CmsException.C_UNKNOWN_EXCEPTION);
-                    } 
-                    
+                        throw new CmsException(
+                            "Unknown property value mapping type found: " + mappingType,
+                            CmsException.C_UNKNOWN_EXCEPTION);
+                    }
+
                     propertyMap.put(propertyKey, property);
                 }
             }
@@ -806,7 +811,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             m_sqlManager.closeAll(conn, stmt, res);
         }
 
-        return (List) new ArrayList(propertyMap.values());
+        return (List)new ArrayList(propertyMap.values());
     }
     
     /**

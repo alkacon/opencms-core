@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/03/31 14:01:10 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/04/01 04:49:40 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.List;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.29 $ $Date: 2004/03/31 14:01:10 $
+ * @version $Revision: 1.30 $ $Date: 2004/04/01 04:49:40 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
@@ -80,16 +80,17 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
      * @see org.opencms.db.I_CmsVfsDriver#readPropertyObjects(org.opencms.file.CmsProject, org.opencms.file.CmsResource)
      */
     public List readPropertyObjects(CmsProject currentProject, CmsResource resource) throws CmsException {
+
         List properties = super.readPropertyObjects(currentProject, resource);
         CmsProperty property = null;
-        
-        for (int i=0;i<properties.size();i++) {
-            property = (CmsProperty) properties.get(i);
-            
+
+        for (int i = 0; i < properties.size(); i++) {
+            property = (CmsProperty)properties.get(i);
+
             property.setStructureValue(CmsSqlManager.unescape(property.getStructureValue()));
-            property.setResourceValue(CmsSqlManager.unescape(property.getResourceValue()));            
+            property.setResourceValue(CmsSqlManager.unescape(property.getResourceValue()));
         }
-        
+
         return properties;
     }    
 

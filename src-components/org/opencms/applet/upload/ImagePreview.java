@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImagePreview.java,v $
- * Date   : $Date: 2003/12/11 15:21:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/04/01 04:43:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 
 package org.opencms.applet.upload;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -41,7 +42,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -59,32 +59,34 @@ public class ImagePreview extends JComponent implements PropertyChangeListener {
     private static final int C_MODE_EMPTY = 0;
     private static final int C_MODE_IMAGE = 1;
     private static final int C_MODE_TEXT = 2;
-
-    private String m_messageNoPreview="";
-
-    ImageIcon m_thumbnail = null;
-    File m_file = null;
-    String[] m_text = null;
-    int m_mode = C_MODE_EMPTY;
-    Font m_font = null;
+    
+    private File m_file;
+    private Font m_font;
+    private String m_messageNoPreview;
+    private int m_mode;
+    private String[] m_text;
+    private ImageIcon m_thumbnail;
 
     /**
      * Constructor, creates a new ImagePreview.<p>
-
+     *
      * @param fc The fileselector box
      * @param messageNoPreview localized message for no preview
      */
     public ImagePreview(JFileChooser fc, String messageNoPreview) {
+
         setPreferredSize(new Dimension(200, 100));
         fc.addPropertyChangeListener(this);
         m_font = new java.awt.Font("Verdana", Font.PLAIN, 9);
-        m_messageNoPreview=messageNoPreview;
+        m_messageNoPreview = messageNoPreview;
+        m_mode = C_MODE_EMPTY;
     }
 
     /**
      * Loads the image for the preview.<p>
      */
     public void loadImage() {
+
         if (m_file == null) {
             m_thumbnail = null;
             return;
@@ -102,26 +104,44 @@ public class ImagePreview extends JComponent implements PropertyChangeListener {
     }
 
     /**
-     * Reads the first 10 lines of e text file.<p>
+     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
      */
-    private void loadText() {
-        m_text = new String[35];
-        BufferedReader fileStream = null;
-        try {
-            fileStream = new BufferedReader(new FileReader(m_file));
-            for (int i = 0; i < 35; i++) {
-                m_text[i] = fileStream.readLine();              
+    public void paintComponent(Graphics g) {
+
+        if (m_mode == C_MODE_IMAGE) {
+            // if we are in image mode, draw the image
+            if (m_thumbnail == null) {
+                loadImage();
             }
-        } catch (Exception e) {
-            // ignore
-        } finally {
-            try {
-                if (fileStream != null) {
-                    fileStream.close();
+            if (m_thumbnail != null) {
+                int x = getWidth() / 2 - m_thumbnail.getIconWidth() / 2;
+                int y = getHeight() / 2 - m_thumbnail.getIconHeight() / 2;
+
+                if (y < 0) {
+                    y = 0;
                 }
-            } catch (IOException e) {
-                // ignore
+
+                if (x < 5) {
+                    x = 5;
+                }
+                m_thumbnail.paintIcon(this, g, x, y);
             }
+        } else if (m_mode == C_MODE_TEXT) {
+            // if we are in text mode, draw the text preview          
+            g.setColor(Color.white);
+            g.fillRect(10, 0, getWidth() - 1, getHeight() - 1);
+            g.setColor(Color.black);
+            g.drawRect(10, 0, getWidth() - 11, getHeight() - 1);
+            g.setFont(m_font);
+            for (int i = 0; i < 35; i++) {
+                if (m_text[i] != null) {
+                    g.drawString(m_text[i], 13, (i + 1) * 11);
+                }
+            }
+        } else {
+            g.setColor(Color.black);
+            g.setFont(m_font);
+            g.drawString(m_messageNoPreview, 30, getHeight() / 2);
         }
     }
 
@@ -131,24 +151,25 @@ public class ImagePreview extends JComponent implements PropertyChangeListener {
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(PropertyChangeEvent e) {
+
         boolean update = false;
         String prop = e.getPropertyName();
 
-        //If the directory changed, don't show an image.
         if (JFileChooser.DIRECTORY_CHANGED_PROPERTY.equals(prop)) {
+            // if the directory changed, don't show an image
             m_file = null;
             m_text = null;
             update = true;
             m_mode = C_MODE_EMPTY;
 
-            //If a file became selected, find out which one.
         } else if (JFileChooser.SELECTED_FILE_CHANGED_PROPERTY.equals(prop)) {
+            // if a file was selected, find out which one
             m_file = (File)e.getNewValue();
             m_mode = getMode();
             update = true;
         }
 
-        //Update the preview accordingly.
+        // update the preview accordingly
         if (update) {
             m_thumbnail = null;
             if (isShowing()) {
@@ -171,12 +192,19 @@ public class ImagePreview extends JComponent implements PropertyChangeListener {
      * @return preview draw mode
      */
     private int getMode() {
+
         int mode = C_MODE_EMPTY;
         String extension = FileUploadUtils.getExtension(m_file);
-        if (extension!=null) {
-            if ((extension.equals("gif")) || (extension.equals("jpg")) || (extension.equals("jpeg")) || (extension.equals("png"))) {
+        if (extension != null) {
+            if ((extension.equals("gif"))
+                || (extension.equals("jpg"))
+                || (extension.equals("jpeg"))
+                || (extension.equals("png"))) {
                 mode = C_MODE_IMAGE;
-            } else if ((extension.equals("txt"))  || (extension.equals("ini")) || (extension.equals("bat")) || (extension.equals("java") || (extension.equals("sys")))) {
+            } else if ((extension.equals("txt"))
+                || (extension.equals("ini"))
+                || (extension.equals("bat"))
+                || (extension.equals("java") || (extension.equals("sys")))) {
                 mode = C_MODE_TEXT;
             }
         }
@@ -184,43 +212,27 @@ public class ImagePreview extends JComponent implements PropertyChangeListener {
     }
 
     /**
-     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+     * Reads the first 10 lines of e text file.<p>
      */
-    public void paintComponent(Graphics g) {
-        if (m_mode == C_MODE_IMAGE) {
-            // if we are in image mode, draw the image
-            if (m_thumbnail == null) {
-                loadImage();
-            }
-            if (m_thumbnail != null) {
-                int x = getWidth() / 2 - m_thumbnail.getIconWidth() / 2;
-                int y = getHeight() / 2 - m_thumbnail.getIconHeight() / 2;
+    private void loadText() {
 
-                if (y < 0) {
-                    y = 0;
-                }
-
-                if (x < 5) {
-                    x = 5;
-                }
-                m_thumbnail.paintIcon(this, g, x, y);
+        m_text = new String[35];
+        BufferedReader fileStream = null;
+        try {
+            fileStream = new BufferedReader(new FileReader(m_file));
+            for (int i = 0; i < 35; i++) {
+                m_text[i] = fileStream.readLine();
             }
-        } else if (m_mode == C_MODE_TEXT) {           
-            // if we are in text mode, draw the text preview          
-            g.setColor(Color.white);  
-            g.fillRect(10, 0, getWidth()-1, getHeight()-1);
-            g.setColor(Color.black);     
-            g.drawRect(10, 0, getWidth()-11, getHeight()-1);     
-            g.setFont(m_font);
-            for (int i=0; i<35; i++) {
-                if (m_text[i]!=null) {
-                    g.drawString(m_text[i], 13, (i+1)*11);
+        } catch (Exception e) {
+            // ignore
+        } finally {
+            try {
+                if (fileStream != null) {
+                    fileStream.close();
                 }
+            } catch (IOException e) {
+                // ignore
             }
-        } else {
-            g.setColor(Color.black); 
-            g.setFont(m_font);  
-            g.drawString(m_messageNoPreview, 30, getHeight()/2);
         }
     }
 }

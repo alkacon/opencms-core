@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImageFilter.java,v $
- * Date   : $Date: 2003/10/28 13:28:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/04/01 04:43:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,8 +28,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.applet.upload;
+
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
@@ -50,13 +51,18 @@ public class ImageFilter extends FileFilter {
      * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
      */
     public boolean accept(File f) {
+
         if (f.isDirectory()) {
             return true;
         }
 
         String extension = FileUploadUtils.getExtension(f);
         if (extension != null) {
-            return (extension.equals("gif") || extension.equals("tiff") || extension.equals("tif") || extension.equals("jpeg") || extension.equals("jpg") || extension.equals("png"));
+            return (extension.equals("gif")
+                || extension.equals("tiff")
+                || extension.equals("tif")
+                || extension.equals("jpeg")
+                || extension.equals("jpg") || extension.equals("png"));
         } else {
             return false;
         }
@@ -66,6 +72,7 @@ public class ImageFilter extends FileFilter {
      * @see javax.swing.filechooser.FileFilter#getDescription()
      */
     public String getDescription() {
+
         return "Images";
     }
 }

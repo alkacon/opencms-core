@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadUtils.java,v $
- * Date   : $Date: 2003/12/11 15:21:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/04/01 04:43:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.applet.upload;
 
-
 import java.io.File;
 
 /**
@@ -42,17 +41,15 @@ import java.io.File;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  */
 public final class FileUploadUtils {
-    
-    
+
     /**
      * Empty Constructor.<p>
-     *
      */
     private FileUploadUtils() {
+
         // noop
     }
-    
-         
+
     /**
      * Gets the extension of a file.<p>
      * 
@@ -60,16 +57,16 @@ public final class FileUploadUtils {
      * @return The file extension
      */
     public static String getExtension(File f) {
+
         String ext = null;
-        if (f!= null) {
+        if (f != null) {
             String s = f.getName();
             int i = s.lastIndexOf('.');
-            if (i > 0 &&  i < s.length() - 1) {
-                ext = s.substring(i+1).toLowerCase();
+            if (i > 0 && i < s.length() - 1) {
+                ext = s.substring(i + 1).toLowerCase();
             }
         }
         return ext;
     }
-
 }
 

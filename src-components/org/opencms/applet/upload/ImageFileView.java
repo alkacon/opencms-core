@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImageFileView.java,v $
- * Date   : $Date: 2003/10/28 13:28:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/04/01 04:43:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 
 package org.opencms.applet.upload;
+
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
@@ -38,7 +39,6 @@ import java.util.StringTokenizer;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.filechooser.FileView;
-
 
 /**
  * Image File View class, plugs image preview into the file selector box.<p>
@@ -59,7 +59,8 @@ public class ImageFileView extends FileView {
      * Creates a new ImageFile Vew object.<p>
      */
     public ImageFileView() {
-        super();      
+
+        super();
     }
 
     /**
@@ -69,80 +70,57 @@ public class ImageFileView extends FileView {
      * @param fileExtensions list of file extensions to select the correct icons
      */
     public ImageFileView(String opencms, String fileExtensions) {
+
         super();
-        m_opencms=opencms;
-        m_extensions=extractExtensions(fileExtensions);   
-                   
-    }
+        m_opencms = opencms;
+        m_extensions = extractExtensions(fileExtensions);
 
-    /**
-     * Extracts the file extensions from the parameter String.<p>
-     * 
-     * @param fileExtensions list of file extensions and their file type
-     * @return HashMap with file extension 
-     */
-    private HashMap extractExtensions(String fileExtensions) {
-        HashMap extensions=new HashMap();
-        // add a dummy extention for the folder
-        fileExtensions += ",FOLDER=folder,";
-        StringTokenizer tok=new StringTokenizer(fileExtensions, ",");
-        // loop through the tokens
-        // all tokens have the format "extension=type"    
-        while (tok.hasMoreElements()) {
-            String token=tok.nextToken();
-            // now extract the file extension and the type
-            String extension=token.substring(0, token.indexOf("="));
-            String type=token.substring(token.indexOf("=")+1);
-            // try to load the image     
-           ImageIcon icon=createImageIcon(m_opencms+type+".gif");         
-           extensions.put(extension, icon);                           
-        }
-      return extensions;
-    }
-
-
-    /**
-     * @see javax.swing.filechooser.FileView#getName(java.io.File)
-     */
-    public String getName(File f) {
-        return null; 
     }
 
     /**
      * @see javax.swing.filechooser.FileView#getDescription(java.io.File)
      */
     public String getDescription(File f) {
-        return null; 
+
+        return null;
+    }
+
+    /**
+     * @see javax.swing.filechooser.FileView#getIcon(java.io.File)
+     */
+    public Icon getIcon(File f) {
+
+        String extension = FileUploadUtils.getExtension(f);
+        // set the default icon
+        Icon icon = null;
+        if (f.isDirectory()) {
+            icon = (Icon)m_extensions.get("FOLDER");
+        } else {
+            icon = (Icon)m_extensions.get(extension);
+        }
+        // if no icon was found, set it to the default
+        if (icon == null) {
+            icon = (Icon)m_extensions.get("txt");
+        }
+        return icon;
+    }
+
+    /**
+     * @see javax.swing.filechooser.FileView#getName(java.io.File)
+     */
+    public String getName(File f) {
+
+        return null;
     }
 
     /**
      * @see javax.swing.filechooser.FileView#isTraversable(java.io.File)
      */
     public Boolean isTraversable(File f) {
-        return null; 
+
+        return null;
     }
 
-
-    /**
-     * @see javax.swing.filechooser.FileView#getIcon(java.io.File)
-     */
-    public Icon getIcon(File f) {
-        String extension = FileUploadUtils.getExtension(f);
-        // set the default icon
-        Icon icon=null;        
-        if (f.isDirectory()) {
-            icon = (Icon)m_extensions.get("FOLDER");
-        } else {
-            icon=(Icon)m_extensions.get(extension);
-        }
-        // if no icon was found, set it to the default
-        if (icon==null) {
-            icon=(Icon)m_extensions.get("txt");
-        }        
-        return icon;
-        }
-        
-        
     /**
      * Returns a resource image icon for a given path. <p>
      * 
@@ -152,19 +130,46 @@ public class ImageFileView extends FileView {
      * @return ImageIcon, or null if the path was invalid
      */
     private ImageIcon createImageIcon(String path) {
-      try {         
-       URL imgURL = new URL(path);    
-       if (imgURL != null) {
-           ImageIcon img=new ImageIcon(imgURL);        
-           return img;
-       } else {
-           System.err.println("Couldn't find file: " + path);
-           return null;
-       }
-       } catch (Exception e) {
-           System.err.println(e);
-           return null;
-       }
+
+        try {
+            URL imgURL = new URL(path);
+            if (imgURL != null) {
+                ImageIcon img = new ImageIcon(imgURL);
+                return img;
+            } else {
+                System.err.println("Couldn't find file: " + path);
+                return null;
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+            return null;
+        }
     }
-        
+
+    /**
+     * Extracts the file extensions from the parameter String.<p>
+     * 
+     * @param fileExtensions list of file extensions and their file type
+     * @return HashMap with file extension 
+     */
+    private HashMap extractExtensions(String fileExtensions) {
+
+        HashMap extensions = new HashMap();
+        // add a dummy extention for the folder
+        fileExtensions += ",FOLDER=folder,";
+        StringTokenizer tok = new StringTokenizer(fileExtensions, ",");
+        // loop through the tokens
+        // all tokens have the format "extension=type"    
+        while (tok.hasMoreElements()) {
+            String token = tok.nextToken();
+            // now extract the file extension and the type
+            String extension = token.substring(0, token.indexOf("="));
+            String type = token.substring(token.indexOf("=") + 1);
+            // try to load the image     
+            ImageIcon icon = createImageIcon(m_opencms + type + ".gif");
+            extensions.put(extension, icon);
+        }
+        return extensions;
     }
+
+}
