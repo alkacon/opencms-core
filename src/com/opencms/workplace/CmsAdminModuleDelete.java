@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2004/07/18 16:27:12 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2005/01/27 11:27:37 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleDependency;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsModuleDeleteThread;
@@ -118,7 +119,7 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
                 xmlTemplateDocument.setData("version", module.getVersion().toString());
                 String depModules = "";
                 for(int i = 0;i < dependencies.size();i++) {
-                    depModules += (String)dependencies.get(i) + "\n";
+                    depModules += ((CmsModuleDependency)dependencies.get(i)).toString()+"\n";
                 }
                 xmlTemplateDocument.setData("precondition", depModules);
                 templateSelector = C_ERROR;
