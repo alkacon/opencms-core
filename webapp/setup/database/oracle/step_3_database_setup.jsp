@@ -1,86 +1,66 @@
-<% /* Initialize the Bean */ %>
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
-
-<%	/* true if properties are initialized */
-	boolean setupOk = (Bean.getProperties()!=null);
-%>
-
-<% /* Import packages */ %>
 <%@ page import="java.util.*" %>
-
-<% /* Set all given properties */ %>
+<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
 <jsp:setProperty name="Bean" property="*" />
-
 <%
+	String conStr = request.getParameter("dbCreateConStr");
+	boolean isSetupOk = (Bean.getProperties() != null);
+	boolean isFormSubmitted =( (request.getParameter("submit") != null) && (conStr != null));
+	String nextPage = "../../step_4_database_creation.jsp";
 
-	/* next page to be accessed */
-	String nextPage ="../../step_4_database_creation.jsp";
-
-	boolean submited = false;
-
-	if(setupOk)	{
-
-		String conStr = request.getParameter("dbCreateConStr");
+	if(isSetupOk)	{
 		String createDb = request.getParameter("createDb");
-		if(createDb == null)	{
+		if(createDb == null) {
 			createDb = "";
 		}
 
 		String createTables = request.getParameter("createTables");
-		if(createTables == null)	{
+		if(createTables == null) {
 			createTables = "";
 		}
 
-		submited = ((request.getParameter("submit") != null) && (conStr != null));
-
-		if(submited)	{
-
+		if(isFormSubmitted)	{
 			Bean.setDbWorkConStr(conStr);
 
-			/* Set user and passwords manually. This is necessary because
-			   jsp:setProperty does not set empty strings ("") :( */
-
-			String dbCreateUser = 	request.getParameter("dbCreateUser");
-			String dbCreatePwd = 	request.getParameter("dbCreatePwd");
-
-			String dbWorkUser =		request.getParameter("dbWorkUser");
-			String dbWorkPwd =		request.getParameter("dbWorkPwd");
+			String dbCreateUser = request.getParameter("dbCreateUser");
+			String dbCreatePwd = request.getParameter("dbCreatePwd");
+			String dbWorkUser = request.getParameter("dbWorkUser");
+			String dbWorkPwd = request.getParameter("dbWorkPwd");
+			
+			Bean.setDbCreateUser(dbCreateUser);
+			Bean.setDbCreatePwd(dbCreatePwd);
+			Bean.setDbWorkUser(dbWorkUser);
+			Bean.setDbWorkPwd(dbWorkPwd);			
+			
 			String dbDefaultTablespace = request.getParameter("dbDefaultTablespace");
 			String dbTemporaryTablespace = request.getParameter("dbTemporaryTablespace");
 			String dbIndexTablespace = request.getParameter("dbIndexTablespace");
+			
+			Bean.setDbProperty(Bean.getDatabase() + ".defaultTablespace", dbDefaultTablespace);
+			Bean.setDbProperty(Bean.getDatabase() + ".temporaryTablespace", dbTemporaryTablespace);
+			Bean.setDbProperty(Bean.getDatabase() + ".indexTablespace", dbIndexTablespace);
 
-			Bean.setDbCreateUser(dbCreateUser);
-			Bean.setDbCreatePwd(dbCreatePwd);
-
-			Bean.setDbWorkUser(dbWorkUser);
-			Bean.setDbWorkPwd(dbWorkPwd);
-
-			Hashtable replacer = new Hashtable();
-			replacer.put("$$user$$",dbWorkUser);
-			replacer.put("$$password$$",dbWorkPwd);
-			replacer.put("$$defaultTablespace$$", dbDefaultTablespace);
-			replacer.put("$$indexTablespace$$", dbIndexTablespace);
-			replacer.put("$$temporaryTablespace$$", dbTemporaryTablespace);
-
+			Map replacer = (Map) new HashMap();
+			replacer.put("${user}", dbWorkUser);
+			replacer.put("${password}", dbWorkPwd);
+			replacer.put("${defaultTablespace}", dbDefaultTablespace);
+			replacer.put("${indexTablespace}", dbIndexTablespace);
+			replacer.put("${temporaryTablespace}", dbTemporaryTablespace);
 			Bean.setReplacer(replacer);
 
 			session.setAttribute("createTables",createTables);
 			session.setAttribute("createDb",createDb);
-
 		} else {
-
 			// initialize the work user with the app name
 			Bean.setDbWorkUser(Bean.getAppName());
 		}
-
-
 	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
-	<script type="text/javascript">
+<script type="text/javascript" language="JavaScript">
+<!--
 	function checkSubmit()	{
 		if(document.forms[0].dbCreateConStr.value == "")	{
 			alert("Please insert connection string");
@@ -118,16 +98,17 @@ OpenCms Setup Wizard
 	}
 
 	<%
-		if(submited)	{
+		if(isFormSubmitted)	{
 			out.println("location.href='"+nextPage+"';");
 		}
 	%>
-	</script>
+//-->
+</script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - <%= Bean.getDatabase() %>
+OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <%= Bean.getHtmlPart("C_LOGO_OPENCMS", "../../") %>
-<% if(setupOk)	{ %>
+<% if(isSetupOk)	{ %>
 <form method="POST" onSubmit="return checkSubmit()" class="nomargin">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
@@ -203,13 +184,13 @@ OpenCms Setup Wizard - <%= Bean.getDatabase() %>
 						</tr>
 						<tr><td colspan="3"><hr></td></tr>
 						<tr>
-							<td>Default Tablespace</td><td colspan="2"><input type="text" name="dbDefaultTablespace" size="8" style="width:250px;" value='<%= Bean.getDbDefaultTablespace() %>'></td>
+							<td>Default Tablespace</td><td colspan="2"><input type="text" name="dbDefaultTablespace" size="8" style="width:250px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".defaultTablespace") %>'></td>
 						</tr>
 						<tr>
-							<td>Index Tablespace</td><td colspan="2"><input type="text" name="dbIndexTablespace" size="8" style="width:250px;" value='<%= Bean.getDbIndexTablespace() %>'></td>
+							<td>Index Tablespace</td><td colspan="2"><input type="text" name="dbIndexTablespace" size="8" style="width:250px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".indexTablespace") %>'></td>
 						</tr>
 						<tr>
-							<td>Temporary Tablespace</td><td colspan="2"><input type="text" name="dbTemporaryTablespace" size="8" style="width:250px;" value='<%= Bean.getDbTemporaryTablespace() %>'></td>
+							<td>Temporary Tablespace</td><td colspan="2"><input type="text" name="dbTemporaryTablespace" size="8" style="width:250px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".temporaryTablespace") %>'></td>
 						</tr>
 					</table>
 				</td>
@@ -234,7 +215,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabase() %>
 	<td align="center" valign="top">
 		<p><b>ERROR</b></p>
 		The setup wizard has not been started correctly!<br>
-		Please click <a href="">here</a> to restart the Wizard
+		Please click <a href="<%= request.getContextPath() %>/setup/">here</a> to restart the Wizard
 	</td>
 </tr>
 </table>

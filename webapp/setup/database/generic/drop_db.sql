@@ -1,5 +1,5 @@
 #
-# replacer = "$$replacer$$"
+# replacer = "${replacer}"
 ############################
 
-drop user $$user$$ cascade;
+drop user ${user} cascade;

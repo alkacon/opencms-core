@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/17 17:05:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/18 11:49:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,23 +37,37 @@ import org.opencms.util.CmsUUID;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * Bean with get / set methods for all properties stored in the 'opencms.properties' file.<p> 
- * The path to the opencms home folder and
- * its config folder can also be stored an retrieved as well as a vector
- * containing possible error messages thrown by the setup.
+ * A java bean as a controller for the OpenCms setup wizard.<p>
+ * 
+ * It is not allowed to customize this bean with methods for a specific database server setup!<p>
+ * 
+ * Database server specific settings should be set/read using get/setDbProperty, as for example like:
+ * 
+ * <pre>
+ * setDbProperty("oracle.defaultTablespace", value);
+ * </pre>
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  */
-public class CmsSetup {
+public class CmsSetup extends Object implements Serializable, Cloneable {
 
-    /** Required setup files per database server.<p> */
+    /** Required files per database server setup.<p> */
     public static final String[] requiredDbSetupFiles = {
             "step_3_database_setup.jsp",
             "database.properties",
@@ -63,37 +77,35 @@ public class CmsSetup {
             "drop_tables.sql"
     };    
     
-    /** 
-     * Contains error messages, displayed by the setup wizard 
-     */
-    private static Vector errors = new Vector();
+    /** Contains the error messages to be displayed in the setup wizard.<p> */
+    private static Vector errors;
 
-    /** 
-     * Contains the properties from the opencms.properties file 
-     */
+    /** Contains the properties of "opencms.properties".<p> */
     private ExtendedProperties m_extProperties;
 
-    /** 
-     * Contains the HTML fragments for the output of the setup pages
-     */
+    /** Contains HTML fragments for the output in the JSP pages of the setup wizard.<p> */
     private Properties m_htmlProps;
 
-    /** Contains the absolute path to the opencms home directory */
+    /** The absolute path to the home directory of the OpenCms webapp.<p> */
     private String m_basePath;
 
-    /**
-     * Name of the database system
-     */
-    private String m_database;
+    /** Key of the selected database server (e.g. "mysql", "generic" or "oracle").<p> */
+    private String m_databaseKey;
 
-    /**
-     * Database password used to drop and create database
-     */
+    /** Password used for the JDBC connection when the OpenCms database is created.<p> */
     private String m_dbCreatePwd;
 
+    /** List of keys of all available database server setups (e.g. "mysql", "generic" or "oracle").<p> */
     private List m_databaseKeys;
+    
+    /** List of clear text names of all available database server setups (e.g. "MySQL", "Generic (ANSI) SQL").<p> */
     private List m_databaseNames;
+    
+    /** Map of database setup properties of all available database server setups keyed by their database keys.<p> */
     private Map m_databaseProperties;
+    
+    /** A map with tokens ${...} to be replaced in SQL scripts.<p> */
+    private Map m_replacer;    
     
     /** 
      * Default constructor.<p>
@@ -102,6 +114,7 @@ public class CmsSetup {
         m_databaseKeys = null;
         m_databaseNames = null;
         m_databaseProperties = null;
+        errors = new Vector();
     }
 
     /** 
@@ -142,7 +155,6 @@ public class CmsSetup {
      * @return boolean true if all properties are set correctly
      */
     public boolean checkProperties() {
-
         // check if properties available
         if (getProperties() == null) {
             return false;
@@ -190,11 +202,10 @@ public class CmsSetup {
      * @param value The value of the property
      */
     public void setDbProperty(String key, String value) {
+        // extract tthe database key out of the entire key
         String databaseKey = key.substring(0, key.indexOf("."));
         Map databaseProperties = (Map) getDatabaseProperties().get(databaseKey);
         databaseProperties.put(key, value);
-        
-        //m_dbProperties.put(key, value);
     }
 
     /**
@@ -205,6 +216,8 @@ public class CmsSetup {
      */
     public String getDbProperty(String key) {
         Object value = null;
+        
+        // extract tthe database key out of the entire key
         String databaseKey = key.substring(0, key.indexOf("."));
         Map databaseProperties = (Map) getDatabaseProperties().get(databaseKey);
 
@@ -219,8 +232,9 @@ public class CmsSetup {
     public void setBasePath(String basePath) {
         m_basePath = basePath;
         if (!m_basePath.endsWith(File.separator)) {
-            // Make sure that Path always ends with a separator, not always the case in different environments
-            // since getServletContext().getRealPath("/") does not end with a "/" in all servlet runtimes
+            // make sure that Path always ends with a separator, not always the case in different 
+            // environments since getServletContext().getRealPath("/") does not end with a "/" in 
+            // all servlet runtimes
             m_basePath += File.separator;
         }
     }
@@ -240,7 +254,7 @@ public class CmsSetup {
      * @return name of the default pool 
      */
     public String getPool() {
-        StringTokenizer tok = new StringTokenizer(this.getExtProperty("db.pools"), ",[]");
+        StringTokenizer tok = new StringTokenizer(getExtProperty("db.pools"), ",[]");
         String pool = tok.nextToken();
         return pool;
     }
@@ -248,20 +262,19 @@ public class CmsSetup {
     /** 
      * Sets the database drivers to the given value 
      * 
-     * @param database name of the database
+     * @param databaseKey the key of the selected database server (e.g. "mysql", "generic" or "oracle")
      */
-    public void setDatabase(String database) {
+    public void setDatabase(String databaseKey) {
+        m_databaseKey = databaseKey;
 
-        m_database = database;
-
-        String vfsDriver = this.getDbProperty(m_database + ".vfs.driver");
-        String userDriver = this.getDbProperty(m_database + ".user.driver");
-        String projectDriver = this.getDbProperty(m_database + ".project.driver");
-        String workflowDriver = this.getDbProperty(m_database + ".workflow.driver");
-        String backupDriver = this.getDbProperty(m_database + ".backup.driver");
+        String vfsDriver = getDbProperty(m_databaseKey + ".vfs.driver");
+        String userDriver = getDbProperty(m_databaseKey + ".user.driver");
+        String projectDriver = getDbProperty(m_databaseKey + ".project.driver");
+        String workflowDriver = getDbProperty(m_databaseKey + ".workflow.driver");
+        String backupDriver = getDbProperty(m_databaseKey + ".backup.driver");
 
         // Change/write configuration only if not available or database changed
-        setExtProperty("db.name", m_database);
+        setExtProperty("db.name", m_databaseKey);
         if (getExtProperty("db.vfs.driver") == null || "".equals(getExtProperty("db.vfs.driver"))) {
             setExtProperty("db.vfs.driver", vfsDriver);
         }
@@ -280,24 +293,27 @@ public class CmsSetup {
     }
 
     /** 
-     * Gets the database 
+     * Returns the key of the selected database server (e.g. "mysql", "generic" or "oracle").<p>
      * 
-     * @return name of the database
-     **/
+     * @return the key of the selected database server (e.g. "mysql", "generic" or "oracle")
+     */
     public String getDatabase() {
-        if (m_database == null) {
-            m_database = this.getExtProperty("db.name");
+        if (m_databaseKey == null) {
+            m_databaseKey = getExtProperty("db.name");
         }
-        if (m_database == null || "".equals(m_database)) {
-            m_database = (String) getDatabases().get(0);
+        
+        if (m_databaseKey == null || "".equals(m_databaseKey)) {
+            m_databaseKey = (String) getDatabases().get(0);
         }
-        return m_database;
+        
+        return m_databaseKey;
     }
 
     /** 
-     * Returns all databases found in 'dbsetup.properties' 
-     *
-     * @return List of names of possible databases 
+     * Returns a list with they keys (e.g. "mysql", "generic" or "oracle") of all available
+     * database server setups found in "/setup/database/".<p>
+     * 
+     * @return a list with they keys (e.g. "mysql", "generic" or "oracle") of all available database server setups
      */
     public List getDatabases() {
         File databaseSetupFolder = null;
@@ -326,9 +342,9 @@ public class CmsSetup {
 
                             if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
                                 hasMissingSetupFiles = true;
-                                System.err.println("[" + this.getClass().getName() + "] missing or unreadable database setup file: " + setupFile.getPath());
+                                System.err.println("[" + getClass().getName() + "] missing or unreadable database setup file: " + setupFile.getPath());
                                 break;
-    }
+                            }
                         }
 
                         if (!hasMissingSetupFiles) {
@@ -347,11 +363,13 @@ public class CmsSetup {
     }
 
     /** 
-     * Returns a list with the clear text names of all available database configurations.<p>
+     * Returns a list with the clear text names (e.g. "MySQL", "Generic (ANSI) SQL") of all 
+     * available database server setups in "/setup/database/".<p>
+     * 
      * Second, this method stores the properties of all available database configurations in a
      * map keyed by their database key names (e.g. "mysql", "generic" or "oracle").<p>
      *
-     * @return a list with the clear text names of all available database configurations
+     * @return a list with the clear text names (e.g. "MySQL", "Generic (ANSI) SQL") of all available database server setups
      * @see #getDatabaseProperties()
      */
     public List getDatabaseNames() {
@@ -401,10 +419,10 @@ public class CmsSetup {
     }
     
     /** 
-     * Returns the map with the database properties of *all* available database configurations keyed
-     * by their database key names (e.g. "mysql", "generic" or "oracle").<p>
+     * Returns a map with the database properties of *all* available database configurations keyed
+     * by their database keys (e.g. "mysql", "generic" or "oracle").<p>
      * 
-     * @return the map with the database properties of *all* available database configurations
+     * @return a map with the database properties of *all* available database configurations
      */
     public Map getDatabaseProperties() {
         if (m_databaseProperties != null) {
@@ -433,13 +451,13 @@ public class CmsSetup {
      */
     public void setDbWorkConStr(String dbWorkConStr) {
 
-        String driver = this.getDbProperty(m_database + ".driver");
+        String driver = getDbProperty(m_databaseKey + ".driver");
 
         // TODO: set the driver in own methods
         setExtProperty("db.pool." + getPool() + ".jdbcDriver", driver);
         setExtProperty("db.pool." + getPool() + ".jdbcUrl", dbWorkConStr);
 
-        this.setTestQuery(this.getDbTestQuery());
+        setTestQuery(getDbTestQuery());
     }
 
     /** 
@@ -448,8 +466,8 @@ public class CmsSetup {
      * @return the connection string used by the OpenCms core  
      */
     public String getDbWorkConStr() {
-
-        return this.getExtProperty("db.pool." + getPool() + ".jdbcUrl");
+        String str = getExtProperty("db.pool." + getPool() + ".jdbcUrl");
+        return str;
     }
 
     /** 
@@ -458,7 +476,6 @@ public class CmsSetup {
      * @param dbWorkUser the database user used by the opencms core 
      */
     public void setDbWorkUser(String dbWorkUser) {
-
         setExtProperty("db.pool." + getPool() + ".user", dbWorkUser);
     }
 
@@ -468,8 +485,7 @@ public class CmsSetup {
      * @return the database user used by the opencms core  
      */
     public String getDbWorkUser() {
-
-        return this.getExtProperty("db.pool." + getPool() + ".user");
+        return getExtProperty("db.pool." + getPool() + ".user");
     }
 
     /** 
@@ -478,7 +494,6 @@ public class CmsSetup {
      * @param dbWorkPwd the password for the OpenCms database user  
      */
     public void setDbWorkPwd(String dbWorkPwd) {
-
         setExtProperty("db.pool." + getPool() + ".password", dbWorkPwd);
     }
 
@@ -488,8 +503,7 @@ public class CmsSetup {
      * @return the password for the OpenCms database user 
      */
     public String getDbWorkPwd() {
-
-        return this.getExtProperty("db.pool." + getPool() + ".password");
+        return getExtProperty("db.pool." + getPool() + ".password");
     }
 
     /** 
@@ -534,7 +548,7 @@ public class CmsSetup {
      * @param driver name of the opencms driver 
      */
     public void setDbDriver(String driver) {
-        this.setDbProperty(m_database + ".driver", driver);
+        setDbProperty(m_databaseKey + ".driver", driver);
     }
 
     /** 
@@ -544,7 +558,7 @@ public class CmsSetup {
      * @return name of the opencms driver 
      */
     public String getDbDriver() {
-        return this.getDbProperty(m_database + ".driver");
+        return getDbProperty(m_databaseKey + ".driver");
     }
 
     /** 
@@ -554,7 +568,7 @@ public class CmsSetup {
      * @return query used to validate connections 
      */
     public String getDbTestQuery() {
-        return this.getDbProperty(m_database + ".testQuery");
+        return getDbProperty(m_databaseKey + ".testQuery");
     }
 
     /** 
@@ -572,7 +586,7 @@ public class CmsSetup {
      * @return query used to validate connections 
      */
     public String getTestQuery() {
-        return this.getExtProperty("db.pool." + getPool() + ".testQuery");
+        return getExtProperty("db.pool." + getPool() + ".testQuery");
     }
 
     /** 
@@ -590,7 +604,7 @@ public class CmsSetup {
      * @return the min. connections
      */
     public String getMinConn() {
-        return this.getExtProperty("db.pool." + getPool() + ".maxIdle");
+        return getExtProperty("db.pool." + getPool() + ".maxIdle");
     }
 
     /** 
@@ -608,7 +622,7 @@ public class CmsSetup {
      * @return the max. connections
      */
     public String getMaxConn() {
-        return this.getExtProperty("db.pool." + getPool() + ".maxActive");
+        return getExtProperty("db.pool." + getPool() + ".maxActive");
     }
 
     /** 
@@ -626,7 +640,7 @@ public class CmsSetup {
      * @return the timeout value
      */
     public String getTimeout() {
-        return this.getExtProperty("db.pool." + getPool() + ".maxWait");
+        return getExtProperty("db.pool." + getPool() + ".maxWait");
     }
 
     /** 
@@ -689,7 +703,7 @@ public class CmsSetup {
      * @return the database name
      */
     public String getDb() {
-        return this.getDbProperty(m_database + ".dbname");
+        return getDbProperty(m_databaseKey + ".dbname");
     }
 
     /**
@@ -698,7 +712,7 @@ public class CmsSetup {
      * @param db the database name to set
      */
     public void setDb(String db) {
-        this.setDbProperty(m_database + ".dbname", db);
+        setDbProperty(m_databaseKey + ".dbname", db);
     }
 
     /**
@@ -707,9 +721,9 @@ public class CmsSetup {
      * @return the database create statement
      */
     public String getDbCreateConStr() {
-        String constr = null;
-        constr = this.getDbProperty(m_database + ".constr");
-        return constr;
+        String str = null;
+        str = getDbProperty(m_databaseKey + ".constr");
+        return str;
     }
 
     /**
@@ -718,7 +732,7 @@ public class CmsSetup {
      * @param dbCreateConStr the database create statement
      */
     public void setDbCreateConStr(String dbCreateConStr) {
-        this.setDbProperty(m_database + ".constr", dbCreateConStr);
+        setDbProperty(m_databaseKey + ".constr", dbCreateConStr);
     }
 
     /**
@@ -727,7 +741,7 @@ public class CmsSetup {
      * @return the database user
      */
     public String getDbCreateUser() {
-        return this.getDbProperty(m_database + ".user");
+        return getDbProperty(m_databaseKey + ".user");
     }
 
     /**
@@ -736,7 +750,7 @@ public class CmsSetup {
      * @param dbCreateUser the user to set
      */
     public void setDbCreateUser(String dbCreateUser) {
-        this.setDbProperty(m_database + ".user", dbCreateUser);
+        setDbProperty(m_databaseKey + ".user", dbCreateUser);
     }
 
     /**
@@ -758,60 +772,6 @@ public class CmsSetup {
      */
     public void setDbCreatePwd(String dbCreatePwd) {
         m_dbCreatePwd = dbCreatePwd;
-    }
-
-    /** 
-     * Set the default tablespace when creating a new oracle user.<p>
-     * 
-     * @param dbDefaultTablespace the tablespace to set
-     */
-    public void setDbDefaultTablespace(String dbDefaultTablespace) {
-        this.setDbProperty(m_database + ".defaultTablespace", dbDefaultTablespace);
-    }
-
-    /** 
-     * Returns the default tablespace when creating a new oracle user.<p>
-     * 
-     * @return the default tablespace when creating a new oracle user
-     */
-    public String getDbDefaultTablespace() {
-        return this.getDbProperty(m_database + ".defaultTablespace");
-    }
-
-    /** 
-     * Set the temporary tablespace when creating a new oracle user.<p>
-     * 
-     * @param dbTemporaryTablespace the temporary tablespace when creating a new oracle user
-     */
-    public void setDbTemporaryTablespace(String dbTemporaryTablespace) {
-        this.setDbProperty(m_database + ".temporaryTablespace", dbTemporaryTablespace);
-    }
-
-    /** 
-     * Returns the temporary tablespace when creating a new oracle user.<p>
-     * 
-     * @return the temporary tablespace when creating a new oracle user
-     */
-    public String getDbTemporaryTablespace() {
-        return this.getDbProperty(m_database + ".temporaryTablespace");
-    }
-
-    /** 
-     * Set the index tablespace when creating a new oracle user.<p>
-     * 
-     * @param dbIndexTablespace the index tablespace to set
-     */
-    public void setDbIndexTablespace(String dbIndexTablespace) {
-        this.setDbProperty(m_database + ".indexTablespace", dbIndexTablespace);
-    }
-
-    /** 
-     * Returns the index tablespace when creating a new oracle user
-     * 
-     * @return the index tablespace
-     */
-    public String getDbIndexTablespace() {
-        return this.getDbProperty(m_database + ".indexTablespace");
     }
 
     /**
@@ -837,7 +797,7 @@ public class CmsSetup {
      * @param value value to set (must be "true" or "false")
      */
     public void setFilenameTranslationEnabled(String value) {
-        this.setExtProperty("filename.translation.enabled", value);
+        setExtProperty("filename.translation.enabled", value);
     }
 
     /** 
@@ -846,7 +806,7 @@ public class CmsSetup {
      * @return "true" if filename translation is enabled
      */
     public String getFilenameTranslationEnabled() {
-        return this.getExtProperty("filename.translation.enabled");
+        return getExtProperty("filename.translation.enabled");
     }
     
     /**
@@ -881,7 +841,7 @@ public class CmsSetup {
      * @param value value to set (must be "true" or "false")
      */    
     public void setDirectoryTranslationEnabled(String value) {
-        this.setExtProperty("directory.translation.enabled", value);
+        setExtProperty("directory.translation.enabled", value);
     }
 
     /** 
@@ -890,7 +850,7 @@ public class CmsSetup {
      * @return "true" if directory translation is enabled
      */
     public String getDirectoryTranslationEnabled() {
-        return this.getExtProperty("directory.translation.enabled");
+        return getExtProperty("directory.translation.enabled");
     }
 
     /**
@@ -901,7 +861,7 @@ public class CmsSetup {
      * @param value the value to set
      */
     public void setDirectoryIndexFiles(String value) {
-        this.setExtProperty("directory.default.files", value);
+        setExtProperty("directory.default.files", value);
     }
 
     /**
@@ -962,7 +922,7 @@ public class CmsSetup {
      * @return String
      */
     public String getDefaultContentEncoding() {
-        return this.getExtProperty("defaultContentEncoding");
+        return getExtProperty("defaultContentEncoding");
     }
 
     /**
@@ -970,7 +930,7 @@ public class CmsSetup {
      * @param defaultContentEncoding The defaultContentEncoding to set
      */
     public void setDefaultContentEncoding(String defaultContentEncoding) {
-        this.setExtProperty("defaultContentEncoding", defaultContentEncoding);
+        setExtProperty("defaultContentEncoding", defaultContentEncoding);
     }
 
     /**
@@ -979,7 +939,7 @@ public class CmsSetup {
      * @param value the new webapp name
      */
     public void setAppName(String value) {
-        this.setExtProperty("app.name", value);
+        setExtProperty("app.name", value);
     }
 
     /**
@@ -988,27 +948,35 @@ public class CmsSetup {
      * @return the webapp name
      */
     public String getAppName() {
-        return this.getExtProperty("app.name");
+        return getExtProperty("app.name");
     }
-
-    /** Replacer Hashtable */
-    private Hashtable m_replacer;
     
     /**
      * Returns the replacer.<p>
      * 
      * @return the replacer
      */
-    public Hashtable getReplacer() {
+    public Map getReplacer() {
         return m_replacer;
     }
     
     /**
      * Sets the replacer.<p>
      * 
-     * @param value the replacer to set
+     * @param map the replacer to set
      */
-    public void setReplacer(Hashtable value) {
-        m_replacer = value;
+    public void setReplacer(Map map) {
+        m_replacer = map;
     }
+    
+    /**
+     * Returns the clear text name for a database server setup specified by a database key (e.g. "mysql", "generic" or "oracle").<p>
+     * 
+     * @param databaseKey a database key (e.g. "mysql", "generic" or "oracle")
+     * @return the clear text name for a database server setup
+     */
+    public String getDatabaseName(String databaseKey) {
+        return (String) ((Map) getDatabaseProperties().get(getDatabase())).get(databaseKey + ".name");
+    }
+    
 }

@@ -1,5 +1,5 @@
 #
-# replacer = "$$database$$"
+# replacer = "${database}"
 ############################
 
-CREATE DATABASE $$database$$ ;
+CREATE DATABASE ${database} ;

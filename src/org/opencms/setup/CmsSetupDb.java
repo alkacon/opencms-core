@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/02/17 16:52:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/18 11:49:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,14 @@
 package org.opencms.setup;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -46,7 +47,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2004/02/17 16:52:24 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/18 11:49:35 $
  */
 public class CmsSetupDb extends Object {
     
@@ -81,12 +82,12 @@ public class CmsSetupDb extends Object {
      */
     public void setConnection(String DbDriver, String DbConStr, String DbUser, String DbPwd) {
         try {
-            Class.forName(DbDriver);
+            Class.forName(DbDriver).newInstance();
             m_con = DriverManager.getConnection(DbConStr, DbUser, DbPwd);
-        } catch (SQLException e) {
-            m_errors.addElement("Could no connect to database via: " + DbConStr + "\n" + e.toString() + "\n");
         } catch (ClassNotFoundException e) {
-            m_errors.addElement("Error while loading driver: " + DbDriver + "\n" + e.toString() + "\n");
+            m_errors.addElement("Error loading JDBC driver: " + DbDriver + "\n" + e.toString() + "\n");
+        } catch (Exception e) {
+            m_errors.addElement("Error connecting to database using: " + DbConStr + "\n" + e.toString() + "\n");
         }
     }
 
@@ -107,14 +108,9 @@ public class CmsSetupDb extends Object {
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      */
-    public void dropDatabase(String database, Hashtable replacer) {
-        String file = m_basePath + "setup" + File.separator + "database" + File.separator + database + File.separator + "drop_db.sql";
-        if (file != null) {
-            m_errorLogging = true;
-            parseScript(file, replacer);
-        } else {
-            m_errors.addElement("Could not open database drop script: " + database + ".dropdb");
-        }
+    public void dropDatabase(String database, Map replacer) {
+        m_errorLogging = true;
+        executeSql(database, "drop_db.sql", replacer);
     }
 
     /**
@@ -123,15 +119,9 @@ public class CmsSetupDb extends Object {
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      */
-    public void createDatabase(String database, Hashtable replacer) {
-        String file = m_basePath + "setup" + File.separator + "database" + File.separator + database + File.separator + "create_db.sql";
-        
-        if (file != null) {
-            m_errorLogging = true;
-            parseScript(file, replacer);
-        } else {
-            m_errors.addElement("No create database script found: " + database + ".createdb \n");
-        }
+    public void createDatabase(String database, Map replacer) {
+        m_errorLogging = true;
+        executeSql(database, "create_db.sql", replacer);
     }
 
     /**
@@ -140,14 +130,9 @@ public class CmsSetupDb extends Object {
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      */
-    public void createTables(String database, Hashtable replacer) {
-        String file = m_basePath + "setup" + File.separator + "database" + File.separator + database + File.separator + "create_tables.sql";
-        if (file != null) {
-            m_errorLogging = true;
-            parseScript(file, replacer);
-        } else {
-            m_errors.addElement("No create tables script found: " + database + ".createtables \n");
-        }
+    public void createTables(String database, Map replacer) {
+        m_errorLogging = true;
+        executeSql(database, "create_tables.sql", replacer);
     }
 
     /**
@@ -156,13 +141,8 @@ public class CmsSetupDb extends Object {
      * @param database the name of the database
      */
     public void dropTables(String database) {
-        String file = m_basePath + "setup" + File.separator + "database" + File.separator + database + File.separator + "drop_tables.sql";
-        if (file != null) {
-            m_errorLogging = true;
-            parseScript(file, null);
-        } else {
-            m_errors.addElement("No drop tables script found: " + database + ".droptables \n");
-        }
+        m_errorLogging = true;
+        executeSql(database, "drop_tables.sql", null);
     }
 
     /**
@@ -171,17 +151,18 @@ public class CmsSetupDb extends Object {
      * @param file the filename of the setup script
      * @param replacers the replacements to perform in the script
      */
-    private void parseScript(String file, Hashtable replacers) {
-
-        /* indicates if the setup script contains included files (oracle) */
-        boolean includedFile = false;
-        
+    private void executeSql(String databaseKey, String sqlScript, Map replacers) {
         String statement = "";
+        LineNumberReader reader = null;
+        String filename = null;
+        String line = null;
 
         /* get and parse the setup script */
         try {
-            LineNumberReader reader = new LineNumberReader(new FileReader(file));
-            String line = null;
+            filename = m_basePath + "setup" + File.separator + "database" + File.separator + databaseKey + File.separator + sqlScript;
+            reader = new LineNumberReader(new FileReader(filename));
+            line = null;
+
             while (true) {
                 line = reader.readLine();
                 if (line == null) {
@@ -202,13 +183,6 @@ public class CmsSetupDb extends Object {
                         break;
                     }
 
-                    /* there is an included file */
-                    if (currentToken.startsWith("@")) {
-                        /* cut of '@' */
-                        currentToken = currentToken.substring(1);
-                        includedFile = true;
-                    }
-
                     /* add token to query */
                     statement += " " + currentToken;
 
@@ -217,33 +191,41 @@ public class CmsSetupDb extends Object {
                         /* cut of ';' at the end */
                         statement = statement.substring(0, (statement.length() - 1));
 
-                        /* there is an included File. Get it and execute it */
-                        if (includedFile) {
-                            if (replacers != null) {
-                                ExecuteStatement(replaceValues(getIncludedFile(statement), replacers));
-                            } else {
-                                ExecuteStatement(getIncludedFile(statement));
-                            }
-                            //reset
-                            includedFile = false;
+                        /* normal statement. Execute it */
+                        if (replacers != null) {
+                            ExecuteStatement(replaceValues(statement, replacers));
                         } else {
-                            /* normal statement. Execute it */
-                            if (replacers != null) {
-                                ExecuteStatement(replaceValues(statement, replacers));
-                            } else {
-                                ExecuteStatement(statement);
-                            }
+                            ExecuteStatement(statement);
                         }
                         //reset
                         statement = "";
                     }
                 }
+
                 statement += " \n";
             }
-            reader.close();
+        } catch (FileNotFoundException e) {
+            if (m_errorLogging) {
+                m_errors.addElement("Database setup SQL script not found: " + filename);
+                m_errors.addElement(e.toString());
+            }            
+        } catch (SQLException e) {
+            if (m_errorLogging) {
+                m_errors.addElement("Error executing SQL statement: " + statement);
+                m_errors.addElement(e.toString());
+            }            
         } catch (Exception e) {
             if (m_errorLogging) {
-                m_errors.addElement("error: " + e.toString() + "\nin statement:\n" + statement);
+                m_errors.addElement("Error parsing database setup SQL script in line: " + line);
+                m_errors.addElement(e.toString());
+            } 
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (Exception e) {
+                // noop
             }
         }
     }
@@ -255,7 +237,7 @@ public class CmsSetupDb extends Object {
      * @param replacers the replacements to perform in the line
      * @return the script line with replaced values
      */
-    private String replaceValues(String source, Hashtable replacers) {
+    private String replaceValues(String source, Map replacers) {
         StringTokenizer tokenizer = new StringTokenizer(source);
         String temp = "";
 
@@ -263,7 +245,7 @@ public class CmsSetupDb extends Object {
             String token = tokenizer.nextToken();
 
             // replace identifier found
-            if (token.startsWith("$$") && token.endsWith("$$")) {
+            if (token.startsWith("${") && token.endsWith("}")) {
 
                 // look in the hashtable
                 Object value = replacers.get(token);
@@ -279,66 +261,18 @@ public class CmsSetupDb extends Object {
     }
 
     /**
-     * Returns an included file as a String.<p>
-     * 
-     * @param statement the filename from the include statement  
-     * @return the contents of the file as String
-     */
-    private String getIncludedFile(String statement) {
-        String file;
-        statement = statement.trim();
-
-        if (statement.startsWith("./")) {
-            /* cut off */
-            file = statement.substring(2);
-        } else if (statement.startsWith(".")) {
-            /* cut off */
-            file = statement.substring(1);
-        } else {
-            file = statement;
-        }
-
-        /* read and return everything */
-        try {
-            LineNumberReader reader = new LineNumberReader(new FileReader(m_basePath + C_SETUP_DATA_FOLDER + file));
-            String stat = "";
-            String line = null;
-
-            while (true) {
-                line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                line = line.trim();
-                if  (!(line.startsWith("--") || line.startsWith("/"))) {
-                    stat += line + " \n";
-                }
-            }
-            reader.close();
-            return stat.trim();
-        } catch (Exception e) {
-            if (m_errorLogging) {
-                m_errors.addElement(e.toString() + "\n");
-            }
-            return null;
-        }
-    }
-
-    /**
      * Creates and executes a database statment from a String.<p>
      * 
      * @param statement the database statement
      */
-    private void ExecuteStatement(String statement) {
-        Statement stat;
+    private void ExecuteStatement(String statement) throws SQLException {
+        Statement stmt = null;
+
         try {
-            stat = m_con.createStatement();
-            stat.execute(statement);
-            stat.close();
-        } catch (Exception e) {
-            if (m_errorLogging) {
-                m_errors.addElement("error: " + e.toString() + "\nin statement:\n" + statement);
-            }
+            stmt = m_con.createStatement();
+            stmt.execute(statement);
+        } finally {
+            stmt.close();
         }
     }
 
@@ -371,11 +305,7 @@ public class CmsSetupDb extends Object {
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        try {
-            m_con.close();
-        } catch (Throwable t) {
-            // ignore
-        }
+        closeConnection();
         super.finalize();
     }
 }

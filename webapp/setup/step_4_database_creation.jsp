@@ -75,7 +75,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - <%= Bean.getDatabase() %>
+OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <%= Bean.getHtmlPart("C_LOGO_OPENCMS") %>
 <% if(setupOk)	{ %>
