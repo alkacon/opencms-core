@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2004/10/14 08:58:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/15 15:09:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,16 @@
  
 package org.opencms.security;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Default implementation for OpenCms password validation,
@@ -46,7 +49,7 @@ import org.apache.commons.codec.binary.Base64;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1.11 
  */
 public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
@@ -106,13 +109,53 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
 
         m_inputEncoding = inputEncoding;
     }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String paramName, String paramValue) {
+
+        // this configuration does not support parameters 
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug(
+                "addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
+        }
+    }
     
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     */
+    public ExtendedProperties getConfiguration() {
+
+        // this configuration does not support parameters
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
+        }
+        return null;
+    }
+    
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
+    public void initConfiguration() throws CmsConfigurationException {
+
+        // simple default configuration does not need to be initialized
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("initConfiguration() called on " + this);
+            // supress compiler warning, this is never true
+            if (this == null) {
+                throw new CmsConfigurationException();
+            }
+        }
+    } 
+    
+
     /**
      * @see org.opencms.security.I_CmsPasswordHandler#validatePassword(java.lang.String)
      */
     public void validatePassword(String password) throws CmsSecurityException {
         if (password.length() < C_PASSWORD_MINLENGTH) {
-            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_INVALID_PASSWORD);
+            throw new CmsSecurityException("Minimum password length " + C_PASSWORD_MINLENGTH, CmsSecurityException.C_SECURITY_INVALID_PASSWORD);
         }
     }
     

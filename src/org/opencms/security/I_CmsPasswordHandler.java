@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPasswordHandler.java,v $
- * Date   : $Date: 2004/10/14 08:23:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/15 15:09:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.security;
 
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.main.CmsException;
 
 /**
@@ -39,10 +40,10 @@ import org.opencms.main.CmsException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.11 
  */
-public interface I_CmsPasswordHandler {
+public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler {
 
     /** Constants to identify the key value for omitting the digest. */
     String C_DIGEST_TYPE_PLAIN = "plain";
