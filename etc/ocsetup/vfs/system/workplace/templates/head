@@ -9,7 +9,7 @@
 <SCRIPT LANGUAGE="JavaScript">
 	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
 	function loadBody() {
-		var link = document.form1.view.options[document.form1.view.selectedIndex].value;
+		var link = document.viewchange.view.options[document.viewchange.view.selectedIndex].value;
 		window.top.body.location.href="]]><METHOD name="getServletPath"/><![CDATA["+link.substring(1);
     }
 	
@@ -24,25 +24,20 @@
 </head>
 
 <body bgcolor="#C0C0C0" onload="loadBody();loadFoot();">
-<form 
-	name="form1"
-	id="form1"
-	method=get>
-	
 	<table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menu><img src="]]><METHOD name="picsUrl">logokunde.gif</METHOD><![CDATA[" border=0 width=109 height=32></td>
 		<td class=menubold><p class=einzug>]]><LABEL value="label.site" /><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
 		<td class=dialogtxt>
-			]]><SELECT class="textfeld" name="site" width="150" method="getSites" onchange="javascript:document.form1.submit()"/><![CDATA[
+			<form name="sitechange" id="sitechange" method="get">]]><SELECT class="textfeld" name="site" width="150" method="getSites" onchange="javascript:document.sitechange.submit()"/><![CDATA[</form>
 		</td>
 		<td class=menubold><p class=einzug>]]><LABEL value="label.project" /><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
 		<td class=dialogtxt>
-			]]><SELECT class="textfeld" name="project" width="150" method="getProjects" onchange="javascript:document.form1.submit()"/><![CDATA[
+			<form name="projectchange" id="projectchange" method="get">]]><SELECT class="textfeld" name="project" width="150" method="getProjects" onchange="javascript:document.projectchange.submit()"/><![CDATA[</form>
 		</td>
 		<td class=menubold><p class=tab>]]><LABEL value="label.view" /><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
 		<td class=dialogtxt>
-			]]><SELECT class="textfeld" name="view" width="150" method="getRegViews" onchange="document.form1.submit()"/><![CDATA[
+			<form name="viewchange" id="viewchange" method="get">]]><SELECT class="textfeld" name="view" width="150" method="getRegViews" onchange="document.viewchange.submit()"/><![CDATA[</form>
 			<!-- <select class=textfeld name="view" width=100 style="width:100px" onchange="window.top.body.location.href=this.options[this.selectedIndex].value">
 			<option value="explorer.html">Explorer
 			<option value="tasks.html">Aufgaben
@@ -58,8 +53,6 @@
 		<td class=dialogtxt><img src="]]><METHOD name="picsUrl">opencms_grau.gif</METHOD><![CDATA[" width=114 height=32 border=0 alt="opencms"><br></a></td>
 	</tr>
 </table>
-
-</form>
 
 </body>
 </html>
