@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/08/18 19:20:28 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
 
 import java.io.IOException;
 
@@ -58,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -111,6 +112,25 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         m_rd.forward(req, res);
     }
     
+    /**
+     * Include an external (non-OpenCms) file using the standard dispatcher.<p>
+     * 
+     * @param req the servlet request
+     * @param res the servlet response
+     * @throws ServletException in case something goes wrong
+     * @throws IOException in case something goes wrong
+     */
+    private void includeExternal(
+        ServletRequest req, 
+        ServletResponse res
+    ) throws ServletException, IOException {
+        // This is an external include, probably to a JSP page, dispatch with system dispatcher
+        if (DEBUG > 0) {
+            System.err.println("FlexDispatcher: Dispatching to external target " + m_extTarget);
+        }
+        m_rd.include(req, res);
+    }
+    
     /** 
      * Wrapper for dispatching to a file from the OpenCms VFS.<p>
      *
@@ -138,13 +158,14 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
     ) throws ServletException, IOException {
             
         if (DEBUG > 0) System.err.println("FlexDispatcher: Include called with target=" + m_vfsTarget + " (ext_target=" + m_extTarget + ")");      
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);                
         CmsObject cms = controller.getCmsObject();
-                
+        
+        CmsResource resource = null;                
         if ((m_extTarget == null) && (controller != null)) {
             // Check if the file exists in the VFS, if not set external target
             try {
-                cms.readFileHeader(m_vfsTarget);
+                resource = cms.readFileHeader(m_vfsTarget);
             } catch (CmsException e) {
                 if (e.getType() == CmsException.C_NOT_FOUND) {
                     // File not found in VFS, treat it as external file
@@ -154,9 +175,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         }
                 
         if ((m_extTarget != null) || (controller == null)) {
-            // This is an external include, probably to a JSP page, dispatch with system dispatcher
-            if (DEBUG > 0) System.err.println("FlexDispatcher: Dispatching to external target " + m_extTarget);      
-            m_rd.include(req, res);   
+            includeExternal(req, res);
             return;
         }
         
@@ -239,9 +258,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
             // Indicate to the response if caching is not required
             w_res.setCmsCachingRequired(variation != null);
                         
-            com.opencms.file.CmsResource resource = null;
             try {
-                resource = cms.readFileHeader(m_vfsTarget);
+                if (resource == null) resource = cms.readFileHeader(m_vfsTarget);
                 int type = resource.getLoaderId();
                 if (DEBUG > 0) System.err.println("FlexDispatcher: Loading resource type " + type);
                 loader = OpenCms.getLoaderManager().getLoader(type);
