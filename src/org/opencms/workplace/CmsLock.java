@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/05/19 16:20:53 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.security.CmsSecurityException;
@@ -52,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1.12
  */
@@ -184,7 +185,7 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
     
         try {
             String resName = getParamResource();
-            CmsResource res = getCms().readFileHeader(resName);
+            CmsResource res = getCms().readFileHeader(resName, CmsResourceFilter.ALL);
             if (res.isFolder() && !resName.endsWith("/")) {
                 resName += "/";
             }

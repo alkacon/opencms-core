@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/05/05 12:53:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -174,7 +174,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                     // a resource with the same name but different uuid does exist,
                     // copy the new resource to the lost+found folder 
                     String target = copyToLostAndFound(cms, destination, false);                             
-                    CmsResource newRes = new CmsResource(resource.getStructureId(), resource.getResourceId(), resource.getParentStructureId(), resource.getFileId(),  CmsResource.getName(target), resource.getType(), resource.getFlags(), resource.getProjectLastModified(), resource.getState(), resource.getLoaderId(), resource.getDateLastModified(), resource.getUserLastModified(), resource.getDateCreated(), resource.getUserCreated(), resource.getLength(), 1);                        
+                    CmsResource newRes = new CmsResource(resource.getStructureId(), resource.getResourceId(), resource.getParentStructureId(), resource.getFileId(),  CmsResource.getName(target), resource.getType(), resource.getFlags(), resource.getProjectLastModified(), resource.getState(), resource.getLoaderId(), resource.getDateLastModified(), resource.getUserLastModified(), resource.getDateCreated(), resource.getUserCreated(), resource.getLength(), 1, 0 ,0);                        
                     importedResource = cms.doImportResource(newRes, content, properties, target);
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/03/06 18:50:57 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -269,7 +269,9 @@ public abstract class A_CmsImport implements I_CmsImport {
                         target.getDateLastModified(), 
                         target.getUserLastModified(), 
                         0, 
-                        1
+                        1,
+                        0,
+                        0
                     );
                     
                     m_cms.importResource(resource, null, properties, key);

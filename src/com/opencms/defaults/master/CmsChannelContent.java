@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/02/26 11:35:35 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2004/05/19 16:20:54 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.defaults.master;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -55,8 +56,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.66 $
- * $Date: 2004/02/26 11:35:35 $
+ * $Revision: 1.67 $
+ * $Date: 2004/05/19 16:20:54 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -150,7 +151,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         m_cms.setContextToCos();
 
         try {
-            m_channel = m_cms.readFolder(channelId, true);            
+            m_channel = m_cms.readFolder(channelId, CmsResourceFilter.ALL);            
             m_channelname = m_channel.getName();
             m_parentchannel = CmsResource.getParentFolder(cms.readAbsolutePath(m_channel));
             // m_GroupId = m_channel.getGroupId();
@@ -212,7 +213,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
                                      I_CmsConstants.C_UNKNOWN_ID,
                                      System.currentTimeMillis(), m_cms.getRequestContext().currentUser().getId(),
                                      System.currentTimeMillis(), m_cms.getRequestContext().currentUser().getId(),
-                                     0, 1);
+                                     0, 1, 0, 0);
         m_properties = new Hashtable();
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2004/05/19 16:20:54 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,15 +29,16 @@
 
 package com.opencms.template;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.I_CmsWpConstants;
 
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import com.opencms.template.cache.CmsElementDefinition;
 import com.opencms.template.cache.CmsElementDefinitionCollection;
 
@@ -54,7 +55,7 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.47 $ $Date: 2004/02/13 13:45:33 $
+ * @version $Revision: 1.48 $ $Date: 2004/05/19 16:20:54 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent {
 
@@ -469,13 +470,13 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
         }
                 
         try {
-            cms.readFileHeader(bodyPath, true);
+            cms.readFileHeader(bodyPath, CmsResourceFilter.ALL);
             validatedBodyPath = bodyPath;
         } catch (CmsException e) {
             if (e.getType()==CmsException.C_NOT_FOUND) {
                 String defaultBodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + CmsResource.getParentFolder(cms.readAbsolutePath(page)).substring(1) + page.getName();
                 try {
-                    cms.readFileHeader(defaultBodyPath, true);
+                    cms.readFileHeader(defaultBodyPath, CmsResourceFilter.ALL);
                     validatedBodyPath = defaultBodyPath;
                     setElementTemplate(CmsXmlTemplate.C_BODY_ELEMENT, validatedBodyPath);
                 } catch (CmsException e1) {

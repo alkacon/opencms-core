@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/05/19 16:20:53 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 
@@ -51,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1
  */
@@ -151,7 +152,7 @@ public class CmsRename extends CmsDialog {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
-            CmsResource resource = getCms().readFileHeader(getParamResource());
+            CmsResource resource = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
             boolean isFolder = resource.isFolder();
             performRenameOperation(isFolder);
             // if no exception is caused rename operation was successful
@@ -206,7 +207,7 @@ public class CmsRename extends CmsDialog {
         // check if target already exists, if so, throw exception and terminate
         boolean targetExists = false;
         try {
-            getCms().readFileHeader(parentFolder + target);
+            getCms().readFileHeader(parentFolder + target, CmsResourceFilter.ALL);
             targetExists = true;
         } catch (CmsException e) {
             // empty

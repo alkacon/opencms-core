@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2004/04/01 10:14:57 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             resource.getUserCreated(),
             resource.getDateLastModified(),
             resource.getUserLastModified(),       
-            resource.getLinkCount()
+            resource.getLinkCount(), 0, 0
         );
         if (resource.hasFullResourceName()) {
             setFullResourceName(resource.getRootPath());
@@ -91,19 +91,21 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
     * Constructor, creates a new CmsFolder object.<p>
     *
     * @param structureId the id of this resources structure record
-    * @param resourceId the id of this resources resource record
-    * @param parentId the id of this resources parent folder
-    * @param fileId the id of this resources content record
-    * @param name the filename of this resouce
-    * @param type the type of this resource
-    * @param flags the flags of this resource
-    * @param projectId the project id this resource was last modified in
-    * @param state the state of this resource
-    * @param dateCreated the creation date of this resource
-    * @param userCreated the id of the user who created this resource
-    * @param dateLastModified the date of the last modification of this resource
-    * @param userLastModified the id of the user who did the last modification of this resource    * @param size the size of the file content of this resource
-    * @param linkCount the count of all siblings of this resource 
+ * @param resourceId the id of this resources resource record
+ * @param parentId the id of this resources parent folder
+ * @param fileId the id of this resources content record
+ * @param name the filename of this resouce
+ * @param type the type of this resource
+ * @param flags the flags of this resource
+ * @param projectId the project id this resource was last modified in
+ * @param state the state of this resource
+ * @param dateCreated the creation date of this resource
+ * @param userCreated the id of the user who created this resource
+ * @param dateLastModified the date of the last modification of this resource
+ * @param userLastModified the id of the user who did the last modification of this resource    * @param size the size of the file content of this resource
+ * @param linkCount the count of all siblings of this resource 
+ * @param dateReleased TODO
+ * @param dateExpired TODO
     */
     public CmsFolder(
         CmsUUID structureId,
@@ -119,7 +121,9 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         CmsUUID userCreated,
         long dateLastModified,
         CmsUUID userLastModified,
-        int linkCount
+        int linkCount, 
+        long dateReleased,
+        long dateExpired
     ) {             
         super(
             structureId,
@@ -137,7 +141,9 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             dateLastModified,
             userLastModified,
             -1,
-            linkCount);
+            linkCount,
+            dateReleased,
+            dateExpired);
     }
     
     /**
@@ -160,6 +166,6 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             getUserCreated(),
             getDateLastModified(),
             getUserLastModified(),
-            getLinkCount());
+            getLinkCount(), 0, 0);
     }
 }

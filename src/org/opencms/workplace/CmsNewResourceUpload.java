@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/05/17 10:52:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace;
 
 import org.opencms.db.CmsImportFolder;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResourceTypeBinary;
 import org.opencms.file.CmsResourceTypeImage;
 import org.opencms.file.CmsResourceTypeJsp;
@@ -64,7 +65,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.3
  */
@@ -160,7 +161,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
      */
     public void actionUpdateFile() throws JspException {
         try {
-            CmsResource res = getCms().readFileHeader(getParamResource());
+            CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
             I_CmsResourceType oldType = getCms().getResourceType(res.getType());
             if (!oldType.getResourceTypeName().equals(getParamNewResourceType())) {
                 // change the type of the uploaded resource
@@ -282,7 +283,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         StringBuffer result = new StringBuffer(512);        
         int currentResTypeId = -1;
         try {
-            CmsResource res = getCms().readFileHeader(getParamResource());
+            CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
             currentResTypeId = res.getType();
          
             for (int i=0; i<ALLOWED_RESOURCETYPES.length; i++) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -58,6 +58,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** The date of the last modification of this resource */
     private long m_dateLastModified;
 
+    /** The expiration date of this resource */
+    private long m_dateReleased;
+
+    /** The expiration date of this resource */
+    private long m_dateExpired;
+    
+    
     /** The flags of this resource ( not used yet; the Accessflags are stored in m_accessFlags) */
     private int m_flags;
 
@@ -122,6 +129,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param userLastModified the id of the user who did the last modification of this resource
      * @param size the size of the file content of this resource
      * @param linkCount the count of all siblings of this resource 
+     * @param dateReleased the release date of this resource
+     * @param dateExpired the expiration date of this resource
      */
     public CmsResource(
         CmsUUID structureId, 
@@ -139,7 +148,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         long dateLastModified, 
         CmsUUID userLastModified, 
         int size, 
-        int linkCount
+        int linkCount,
+        long dateReleased,
+        long dateExpired        
     ) {
         m_structureId = structureId;
         m_resourceId = resourceId;
@@ -157,6 +168,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_userLastModified = userLastModified;
         m_length = size;
         m_linkCount = linkCount;
+        m_dateReleased = dateReleased;
+        m_dateExpired = dateExpired;
+        
+        // TODO: remove this logig after testing
+        if ((dateExpired == dateReleased) && (dateExpired == 0)) {
+            m_dateExpired = Long.MAX_VALUE;
+        }
+        
         
         m_isTouched = false;
         m_rootPath = null;
@@ -316,7 +335,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_dateLastModified, 
             m_userLastModified, 
             m_length, 
-            m_linkCount
+            m_linkCount,
+            m_dateReleased,
+            m_dateExpired
         );
     }
 
@@ -377,12 +398,30 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
     
     /**
+     * Returns the expiration date this resource.<p>
+     *
+     * @return the expiration date of this resource
+     */
+    public long getDateExpired() {
+        return m_dateExpired;
+    }
+    
+    /**
      * Returns the date of the last modification of this resource.<p>
      *
      * @return the date of the last modification of this resource
      */
     public long getDateLastModified() {
         return m_dateLastModified;
+    }
+    
+    /**
+     * Returns the release date this resource.<p>
+     *
+     * @return the release date of this resource
+     */
+    public long getDateReleased() {
+        return m_dateReleased;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2004/04/10 23:12:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/05/19 16:20:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.3
  */
@@ -313,7 +314,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         TreeMap elements = new TreeMap();
 
         // get all visible template elements in the module folders
-        List modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES, false);
+        List modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES, CmsResourceFilter.DEFAULT);
         for (int i = 0; i < modules.size(); i++) {
             List moduleTemplateFiles = (List) new ArrayList();
             String folder = cms.readAbsolutePath((CmsFolder)modules.get(i));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2004/05/13 11:09:35 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace.editor;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -56,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1.12
  */
@@ -129,7 +130,7 @@ public class CmsSimpleEditor extends CmsEditor {
         try {
             // lock resource if autolock is enabled
             checkLock(getParamResource());
-            CmsFile editFile = getCms().readFile(getParamResource());
+            CmsFile editFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
             try {
                 content = new String(editFile.getContents(), getFileEncoding());
             } catch (UnsupportedEncodingException e) {
@@ -168,7 +169,7 @@ public class CmsSimpleEditor extends CmsEditor {
     public void actionSave() throws JspException {
         CmsFile editFile = null;
         try {
-            editFile = getCms().readFile(getParamResource());            
+            editFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);            
             // ensure all chars in the content are valid for the selected encoding
             String decodedContent = CmsEncoder.adjustHtmlEncoding(decodeContent(getParamContent()), getFileEncoding());
             

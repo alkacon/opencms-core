@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2004/04/28 22:29:02 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -54,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.1
  */
@@ -186,7 +187,7 @@ public class CmsCopy extends CmsDialog {
         // check if the current resource is a folder
         boolean isFolder = false;
         try {
-            CmsResource curRes = getCms().readFileHeader(getParamResource());
+            CmsResource curRes = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
             if (curRes.isFolder()) {
                 isFolder = true;        
             }
@@ -247,7 +248,7 @@ public class CmsCopy extends CmsDialog {
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         CmsResource resource = null;
         try {
-            resource = getCms().readFileHeader(getParamResource());
+            resource = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
             boolean isFolder = resource.isFolder();
             if (performCopyOperation(isFolder))  {
                 // if no exception is caused and "true" is returned copy operation was successful
@@ -362,7 +363,7 @@ public class CmsCopy extends CmsDialog {
             }            
             
             try {
-                CmsResource res = getCms().readFileHeader(target);
+                CmsResource res = getCms().readFileHeader(target, CmsResourceFilter.ALL);
                 if (res.isFolder()) {
                     // target folder already exists, so we add the current folder name
                     if (! target.endsWith("/")) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2004/05/19 16:20:54 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.defaults;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -52,7 +53,7 @@ import java.util.Vector;
  * @author Alexander Kandzior
  * @author Waruschan Babachan
  * @author Thomas Weckert
- * @version $Revision: 1.58 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.59 $ $Date: 2004/05/19 16:20:54 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -954,7 +955,7 @@ public class CmsXmlNav extends A_CmsNavBase {
             
             // add the current folder as the unique resource
             Vector resources = new Vector();       
-            resources.addElement(cms.readFolder(currentFolder, false));                             
+            resources.addElement(cms.readFolder(currentFolder, CmsResourceFilter.ALL));                             
             
             // build the navigation for the current folder and append to the path
             String currentNav = buildNav(cms, doc, userObject, resources);

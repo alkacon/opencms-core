@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,13 @@
 package org.opencms.lock;
 
 import org.opencms.db.CmsDriverManager;
-import org.opencms.util.CmsUUID;
-
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.4
  * 
@@ -337,7 +337,7 @@ public final class CmsLockManager extends Object {
         // inevitably result in an infinite loop...
 
         try {
-            List path = driverManager.readPath(context, resourcename, false);
+            List path = driverManager.readPath(context, resourcename, CmsResourceFilter.DEFAULT);
             resource = (CmsResource)path.get(path.size() - 1);
             resource.setFullResourceName(resourcename);
         } catch (CmsException e) {

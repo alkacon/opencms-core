@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/03/06 18:49:13 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.report.CmsShellReport;
@@ -68,7 +69,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -640,7 +641,7 @@ class CmsShellCommands implements I_CmsShellCommands {
                 int index = random.nextInt(resourceCount);
                 CmsResource resource = (CmsResource)testResources.get(index);
                 start = System.currentTimeMillis();               
-                m_cms.readFileHeader(m_cms.readAbsolutePath(resource), true);
+                m_cms.readFileHeader(m_cms.readAbsolutePath(resource), CmsResourceFilter.ALL);
                 time = System.currentTimeMillis() - start;
                 totalTime += time;
                 if (time < minTime) {

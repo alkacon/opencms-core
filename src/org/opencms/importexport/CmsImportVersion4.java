@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/05/13 11:08:40 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -557,7 +557,9 @@ public class CmsImportVersion4 extends A_CmsImport {
                 datelastmodified, 
                 newUserlastmodified, 
                 size, 
-                1
+                1,
+                0,
+                0
             );
              
             if (C_RESOURCE_TYPE_LINK_ID == resType) {

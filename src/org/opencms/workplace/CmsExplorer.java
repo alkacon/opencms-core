@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2004/05/19 16:20:53 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
@@ -59,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  * 
  * @since 5.1
  */
@@ -177,7 +178,7 @@ public class CmsExplorer extends CmsWorkplace {
      */
     private boolean resourceExists(CmsObject cms, String resource) {
         try {
-            cms.readFileHeader(resource);
+            cms.readFileHeader(resource, CmsResourceFilter.ALL);
             return true;            
         } catch (Exception e) {
             return false;
@@ -212,7 +213,7 @@ public class CmsExplorer extends CmsWorkplace {
         String currentFolder = getSettings().getExplorerResource();
         boolean found = true;
         try {
-            currentResource = getCms().readFileHeader(currentFolder);
+            currentResource = getCms().readFileHeader(currentFolder, CmsResourceFilter.ALL);
         } catch (CmsException e) {
             // file was not readable
             found = false;
@@ -227,7 +228,7 @@ public class CmsExplorer extends CmsWorkplace {
             currentFolder = "/";
             showVfsLinks = false;
             try {
-                currentResource = getCms().readFileHeader(currentFolder);
+                currentResource = getCms().readFileHeader(currentFolder, CmsResourceFilter.ALL);
             } catch (CmsException e) {
                 // should not happen
             }            
@@ -395,6 +396,7 @@ public class CmsExplorer extends CmsWorkplace {
                 try {
                     title = getCms().readPropertyObject(getCms().readAbsolutePath(res), I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
                 } catch (CmsException e) {
+                   
                     // ignore
                 }
                 if (title == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/04/23 13:27:06 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.85 $ $Date: 2004/04/23 13:27:06 $
+ * @version $Revision: 1.86 $ $Date: 2004/05/19 16:20:54 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -1107,9 +1107,11 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setString(3, resource.getResourceId().toString());
             stmt.setString(4, resource.getName());
             stmt.setInt(5, resource.getState());
-            stmt.setInt(6, tagId);
-            stmt.setInt(7, versionId);
-            stmt.setString(8, backupPkId.toString());
+            stmt.setTimestamp(6, new Timestamp(resource.getDateReleased()));
+            stmt.setTimestamp(7, new Timestamp(resource.getDateExpired()));
+            stmt.setInt(8, tagId);
+            stmt.setInt(9, versionId);
+            stmt.setString(10, backupPkId.toString());
             stmt.executeUpdate();
 
             writeBackupProperties(publishProject, resource, properties, backupPkId, tagId, versionId);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/05/08 03:12:08 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.editor;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -54,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 5.1.12
  */
@@ -385,7 +386,7 @@ public abstract class CmsEditor extends CmsDialog {
         CmsFile tempFile;
         List properties;
         try {
-            tempFile = getCms().readFile(getParamTempfile());
+            tempFile = getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL);
             properties = getCms().readPropertyObjects(getParamTempfile(), false);
         } finally {
             // make sure the project is reset in case of any exception
@@ -394,7 +395,7 @@ public abstract class CmsEditor extends CmsDialog {
         // update properties of original file first (required if change in encoding occured)
         getCms().writePropertyObjects(getParamResource(), properties);
         // now replace the content of the original file
-        CmsFile orgFile = getCms().readFile(getParamResource());
+        CmsFile orgFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
         orgFile.setContents(tempFile.getContents());
         getCms().writeFile(orgFile);
     }
@@ -407,7 +408,7 @@ public abstract class CmsEditor extends CmsDialog {
      */
     protected String createTempFile() throws CmsException {
         // read the selected file
-        CmsResource file = getCms().readFileHeader(getParamResource());
+        CmsResource file = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
         
         // Create the filename of the temporary file
         String temporaryFilename = CmsResource.getFolderPath(getCms().readAbsolutePath(file)) + I_CmsConstants.C_TEMP_PREFIX + file.getName();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/05/05 12:53:19 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public class CmsObject {
 
@@ -303,7 +303,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
-        CmsResource res = readFileHeader(resourceName);
+        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.ALL);
         CmsAccessControlEntry acEntry = null;
         I_CmsPrincipal principal = null;
 
@@ -330,7 +330,7 @@ public class CmsObject {
      */
     public void changeLockedInProject(int projectId, String resourcename) throws CmsException {
         // must include files marked as deleted when publishing
-        getResourceType(readFileHeader(resourcename, true).getType()).changeLockedInProject(this, projectId, resourcename);
+        getResourceType(readFileHeader(resourcename, CmsResourceFilter.ALL).getType()).changeLockedInProject(this, projectId, resourcename);
     }
 
     /**
@@ -378,7 +378,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void chtype(String filename, int newType) throws CmsException {
-        getResourceType(readFileHeader(filename).getType()).chtype(this, filename, newType);
+        getResourceType(readFileHeader(filename, CmsResourceFilter.ALL).getType()).chtype(this, filename, newType);
     }
 
     /**
@@ -421,7 +421,7 @@ public class CmsObject {
      * has not the appropriate rights to copy the file.
      */
     public void copyResource(String source, String destination) throws CmsException {
-        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, false, true, I_CmsConstants.C_COPY_PRESERVE_SIBLING);
+        getResourceType(readFileHeader(source, CmsResourceFilter.ALL).getType()).copyResource(this, source, destination, false, true, I_CmsConstants.C_COPY_PRESERVE_SIBLING);
     }
 
     /**
@@ -443,7 +443,7 @@ public class CmsObject {
      * has not the appropriate rights to copy the file.
      */
     public void copyResource(String source, String destination, boolean keepFlags, boolean lockCopy, int copyMode) throws CmsException {
-        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, keepFlags, lockCopy, copyMode);
+        getResourceType(readFileHeader(source, CmsResourceFilter.ALL).getType()).copyResource(this, source, destination, keepFlags, lockCopy, copyMode);
     }
 
     /**
@@ -456,7 +456,7 @@ public class CmsObject {
          * @throws CmsException if operation was not successful.
      */
     public void copyResourceToProject(String resource) throws CmsException {
-        getResourceType(readFileHeader(resource).getType()).copyResourceToProject(this, resource);
+        getResourceType(readFileHeader(resource, CmsResourceFilter.ALL).getType()).copyResourceToProject(this, resource);
     }
 
     /**
@@ -917,7 +917,7 @@ public class CmsObject {
      * @see org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_SIBLINGS
      */
     public void deleteResource(String filename, int deleteOption) throws CmsException {
-        getResourceType(readFileHeader(filename).getType()).deleteResource(this, filename, deleteOption);
+        getResourceType(readFileHeader(filename, CmsResourceFilter.ALL).getType()).deleteResource(this, filename, deleteOption);
     }
 
     /**
@@ -1414,7 +1414,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public List getAllVfsLinks(String resourcename) throws CmsException {
-        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), true, false);
+        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), true, CmsResourceFilter.DEFAULT);
     }
 
     /**
@@ -1426,7 +1426,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong 
      */
     public List getAllVfsSoftLinks(String resourcename) throws CmsException {       
-        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), false, false);
+        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), false, CmsResourceFilter.DEFAULT);
     } 
 
     /**
@@ -1496,7 +1496,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsAccessControlList getAccessControlList(String resourceName, boolean inheritedOnly) throws CmsException {
-        CmsResource res = readFileHeader(resourceName);
+        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.ALL);
         return m_driverManager.getAccessControlList(m_context, res, inheritedOnly);
     }
 
@@ -1633,7 +1633,7 @@ public class CmsObject {
      * @throws CmsException if the user has not hte appropriate rigths to access or read the resource.
      */
     public List getFilesInFolder(String foldername) throws CmsException {
-        return (m_driverManager.getSubFiles(m_context, addSiteRoot(foldername), false));
+        return (m_driverManager.getSubFiles(m_context, addSiteRoot(foldername), CmsResourceFilter.DEFAULT));
     }
 
     /**
@@ -1642,14 +1642,14 @@ public class CmsObject {
      * Files of a folder can be read from an offline Project and the online Project.
      *
      * @param foldername the complete path to the folder.
-     * @param includeDeleted Include if the folder is marked as deleted
+     * @param filter a filter object to filter the resources
      *
      * @return subfiles a Vector with all files of the given folder.
      *
      * @throws CmsException if the user has not hte appropriate rigths to access or read the resource.
      */
-    public List getFilesInFolder(String foldername, boolean includeDeleted) throws CmsException {
-        return (m_driverManager.getSubFiles(m_context, addSiteRoot(foldername), includeDeleted));
+    public List getFilesInFolder(String foldername, CmsResourceFilter filter) throws CmsException {
+        return (m_driverManager.getSubFiles(m_context, addSiteRoot(foldername), filter));
     }
 
     /**
@@ -1786,7 +1786,7 @@ public class CmsObject {
      */
     public CmsPermissionSet getPermissions(String resourceName) throws CmsException {
         // reading permissions is allowed even if the resource is marked as deleted
-        CmsResource resource = readFileHeader(resourceName, true);
+        CmsResource resource = readFileHeader(resourceName, CmsResourceFilter.ALL);
         CmsUser user = m_context.currentUser();
 
         return m_driverManager.getPermissions(m_context, resource, user);
@@ -1956,19 +1956,19 @@ public class CmsObject {
      * @throws CmsException if the user has not the permissions to access or read the resource
      */
     public List getSubFolders(String foldername) throws CmsException {
-        return (m_driverManager.getSubFolders(m_context, addSiteRoot(foldername), false));
+        return (m_driverManager.getSubFolders(m_context, addSiteRoot(foldername), CmsResourceFilter.DEFAULT));
     }
 
     /**
      * Returns a Vector with all subfolders of a given folder.<p>
      *
      * @param foldername the complete path to the folder
-     * @param includeDeleted if true folders marked as deleted are also included
+     * @param filter a filter object to filter the resources
      * @return all subfolders (CmsFolder Objects) for the given folder
      * @throws CmsException if the user has not the permissions to access or read the resource
      */
-    public List getSubFolders(String foldername, boolean includeDeleted) throws CmsException {
-        return (m_driverManager.getSubFolders(m_context, addSiteRoot(foldername), includeDeleted));
+    public List getSubFolders(String foldername, CmsResourceFilter filter) throws CmsException {
+        return (m_driverManager.getSubFolders(m_context, addSiteRoot(foldername), filter));
     }
 
     /**
@@ -2263,7 +2263,7 @@ public class CmsObject {
      * It will also be thrown, if there is a existing lock and force was set to false.
      */
     public void lockResource(String resource, boolean force, int mode) throws CmsException {
-        getResourceType(readFileHeader(resource).getType()).lockResource(this, resource, force, mode);
+        getResourceType(readFileHeader(resource, CmsResourceFilter.ALL).getType()).lockResource(this, resource, force, mode);
     }
     
     /**
@@ -2391,7 +2391,7 @@ public class CmsObject {
      * or if the file couldn't be moved.
      */
     public String copyToLostAndFound(String source) throws CmsException {
-        return getResourceType(readFileHeader(source).getType()).copyToLostAndFound(this, source, true);
+        return getResourceType(readFileHeader(source, CmsResourceFilter.ALL).getType()).copyToLostAndFound(this, source, true);
     }
 
     /**
@@ -2499,7 +2499,7 @@ public class CmsObject {
         CmsResource resource = null;
         
         try {
-            resource = readFileHeader(resourcename, true);
+            resource = readFileHeader(resourcename, CmsResourceFilter.ALL);
             publishProject(report, resource, directPublishSiblings);
         } catch (CmsException e) {
             throw e;
@@ -2516,7 +2516,7 @@ public class CmsObject {
      * @return the absolute path
      */
     public String readAbsolutePath(CmsResource resource) {
-        return readAbsolutePath(resource, false);
+        return readAbsolutePath(resource, CmsResourceFilter.DEFAULT);
     }
 
     /**
@@ -2524,13 +2524,13 @@ public class CmsObject {
      * The absolute path is the root path without the site information.
      * 
      * @param resource the resource
-     * @param includeDeleted include resources that are marked as deleted
+     * @param filter  a filter object to filter the resources
      * @return the absolute path
      */
-    public String readAbsolutePath(CmsResource resource, boolean includeDeleted) {
+    public String readAbsolutePath(CmsResource resource, CmsResourceFilter filter) {
         if (!resource.hasFullResourceName()) {
             try {
-                m_driverManager.readPath(m_context, resource, includeDeleted);
+                m_driverManager.readPath(m_context, resource, filter);
             } catch (CmsException e) {
                 OpenCms.getLog(this).error("Could not read absolute path for resource " + resource, e);
                 resource.setFullResourceName(null);
@@ -2716,15 +2716,15 @@ public class CmsObject {
      * Reads a file from the Cms.
      *
      * @param filename the complete path to the file.
-     * @param includeDeleted If true the deleted file will be returned.
+     * @param filter a filter object to filter the resources
      *
      * @return file the read file.
      *
      * @throws CmsException if the user has not the rights to read this resource,
      * or if the file couldn't be read.
      */
-    public CmsFile readFile(String filename, boolean includeDeleted) throws CmsException {
-        return m_driverManager.readFile(m_context, addSiteRoot(filename), includeDeleted);
+    public CmsFile readFile(String filename, CmsResourceFilter filter) throws CmsException {
+        return m_driverManager.readFile(m_context, addSiteRoot(filename), filter);
     }
 
     /**
@@ -2776,16 +2776,15 @@ public class CmsObject {
      * The reading excludes the filecontent.
      *
      * @param filename the complete path of the file to be read
-     * @param includeDeleted if <code>true</code>, deleted files (in offline projects) will 
-     * also be read
+     * @param filter a filter object to filter the resources
      *
      * @return file the read file header
      *
      * @throws CmsException if the user has not the rights
      * to read the file headers, or if the file headers couldn't be read
      */
-    public CmsResource readFileHeader(String filename, boolean includeDeleted) throws CmsException {
-        return (m_driverManager.readFileHeader(m_context, addSiteRoot(filename), includeDeleted));
+    public CmsResource readFileHeader(String filename, CmsResourceFilter filter) throws CmsException {
+        return (m_driverManager.readFileHeader(m_context, addSiteRoot(filename), filter));
     }
 
     /**
@@ -2795,15 +2794,15 @@ public class CmsObject {
      *
      * @param filename the complete path of the file to be read.
      * @param projectId the id of the project where the resource should belong to
-     * @param includeDeleted include resources that are marked as deleted
+     * @param filter a filter object to filter the resources
      * 
      * @return file the read file.
      *
      * @throws CmsException , if the user has not the rights
      * to read the file headers, or if the file headers couldn't be read.
      */
-    public CmsResource readFileHeader(String filename, int projectId, boolean includeDeleted) throws CmsException {
-        return (m_driverManager.readFileHeaderInProject(projectId, addSiteRoot(filename), includeDeleted));
+    public CmsResource readFileHeader(String filename, int projectId, CmsResourceFilter filter) throws CmsException {
+        return (m_driverManager.readFileHeaderInProject(projectId, addSiteRoot(filename), filter));
     }
 
     /**
@@ -2841,15 +2840,15 @@ public class CmsObject {
      * Reads a folder from the Cms.
      *
      * @param folderId the id of the folder to be read
-     * @param includeDeleted Include the folder if it is marked as deleted
+     * @param filter a filter object to filter the resources
      *
      * @return folder the read folder
      *
      * @throws CmsException if the user does not have the permissions
      * to read this folder, or if the folder couldn't be read
      */
-    public CmsFolder readFolder(CmsUUID folderId, boolean includeDeleted) throws CmsException {
-        return (m_driverManager.readFolder(m_context, folderId, includeDeleted));
+    public CmsFolder readFolder(CmsUUID folderId, CmsResourceFilter filter) throws CmsException {
+        return (m_driverManager.readFolder(m_context, folderId, filter));
     }
 
     /**
@@ -2870,15 +2869,15 @@ public class CmsObject {
      * Reads a folder from the Cms.
      *
      * @param folderName the complete path to the folder to be read
-     * @param includeDeleted Include the folder if it is marked as deleted
+     * @param filter a filter object to filter the resources
      *
      * @return The read folder 
      *
      * @throws CmsException If the user does not have the permissions
      * to read this folder, or if the folder couldn't be read
      */
-    public CmsFolder readFolder(String folderName, boolean includeDeleted) throws CmsException {
-        return (m_driverManager.readFolder(m_context, addSiteRoot(folderName), includeDeleted));
+    public CmsFolder readFolder(String folderName, CmsResourceFilter filter) throws CmsException {
+        return (m_driverManager.readFolder(m_context, addSiteRoot(folderName), filter));
     }
 
     /**
@@ -3016,12 +3015,12 @@ public class CmsObject {
      * inevitably increases runtime costs.
      * 
      * @param path the requested path
-     * @param includeDeleted include resources that are marked as deleted
+     * @param filter a filter object to filter the resources
      * @return List of CmsResource's
      * @throws CmsException if something goes wrong
      */
-    public List readPath(String path, boolean includeDeleted) throws CmsException {
-        return (m_driverManager.readPath(m_context, m_context.addSiteRoot(path), includeDeleted));
+    public List readPath(String path, CmsResourceFilter filter) throws CmsException {
+        return (m_driverManager.readPath(m_context, m_context.addSiteRoot(path), filter));
     }
 
     /**
@@ -3358,7 +3357,7 @@ public class CmsObject {
      * to rename the file, or if the file couldn't be renamed.
      */
     public void renameResource(String oldname, String newname) throws CmsException {
-        getResourceType(readFileHeader(oldname).getType()).renameResource(this, oldname, newname);
+        getResourceType(readFileHeader(oldname, CmsResourceFilter.ALL).getType()).renameResource(this, oldname, newname);
     }
 
     /**
@@ -3385,7 +3384,7 @@ public class CmsObject {
             resProps.putAll(properties);
         }
 
-        getResourceType(readFileHeader(resourcename, true).getType()).replaceResource(this, resourcename, resProps, content, type);
+        getResourceType(readFileHeader(resourcename, CmsResourceFilter.ALL).getType()).replaceResource(this, resourcename, resProps, content, type);
     }
 
     /**
@@ -3397,7 +3396,7 @@ public class CmsObject {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(int tagId, String filename) throws CmsException {
-        getResourceType(readFileHeader(filename).getType()).restoreResource(this, tagId, filename);
+        getResourceType(readFileHeader(filename, CmsResourceFilter.ALL).getType()).restoreResource(this, tagId, filename);
     }
 
     /**
@@ -3560,7 +3559,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void touch(String resourceName, long timestamp, boolean touchRecursive, CmsUUID user) throws CmsException {
-        getResourceType(readFileHeader(resourceName).getType()).touch(this, resourceName, timestamp, touchRecursive, user);
+        getResourceType(readFileHeader(resourceName, CmsResourceFilter.ALL).getType()).touch(this, resourceName, timestamp, touchRecursive, user);
     }
 
     /**
@@ -3585,7 +3584,7 @@ public class CmsObject {
      */
     public void undeleteResource(String filename) throws CmsException {
         //read the file header including deleted
-        getResourceType(readFileHeader(filename, true).getType()).undeleteResource(this, filename);
+        getResourceType(readFileHeader(filename, CmsResourceFilter.ALL).getType()).undeleteResource(this, filename);
     }
 
     /**
@@ -3598,7 +3597,7 @@ public class CmsObject {
      */
     public void undoChanges(String filename, boolean recursive) throws CmsException {
         //read the file header including deleted
-        getResourceType(readFileHeader(filename, true).getType()).undoChanges(this, filename, recursive);
+        getResourceType(readFileHeader(filename, CmsResourceFilter.ALL).getType()).undoChanges(this, filename, recursive);
     }
 
     /**
@@ -3620,7 +3619,7 @@ public class CmsObject {
      * @throws CmsException if the user has no write permission for the resource
      */
     public void unlockResource(String resource, boolean forceRecursive) throws CmsException {
-        getResourceType(readFileHeader(resource, true).getType()).unlockResource(this, resource, forceRecursive);
+        getResourceType(readFileHeader(resource, CmsResourceFilter.ALL).getType()).unlockResource(this, resource, forceRecursive);
     }
 
     /**

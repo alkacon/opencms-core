@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2004/04/28 22:24:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsRequestContext {
 
@@ -87,6 +87,9 @@ public class CmsRequestContext {
     /** The current user */
     private CmsUser m_user;
     
+    /** The current request time */
+    private long m_requestTime;
+    
     /**
      * Constructs a new request context.<p>
      * 
@@ -121,6 +124,8 @@ public class CmsRequestContext {
         m_remoteAddr = remoteAddr;
         m_directoryTranslator = directoryTranslator;
         m_fileTranslator = fileTranslator;
+        m_requestTime = System.currentTimeMillis();
+
     }
 
     /**
@@ -280,6 +285,15 @@ public class CmsRequestContext {
     public String getRemoteAddress() {
         return m_remoteAddr;
     }
+    
+    /**
+     * Returns the current request time.<p>
+     * 
+     * @return the current request time
+     */
+    public long getRequestTime() {
+        return m_requestTime;
+    }
 
     /**
      * Returns the current root directory in the virtual file system.<p>
@@ -404,6 +418,16 @@ public class CmsRequestContext {
         m_eventControlled = value;
     }
 
+    /**
+     * Sets the current request time.<p>
+     * 
+     * @param time the request time
+     */
+    public void setRequestTime(long time) {
+        m_requestTime = time;
+    }
+    
+    
     /**
      * Sets the current root directory in the virtual file system.<p>
      * 

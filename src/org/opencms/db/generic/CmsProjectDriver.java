@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/04/23 14:51:07 $
- * Version: $Revision: 1.162 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.163 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,15 +37,7 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsUser;
+import org.opencms.file.*;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -84,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.162 $ $Date: 2004/04/23 14:51:07 $
+ * @version $Revision: 1.163 $ $Date: 2004/05/19 16:20:54 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -626,7 +618,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             try {
                 // read the folder online
-                onlineFolder = m_driverManager.readFolder(context, currentFolder.getStructureId(), true);
+                onlineFolder = m_driverManager.readFolder(context, currentFolder.getStructureId(), CmsResourceFilter.ALL);
                 onlineFolder.setFullResourceName(currentFolder.getRootPath());
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {

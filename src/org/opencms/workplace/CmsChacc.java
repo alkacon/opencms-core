@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2004/05/17 07:06:46 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.workplace;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -63,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 5.1
  */
@@ -241,7 +242,7 @@ public class CmsChacc extends CmsDialog {
             setCurPermissions(getCms().getPermissions(getParamResource(), userName));
     
             // check if the current resource is a folder
-            CmsResource resource = getCms().readFileHeader(getParamResource());
+            CmsResource resource = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
             if (resource.isFolder()) {
                 setInherit(true);
             }
@@ -295,7 +296,7 @@ public class CmsChacc extends CmsDialog {
             internalValue = true;
         }     
         try { 
-            resource = (CmsFile)getCms().readFileHeader(getParamResource());
+            resource = (CmsFile)getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
           
             int flags = resource.getFlags();
              
@@ -482,7 +483,7 @@ public class CmsChacc extends CmsDialog {
                     // ignore
                 }
             }
-            CmsResource res = getCms().readFileHeader(fileName);
+            CmsResource res = getCms().readFileHeader(fileName, CmsResourceFilter.ALL);
             CmsUUID fileId = res.getFileId();
             CmsAccessControlEntry entry = new CmsAccessControlEntry(fileId, id, curSet, flags);
             return buildPermissionEntryForm(entry, editable, extendedView, null);
@@ -780,7 +781,7 @@ public class CmsChacc extends CmsDialog {
         List parentResources = new ArrayList();
         try {
             // get all parent folders of the current file
-            parentResources = getCms().readPath(path, false);
+            parentResources = getCms().readPath(path, CmsResourceFilter.DEFAULT);
         } catch (CmsException e) {
             // ignore
         }
@@ -838,7 +839,7 @@ public class CmsChacc extends CmsDialog {
         
         // try to read the internal flag from the resource
         try { 
-            resource = getCms().readFileHeader(getParamResource());
+            resource = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
             internal = ((resource.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0);
         } catch (CmsException e) {
             // an error occured reading the resource

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResourceTypeXmlPage;
 import org.opencms.file.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
@@ -66,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -180,7 +181,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      */
     public String getDialogUri(String resource, CmsJspActionElement jsp) {
         try {
-            CmsResource res = jsp.getCmsObject().readFileHeader(resource);
+            CmsResource res = jsp.getCmsObject().readFileHeader(resource, CmsResourceFilter.ALL);
             if (res.getType() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
                 // display special property dialog for xmlpage types
                 return C_PATH_WORKPLACE + "editors/dialogs/property.html";
@@ -317,7 +318,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      * @throws CmsException if something goes wrong
      */
     public Vector getPropertyDefinitions() throws CmsException {
-        CmsResource res = getCms().readFileHeader(getParamResource());
+        CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
         I_CmsResourceType type = getCms().getResourceType(res.getType());
         return getCms().readAllPropertydefinitions(type.getResourceTypeName());           
     }          
@@ -335,7 +336,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         // check the resource type of the edited resource
         m_isFolder = false;
         try {
-            CmsResource resource = getCms().readFileHeader(getParamResource());
+            CmsResource resource = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
             if (resource.isFolder()) {
                 m_isFolder = true;
                 if (!getParamResource().endsWith("/")) {
@@ -659,7 +660,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 CmsResource file = null;
                 CmsLock lock = null;
                 try {
-                    file = getCms().readFileHeader(resourceName);
+                    file = getCms().readFileHeader(resourceName, CmsResourceFilter.ALL);
                     // check if resource is a folder
                     if (file.isFolder()) {
                         resourceName += "/";            
@@ -739,7 +740,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         } else if (getAction() == ACTION_SAVE_EDIT && MODE_WIZARD.equals(getParamDialogmode())) {
             // set request attribute to reload the folder tree after creating a folder in wizard mode
             try {
-                CmsResource res = getCms().readFileHeader(getParamResource());
+                CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
                 if (res.isFolder()) {
                     List folderList = new ArrayList(1);
                     folderList.add(CmsResource.getParentFolder(getParamResource()));
@@ -818,7 +819,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             if (useTempfileProject) {
                 switchToTempProject();
             }
-            CmsResource res = getCms().readFileHeader(getParamResource());
+            CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
             String newProperty = getParamNewproperty();
             if (newProperty != null && !"".equals(newProperty.trim())) {
                 getCms().createPropertydefinition(newProperty, res.getType());

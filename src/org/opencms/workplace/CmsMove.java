@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2004/04/28 22:29:02 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,13 +30,13 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.site.CmsSiteManager;
-import org.opencms.staticexport.CmsLinkManager;
-
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.site.CmsSiteManager;
+import org.opencms.staticexport.CmsLinkManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.1
  */
@@ -144,7 +144,7 @@ public class CmsMove extends CmsDialog {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
-            CmsResource sourceRes = getCms().readFileHeader(getParamResource());
+            CmsResource sourceRes = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
             boolean isFolder = sourceRes.isFolder();
             if (performMoveOperation(isFolder))  {
                 // if no exception is caused and "true" is returned move operation was successful
@@ -229,7 +229,7 @@ public class CmsMove extends CmsDialog {
             }           
             
             try {
-                CmsResource res = getCms().readFileHeader(target);
+                CmsResource res = getCms().readFileHeader(target, CmsResourceFilter.ALL);
                 if (res.isFolder()) {
                     // target folder already exists, so we add the current folder name
                     if (! target.endsWith("/")) {
@@ -250,7 +250,7 @@ public class CmsMove extends CmsDialog {
             // check if target already exists, if so, throw exception to show confirmation dialog
             CmsResource targetRes = null;
             try {
-                targetRes = getCms().readFileHeader(target);
+                targetRes = getCms().readFileHeader(target, CmsResourceFilter.ALL);
             } catch (CmsException e) { 
                 // ignore
             }

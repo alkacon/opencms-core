@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/05/17 10:53:26 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
@@ -74,7 +75,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  * 
  * @since 5.1
  */
@@ -658,7 +659,7 @@ public abstract class CmsWorkplace {
     public void checkLock(String resource, int mode) throws CmsException {
         if (OpenCms.getWorkplaceManager().autoLockResources()) {
             // Autolock is enabled, check the lock state of the resource
-            CmsResource res = getCms().readFileHeader(resource);
+            CmsResource res = getCms().readFileHeader(resource, CmsResourceFilter.ALL);
             if (getCms().getLock(res).isNullLock()) {
                 // resource is not locked, lock it automatically
                 getCms().lockResource(resource, false, mode);

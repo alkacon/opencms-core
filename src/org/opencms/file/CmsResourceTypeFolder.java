@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/05/05 12:53:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
     
@@ -93,7 +93,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if (curFile.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                 // must include files already deleted for publishing deleted resources
-                cms.changeLockedInProject(newProjectId, cms.readAbsolutePath(curFile, true));
+                cms.changeLockedInProject(newProjectId, cms.readAbsolutePath(curFile, CmsResourceFilter.ALL));
             }
         }
         // now all the subfolders
@@ -109,7 +109,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             // change the corresponding folder in C_VFS_PATH_BODIES
             String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourcename;
             try {
-                cms.readFolder(bodyFolder, true);
+                cms.readFolder(bodyFolder, CmsResourceFilter.ALL);
                 changeLockedInProject(cms, newProjectId, bodyFolder);
             } catch (CmsException ex) {
                 // no folder is there, so do nothing
@@ -189,7 +189,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         if (C_BODY_MIRROR) {
             // try to copy the corresponding folder in C_VFS_PATH_BODIES to the project
             try {
-                CmsResource contentFolder = cms.readFolder(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourceName, true);
+                CmsResource contentFolder = cms.readFolder(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourceName, CmsResourceFilter.ALL);
                 if (contentFolder != null) {
                     cms.doCopyResourceToProject(cms.readAbsolutePath(contentFolder));
                 }
@@ -529,14 +529,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         for (int i = 0; i < allSubFiles.size(); i++) {
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if (curFile.getState() == I_CmsConstants.C_STATE_DELETED) {
-                cms.undeleteResource(cms.readAbsolutePath(curFile, true));
+                cms.undeleteResource(cms.readAbsolutePath(curFile, CmsResourceFilter.ALL));
             }
         }
         // now all the empty subfolders
         for (int i = 0; i < allSubFolders.size(); i++) {
             CmsFolder curFolder = (CmsFolder)allSubFolders.elementAt(i);
             if (curFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
-                cms.doUndeleteFolder(cms.readAbsolutePath(curFolder, true));
+                cms.doUndeleteFolder(cms.readAbsolutePath(curFolder, CmsResourceFilter.ALL));
             }
         }
         // finally the folder
@@ -550,7 +550,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             // undelete the corresponding folder in C_VFS_PATH_BODIES
             String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + folder;
             try {
-                cms.readFolder(bodyFolder, true);
+                cms.readFolder(bodyFolder, CmsResourceFilter.ALL);
                 cms.undeleteResource(bodyFolder);
             } catch (CmsException ex) {
                 // no folder is there, so do nothing
@@ -688,13 +688,13 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         List files = (List)new ArrayList();
 
         // get files and folders of this rootFolder
-        folders = cms.getSubFolders(rootFolder, true);
-        files = cms.getFilesInFolder(rootFolder, true);
+        folders = cms.getSubFolders(rootFolder, CmsResourceFilter.ALL);
+        files = cms.getFilesInFolder(rootFolder, CmsResourceFilter.ALL);
 
         //copy the values into the allFiles and allFolders Vectors
         for (int i = 0; i < folders.size(); i++) {
             allFolders.add(folders.get(i));
-            getAllResources(cms, cms.readAbsolutePath((CmsFolder)folders.get(i), true), allFiles, allFolders);
+            getAllResources(cms, cms.readAbsolutePath((CmsFolder)folders.get(i), CmsResourceFilter.ALL), allFiles, allFolders);
         }
         for (int i = 0; i < files.size(); i++) {
             allFiles.add(files.get(i));

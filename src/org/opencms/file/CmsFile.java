@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
     
@@ -77,7 +77,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             resource.getUserLastModified(),
             0,            
             resource.getLinkCount(), 
-            new byte[0]
+            0, 0, new byte[0]
         );
         if (resource.hasFullResourceName()) {
             setFullResourceName(resource.getRootPath());
@@ -95,22 +95,24 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     * Constructor, creates a new CmsFile object.<p>
     *
     * @param structureId the id of this resources structure record
-    * @param resourceId the id of this resources resource record
-    * @param parentId the id of this resources parent folder
-    * @param fileId the id of this resources content record
-    * @param name the filename of this resouce
-    * @param type the type of this resource
-    * @param flags the flags of this resource
-    * @param projectId the project id this resource was last modified in
-    * @param state the state of this resource
-    * @param loaderId the id for the that is used to load this recource
-    * @param dateCreated the creation date of this resource
-    * @param userCreated the id of the user who created this resource
-    * @param dateLastModified the date of the last modification of this resource
-    * @param userLastModified the id of the user who did the last modification of this resource
-    * @param length the size of the file content of this resource
-    * @param linkCount the count of all siblings of this resource 
-    * @param content the binary content data of this file
+ * @param resourceId the id of this resources resource record
+ * @param parentId the id of this resources parent folder
+ * @param fileId the id of this resources content record
+ * @param name the filename of this resouce
+ * @param type the type of this resource
+ * @param flags the flags of this resource
+ * @param projectId the project id this resource was last modified in
+ * @param state the state of this resource
+ * @param loaderId the id for the that is used to load this recource
+ * @param dateCreated the creation date of this resource
+ * @param userCreated the id of the user who created this resource
+ * @param dateLastModified the date of the last modification of this resource
+ * @param userLastModified the id of the user who did the last modification of this resource
+ * @param length the size of the file content of this resource
+ * @param linkCount the count of all siblings of this resource 
+ * @param dateReleased TODO
+ * @param dateExpired TODO
+ * @param content the binary content data of this file
     */
     public CmsFile(
         CmsUUID structureId,
@@ -129,6 +131,8 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         CmsUUID userLastModified,
         int length,
         int linkCount,
+        long dateReleased, 
+        long dateExpired, 
         byte[] content
     ) {
         // create the CmsResource.
@@ -148,7 +152,9 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             dateLastModified, 
             userLastModified, 
             length, 
-            linkCount);
+            linkCount,
+            dateReleased,
+            dateExpired);
                 
         // set content and length
         m_fileContent = content;
@@ -181,7 +187,8 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             getUserLastModified(),
             getLength(),
             getLinkCount(),
-            newContent);
+            getDateReleased(),
+            getDateExpired(), newContent);
             
         return clone;
     }

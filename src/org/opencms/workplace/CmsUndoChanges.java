@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndoChanges.java,v $
- * Date   : $Date: 2004/05/05 12:53:19 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/05/19 16:20:53 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,11 +30,11 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.util.CmsUUID;
-
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
@@ -111,7 +111,7 @@ public class CmsUndoChanges extends CmsDialog {
         }
         
         try {
-            setCurrentResource(getCms().readFileHeader(getParamResource()));
+            setCurrentResource(getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL));
         } catch (CmsException e) {
             // empty
         }
@@ -152,7 +152,7 @@ public class CmsUndoChanges extends CmsDialog {
     private boolean performUndoChangesOperation() throws CmsException {     
          
         // on undo changes display "please wait" screen, not for simple file copy
-        CmsResource sourceRes = getCms().readFileHeader(getParamResource());
+        CmsResource sourceRes = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
         if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
@@ -176,7 +176,7 @@ public class CmsUndoChanges extends CmsDialog {
         
         CmsResource res = null;
         try {
-            res = getCms().readFileHeader(getParamResource());
+            res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
         } catch (CmsException e) {
             return "";
         }    

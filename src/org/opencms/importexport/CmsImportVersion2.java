@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/05/13 11:08:40 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/05/19 16:20:54 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.file.CmsResourceTypePlain;
 import org.opencms.file.CmsResourceTypeXmlPage;
@@ -572,7 +573,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     I_CmsConstants.C_STATE_NEW, resourceTypeLoaderId, lastmodified,
                     curUser,
                     lastmodified, curUser, size,
-                    1);
+                    1, 0, 0);
             
             if (C_RESOURCE_TYPE_LINK_ID == resourceTypeId) {
                 // store links for later conversion
@@ -877,10 +878,10 @@ public class CmsImportVersion2 extends A_CmsImport {
             String resname = (String)i.previous();
             resname = (resname.startsWith("/") ? "" : "/") + resname + (resname.endsWith("/") ? "" : "/");
             // now check if the folder is really empty. Only delete empty folders
-            List files = m_cms.getFilesInFolder(resname, false);
+            List files = m_cms.getFilesInFolder(resname, CmsResourceFilter.DEFAULT);
 
             if (files.size() == 0) {
-                List folders = m_cms.getSubFolders(resname, false);
+                List folders = m_cms.getSubFolders(resname, CmsResourceFilter.DEFAULT);
                 if (folders.size() == 0) {
                     m_report.print("( " + counter + " / " + size + " ) ",  I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(m_report.key("report.delfolder") + " " , I_CmsReport.C_FORMAT_NOTE);
