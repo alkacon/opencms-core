@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/08/03 16:15:23 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.3.5
  */
@@ -140,12 +140,26 @@ public class OpenCmsTestCase extends TestCase {
         removeDatabase();
         
         // copy the configuration files to re-create the original configuration
-        copyConfiguration();
+        String configFolder = getTestDataPath() + "WEB-INF/config-ori/";
+        copyConfiguration(configFolder);
 
         // remove potentially created "classes, "lib" and "backup" folder
         CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/classes/"));        
         CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/lib/"));
         CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/config/backup/"));        
+    }
+
+    /**
+     * Sets up a complete OpenCms instance with configuration from the config-ori folder, 
+     * creating the usual projects, and importing a default database.<p>
+     * 
+     * @param importFolder the folder to import in the "real" FS
+     * @param targetFolder the target folder of the import in the VFS
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     */
+    public static CmsObject setupOpenCms(String importFolder, String targetFolder) {
+    
+        return setupOpenCms(importFolder, targetFolder, getTestDataPath() + "WEB-INF/config-ori/");
     }
     
     /**
@@ -154,9 +168,10 @@ public class OpenCmsTestCase extends TestCase {
      * 
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
+     * @param configFolder the folder to copy the configuration files
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
      */
-    public static CmsObject setupOpenCms(String importFolder, String targetFolder) {
+    public static CmsObject setupOpenCms(String importFolder, String targetFolder, String configFolder) {
         
         // output a message 
         System.out.println("\n\n\n----- Starting test case: Importing OpenCms VFS data -----");
@@ -175,7 +190,7 @@ public class OpenCmsTestCase extends TestCase {
         }
         
         // copy the configuration files
-        copyConfiguration();
+        copyConfiguration(configFolder);
         
         // create a shell instance
         m_shell = new CmsShell(
@@ -491,7 +506,7 @@ public class OpenCmsTestCase extends TestCase {
      * Copies the configuration files from the "config-ori" folder to the 
      * "config" folder.<p>
      */
-    private static void copyConfiguration() {
+    private static void copyConfiguration(String newConfig) {
         
         File configDir = new File(getTestDataPath() + "WEB-INF/config/");
         File configOriDir = new File(getTestDataPath() + "WEB-INF/config-ori/");
