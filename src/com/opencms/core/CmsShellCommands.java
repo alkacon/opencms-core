@@ -1,11 +1,11 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/01/30 14:02:19 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2001/02/19 13:04:41 $
+* Version: $Revision: 1.28 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -38,42 +38,42 @@ import source.org.apache.java.util.*;
 /**
  * This class is a commadnlineinterface for the opencms. It can be used to test
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
- * 
+ *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.27 $ $Date: 2001/01/30 14:02:19 $
+ * @version $Revision: 1.28 $ $Date: 2001/02/19 13:04:41 $
  */
 public class CmsShellCommands implements I_CmsConstants {
-    
+
     /**
      * The resource broker to get access to the cms.
      */
     private CmsObject m_cms;
-    
+
     /**
      * The open-cms.
      */
     private A_OpenCms m_openCms;
-    
+
     /**
      * Insert the method's description here.
      * Creation date: (10/05/00 %r)
-     * @author: 
+     * @author:
      */
     public CmsShellCommands(String[] args, A_OpenCms openCms, CmsObject cms) throws Exception {
         m_openCms = openCms;
         m_cms = cms;
         m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
-        
+
         // print the version-string
         version();
         copyright();
         printHelpText();
     }
-    
+
     /**
      * Accept a task from the Cms.
-     * 
+     *
      * @param taskid the id of the task to accept.
      */
     public void acceptTask(String taskId) {
@@ -85,16 +85,16 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Checks, if the user may create this resource.
-     * 
+     *
      * @param resource the resource to check.
      */
     public void accessCreate(String resource) {
         try {
-            
-            //System.out.println(m_cms.accessCreate(m_cms.readFileHeader(resource)));            
+
+            //System.out.println(m_cms.accessCreate(m_cms.readFileHeader(resource)));
             // ednfal: resource is read later in resourcebroker
             System.out.println(m_cms.accessCreate(resource));
         }
@@ -102,16 +102,16 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Checks, if the user may lock this resource.
-     * 
+     *
      * @param resource the resource to check.
      */
     public void accessLock(String resource) {
         try {
-            
-            //System.out.println(m_cms.accessLock(m_cms.readFileHeader(resource)));            
+
+            //System.out.println(m_cms.accessLock(m_cms.readFileHeader(resource)));
             // ednfal: resource is read later in resourcebroker
             System.out.println(m_cms.accessLock(resource));
         }
@@ -119,10 +119,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Tests if the user can access the project.
-     * 
+     *
      * @param id the id of the project.
      */
     public void accessProject(String id) {
@@ -134,16 +134,16 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Checks, if the user may read this resource.
-     * 
+     *
      * @param resource The resource to check.
      */
     public void accessRead(String resource) {
         try {
-            
-            //System.out.println(m_cms.accessRead(m_cms.readFileHeader(resource)));            
+
+            //System.out.println(m_cms.accessRead(m_cms.readFileHeader(resource)));
             // ednfal: resource is read later in resourcebroker
             System.out.println(m_cms.accessRead(resource));
         }
@@ -151,17 +151,17 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Tests if the user can write the resource.
-     * 
+     *
      * @param resource the name of the resource.
      */
     public void accessWrite(String resource) {
         try {
-            
-            //CmsResource res = m_cms.readFileHeader(resource);            
-            //System.out.println( m_cms.accessWrite(res) );            
+
+            //CmsResource res = m_cms.readFileHeader(resource);
+            //System.out.println( m_cms.accessWrite(res) );
             // ednfal: resource is read later in resourcebroker
             System.out.println(m_cms.accessWrite(resource));
         }
@@ -169,7 +169,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * adds a file extension.
      * @param extension a file extension, e.g. 'html'
@@ -183,10 +183,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Adds a Group to the cms.
-     * 
+     *
      * @param name The name of the new group.
      * @param description The description for the new group.
      */
@@ -198,10 +198,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Adds a Group to the cms.
-     * 
+     *
      * @param name The name of the new group.
      * @param description The description for the new group.
      * @int flags The flags for the new group.
@@ -215,10 +215,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Adds a CmsResourceType.
-     * 
+     *
      * @param resourceType the name of the resource to get.
      * @param launcherType the launcherType-id
      * @param launcherClass the name of the launcher-class normaly ""
@@ -231,10 +231,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Adds a user to the cms.
-     * 
+     *
      * @param name The new name for the user.
      * @param password The new password for the user.
      * @param group The default groupname for the user.
@@ -248,10 +248,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Adds a user to the cms.
-     * 
+     *
      * @param name The new name for the user.
      * @param password The new password for the user.
      * @param group The default groupname for the user.
@@ -266,10 +266,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Adds a user to the cms.
-     * 
+     *
      * @param name The new name for the user.
      * @param password The new password for the user.
      * @param group The default groupname for the user.
@@ -288,7 +288,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Adds a user to a group.
      *
@@ -303,8 +303,8 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
-    /** 
+
+    /**
      * Adds a web user to the Cms.
      * <br>
      * A web user has no access to the workplace but is able to access personalized
@@ -315,7 +315,7 @@ public class CmsShellCommands implements I_CmsConstants {
      * @param group the default groupname for the user.
      * @param description the description for the user.
      * @param flags the flags for a user (e.g. C_FLAG_ENABLED)
-     * 
+     *
      */
     public void addWebUser(String name, String password, String group, String description, String flags) {
         try {
@@ -326,10 +326,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns the anonymous user object.
-     * 
+     *
      * @return a <code>CmsUser</code> object representing the anonymous user.
      */
     public void anonymousUser() {
@@ -340,12 +340,12 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Changes the group for this resource<BR/>
-     * 
+     *
      * The user may change this, if he is admin of the resource.
-     * 
+     *
      * @param filename The complete path to the resource.
      * @param newGroup The new of the new group for this resource.
      */
@@ -357,12 +357,12 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Changes the flags for this resource<BR/>
-     * 
+     *
      * The user may change the flags, if he is admin of the resource.
-     * 
+     *
      * @param filename The complete path to the resource.
      * @param flags The new flags for the resource.
      */
@@ -374,12 +374,12 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Changes the owner for this resource<BR/>
-     * 
+     *
      * The user may change this, if he is admin of the resource.
-     * 
+     *
      * @param filename The complete path to the resource.
      * @param newOwner The name of the new owner for this resource.
      */
@@ -391,12 +391,12 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Changes the resourcetype for this resource<BR/>
-     * 
+     *
      * The user may change this, if he is admin of the resource.
-     * 
+     *
      * @param filename The complete path to the resource.
      * @param newType The name of the new resourcetype for this resource.
      */
@@ -408,7 +408,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Clears all internal DB-Caches.
      */
@@ -420,15 +420,15 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Copies the file.
-     * 
+     *
      * @param source The complete path of the sourcefile.
      * @param destination The complete path of the destination.
-     * 
-     * @exception CmsException will be thrown, if the file couldn't be copied. 
-     * The CmsException will also be thrown, if the user has not the rights 
+     *
+     * @exception CmsException will be thrown, if the file couldn't be copied.
+     * The CmsException will also be thrown, if the user has not the rights
      * for this resource.
      */
     public void copyFile(String source, String destination) {
@@ -439,10 +439,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Copies a folder.
-     * 
+     *
      * @param source the complete path of the sourcefolder.
      * @param destination the complete path of the destinationfolder.
      */
@@ -454,12 +454,12 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Copies a resource from the online project to a new, specified project.<br>
-     * Copying a resource will copy the file header or folder into the specified 
+     * Copying a resource will copy the file header or folder into the specified
      * offline project and set its state to UNCHANGED.
-     * 
+     *
      * @param resource The name of the resource.
      */
     public void copyResourceToProject(String resource) {
@@ -470,7 +470,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns a copyright-string for this OpenCms.
      */
@@ -480,10 +480,10 @@ public class CmsShellCommands implements I_CmsConstants {
             System.out.println(copy[i]);
         }
     }
-    
+
     /**
      * Counts the locked resources in a project.
-     * 
+     *
      * @param id the id of the project
      */
     public void countLockedResources(String id) {
@@ -495,11 +495,11 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Creates a new folder.
-     * 
-     * @param folder The complete path to the folder in which the new folder 
+     *
+     * @param folder The complete path to the folder in which the new folder
      * will be created.
      * @param newFolderName The name of the new folder (No pathinformation allowed).
      */
@@ -511,7 +511,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * This method creates a new module in the repository.
      *
@@ -523,7 +523,7 @@ public class CmsShellCommands implements I_CmsConstants {
      * @param String version the version number of the module.
      */
     public void createModule(String modulename, String niceModulename, String description, String author, String createDate, String version) {
-        
+
         // create the module
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
@@ -535,10 +535,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Creates a project.
-     * 
+     *
      * @param name The name of the project to read.
      * @param description The description for the new project.
      * @param groupname the name of the group to be set.
@@ -551,14 +551,14 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Creates the propertydefinition for the resource type.<BR/>
-     * 
+     *
      * @param name The name of the propertydefinition to overwrite.
      * @param resourcetype The name of the resource-type for the propertydefinition.
      * @param type The type of the propertydefinition (normal|mandatory|optional)
-     * 
+     *
      * @exception CmsException Throws CmsException if something goes wrong.
      */
     public void createPropertydefinition(String name, String resourcetype, String type) throws CmsException {
@@ -569,13 +569,13 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Creates a new task.
      * <p>
      * <B>Security:</B>
      * All users can create a new task.
-     * @param agent the User who will edit the task. 
+     * @param agent the User who will edit the task.
      * @param role a Usergroup for the task.
      * @param taskname the name of the task.
      * @param taskcomment a description of the task.
@@ -592,15 +592,15 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Creates a new task.
      * <p>
      * <B>Security:</B>
      * All users can create a new task.
-     * 
+     *
      * @param projectid the Id of the current project task of the user.
-     * @param agentname the User who will edit the task. 
+     * @param agentname the User who will edit the task.
      * @param rolename a Usergroup for the task.
      * @param taskname a Name of the task.
      * @param tasktype the type of the task.
@@ -608,21 +608,21 @@ public class CmsShellCommands implements I_CmsConstants {
      * @param timeout the time when the task must finished.
      * @param priority the Id for the priority of the task.
      */
-    public void createTask(String projectid, String agentName, String roleName, 
+    public void createTask(String projectid, String agentName, String roleName,
             String taskname, String taskcomment, String tasktype, String timeout, String priority) {
         try {
-            System.out.println(m_cms.createTask(Integer.parseInt(projectid), agentName, roleName, taskname, taskcomment, 
+            System.out.println(m_cms.createTask(Integer.parseInt(projectid), agentName, roleName, taskname, taskcomment,
                     Integer.parseInt(tasktype), Long.parseLong(timeout), Integer.parseInt(priority)));
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Deletes all propertyinformation for a file or folder.
-     * 
-     * @param resource The name of the resource of which the propertyinformations 
+     *
+     * @param resource The name of the resource of which the propertyinformations
      * have to be deleted.
      */
     public void deleteAllProperties(String resource) {
@@ -633,10 +633,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Deletes the file.
-     * 
+     *
      * @param filename The complete path of the file.
      */
     public void deleteFile(String filename) {
@@ -647,10 +647,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Deletes the folder.
-     * 
+     *
      * @param foldername The complete path of the folder.
      */
     public void deleteFolder(String foldername) {
@@ -661,10 +661,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Delete a group from the Cms.<BR/>
-     * 
+     *
      * @param delgroup The name of the group that is to be deleted.
      */
     public void deleteGroup(String delgroup) {
@@ -675,10 +675,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Deletes a module from the cms.
-     * 
+     *
      * @param module The name of module to delete.
      */
     public void deleteModule(String module) {
@@ -690,7 +690,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * This method deletes the view for an module.
      *
@@ -705,10 +705,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Deletes a project.
-     * 
+     *
      * @param id The id of the project to delete.
      */
     public void deleteProject(String id) {
@@ -719,10 +719,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Deletes a propertyinformation for a file or folder.
-     * 
+     *
      * @param resourcename The resource-name of which the propertyinformation has to be delteted.
      * @param property The propertydefinition-name of which the propertyinformation has to be set.
      */
@@ -734,10 +734,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Delete the propertydefinition for the resource type.<BR/>
-     * 
+     *
      * @param name The name of the propertydefinition to overwrite.
      * @param resourcetype The name of the resource-type for the propertydefinition.
      */
@@ -749,10 +749,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
-    /** 
+
+    /**
      * Deletes a user from the Cms.
-     * 
+     *
      * @param name The name of the user to be deleted.
      */
     public void deleteUser(String name) {
@@ -763,10 +763,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
-    /** 
+
+    /**
      * Deletes a web user from the Cms.
-     * 
+     *
      * @param name the id of the user to be deleted.
      */
     public void deleteWebUser(String userId) {
@@ -777,10 +777,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Echos the input to output.
-     * 
+     *
      * @param echo The echo to be written to output.
      */
     public void echo(String echo) {
@@ -796,10 +796,10 @@ public class CmsShellCommands implements I_CmsConstants {
             }
         }
     }
-    
+
     /**
      * Ends a task of the Cms.
-     * 
+     *
      * @param taskid the ID of the task to end.
      */
     public void endTask(String taskid) {
@@ -810,7 +810,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Exits the commandline-interface
      */
@@ -823,16 +823,16 @@ public class CmsShellCommands implements I_CmsConstants {
         }
         System.exit(0);
     }
-    
+
     /**
      * Exports cms-resources to zip. In the zip-file the system - path will be included.
-     * 
+     *
      * @param exportFile the name (absolute Path) of the export resource (zip)
-     * 
+     *
      * @exception Throws CmsException if something goes wrong.
      */
     public void exportAllResources(String exportFile) throws CmsException {
-        
+
         // export the resources
         String[] exportPaths =  {
             C_ROOT
@@ -844,17 +844,17 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Exports cms-resources to zip. In the zip-file the system - path will be included.
      * Unchanged resources will be ignored.
-     * 
+     *
      * @param exportFile the name (absolute Path) of the export resource (zip)
-     * 
+     *
      * @exception Throws CmsException if something goes wrong.
      */
     public void exportAllResourcesOnlyChanged(String exportFile) throws CmsException {
-        
+
         // export the resources
         String[] exportPaths =  {
             C_ROOT
@@ -866,10 +866,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Exports a module.
-     * 
+     *
      * @param modulename the name of the module to export
      * @param resource the folder to export.
      * @param filename the name of the file to export to.
@@ -886,18 +886,18 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Exports cms-resources to zip.
-     * 
+     *
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param pathList the names (absolute Path) of folders from which should be exported
      *			separated by semicolons
-     * 
+     *
      * @exception Throws CmsException if something goes wrong.
      */
     public void exportResources(String exportFile, String pathList) throws CmsException {
-        
+
         // export the resources
         StringTokenizer tok = new StringTokenizer(pathList, ";");
         Vector paths = new Vector();
@@ -919,19 +919,52 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Exports cms-resources to zip.
-     * Unchanged resources will be ignored. 
-     * 
+     *
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param pathList the names (absolute Path) of folders from which should be exported
      *			separated by semicolons
-     * 
+     *
+     * @exception Throws CmsException if something goes wrong.
+     */
+    public void exportResourcesAndUserdata(String exportFile, String pathList) throws CmsException {
+
+        // export the resources
+        StringTokenizer tok = new StringTokenizer(pathList, ";");
+        Vector paths = new Vector();
+        while(tok.hasMoreTokens()) {
+            paths.addElement(tok.nextToken());
+        }
+        String exportPaths[] = new String[paths.size()];
+        for(int i = 0;i < paths.size();i++) {
+            exportPaths[i] = (String)paths.elementAt(i);
+        }
+        boolean excludeSystem = true;
+        if(pathList.startsWith("/system/") || (pathList.indexOf(";/system/") > -1)) {
+            excludeSystem = false;
+        }
+        try {
+            m_cms.exportResources(exportFile, exportPaths, excludeSystem, false, true);
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Exports cms-resources to zip.
+     * Unchanged resources will be ignored.
+     *
+     * @param exportFile the name (absolute Path) of the export resource (zip)
+     * @param pathList the names (absolute Path) of folders from which should be exported
+     *			separated by semicolons
+     *
      * @exception Throws CmsException if something goes wrong.
      */
     public void exportResourcesOnlyChanged(String exportFile, String pathList) throws CmsException {
-        
+
         // export the resources
         StringTokenizer tok = new StringTokenizer(pathList, ";");
         Vector paths = new Vector();
@@ -953,10 +986,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Forwards a task to a new user.
-     * 
+     *
      * @param taskid the id of the task which will be forwarded.
      * @param newRole the new group for the task.
      * @param newUser the new user who gets the task.
@@ -969,10 +1002,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns all projects, which the user may access.
-     * 
+     *
      * @return a Vector of projects.
      */
     public void getAllAccessibleProjects() {
@@ -986,7 +1019,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns all projects which are owned by the current user or which are manageable
      * for the group of the user.
@@ -1003,7 +1036,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns  all I_CmsResourceTypes.
      */
@@ -1019,7 +1052,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Gets information about the cache size.
      * <br>
@@ -1049,10 +1082,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns all child groups of a group<P/>
-     * 
+     *
      * @param groupname The name of the group.
      */
     public void getChild(String groupname) {
@@ -1066,11 +1099,11 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns all child groups of a group<P/>
      * This method also returns all sub-child groups of the current group.
-     * 
+     *
      * @param groupname The name of the group.
      */
     public void getChilds(String groupname) {
@@ -1084,17 +1117,17 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns the current project for the user.
      */
     public void getCurrentProject() {
         System.out.println(m_cms.getRequestContext().currentProject().toString());
     }
-    
+
     /**
      * Gets all groups to which a given user directly belongs.
-     * 
+     *
      * @param username the name of the user to get all groups for.
      * @return a Vector of all groups of a user.
      */
@@ -1109,15 +1142,15 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns a Vector with all subfiles.<BR/>
-     * 
+     *
      * @param foldername the complete path to the folder.
-     * 
+     *
      * @return subfiles A Vector with all subfiles for the overgiven folder.
-     * 
-     * @exception CmsException will be thrown, if the user has not the rights 
+     *
+     * @exception CmsException will be thrown, if the user has not the rights
      * for this resource.
      */
     public void getFilesInFolder(String foldername) {
@@ -1131,10 +1164,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns a Vector with all resource-names of the resources that have set the given property to the given value.
-     * 
+     *
      * @param propertydef the name of the property-definition to check.
      * @param property the value of the property for the resource.
      */
@@ -1149,21 +1182,21 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
-     * This method can be called, to determine if the file-system was changed 
+     * This method can be called, to determine if the file-system was changed
      * in the past. A module can compare its previosly stored number with this
      * returned number. If they differ, a change was made.
-     * 
+     *
      * @return the number of file-system-changes.
      */
     public void getFileSystemChanges() {
         System.out.println(m_cms.getFileSystemChanges());
     }
-    
+
     /**
      * Returns a Vector with the complete folder-tree for this project.<br>
-     * 
+     *
      * Subfolders can be read from an offline project and the online project. <br>
      */
     public void getFolderTree() {
@@ -1177,7 +1210,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns all users of the cms.
      */
@@ -1192,10 +1225,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns all groups of a user.
-     * 
+     *
      * @param username The name of the user.
      */
     public void getGroupsOfUser(String username) {
@@ -1209,10 +1242,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Prints out all files for a module.
-     * 
+     *
      * @param moduleZip The file-name of module to import.
      */
     public void getModuleFiles(String name) {
@@ -1231,17 +1264,17 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Imports a module into the cms.
-     * 
+     *
      * @param moduleZip The file-name of module to import.
      */
     public void getModuleInfo() {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
             java.util.Enumeration names = reg.getModuleNames();
-            
+
             // print out the available modules
             while(names.hasMoreElements()) {
                 String name = (String)names.nextElement();
@@ -1265,10 +1298,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Prints out informations about a module.
-     * 
+     *
      * @param String module the name of the module to get infos about.
      */
     public void getModuleInfo(String name) {
@@ -1320,10 +1353,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns the parent group of a group.
-     * 
+     *
      * @param groupname the name of the group.
      */
     public void getParent(String groupname) {
@@ -1334,10 +1367,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns a Vector with the subresources for a folder.<br>
-     * 
+     *
      * @param folder The name of the folder to get the subresources from.
      */
     public void getResourcesInFolder(String folder) {
@@ -1351,10 +1384,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns a CmsResourceTypes.
-     * 
+     *
      * @param resourceType the name of the resource to get.
      */
     public void getResourceType(String resourceType) {
@@ -1365,10 +1398,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns a Vector with all subfolders.<BR/>
-     * 
+     *
      * @param foldername the complete path to the folder.
      */
     public void getSubFolders(String foldername) {
@@ -1382,7 +1415,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns a value for a system-key.
      * E.g. <code>&lt;system&gt;&lt;mailserver&gt;mail.server.com&lt;/mailserver&gt;&lt;/system&gt;</code>
@@ -1399,7 +1432,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns all values for a system-key.
      *
@@ -1419,10 +1452,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Get a parameter value for a task.
-     * 
+     *
      * @param taskid the id of the task.
      * @param parname the name of the parameter.
      */
@@ -1434,10 +1467,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Get the template task id fo a given taskname.
-     * 
+     *
      * @param taskname the name of the task.
      */
     public void getTaskType(String taskname) {
@@ -1448,7 +1481,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns all users of the cms.
      */
@@ -1463,10 +1496,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns all users of the given type in the Cms.
-     * 
+     *
      * @param type the type of the users.
      */
     public void getUsers(String type) {
@@ -1480,10 +1513,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns all groups of a user.
-     * 
+     *
      * @param groupname The name of the group.
      */
     public void getUsersOfGroup(String groupname) {
@@ -1497,10 +1530,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Imports a module into the cms.
-     * 
+     *
      * @param moduleZip The file-name of module to import.
      */
     public void getViews() {
@@ -1517,7 +1550,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Prints all possible commands.
      */
@@ -1529,7 +1562,7 @@ public class CmsShellCommands implements I_CmsConstants {
             }
         }
     }
-    
+
     /**
      * Prints signature of all possible commands containing a certain string.<br>
      * May also be used to print signature of a specific command by giving full command name.
@@ -1544,19 +1577,19 @@ public class CmsShellCommands implements I_CmsConstants {
         else {
             Method meth[] = getClass().getMethods();
             for(int z = 0;z < meth.length;z++) {
-                if((meth[z].getDeclaringClass() == getClass()) && (meth[z].getModifiers() == Modifier.PUBLIC) 
+                if((meth[z].getDeclaringClass() == getClass()) && (meth[z].getModifiers() == Modifier.PUBLIC)
                         && (meth[z].getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1)) {
                     CmsShell.printMethod(meth[z]);
                 }
             }
         }
     }
-    
+
     /**
      * Reads a given file from the local harddisk and uploads
      * it to the OpenCms system.
      * Used in the OpenCms console only.
-     * 
+     *
      * @author Alexander Lucas
      * @param filename Local file to be uploaded.
      * @return Byte array containing the file content.
@@ -1567,7 +1600,7 @@ public class CmsShellCommands implements I_CmsConstants {
         long len = 0;
         FileInputStream importInput = null;
         byte[] result;
-        
+
         // First try to load the file
         try {
             file = new File(filename);
@@ -1578,9 +1611,9 @@ public class CmsShellCommands implements I_CmsConstants {
         if(file == null) {
             throw new CmsException("Could not load local file " + filename, CmsException.C_NOT_FOUND);
         }
-        
+
         // File was loaded successfully.
-        
+
         // Now try to read the content.
         try {
             len = file.length();
@@ -1594,15 +1627,15 @@ public class CmsShellCommands implements I_CmsConstants {
         }
         return result;
     }
-    
+
     /**
      * Imports a import-resource (folder or zipfile) to the cms.
-     * 
+     *
      * @param importFile the name (absolute Path) of the import resource (zip or folder)
      * @param importPath the name (absolute Path) of folder in which should be imported
      */
     public void importFolder(String importFile, String importPath) {
-        
+
         // import the resources
         try {
             m_cms.importFolder(importFile, importPath);
@@ -1611,10 +1644,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Checks for conflicting file names for a import.
-     * 
+     *
      * @param moduleZip The file-name of module to import.
      */
     public void importGetConflictingFileNames(String moduleZip) {
@@ -1630,10 +1663,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Checks for resources that should be copied to the import-project.
-     * 
+     *
      * @param moduleZip The file-name of module to import.
      */
     public void importGetResourcesForProject(String moduleZip) {
@@ -1649,14 +1682,14 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Imports a module (zipfile) to the cms.
-     * 
+     *
      * @param importFile java.lang.String the name (complete Path) of the import module
      */
     public void importModule(String importFile) {
-        
+
         // import the module
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
@@ -1666,14 +1699,14 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Imports an import-resource (folder or zipfile) to the cms.
      * Creation date: (09.08.00 16:28:48)
      * @param importFile java.lang.String the name (absolute Path) of the import resource (zip or folder)
      */
     public void importResources(String importFile) {
-        
+
         // import the resources
         try {
             m_cms.importResources(importFile, C_ROOT);
@@ -1682,15 +1715,15 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Imports an import-resource (folder or zipfile) to the cms.
-     * 
+     *
      * @param importFile the name (absolute Path) of the import resource (zip or folder)
      * @param importPath the name (absolute Path) of folder in which should be imported
      */
     public void importResources(String importFile, String importPath) {
-        
+
         // import the resources
         try {
             m_cms.importResources(importFile, importPath);
@@ -1699,7 +1732,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Determines, if the user is Admin.
      */
@@ -1711,7 +1744,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Determines, if the user is Projectleader.
      */
@@ -1723,15 +1756,15 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns the user, who has locked a given resource.
      * <br>
-     * A user can lock a resource, so he is the only one who can write this 
+     * A user can lock a resource, so he is the only one who can write this
      * resource. This methods checks, who has locked a resource.
-     * 
+     *
      * @param resource The complete path to the resource.
-     * 
+     *
      */
     public void lockedBy(String resource) {
         try {
@@ -1741,13 +1774,13 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Locks a resource<BR/>
-     * 
-     * A user can lock a resource, so he is the only one who can write this 
+     *
+     * A user can lock a resource, so he is the only one who can write this
      * resource.
-     * 
+     *
      * @param resource The complete path to the resource to lock.
      */
     public void lockResource(String resource) {
@@ -1758,19 +1791,19 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Locks a given resource.
      * <br>
-     * A user can lock a resource, so he is the only one who can write this 
+     * A user can lock a resource, so he is the only one who can write this
      * resource.
-     * 
+     *
      * @param resource the complete path to the resource to lock.
      * @param force if force is <code>true</code>, a existing locking will be overwritten.
      */
     public void lockResource(String resource, String force) {
         try {
-            
+
             //m_cms.lockResource(resource, Boolean.getBoolean(force));
             if(force.toLowerCase().equals("true")) {
                 m_cms.lockResource(resource, true);
@@ -1783,10 +1816,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Logs a user into the system.
-     * 
+     *
      * @param username The name of the user to log in.
      * @param password The password.
      */
@@ -1800,20 +1833,20 @@ public class CmsShellCommands implements I_CmsConstants {
             System.out.println("Login failed!");
         }
     }
-    
+
     /**
      * Logs a user into the system.
-     * 
+     *
      * @param username The name of the user to log in.
      * @param password The password.
      */
     public void loginUser(String username, String password) {
         login(username, password);
     }
-    
+
     /**
      * Logs a web user into the Cms, if the password is correct.
-     * 
+     *
      * @param username the name of the user.
      * @param password the password of the user.
      */
@@ -1825,10 +1858,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Moves a file to the given destination.
-     * 
+     *
      * @param source the complete path of the sourcefile.
      * @param destination the complete path of the destinationfile.
      */
@@ -1840,7 +1873,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads a the online-project from the Cms.
      */
@@ -1852,7 +1885,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Prints help text when Shell is startet.
      * Creation date: (09/29/00)
@@ -1866,10 +1899,10 @@ public class CmsShellCommands implements I_CmsConstants {
         System.out.println("exit or quit      Leaves the Shell");
         System.out.println("");
     }
-    
+
     /**
      * Publishes a project.
-     * 
+     *
      * @param id The id of the project to be published.
      */
     public void publishProject(String id) {
@@ -1882,19 +1915,19 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     // All methods, that may be called by the user:
-    
+
     /**
      * Exits the commandline-interface
      */
     public void quit() {
         exit();
     }
-    
+
     /**
      * Reads the agent of a task from the OpenCms.
-     * 
+     *
      * @param task the task to read the agent from.
      */
     public void readAgent(String taskId) {
@@ -1911,14 +1944,14 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads all file headers of a file in the OpenCms.<BR>
-     * This method returns a vector with the histroy of all file headers, i.e. 
+     * This method returns a vector with the histroy of all file headers, i.e.
      * the file headers of a file, independent of the project they were attached to.<br>
-     * 
+     *
      * The reading excludes the filecontent.
-     * 
+     *
      * @param filename The name of the file to be read.
      */
     public void readAllFileHeaders(String filename) {
@@ -1932,11 +1965,11 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns a list of all propertyinformations of a file or folder.
-     * 
-     * @param resource The name of the resource of which the propertyinformation has to be 
+     *
+     * @param resource The name of the resource of which the propertyinformation has to be
      * read.
      */
     public void readAllProperties(String resource) {
@@ -1954,11 +1987,11 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads all propertydefinitions for the given resource type.
-     * 
-     * @param resourcetype The name of the resource type to read the 
+     *
+     * @param resourcetype The name of the resource type to read the
      * propertydefinitions for.
      */
     public void readAllPropertydefinitions(String resourcetype) {
@@ -1972,11 +2005,11 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads all propertydefinitions for the given resource type.
-     * 
-     * @param resourcetype The name of the resource type to read the 
+     *
+     * @param resourcetype The name of the resource type to read the
      * propertydefinitions for.
      * @param type The type of the propertydefinition (normal|mandatory|optional).
      */
@@ -1991,11 +2024,11 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads the export-path for the system.
      * This path is used for db-export and db-import.
-     * 
+     *
      * @return the exportpath.
      */
     public void readExportPath() throws CmsException {
@@ -2006,10 +2039,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads a file from the Cms.<BR/>
-     * 
+     *
      * @param filename The complete path to the file
      */
     public void readFile(String filename) {
@@ -2020,10 +2053,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads a file from the Cms.<BR/>
-     * 
+     *
      * @param filename The complete path to the file
      */
     public void readFileContent(String filename) {
@@ -2035,9 +2068,9 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
-     * Gets the known file extensions (=suffixes). 
+     * Gets the known file extensions (=suffixes).
      */
     public void readFileExtensions() {
         try {
@@ -2053,11 +2086,11 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads a file header from the Cms.<BR/>
      * The reading excludes the filecontent.
-     * 
+     *
      * @param filename The complete path of the file to be read.
      */
     public void readFileHeader(String filename) {
@@ -2068,10 +2101,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads all file headers of a project from the Cms.
-     * 
+     *
      * @param projectId the id of the project to read the file headers for.
      */
     public void readFileHeaders(String projectId) {
@@ -2085,10 +2118,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads a folder from the Cms.<BR/>
-     * 
+     *
      * @param folder The complete path to the folder that will be read.
      */
     public void readFolder(String folder) {
@@ -2099,10 +2132,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads all given tasks from a user for a project.
-     * 
+     *
      * @param projectId the id of the project in which the tasks are defined.
      * @param owner the owner of the task.
      * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
@@ -2119,12 +2152,12 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns a group in the Cms.
-     * 
+     *
      * @param groupname The name of the group to be returned.
-     * 
+     *
      * @exception CmsException Throws CmsException if operation was not succesful
      */
     public void readGroup(String groupname) {
@@ -2135,7 +2168,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads the group of a project from the OpenCms.
      */
@@ -2147,7 +2180,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads the group of a resource from the Cms.
      */
@@ -2159,10 +2192,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads the group (role) of a task from the Cms.
-     * 
+     *
      * @param task the task to read the role from.
      */
     public void readGroupOfTask(String task) {
@@ -2173,7 +2206,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads the managergroup of a project from the Cms.
      */
@@ -2185,11 +2218,11 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
-     * Gets all CmsMountPoints. 
+     * Gets all CmsMountPoints.
      * All mountpoints will be returned.
-     * 
+     *
      * @return the mountpoints - or null if they doesen't exists.
      */
     public void readMimeTypes() {
@@ -2206,10 +2239,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads the original agent of a task from the Cms.
-     * 
+     *
      * @param task the task to read the original agent from.
      */
     public void readOriginalAgent(String task) {
@@ -2220,7 +2253,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads the owner of a project from the Cms.
      */
@@ -2232,7 +2265,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads the owner of a resource from the Cms.
      */
@@ -2244,10 +2277,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads the owner (initiator) of a task from the Cms.
-     * 
+     *
      * @param tasktThe task to read the owner from.
      */
     public void readOwnerOfTask(String task) {
@@ -2258,10 +2291,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads a project from the Cms.
-     * 
+     *
      * @param name The id of the project to read.
      */
     public void readProject(String id) {
@@ -2273,10 +2306,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads log entries for a project.
-     * 
+     *
      * @param projectId the id of the project for which the tasklog will be read.
      */
     public void readProjectLogs(String projectId) {
@@ -2290,10 +2323,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads a project from the Cms.
-     * 
+     *
      * @param res The resource to read the project for.
      */
     public void readProjectOfResource(String res) {
@@ -2304,10 +2337,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads a project from the Cms.
-     * 
+     *
      * @param task the task for which the project will be read.
      */
     public void readProjectOfTask(String task) {
@@ -2318,10 +2351,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns a propertyinformation of a file or folder.
-     * 
+     *
      * @param name The resource-name of which the propertyinformation has to be read.
      * @param property The propertydefinition-name of which the propertyinformation has to be read.
      */
@@ -2333,10 +2366,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads the propertydefinition for the resource type.<BR/>
-     * 
+     *
      * @param name The name of the propertydefinition to read.
      * @param resourcetype The name of the resource type for the propertydefinition.
      */
@@ -2348,10 +2381,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads the task with the given id.
-     * 
+     *
      * @param id the id of the task to be read.
      */
     public void readTask(String id) {
@@ -2362,10 +2395,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads log entries for a task.
-     * 
+     *
      * @param taskid the task for which the tasklog will be read.
      */
     public void readTaskLogs(String taskid) {
@@ -2379,13 +2412,13 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads all tasks for a project.
-     * 
+     *
      * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks.
      * @tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
-     * @param orderBy specifies how to order the tasks. 
+     * @param orderBy specifies how to order the tasks.
      * @param sort sort order: C_SORT_ASC, C_SORT_DESC, or null.
      */
     public void readTasksForProject(String projectId, String tasktype, String orderBy, String sort) {
@@ -2399,10 +2432,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads all tasks for a role in a project.
-     * 
+     *
      * @param projectId the id of the Project in which the tasks are defined.
      * @param user the user who has to process the task.
      * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
@@ -2420,10 +2453,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reads all tasks for a user in a project.
-     * 
+     *
      * @param projectId the id of the Project in which the tasks are defined.
      * @param role the user who has to process the task.
      * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
@@ -2441,10 +2474,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns a user object.<P/>
-     * 
+     *
      * @param username The name of the user that is to be read.
      */
     public void readUser(String username) {
@@ -2455,10 +2488,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns a user object.<P/>
-     * 
+     *
      * @param username The name of the user that is to be read.
      */
     public void readUser(String username, String password) {
@@ -2469,10 +2502,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Reactivates a task from the Cms.
-     * 
+     *
      * @param taskid the Id of the task to accept.
      */
     public void reaktivateTask(String taskId) {
@@ -2483,10 +2516,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
-    /** 
+
+    /**
      * Recovers the password for a user.
-     * 
+     *
      * @param username The name of the user.
      * @param recoverPassword The recover password to check the access.
      * @param newPassword The new password.
@@ -2499,10 +2532,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Removes a user from a group.
-     * 
+     *
      * @param username The name of the user that is to be removed from the group.
      * @param groupname The name of the group.
      */
@@ -2514,10 +2547,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Renames the file to the new name.
-     * 
+     *
      * @param oldname The complete path to the resource which will be renamed.
      * @param newname The new name of the resource (No path information allowed).
      */
@@ -2529,10 +2562,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns the root-folder object.
-     * 
+     *
      * @return the root-folder object.
      */
     public void rootFolder() {
@@ -2543,10 +2576,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Sets the current project for the user.
-     * 
+     *
      * @param id The id of the project to be set as current.
      */
     public void setCurrentProject(String id) {
@@ -2558,7 +2591,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * This method sets the author of the module.
      *
@@ -2574,7 +2607,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * This method sets the email of author of the module.
      *
@@ -2590,7 +2623,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Sets the create date of the module.
      *
@@ -2607,7 +2640,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Sets the description of the module.
      *
@@ -2623,10 +2656,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Sets the url to the documentation of the module.
-     * 
+     *
      * @param String the name of the module.
      * @param java.lang.String the url to the documentation of the module.
      */
@@ -2639,10 +2672,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Sets the classname, that receives all maintenance-events for the module.
-     * 
+     *
      * @param String the name of the module.
      * @param java.lang.Class that receives all maintenance-events for the module.
      */
@@ -2655,7 +2688,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Sets the description of the module.
      *
@@ -2671,7 +2704,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * This method sets the version of the module.
      *
@@ -2688,10 +2721,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Sets a view for a module
-     * 
+     *
      * @param String the name of the module.
      * @param String the name of the view, that is implemented by the module.
      * @param String the url of the view, that is implemented by the module.
@@ -2705,10 +2738,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Set a new name for a task.
-     * 
+     *
      * @param taskid the id of the task.
      * @param name the new name of the task.
      */
@@ -2720,12 +2753,12 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Sets a new parent-group for an already existing group in the Cms.
-     * 
+     *
      * @param groupName the name of the group that should be written to the Cms.
-     * @param parentGroupName the name of the parentGroup to set, or null if the parent 
+     * @param parentGroupName the name of the parentGroup to set, or null if the parent
      * group should be deleted.
      */
     public void setParentGroup(String groupName, String parentGroupName) {
@@ -2736,10 +2769,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
-    /** 
+
+    /**
      * Sets the password for a user.
-     * 
+     *
      * @param username The name of the user.
      * @param newPassword The new password.
      */
@@ -2751,10 +2784,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
-    /** 
+
+    /**
      * Sets the password for a user.
-     * 
+     *
      * @param username The name of the user.
      * @param oldPassword The old password.
      * @param newPassword The new password.
@@ -2767,10 +2800,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Sets the priority of a task.
-     * 
+     *
      * @param taskid the id of the task.
      * @param priority the new priority value.
      */
@@ -2782,10 +2815,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
-    /** 
+
+    /**
      * Sets the recovery password for a user.
-     * 
+     *
      * @param username The name of the user.
      * @param password The password.
      * @param newPassword The new recovery password.
@@ -2798,10 +2831,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Set a parameter for a task.
-     * 
+     *
      * @param taskid the Id of the task.
      * @param parname the ame of the parameter.
      * @param parvalue the value of the parameter.
@@ -2814,10 +2847,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Sets the timeout of a task.
-     * 
+     *
      * @param taskid the id of the task.
      * @param timeout the new timeout value.
      */
@@ -2829,7 +2862,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Sets the current group of the current user.
      */
@@ -2841,10 +2874,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Echos the input to output.
-     * 
+     *
      * @param echo The echo to be written to output.
      */
     public void shortException(String param) {
@@ -2860,9 +2893,9 @@ public class CmsShellCommands implements I_CmsConstants {
 
 	/**
 	* Synchronize cms-resources on virtual filesystem with the server filesystem.
-	* 
+	*
 	* @param resourceName the name (absolute Path) of the resource that should be synchronized.
-	* 
+	*
 	* @exception CmsException if operation was not successful.
 	*/
 	public void syncFolder(String resourceName){
@@ -2871,12 +2904,12 @@ public class CmsShellCommands implements I_CmsConstants {
 			m_cms.syncFolder(resourceName);
 		} catch (Exception exc) {
 			CmsShell.printException(exc);
-		}	
-	}	
-	
+		}
+	}
+
     /**
      * Unlocks all resources of a project.
-     * 
+     *
      * @param id the id of the project to be unlocked.
      */
     public void unlockProject(String id) {
@@ -2887,12 +2920,12 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Unlocks a resource<BR/>
-     * 
+     *
      * A user can unlock a resource, so other users may lock this file.
-     * 
+     *
      * @param resource The complete path to the resource to lock.
      */
     public void unlockResource(String resource) {
@@ -2903,10 +2936,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Loads a File up to the cms from the lokal disc.
-     * 
+     *
      * @param lokalfile The lokal file to load up.
      * @param folder The folder in the cms to put the new file
      * @param filename The name of the new file.
@@ -2920,24 +2953,24 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns the current group of the current user.
      */
     public void userCurrentGroup() {
         System.out.println(m_cms.getRequestContext().currentGroup());
     }
-    
+
     /**
      * Returns the default group of the current user.
      */
     public void userDefaultGroup() {
         System.out.println(m_cms.getRequestContext().currentUser().getDefaultGroup());
     }
-    
+
     /**
      * Checks if a user is member of a group.<P/>
-     *  
+     *
      * @param nameuser The name of the user to check.
      * @param groupname The name of the group to check.
      */
@@ -2949,25 +2982,25 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Returns a version-string for this OpenCms.
      */
     public void version() {
         System.out.println(m_cms.version());
     }
-    
+
     /**
      * Returns the current user.
      */
     public void whoami() {
         System.out.println(m_cms.getRequestContext().currentUser());
     }
-    
+
     /**
      * Writes the export-path for the system.
      * This path is used for db-export and db-import.
-     * 
+     *
      * @param mountpoint The mount point in the Cms filesystem.
      */
     public void writeExportPath(String path) throws CmsException {
@@ -2978,16 +3011,16 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
-    /** 
+
+    /**
      * Writes a group to the Cms.
-     * 
+     *
      * @param name The name of the group to be written.
      * @param flags The flags of the user to be written.
      */
     public void writeGroup(String name, String flags) {
         try {
-            
+
             // get the group, which has to be written
             CmsGroup group = m_cms.readGroup(name);
             if(Integer.parseInt(flags) == C_FLAG_DISABLED) {
@@ -2996,7 +3029,7 @@ public class CmsShellCommands implements I_CmsConstants {
             else {
                 group.setEnabled();
             }
-            
+
             // write it back
             m_cms.writeGroup(group);
         }
@@ -3004,10 +3037,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Writes a propertyinformation for a file or folder.
-     * 
+     *
      * @param name The resource-name of which the propertyinformation has to be set.
      * @param property The propertydefinition-name of which the propertyinformation has to be set.
      * @param value The value for the propertyinfo to be set.
@@ -3020,15 +3053,15 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Writes the propertydefinition for the resource type.<BR/>
-     * 
+     *
      * @param name The name of the propertydefinition to overwrite.
-     * @param resourcetype The name of the resource type to read the 
+     * @param resourcetype The name of the resource type to read the
      * propertydefinitions for.
      * @param type The new type of the propertydefinition (normal|mandatory|optional).
-     * 
+     *
      * @exception CmsException Throws CmsException if something goes wrong.
      */
     public void writePropertydefinition(String name, String resourcetype, String type) {
@@ -3041,10 +3074,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Writes a new user tasklog for a task.
-     * 
+     *
      * @param taskid the Id of the task.
      * @param comment the description for the log.
      */
@@ -3056,10 +3089,10 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
+
     /**
      * Writes a new user tasklog for a task.
-     * 
+     *
      * @param taskid the Id of the task .
      * @param comment the description for the log
      * @param tasktype the type of the tasklog. User tasktypes must be greater than 100.
@@ -3072,16 +3105,16 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
-    /** 
+
+    /**
      * Writes a user to the Cms.
-     * 
+     *
      * @param name The name of the user to be written.
      * @param flags The flags of the user to be written.
      */
     public void writeUser(String name, String flags) {
         try {
-            
+
             // get the user, which has to be written
             CmsUser user = m_cms.readUser(name);
             if(Integer.parseInt(flags) == C_FLAG_DISABLED) {
@@ -3090,7 +3123,7 @@ public class CmsShellCommands implements I_CmsConstants {
             else {
                 user.setEnabled();
             }
-            
+
             // write it back
             m_cms.writeUser(user);
         }
@@ -3098,16 +3131,16 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-    
-    /** 
+
+    /**
      * Writes a webuser to the Cms.
-     * 
+     *
      * @param name The name of the user to be written.
      * @param flags The flags of the user to be written.
      */
     public void writeWebUser(String name, String flags) {
         try {
-            
+
             // get the user, which has to be written
             CmsUser user = m_cms.readUser(name, C_USER_TYPE_WEBUSER);
             if(Integer.parseInt(flags) == C_FLAG_DISABLED) {
@@ -3116,7 +3149,7 @@ public class CmsShellCommands implements I_CmsConstants {
             else {
                 user.setEnabled();
             }
-            
+
             // write it back
             m_cms.writeUser(user);
         }
