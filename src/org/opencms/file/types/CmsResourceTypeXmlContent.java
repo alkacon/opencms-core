@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2005/01/19 11:54:51 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/01/19 14:36:58 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,27 +35,19 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.util.CmsStringMapper;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.SortedMap;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -64,7 +56,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.5
  */
@@ -76,19 +68,8 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
     /** The name of this resource type. */
     public static final String C_RESOURCE_TYPE_NAME = "xmlcontent";
     
-    /** Configuration key for properties that are attached when creating a new resource. */
-    public static final String C_CONFIGURATION_PROPERTY_CREATE = "property.create.";
-    
     /** Configuration key for the (optional) schema. */
     public static final String C_CONFIGURATION_SCHEMA = "schema";
-    
-    /** Store the property on resource record. */
-    public static final String C_PROPERTY_ON_RESOURCE = "resource";
-    /** Store the property on structure record. */
-    public static final String C_PROPERTY_ON_STRUCTURE = "structure";
-    
-    /** Property parameters that are given in the xml configuration. */
-    private SortedMap m_propertyValues;
 
     /** The type id of this resource. */
     private int m_resourceType;
@@ -104,9 +85,8 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
         
-        if (paramName.startsWith(C_CONFIGURATION_PROPERTY_CREATE)) {
-            createPropertyConfiguration(paramName, paramValue);
-        } else if (I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_ID.equalsIgnoreCase(paramName)) {
+        super.addConfigurationParameter(paramName, paramValue);
+        if (I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_ID.equalsIgnoreCase(paramName)) {
             m_resourceType = Integer.valueOf(paramValue).intValue();
         } else if (I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_NAME.equalsIgnoreCase(paramName)) {
             m_resourceTypeName = paramValue.trim();
@@ -145,7 +125,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
             content = newContent.marshal();
         }
         
-        // add the predefined property values to the resource
+        // add the predefined property values from XMl configuration to the resource
         List newProperties;       
         if (properties == null) {
             newProperties = new ArrayList();
@@ -179,17 +159,14 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
     public ExtendedProperties getConfiguration() {
 
         ExtendedProperties result = new ExtendedProperties();
-        if (m_propertyValues != null) {
-            Iterator i = m_propertyValues.keySet().iterator();
-            while (i.hasNext()) {
-                String key = (String)i.next();               
-                result.put(C_CONFIGURATION_PROPERTY_CREATE + key, m_propertyValues.get(key));
-            }
-        }
         result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_ID, new Integer(m_resourceType));
         result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_NAME, m_resourceTypeName);
         if (m_schema != null) {
             result.put(C_CONFIGURATION_SCHEMA, m_schema);
+        }
+        ExtendedProperties additional = super.getConfiguration();
+        if (additional != null) {
+            result.putAll(additional);
         }
         return result;
     }
@@ -253,67 +230,4 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
         return super.writeFile(cms, securityManager, resource);
     }
     
-    /**
-     * Fills a Map with neccessary values to create properties on file creation.<p>
-     * 
-     * The key is the property definition name, the value the parameter value String from the XML configuration.<p>
-     * 
-     * @param paramName parameter name from XML configuration, has to start with prefix "property.create.".<p>
-     * @param paramValue parameter value from XML configuration
-     */
-    private void createPropertyConfiguration(String paramName, String paramValue) {
-        
-        // get property name from parameter name
-        String propDef = paramName.substring(C_CONFIGURATION_PROPERTY_CREATE.length());
-        if (m_propertyValues == null) {
-            m_propertyValues = new TreeMap();
-        }
-        m_propertyValues.put(propDef, paramValue);
-    }
-    
-    /**
-     * Returns a list of property objects that are attached to the resource on creation.<p>
-     * 
-     * @param cms the CmsObject to get information when substituting String macros 
-     * @return ready defined property objects
-     */
-    private List createPropertyObjects(CmsObject cms) {
-        
-        if (m_propertyValues != null) {
-            List propertyObjects = new ArrayList(m_propertyValues.size());
-            Iterator i = m_propertyValues.keySet().iterator();
-            while (i.hasNext()) {
-                String key = (String)i.next();
-                // create new property object
-                CmsProperty property = new CmsProperty();
-                property.setAutoCreatePropertyDefinition(true);
-                // set property key name             
-                property.setKey(key);
-                String value = (String)m_propertyValues.get(key);
-                StringTokenizer T = new StringTokenizer(value.trim(), "|");     
-                // determine property value
-                String propValue = T.nextToken();
-                // substitute eventual String macros in property value
-                propValue = CmsStringUtil.substituteMacros(propValue, new CmsStringMapper(cms, null));  
-                // get eventual property record information from parameter value
-                String propRecord = "";
-                if (T.hasMoreTokens()) {
-                    // the record to write the property to is given
-                    propRecord = T.nextToken();
-                }                    
-                
-                if (C_PROPERTY_ON_RESOURCE.equals(propRecord) || (CmsStringUtil.isEmpty(propRecord) && ! OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure())) {
-                    // set the resource property value
-                    property.setResourceValue(propValue);
-                } else {
-                    // set the structure property value
-                    property.setStructureValue(propValue);
-                }
-                // add property to list
-                propertyObjects.add(property);
-            }
-            return propertyObjects;
-        }
-        return Collections.EMPTY_LIST;
-    }
 }

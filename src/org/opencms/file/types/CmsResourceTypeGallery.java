@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeGallery.java,v $
- * Date   : $Date: 2004/12/08 14:30:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/01/19 14:36:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsResourceTypeGallery extends CmsResourceTypeFolder {
 
@@ -63,7 +63,8 @@ public class CmsResourceTypeGallery extends CmsResourceTypeFolder {
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
-
+        
+        super.addConfigurationParameter(paramName, paramValue);
         if (I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_ID.equalsIgnoreCase(paramName)) {
             m_resourceType = Integer.valueOf(paramValue).intValue();
         } else if (I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_NAME.equalsIgnoreCase(paramName)) {
@@ -82,6 +83,10 @@ public class CmsResourceTypeGallery extends CmsResourceTypeFolder {
         result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_ID, new Integer(m_resourceType));
         result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_NAME, m_resourceTypeName);
         result.put(C_CONFIGURATION_GALLERY_CLASS, m_galleryClassName);
+        ExtendedProperties additional = super.getConfiguration();
+        if (additional != null) {
+            result.putAll(additional);
+        }
         return result;
     }
 

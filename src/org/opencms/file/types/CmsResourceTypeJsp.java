@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2004/11/11 11:46:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/01/19 14:36:58 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -77,7 +77,8 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
-
+        
+        super.addConfigurationParameter(paramName, paramValue);
         if (C_CONFIGURATION_JSP_ENCODING.equalsIgnoreCase(paramName)) {
             m_defaultEncoding = CmsEncoder.lookupEncoding(paramValue.trim(), OpenCms.getSystemInfo()
                 .getDefaultEncoding());
@@ -103,7 +104,8 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
         }
         newProperties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_EXPORT, null, "false"));
         newProperties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, null, m_defaultEncoding));
-
+        newProperties.addAll(createPropertyObjects(cms));
+        
         return super.createResource(cms, securityManager, resourcename, content, newProperties);
     }
 
@@ -114,6 +116,10 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
 
         ExtendedProperties result = new ExtendedProperties();
         result.put(C_CONFIGURATION_JSP_ENCODING, m_defaultEncoding);
+        ExtendedProperties additional = super.getConfiguration();
+        if (additional != null) {
+            result.putAll(additional);
+        }
         return result;
     }
 
