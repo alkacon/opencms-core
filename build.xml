@@ -47,7 +47,7 @@
     <property name="db.password"                value=""/>
     <property name="db.driver"                  value="org.gjt.mm.mysql.Driver"/>
 
-    <property name="build.excludes"             value=""/>
+    <property name="build.tmpexcludes"          value=""/>
     <property name="excludes"                   value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath"/>
         
     <target name="init" description="Checks if all needed libaries are available">
@@ -64,11 +64,13 @@
             </and>
         </condition>
         
-        <property name="ex.oracle"      value="com/opencms/file/oracleplsql/**"/>
-                
-        <condition property="build.excludes" value="${build.excludes},${ex.oracle}">
+        <condition property="build.excludes" value="com/opencms/file/oraclesql/**,com/opencms/file/oracleplsql/**">
             <not><available file="${build.inputlib.oracle}"/></not>
         </condition>           
+        
+        <condition property="build.excludes" value="">
+            <available file="${build.inputlib.oracle}"/>
+        </condition> 
         
         <condition property="tomcat.home" value="${env.TOMCAT_HOME}">
             <available file="${env.TOMCAT_HOME}" type="dir"/>
@@ -198,6 +200,8 @@ ${build.inputlib.tidy}
        <copy todir="${build.web}">
             <fileset dir="web" excludes="${excludes}"/>
        </copy>
+       
+       <mkdir dir="${build.local}"/>
        
        <touch>
             <fileset dir="${build.local}"/>
@@ -398,7 +402,9 @@ ${build.inputlib.tidy}
         <copy todir="${build.srcdist.main}">
             <fileset dir="." includes="*.*" excludes="${excludes}"/>
         </copy>
-       
+        
+        <mkdir dir="${build.local}"/>       
+        
         <touch>
             <fileset dir="${build.local}"/>
         </touch>
