@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/04/28 13:47:07 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/05/02 14:22:45 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,10 +42,25 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.11 $ $Date: 2000/04/28 13:47:07 $
+ * @version $Revision: 1.12 $ $Date: 2000/05/02 14:22:45 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
-		
+	
+	
+	/**
+     * Indicates if the results of this class are cacheable.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+     */
+    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        return true;
+    }	
+	
 	
 	/** 
 	 * gets the current folder.
@@ -291,6 +306,70 @@ public class CmsXmlNav extends A_CmsNavBase {
 		}
 		
 		return buildNavRedirected(cms,doc,userObject,resources).getBytes();
+	}
+	
+	
+	/** 
+	 * gets the navigation of files and folders,
+	 * by folders it is showed closed, if the folder is clicked then it is opened.
+	 * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getNavFold(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+			throws CmsException {
+		
+		int level=0;		
+		// if level is zero or null or negative then all folders recursive must  
+		// be showed starting from root folder unless all folders stating from 
+		// specified level of parent folder.
+		if (!tagcontent.equals("")) {
+			try {
+				level=Integer.parseInt(tagcontent);
+			} catch(NumberFormatException e) {
+				throw new CmsException(e.getMessage());
+			}
+		}
+		String folder="";
+		if (level<=0) {
+			folder=cms.rootFolder().getAbsolutePath();
+		} else {
+			folder=extractFolder(cms,level);
+		}		
+		String requestedUri = cms.getRequestContext().getUri();
+		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
+		String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
+		CmsXmlTemplateFile xmlDataBlock=(CmsXmlTemplateFile)doc;			
+		
+		Vector resources=cms.getSubFolders(folder);
+		Vector allFile=cms.getFilesInFolder(folder);
+		
+		resources.ensureCapacity(resources.size() + allFile.size());
+		Enumeration e = allFile.elements();
+		while (e.hasMoreElements()) {
+			resources.addElement(e.nextElement());
+		}
+		
+		String result="";
+		// check wheather xml data blocks are defined.
+		if (xmlDataBlock.hasData("navEntry")) {
+			if (!xmlDataBlock.hasData("navCurrent")) {
+				xmlDataBlock.setData("navCurrent", xmlDataBlock.getDataValue("navEntry"));
+			}
+			if (!xmlDataBlock.hasData("navTreeStart")) {
+				xmlDataBlock.setData("navTreeStart", "");
+			}
+			if (!xmlDataBlock.hasData("navTreeEnd")) {
+				xmlDataBlock.setData("navTreeEnd", "");
+			}
+			result=buildNavFold(cms,xmlDataBlock,userObject,resources,requestedUri,currentFolder,servletPath);
+		}
+		
+		return result.getBytes();
 	}
 	
 		
@@ -786,7 +865,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 	
 	
 	/**
-	 * Builds the navigation.
+	 * Builds the navigation redirected on a specified folder.
 	 * 
 	 * @param cms A_CmsObject Object for accessing system resources.    
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
@@ -868,6 +947,91 @@ public class CmsXmlNav extends A_CmsNavBase {
 					result.append(xmlDataBlock.getProcessedDataValue("navEntry"));
 				}
 			}
+		}
+		
+		return result.toString();
+		
+	}
+	
+	
+	/**
+	 * Builds the navigation that could be closed or opened.
+	 * 
+	 * @param cms A_CmsObject Object for accessing system resources.    
+     * @param doc Reference to the CmsXmTemplateFile object of the initiating XLM document.
+	 * @param resources a vector that contains the elements of navigation.
+	 * @param userObj Hashtable with parameters.
+	 * @param requestedUri The absolute path of current requested file. 
+	 * @param currentFolder The currenet folder.
+	 * @param servletPath The absolute path of servlet
+	 * @param depth An Integer that shows how many folders must be displayed.
+	 * @return String that contains the navigation.
+	 */	
+	private String buildNavFold(A_CmsObject cms, CmsXmlTemplateFile xmlDataBlock, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath)
+		throws CmsException {
+		
+		String cmsfolder=(String)(((Hashtable)userObject).get("cmsfolder"));
+		String cmsframe=((((Hashtable)userObject).get("cmsframe")).equals("plain")?"?cmsframe=plain":"");
+		StringBuffer result = new StringBuffer();
+		
+		int size = resources.size();		
+		String navLink[] = new String[size];
+        String navText[] = new String[size];
+        float navPos[] = new float[size];
+        
+		int max=extractNav(cms,resources,navLink,navText,navPos);
+		if (max>0) {
+			result.append(xmlDataBlock.getProcessedDataValue("navTreeStart"));
+			for(int i=0; i<max; i++) {
+				xmlDataBlock.setData("navText", navText[i]);
+				xmlDataBlock.setData("count", new Integer(i+1).toString());
+				// this if condition is necessary because of url parameter,
+				// if there is no filename then the parameters are ignored, so I
+				// can't use e.g. ?cmsframe=body.
+				if (navLink[i].endsWith("/")) {
+					String cmsfold="";
+					if (cmsframe.equals("")) {
+						cmsfold="?cmsfolder="+navLink[i];
+					} else {
+						cmsfold="&cmsfolder="+navLink[i];
+					}
+					String navIndex=cms.readProperty(navLink[i],C_PROPERTY_NAVINDEX);
+					if (navIndex==null) {
+						navIndex=C_NAVINDEX;
+					}
+					try {
+						cms.readFile(navLink[i] + navIndex);
+						xmlDataBlock.setData("navLink", servletPath + navLink[i] + navIndex + cmsframe + cmsfold);
+					} catch (CmsException e) {
+						xmlDataBlock.setData("navLink", servletPath + requestedUri );
+					}
+				} else {
+					try {
+						cms.readFile(navLink[i]);
+						xmlDataBlock.setData("navLink", servletPath + navLink[i] + cmsframe);
+					} catch (CmsException e) {
+						xmlDataBlock.setData("navLink", servletPath + requestedUri );
+					}					
+				}
+				// Check if nav is current nav				
+				if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
+					result.append(xmlDataBlock.getProcessedDataValue("navCurrent"));
+				} else {
+					result.append(xmlDataBlock.getProcessedDataValue("navEntry"));
+				}
+				// if the folder was clicked				
+				if (cmsfolder!=null && (!cmsfolder.equals("")) && (cmsfolder.indexOf(navLink[i])!=-1)) {
+					Vector all=cms.getSubFolders(navLink[i]);
+					Vector files=cms.getFilesInFolder(navLink[i]);
+					all.ensureCapacity(all.size() + files.size());
+					Enumeration e = files.elements();
+					while (e.hasMoreElements()) {
+						all.addElement(e.nextElement());
+					}
+					result.append(buildNavFold(cms,xmlDataBlock,userObject,all,requestedUri,currentFolder,servletPath));
+				}
+			}
+			result.append(xmlDataBlock.getProcessedDataValue("navTreeEnd"));
 		}
 		
 		return result.toString();

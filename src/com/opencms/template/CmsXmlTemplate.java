@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/04/28 13:47:07 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/05/02 14:23:12 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2000/04/28 13:47:07 $
+ * @version $Revision: 1.31 $ $Date: 2000/05/02 14:23:12 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -533,6 +533,57 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
         if(query != null && !"".equals(query)) {
             query = "?" + query;
         }
+        return query;
+    }  
+	
+	
+	/**
+     * Gets the QueryString for CmsFrameTemplates.
+     * <P>
+     * This method can be called using <code>&lt;METHOD name="getCmsQueryString"&gt;</code>
+     * in the template file.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getFrameQueryString(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException {
+        String query = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getQueryString();
+		if (query==null) {
+			query="";
+		}
+        if(!query.equals("")) {
+			if (query.indexOf("cmsframe=")!=-1) {
+				int start=query.indexOf("cmsframe=");
+				int end=query.indexOf("&",start);
+				if (!tagcontent.equals("")){
+					if (end!=-1) {
+						query=query.substring(0,start+9)+tagcontent+query.substring(end);
+					} else {
+						query=query.substring(0,start+9)+tagcontent;
+					}
+				} else {
+					if (end!=-1) {
+						query=query.substring(0,start)+query.substring(end+1);
+					} else {
+						query=query.substring(0,start);
+					}
+				}
+			} else {
+				if (!tagcontent.equals("")){
+					query=query+"&cmsframe="+tagcontent;
+				}
+			}
+            query = "?" + query;			
+		} else {
+			if (!tagcontent.equals("")){
+				query = "?cmsframe="+tagcontent;
+			}
+		}
         return query;
     }  
 
