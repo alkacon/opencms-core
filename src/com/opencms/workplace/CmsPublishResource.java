@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2002/05/31 13:20:58 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/06/11 15:40:50 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.9 $ $Date: 2002/05/31 13:20:58 $
+ * @version $Revision: 1.10 $ $Date: 2002/06/11 15:40:50 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -215,6 +215,9 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
                     // now if cancel delete the temp-project, else publish it.
                     int tempProjectId = cms.publishResource(file.getAbsolutePath(), true);
                     session.putValue(C_TEMP_PROJECT_ID, new Integer(tempProjectId));
+                    if(lasturl == null){
+                        lasturl = "";
+                    }
                     session.putValue("lasturlForPublishResource", lasturl);
                     // first part of the publish: check for broken links
                     CmsAdminLinkmanagementThread doCheck = new CmsAdminLinkmanagementThread(cms, tempProjectId);
