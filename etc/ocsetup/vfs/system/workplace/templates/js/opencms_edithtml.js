@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
-* Date   : $Date: 2002/02/18 15:32:42 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2002/04/17 08:53:29 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -367,7 +367,8 @@ function doEditHTML(para)
         //DECMD_SETBACKCOLOR_onclick();
         break;
     case 40:
-        InsertTable();
+//        InsertTable();
+          checkTableSelection();
         break;          
     case 41:
         DECMD_HYPERLINK_onclick();
@@ -613,6 +614,58 @@ function DECMD_SETBACKCOLOR_onclick()
   }
   EDITOR.EDIT_HTML.focus();
 }
+
+/* Checks if an table-element is selected in the DHTML Editor */
+function checkTableSelection() {
+  var editor = document.all.EDIT_HTML;
+  var sel = editor.DOM.selection;
+    
+  if(sel.type == "Control") {
+    var range = sel.createRange()(0);
+    
+    // we have selected a table object
+    if(range.tagName == "TABLE" || range.tagName == "table") {
+      
+      // get table properties
+      var args1 = new Array();      
+      args1["border"] = range.border;  
+      args1["cellpadding"] = range.cellPadding;  
+      args1["cellspacing"] = range.cellSpacing; 
+      if(range.bgColor != "" && range.bgColor.length > 0) {
+        args1["bgcolor"] = range.bgColor       
+      }
+      
+      //get new attributes
+      var args2 = new Array();               
+      args2 = showModalDialog( "edit_html_changetable.html", args1,"font-family:Verdana; font-size:12; dialogWidth:50em; dialogHeight:25em");
+      
+      // set the new attributes
+      if (args2 != null) {     
+        for ( elem in args2 ) {
+          if ("border" == elem && args2["border"] != null) {      
+            range.border = args2["border"];
+          }
+          else if ("cellpadding" == elem && args2["cellpadding"] != null) {      
+            range.cellPadding = args2["cellpadding"];
+          }          
+          else if ("cellspacing" == elem && args2["cellspacing"] != null) {      
+            range.cellSpacing = args2["cellspacing"];
+          }
+          else if ("bgcolor" == elem && args2["bgcolor"] != null) {      
+            range.bgColor = args2["bgcolor"];
+          }                              
+        }
+      }
+    }
+  }
+  else {
+    InsertTable();
+  }
+  
+}
+
+
+/* Builds a new table */
 function InsertTable()
 {
   var pVar = document.all.ObjTableInfo;
@@ -722,6 +775,13 @@ function InsertTable()
     document.all.EDIT_HTML.ExecCommand(DECMD_INSERTTABLE, OLECMDEXECOPT_DODEFAULT, pVar);  
   }
 }
+
+
+
+
+
+
+
 function DECMD_HYPERLINK_onclick()
 {
   EDITOR.EDIT_HTML.ExecCommand(DECMD_HYPERLINK,OLECMDEXECOPT_PROMPTUSER);
