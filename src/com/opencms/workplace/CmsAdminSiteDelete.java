@@ -40,7 +40,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	String initial = (String) parameters.get(C_PARA_INITIAL);
 	if (initial != null)
 	{	
-		CmsSite site = cms.getSite((String) parameters.get("sitename"));
+		CmsSite site = cms.getSiteBySiteId(Integer.parseInt((String) parameters.get("siteid")));
 		String name = site.getName();
 		String description = site.getDescription();
 		String domainname = "";

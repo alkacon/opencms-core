@@ -36,7 +36,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	}
 	CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 
-		CmsSite site = cms.getSite((String) parameters.get("sitename"));
+		CmsSite site = cms.getSiteBySiteId(Integer.parseInt((String) parameters.get("siteid")));
 		String name = site.getName();
 		String description = site.getDescription();
 		String domainname = "";

@@ -88,7 +88,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		session.removeValue("SITE_LANGUAGE");
 		session.removeValue("SITE_DOMAIN");
 		session.removeValue("SITE_ID");
-		CmsSite site = cms.getSite((String) parameters.get("sitename"));
+		CmsSite site = cms.getSiteBySiteId(Integer.parseInt((String) parameters.get("siteid")));
 		name = site.getName();
 		description = site.getDescription();
 		Vector siteUrls = cms.getSiteUrls(site.getId());
