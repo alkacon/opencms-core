@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/01/06 12:26:42 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/01/06 17:06:05 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,43 +46,69 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.1
  */
 public class CmsDialog extends CmsWorkplace {
 
+    /** Value for the action: default (show initial dialog form) */
     public static final int ACTION_DEFAULT = 0;
+    /** Value for the action: confirmed */
     public static final int ACTION_CONFIRMED = 1;
+    /** Value for the action: wait (show please wait screen) */
     public static final int ACTION_WAIT = 2;
     
     // note: action values 90 - 99 are reserved for reports
+    /** Value for the action: begin the report */
     public static final int ACTION_REPORT_BEGIN  = 90;
+    /** Value for the action: update the report */
     public static final int ACTION_REPORT_UPDATE = 91;
+    /** Value for the action: end the report */
     public static final int ACTION_REPORT_END    = 92;
     
+    /** Request parameter value for the action: begin the report */
     public static final String REPORT_BEGIN  = "reportbegin";
+    /** Request parameter value for the action: update the report */
     public static final String REPORT_UPDATE = "reportupdate";
+    /** Request parameter value for the action: end the report */
     public static final String REPORT_END    = "reportend";    
     
+    /** Constant for the "OK" button in the build button methods */
     public static final int BUTTON_OK = 0;
+    /** Constant for the "Cancel" button in the build button methods */
     public static final int BUTTON_CANCEL = 1;
+    /** Constant for the "Close" button in the build button methods */
     public static final int BUTTON_CLOSE = 2;
+    /** Constant for the "Advanced" button in the build button methods */
     public static final int BUTTON_ADVANCED = 3;
+    /** Constant for the "Set" button in the build button methods */
     public static final int BUTTON_SET = 4;
+    /** Constant for the "OK" button without form submission in the build button methods */
     public static final int BUTTON_OK_NO_SUBMIT = 5;
     
+    /** Request parameter value for the action: dialog confirmed */
     public static final String DIALOG_CONFIRMED = "confirmed";
+    /** Request parameter value for the action: show please wait screen */
     public static final String DIALOG_WAIT = "wait";
-        
+    
+    /** Request parameter name for the action */
     public static final String PARAM_ACTION = "action";
+    /** Request parameter name for the file */
     public static final String PARAM_FILE = "file";
+    /** Request parameter name for the target */
     public static final String PARAM_TARGET = "target";
+    /** Request parameter name for the dialog type */
     public static final String PARAM_DIALOGTYPE = "dialogtype";
+    /** Request parameter name for the error stack */
     public static final String PARAM_ERRORSTACK = "errorstack";
+    /** Request parameter name for the dialog title */
     public static final String PARAM_TITLE = "title";
+    /** Request parameter name for the error message */
     public static final String PARAM_MESSAGE = "message";
+    /** Request parameter name for the thread id */
     public static final String PARAM_THREAD = "thread";
+    /** Request parameter name for the lock */
     public static final String PARAM_LOCK = "lock";
 
     private String m_paramAction;

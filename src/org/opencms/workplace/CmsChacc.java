@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/12/05 16:22:27 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/01/06 17:06:05 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,27 +62,35 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.1
  */
 public class CmsChacc extends CmsDialog {
     
+    /** The dialog type */
     public static final String DIALOG_TYPE = "chacc";
     
+    /** Request parameter value for the action: set the permissions */
     public static final String DIALOG_SET = "set";
+    /** Request parameter value for the action: delete the permissions */
     public static final String DIALOG_DELETE = "delete";
+    /** Request parameter value for the action: add an access control entry */
     public static final String DIALOG_ADDACE = "addace";
     
-    // always start individual action id's with 100 to leave enough room for more default actions
+    /** Value for the action: set the permissions */
     public static final int ACTION_SET = 100;
+    /** Value for the action: delete the permissions */
     public static final int ACTION_DELETE = 200;
+    /** Value for the action: add an access control entry */
     public static final int ACTION_ADDACE = 300;
     
     private String m_paramType;
     private String m_paramName;
     
+    /** Constant for the request parameters suffix: allow */
     public static final String PERMISSION_ALLOW = "allow";
+    /** Constant for the request parameters suffix: deny */
     public static final String PERMISSION_DENY = "deny";    
     
     /** Stores eventual error message Strings */

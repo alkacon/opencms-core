@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2003/12/05 16:22:27 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/01/06 17:06:05 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,18 +55,21 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
 public class CmsTouch extends CmsDialog {
     
-    // always start individual action id's with 100 to leave enough room for more default actions
+    /** Value for the action: touch */
     public static final int ACTION_TOUCH = 100;
     
+    /** The dialog type */
     public static final String DIALOG_TYPE = "touch";
     
+    /** Request parameter name for timestamp.<p> */
     public static final String PARAM_NEWTIMESTAMP = "newtimestamp";
+    /** Request parameter name for the recursive flag.<p> */
     public static final String PARAM_RECURSIVE = "recursive";
     
     private String m_paramRecursive;

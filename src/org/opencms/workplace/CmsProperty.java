@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/12/05 16:25:09 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/01/06 17:06:05 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,33 +59,47 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.1
  */
 public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
-
-    // always start individual action id's with 100 to leave enough room for more default actions
-    public static final int ACTION_SHOW_EDIT = 100;
-    public static final int ACTION_SHOW_DEFINE = 200;
-    public static final int ACTION_SAVE_EDIT = 300;
-    public static final int ACTION_SAVE_DEFINE = 400;
     
+    /** The dialog type */
     public static final String DIALOG_TYPE = "property";
     
+    /** Value for the action: show edit properties form */
+    public static final int ACTION_SHOW_EDIT = 100;
+    /** Value for the action: show define property form */
+    public static final int ACTION_SHOW_DEFINE = 200;
+    /** Value for the action: save edited properties */
+    public static final int ACTION_SAVE_EDIT = 300;
+    /** Value for the action: save defined property */
+    public static final int ACTION_SAVE_DEFINE = 400;
+    
+    /** Request parameter value for the action: show edit properties form */
     public static final String DIALOG_SHOW_EDIT = "edit";
+    /** Request parameter value for the action: show define property form */
     public static final String DIALOG_SHOW_DEFINE = "define";
+    /** Request parameter value for the action: show information form */
     public static final String DIALOG_SHOW_DEFAULT = "default";
     
+    /** Request parameter value for the action: save edited properties */
     public static final String DIALOG_SAVE_EDIT = "saveedit";
+    /** Request parameter value for the action: save defined property */
     public static final String DIALOG_SAVE_DEFINE = "savedefine";
     
+    /** Prefix for the input values */
     public static final String PREFIX_VALUE = "value-";
+    /** Prefix for the hidden fields */
     public static final String PREFIX_HIDDEN = "hidden-";
+    /** Prefix for the use property fields */
     public static final String PREFIX_USEPROPERTY = "use-";
     
+    /** Request parameter name for the new property definition */
     public static final String PARAM_NEWPROPERTY = "newproperty";   
     
+    /** The URI to the standard property dialog */
     public static final String URI_PROPERTY_DIALOG = C_PATH_DIALOGS + "property_standard.html"; 
 
     private String m_paramNewproperty;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2003/12/03 14:00:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/06 17:06:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,22 +61,29 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
 public class CmsPreferences extends CmsTabDialog {
 
-    
+    /** The dialog type */
     public static final String DIALOG_TYPE = "preferences";
     
+    /** Request parameter value for the action: cancel button */
     public static final String DIALOG_CANCEL = "cancel";
+    /** Request parameter value for the action: reload the workplace */
     public static final String DIALOG_RELOAD = "reload";
+    /** Request parameter value for the action: change the password */
     public static final String DIALOG_CHPWD = "chpwd";
     
+    /** Value for the action: cancel button */
     public static final int ACTION_CANCEL = 200;
+    /** Value for the action: reload the workplace */
     public static final int ACTION_RELOAD = 201;
+    /** Value for the action: change the password */
     public static final int ACTION_CHPWD = 202;
+    /** Value for the action: show error screen */
     public static final int ACTION_ERROR = 203;
     
     private String m_paramNewPassword;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/01/06 17:06:05 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,16 +51,19 @@ import org.opencms.site.CmsSiteManager;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1
  */
 public class CmsCopy extends CmsDialog {
-
-    // always start individual action id's with 100 to leave enough room for more default actions
+    
+    /** The dialog type */
+    public static final String DIALOG_TYPE = "copy";
+    
+    /** Value for the action: copy the resource */
     public static final int ACTION_COPY = 100;
     
-    public static final String DIALOG_TYPE = "copy";
+    /** Request parameter name for the keep rights flag */
     public static final String PARAM_KEEPRIGHTS = "keeprights";    
 
     private String m_paramTarget;

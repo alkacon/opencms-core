@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2003/11/07 13:17:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/01/06 17:06:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,23 +50,29 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
 public class CmsChaccBrowser extends CmsDialog {
     
-    public static final int FRAME_DEFAULT = 1;
-    public static final int FRAME_GROUPS = 100;
-    public static final int FRAME_USERS = 200;
-    
+    /** The dialog type */
     public static final String DIALOG_TYPE = "chaccbrowser";
     
+    /** Constant for the frame type which is displayed: default frame */
+    public static final int FRAME_DEFAULT = 1;
+    /** Constant for the frame type which is displayed: groups frame */
+    public static final int FRAME_GROUPS = 100;
+    /** Constant for the frame type which is displayed: users frame */
+    public static final int FRAME_USERS = 200;
+    
+    /** Constant for the frame name which is displayed: groups frame */
     public static final String DIALOG_FRAME_GROUPS = "groups";
+    /** Constant for the frame name which is displayed: users frame */
     public static final String DIALOG_FRAME_USERS = "users";
     
+    /** Request parameter name for the frame parameter */
     public static final String PARAM_FRAME = "frame";
-    
     
     private String m_paramFrame;
     private int m_frame;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/12/05 16:22:27 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/01/06 17:06:05 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,24 +67,34 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 5.1
  */
 public abstract class CmsWorkplace {
     
+    /** Key name for the session workplace settings */
     protected static final String C_SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
+    /** Key name for the session workplace class */
     protected static final String C_SESSION_WORKPLACE_CLASS    = "__CmsWorkplace.WORKPLACE_CLASS";
     
     /** Path definitions for workplace */
+    /** Constant for the JSP workplace path */
     protected static final String C_PATH_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "jsp/";
+    /** Constant for the JSP dialogs path */
     protected static final String C_PATH_DIALOGS = C_PATH_WORKPLACE + "dialogs/";
+    /** Constant for the JSP common files (e.g. error page) path */
     protected static final String C_PATH_DIALOG_COMMON = C_PATH_DIALOGS + "common/";
     
+    /** Constant for the JSP explorer filelist file */
     protected static final String C_FILE_EXPLORER_FILELIST = C_PATH_WORKPLACE + "explorer_files.html";
+    /** Constant for the JSP common wait screen */
     protected static final String C_FILE_DIALOG_SCREEN_WAIT = C_PATH_DIALOG_COMMON + "wait.html";
+    /** Constant for the JSP common error dialog */
     protected static final String C_FILE_DIALOG_SCREEN_ERROR = C_PATH_DIALOG_COMMON + "error.html";
+    /** Constant for the JSP common confirmation dialog */
     protected static final String C_FILE_DIALOG_SCREEN_CONFIRM = C_PATH_DIALOG_COMMON + "confirmation.html";
+    /** Constant for the JSP common report page */
     protected static final String C_FILE_REPORT_OUTPUT = C_PATH_DIALOG_COMMON + "report.html";
     
     private static String m_file_explorer_filelist; 
@@ -94,10 +104,13 @@ public abstract class CmsWorkplace {
     private HttpSession m_session;
     private CmsWorkplaceSettings m_settings;
     private String m_resourceUri = null;
-      
+    
+    /** Helper variable to deliver the html start part */
     public static final int HTML_START = 0;
+    /** Helper variable to deliver the html end part */
     public static final int HTML_END = 1;
     
+    /** The debug flag */
     public static final boolean DEBUG = false;
         
     /**

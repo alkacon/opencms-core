@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2003/11/07 13:17:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/06 17:06:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,24 +59,32 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
 public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
-        
-    public static final String DIALOG_TYPE_LOCK = "lock";
-    public static final String DIALOG_TYPE_LOCKCHANGE = "lockchange";
-    public static final String DIALOG_TYPE_UNLOCK = "unlock";
-    // always start individual action id's with 100 to leave enough room for more default actions
     
+    /** The dialog type: lock a resource */
+    public static final String DIALOG_TYPE_LOCK = "lock";
+    /** The dialog type: Steal a lock */
+    public static final String DIALOG_TYPE_LOCKCHANGE = "lockchange";
+    /** The dialog type: unlock a resource */
+    public static final String DIALOG_TYPE_UNLOCK = "unlock";
+    
+    
+    /** The lock dialog URI */
     public static final String URI_LOCK_DIALOG = C_PATH_DIALOGS + "lock_standard.html";
+    /** The steal lock dialog URI */
     public static final String URI_LOCKCHANGE_DIALOG = C_PATH_DIALOGS + "lockchange_standard.html";
+    /** The unlock dialog URI */
     public static final String URI_UNLOCK_DIALOG = C_PATH_DIALOGS + "unlock_standard.html";
     
-    // the three possible action types performed by this class
+    /** Type of the operation which is performed: lock resource */
     public static final int TYPE_LOCK = 1;
+    /** Type of the operation which is performed: steal a lock */
     public static final int TYPE_LOCKCHANGE = 2;
+    /** Type of the operation which is performed: unlock resource */
     public static final int TYPE_UNLOCK = 3;
     
     /**

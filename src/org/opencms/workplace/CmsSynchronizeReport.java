@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsSynchronizeReport.java,v $
- * Date   : $Date: 2003/09/11 12:45:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/06 17:06:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,14 +54,14 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.10
  */
 public class CmsSynchronizeReport extends CmsReport {
-        
+    
+    /** The dialog type */
     public static final String DIALOG_TYPE = "sync";
-    // always start individual action id's with 100 to leave enough room for more default actions
 
     /**
      * Public constructor.<p>

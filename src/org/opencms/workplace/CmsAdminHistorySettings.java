@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2003/11/03 09:05:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/06 17:06:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,17 +50,20 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
 public class CmsAdminHistorySettings extends CmsDialog {
     
+    /** The dialog type */
+    public static final String DIALOG_TYPE = "historysettings";
+    
+    /** Value for the action: save the settings */
     public static final int ACTION_SAVE_EDIT = 300;
     
+    /** Request parameter value for the action: save the settings */
     public static final String DIALOG_SAVE_EDIT = "saveedit";
-    
-    public static final String DIALOG_TYPE = "historysettings";
 
     /**
      * Public constructor with JSP action element.<p>

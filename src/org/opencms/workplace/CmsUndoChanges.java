@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndoChanges.java,v $
- * Date   : $Date: 2003/11/07 13:17:33 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/01/06 17:06:05 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,15 +50,16 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
 public class CmsUndoChanges extends CmsDialog {
 
-    // always start individual action id's with 100 to leave enough room for more default actions
+    /** Value for the action: undo changes */
     public static final int ACTION_UNDOCHANGES = 100;
     
+    /** The dialog type */
     public static final String DIALOG_TYPE = "undochanges";
     
     private CmsResource m_currentResource;

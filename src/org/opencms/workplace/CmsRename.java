@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/01/06 17:06:05 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,15 +48,16 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */
 public class CmsRename extends CmsDialog {
 
-    // always start individual action id's with 100 to leave enough room for more default actions
+    /** Value for the action: rename */
     public static final int ACTION_RENAME = 100;
     
+    /** The dialog type */
     public static final String DIALOG_TYPE = "rename";
 
     private String m_paramTarget;
