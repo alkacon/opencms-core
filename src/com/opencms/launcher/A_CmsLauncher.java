@@ -2,8 +2,8 @@ package com.opencms.launcher;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
- * Date   : $Date: 2000/08/08 14:08:28 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/09/18 15:57:26 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -59,7 +59,7 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2000/08/08 14:08:28 $
+ * @version $Revision: 1.20 $ $Date: 2000/09/18 15:57:26 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsConstants  {
 		
@@ -284,10 +284,12 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsCo
 	 */
 	protected void writeBytesToResponse(CmsObject cms, byte[] result) 
 			throws CmsException {
+			int length;
 		try {
 			I_CmsResponse resp = cms.getRequestContext().getResponse();
-			resp.setContentLength(result.length);
 			OutputStream out = resp.getOutputStream();
+
+						resp.setContentLength(result.length);
 			out.write(result);
 			out.flush();
 			out.close();

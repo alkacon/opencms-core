@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/08/31 15:10:36 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2000/09/18 15:57:26 $
+ * Version: $Revision: 1.56 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.55 $ $Date: 2000/08/31 15:10:36 $  
+* @version $Revision: 1.56 $ $Date: 2000/09/18 15:57:26 $  
 * 
 * */
 
@@ -643,11 +643,23 @@ private CmsObject initMultisite(I_CmsRequest cmsReq, I_CmsResponse cmsRes) throw
 	//set up the default Cms object, based on the default site.
 	try
 	{
-		//get the called URL.
-		StringBuffer requestUrl = HttpUtils.getRequestURL(req);
-		CmsSite site = cms.getSite(requestUrl);
-		m_opencms.initUser(cms, cmsReq, cmsRes, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
+		//login the default user - to setup CmsObject correctly.
 
+		m_opencms.initUser(cms, cmsReq, cmsRes, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
+		//get the called URL.
+
+		StringBuffer requestUrl = HttpUtils.getRequestURL(req);
+		try
+		{
+			CmsSite site = cms.getSiteFromUrl(requestUrl);
+			System.out.println(site);
+			m_opencms.initUser(cms, cmsReq, cmsRes, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
+		}
+		catch (CmsException ce)
+		{
+			System.err.println("Warning could not find site:" + requestUrl);
+			//do nothing. The site cannot be found, so fallback to default.
+		}
 		// check if a parameter "opencms=login" was included in the request.
 		// this is used to force the HTTP-Authentification to appear.
 		loginParameter = cmsReq.getParameter("opencms");

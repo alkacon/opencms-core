@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSite.java,v $
- * Date   : $Date: 2000/09/15 11:22:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/09/18 15:57:26 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file;
  * This Class represents a site, used by the multisite functionality.
  *   
  * @author Anders Fugmann
- * @version $Revision: 1.3 $ $Date: 2000/09/15 11:22:11 $  
+ * @version $Revision: 1.4 $ $Date: 2000/09/18 15:57:26 $  
  * 
  */
 
@@ -55,10 +55,19 @@ public class CmsSite
 
 	/** The online project id used with this site. */
 	private int onlineProjectId;
-	/** The guestuser of this site. */
-	private String guestUser;
-	/** The guestgroup of this site. */
-	private String guestGroup;
+	
+	/** 
+	 * The guestuser of this site.
+	 * default to guest-user
+	 */
+	private String guestUser = com.opencms.core.CmsConstants.C_USER_GUEST;
+
+	/** 
+	 * The guestgroup of this site. 
+	 * default to guest-user
+	 */
+
+	private String guestGroup = com.opencms.core.CmsConstants.C_GROUP_GUEST;
 /**
  * Insert the method's description here.
  * Creation date: (08/31/00 %r)
@@ -216,5 +225,13 @@ public void setName(java.lang.String newName) {
  */
 public void setOnlineProjectId(int newOnlineProjectId) {
 	onlineProjectId = newOnlineProjectId;
+}
+/**
+ * Insert the method's description here.
+ * Creation date: (09/18/00 %r)
+ * @return java.lang.String
+ */
+public String toString() {
+	return "Site " + name + ", OnlineProject " + onlineProjectId;
 }
 }
