@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2000/12/14 09:26:51 $
-  * Version: $Revision: 1.5 $
+  * Date   : $Date: 2000/12/14 14:01:00 $
+  * Version: $Revision: 1.6 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -518,7 +518,7 @@
  
      if(node.isGrey)var foco="class=ig ";
          else var foco="class=tf ";
-     doc.writeln("&nbsp;<a "+foco+"href='javascript:top.openFolder(&quot;"+ node.id +"&quot;);' target='explorer_files' ;>&nbsp;"+ node.name + "&nbsp;</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
+     doc.writeln("<a "+foco+"href='javascript:top.openFolder(&quot;"+ node.id +"&quot;);' target='explorer_files' ;>&nbsp;"+ node.name + "&nbsp;</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
  
  
  	if (node.open || node == tree.root) {
