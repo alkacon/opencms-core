@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLabel.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/22 14:00:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,8 @@
 package org.opencms.jsp;
 
 import org.opencms.flex.CmsFlexController;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.I_CmsWpConstants;
-
-import com.opencms.workplace.CmsXmlLanguageFile;
-import com.opencms.workplace.CmsXmlWpLabelDefFile;
+import org.opencms.workplace.CmsWorkplaceMessages;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -53,7 +49,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagLabel extends BodyTagSupport {
             
@@ -92,20 +88,13 @@ public class CmsJspTagLabel extends BodyTagSupport {
      * 
      * @param label the label to look up
      * @param req the current request
-     * @return String the value of the selected lable
-     * @throws CmsException in case something goes wrong
+     * @return String the value of the selected label
      */    
-    public static String wpLabelTagAction(String label, ServletRequest req) 
-    throws CmsException {
-        CmsXmlWpLabelDefFile labeldeffile;
-        CmsXmlLanguageFile langfile;
-        
+    public static String wpLabelTagAction(String label, ServletRequest req) {
+
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-        
-        labeldeffile = new CmsXmlWpLabelDefFile(controller.getCmsObject(), I_CmsWpConstants.C_VFS_PATH_WORKPLACE +  I_CmsWpConstants.C_VFS_DIR_TEMPLATES + I_CmsWpConstants.C_LABELTEMPLATE);
-        langfile = new CmsXmlLanguageFile(controller.getCmsObject());
-        
-        return labeldeffile.getLabel(langfile.getLanguageValue(label));                        
+        CmsWorkplaceMessages messages = new CmsWorkplaceMessages(controller.getCmsObject(), controller.getCmsObject().getRequestContext().getLocale());
+        return messages.key(label);                    
     }
 
 }

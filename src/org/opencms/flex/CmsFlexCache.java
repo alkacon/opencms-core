@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/02/22 13:52:28 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/02/22 14:00:45 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.collections.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -257,7 +257,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
             OpenCms.addCmsEventListener(this, new int[] {
                 I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-                I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE,
                 I_CmsEventListener.EVENT_CLEAR_CACHES,
                 I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR       
@@ -294,7 +293,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
-            case I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE:
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 if (DEBUG > 0) {
                     System.err.println("FlexCache: Recieved event, clearing cache!");

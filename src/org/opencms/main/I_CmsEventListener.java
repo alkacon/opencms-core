@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2004/02/13 14:37:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/22 14:00:45 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -103,14 +103,7 @@ public interface I_CmsEventListener {
      * 
      * @see org.opencms.file.CmsObject#publishResource(String, boolean, org.opencms.report.I_CmsReport)
      */    
-    int EVENT_PUBLISH_RESOURCE = 3;    
-
-    /** 
-     * Event "a resource in the COS was published".<p>
-     * 
-     * @see com.opencms.defaults.master.CmsMasterContent#publishResource(org.opencms.file.CmsObject)
-     */    
-    int EVENT_PUBLISH_BO_RESOURCE = 4;    
+    int EVENT_PUBLISH_RESOURCE = 3; 
         
     /** 
      * Event "all caches must be cleared".<p>
