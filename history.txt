@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/02/08 18:18:26 $
- * Version: $Revision: 1.603 $
+ * Date   : $Date: 2005/02/14 09:53:22 $
+ * Version: $Revision: 1.604 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,12 +23,12 @@ OpenCms 5.7.1 Caladan (aka 6.0 beta 1) - February xx, 2004
 ! Static export "file scrubbing" can now be customized implementing I_CmsStaticExportHandler
 ! Added logging option to site manager for debugging site configuration
 ! Height of popup windows in WYSIWYG editor now automatically adjusts to content height
-! Added master implemetation of SQL manager that delivers connections to the configured database,
+! Added master implementation of SQL manager that delivers connections to the configured database,
   this can also be used to use the OpenCms connection pool for additional DB tables
 ! Permission ACL for folders are not longer automatically inherited to subfolders, only to files in the folder
 ! Added configurable user options to expand permission dialog details
 ! Added configurable email form editor to "templateone" demo
-- Improved performance of interal Lucene search by not calculating the exerpts for all files
+- Improved performance of internal Lucene search by not calculating the exerpts for all files
 ! Added selector widget for XML content
 - Updated PDFbox for better results searching in PDF documents
 ! Added "contentcheck" tag to provide information about XML content loops
