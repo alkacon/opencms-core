@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsExampleNavFile.java,v $
- * Date   : $Date: 2000/03/01 15:44:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/16 13:42:59 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.template.*;
  * of the navigation.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/03/01 15:44:31 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/16 13:42:59 $
  */
  public class CmsExampleNavFile extends CmsXmlTemplateFile {
 
@@ -92,7 +92,7 @@ import com.opencms.template.*;
     }
             
     /**
-     * Gets a navigation entry for a section (folder).
+     * Gets a navigation entry for a starndard section (folder).
      * The given link and title will be used to display the entry.
      * This method makes use of the special XML tags
      * <code>&lt;STARTSEQ&gt;</code>, <code>&lt;MIDDLESEQ&gt;</code> and <code>&lt;ENDSEQ&gt;</code> tag
@@ -103,10 +103,26 @@ import com.opencms.template.*;
      * @param title Title for this link
      * @exception CmsException
      */
-    public String getSectionNavEntry(String link, String title) throws CmsException {
+    public String getOtherSectionNavEntry(String link, String title) throws CmsException {
         return getDataValue("section.startseq") + link + getDataValue("section.middleseq") + title + getDataValue("section.endseq") + "\n";
     }
 
+    /**
+     * Gets a navigation entry for the current section (folder).
+     * The given link and title will be used to display the entry.
+     * This method makes use of the special XML tags
+     * <code>&lt;STARTSEQ&gt;</code>, <code>&lt;MIDDLESEQ&gt;</code> and <code>&lt;ENDSEQ&gt;</code> tag
+     * inside the <code>&lt;SECTION&gt;</code> tag of the template file to 
+     * determine the start, middle and end HTML sequence of each section entry.
+     * 
+     * @param link URL that should be ued for the link.
+     * @param title Title for this link
+     * @exception CmsException
+     */
+    public String getCurrentSectionNavEntry(String link, String title) throws CmsException {
+        return getDataValue("currentsection.startseq") + link + getDataValue("currentsection.middleseq") + title + getDataValue("currentsection.endseq") + "\n";
+    }    
+    
     /**
      * Gets a navigation entry for a standard page entry.
      * The given link and title will be used to display the entry.

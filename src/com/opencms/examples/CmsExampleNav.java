@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsExampleNav.java,v $
- * Date   : $Date: 2000/03/01 15:44:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/16 13:42:59 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import javax.servlet.http.*;
  * the same technique, too.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/03/01 15:44:31 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/16 13:42:59 $
  */
 public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
         
@@ -81,7 +81,7 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
     public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return false;
+        return true;
     }    
     
     /**
@@ -128,7 +128,7 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
         // Reference to our own document.
         CmsExampleNavFile xmlTemplateDocument = (CmsExampleNavFile)doc;     
         
-        String requestedUri = cms.getRequestContext().getUri();
+        String requestedUri = cms.getRequestContext().getUri();        
         String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
         StringBuffer result = new StringBuffer();        
         
@@ -137,6 +137,7 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
         int numFolders = allFolders.size();
         int maxfolder = 0;
 
+        
         // First scan all subfolders of the root folder
         // for any navigation metainformations and store
         // the maximum position found
@@ -166,50 +167,60 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
             String currFolder = (String)sortedFolders.get(new Integer(i));
             if(currFolder != null && !"".equals(currFolder)) {
                 String navtext = cms.readMetainformation(currFolder, C_METAINFO_NAVTITLE);                 
-                result.append(xmlTemplateDocument.getSectionNavEntry(servletPath + currFolder + "index.html", navtext));                
-            }                                            
-            
-            Vector allFiles = cms.getFilesInFolder(currFolder);
-            Hashtable sortedNav = new Hashtable();
-            int numFiles = allFiles.size();
-            int maxindex = 0;
+                //if(! currFolder.equals("/" + requestedFolder + "/")) {
+                if(! requestedUri.startsWith(currFolder)) {
+                    result.append(xmlTemplateDocument.getOtherSectionNavEntry(servletPath + currFolder + "index.html", navtext));                
+                } else {
+                    result.append(xmlTemplateDocument.getCurrentSectionNavEntry(servletPath + currFolder + "index.html", navtext));                
                 
-            // First scan all files in the given folder
-            // for any navigation metainformations and store
-            // the maximum position found
-            for(int j=0; j<numFiles; j++) {
-                A_CmsResource currFile = (A_CmsResource)allFiles.elementAt(j);
-                String filename = currFile.getAbsolutePath();
-                String navpos = cms.readMetainformation(filename, C_METAINFO_NAVPOS);
-                String navtext = cms.readMetainformation(filename, C_METAINFO_NAVTITLE);     
-                if(currFile.getState() != C_STATE_DELETED) { 
-                    // Only list files in the nav bar if they are not deleted!
-                    if(navpos != null && navtext != null && (!"".equals(navpos)) && (!"".equals(navtext))
-                         && ((!currFile.getName().startsWith(C_TEMP_PREFIX)) || filename.equals(requestedUri))) {
-                        Integer npValue = new Integer(navpos);
-                        int npIntValue = npValue.intValue();
-                        if(maxindex < npIntValue) {
-                            maxindex = npIntValue;
-                        }
-                        sortedNav.put(npValue, filename);
+                    // This is the currently requested folder.
+                    // Only for this folder we should display the list of files
+                    Vector allFiles = cms.getFilesInFolder(currFolder);
+                    Hashtable sortedNav = new Hashtable();
+                    int numFiles = 0;
+                    if(allFiles != null) {
+                        numFiles = allFiles.size();
                     }
-                }        
-            }
-        
-            // The Hashtable sortedNav now contains all navigation
-            // elements with its positions as key.
-            // So we can loop through all possible positions
-            // and print out the nav elements
-            for(int j=1; j<=maxindex; j++) {
-                String filename = (String)sortedNav.get(new Integer(j));
-                if(filename != null && !"".equals(filename)) {
-                    String navtext = cms.readMetainformation(filename, C_METAINFO_NAVTITLE);                 
-                    if(filename.equals(requestedUri)) {
-                        result.append(xmlTemplateDocument.getCurrentNavEntry(navtext));                    
-                    } else {
-                        result.append(xmlTemplateDocument.getOtherNavEntry(servletPath + filename, navtext));
-                    }                
-                }            
+                    int maxindex = 0;
+               
+                    // First scan all files in the given folder
+                    // for any navigation metainformations and store
+                    // the maximum position found
+                    for(int j=0; j<numFiles; j++) {
+                        A_CmsResource currFile = (A_CmsResource)allFiles.elementAt(j);
+                        String filename = currFile.getAbsolutePath();
+                        String navpos = cms.readMetainformation(filename, C_METAINFO_NAVPOS);
+                        navtext = cms.readMetainformation(filename, C_METAINFO_NAVTITLE);     
+                        if(currFile.getState() != C_STATE_DELETED) { 
+                            // Only list files in the nav bar if they are not deleted!
+                            if(navpos != null && navtext != null && (!"".equals(navpos)) && (!"".equals(navtext))
+                                 && ((!currFile.getName().startsWith(C_TEMP_PREFIX)) || filename.equals(requestedUri))) {
+                                Integer npValue = new Integer(navpos);
+                                int npIntValue = npValue.intValue();
+                                if(maxindex < npIntValue) {
+                                    maxindex = npIntValue;
+                                }
+                                sortedNav.put(npValue, filename);
+                            }
+                        }        
+                    }
+
+                    // The Hashtable sortedNav now contains all navigation
+                    // elements with its positions as key.
+                    // So we can loop through all possible positions
+                    // and print out the nav elements
+                    for(int j=1; j<=maxindex; j++) {
+                        String filename = (String)sortedNav.get(new Integer(j));
+                        if(filename != null && !"".equals(filename)) {
+                            navtext = cms.readMetainformation(filename, C_METAINFO_NAVTITLE);                 
+                            if(filename.equals(requestedUri)) {
+                                result.append(xmlTemplateDocument.getCurrentNavEntry(navtext));                    
+                            } else {
+                                result.append(xmlTemplateDocument.getOtherNavEntry(servletPath + filename, navtext));
+                            }
+                        }                
+                    }            
+                }
             }                        
         }         
         return result.toString().getBytes();            
