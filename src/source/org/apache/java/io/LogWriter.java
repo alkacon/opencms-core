@@ -78,7 +78,7 @@ import source.org.apache.java.util.*;
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
  * @author <a href="mailto:vt@freehold.crocodile.org">Vadim Tkachenko</a>
- * @version $Revision: 1.3 $ $Date: 2000/06/02 13:34:13 $
+ * @version $Revision: 1.4 $ $Date: 2000/07/20 15:34:49 $
  */
 
 public class LogWriter 
@@ -109,6 +109,8 @@ public class LogWriter
 	public static final String C_KEYWORD_SEPERATOR = "channelSeperator";
 	
     public static final String KEYWORD_TIMESTAMP = "timestamp";
+
+    public static final String KEYWORD_MEMORY = "memory";
     
     public static final String KEYWORD_CHANNEL = "channel";
 
@@ -173,6 +175,12 @@ public class LogWriter
      */
     private boolean timestamp;
 
+    /**
+     * Tells if the log message should contain the current memory state.
+     * Default is false.
+     */
+    private boolean memory;
+        
     /**
      * The timestamp formatter.
      */
@@ -342,6 +350,8 @@ public class LogWriter
                  */
                 formatter.setTimeZone(TimeZone.getDefault());
             }
+
+            this.memory = configurations.getBoolean(identifier + "." + KEYWORD_MEMORY, false);            
             
             this.queue_maxage = configurations.getInteger(KEYWORD_QUEUE_MAXAGE, 5000);
             this.queue_maxsize = configurations.getInteger(KEYWORD_QUEUE_MAXSIZE, 10000);
@@ -380,7 +390,12 @@ public class LogWriter
      */
     public void log(String channel, String message) {
         if (active) {
-            this.logQueue.put(new LogRecord(channel,getMem()+message, null));
+            String mem = "";
+            if (memory) {
+                mem = getMem();
+            }
+                
+            this.logQueue.put(new LogRecord(channel,mem+message, null));
 
             if (this.logQueue.size() > queue_maxsize) {
                 this.logQueue.put(new LogRecord(CH_QUEUE_STATUS, "Log queue size limit exceeded", null));
