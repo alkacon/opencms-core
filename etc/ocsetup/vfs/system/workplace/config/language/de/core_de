@@ -915,6 +915,7 @@
                 <packetname>Paketname</packetname>
                 <adminpoint>Administrationspunkt</adminpoint>
                 <maintenance>Ereignis-Verarbeitungsklasse</maintenance>
+                <publishclass>Klasse für Veröffentlichung</publishclass>
                 <dependon>Abhängig von</dependon>
                 <minversion>min Version</minversion>
                 <maxversion>max Version</maxversion>

@@ -915,6 +915,7 @@
                 <packetname>Packetname</packetname>
                 <adminpoint>Administrationpoint</adminpoint>
                 <maintenance>Maintenance class</maintenance>
+                <publishclass>Class for Publishing</publishclass>
                 <dependon>Depend on</dependon>
                 <minversion>min version</minversion>
                 <maxversion>max version</maxversion>

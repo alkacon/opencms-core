@@ -915,6 +915,7 @@
                 <packetname>Nome Pacchetto</packetname>
                 <adminpoint>Punto di Amministrazione</adminpoint>
                 <maintenance>Classe di Manutenzione</maintenance>
+                <publishclass>Class for Publishing</publishclass>
                 <dependon>Dipende da</dependon>
                 <minversion>versione min</minversion>
                 <maxversion>versione max</maxversion>
