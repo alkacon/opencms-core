@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsEventListener.java,v $
- * Date   : $Date: 2003/09/01 16:44:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/08 09:27:04 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ package com.opencms.flex;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -153,7 +153,7 @@ public interface I_CmsEventListener {
      * 
      * Event data:
      * <ul>
-     * <li>key "resource": the modified CmsResource</li>
+     * <li>key "resource" (mandatory): the modified CmsResource</li>
      * </ul>
      */
     int EVENT_RESOURCE_MODIFIED = 11;
@@ -163,7 +163,7 @@ public interface I_CmsEventListener {
      * 
      * Event data:
      * <ul>
-     * <li>key "resources": a List of modified CmsResources</li>
+     * <li>key "resources" (mandatory): a List of modified CmsResources</li>
      * </ul>
      */
     int EVENT_RESOURCES_MODIFIED = 12;
@@ -173,7 +173,7 @@ public interface I_CmsEventListener {
      * 
      * Event data:
      * <ul>
-     * <li>key "resource": the modified CmsResource (a folder)</li>
+     * <li>key "resource" (mandatory): the modified CmsResource (a folder)</li>
      * </ul>
      */
     int EVENT_RESOURCE_LIST_MODIFIED = 13;
@@ -183,8 +183,8 @@ public interface I_CmsEventListener {
      * 
      * Event data:
      * <ul>
-     * <li>key "resource": the CmsResource that has the modified property attached</li>
-     * <li>key "property": the modified property</li>
+     * <li>key "resource" (mandatory): the CmsResource that has the modified property attached</li>
+     * <li>key "property" (mandatory): the modified property</li>
      * </ul>
      */
     int EVENT_PROPERTY_MODIFIED = 14;
@@ -192,10 +192,12 @@ public interface I_CmsEventListener {
     /** 
      * Event "all properties of a resource have been modified".<p>
      * 
+     * The specified resource, plus all of it's properties are removed from the offline cache.<p>
+     * 
      * Event data:
      * <ul>
-     * <li>key "resource": the CmsResource that has the modified properties attached</li>
-     * <li>key "properties": the modified properties as a Map</li>
+     * <li>key "resource" (mandatory): the CmsResource that has the modified properties attached</li>
+     * <li>key "properties" (optional): the modified properties as a Map</li>
      * </ul>
      */
     int EVENT_PROPERTY_MAP_MODIFIED = 15;
@@ -213,7 +215,7 @@ public interface I_CmsEventListener {
      * 
      * Event data:
      * <ul>
-     * <li>key "project": the deleted CmsProject</li>
+     * <li>key "project" (mandatory): the deleted CmsProject</li>
      * </ul>
      */
     int EVENT_PROJECT_MODIFIED = 17;
