@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/07/28 14:15:27 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/07/28 14:38:51 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.27 $ $Date: 2000/07/28 14:15:27 $
+ * @version $Revision: 1.28 $ $Date: 2000/07/28 14:38:51 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -469,9 +469,9 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
         startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
             if (startSettings != null) {
                 accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
-                    if (accessFlags == null) {
+            }
+            if (accessFlags == null) {
                         accessFlags=new Integer(C_ACCESS_DEFAULT_FLAGS);
-                    }
             }                           
          newfile.setAccessFlags(accessFlags.intValue());  
          cms.writeFile(newfile);
