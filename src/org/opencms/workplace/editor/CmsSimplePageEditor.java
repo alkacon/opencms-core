@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2004/01/14 17:07:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/15 08:35:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 package org.opencms.workplace.editor;
 
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
 import org.opencms.lock.CmsLock;
@@ -50,7 +49,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.0
  */
@@ -109,12 +108,6 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
         } else if (EDITOR_CHANGE_BODY.equals(getParamAction())) {
             setAction(ACTION_SHOW);
             actionChangeBodyElement();
-        } else if (EDITOR_CHANGE_TEMPLATE.equals(getParamAction())) {
-            setAction(ACTION_SHOW);
-            actionChangeTemplate();
-        } else if (EDITOR_NEW_BODY.equals(getParamAction())) {
-            setAction(ACTION_SHOW);            
-            actionNewBody();
         } else if (EDITOR_SHOW.equals(getParamAction())) {
             setAction(ACTION_SHOW);
         } else if (EDITOR_PREVIEW.equals(getParamAction())) {
@@ -153,15 +146,6 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             }
             // initialize the editor content
             initContent();
-            // set template
-            // setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));
-            try {
-                setParamPagetemplate(getCms().readProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, true, ""));
-            } catch (CmsException exc) {
-                setParamPagetemplate("");
-            }
-            // set page title
-            setParamPagetitle(getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getParamTempfile(), ""));
         } 
         
         // prepare the content String for the editor

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/01/09 11:11:35 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/01/15 08:35:46 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.workplace.editor;
 
+import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -49,7 +50,7 @@ import java.util.Vector;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.1.12
  */
@@ -88,7 +89,18 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
             }           
         } else {
             // editor is in html mode, add tags for stylesheet
-            String stylesheet = getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamPagetemplate(), "");
+            String currentTemplate = null;
+            String stylesheet = "";
+            try {
+                currentTemplate = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_TEMPLATE, true);
+            } catch (CmsException e) {
+                // ignore this exception
+            }
+            if (currentTemplate == null) {
+                currentTemplate = "";
+            } else {      
+                stylesheet = getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, currentTemplate, "");
+            }
             if (indexBodyStart != -1) {
                 // first delete the old tags
                 content = content.substring(indexBodyStart + 6);

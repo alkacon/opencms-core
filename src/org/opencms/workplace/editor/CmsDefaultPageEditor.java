@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/14 10:00:04 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/01/15 08:35:46 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
-import com.opencms.workplace.CmsHelperMastertemplates;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.main.OpenCms;
@@ -49,7 +48,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.servlet.jsp.JspException;
 
@@ -59,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1.12
  */
@@ -73,11 +71,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     
     private String m_paramBodylanguage;
     private String m_paramBodyname;
-    private String m_paramNewbodylanguage;
-    private String m_paramNewbodyname;
     private String m_paramOldbodylanguage;
     private String m_paramOldbodyname; 
-    private String m_paramPageTemplate;
     private String m_paramBackLink;
 
     /** Page object used from the action and init methods, be sure to initialize this e.g. in the initWorkplaceRequestValues method */
@@ -85,9 +80,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     
     /** File object used to read and write contents */
     protected CmsFile m_file;
-    
-    /** Helper variable to store the html content for the template selector */
-    private String m_selectTemplates = null;
       
     /**
      * Public constructor.<p>
@@ -133,48 +125,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     public final void setParamBodyname(String bodyName) {
         m_paramBodyname = bodyName;
     }
-    
-    /**
-    * Returns the new body element language.<p>
-    * 
-    * @return the new body element language
-    */
-    public final String getParamNewbodylanguage() {
-        if (m_paramNewbodylanguage == null) {
-            m_paramNewbodyname = "";
-        }
-        return m_paramNewbodylanguage;
-    }
-
-    /**
-     * Sets the new body element language.<p>
-     * 
-     * @param newBodyLang the new body element language
-     */
-    public final void setParamNewbodylanguage(String newBodyLang) {
-        m_paramNewbodylanguage = newBodyLang;
-    }
-    
-    /**
-    * Returns the new body element name.<p>
-    * 
-    * @return the new body element name
-    */
-    public final String getParamNewbodyname() {
-        if (m_paramNewbodyname == null) {
-            m_paramNewbodyname = "";
-        }
-        return m_paramNewbodyname;
-    }
-    
-    /**
-     * Sets the new body element name.<p>
-     * 
-     * @param newBodyName the new body element name
-     */
-    public final void setParamNewbodyname(String newBodyName) {
-        m_paramNewbodyname = newBodyName;
-    }
 
     /**
     * Returns the old body element language.<p>
@@ -213,24 +163,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
    }
     
     /**
-     * Returns the page template.<p>
-     * 
-     * @return the page template
-     */
-    public final String getParamPagetemplate() {
-        return m_paramPageTemplate;
-    }
-    
-    /**
-     * Sets the page template.<p>
-     * 
-     * @param pageTemplate the page template
-     */
-    public final void setParamPagetemplate(String pageTemplate) {
-        m_paramPageTemplate = pageTemplate;
-    }  
-    
-    /**
      * Returns the back link when closing the editor.<p>
      * 
      * @return the back link
@@ -257,8 +189,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * This method has to be called on the JSP right before the form display html is created.<p>     *
      */
     public void escapeParams() {
-        // escape the title string to be printed as text content in an input field
-        setParamPagetitle(Encoder.escapeXml(getParamPagetitle()));
         // escape the content
         setParamContent(Encoder.escapeWBlanks(getParamContent(), Encoder.C_UTF8_ENCODING));
     }
@@ -422,44 +352,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
         return buildSelect(attributes, bodies, bodies, currentIndex, false);
     }
-
-    /**
-     * Builds the html for the page template select box.<p>
-     * 
-     * @param attributes optional attributes for the &lt;select&gt; tag
-     * @return the html for the page template select box
-     */
-    public String buildSelectTemplates(String attributes) {
-        if (m_selectTemplates == null) {
-            // member variable is null, so generate the html
-            Vector names = new Vector();
-            Vector values = new Vector();
-            Integer selectedValue = new Integer(-1);
-            try {
-                selectedValue = CmsHelperMastertemplates.getTemplates(getCms(), names, values, getParamPagetemplate(), -1);
-            } catch (CmsException e) {
-                // ignore this exception
-            }
-            if (selectedValue.intValue() == -1) {
-                // no template found -> use the given one
-                // first clean the vectors
-                names.removeAllElements();
-                values.removeAllElements();
-                // now add the current template
-                String name = getParamPagetemplate();
-                try { 
-                    // read the title of this template
-                    name = getCms().readProperty(name, I_CmsConstants.C_PROPERTY_TITLE);
-                } catch (CmsException exc) {
-                    // ignore this exception - the title for this template was not readable
-                }
-                names.add(name);
-                values.add(getParamPagetemplate());
-            }
-            m_selectTemplates = buildSelect(attributes, names, values, selectedValue.intValue(), false);
-        }
-        return m_selectTemplates;
-    }
     
     /**
      * Builds the html to display the special action button for the direct edit mode of the editor.<p>
@@ -507,27 +399,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         }
         
         return retValue.toString();
-    }
-   
-    /**
-     * Performs a change template action.<p>
-     */
-    public void actionChangeTemplate() {
-        try {
-            // switch to the temporary file project
-            switchToTempProject();       
-            // write the changed template property to the temporary file
-            getCms().writeProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, getParamPagetemplate());
-            // switch back to the current users project
-            switchToCurrentProject();     
-        } catch (CmsException e) {
-            // show error page
-            try {
-            showErrorPage(this, e, "save");
-            } catch (JspException exc) {
-                // ignore this exception
-            }
-        }
     }
     
     /**
@@ -615,32 +486,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     }
     
     /**
-     * Performs the creation of a new body action.<p>
-     */
-    public void actionNewBody() {
-        try {
-            // save content of the editor to the temporary file
-            performSaveContent(getParamBodyname(), getParamBodylanguage());
-            String newBody = getParamNewbodyname();
-            if (newBody != null && !"".equals(newBody.trim()) && !"null".equals(newBody)) {
-                if (!m_page.hasElement(newBody, getParamBodylanguage())) {
-                    m_page.addElement(newBody, getParamBodylanguage());
-                    getCms().writeFile(m_page.write(m_file));
-                    setParamBodyname(newBody);
-                    initContent();
-                }
-            } 
-        } catch (CmsException e) {
-            // show error page
-            try {
-            showErrorPage(this, e, "save");
-            } catch (JspException exc) {
-                // ignore this exception
-            }
-        }
-    }
-    
-    /**
      * Performs the preview page action in a new browser window.<p>
      * 
      * @throws IOException if redirect fails
@@ -665,11 +510,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public void actionSave() throws JspException { 
         try {
-            // write the modified title to the temporary file
-            String title = getParamPagetitle();
-            if (title != null && !"null".equals(title)) {
-                getCms().writeProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TITLE, title);
-            }
             // save content to temporary file
             performSaveContent(getParamBodyname(), getParamBodylanguage());
             // copy the temporary file content back to the original file

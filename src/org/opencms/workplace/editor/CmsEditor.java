@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/01/14 10:00:04 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/01/15 08:35:46 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1.12
  */
@@ -75,16 +75,12 @@ public abstract class CmsEditor extends CmsDialog {
     public static final String EDITOR_EXIT = "exit";
     /** Value for the action parameter: save and exit */
     public static final String EDITOR_SAVEEXIT = "saveexit";
-    /** Value for the action parameter: change the template */
-    public static final String EDITOR_CHANGE_TEMPLATE = "changetemplate";
     /** Value for the action parameter: change the body */
     public static final String EDITOR_CHANGE_BODY = "changebody";
     /** Value for the action parameter: show the editor */
     public static final String EDITOR_SHOW = "show";
     /** Value for the action parameter: show a preview */
     public static final String EDITOR_PREVIEW = "preview";
-    /** Value for the action parameter: create a new body */
-    public static final String EDITOR_NEW_BODY = "newbody";
     /** Value for the action parameter: an error occured */
     public static final String EDITOR_SHOW_ERRORMESSAGE = "error";
     
@@ -94,22 +90,17 @@ public abstract class CmsEditor extends CmsDialog {
     public static final int ACTION_EXIT = 122;
     /** Value for the action: save and exit */
     public static final int ACTION_SAVEEXIT = 123;
-    /** Value for the action: change the template */
-    public static final int ACTION_CHANGE_TEMPLATE = 124;
     /** Value for the action: change the body */
-    public static final int ACTION_CHANGE_BODY = 125;
+    public static final int ACTION_CHANGE_BODY = 124;
     /** Value for the action: show the editor */
-    public static final int ACTION_SHOW = 126;
+    public static final int ACTION_SHOW = 125;
     /** Value for the action: show a preview */
-    public static final int ACTION_PREVIEW = 127;
-    /** Value for the action: create a new body */
-    public static final int ACTION_NEW_BODY = 128;
+    public static final int ACTION_PREVIEW = 126;
     /** Value for the action: an error occured */
-    public static final int ACTION_SHOW_ERRORMESSAGE = 129;
+    public static final int ACTION_SHOW_ERRORMESSAGE = 127;
     
     private String m_paramEditormode;
     private String m_paramDirectedit;
-    private String m_paramPageTitle;
     private String m_paramTempFile;
     private String m_paramContent;
     private String m_paramNoActiveX;
@@ -182,27 +173,6 @@ public abstract class CmsEditor extends CmsDialog {
      */
     public final void setParamDirectedit(String direct) {
         m_paramDirectedit = direct;
-    }
-    
-    /**
-     * Returns the page title.<p>
-     * 
-     * @return the page title
-     */
-    public final String getParamPagetitle() {
-        if (m_paramPageTitle == null) {
-            m_paramPageTitle = "";
-        }
-        return m_paramPageTitle;
-    }
-    
-    /**
-     * Sets the page title.<p>
-     * 
-     * @param pageTitle the page title
-     */
-    public final void setParamPagetitle(String pageTitle) {
-        m_paramPageTitle = pageTitle;
     }
     
     /**

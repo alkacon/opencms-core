@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/01/14 15:46:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/15 08:35:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.0
  */
@@ -112,7 +112,11 @@ public class CmsDialogProperty extends CmsProperty {
             setAction(ACTION_SAVE_EDIT);
         } else {                   
             setAction(ACTION_EDIT); 
-            setParamTitle(key("title.property") + ": " + CmsResource.getName(getParamResource()));
+            String resName = CmsResource.getName(getParamResource());
+            if (resName.startsWith(I_CmsConstants.C_TEMP_PREFIX)) {
+                resName = resName.substring(1);
+            }
+            setParamTitle(key("title.property") + ": " + resName);
         }         
     } 
     
@@ -412,7 +416,7 @@ public class CmsDialogProperty extends CmsProperty {
             if (paramValue != null && !paramValue.equals(oldValue)) {
                 // template has changed, refresh editor window
                 if (getParamOkFunctions() != null && getParamOkFunctions().startsWith("window.close()")) {
-                    setParamOkFunctions("window.opener.EDITOR.pagetemplate.value='"+paramValue+"';window.opener.doTemplSubmit(3);");
+                    setParamOkFunctions("window.opener.doTemplSubmit(1);");
                 }
             }
                   

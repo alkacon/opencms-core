@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/01/14 15:46:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/15 08:35:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace.editor;
 
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.0
  */
@@ -87,7 +88,6 @@ public class CmsDialogElements extends CmsDialog {
     private String m_paramBodyname;
     private String m_paramBodylanguage;
     private String m_paramDeleteElementContent;
-    private String m_paramPageTemplate;
     private String m_paramTempFile;
     
     /**
@@ -162,24 +162,6 @@ public class CmsDialogElements extends CmsDialog {
      */
     public final void setParamDeleteElement(String deleteElement) {
         m_paramDeleteElementContent = deleteElement;
-    }
-    
-    /**
-     * Returns the page template.<p>
-     * 
-     * @return the page template
-     */
-    public final String getParamPagetemplate() {
-        return m_paramPageTemplate;
-    }
-    
-    /**
-     * Sets the page template.<p>
-     * 
-     * @param pageTemplate the page template
-     */
-    public final void setParamPagetemplate(String pageTemplate) {
-        m_paramPageTemplate = pageTemplate;
     }
     
     /**
@@ -390,8 +372,17 @@ public class CmsDialogElements extends CmsDialog {
     public List computeElements() throws CmsException {
         if (m_elementList == null) {
             m_elementList = new ArrayList();
+            String currentTemplate = null;
+            try {
+                currentTemplate = getCms().readProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, true);
+            } catch (CmsException e) {
+                // ignore this exception
+            }
+            if (currentTemplate == null) {
+                currentTemplate = "";
+            }      
             // read the property from the template file
-            String elements = getCms().readProperty(getParamPagetemplate(), "template-elements", false, null);
+            String elements = getCms().readProperty(currentTemplate, "template-elements", false, null);
             if (elements == null) {
                 // no elements defined on template file, don't create list
                 return null;
