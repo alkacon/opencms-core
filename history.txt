@@ -8,8 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.7.4 Ecaz - ?? April 2002
+OpenCms 4.7.5 Ecaz - ?? April 2002
 * BUG#7 fixed: ArrayIndexOutOfBoundsException happening during ocsetup (4.6.0)
+* When reading a webuser with password the user must not be read from the cache.
+* Synchronizing: When there is an exception while reading the synchronize list,
+  this exception must be thrown.
 
 OpenCms 4.7.4 Ecaz - 10 April 2002
 ! A new property (pool.mysql.testQuery) for the OpenCms SQL Connection pool:
