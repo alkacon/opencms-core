@@ -13,6 +13,8 @@ OpenCms 4.5.4  Gom Jabbar   - ?? August 2001
   TOMCAT_HOME/web-apps/opencms/WEB-INF/occlasses/mimtypes.properties.
 * Added the name of the element to the parameters with the key  _ELEMENT_.
 * Added the parameters of the element-definition to the cache-directive -key.
+* A new created page with default flag internal set results now in an 
+  body-file with set internal, too.
 - Added redirect-informations to opencms.properties
 - Added a warning about the file.encoding. The warning will be printed 
   if you are not using the prefered properties. You may get in trouble 
