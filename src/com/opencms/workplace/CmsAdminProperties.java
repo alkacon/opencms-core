@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.18 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.19 $ $Date: 2003/02/02 15:59:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -212,7 +212,6 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
         Vector properties = cms.readAllPropertydefinitions(resType.getResourceTypeName());
         templateFile.setData(C_TAG_RESTYPE, resType.getResourceTypeName());
 
-        //Gridnine AB Aug 8, 2002
         templateFile.setData(C_TAG_RESTYPE + "_esc",
                 Encoder.escapeWBlanks(resType.getResourceTypeName(),
                 cms.getRequestContext().getEncoding()));
@@ -220,7 +219,6 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
         for(int z = 0;z < properties.size();z++) {
             CmsPropertydefinition propdef = (CmsPropertydefinition)properties.elementAt(z);
             templateFile.setData("PROPERTY_NAME", propdef.getName());
-            //Gridnine AB Aug 8, 2002
             templateFile.setData("PROPERTY_NAME_ESC", Encoder.escapeWBlanks(propdef.getName(),
                 cms.getRequestContext().getEncoding()));
             output.append(templateFile.getProcessedDataValue(C_TYPELISTENTRY, callingObject));

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/02/02 15:59:53 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.48 $ $Date: 2003/02/02 15:59:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -135,7 +135,6 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 			String message = (String) cms.getRequestContext().getSession(true).getValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
 			if (message != null) {
 				cms.getRequestContext().getSession(true).removeValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
-				//Gridnine AB Aug 8, 2002
 				xmlTemplateDocument.setData("message", "alert(unescape('BROADCASTMESSAGE: " + Encoder.escape(message, cms.getRequestContext().getEncoding()) + "'));");
 			}
 		}
@@ -233,9 +232,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 
 		// Get all project information
 		CmsRequestContext reqCont = cms.getRequestContext();
-		// CHECKME String currentProject = null;
 		Vector allProjects = cms.getAllAccessibleProjects();
-		// CHECKME currentProject = reqCont.currentProject().getName();
 		int currentProjectId = reqCont.currentProject().getId();
 
 		// Now loop through all projects and fill the result vectors

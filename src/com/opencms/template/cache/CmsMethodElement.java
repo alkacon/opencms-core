@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2003/01/21 14:14:14 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/02/02 15:59:53 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -168,7 +168,6 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
             }
             if(methodResult != null){
                 if(methodResult instanceof String){
-                    //Gridnine AB Aug 7, 2002
                    	result = (String)methodResult;
                 }else if(methodResult instanceof byte[]){
                 	try {
@@ -181,7 +180,6 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
                 }else if(methodResult instanceof CmsProcessedString){
                     // result stays null but we have to write to the variant cache
                     variant = new CmsElementVariant();
-                    //Gridnine AB Aug 5, 2002
                     variant.add(((CmsProcessedString)methodResult).toString());
                     addVariant(cacheKey, variant);
                 }else {
@@ -190,7 +188,6 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
             }
             if((result != null)&&(cacheKey != null)&&(cd.isInternalCacheable())){
                 variant = new CmsElementVariant();
-                //Gridnine AB Aug 5, 2002
                 variant.add(result);
                 addVariant(cacheKey, variant);
             }

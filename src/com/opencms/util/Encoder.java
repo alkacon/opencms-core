@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2003/01/31 16:59:07 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/02/02 15:59:53 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,6 @@ import java.util.StringTokenizer;
  *
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Unknown guys from Gridnine AB
  */
 public class Encoder {
     
@@ -169,8 +168,6 @@ public class Encoder {
      * @param Source The textstring to be encoded.
      * @return The JavaScript escaped string.
      */
-    // Gridnine AB Aug 8, 2002
-    // added support for different encodings
     public static String escape(String source, String encoding) {
         StringBuffer ret = new StringBuffer();
 
@@ -194,8 +191,6 @@ public class Encoder {
      * @param Source The textstring to be encoded.
      * @return The JavaScript escaped string.
      */
-    // Gridnine AB Aug 8, 2002
-    // added support for different encodings
     public static String escapeWBlanks(String source, String encoding) {
         if(source == null) {
             return null;
@@ -294,8 +289,6 @@ public class Encoder {
      * @param Source The String to be decoded.
      * @return The JavaScript unescaped String.
      */
-    // Gridnine AB Aug 8, 2002
-    // changed to support different encodings
     public static String unescape(String source, String encoding) {
         if(source == null){
             return null;

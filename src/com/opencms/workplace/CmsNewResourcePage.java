@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2003/01/31 17:05:32 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -40,6 +41,9 @@ import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.I_CmsXmlParser;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -55,7 +59,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.61 $ $Date: 2003/01/31 17:05:32 $
+ * @version $Revision: 1.62 $ $Date: 2003/02/02 15:59:52 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -206,8 +210,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                         bodyBytes = (CmsResourceTypePage.getDefaultBodyStart() + CmsResourceTypePage.getDefaultBodyEnd()).getBytes();
                     } else {
                         // do not catch exceptions, a specified layout should exist
-                        CmsFile layoutFile = cms.readFile(layoutFilePath);
-                        bodyBytes = layoutFile.getContents();
+                        bodyBytes = ensureBodyEncoding(cms, layoutFilePath);
                         layoutFileDefined = true;
                     }
                     CmsFile bodyFile = cms.readFile(C_VFS_PATH_BODIES + currentFilelist.substring(1,
@@ -257,6 +260,60 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
     }
+    
+    /**
+     * Ensures that a "default body file" for a new page uses the systems default encoding.<p>
+     * 
+     * The encoding of new page bodys should be in the encoding set for the system default.
+     * However, the default body file in the VFS will be static and so must have
+     * some setting hardcoded in the header. This method parses the XML and replaces the
+     * "content-encoding" setting in the header with the system default.<p>  
+     * 
+     * In case you do not want the encoding in the body file to be set to the
+     * system default, append the C_PROPERTY_CONTENT_ENCODING to it with some value. In this
+     * case the contents will be copied without modification.
+     * 
+     * @param cms the current CmsObject
+     * @param bodyFilename the filename of the default body file
+     * @return byte[] the contents for the new body file that will be created for the page
+     * @throws CmsException in case something goes wrong 
+     */
+    private byte[] ensureBodyEncoding(CmsObject cms, String bodyFilename) throws CmsException {
+        CmsFile bodyFile = cms.readFile(bodyFilename);
+        byte[] result = bodyFile.getContents();
+        // check if C_PROPERTY_CONTENT_ENCODING is set on body file
+        // if so, this means that the files encoding is fixed and must not be ensured 
+        String bodyEncoding = cms.readProperty(bodyFilename, C_PROPERTY_CONTENT_ENCODING);
+        if (bodyEncoding == null) {
+            // encoding not set, ensure that encoding is default encoding 
+            Document doc = null;
+            // create a XML Document from the contents of the body file
+            try {
+                InputStream in = new ByteArrayInputStream(result);
+                try {
+                    doc = A_CmsXmlContent.getXmlParser().parse(in);
+                } finally {
+                    try {
+                        in.close();
+                    } catch (Exception e1) {}
+                }
+            } catch (Exception e2) {
+                throw new CmsException(
+                    this.getClass().getName()
+                        + " Error parsing default body file '"
+                        + bodyFilename
+                        + "'",
+                    CmsException.C_XML_PARSING_ERROR,
+                    e2);
+            }
+            if (doc == null) return result;
+            // create a byte array encoded in the default from the Document
+            ByteArrayOutputStream out = new ByteArrayOutputStream(result.length + 32);
+            A_CmsXmlContent.getXmlParser().getXmlText(doc, out, A_OpenCms.getDefaultEncoding());
+            result =  out.toByteArray();
+        }               
+        return result;
+    }
 
     /**
      * Gets all required navigation information from the files and subfolders of a folder.
@@ -267,7 +324,6 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
      * nicenames and navigation positions.
      * @throws Throws CmsException if something goes wrong.
      */
-
     private Hashtable getNavData(CmsObject cms) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);

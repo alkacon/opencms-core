@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRestoreResource.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.7 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.8 $ $Date: 2003/02/02 15:59:52 $
  */
 
 public class CmsRestoreResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -133,7 +133,6 @@ public class CmsRestoreResource extends CmsWorkplaceDefault implements I_CmsWpCo
         }
         // set the required datablocks
         if(action == null) {
-            // CHECKME: CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
             xmlTemplateDocument.setData("CHANGEDATE", Utils.getNiceDate(file.getDateLastModified()));
             xmlTemplateDocument.setData("USER", cms.readUser(file.getResourceLastModifiedBy()).getName());
             xmlTemplateDocument.setData("FILENAME", file.getName());

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdminEdit.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -148,7 +148,6 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
         }
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        // CHECKME: I_CmsRegistry reg = cms.getRegistry();
         Hashtable sessionData = (Hashtable)session.getValue(C_SESSION_MODULE_ADMIN_DATA);
         String module = (String)sessionData.get(C_MODULE_PACKETNAME);
         xmlTemplateDocument.setData("packetname", module);

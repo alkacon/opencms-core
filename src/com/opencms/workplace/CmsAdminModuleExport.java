@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/01/30 19:12:50 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,6 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 		}
         
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        // CHECKME CmsRequestContext reqCont = cms.getRequestContext();
         I_CmsRegistry reg = cms.getRegistry();
         I_CmsSession session = cms.getRequestContext().getSession(true);
 

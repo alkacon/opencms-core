@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/02/01 23:01:07 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/02/02 15:59:53 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.61 $ $Date: 2003/02/01 23:01:07 $
+ * @version $Revision: 1.62 $ $Date: 2003/02/02 15:59:53 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -592,7 +592,6 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 if(elName != null && !"".equalsIgnoreCase(elName)) {
                     // If there is something in the string buffer, store is now!
                     if(buf.length() > 0) {
-                        //Gridnine AB Aug 5, 2002
                         result.add(buf.toString());
                         buf = new StringBuffer();
 
@@ -609,7 +608,6 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 if(methodName != null && !"".equals(methodName)){
                     //if there is something in the buffer store it now
                     if(buf.length() > 0) {
-                        //Gridnine AB Aug 5, 2002
                         result.add(buf.toString());
                         buf = new StringBuffer();
                     }
@@ -628,7 +626,6 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
         // Store pending buffer content
         if(buf.length() > 0) {
-            //Gridnine AB Aug 5, 2002
             result.add(buf.toString());
         }
         return result;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2003/01/30 19:13:35 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.8 $ $Date: 2003/01/30 19:13:35 $
+ * @version $Revision: 1.9 $ $Date: 2003/02/02 15:59:52 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -74,9 +74,7 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
         String template = null;
         // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-        // CHECKME: CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        // CHECKME: I_CmsRegistry registry = cms.getRegistry();
         String navtext = "";
 
         // clear the session on first call
@@ -149,7 +147,6 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
         }
         xmlTemplateDocument.setData("frametitle", resource.getName());
         if(navtext != null){
-            //Gridnine AB Aug 8, 2002
             navtext = Encoder.escape(navtext,
                 cms.getRequestContext().getEncoding());
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHtmlBrowser.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author magnus meurer
- * @version $Revision: 1.7 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.8 $ $Date: 2003/02/02 15:59:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -137,7 +137,6 @@ public class CmsHtmlBrowser extends CmsWorkplaceDefault {
                 int maxpage = ((filteredLinks.size() - 1) / C_PICBROWSER_MAXIMAGES) + 1;
 
                 // Now set the appropriate datablocks
-                //Gridnine AB Aug 8, 2002
                 xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder,
                     cms.getRequestContext().getEncoding()));
                 xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
@@ -283,7 +282,6 @@ public class CmsHtmlBrowser extends CmsWorkplaceDefault {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         Hashtable parameters = (Hashtable)userObj;
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)doc;
-        // CHECKME: CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         StringBuffer result = new StringBuffer();
         String pageText = (String)parameters.get(C_PARA_PAGE);
 
@@ -331,7 +329,6 @@ public class CmsHtmlBrowser extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("linktext", filename);
             xmlTemplateDocument.setData("snippetid", "" + i);
             xmlTemplateDocument.setData("filecontent", new String(file.getContents()));
-            //Gridnine AB Aug 8, 2002
             try {
                 xmlTemplateDocument.setData("filecontent_escaped", Encoder.escape(
                     new String(file.getContents(), cms.getRequestContext().getEncoding()),

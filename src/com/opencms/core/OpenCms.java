@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/02/01 19:14:45 $
-* Version: $Revision: 1.108 $
+* Date   : $Date: 2003/02/02 15:59:53 $
+* Version: $Revision: 1.109 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.108 $ $Date: 2003/02/01 19:14:45 $
+ * @version $Revision: 1.109 $ $Date: 2003/02/02 15:59:53 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
 
@@ -238,7 +238,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 osinfo += System.getProperty("os.arch") + " ";
                 log(C_OPENCMS_INIT, ". Operating sytem      : " + osinfo);
             }
-            // CHECKME: new CmsObject();
             m_sessionFailover = conf.getBoolean("sessionfailover.enabled", false);
         } catch(Exception e) {
             if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, ". Critical init error/2: " + e.getMessage());

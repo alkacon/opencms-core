@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.24 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Name:  $ $Revision: 1.25 $ $Date: 2003/02/02 15:59:52 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -93,7 +93,6 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
         // call the method for activation decision
         boolean activate = true;
         if(iconActiveMethod != null && !"".equals(iconActiveMethod)) {
-            // CHECKME: CmsTemplateClassManager callingObject = new CmsTemplateClassManager();
             String className = iconActiveMethod.substring(0, iconActiveMethod.lastIndexOf("."));
             iconActiveMethod = iconActiveMethod.substring(iconActiveMethod.lastIndexOf(".") + 1);
             Method groupsMethod = null;
@@ -139,7 +138,6 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
         // call the method for the visibility decision
         boolean visible = true;
         if(iconVisibleMethod != null && !"".equals(iconVisibleMethod)) {
-            // CHECKME: CmsTemplateClassManager callingObject = new CmsTemplateClassManager();
             String className = iconVisibleMethod.substring(0, iconVisibleMethod.lastIndexOf("."));
             iconVisibleMethod = iconVisibleMethod.substring(iconVisibleMethod.lastIndexOf(".") + 1);
             Method groupsMethod = null;

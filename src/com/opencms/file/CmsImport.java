@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/01/29 16:28:07 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/02/02 15:59:53 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.NodeList;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.65 $ $Date: 2003/01/29 16:28:07 $
+ * @version $Revision: 1.66 $ $Date: 2003/02/02 15:59:53 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -435,12 +435,6 @@ public Vector getResourcesForProject() throws CmsException {
 
       private void getXmlConfigFile() throws CmsException {
          try {
-             //Gridnine AB Sep 3, 2002
-             /*
-             BufferedReader xmlReader =getFileReader(C_EXPORT_XMLFILENAME);
-             m_docXml = A_CmsXmlContent.getXmlParser().parse(xmlReader);
-             xmlReader.close();
-             */
              InputStream in = new ByteArrayInputStream(getFileBytes(C_EXPORT_XMLFILENAME));
              try {
                  m_docXml = A_CmsXmlContent.getXmlParser().parse(in);

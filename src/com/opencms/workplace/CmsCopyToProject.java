@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopyToProject.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.5 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.6 $ $Date: 2003/02/02 15:59:52 $
  */
 
 public class CmsCopyToProject extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -120,7 +120,6 @@ public class CmsCopyToProject extends CmsWorkplaceDefault implements I_CmsWpCons
         }
         // set the required datablocks
         if(action == null) {
-            // CHECKME: CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
             xmlTemplateDocument.setData("FILENAME", file.getAbsolutePath());
         }
         // process the selected template

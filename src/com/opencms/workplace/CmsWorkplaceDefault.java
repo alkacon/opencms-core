@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2003/01/30 19:36:48 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.53 $ $Date: 2003/01/30 19:36:48 $
+ * @version $Revision: 1.54 $ $Date: 2003/02/02 15:59:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -319,7 +319,6 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
                             String value = (idx < (currToken.length() - 1)) ? currToken.substring(idx + 1) : "";
                             encLasturl.append(key);
                             encLasturl.append("=");
-                            //Gridnine AB Aug 8, 2002
                             encLasturl.append(Encoder.escape(value,
                                 cms.getRequestContext().getEncoding()));
                         }

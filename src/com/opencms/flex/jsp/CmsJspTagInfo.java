@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInfo.java,v $
- * Date   : $Date: 2003/02/01 22:58:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/02/02 15:59:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,14 +33,6 @@ import com.opencms.boot.CmsBase;
 import com.opencms.core.A_OpenCms;
 import com.opencms.flex.cache.CmsFlexRequest;
 
-//http://localhost:8080/opencms/opencms/index.jsp
-///opencms/opencms/index.jsp
-//opencms
-//C:\Java\Tomcat4_1_8\bin\..\webapps\opencms\
-///index.jsp
-///index.jsp
-///
-
 /**
  * Provides access to OpenCms and System related information.<p>
  * 
@@ -62,6 +54,8 @@ import com.opencms.flex.cache.CmsFlexRequest;
  * in the OpenCms VFS, e.g. <i>/system/modules/org.opencms.welcome/jsptemplates/welcome.jsp</i>
  * <li><code>opencms.request.folder</code> returns the name of the parent folder of the currently
  * requested URI in the OpenCms VFS, e.g. <i>/</i>
+ * <li><code>opencms.request.encoding</code> returns the content encoding that has been set
+ * for the currently requested resource, e.g. <i>ISO-8859-1</i>
  * </ul>
  * 
  * All other property values that are passes to the tag as routed to a standard 
@@ -74,7 +68,7 @@ import com.opencms.flex.cache.CmsFlexRequest;
  * error message.<p>
  *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -119,7 +113,8 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
             "opencms.webbasepath", // 4 
             "opencms.request.uri", // 5
             "opencms.request.element.uri", // 6
-            "opencms.request.folder" // 7      
+            "opencms.request.folder", // 7      
+            "opencms.request.encoding" // 8      
         };                
             
     /** array list of allowed property values for more convenient lookup */
@@ -158,9 +153,8 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
      */    
 	public static String infoTagAction(String property, CmsFlexRequest req) {   
              
-		if (property == null)
-			property = m_systemProperties[0];
-
+		if (property == null) return "+++ Invalid info property selected: null +++";
+        			
 		String result = null;
 		switch (m_userProperty.indexOf(property)) {
 			case 0 : // opencms.version
@@ -186,7 +180,10 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
                 break;                               
             case 7: // opencms.request.folder
                 result = com.opencms.file.CmsResource.getParent(req.getCmsRequestedResource());
-                break;            
+                break;  
+            case 8: // opencms.request.encoding
+                result = req.getCmsObject().getRequestContext().getEncoding();
+                break;          
             default :
                 result = System.getProperty(property);
                 if (result == null) {

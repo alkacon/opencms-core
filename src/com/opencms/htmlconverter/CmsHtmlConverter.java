@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2003/01/23 10:44:10 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/02/02 15:59:53 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -295,8 +295,6 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      * @param inString String with HTML code
      * @return String with transformed code
      */
-    //Gridnine AB Aug 9, 2002
-    // byte streams are replaced with character streams
     public String convertHTML (String inString) {
         Reader in = new StringReader(inString);
         Writer out = new StringWriter();
@@ -309,11 +307,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      * @param input Reader with HTML code
      * @param output Writer with transformed code
      */
-    //Gridnine AB Aug 9, 2002
-    // byte streams are replaced with character streams to support correct encodings handling
     public void convertHTML (Reader input, Writer output) {
         /* local variables */
-        // CHECK: int streamInput;
         StringBuffer htmlString = new StringBuffer();
         Node node;
         String outString = "";
@@ -333,16 +328,6 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
             while ((c = input.read()) != -1) {
                 htmlString.append((char)c);
             }
-            /*
-            while ((streamInput = input.available()) > 0) {
-                byte[] b = new byte[streamInput];
-                int result = input.read(b);
-                if (result == -1) {
-                    break;
-                }
-                htmlString.append(new String(b));
-            }
-            */
         }
         catch (IOException e) {
             System.err.println("Conversion error: " + e.toString());
@@ -371,7 +356,6 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         outString = m_tools.scanString(m_tempString.toString(),m_configuration.getReplaceStrings());
         outString = this.cleanOutput(outString);
         try {
-            //output.write(outString.getBytes(),0,outString.length());
             output.write(outString);
             output.close();
         }

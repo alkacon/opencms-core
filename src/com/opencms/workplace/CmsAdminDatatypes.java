@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/02/02 15:59:53 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.19 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.20 $ $Date: 2003/02/02 15:59:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -262,7 +262,6 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
         CmsXmlWpTemplateFile templateFile = (CmsXmlWpTemplateFile)doc;
         templateFile.setData(C_TAG_RESTYPE, resTypeName);
 
-        //Gridnine AB Aug 8, 2002
         templateFile.setData(C_TAG_RESTYPE + "_esc", Encoder.escapeWBlanks(resTypeName,
             cms.getRequestContext().getEncoding()));
         output.append(templateFile.getProcessedDataValue(C_TAG_RESTYPEENTRY, callingObject));
@@ -270,7 +269,6 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
             for(int z = 0;z < suffList.size();z++) {
                 String suffix = (String)suffList.elementAt(z);
                 templateFile.setData("EXTENSION_NAME", suffix);
-                //Gridnine AB Aug 8, 2002
                 templateFile.setData("EXTENSION_NAME_ESC", Encoder.escapeWBlanks(suffix,
                     cms.getRequestContext().getEncoding()));
                 output.append(templateFile.getProcessedDataValue(C_TYPELISTENTRY, callingObject));

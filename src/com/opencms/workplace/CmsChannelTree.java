@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.10 $ $Date: 2003/02/02 15:59:52 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -502,14 +502,12 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
 
                         // test if the + or minus must be displayed
                         if(endfolder.startsWith(res.getAbsolutePath())) {
-                            //Gridnine AB Aug 8, 2002
                             template.setData(C_TREELINK, C_WP_CHANNEL_TREE + "?" + C_PARA_FOLDERTREE
                                     + "=" + Encoder.escape(curfolder,
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_MEND, this);
                         }
                         else {
-                            //Gridnine AB Aug 8, 2002
                             template.setData(C_TREELINK, C_WP_CHANNEL_TREE + "?" + C_PARA_FOLDERTREE
                                     + "=" + Encoder.escape(res.getAbsolutePath(),
                                     cms.getRequestContext().getEncoding()));
@@ -521,22 +519,18 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
                     }
                 }
                 else {
-
                     // use the cross image
-
                     // if there are any subfolders extisintg, use the + or - box
                     if(subfolders.size() > 0) {
 
                         // test if the + or minus must be displayed
                         if(endfolder.startsWith(res.getAbsolutePath())) {
-                            //Gridnine AB Aug 8, 2002
                             template.setData(C_TREELINK, C_WP_CHANNEL_TREE + "?" + C_PARA_FOLDERTREE
                                     + "=" + Encoder.escape(curfolder,
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_MCROSS, this);
                         }
                         else {
-                            //Gridnine AB Aug 8, 2002
                             template.setData(C_TREELINK, C_WP_CHANNEL_TREE + "?" + C_PARA_FOLDERTREE
                                     + "=" + Encoder.escape(res.getAbsolutePath(),
                                     cms.getRequestContext().getEncoding()));

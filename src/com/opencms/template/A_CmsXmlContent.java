@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/01/31 16:51:35 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2003/02/02 15:59:53 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.67 $ $Date: 2003/01/31 16:51:35 $
+ * @version $Revision: 1.68 $ $Date: 2003/02/02 15:59:53 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -745,12 +745,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         parser.getXmlText(tempDoc, out);
     }
 
-    //[added by Gridnine AB, 2002-06-17]
     public void getXmlText(OutputStream out) {
         parser.getXmlText(m_content, out, m_newEncoding);
     }
 
-    //[added by Gridnine AB, 2002-06-17]
     public void getXmlText(OutputStream out, Node n) {
         Document tempDoc = (Document)m_content.cloneNode(false);
         tempDoc.appendChild(parser.importNode(tempDoc, n));
@@ -989,19 +987,13 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         m_filename = filename;
         parsedContent = loadCachedDocument(filename);
         if(parsedContent == null) {
-            //[removed by Gridnine AB, 2002-06-13] String fileContent = new String(file.getContents());
             byte[] fileContent = file.getContents();
-            //[removed by Gridnine AB, 2002-06-13] if(fileContent == null || "".equals(fileContent.trim())) {
-            //[changed by ednfal, 2002-08-07] if you use Oracle the "empty" fileContent has a blank, so its length is 1 
             if(fileContent == null || fileContent.length <= 1) {
                 // The file content is empty. Possibly the file object is only
                 // a file header. Re-read the file object and try again
                 file = cms.readFile(filename);
-                //[removed by Gridnine AB, 2002-06-13] fileContent = new String(file.getContents()).trim();
                 fileContent = file.getContents();
             }
-            //[removed by Gridnine AB, 2002-06-13] if(fileContent == null || "".equals(fileContent.trim())) {
-            //[changed by ednfal, 2002-08-07] if you use Oracle the "empty" fileContent has a blank, so its length is 1 
             if(fileContent == null || fileContent.length <= 1) {
                 // The file content is still emtpy.
                 // Start with an empty XML document.
@@ -1045,7 +1037,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         parsedContent = loadCachedDocument(filename);
         if(parsedContent == null) {
             CmsFile file = cms.readFile(filename);
-            //[removed by Gridnine AB, 2002-06-13] parsedContent = parse(new String(file.getContents()));
             parsedContent = parse(file.getContents());
             m_filecache.put(currentProject + ":" + filename, parsedContent.cloneNode(true));
         }
@@ -1359,7 +1350,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         return tempNode.getChildNodes();
     }
 
-    //[added by Gridnine AB, 2002-06-13]
     protected Document parse(byte[] content) throws CmsException {
         return parse(new ByteArrayInputStream(content));
     }
@@ -1374,25 +1364,17 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @see #processNode
      * @see #firstRunParameters
      */
-    //[removed by Gridnine AB, 2002-06-13] protected Document parse(String content) throws CmsException {
     protected Document parse(InputStream content) throws CmsException {
         Document parsedDoc = null;
-        //[removed by Gridnine AB, 2002-06-13] StringReader reader = new StringReader(content);
 
         // First parse the String for XML Tags and
-
         // get a DOM representation of the document
         try {
-            //[removed by Gridnine AB, 2002-06-13] parsedDoc = parser.parse(reader);
             parsedDoc = parser.parse(content);
         }
         catch(Exception e) {
-
             // Error while parsing the document.
-
             // there ist nothing to do, we cannot go on.
-
-            // throws exception.
             String errorMessage = "Cannot parse XML file \"" + getAbsoluteFilename() + "\". " + e;
             throwException(errorMessage, CmsException.C_XML_PARSING_ERROR);
         }
@@ -1401,22 +1383,20 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
             throwException(errorMessage, CmsException.C_XML_PARSING_ERROR);
         }
 
-        /* Try to normalize the XML document.
-        We should not call the normalize() method in the usual way
-        here, since the DOM interface changed at this point between
-        Level 1 and Level 2.
-        It's better to lookup the normalize() method first using reflection
-        API and call it then. So we will get the appropriate method for the
-        currently used DOM level and avoid NoClassDefFound exceptions. */
+        // Try to normalize the XML document.
+        // We should not call the normalize() method in the usual way
+        // here, since the DOM interface changed at this point between
+        // Level 1 and Level 2.
+        // It's better to lookup the normalize() method first using reflection
+        // API and call it then. So we will get the appropriate method for the
+        // currently used DOM level and avoid NoClassDefFound exceptions.
         try {
             Class elementClass = Class.forName("org.w3c.dom.Element");
             Method normalizeMethod = elementClass.getMethod("normalize", new Class[]{});
             normalizeMethod.invoke(parsedDoc.getDocumentElement(), new Object[]{});
         }
         catch(Exception e) {
-
-            // Sorry. The workaround using reflection API failed.
-
+            // The workaround using reflection API failed.
             // We have to throw an exception.
             throwException("Normalizing the XML document failed. Possibly you are using concurrent versions of " + "the XML parser with different DOM levels. ", e, CmsException.C_XML_PARSING_ERROR);
         }
@@ -2093,15 +2073,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * Writes the XML document back to the OpenCms system.
      * @throws CmsException
      */
-    //[modified by Gridnine AB, 2002-06-17]
     public void write() throws CmsException {
-        /*
-        // Get the XML content as String
-        StringWriter writer = new StringWriter();
-        getXmlText(writer);
-        byte[] xmlContent = writer.toString().getBytes();
-        */
-        
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         getXmlText(os);
         byte[] xmlContent = os.toByteArray();
@@ -2123,7 +2095,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * Returns current XML document encoding.
      * @return String encoding of XML document
      */
-    //Gridnine AB Aug 9, 2002
     public String getEncoding() {
         return parser.getOriginalEncoding(m_content);
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -159,7 +159,6 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        // CHECKME CmsRequestContext reqCont = cms.getRequestContext();
         I_CmsRegistry reg = cms.getRegistry();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String stepTo = "";

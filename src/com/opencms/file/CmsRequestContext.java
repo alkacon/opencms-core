@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2003/02/02 15:59:53 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.62 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.63 $ $Date: 2003/02/02 15:59:53 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -609,7 +609,6 @@ public class CmsRequestContext implements I_CmsConstants {
     /**
      * Returns the current content encoding to be used in HTTP response
      */
-    // Gridnine AB Aug 1, 2002
     public String getEncoding() {
         return m_encoding;
     }
@@ -617,7 +616,6 @@ public class CmsRequestContext implements I_CmsConstants {
     /**
      * Sets the current content encoding to be used in HTTP response
      */
-    // Gridnine AB Aug 1, 2002
     public void setEncoding(String encoding) {
         setEncoding(encoding, false);
     }
@@ -626,7 +624,6 @@ public class CmsRequestContext implements I_CmsConstants {
      * Sets the current content encoding to be used in HTTP response
      * and store it in session if it is available
      */
-    // Gridnine AB Aug 6, 2002
     public void setEncoding(String encoding, boolean storeInSession) {
         m_encoding = encoding;
         if (!storeInSession) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.17 $ $Date: 2003/02/02 15:59:52 $
  */
 
 public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -330,14 +330,12 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
                         
                         // test if the + or minus must be displayed
                         if(endfolder.startsWith(folder.getAbsolutePath())) {
-                            //Gridnine AB Aug 8, 2002
                             template.setData(C_TREELINK, C_WP_EXPLORER_TREE + "?" + C_PARA_FOLDER + "=" 
                                     + Encoder.escape(curfolder,
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_MEND, this);
                         }
                         else {
-                            //Gridnine AB Aug 8, 2002
                             template.setData(C_TREELINK, C_WP_EXPLORER_TREE + "?" + C_PARA_FOLDER + "=" 
                                     + Encoder.escape(folder.getAbsolutePath(),
                                     cms.getRequestContext().getEncoding()));
@@ -356,14 +354,12 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
                         
                         // test if the + or minus must be displayed
                         if(endfolder.startsWith(folder.getAbsolutePath())) {
-                            //Gridnine AB Aug 8, 2002
-                            template.setData(C_TREELINK, C_WP_EXPLORER_TREE + "?" + C_PARA_FOLDER + "=" 
+                           template.setData(C_TREELINK, C_WP_EXPLORER_TREE + "?" + C_PARA_FOLDER + "=" 
                                     + Encoder.escape(curfolder,
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_MCROSS, this);
                         }
                         else {
-                            //Gridnine AB Aug 8, 2002
                             template.setData(C_TREELINK, C_WP_EXPLORER_TREE + "?" + C_PARA_FOLDER + "=" 
                                     + Encoder.escape(folder.getAbsolutePath(),
                                     cms.getRequestContext().getEncoding()));

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/01/31 17:01:40 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.39 $ $Date: 2003/01/31 17:01:40 $
+ * @version $Revision: 1.40 $ $Date: 2003/02/02 15:59:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -171,7 +171,6 @@ public class CmsEditor extends CmsWorkplaceDefault {
             // If there is no content set, this is the first request of the editor.
             // So load the file content and set the "content" parameter.
             if(content == null) {
-                //Gridnine AB Aug 8, 2002
                 try {
                     content = new String(editFile.getContents(), encoding);
                 } catch (UnsupportedEncodingException e) {
@@ -185,7 +184,6 @@ public class CmsEditor extends CmsWorkplaceDefault {
             // back to the database.
             if(saveRequested) {
                 try{
-                    //Gridnine AB Aug 8, 2002
                     String decodedContent = Encoder.unescape(content, Encoder.C_URI_ENCODING);
                     try {
                         editFile.setContents(decodedContent.getBytes(encoding));

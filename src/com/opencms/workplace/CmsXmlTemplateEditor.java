@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/01/31 17:01:55 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2003/02/02 15:59:52 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.79 $ $Date: 2003/01/31 17:01:55 $
+ * @version $Revision: 1.80 $ $Date: 2003/02/02 15:59:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -666,7 +666,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
         // Load the body!
         content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);
-        //Gridnine AB Aug 8, 2002
         content = Encoder.escapeWBlanks(content, Encoder.C_URI_ENCODING);
         parameters.put(C_PARA_CONTENT, content);
 
@@ -829,7 +828,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         return Encoder.escapeXml(title);
     }
     
-    //Gridnine AB Aug 9, 2002
     public Object getCharset(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) {
         // Try to find property on file and all parent folders
         String prop = null;

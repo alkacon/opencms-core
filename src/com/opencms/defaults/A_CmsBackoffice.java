@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/01/20 23:59:22 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/02/02 15:59:53 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -217,8 +217,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     //return var
     byte[] returnProcess = null;
 
-    // CHECKME: String error="";
-
         // the CD to be used
          A_CmsContentDefinition cd=null;
 
@@ -233,7 +231,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     String idlock = (String) parameters.get("idlock");
     String iddelete = (String) parameters.get("iddelete");
     String idedit = (String) parameters.get("idedit");
-    // CHECKME: String idview = (String) parameters.get("idview");
     String action = (String) parameters.get("action");
     String parentId = (String) parameters.get("parentId");
     String ok = (String) parameters.get("ok");
@@ -403,7 +400,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         }
 
     //get marker for accessing the new dialog
-    // CHECKME: String idnewsave = (String) session.getValue("idnew");
 
         // --- This is the part when getContentNew is called ---
     //access to new dialog
@@ -1344,11 +1340,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     //return var
     byte[] processResult = null;
     //get the class of the content definition
-    // CHECKME: Class cdClass = getContentDefinitionClass();
-
+ 
     //init vars
-    // CHECKME: String singleSelection = "";
-    // CHECKME: String allSelections = "";
 
     //create new or fetch existing session
     CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
@@ -1385,8 +1378,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     session.putValue("filter",selectBoxValue);  // store filter in session for getContentList!
 
     String filterParam = (String) parameters.get("filterparameter");
-    // CHECKME: String action = (String) parameters.get("action");
-    // CHECKME: String setaction = (String) parameters.get("setaction");
     // create the key for the filterparameter in the session ... should be unique to avoid problems...
     String sessionFilterParam = uri+selectBoxValue+"filterparameter";
     //store filterparameter in the session, new enty for every filter of every url ...
@@ -1408,7 +1399,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     template.setData("filterparameterlabel", lang.getLanguageValue(moduleName + ".label.filterparameter"));
 
     //no filter selected so far, store a default filter in the session
-    // CHECKME: CmsFilterMethod filterMethod = null;
     if (selectBoxValue == null) {
       CmsFilterMethod defaultFilter = (CmsFilterMethod) filterMethods.firstElement();
       session.putValue("selectbox", defaultFilter.getFilterName());
@@ -1514,8 +1504,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
     //get the class of the content definition
     Class cdClass = getContentDefinitionClass();
-
-    // CHECKME: String action = (String) parameters.get("action");
 
     //read value of the selected filter
     String filterMethodName = (String) session.getValue("filter");
@@ -1779,8 +1767,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         //get the class of the content definition
         Class cdClass = getContentDefinitionClass();
 
-        // CHECKME: String action = (String) parameters.get("action");
-
         //read value of the selected filter
         String filterMethodName = (String) session.getValue("filter");
         if (filterMethodName == null) {
@@ -1857,7 +1843,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             }
 
             // now apply the filter with the cms object, the filter method and additional user parameters
-            // CHECKME: long stoptime = System.currentTimeMillis();
             tableContent = (Vector) cdClass.getMethod("applyFilter", new Class[] {CmsObject.class, CmsFilterMethod.class, String.class}).invoke(null, new Object[] {cms, filterMethod, filterParam});
         } catch (InvocationTargetException ite) {
             //error occured while applying the filter
@@ -2134,7 +2119,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       } catch (Exception e) {
         ls = -1;
         //access content definition object specified by id through reflection
-        // CHECKME: String title = "no title";
         Object o = null;
         o = getContentDefinition(cms, cdClass, id);
         try {
@@ -2146,7 +2130,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         }
       }
       //access content definition object specified by id through reflection
-      // CHECKME: String title = "no title";
       Object o = null;
       if (idInteger != null) {
         o = getContentDefinition(cms, cdClass, idInteger);
@@ -2211,7 +2194,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         ls = C_NOT_LOCKED;
 
       //access content definition object specified by id through reflection
-      // CHECKME: String title = "no title";
       Object o = null;
       o = getContentDefinition(cms, cdClass, id);
       try {
@@ -2775,7 +2757,6 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
 
         //init project flag vars
         int state = 0;
-        // CHECKME: int lockstate = -1;
         int projectId = 1;
         int actProjectId = cms.getRequestContext().currentProject().getId();
         String style = new String();
@@ -2846,7 +2827,6 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         int projectId = 1;
         int lockedInProject = -1;
         int actProjectId = cms.getRequestContext().currentProject().getId();
-        // CHECKME: String style = new String();
 
         // get the projectid of the entry
         try{
@@ -3473,8 +3453,6 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
    * @methods A vector with all "getXYZ" methods to be used.
    * @throws Throws CmsException if something goes wrong.
    */
-  //Gridnine AB Aug 8, 2002
-  // modified method declaration to getaccess to CmsObject for correct handling encodings
   private void setDatablocks(CmsObject cms, CmsXmlWpTemplateFile template,
                              A_CmsContentDefinition contentDefinition,
                              Vector methods) throws CmsException {

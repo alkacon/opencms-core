@@ -178,7 +178,6 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
             // get the alt_text
             String media_title = (String) parameters.get("media_alt_text");
             media_title=(media_title!=null?media_title.trim():"");
-            //Gridnine AB Aug 8, 2002
             media_title = com.opencms.util.Encoder.unescape(media_title,
                 cms.getRequestContext().getEncoding());
             // get the pos
@@ -322,7 +321,6 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
                 templateFile.setData("media_name",selectedmediaCD.getName());
                 templateFile.setData("posEdit",pos);
                 String title=selectedmediaCD.getTitle();
-                //Gridnine AB Aug 8, 2002
                 title=com.opencms.util.Encoder.unescape(title,
                     cms.getRequestContext().getEncoding());
                 templateFile.setData("media_alt_text", title);

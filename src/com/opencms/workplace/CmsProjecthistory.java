@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjecthistory.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/02/02 15:59:53 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.6 $ $Date: 2003/01/20 23:59:20 $
+ * @version $Revision: 1.7 $ $Date: 2003/02/02 15:59:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -201,7 +201,6 @@ public class CmsProjecthistory extends A_CmsWpElement implements I_CmsWpElement,
         xmlFile.setData(C_PROJECTLIST_OWNER, project.getOwnerName());
         xmlFile.setData("publishdate", Utils.getNiceDate(project.getPublishingDate()));
         xmlFile.setData("publishedby", project.getPublishedByName());
-        //Gridnine AB Aug 8, 2002
         xmlFile.setData(C_PROJECTLIST_NAME_ESCAPED, Encoder.escape(project.getName(),
             cms.getRequestContext().getEncoding()));
         xmlFile.setData(C_PROJECTLIST_PROJECTID, project.getId() + "");

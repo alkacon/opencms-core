@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsProcessedString.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/02/02 15:59:53 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.io.UnsupportedEncodingException;
  * make use of this class and return the original String.
  *
  * @author Alexander Lucas <alexander.lucas@framfab.de>
- * @version $Revision: 1.4 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.5 $ $Date: 2003/02/02 15:59:53 $
  */
 public class CmsProcessedString {
 
@@ -53,7 +53,6 @@ public class CmsProcessedString {
         m_orgString = s;
     }
 
-    // Gridnine AB Aug 5, 2002
     /** Constructor for a new CmsProcessedString object */
     public CmsProcessedString(byte[] b, String encoding) {
         if(b == null) {
