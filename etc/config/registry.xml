@@ -61,6 +61,12 @@
             <launcherClass></launcherClass>
             <resourceClass>com.opencms.file.CmsResourceTypePdfpage</resourceClass>
         </restype>
+        <restype>
+            <name>compatiblePlain</name>
+            <launcherType>1</launcherType>
+            <launcherClass/>
+            <resourceClass>com.opencms.file.CmsResourceTypeCompatiblePlain</resourceClass>
+        </restype>
         <view>
             <name>select.explorer</name>
             <url>/system/workplace/action/explorer_new.html</url>
