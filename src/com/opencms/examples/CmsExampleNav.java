@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsExampleNav.java,v $
- * Date   : $Date: 2000/03/22 10:29:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/03/31 09:34:18 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import javax.servlet.http.*;
  * the same technique, too.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/03/22 10:29:36 $
+ * @version $Revision: 1.4 $ $Date: 2000/03/31 09:34:18 $
  */
 public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
         
@@ -146,7 +146,7 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
             A_CmsResource currFolder = (A_CmsResource)allFolders.elementAt(i);
             String filename = currFolder.getAbsolutePath();
             String navpos = cms.readMetainformation(filename, C_METAINFO_NAVPOS);
-            String navtext = cms.readMetainformation(filename, C_METAINFO_NAVTITLE);     
+            String navtext = cms.readMetainformation(filename, C_METAINFO_NAVTEXT);     
             if(currFolder.getState() != C_STATE_DELETED) { 
                 // Only list folders in the nav bar if they are not deleted!
                 if(navpos != null && navtext != null && (!"".equals(navpos)) && (!"".equals(navtext))
@@ -214,7 +214,7 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
             A_CmsResource currFile = (A_CmsResource)allFiles.elementAt(j);
             String filename = currFile.getAbsolutePath();
             String navpos = cms.readMetainformation(filename, C_METAINFO_NAVPOS);
-            String navtext = cms.readMetainformation(filename, C_METAINFO_NAVTITLE);     
+            String navtext = cms.readMetainformation(filename, C_METAINFO_NAVTEXT);     
             if(currFile.getState() != C_STATE_DELETED) { 
                 // Only list files in the nav bar if they are not deleted!
                 if(navpos != null && navtext != null && (!"".equals(navpos)) && (!"".equals(navtext))

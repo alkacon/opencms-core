@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/03/29 15:23:01 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2000/03/31 09:34:18 $
+ * Version: $Revision: 1.64 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.63 $ $Date: 2000/03/29 15:23:01 $
+ * @version $Revision: 1.64 $ $Date: 2000/03/31 09:34:18 $
  */
 public interface I_CmsConstants
 {
@@ -173,7 +173,7 @@ public interface I_CmsConstants
      /**
      * Metainformation for resource navigation title
      */
-    static final String C_METAINFO_NAVTITLE="NavTitle";
+    static final String C_METAINFO_NAVTEXT="NavText";
    
     /**
      * Metainformation for resource navigation position

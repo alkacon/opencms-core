@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/29 16:16:02 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2000/03/31 09:34:18 $
+ * Version: $Revision: 1.76 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.75 $ $Date: 2000/03/29 16:16:02 $
+ * @version $Revision: 1.76 $ $Date: 2000/03/31 09:34:18 $
  */
 public interface I_CmsWpConstants {
 
@@ -116,7 +116,7 @@ public interface I_CmsWpConstants {
     public static final String C_PARA_TEMPLATE = "template";
     
     /** Parameter for a navigation title */
-    public static final String C_PARA_NAVTITLE = "navtitle";
+    public static final String C_PARA_NAVTEXT = "navtitle";
     
     /** Parameter for a navigation position */
     public static final String C_PARA_NAVPOS = "navpos";  

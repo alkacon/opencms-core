@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2000/03/24 08:21:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/31 09:34:18 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/03/24 08:21:28 $
+ * @version $Revision: 1.5 $ $Date: 2000/03/31 09:34:18 $
  */
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -94,7 +94,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
         // get request parameters
         String newFolder=(String)parameters.get(C_PARA_NEWFOLDER);
         String title=(String)parameters.get(C_PARA_TITLE);
-        String navtitle=(String)parameters.get(C_PARA_NAVTITLE);       
+        String navtitle=(String)parameters.get(C_PARA_NAVTEXT);       
         String navpos=(String)parameters.get(C_PARA_NAVPOS);   
         // get the current phase of this wizard
         String step=cms.getRequestContext().getRequest().getParameter("step");
@@ -109,7 +109,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
          
                    // now check if navigation informations have to be added to the new page.
                    if (navtitle != null) {
-                       cms.writeMetainformation(folder.getAbsolutePath(),C_METAINFO_NAVTITLE,navtitle);                       
+                       cms.writeMetainformation(folder.getAbsolutePath(),C_METAINFO_NAVTEXT,navtitle);                       
                         
                         // update the navposition.
                         if (navpos != null) {
@@ -350,7 +350,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 
                         // check if there is a navpos for this file/folder
                         if (navpos!= null) {
-                                nicename=cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVTITLE);
+                                nicename=cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVTEXT);
                             if (nicename == null) {
                                 nicename=res.getName();
                             }

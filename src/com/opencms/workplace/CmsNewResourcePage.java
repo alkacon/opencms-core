@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/03/22 09:35:20 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/03/31 09:34:18 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/03/22 09:35:20 $
+ * @version $Revision: 1.20 $ $Date: 2000/03/31 09:34:18 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -103,7 +103,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         String title=(String)parameters.get(C_PARA_TITLE);
         // TODO: check, if this is neede: String flags=(String)parameters.get(C_PARA_FLAGS);
         String templatefile=(String)parameters.get(C_PARA_TEMPLATE);
-        String navtitle=(String)parameters.get(C_PARA_NAVTITLE);       
+        String navtitle=(String)parameters.get(C_PARA_NAVTEXT);       
         String navpos=(String)parameters.get(C_PARA_NAVPOS);   
         // get the current phase of this wizard
         String step=cms.getRequestContext().getRequest().getParameter("step");
@@ -143,7 +143,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                                    
                    // now check if navigation informations have to be added to the new page.
                    if (navtitle != null) {
-                       cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_NAVTITLE,navtitle);                       
+                       cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_NAVTEXT,navtitle);                       
                         
                         // update the navposition.
                         if (navpos != null) {
@@ -466,7 +466,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
 
                     // check if there is a navpos for this file/folder
                     if (navpos!= null) {
-                        nicename=cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVTITLE);
+                        nicename=cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVTEXT);
                         if (nicename == null) {
                             nicename=res.getName();
                         }
