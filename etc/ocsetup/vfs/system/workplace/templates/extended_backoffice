@@ -233,6 +233,7 @@ start();
 
 <contextmenue name="backofficedeleted"> 
 	<contextentry name="explorer.context.undelete" href="javascript:location.href=undeleteUrl+'?idundelete='+kontextparam;"/>
+	<contextentry name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
