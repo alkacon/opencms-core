@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/30 14:09:01 $
- * Version: $Revision: 1.262 $
+ * Date   : $Date: 2001/07/31 14:01:09 $
+ * Version: $Revision: 1.263 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.262 $ $Date: 2001/07/30 14:09:01 $
+ * @version $Revision: 1.263 $ $Date: 2001/07/31 14:01:09 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -296,7 +296,8 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
         // check the rights and if the resource is not locked
         do {
             // is the resource locked?
-            if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
+            if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ||
+                resource.getLockedInProject() != currentProject.getId()) ) {
                 // resource locked by anopther user, no creation allowed
                 return(false);
             }
@@ -1108,7 +1109,8 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 
         // has the user write-access?
         if( accessWrite(currentUser, currentProject, resource)||
-            ((resource.isLockedBy() == currentUser.getId()) &&
+            ((resource.isLockedBy() == currentUser.getId() &&
+              resource.getLockedInProject() == currentProject.getId()) &&
                 (resource.getOwnerId() == currentUser.getId()||isAdmin(currentUser, currentProject))) ) {
 
             // write-acces  was granted - write the file.
@@ -1174,7 +1176,9 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
     }
 
     // has the user write-access? and is he owner or admin?
-    if (((resource.getOwnerId() == currentUser.getId()) || isAdmin(currentUser, currentProject)) && (resource.isLockedBy() == currentUser.getId())) {
+    if (((resource.getOwnerId() == currentUser.getId()) || isAdmin(currentUser, currentProject)) &&
+            (resource.isLockedBy() == currentUser.getId() &&
+             resource.getLockedInProject() == currentProject.getId())) {
         CmsUser owner = readUser(currentUser, currentProject, newOwner);
         resource.setUserId(owner.getId());
         // write-acces  was granted - write the file.
