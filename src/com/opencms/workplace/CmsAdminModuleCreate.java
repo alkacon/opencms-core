@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2002/08/26 13:00:40 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2002/09/02 07:49:39 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -149,7 +149,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 
                     // create the module (first test if we are in a project including /system/
                     try {
-                        cms.createFolder("/system/modules/", packetname);
+                        cms.createResource("/system/modules/", packetname, C_TYPE_FOLDER_NAME);
                     }catch(CmsException e) {
                         if(e.getType() != e.C_FILE_EXISTS) {
 
@@ -203,8 +203,8 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_DEFAULTBODIESDIR);
                     tryToCreateFolder(cms, modulePath, "elements");
                     tryToCreateFolder(cms, modulePath, "language");
-                    tryToCreateFolder(cms, modulePath + "language/", "de");
-                    tryToCreateFolder(cms, modulePath + "language/", "uk");
+                    tryToCreateFolder(cms, modulePath + "language/", I_CmsWpConstants.C_DEFAULT_LANGUAGE);
+                    // tryToCreateFolder(cms, modulePath + "language/", "de");
                     tryToCreateFolder(cms, modulePath, "doc");
                     reg.setModuleDocumentPath(packetname, modulePath + "doc/index.html");
                     if("checked".equals(view)) {
@@ -281,7 +281,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
      */
     private void tryToCreateFolder(CmsObject cms, String folder, String newFolder) {
         try {
-            cms.createFolder(folder, newFolder);
+            cms.createResource(folder, newFolder, C_TYPE_FOLDER_NAME);
         }catch(Exception e) {
 
         }
