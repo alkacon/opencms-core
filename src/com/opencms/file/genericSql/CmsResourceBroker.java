@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/27 16:06:12 $
- * Version: $Revision: 1.139 $
+ * Date   : $Date: 2000/09/28 09:14:49 $
+ * Version: $Revision: 1.140 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.139 $ $Date: 2000/09/27 16:06:12 $
+ * @version $Revision: 1.140 $ $Date: 2000/09/28 09:14:49 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3182,11 +3182,26 @@ public Vector getSiteMatrixInfo(CmsUser currentUser, CmsProject currentProject) 
  
 
 		    // copy the metainfos			
-		    writeProperties(currentUser,offlineProject,offlineRes.getAbsolutePath(), readAllProperties(currentUser,onlineProject,onlineRes.getAbsolutePath()));
-		  
-			chstate(currentUser,offlineProject,offlineRes.getAbsolutePath(),C_STATE_UNCHANGED);
-		   
-			
+		    m_dbAccess.writeProperties(readAllProperties(currentUser,onlineProject,onlineRes.getAbsolutePath()),offlineRes.getResourceId(),offlineRes.getType());
+		    //currentUser,offlineProject,offlineRes.getAbsolutePath(), readAllProperties(currentUser,onlineProject,onlineRes.getAbsolutePath()));
+
+		    offlineRes.setState(C_STATE_UNCHANGED);
+
+		    if (offlineRes instanceof CmsFolder) {
+		      m_dbAccess.writeFolder(offlineProject,(CmsFolder)offlineRes,false);
+				  // update the cache
+				  m_resourceCache.put(C_FOLDER+offlineProject.getId()+offlineRes.getName(),(CmsFolder)offlineRes);
+			  } else {  
+			  	//(offlineRes instanceof CmsFile)          
+				  m_dbAccess.writeFileHeader(offlineProject,(CmsFile)offlineRes,false);
+				  // update the cache
+				  m_resourceCache.put(C_FILE+offlineProject.getId()+offlineRes.getName(),offlineRes);   
+			  }
+			  m_subresCache.clear();
+			  
+			  // inform about the file-system-change
+			  fileSystemChanged();  
+			     
 		
 		    // now walk recursive through all files and folders, and copy them too
 		    if(onlineRes.isFolder()) {
