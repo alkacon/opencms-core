@@ -50,7 +50,6 @@
 			/* check if database exists */
 			if(!dropDb)	{
 				db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());				
-System.err.println("Creating work connection");
 				dbExists = db.noErrors();
 				if(dbExists)	{
 					db.closeConnection();
@@ -61,7 +60,6 @@ System.err.println("Creating work connection");
 			}
 			if(!dbExists || dropDb)	{
 				db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
-System.err.println("Creating system connection");
 			}
 			else {
 				if (createDb) {
