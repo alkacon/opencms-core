@@ -193,7 +193,7 @@ ${build.inputlib.dbcp}
     	description="Creates OpenCms .war file structure and copies required files to it">
     	
        <copy todir="${build.home}">
-            <fileset dir="." includes="*.*" excludes="build.xml,build_flex.xml,${excludes}"/>
+            <fileset dir="." includes="*.*" excludes="build.xml,build_flex.xml,.*,${excludes}"/>
        </copy>
 
         <copy todir="${build.lib}">
