@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/04/07 15:22:16 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2000/04/07 15:57:37 $
+ * Version: $Revision: 1.48 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2000/04/07 15:22:16 $
+ * @version $Revision: 1.48 $ $Date: 2000/04/07 15:57:37 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -91,6 +91,18 @@ import com.opencms.util.*;
                                               +"WHERE RESOURCE_NAME = ? "                                           
                                               +"AND PROJECT_ID = ?";
                                               
+    /**
+     * SQL Command for deleting all files in a project. 
+     */   
+    private static final String C_PROJECT_DELETE_FILES = "DELETE FROM " + C_DATABASE_PREFIX + "FILES "
+														 + "WHERE PROJECT_ID = ?";
+	
+    /**
+     * SQL Command for deleting all files in a project. 
+     */   
+    private static final String C_PROJECT_DELETE_RESOURCES = "DELETE FROM " + C_DATABASE_PREFIX + "RESOURCES "
+															 + "WHERE PROJECT_ID = ?";
+	
      /**
      * SQL Command for reading all headers of a resource. 
      * A resource includes all data of the fileheader.
@@ -1511,6 +1523,36 @@ import com.opencms.util.*;
            return resources;
     }
      
+    /**
+     * Deletes a specified project
+     *
+     * @param project The project to be deleted.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void deleteProject(A_CmsProject project)
+        throws CmsException {
+		try {
+			System.err.println("deleteProject() " + project.getId());
+			
+			System.err.println(C_PROJECT_DELETE_RESOURCES);
+			
+			// delete all project-resources.
+			PreparedStatement statementDeleteProject = m_Con.prepareStatement(C_PROJECT_DELETE_RESOURCES);
+			statementDeleteProject.setInt(1,project.getId());
+			statementDeleteProject.executeQuery();
+
+			System.err.println(C_PROJECT_DELETE_FILES);
+			
+			// delete all project-files.
+			statementDeleteProject = m_Con.prepareStatement(C_PROJECT_DELETE_FILES);
+			statementDeleteProject.setInt(1,project.getId());
+			statementDeleteProject.executeQuery();		
+			System.err.println("deleteProject() done " + project.getId());
+		} catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		}
+	}
+	
      /**
 	 * Reads a resource from the Cms.<BR/>
 	 * A resource is either a file header or a folder.

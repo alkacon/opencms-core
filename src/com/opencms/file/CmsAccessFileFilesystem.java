@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/04/07 15:22:16 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/04/07 15:57:37 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/04/07 15:22:16 $
+ * @version $Revision: 1.20 $ $Date: 2000/04/07 15:57:37 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -1028,13 +1028,11 @@ import com.opencms.core.*;
      */
     public Vector publishProject(A_CmsProject project, A_CmsProject onlineProject)
         throws CmsException {
-        
         // get the root of this mountpoint
         String rootFolder=m_mountpoint.getMountpoint();
         // Vectors to store all files and folders
         Vector allFiles=new Vector();
         Vector allFolders=new Vector();
-        
         Vector resources= new Vector();
         
         getAllResources(rootFolder,project,allFiles,allFolders);
@@ -1189,6 +1187,21 @@ import com.opencms.core.*;
         return resources;
     }
     
+    /**
+     * Deletes a specified project.
+     *
+     * @param project The project to be deleted.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void deleteProject(A_CmsProject project)
+        throws CmsException {
+        
+         // all files in a file system mounpoint belong to the online project,
+         // so nothing is done here.
+        
+        return;
+    }
+	
     
     /**
      * Gets all resources - files and subfolders - of a given folder.

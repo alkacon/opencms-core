@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbProject.java,v $
- * Date   : $Date: 2000/04/04 10:28:47 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/07 15:57:37 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/04/04 10:28:47 $
+ * @version $Revision: 1.13 $ $Date: 2000/04/07 15:57:37 $
  */
 class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	
@@ -127,6 +127,18 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 		 return( m_accessProject.writeProject(project) );
 	 }
 
+	/**
+	 * Deletes a project.
+	 * 
+	 * @param project The project that will be deleted.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public void deleteProject(A_CmsProject project)
+		 throws CmsException {
+		 m_accessProject.deleteProject(project);
+	 }
+	 
 	/**
 	 * Returns all projects, which are owned by a user.
 	 * 

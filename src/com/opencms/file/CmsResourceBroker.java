@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/07 15:22:17 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2000/04/07 15:57:37 $
+ * Version: $Revision: 1.99 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.98 $ $Date: 2000/04/07 15:22:17 $
+ * @version $Revision: 1.99 $ $Date: 2000/04/07 15:57:37 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -234,16 +234,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
              }
          }
          if (project==null) {
-            projects=m_projectRb.getAllProjects(this.C_PROJECT_STATE_DELETED);
-            if (projects != null) {
-                 for (int i=0;i<projects.size();i++) {
-                     if (((A_CmsProject)projects.elementAt(i)).getId() == projectId) {
-                        project=(A_CmsProject)projects.elementAt(i);
-                    }                                                                                  
-                }
-            }
-         }
-         if (project==null) {
             projects=m_projectRb.getAllProjects(this.C_PROJECT_STATE_LOCKED);                                                       
             if (projects != null) {
                  for (int i=0;i<projects.size();i++) {
@@ -262,10 +252,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                     }                                                                                  
                 }
             }
-         }         
-         
-         
-         
+         }
 		 return project;
 	 }
      
@@ -529,10 +516,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			(deleteProject.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
 			 
 			 // delete the project
-			 // the project-state will be set to "deleted".
-			 // the project must be written to the cms.
-			 deleteProject.setFlags(C_PROJECT_STATE_DELETED);
-			 m_projectRb.writeProject(deleteProject);
+			 m_projectRb.deleteProject(deleteProject);
+			 // delete the files
+			 m_fileRb.deleteProject(deleteProject);
+			 // delete the properties
+			 m_metadefRb.deleteProject(deleteProject);
 		} else {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + id, 
 				CmsException.C_NO_ACCESS);

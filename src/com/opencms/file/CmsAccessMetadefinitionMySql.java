@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessMetadefinitionMySql.java,v $
- * Date   : $Date: 2000/04/03 10:48:29 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/04/07 15:57:37 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -171,6 +171,12 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
     private static final String C_METADEF_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "METADEF WHERE " + 
 												   C_METADEF_NAME + " = ? and " +
 												   C_METADEF_TYPE + " = ?";
+	
+	/**
+     * SQL Command for deleting all metainfos in a project.
+     */    
+    private static final String C_PROJECT_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "METAINFO WHERE " + 
+												   C_PROJECT_ID + " = ? ";
 	
 	/**
      * Constructor, creartes a new CmsAccessMetadefinition object and connects it to the
@@ -796,7 +802,6 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
      */
     private void initConnections(String conUrl)	
       throws CmsException {
-      
         try {
         	m_con = DriverManager.getConnection(conUrl);
        	} catch (SQLException e)	{
@@ -804,4 +809,26 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 				CmsException.C_SQL_ERROR, e);
 		}
     }
+	
+	/**
+	 * Deletes all Metainformations for a project.
+	 * 
+	 * @param project The project to delete.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteProject(A_CmsProject project)
+		throws CmsException {
+		try {
+			// create statement
+			PreparedStatement statementDeleteProject = 
+				m_con.prepareStatement(C_PROJECT_DELETE);
+
+			statementDeleteProject.setInt(1,project.getId());
+			statementDeleteProject.executeUpdate();
+		 } catch( SQLException exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				CmsException.C_SQL_ERROR, exc);
+		 }
+	}
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbFile.java,v $
- * Date   : $Date: 2000/03/21 15:07:11 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/04/07 15:57:37 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/03/21 15:07:11 $
+ * @version $Revision: 1.14 $ $Date: 2000/04/07 15:57:37 $
  */
  interface I_CmsRbFile {
 	
@@ -738,4 +738,12 @@ import com.opencms.core.*;
     public Vector publishProject(A_CmsProject project, A_CmsProject onlineProject)
         throws CmsException;
 	
+    /**
+     * Deletes all resources of a project.
+     *
+     * @param project The project to be published.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void deleteProject(A_CmsProject project)
+        throws CmsException;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessMetadefinition.java,v $
- * Date   : $Date: 2000/04/03 10:48:30 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/04/07 15:57:37 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/04/03 10:48:30 $
+ * @version $Revision: 1.9 $ $Date: 2000/04/07 15:57:37 $
  */
 interface I_CmsAccessMetadefinition {
 
@@ -320,5 +320,15 @@ interface I_CmsAccessMetadefinition {
 	 */
 	public void deleteMetainformation(String meta, int projectId, String path, 
 									  int resourceType)
+		throws CmsException;
+	
+	/**
+	 * Deletes all Metainformations for a project.
+	 * 
+	 * @param project The project to delete.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteProject(A_CmsProject project)
 		throws CmsException;
 }

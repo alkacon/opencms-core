@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessProjectMySql.java,v $
- * Date   : $Date: 2000/04/04 10:28:47 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/04/07 15:57:37 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.util.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2000/04/04 10:28:47 $
+ * @version $Revision: 1.19 $ $Date: 2000/04/07 15:57:37 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -104,6 +104,11 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
      */    
     private static final String C_PROJECT_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROJECTS VALUES(?,?,?,?,?,?,?,?,?,null)";
 
+	/**
+     * SQL Command for deleting projects.
+     */    
+    private static final String C_PROJECT_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "PROJECTS where " + C_PROJECT_ID + " = ?";
+	
 	/**
      * SQL Command for updating projects.
      */    
@@ -313,6 +318,29 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 				 CmsException.C_SQL_ERROR, exc);
 		 }
 		 return(readProject(project.getId()));
+	 }
+	 
+	/**
+	 * Deletes a project.
+	 * 
+	 * @param project The project that will be deleted.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public void deleteProject(A_CmsProject project)
+		 throws CmsException {
+		 try {
+			 // create the statement
+			 PreparedStatement statementDeleteProject = 
+				m_con.prepareStatement(C_PROJECT_DELETE);
+			 
+			 statementDeleteProject.setInt(1,project.getId());
+			 
+			 statementDeleteProject.executeUpdate();
+		 } catch( SQLException exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 }
 	 }
 	 
 	/**

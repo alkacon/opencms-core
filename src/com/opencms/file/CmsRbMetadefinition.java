@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbMetadefinition.java,v $
- * Date   : $Date: 2000/04/03 10:48:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/07 15:57:37 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/04/03 10:48:30 $
+ * @version $Revision: 1.8 $ $Date: 2000/04/07 15:57:37 $
  */
 public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	
@@ -381,5 +381,17 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 									  int resourceType)
 		throws CmsException {
 		m_accessMetadefinition.deleteMetainformation(meta, projectId, path, resourceType);
+	}
+
+	/**
+	 * Deletes all Metainformations for a project.
+	 * 
+	 * @param project The project to delete.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteProject(A_CmsProject project)
+		throws CmsException {
+		m_accessMetadefinition.deleteProject(project);
 	}
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbProject.java,v $
- * Date   : $Date: 2000/04/04 10:28:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/04/07 15:57:37 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/04/04 10:28:48 $
+ * @version $Revision: 1.10 $ $Date: 2000/04/07 15:57:37 $
  */
 interface I_CmsRbProject {
 	
@@ -99,6 +99,16 @@ interface I_CmsRbProject {
 	 public A_CmsProject writeProject(A_CmsProject project)
 		 throws CmsException;
 
+	/**
+	 * Deletes a project.
+	 * 
+	 * @param project The project that will be deleted.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public void deleteProject(A_CmsProject project)
+		 throws CmsException;
+	 
 	/**
 	 * Returns all projects, which are owned by a user.
 	 * 

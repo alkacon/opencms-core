@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFile.java,v $
- * Date   : $Date: 2000/04/07 15:22:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/04/07 15:57:37 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/04/07 15:22:16 $
+ * @version $Revision: 1.15 $ $Date: 2000/04/07 15:57:37 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -533,6 +533,27 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
         return allResources;
     }
      
+    /**
+     * Deletes all resources of a project.
+     *
+     * @param project The project to be deleted.
+     * @exception CmsException  Throws CmsException if operation was not succesfull.
+     */
+    public void deleteProject(A_CmsProject project)
+        throws CmsException {
+        Vector resources;
+        String mountpoint;
+        I_CmsAccessFile accessFile=null;
+        
+        // initatite the deleting process for all access modules
+        Enumeration e = m_mountpointStorage.keys();
+		while (e.hasMoreElements()) {
+			mountpoint=(String)e.nextElement();
+			accessFile=(I_CmsAccessFile)m_mountpointStorage.get(mountpoint);
+			// delete the project
+			accessFile.deleteProject(project);
+		}
+	}
      
      /**
       * Returns the  appropriate access module for a given file or folder.

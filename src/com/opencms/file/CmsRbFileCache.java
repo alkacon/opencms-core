@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/04/07 15:22:17 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/07 15:57:37 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/04/07 15:22:17 $
+ * @version $Revision: 1.13 $ $Date: 2000/04/07 15:57:37 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
@@ -345,7 +345,7 @@ import com.opencms.core.*;
         m_filecache.remove(key);
      }
     
-          /**
+    /**
 	 * Deletes a folder in the Cms.<br>
 	 * 
      * In difference to the deleteFile method, the given file is physically removed <br> 
@@ -372,4 +372,16 @@ import com.opencms.core.*;
         m_filecache.remove(key);
      }
     
+    /**
+     * Deletes all resources of a project.
+     *
+     * @param project The project to be deleted.
+     * @exception CmsException  Throws CmsException if operation was not succesfull.
+     */
+    public void deleteProject(A_CmsProject project)
+        throws CmsException {
+		// delete the filecache
+		m_filecache = new CmsCache(C_FILECACHE);
+		super.deleteProject(project);
+    }
 }
