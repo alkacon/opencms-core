@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/03/07 15:16:36 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/03/07 15:44:44 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.65 $ $Date: 2003/03/07 15:16:36 $
+ * @version $Revision: 1.66 $ $Date: 2003/03/07 15:44:44 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -117,8 +117,8 @@ public class CmsRequestContext implements I_CmsConstants {
     /** Current encoding */
     private String m_encoding = null;
 
-    /** A faked URI for getUri(), this is required to enable a cascade of elements that use the XMLTemplate mechanism */
-    private String m_fakeUri = null;
+    /** The URI for getUri() */
+    private String m_uri = null;
     
     /** Directroy name translator */
     private CmsResourceTranslator m_directoryTranslator = null;
@@ -370,12 +370,13 @@ public class CmsRequestContext implements I_CmsConstants {
      * @return the path to the requested resource.
      */
     public String getUri() {
-        if (m_fakeUri != null) return m_fakeUri;
+        if (m_uri != null) return m_uri;
         if( m_req != null ) {
-            return( m_req.getRequestedResource() );
+            m_uri = m_req.getRequestedResource();
         } else {
-            return (C_ROOT);
+            m_uri = C_ROOT;
         }
+        return m_uri;
     }
 
     /**
@@ -393,7 +394,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * @since 5.0 beta 1
      */
     public void setUri(String value) {
-        m_fakeUri = value;
+        m_uri = value;
     }
 
     /**
