@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/11/07 19:29:24 $
-* Version: $Revision: 1.209 $
+* Date   : $Date: 2002/11/17 13:57:19 $
+* Version: $Revision: 1.210 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package com.opencms.core;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.209 $ $Date: 2002/11/07 19:29:24 $
+ * @version $Revision: 1.210 $ $Date: 2002/11/17 13:57:19 $
  */
 public interface I_CmsConstants {
 
@@ -292,8 +292,6 @@ public interface I_CmsConstants {
      * This constant is used to order the tasks by name.
      */
     static final int C_TASK_ORDER_BY_NAME = 2;
-
-    // TODO: add order-criteria here.
 
     /**
      * This constant defines the onlineproject. This is the project which

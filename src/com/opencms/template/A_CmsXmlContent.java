@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2002/10/30 10:31:08 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2002/11/17 13:54:20 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.61 $ $Date: 2002/10/30 10:31:08 $
+ * @version $Revision: 1.62 $ $Date: 2002/11/17 13:54:20 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -986,7 +986,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
             //[removed by Gridnine AB, 2002-06-13] if(fileContent == null || "".equals(fileContent.trim())) {
             //[changed by ednfal, 2002-08-07] if you use Oracle the "empty" fileContent has a blank, so its length is 1 
             if(fileContent == null || fileContent.length <= 1) {
-
                 // The file content is still emtpy.
                 // Start with an empty XML document.
                 try {
@@ -996,8 +995,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                     throwException("Could not initialize now XML document " + filename + ". " + e, CmsException.C_XML_PARSING_ERROR);
                 }
             } else {
-                // TODO: really re-read file content???
-                // parsedContent = parse(new String(file.getContents()));
                 parsedContent = parse(fileContent);
             }
             m_filecache.put(currentProject + ":" + filename, parsedContent.cloneNode(true));

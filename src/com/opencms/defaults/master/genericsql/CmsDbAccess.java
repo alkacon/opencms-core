@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/08/23 16:51:50 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2002/11/17 13:56:46 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1301,7 +1301,14 @@ public class CmsDbAccess {
     }
 
     /**
-     * TODO: write header here
+     * Updates the media object of a content definition.
+     * 
+     * @param masterId the content definition master id
+     * @param mediaToAdd vector of media objects to add
+     * @param mediaToUpdate vector of media objects to update 
+     * @param mediaToDelete vector of media objects to delete
+     * @throws SQLException
+     * @throws CmsException
      */
     protected void updateMedia(int masterId, Vector mediaToAdd,
                                Vector mediaToUpdate, Vector mediaToDelete)
@@ -1358,7 +1365,13 @@ public class CmsDbAccess {
     }
 
     /**
-     * TODO: write header here
+     * Updates the channels of a content definition.
+     * 
+     * @param cms the current context object
+     * @param masterId the content definition master id
+     * @param channelToAdd vector of channels to add 
+     * @param channelToDelete vector of channels to delete
+     * @throws SQLException
      */
     protected void updateChannels(CmsObject cms, int masterId, Vector channelToAdd,
         Vector channelToDelete) throws SQLException {
@@ -1418,7 +1431,12 @@ public class CmsDbAccess {
     }
 
     /**
-     * TODO: write header here
+     * Fills a prepared statement with media values.
+     * 
+     * @param stmnt the statement to fill
+     * @param media the data to fill the statement with
+     * @return int the number of values set in the statement
+     * @throws SQLException if data could not be set in statement
      */
     protected int sqlFillValues(PreparedStatement stmnt, CmsMasterMedia media)
         throws SQLException {
