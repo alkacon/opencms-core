@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
- * Author : $Author: m.dernen $
- * Date   : $Date: 2001/11/23 17:23:55 $
- * Version: $Revision: 1.14 $
+ * Author : $Author: a.schouten $
+ * Date   : $Date: 2001/12/21 15:01:34 $
+ * Version: $Revision: 1.15 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -1584,7 +1584,12 @@ public class CmsDbAccess {
 
         // backup the data
         if(enableHistory) {
+            // stroe the creationdate, because it will be set to publishingdate
+            // with this method.
+            long backupCreationDate = dataset.m_dateCreated;
             publishBackupData(cms, dataset, subId, versionId, publishingDate);
+            // restore the creationdate to the correct one
+            dataset.m_dateCreated = backupCreationDate;
         }
 
         // delete the online data

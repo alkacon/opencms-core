@@ -21,6 +21,8 @@ OpenCms 4.5.31 Chusuk       - xx December 2001
 * In emails for taskaction the port of the webserver was added to the generated URL.
 * Bugfix when creating a page with the same name of a deleted file
 * Bugfix when publishing deleted resources directly
+* Bugfix in mastermodule, now the creationdate will not be set to the publishingdate during
+  publishing.
 - Description and Keywords metatags added to empty template.
 - Removed v-flag for /moduldemos/.
 - Added opencms.property for file.encoding used to encode encrypted passwords. This helps for
