@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/01 15:42:18 $
-* Version: $Revision: 1.357 $
+* Date   : $Date: 2003/08/01 17:04:03 $
+* Version: $Revision: 1.358 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.357 $
+ * @version $Revision: 1.358 $
  */
 public class CmsObject {
 
@@ -4430,6 +4430,10 @@ public class CmsObject {
      */
     public boolean isInsideCurrentProject(CmsResource resource) {
         return m_driverManager.isInsideCurrentProject(m_context, resource);
+    }
+    
+    public CmsLock getExclusiveLockedSibling(String resourcename) throws CmsException {
+        return m_driverManager.getExclusiveLockedSibling(m_context, m_context.addSiteRoot(resourcename));
     }
 
 }

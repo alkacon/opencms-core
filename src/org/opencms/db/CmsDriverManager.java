@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/01 15:42:18 $
- * Version: $Revision: 1.120 $
+ * Date   : $Date: 2003/08/01 17:04:03 $
+ * Version: $Revision: 1.121 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.120 $ $Date: 2003/08/01 15:42:18 $
+ * @version $Revision: 1.121 $ $Date: 2003/08/01 17:04:03 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -8208,6 +8208,10 @@ public class CmsDriverManager extends Object {
         }
 
         return false;
+    }
+    
+    public CmsLock getExclusiveLockedSibling(CmsRequestContext context, String resourcename) throws CmsException {
+        return m_lockDispatcher.getExclusiveLockedSibling(this, context, resourcename);
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/01 14:20:02 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2003/08/01 17:04:03 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.79 $ $Date: 2003/08/01 14:20:02 $
+ * @version $Revision: 1.80 $ $Date: 2003/08/01 17:04:03 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -207,14 +207,14 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             content = new byte[0];
         }
 
-        if (!lockedBy.equals(CmsUUID.getNullUUID())) {
+        //if (!lockedBy.equals(CmsUUID.getNullUUID())) {
             // resource is locked
             resProjectId = lockedInProject;
-        } else {
+        //} else {
             // resource is not locked
-            resProjectId = projectId;
-            lockedInProject = projectId;
-        }
+        //    resProjectId = projectId;
+        //    lockedInProject = projectId;
+        //}
 
         if (org.opencms.db.generic.CmsProjectDriver.C_USE_TARGET_DATE && resourceType == org.opencms.db.generic.CmsProjectDriver.C_RESTYPE_LINK_ID && resourceFlags > 0) {
             dateLastModified = fetchDateFromResource(projectId, resourceFlags, dateLastModified);
@@ -251,6 +251,15 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             dateLastModified = fetchDateFromResource(projectId, resourceFlags, dateLastModified);
         }
         
+        /*
+        if (!lockedBy.equals(CmsUUID.getNullUUID())) {
+            // resource is locked
+        } else {
+            // resource is not locked
+            resProjectId = projectId;
+            lockedInProject = projectId;
+        }        
+        */
         int newState = (structureState > resourceState) ? structureState : resourceState;
         
         return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, projectId, newState, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, linkCount);
@@ -1149,29 +1158,21 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#resetProjectId(com.opencms.file.CmsProject, java.util.List)
      */
-    public void resetProjectId(CmsProject currentProject, List resources) throws CmsException {
+    public void resetProjectId(CmsProject currentProject, CmsResource currentResource) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
-        CmsResource currentResource = null;
-        
-        try {
-            conn = m_sqlManager.getConnection(currentProject);            
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_UPDATE_PROJECT_ID");
-            
-            Iterator i = resources.iterator();
-            while (i.hasNext()) {
-                currentResource = (CmsResource) i.next();
-                stmt.setInt(1, 0);
-                stmt.setString(2, currentResource.getResourceId().toString());
-                stmt.addBatch();
-            }
 
-            stmt.executeBatch();
+        try {
+            conn = m_sqlManager.getConnection(currentProject);
+            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_UPDATE_PROJECT_ID");
+            stmt.setInt(1, 0);
+            stmt.setString(2, currentResource.getResourceId().toString());
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
-        }         
+        }
     }
 
     /**
