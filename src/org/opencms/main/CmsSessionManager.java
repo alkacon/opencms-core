@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2005/03/06 11:28:39 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/06 12:32:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.Buffer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1
  */
 public class CmsSessionManager {
@@ -205,19 +205,19 @@ public class CmsSessionManager {
     public void sendBroadcast(CmsObject cms, String message) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
-            // don't braodcast empty messages
+            // don't broadcast empty messages
             return;
         }
-
+        // create the broadcast
+        CmsBroadcast broadcast = new CmsBroadcast(cms.getRequestContext().currentUser(), message);
+        // send the broadcast to all authenticated sessions
         synchronized (m_sessions) {
             Iterator i = getConcurrentSessionIterator();
-            long sendTime = System.currentTimeMillis();
             while (i.hasNext()) {
                 CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
                 if (sessionInfo != null) {
                     // double check for concurrent modification
-                    sessionInfo.getBroadcastQueue().add(
-                        new CmsBroadcast(cms.getRequestContext().currentUser(), message, sendTime));
+                    sessionInfo.getBroadcastQueue().add(broadcast);
                 }
             }
         }
@@ -234,20 +234,20 @@ public class CmsSessionManager {
     public void sendBroadcast(CmsObject cms, String message, CmsUser user) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
-            // don't braodcast empty messages
+            // don't broadcast empty messages
             return;
         }
-
+        // create the broadcast
+        CmsBroadcast broadcast = new CmsBroadcast(cms.getRequestContext().currentUser(), message);
         List userSessions = getSessionInfos(user.getId());
         Iterator i = userSessions.iterator();
-        long sendTime = System.currentTimeMillis();
+        // send the broadcast to all sessions of the selected user
         synchronized (m_sessions) {
             while (i.hasNext()) {
                 CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
                 if (sessionInfo != null) {
                     // double check for concurrent modification
-                    sessionInfo.getBroadcastQueue().add(
-                        new CmsBroadcast(cms.getRequestContext().currentUser(), message, sendTime));
+                    sessionInfo.getBroadcastQueue().add(broadcast);
                 }
             }
         }
@@ -264,16 +264,14 @@ public class CmsSessionManager {
     public void sendBroadcast(CmsObject cms, String message, String sessionId) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
-            // don't braodcast empty messages
+            // don't broadcast empty messages
             return;
         }
-
-        synchronized (m_sessions) {
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
-            if (sessionInfo != null) {
-                // double check for concurrent modification
-                sessionInfo.getBroadcastQueue().add(new CmsBroadcast(cms.getRequestContext().currentUser(), message));
-            }
+        // send the broadcast only to the selected session
+        CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
+        if (sessionInfo != null) {
+            // double check for concurrent modification
+            sessionInfo.getBroadcastQueue().add(new CmsBroadcast(cms.getRequestContext().currentUser(), message));
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsBroadcast.java,v $
- * Date   : $Date: 2005/03/06 09:26:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/06 12:32:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.file.CmsUser;
  * {@link org.opencms.main.CmsSessionManager#sendBroadcast(org.opencms.file.CmsObject, String, CmsUser)}.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.7.2
  */
@@ -64,21 +64,9 @@ public class CmsBroadcast {
      */
     public CmsBroadcast(CmsUser sender, String message) {
 
-        this(sender, message, System.currentTimeMillis());
-    }
-
-    /**
-     * Creates a new broadcast.<p>
-     * 
-     * @param sender the sender of the broadcast
-     * @param message the message to send
-     * @param sendTime the time the broadcast was send
-     */
-    public CmsBroadcast(CmsUser sender, String message, long sendTime) {
-
         m_sender = sender;
         m_message = message;
-        m_sendTime = sendTime;
+        m_sendTime = System.currentTimeMillis();
     }
 
     /**
