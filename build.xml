@@ -41,6 +41,7 @@
 	<property name="drivers.user"						value="db" />
 	<property name="drivers.workflow"					value="db" />
 	<property name="drivers.backup"						value="db" />
+	<property name="drivers.configuration"				value="" />
 
     <property name="excludes"                   		value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath" />
     
@@ -219,6 +220,7 @@ ${opencms.inputlib.dbcp}
       			<filter token="DRIVERS_USER" value="${drivers.user}"/>
       			<filter token="DRIVERS_WORKFLOW" value="${drivers.workflow}"/>
       			<filter token="DRIVERS_BACKUP" value="${drivers.backup}"/>
+      			<filter token="DRIVERS_CONFIGURATION" value="${drivers.configuration}"/>
     		</filterset>	   		
 	   	</copy>       	  
     </target>
