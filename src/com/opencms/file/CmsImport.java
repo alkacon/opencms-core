@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/24 11:17:00 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2003/02/25 13:09:23 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlXercesParser;
+import com.opencms.util.LinkSubstitution;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.ByteArrayInputStream;
@@ -52,6 +53,7 @@ import java.io.Writer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Stack;
@@ -60,8 +62,10 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 ;
 
@@ -72,7 +76,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.70 $ $Date: 2003/02/24 11:17:00 $
+ * @version $Revision: 1.71 $ $Date: 2003/02/25 13:09:23 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -105,14 +109,14 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     private int m_importVersion = 0;
 
     /**
-     * Flag to indicate support for 4.x file conversion
-     */
-    private Boolean m_convertImport4x = new Boolean(false);
-    
-    /**
      * Web application names for conversion support
      */
     private List m_webAppNames = new ArrayList();
+    
+    /**
+     * Old webapp URL for import conversion
+     */
+    private String m_webappUrl = null;
 
     /**
      * The import-resource (zip) to load resources from
@@ -224,32 +228,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             // no: create it
             m_cms.createPropertydefinition(name, resourceType);
         }
-    }
-
-    /**
-     * Checks if the file sticks to the rules for files in the content path.<p>
-     * 
-     * If not, it sets the type of the file to compatible_plain.
-     * This is for exports of older versions of OpenCms. The imported files
-     * will work as before, but they cant be edited.
-     *
-     * @param name the name of the resource including path that is imported
-     * @param content the content of the resource
-     * @param type the type of the resourse, is set to compatible_plain if nessesary
-     * @param properties the properties, not yet used here
-     * @return the new type of the resouce
-     */
-    private String fitFileType(String name, byte[] content, String type, Hashtable properties){
-
-        // only check the file if the version of the export is 0
-        if(m_importVersion == 0){
-            // ok, an old system exported this, check if the file is ok
-            if(!(new CmsCompatibleCheck()).isTemplateCompatible(name, content, type)){
-                type = C_TYPE_COMPATIBLEPLAIN_NAME;
-                m_report.print(m_report.key("report.must_set_to") + C_TYPE_COMPATIBLEPLAIN_NAME + " ", I_CmsReport.C_FORMAT_WARNING);
-            }
-        }
-        return type;
     }
 
     /**
@@ -472,21 +450,28 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         byte[] content = null;
         String fullname = null;
         try {
-    
+            // get the file content
             if (source != null) {
                 content = getFileBytes(source);
-                if (m_convertImport4x.booleanValue() && 
-                    // convert content from pre 4.x is activated
-                    ("page".equals(type) || ("plain".equals(type)) || ("XMLTemplate".equals(type)))) {
+            }   
+            // check and convert old import files    
+            if (m_importVersion < 2) {
+             
+                // convert content from pre 5.x must be activated
+                if ("page".equals(type) || ("plain".equals(type)) || ("XMLTemplate".equals(type))) {
                     // change the filecontent for encoding if necessary
                     content = convertFile(source, content, type);
-                }
-            }
-    
-            if (m_convertImport4x.booleanValue()) {
-                // set invalid files to type compatible_plain
-                type = fitFileType(m_importPath + destination, content, type, properties);
-            }
+                }     
+                // only check the file type if the version of the export is 0
+                if(m_importVersion == 0){
+                    // ok, a (very) old system exported this, check if the file is ok
+                    if(!(new CmsCompatibleCheck()).isTemplateCompatible(m_importPath + destination, content, type)){
+                        type = C_TYPE_COMPATIBLEPLAIN_NAME;
+                        m_report.print(m_report.key("report.must_set_to") + C_TYPE_COMPATIBLEPLAIN_NAME + " ", I_CmsReport.C_FORMAT_WARNING);
+                    }
+                }   
+            } 
+            // version 2.0 import (since OpenCms 5.0), no content conversion required                        
     
             CmsResource res = m_cms.importResource(source, destination, type, user, group, access,
                                         properties, launcherStartClass, content, m_importPath);
@@ -557,10 +542,28 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         Hashtable properties;
         Vector types = new Vector(); // stores the file types for which the property already exists
         
-        m_convertImport4x = (Boolean)A_OpenCms.getRuntimeProperty("compatibility.support.import.4.x.contents");
-        if (m_convertImport4x == null) m_convertImport4x = new Boolean(false);    
-        m_webAppNames = (List)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");  
-        if (m_webAppNames == null) m_webAppNames = new ArrayList();            
+        m_webAppNames = (List)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
+        if (m_webAppNames == null)
+            m_webAppNames = new ArrayList();
+
+        // get the old webapp url from the OpenCms properties
+        m_webappUrl = (String)A_OpenCms.getRuntimeProperty("compatibility.support.import.old.webappurl");
+        System.err.println("Webapp URL: " + m_webappUrl);
+        if (m_webappUrl == null) {
+            m_webappUrl = "http://localhost:8080/opencms/opencms";
+        }
+        // cut last "/" from webappUrl if present
+        if (m_webappUrl.endsWith("/")) {
+            m_webappUrl = m_webappUrl.substring(0, m_webappUrl.lastIndexOf("/"));
+        }
+
+        // get list of unwanted properties
+        // TODO: read in ArrayList from property, delete "add"-lines!!
+        // List deleteProperties = (List) A_OpenCms.getRuntimeProperty("compatibility.support.propertytags");
+        List deleteProperties = new ArrayList();
+        deleteProperties.add("module");  
+        deleteProperties.add("test");
+        if (deleteProperties == null) deleteProperties = new ArrayList();
             
         try {
             // get all file-nodes
@@ -610,8 +613,20 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                             value = "";
                         }
                         // store these informations
-                        if ((name != null) && (value != null)) {
-                            properties.put(name, value);
+                        if (name != null) {
+                            // filter unwanted properties, e.g. "module" 
+                            boolean found = false;
+                            // scan for unwanted properties
+                            for (int k=0; k<deleteProperties.size(); k++) {
+                                if (name.equals((String) deleteProperties.get(k))) {
+                                    found = true;
+                                    k = deleteProperties.size();                        
+                                }
+                            }
+                            // add property
+                            if (!found) {
+                                properties.put(name, value);
+                            }
                             createPropertydefinition(name, type);
                         }
                     }
@@ -909,7 +924,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         fileContent = setDirectories(fileContent,type);
         // scan content/bodys
         if (filename.indexOf(C_VFS_PATH_OLD_BODIES) != -1 || filename.indexOf(I_CmsWpConstants.C_VFS_PATH_BODIES) != -1) {
-            fileContent = convertPageBody(fileContent);
+            fileContent = convertPageBody(fileContent, filename);
         }
         // create output file
 	    returnValue = fileContent.getBytes();
@@ -995,49 +1010,122 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     
     /**
      * Searches for the webapps String and replaces it with a macro which is needed for the WYSIWYG editor.<p>
+     * Creates missing &lt;edittemplate&gt; tags from old OpenCms 4.x versions.<p>
      * 
      * @param content the filecontent 
      * @return String the modified filecontent
      */
-    private String convertPageBody(String content) {
+    private String convertPageBody(String content, String fileName) {
+        // variables needed for the creation of <template> elements
+        boolean createTemplateTags = false;
+        Hashtable templateElements = new Hashtable();
         // first check if any contextpaths are in the content String
         boolean found = false;
-        for (int i=0; i<m_webAppNames.size(); i++) {
+        for (int i = 0; i < m_webAppNames.size(); i++) {
             if (content.indexOf((String)m_webAppNames.get(i)) != -1) {
                 found = true;
             }
         }
-        // only build document when some paths were found!
-        if (found == true) { 
+        // check if edittemplates are in the content string
+        if (content.indexOf("<edittemplate>") != -1) {
+            found = true;
+        }
+        // only build document when some paths were found or <edittemplate> is missing!
+        if (found == true) {
             InputStream in = new ByteArrayInputStream(content.getBytes());
+            String editString, templateString;
             try {
                 // create DOM document
                 Document contentXml = A_CmsXmlContent.getXmlParser().parse(in);
-                // get all "edittemplate" nodes to check their content
+                // get all <edittemplate> nodes to check their content
                 NodeList editNodes = contentXml.getElementsByTagName("edittemplate");
-                for (int i=0; i<editNodes.getLength(); i++) {
-                    String editString = editNodes.item(i).getFirstChild().getNodeValue();
-                    for (int k=0; k<m_webAppNames.size(); k++) {
-                        editString = CmsStringSubstitution.substitute(editString, 
-                            CmsStringSubstitution.escapePattern((String)m_webAppNames.get(k)),
-                            CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT));                       
+                // no <edittemplate> tags present, create them!
+                if (editNodes.getLength() < 1) {
+                    createTemplateTags = true;
+                    NodeList templateNodes = contentXml.getElementsByTagName("TEMPLATE");
+                    // create an <edittemplate> tag for each <template> tag
+                    for (int i = 0; i < templateNodes.getLength(); i++) {
+                        // get the CDATA content of the <template> tags
+                        editString = templateNodes.item(i).getFirstChild().getNodeValue();
+                        templateString = editString;
+                        // substitute the links in the <template> tag String
+                        try {
+                            LinkSubstitution sub = new LinkSubstitution();
+                            templateString = sub.substituteContentBody(m_cms, templateString, m_webappUrl, fileName);
+                        } catch (CmsException e) {
+                            throw new CmsException("[" + this.getClass().getName() + "] can't parse the content: ", e);
+                        }
+                        // look for the "name" attribute of the <template> tag
+                        NamedNodeMap attrs = templateNodes.item(i).getAttributes();
+                        String templateName = "";
+                        if (attrs.getLength() > 0) {
+                            templateName = attrs.item(0).getNodeValue();
+                        }
+                        // create the new <edittemplate> node                       
+                        Element newNode = contentXml.createElement("edittemplate");
+                        CDATASection newText = contentXml.createCDATASection(editString);
+                        newNode.appendChild(newText);
+                        // set the "name" attribute, if necessary
+                        attrs = newNode.getAttributes();
+                        if (!templateName.equals("")) {
+                            newNode.setAttribute("name", templateName);
+                        }
+                        // append the new edittemplate node to the document
+                        contentXml.getElementsByTagName("XMLTEMPLATE").item(0).appendChild(newNode);
+                        // store modified <template> node Strings in Hashtable
+                        if (templateName.equals("")) {
+                            templateName = "noNameKey";
+                        }
+                        templateElements.put(templateName, templateString);
                     }
-                    editNodes.item(i).getFirstChild().setNodeValue(editString);               
+                    // finally, delete old <TEMPLATE> tags from document
+                    while (templateNodes.getLength() > 0) {
+                        contentXml.getElementsByTagName("XMLTEMPLATE").item(0).removeChild(templateNodes.item(0));
+                    }
+                }
+                // check the content of the <edittemplate> nodes
+                for (int i = 0; i < editNodes.getLength(); i++) {
+                    editString = editNodes.item(i).getFirstChild().getNodeValue();
+                    for (int k = 0; k < m_webAppNames.size(); k++) {
+                        editString =
+                            CmsStringSubstitution.substitute(
+                                editString,
+                                CmsStringSubstitution.escapePattern((String)m_webAppNames.get(k)),
+                                CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT));
+                    }
+                    editNodes.item(i).getFirstChild().setNodeValue(editString);
                 }
                 // convert XML document back to String
                 CmsXmlXercesParser parser = new CmsXmlXercesParser();
                 Writer out = new StringWriter();
                 parser.getXmlText(contentXml, out);
-                content = out.toString();               
-                
-            }
-            catch(Exception exc) {
-            }
-        }   
+                content = out.toString();
+                // rebuild the template tags in the document!
+                if (createTemplateTags) {
+                    content = content.substring(0, content.lastIndexOf("</XMLTEMPLATE>"));
+                    // get the keys
+                    Enumeration enum = templateElements.keys();
+                    while (enum.hasMoreElements()) {
+                        String key = (String)enum.nextElement();
+                        String value = (String)templateElements.get(key);
+                        // create the default template
+                        if (key.equals("noNameKey")) {
+                            content += "\n<TEMPLATE><![CDATA[" + value;
+                        }
+                        // create template with "name" attribute
+                        else {
+                            content += "\n<TEMPLATE name=\"" + key + "\"><![CDATA[" + value;
+                        }
+                        content += "]]></TEMPLATE>\n";
+                    }
+                    content += "\n</XMLTEMPLATE>";
+                }
+
+            } catch (Exception exc) {}
+        }
         return content;
-    }   
-    
-    
+    }  
+       
     /**
      * Method to replace a subString with replaceItem.<p>
      * 
