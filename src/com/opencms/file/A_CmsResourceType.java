@@ -1,6 +1,7 @@
 package com.opencms.file;
 
 import java.util.*;
+import java.io.*;
 
 /**
  * This abstract class describes a resource-type. To determine the special launcher 
@@ -8,9 +9,9 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/01/05 17:03:09 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/07 18:46:09 $
  */
-abstract public class A_CmsResourceType {	
+abstract public class A_CmsResourceType implements Serializable {	
 	
 	/**
 	 * Returns the type of this resource-type.
@@ -40,5 +41,12 @@ abstract public class A_CmsResourceType {
 	 * @return the name of the Java class.
 	 */
 	abstract public String getLauncherClass();
-
+	
+	/**
+	 * Returns a string-representation for this object.
+	 * This can be used for debugging.
+	 * 
+	 * @return string-representation for this object.
+	 */
+	abstract public String toString();
 }

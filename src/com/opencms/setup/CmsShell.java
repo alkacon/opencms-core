@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/01/06 17:02:04 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/07 18:46:09 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -667,6 +667,54 @@ public class CmsShell implements I_CmsConstants {
 	public void createFolder(String folder, String newFolderName) {
 		try {
 			System.out.println( m_cms.createFolder(folder, newFolderName) );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+
+	/**
+	 * Returns  all I_CmsResourceTypes.
+	 */
+	public void getAllResourceTypes() {
+		try {
+			Hashtable resourceTypes = m_cms.getAllResourceTypes();
+			Enumeration keys = resourceTypes.keys();
+			
+			while(keys.hasMoreElements()) {
+				System.out.println(resourceTypes.get(keys.nextElement()));
+			}
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+	
+	/**
+	 * Returns a A_CmsResourceTypes.
+	 * 
+	 * @param resourceType the name of the resource to get.
+	 */
+	public void getResourceType(String resourceType) {
+		try {
+			System.out.println( m_cms.getResourceType(resourceType) );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+
+	/**
+	 * Adds a CmsResourceTypes.
+	 * 
+	 * @param resourceType the name of the resource to get.
+	 * @param launcherType the launcherType-id
+	 * @param launcherClass the name of the launcher-class normaly ""
+	 */
+	public void addResourceType(String resourceType, String launcherType, 
+								String launcherClass) {
+		
+		try {
+			System.out.println( m_cms.addResourceType(resourceType, 
+													  Integer.parseInt(launcherType), 
+													  launcherClass) );
 		} catch( Exception exc ) {
 			System.err.println(exc);
 		}		

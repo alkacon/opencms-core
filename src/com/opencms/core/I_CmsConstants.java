@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/01/06 17:02:03 $
+ * @version $Revision: 1.16 $ $Date: 2000/01/07 18:46:09 $
  */
 public interface I_CmsConstants
 {
@@ -27,12 +27,22 @@ public interface I_CmsConstants
 	 */
 	 static final int C_FLAG_DISABLED = 1;
 	
+	 /**
+	  * The last index, that was used for resource-types.
+	  */
+	 final static String C_TYPE_LAST_INDEX = "lastIndex";
+	 
 	/**
 	 * The resource type-id for a folder.
 	 */
 	 final static int C_TYPE_FOLDER		= 0;
 	
 	/**
+	 * The resource type-id for a folder.
+	 */
+	 final static String C_TYPE_FOLDER_NAME		= "folder";
+
+	 /**
 	 * The resource type-id for a plain text file.
 	 */
 	 final static int C_TYPE_TEXTPLAIN		= 1;
@@ -335,6 +345,11 @@ public interface I_CmsConstants
 	  */
 	 static final String C_PROPERTY_MOUNTPOINT = "MOUNTPOINT";
      
+	 /**
+	  * The name of the resourcetype-property.
+	  */
+	 static final String C_PROPERTY_RESOURCE_TYPE = "RESOURCE_TYPE";
+	 
     /**
      * The key for the username in the user information hashtable.
      */

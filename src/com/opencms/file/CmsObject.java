@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/01/06 17:02:03 $ 
+ * @version $Revision: 1.14 $ $Date: 2000/01/07 18:46:09 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -102,9 +102,49 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * Returns a Vector with all I_CmsResourceTypes.
 	 * 
 	 * Returns a Vector with all I_CmsResourceTypes.
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Vector getAllResourceTypes() { 
-		return null; // TODO: implement this! 
+	public Hashtable getAllResourceTypes() 
+		throws CmsException { 
+		return( c_rb.getAllResourceTypes(m_context.currentUser(), 
+										 m_context.getCurrentProject()) );
+	}
+	
+	/**
+	 * Returns a Vector with all I_CmsResourceTypes.
+	 * 
+	 * @param resourceType the name of the resource to get.
+	 * 
+	 * @return a CmsResourceTypes.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsResourceType getResourceType(String resourceType) 
+		throws CmsException {
+		return( c_rb.getResourceType(m_context.currentUser(), 
+									 m_context.getCurrentProject(), resourceType) );
+	}
+	
+	/**
+	 * Adds a CmsResourceTypes.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param resourceType the name of the resource to get.
+	 * @param launcherType the launcherType-id
+	 * @param launcherClass the name of the launcher-class normaly ""
+	 * 
+	 * Returns a CmsResourceTypes.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsResourceType addResourceType(String resourceType, int launcherType, 
+											 String launcherClass) 
+		throws CmsException {
+		return( c_rb.addResourceType(m_context.currentUser(), 
+									 m_context.getCurrentProject(), resourceType,
+									 launcherType, launcherClass) );
 	}
 	
 	/**

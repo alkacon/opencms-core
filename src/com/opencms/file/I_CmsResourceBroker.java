@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/01/06 17:02:04 $
+ * @version $Revision: 1.14 $ $Date: 2000/01/07 18:46:09 $
  */
 interface I_CmsResourceBroker {
 
@@ -863,4 +863,61 @@ interface I_CmsResourceBroker {
 								  Hashtable metainfos)
 		throws CmsException;
 	
+	/**
+	 * Returns a Vector with all I_CmsResourceTypes.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * Returns a Hashtable with all I_CmsResourceTypes.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public Hashtable getAllResourceTypes(A_CmsUser currentUser, 
+										 A_CmsProject currentProject) 
+		throws CmsException;
+
+	/**
+	 * Returns a CmsResourceTypes.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resourceType the name of the resource to get.
+	 * 
+	 * Returns a CmsResourceTypes.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsResourceType getResourceType(A_CmsUser currentUser, 
+											 A_CmsProject currentProject,
+											 String resourceType) 
+		throws CmsException;
+
+	/**
+	 * Adds a CmsResourceTypes.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resourceType the name of the resource to get.
+	 * @param launcherType the launcherType-id
+	 * @param launcherClass the name of the launcher-class normaly ""
+	 * 
+	 * Returns a CmsResourceTypes.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsResourceType addResourceType(A_CmsUser currentUser, 
+											 A_CmsProject currentProject,
+											 String resourceType, int launcherType, 
+											 String launcherClass) 
+		throws CmsException;
 }

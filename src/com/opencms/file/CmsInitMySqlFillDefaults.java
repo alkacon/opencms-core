@@ -9,7 +9,7 @@ import com.opencms.core.*;
  * anonymous user.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/01/06 17:02:03 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/07 18:46:09 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -51,7 +51,18 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			
 			I_CmsRbProperty propertyRb = new CmsRbProperty(
 				new CmsAccessPropertyMySql(propertyDriver, propertyConnectString));
+
+			// the resourceType "folder" is needed always - so adding it
+			Hashtable resourceTypes = new Hashtable(1);
+			resourceTypes.put(C_TYPE_FOLDER_NAME, new CmsResourceType(C_TYPE_FOLDER, 0, 
+																	  C_TYPE_FOLDER_NAME, ""));
 			
+			// sets the last used index of resource types.
+			resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
+			
+			propertyRb.addProperty( C_PROPERTY_RESOURCE_TYPE, resourceTypes );
+			
+			// create the root-mountpoint
 			Hashtable mount = new Hashtable(1);
 			mount.put("/", new CmsMountPoint("/", propertyDriver, 
 											 propertyConnectString,
@@ -83,7 +94,12 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			accessFile.createFolder(user, project, C_ROOT, C_ACCESS_DEFAULT_FLAGS);
 									
 			I_CmsRbFile fileRb = new CmsRbFile(accessFile);
+
+			I_CmsRbMetadefinition metadefinitionRb = 
+				new CmsRbMetadefinition(
+					new CmsAccessMetadefinitionMySql(propertyDriver, propertyConnectString));
 			
-			return null;
+			return new CmsResourceBroker(userRb, fileRb, metadefinitionRb, 
+										 propertyRb, projectRb);
 	}
 }

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/01/06 17:02:04 $
+ * @version $Revision: 1.13 $ $Date: 2000/01/07 18:46:09 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -45,6 +45,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * The resource broker for task
 	 */
 	private I_CmsRbTask m_taskRb;
+	
+	/**
+	 * A Hashtable with all resource-types.
+	 */
+	private Hashtable m_resourceTypes = null;
 	
 	/**
 	 * The constructor for this ResourceBroker. It gets all underlaying 
@@ -1075,6 +1080,69 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}		
 	}
 
+    /**
+	 * Adds a new CmsMountPoint. 
+	 * A new mountpoint for a disc filesystem is added.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * @param mountpath The physical location this mount point directs to. 
+	 * @param name The name of this mountpoint.
+	 * @param user The default user for this mountpoint.
+	 * @param group The default group for this mountpoint.
+	 * @param type The default resourcetype for this mountpoint.
+	 * @param accessFLags The access-flags for this mountpoint.
+	 */
+	synchronized public void addMountPoint(A_CmsUser currentUser, 
+										   A_CmsProject currentProject,
+										   String mountpoint, String mountpath, 
+										   String name, String user, String group,
+										   String type, int accessFlags)
+		throws CmsException {
+		
+		if( isAdmin(currentUser, currentProject) ) {
+			
+			// TODO: check, if the mountpoint is valid (exists the folder?)
+			
+			// create the new mountpoint
+			
+			// TODO: implement this
+			A_CmsMountPoint newMountPoint = null;
+/*			A_CmsMountPoint newMountPoint = 
+				new CmsMountPoint(mountpoint, mountpath,
+								  name, 
+								  readUser(currentUser, currentProject, user), 
+								  readGroup(currentUser, currentProject, group), 
+								  onlineProject(currentUser, currentProject), 
+								  null,
+								  accessFlags);
+*/			
+			// read all mountpoints from propertys
+			Hashtable mountpoints = (Hashtable) 
+									 m_propertyRb.readProperty(C_PROPERTY_MOUNTPOINT);
+			
+			// if mountpoints dosen't exists - create them.
+			if(mountpoints == null) {
+				mountpoints = new Hashtable();
+				m_propertyRb.addProperty(C_PROPERTY_MOUNTPOINT, mountpoints);
+			}
+			
+			// add the new mountpoint
+			mountpoints.put(newMountPoint.getMountpoint(), newMountPoint);
+			
+			// write the mountpoints back to the properties
+			m_propertyRb.writeProperty(C_PROPERTY_MOUNTPOINT, mountpoints);			
+			
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}		
+	}
+	
 	/**
 	 * Gets a CmsMountPoint. 
 	 * A mountpoint will be returned.
@@ -1172,7 +1240,117 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				CmsException.C_NO_ACCESS);
 		}		
 	}
+	
+	/**
+	 * Returns a Vector with all I_CmsResourceTypes.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * Returns a Hashtable with all I_CmsResourceTypes.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public Hashtable getAllResourceTypes(A_CmsUser currentUser, 
+										 A_CmsProject currentProject) 
+		throws CmsException {
+		// check, if the resourceTypes were read bevore
+		if(m_resourceTypes == null) {
+			// read the resourceTypes from the propertys
+			m_resourceTypes = (Hashtable) 
+							   m_propertyRb.readProperty(C_PROPERTY_RESOURCE_TYPE);
 
+			// remove the last index.
+			m_resourceTypes.remove(C_TYPE_LAST_INDEX);
+		}
+		
+		// return the resource-types.
+		return(m_resourceTypes);
+	}
+
+	/**
+	 * Returns a CmsResourceTypes.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resourceType the name of the resource to get.
+	 * 
+	 * Returns a CmsResourceTypes.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsResourceType getResourceType(A_CmsUser currentUser, 
+									 A_CmsProject currentProject,
+									 String resourceType) 
+		throws CmsException {
+		return((A_CmsResourceType)getAllResourceTypes(currentUser, currentProject).
+			get(resourceType));
+	}
+	
+	/**
+	 * Adds a CmsResourceTypes.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resourceType the name of the resource to get.
+	 * @param launcherType the launcherType-id
+	 * @param launcherClass the name of the launcher-class normaly ""
+	 * 
+	 * Returns a CmsResourceTypes.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsResourceType addResourceType(A_CmsUser currentUser, 
+											 A_CmsProject currentProject,
+											 String resourceType, int launcherType, 
+											 String launcherClass) 
+		throws CmsException {
+		if( isAdmin(currentUser, currentProject) ) {
+
+			// read the resourceTypes from the propertys
+			m_resourceTypes = (Hashtable) 
+							   m_propertyRb.readProperty(C_PROPERTY_RESOURCE_TYPE);
+
+			synchronized(m_resourceTypes) {
+
+				// get the last index and increment it.
+				Integer lastIndex = 
+					new Integer(((Integer)
+								  m_resourceTypes.get(C_TYPE_LAST_INDEX)).intValue() + 1);
+						
+				// write the last index back
+				m_resourceTypes.put(C_TYPE_LAST_INDEX, lastIndex); 
+						
+				// add the new resource-type
+				m_resourceTypes.put(resourceType, new CmsResourceType(lastIndex.intValue(), 
+																	  launcherType, 
+																	  resourceType, 
+																	  launcherClass));
+						
+				// store the resource types in the properties
+				m_propertyRb.writeProperty(C_PROPERTY_RESOURCE_TYPE, m_resourceTypes);
+						
+			}
+
+			// the cached resource types aren't valid any more.
+			m_resourceTypes = null;				
+			// return the new resource-type
+			return(getResourceType(currentUser, currentProject, resourceType));
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
 	/**
 	 * Reads a file from the Cms.<BR/>
 	 * 

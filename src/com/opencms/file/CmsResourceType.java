@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * for a resource this resource-type is needed.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/21 14:23:14 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/07 18:46:09 $
  */
  class CmsResourceType extends A_CmsResourceType implements I_CmsConstants {	
 	
@@ -88,4 +88,22 @@ import com.opencms.core.*;
          return m_launcherClass;
      }
 
+	/**
+	 * Returns a string-representation for this object.
+	 * This can be used for debugging.
+	 * 
+	 * @return string-representation for this object.
+	 */
+     public String toString() {
+        StringBuffer output=new StringBuffer();
+        output.append("[ResourceType]:");
+        output.append(m_resourceTypeName);
+        output.append(" , Id=");
+        output.append(m_resourceType);
+        output.append(" , launcherType=");
+        output.append(m_launcherType);
+        output.append(" , launcherClass=");
+        output.append(m_launcherClass);
+        return output.toString();
+      }
 }

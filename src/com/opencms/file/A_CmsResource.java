@@ -8,9 +8,9 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/06 17:02:03 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/07 18:46:09 $
  */
-public abstract class A_CmsResource {
+public abstract class A_CmsResource  {
 	/**
 	 * Returns the absolute path for this resource.<BR/>
 	 * Example: retuns /system/def/language.cms
