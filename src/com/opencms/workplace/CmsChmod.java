@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2000/04/17 16:11:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/19 08:07:58 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/04/17 16:11:35 $
+ * @version $Revision: 1.8 $ $Date: 2000/04/19 08:07:58 $
  */
 public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -114,6 +114,18 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,
         String pv=(String)parameters.get("pv");
         String ir=(String)parameters.get("ir");
       
+        String allflag=(String)parameters.get(C_PARA_FLAGS);
+        if (allflag== null) {
+            allflag="false";
+        }
+        
+        // select the template to be displayed
+        if (file.isFile()) {
+            template="file";            
+        } else {
+            template="folder";
+        }
+        
         // check if the newaccess parameter is available. This parameter is set when
         // the access flags are modified.
         if (newaccess != null) {
@@ -192,7 +204,48 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,
                         }
                         cms.chmod(hbodyPath,flag);
 				    }
-                }      
+                }     
+                
+                // the resource was a folder and the rekursive flag was set                   
+                // do a recursive chown on all files and subfolders
+                if (allflag.equals("true")) {
+                   // get all subfolders and files
+                    Vector allFolders=new Vector();
+                    Vector allFiles=new Vector();
+                    getAllResources(cms,filename,allFiles,allFolders);
+                    
+                   cms.unlockResource(file.getAbsolutePath());
+                   // now modify all subfolders
+                    for (int i=0;i<allFolders.size();i++) {
+                        CmsFolder folder=(CmsFolder)allFolders.elementAt(i);  
+                        cms.lockResource(folder.getAbsolutePath());
+                        cms.chmod(folder.getAbsolutePath(),flag);
+                        cms.unlockResource(folder.getAbsolutePath());
+                    }
+                
+                    // now modify all files in the subfolders
+                    for (int i=0;i<allFiles.size();i++) {
+                        CmsFile newfile=(CmsFile)allFiles.elementAt(i);  
+                        cms.lockResource(newfile.getAbsolutePath());
+                        cms.chmod(newfile.getAbsolutePath(),flag);
+                        cms.unlockResource(newfile.getAbsolutePath());
+                        if( (cms.getResourceType(newfile.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+				            String bodyPath=getBodyPath(cms, (CmsFile)newfile);
+				            int help = C_CONTENTBODYPATH.lastIndexOf("/");
+				            String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(newfile.getAbsolutePath());
+				            if (hbodyPath.equals(bodyPath)){
+                                cms.lockResource(hbodyPath);
+					            cms.chmod(hbodyPath,flag);
+                                cms.unlockResource(hbodyPath);
+				            }
+                        }   
+                        
+                    }    
+                   cms.lockResource(file.getAbsolutePath());
+                }
+              
+                
+                
                 session.removeValue(C_PARA_FILE);
                 // return to filelist 
                 try {
@@ -315,5 +368,39 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,
          }
          return output.toString();
      }
+     
+         
+     /**
+     * Gets all resources - files and subfolders - of a given folder.
+     * @param cms The CmsObject.
+     * @param rootFolder The name of the given folder.
+     * @param allFiles Vector containing all files found so far. All files of this folder
+     * will be added here as well.
+     * @param allolders Vector containing all folders found so far. All subfolders of this folder
+     * will be added here as well.
+     * @exception Throws CmsException if something goes wrong.
+     */
+    private void getAllResources(A_CmsObject cms, String rootFolder,
+                                 Vector allFiles, Vector allFolders) 
+     throws CmsException {
+        Vector folders=new Vector();
+        Vector files=new Vector();
+        
+        // get files and folders of this rootFolder
+        folders=cms.getSubFolders(rootFolder);
+        files=cms.getFilesInFolder(rootFolder);
+        
+        
+        //copy the values into the allFiles and allFolders Vectors
+        for (int i=0;i<folders.size();i++) {
+            allFolders.addElement((CmsFolder)folders.elementAt(i));
+            getAllResources(cms,((CmsFolder)folders.elementAt(i)).getAbsolutePath(),
+                            allFiles,allFolders);
+        }
+        for (int i=0;i<files.size();i++) {
+            allFiles.addElement((CmsFile)files.elementAt(i));
+        } 
+    }
+ 
     
 }
