@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlLinkGalleryWidget.java,v $
- * Date   : $Date: 2004/12/10 11:42:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/10 15:50:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.3
  */
 public class CmsXmlLinkGalleryWidget extends A_CmsXmlWidget {
@@ -113,7 +113,7 @@ public class CmsXmlLinkGalleryWidget extends A_CmsXmlWidget {
         result.append(id);
         result.append("\" id=\"");
         result.append(id);
-        result.append("\" onkeyup=\"checkLinkPreview('");
+        result.append("\" onkeyup=\"checkPreview('");
         result.append(id);
         result.append("');\"></td>");
         result.append(widgetDialog.buttonBarSpacer(1));
