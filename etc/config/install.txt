@@ -1,0 +1,194 @@
+How to install OpenCms
+
+
+The following instructions guide you through the installation of the OpenCms
+system. All steps should work both with Linux/UNIX and Windows NT. Be sure to
+complete every step and check its results as described before you go on to the
+next step.
+
+Step 1   
+First, install the Apache Web Server. 
+
+Check that your server is working by requesting an example page
+(e. g. the demo index.html coming with the apache distribution).
+ 
+
+Step 2
+Install the Java JDK (from SUN or IBM) and the Apache JServ 1.0. OpenCms
+currently works only with version 1.0. For details on how to install these
+components on your operating system, see the documentation that comes with them.
+
+Check that a Jserv Servlet Zone is set up properly and running on your machine
+by requesting the default IsItWorking class coming with JServ.
+
+
+Step 3
+After that, install mySQL. See the mySQL documentation on how to do this.
+Please remember that mySQL is shareware and you have to pay for it if you use
+it for a commercial purpose.
+
+Make sure mySQL is running before you continue by starting the mySQL monitor
+(command mysql in your mySQL bin folder). If a mySQL prompt appears after
+calling the monitor, the database seems to work correctly and you can exit and
+go on to the next step.
+
+
+Step 4
+Now unzip the OpenCms distribution (opencms_40xxx.zip). We currently have no
+RPM or setup.exe available, but this is a planned project for the future.
+Copy the opencms.properties from the config folder and the opencms.jar to your
+servlets directory. Copy the pics folder residing in the workplace to your
+apache document root folder. Create two new folders ExternalComponents and logs
+in your servlet directory.
+
+Get the database driver mysql_uncomp.jar and xerces.jar described in Components
+and copy them to the newly created ExternalComponents folder and to the opencms
+folder extracted from the zip file.
+
+Your servlets folder should now look like this: 
+
+(your servlet path)/servlets/ExternalComponents/xerces.jar
+(your servlet path)/servlets/ExternalComponents/mysql_uncomp.jar
+(your servlet path)/servlets/logs/
+(your servlet path)/servlets/opencms.jar
+(your servlet path)/servlets/opencms.properties
+ 
+
+Step 5
+For setting up the opencms database make config in the extracted opencms folder
+to your current directory and run
+
+mysql < databasesetup.txt
+
+This will create all required database tables.
+Make sure all tables are created properly by calling the mySQL monitor again
+with mysql opencms and entering show tables at the monitor prompt. mySQL should
+print out the following list of tables:
+
++--------------------------+
+  Tables in opencms 
++--------------------------+
+  CMS_FILES 
+  CMS_GROUPS 
+  CMS_GROUPUSERS 
+  CMS_METADEF 
+  CMS_METAINFO 
+  CMS_PROJECTS 
+  CMS_PROPERTIES 
+  CMS_RESOURCES 
+  CMS_USERS 
+  CMS_USERS_ADDITIONALINFO 
++--------------------------+
+
+
+Step 6
+After this, edit the cmssetup.txt and fill in your personal path to your earlier
+copied pics folder in the apache docroot in the line beginning with
+"AddMountPoint" (You will find this line near to the end of the file). cd to
+the parent opencms folder, start the OpenCms console and initialize the database
+with all workplace default files by calling:
+
+jre -cp opencms.jar -cp xerces.jar -cp mysql_uncomp.jar \
+   com.opencms.setup.CmsShell com.opencms.file.CmsInitMySqlFillDefaults \
+   org.gjt.mm.mysql.Driver \
+   "jdbc:mysql://localhost:3306/opencms?user=root&password=" < config/cmssetup.txt
+
+
+Thanks to Gregor Wolf for his hint to set classpaths system independent. The
+Java runtime environment jre should reside in the bin folder of your JDK
+installation. The OpenCms database should now be set up completely. You are now
+able to check the basic OpenCms system. Call the OpenCms console again by
+entering
+
+jre -cp opencms.jar -cp xerces.jar -cp mysql_uncomp.jar \
+   com.opencms.setup.CmsShell com.opencms.file.CmsInitMySql \
+   org.gjt.mm.mysql.Driver \
+   "jdbc:mysql://localhost:3306/opencms?user=root&password="
+
+Log in as Admin and check the accessibility of a workplace file in your
+database:
+
+> login Admin admin
+> readFile "/system/workplace/action/start.html"
+
+The OpenCms console should answer with
+
+[Resource]:/system/workplace/action/start.html , Project=1 , User=1 , \
+   Group=1 : Access=rwvrwvr-v- : Resource-type=2
+
+For performance reasons, all pictures used in the workplace are not stored in
+the OpenCms database, but accessed directly by the Apache (Remember, you
+copied the pics folder to the Apache document root in step 4). OpenCms mounts
+this folder into its own directory structure to give you access to all your
+pictures inside the OpenCms system. Check that your pics mountpoint was set
+correctly by accessing another file from the console:
+
+> readFile "/system/workplace/pics/system/opencms.gif"
+
+The answer should be similar to the last one above. If you are not able to read
+a file from the mountpoint, check if you copied all files correctly in step 4
+and make sure you updated the line AddMountPoint earlier in this step.
+
+Step 7
+Now you can finalize the configuration of your servlet zone. Make sure that your
+jserv.conf contains the line
+
+ApJServMount /servlets /root
+and the jserv.properties contains
+
+zones=root
+wrapper.bin.parameters=-mx64M
+
+and
+
+root.properties=(your servlet configuration path)/zone.properties
+Update your zone.properties and set the following repositories:
+repositories=(your servlet path)/servlets/opencms.jar
+repositories=(your servlet path)/servlets/ExternalComponents/xerces.jar
+repositories=(your servlet path)/servlets/ExternalComponents/mysql_uncomp.jar
+and add the lines:
+servlet.opencms.code=com.opencms.core.OpenCmsServlet
+servlet.opencms.initArgs=properties=(your servlet path)/servlets/opencms.properties
+
+to the Servlet Aliases and Servlet Init Parameters sections. Edit the
+opencms.properties and set the path for the log file:
+
+log.file=(your servlet path)/servlets/logs/opencms.log
+
+On UNIX systems the apache may have problems writing to the logs folder.
+For this reason you should set its owner to nobody.
+
+
+Now your system should be ready!
+Finally you can start your web server. The opencms system should be available
+at http://your.server/servlets/opencms/system/workplace/action/login.html.
+Now you can login as Admin with the default password admin.
+
+
+Problems?
+If you have problems with calling the login screen, you first should have a
+look at all available log files (here with the paths used in a standard
+UNIX installation):
+
+Apache log file (/usr/local/apache/logs/error_log)
+JServ module log file (/usr/local/apache/logs/mod_jserv.log)
+OpenCms log file ((your servlet path)/servlets/logs/opencms.log)  
+
+Security
+After you have managed to install OpenCms you should have a look at the
+security. First of all you can change the admin-password of OpenCms. You can
+change the password currently only in the OpenCms-Shell. After that you can add
+a password to the MySQL database. For this enter the following commands at the
+MySql-commandline.
+
+> use mysql;
+> insert into user values ('localhost', 'ocmsuser', \
+   password('XXXXX'),'N','N','N','N','N','N','N','N','N','N','N','N','N','N');
+> insert into db values ('localhost', 'opencms', \
+   'ocmsuser', 'Y','Y','Y','Y','Y','Y','Y','Y','Y','Y');
+> flush privileges;
+
+Don't forget to add the new user and his password into all connect-strings to
+the database. The new user can now only connect to the opencms-tables. For more
+informations see the MySQL-Documentation.
+
