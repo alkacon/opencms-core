@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2002/11/16 13:23:06 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2002/12/04 15:00:36 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.71 $ $Date: 2002/11/16 13:23:06 $
+ * @version $Revision: 1.72 $ $Date: 2002/12/04 15:00:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -568,13 +568,17 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
                 temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
             }
+            
+            // check for C_PROPERTY_RELATIVEROOT property (with directory search)
+            String relativeRoot = cms.readProperty(file, C_PROPERTY_RELATIVEROOT, true);
+            
             // save file contents to our temporary file.
             //Gridnine AB Aug 8, 2002
             content = encoder.unescape(content,
                 cms.getRequestContext().getEncoding());
             // TODO: Set correct error page here
             if((!exitRequested) || saveRequested) {
-                bodyTemplateFile.setEditedTemplateContent(cms, content, oldBody, oldEdit.equals(C_SELECTBOX_EDITORVIEWS[0]), file);
+                bodyTemplateFile.setEditedTemplateContent(cms, content, oldBody, oldEdit.equals(C_SELECTBOX_EDITORVIEWS[0]), file, relativeRoot);
             }
             cms.getRequestContext().setCurrentProject(tempProject);
             bodyTemplateFile.write();

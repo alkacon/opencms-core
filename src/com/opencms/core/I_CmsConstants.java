@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/11/17 13:57:19 $
-* Version: $Revision: 1.210 $
+* Date   : $Date: 2002/12/04 15:00:46 $
+* Version: $Revision: 1.211 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package com.opencms.core;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.210 $ $Date: 2002/11/17 13:57:19 $
+ * @version $Revision: 1.211 $ $Date: 2002/12/04 15:00:46 $
  */
 public interface I_CmsConstants {
 
@@ -211,6 +211,11 @@ public interface I_CmsConstants {
      * Property for default file in folders
      */
     static final String C_PROPERTY_DEFAULT_FILE = "default-file";
+
+    /**
+     * Property for relative root link substitution
+     */
+    static final String C_PROPERTY_RELATIVEROOT = "relativeroot";
 
     /**
      * This is the group for guests.
