@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/01 16:05:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/02 09:22:10 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -156,10 +156,12 @@ public class CmsChacc extends CmsDialog {
         } catch (CmsException e) {}
 
         // check the current users permission to change access control entries
-        if ((m_curPermissions.getAllowedPermissions() & I_CmsConstants.C_PERMISSION_CONTROL) > 0
-            && !((m_curPermissions.getDeniedPermissions() & I_CmsConstants.C_PERMISSION_CONTROL) > 0)) {
-                setEditable(true);
-        }
+        try {
+            if (getCms().isAdmin() || ((m_curPermissions.getAllowedPermissions() & I_CmsConstants.C_PERMISSION_CONTROL) > 0
+                && !((m_curPermissions.getDeniedPermissions() & I_CmsConstants.C_PERMISSION_CONTROL) > 0))) {
+                    setEditable(true);
+            }
+        } catch (CmsException e) {}
     }
     
     /**
@@ -539,7 +541,9 @@ public class CmsChacc extends CmsDialog {
         } else {
             // show the short view
             try {
-                CmsAccessControlList acList = getCms().getAccessControlList(getSettings().getFileUri(), true);
+                // get the inherited ACL of the parent folder 
+                String parentUri = com.opencms.file.CmsResource.getParent(getSettings().getFileUri());
+                CmsAccessControlList acList = getCms().getAccessControlList(parentUri, true);
                 Set principalSet = acList.getPrincipals();
                 i = principalSet.iterator();
                 while (i.hasNext()) {
@@ -688,6 +692,10 @@ public class CmsChacc extends CmsDialog {
             retValue.append("<tr>\n");
             retValue.append("\t<td>"+buildSelect("name=\"type\"", options, optionValues, -1)+"</td>\n");
             retValue.append("\t<td class=\"maxwidth\"><input type=\"text\" class=\"maxwidth\" name=\"name\" value=\"\"></td>\n");
+            
+            
+            retValue.append("\t<td><input class=\"dialogbutton\" style=\"width: 60px;\" type=\"button\" value=\""+key("button.search")+"\" onClick=\"javascript:opensmallwin('chaccbrowseusergroup.jsp','UserGroup',200,400);\"></td>\n");
+            
             retValue.append("\t<td><input class=\"dialogbutton\" type=\"submit\" value=\""+key("input.add")+"\"></td>\n");
             retValue.append("</tr>\n");
             retValue.append("</form>\n");
