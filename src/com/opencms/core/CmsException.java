@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
-* Date   : $Date: 2002/01/03 14:56:35 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2002/01/03 15:01:43 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import java.util.*;
  * This exception is thrown for security reasons in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.43 $ $Date: 2002/01/03 14:56:35 $
+ * @version $Revision: 1.44 $ $Date: 2002/01/03 15:01:43 $
  */
 public class CmsException extends Exception {
 
@@ -253,7 +253,7 @@ public class CmsException extends Exception {
         "New password is too short", "Access denied to resource",
         "Resource deleted", "Resourcebroker-init error", "Registry error",
         "User already exists", "HTTP streaming error",
-        "text1 C_HTTPS_PAGE_ERROR", "text2 C_HTTPS_REQUEST_ERROR"
+        "Wrong scheme for http resource", "Wrong scheme for https resource"
     };
 
     /**
