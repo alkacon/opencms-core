@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/15 09:46:23 $
- * Version: $Revision: 1.445 $
+ * Date   : $Date: 2004/11/15 17:04:45 $
+ * Version: $Revision: 1.446 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.445 $ $Date: 2004/11/15 09:46:23 $
+ * @version $Revision: 1.446 $ $Date: 2004/11/15 17:04:45 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3470,10 +3470,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsPublishList publishList = new CmsPublishList(directPublishResource);
 
         if (directPublishResource == null) {
+            
             // when publishing a project, 
             // all modified resources with the last change done in the current project are candidates if unlocked
 
-            publishList.addFolders(filterResources(context, null, m_vfsDriver.readResourceTree(
+            List folderList = m_vfsDriver.readResourceTree(
                 context.currentProject().getId(),
                 I_CmsConstants.C_READ_IGNORE_PARENT,
                 I_CmsConstants.C_READ_IGNORE_TYPE,
@@ -3483,8 +3484,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 I_CmsConstants.C_READMODE_INCLUDE_TREE
                     | I_CmsConstants.C_READMODE_INCLUDE_PROJECT
                     | I_CmsConstants.C_READMODE_EXCLUDE_STATE
-                    | I_CmsConstants.C_READMODE_ONLY_FOLDERS)));
-            publishList.addFiles(filterResources(context, publishList.getFolderList(), m_vfsDriver.readResourceTree(
+                    | I_CmsConstants.C_READMODE_ONLY_FOLDERS);            
+            publishList.addFolders(filterResources(context, folderList, folderList));
+            
+            List fileList = m_vfsDriver.readResourceTree(
                 context.currentProject().getId(),
                 I_CmsConstants.C_READ_IGNORE_PARENT,
                 I_CmsConstants.C_READ_IGNORE_TYPE,
@@ -3494,16 +3497,21 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 I_CmsConstants.C_READMODE_INCLUDE_TREE
                     | I_CmsConstants.C_READMODE_INCLUDE_PROJECT
                     | I_CmsConstants.C_READMODE_EXCLUDE_STATE
-                    | I_CmsConstants.C_READMODE_ONLY_FILES)));
+                    | I_CmsConstants.C_READMODE_ONLY_FILES);
+            publishList.addFiles(filterResources(context, publishList.getFolderList(), fileList));
+            
         } else if (directPublishResource.isFolder()) {
+            
             // when publishing a folder directly, 
             // the folder and all modified resources within the tree below this folder 
             // and with the last change done in the current project are candidates if unlocked
+            
             if (I_CmsConstants.C_STATE_UNCHANGED != directPublishResource.getState()
                 && getLock(context, null, directPublishResource.getRootPath()).isNullLock()) {
                 publishList.addFolder(directPublishResource);
             }
-            publishList.addFolders(filterResources(context, null, m_vfsDriver.readResourceTree(
+            
+            List folderList = m_vfsDriver.readResourceTree(
                 context.currentProject().getId(),
                 directPublishResource.getRootPath(),
                 I_CmsConstants.C_READ_IGNORE_TYPE,
@@ -3513,8 +3521,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 I_CmsConstants.C_READMODE_INCLUDE_TREE
                     | I_CmsConstants.C_READMODE_INCLUDE_PROJECT
                     | I_CmsConstants.C_READMODE_EXCLUDE_STATE
-                    | I_CmsConstants.C_READMODE_ONLY_FOLDERS)));
-            publishList.addFiles(filterResources(context, publishList.getFolderList(), m_vfsDriver.readResourceTree(
+                    | I_CmsConstants.C_READMODE_ONLY_FOLDERS);            
+            publishList.addFolders(filterResources(context, publishList.getFolderList(), folderList));
+            
+            List fileList = m_vfsDriver.readResourceTree(
                 context.currentProject().getId(),
                 directPublishResource.getRootPath(),
                 I_CmsConstants.C_READ_IGNORE_TYPE,
@@ -3524,20 +3534,27 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 I_CmsConstants.C_READMODE_INCLUDE_TREE
                     | I_CmsConstants.C_READMODE_INCLUDE_PROJECT
                     | I_CmsConstants.C_READMODE_EXCLUDE_STATE
-                    | I_CmsConstants.C_READMODE_ONLY_FILES)));
+                    | I_CmsConstants.C_READMODE_ONLY_FILES);
+            publishList.addFiles(filterResources(context, publishList.getFolderList(), fileList));
+            
         } else if (directPublishResource.isFile()
             && I_CmsConstants.C_STATE_UNCHANGED != directPublishResource.getState()) {
+            
             // when publishing a file directly this file is the only candidate
             // if it is modified and unlocked
+            
             if (getLock(context, null, directPublishResource.getRootPath()).isNullLock()) {
                 publishList.addFile(directPublishResource);
             }
+            
         }
 
         // Step 2: if desired, extend the list of files to publish with related siblings
         if (publishSiblings) {
+            
             List publishFiles = publishList.getFileList();
             int size = publishFiles.size();
+            
             for (int i = 0; i < size; i++) {
                 CmsResource currentFile = (CmsResource)publishFiles.get(i);
                 if (currentFile.getSiblingCount() > 1) {
@@ -7706,12 +7723,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         for (int j = 0; j < folderList.size(); j++) {
             if (((CmsResource)folderList.get(j)).getStructureId().equals(parent.getStructureId())) {
-                // parent will be published
+                // parent is new, but it will get published
                 return true;
             }
         }
 
-        // parent is new, but will not be published
+        // parent is new, but it will not get published
         return false;
     }
 
