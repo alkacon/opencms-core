@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/17 08:02:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/06/20 16:19:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.6 $ $Date: 2003/06/17 08:02:31 $
+ * @version $Revision: 1.7 $ $Date: 2003/06/20 16:19:14 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -109,7 +109,7 @@ public class CmsDriverManager implements I_CmsConstants {
     /**
      * Inner class to define the access policy when checking permissions on vfs operations.
      * 
-	 * @version $Revision: 1.6 $ $Date: 2003/06/17 08:02:31 $
+	 * @version $Revision: 1.7 $ $Date: 2003/06/20 16:19:14 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
     class VfsAccessGuard extends CmsAccessGuard {
@@ -207,7 +207,7 @@ public class CmsDriverManager implements I_CmsConstants {
 			} else {	
 				// otherwise, get the permissions from the access control list
 				CmsAccessControlList acl = getAccessControlList(getUser(), getProject(), resource);
-				permissions = acl.getPermissions(getUser(), getGroupsOfUser(getUser(),getUser().getName()));
+				permissions = acl.getPermissions(getUser(), getGroupsOfUser(getUser(),getProject(),getUser().getName()));
 			}
 			
 			permissions.denyPermissions(denied);
@@ -219,7 +219,7 @@ public class CmsDriverManager implements I_CmsConstants {
 	/**
 	 * Inner class to define the access policy when checking permissions on user operations.
 	 * 
-	 * @version $Revision: 1.6 $ $Date: 2003/06/17 08:02:31 $
+	 * @version $Revision: 1.7 $ $Date: 2003/06/20 16:19:14 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
 	class UserAccessGuard extends CmsAccessGuard {
@@ -260,7 +260,7 @@ public class CmsDriverManager implements I_CmsConstants {
 			} else {	
 				// otherwise, get the permissions from the access control list
 				CmsAccessControlList acl = getAccessControlList(getUser(), getProject(), resource);
-				return acl.getPermissions(getUser(), getGroupsOfUser(getUser(),getUser().getName()));
+				return acl.getPermissions(getUser(), getGroupsOfUser(getUser(),getProject(),getUser().getName()));
 			}
 		}
 	}
@@ -638,7 +638,7 @@ public class CmsDriverManager implements I_CmsConstants {
         }
 
         // get all groups of the user
-        Vector groups = getGroupsOfUser(currentUser, currentUser.getName());
+        Vector groups = getGroupsOfUser(currentUser, currentProject, currentUser.getName());
 
         // test, if the user is in the same groups like the project.
         for (int i = 0; i < groups.size(); i++) {
@@ -2883,7 +2883,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                                             CmsProject currentProject)
          throws CmsException {
         // get all groups of the user
-        Vector groups = getGroupsOfUser(currentUser, currentUser.getName());
+        Vector groups = getGroupsOfUser(currentUser, currentProject, currentUser.getName());
 
         // get all projects which are owned by the user.
         Vector projects = m_projectDriver.getAllAccessibleProjectsByUser(currentUser);
@@ -2927,7 +2927,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                                             CmsProject currentProject)
          throws CmsException {
         // get all groups of the user
-        Vector groups = getGroupsOfUser(currentUser, currentUser.getName());
+        Vector groups = getGroupsOfUser(currentUser, currentProject, currentUser.getName());
 
         // get all projects which are owned by the user.
         Vector projects = m_projectDriver.getAllAccessibleProjectsByUser(currentUser);
@@ -3152,7 +3152,9 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
     public Vector getDirectGroupsOfUser(CmsUser currentUser, CmsProject currentProject,
                                         String username)
         throws CmsException {
-        return m_userDriver.getGroupsOfUser(username);
+        	
+        CmsUser user = readUser(currentUser, currentProject, username);
+        return m_userDriver.getGroupsOfUser(user.getId());
     }
 
 /**
@@ -3372,9 +3374,10 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
      * @return Vector of groups
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public Vector getGroupsOfUser(CmsUser currentUser, String username)
+    public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject, String username)
         throws CmsException {
 
+		 CmsUser user = readUser(currentUser, currentProject, username);
          Vector allGroups;
 
          allGroups=(Vector)m_userGroupsCache.get(username);
@@ -3383,7 +3386,7 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
          CmsGroup subGroup;
          CmsGroup group;
          // get all groups of the user
-         Vector groups=m_userDriver.getGroupsOfUser(username);
+         Vector groups=m_userDriver.getGroupsOfUser(user.getId());
          allGroups = new Vector();
          // now get all childs of the groups
          Enumeration enu = groups.elements();
@@ -3430,7 +3433,7 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
 			return g.getName();
 			
 		// check if any of the groups of the current user has read permissions
-		Enumeration groups = getGroupsOfUser(currentUser, currentUser.getName()).elements();
+		Enumeration groups = getGroupsOfUser(currentUser, currentProject, currentUser.getName()).elements();
 		while (rpgroupName == null && groups.hasMoreElements()) {
 			
 			g = (CmsGroup)groups.nextElement();
@@ -4195,7 +4198,7 @@ System.err.println("ReadingpermittedGroup=" + rpgroupName);
             return true;
         }
         // get all groups of the user
-        Vector groups = getGroupsOfUser(currentUser, currentUser.getName());
+        Vector groups = getGroupsOfUser(currentUser, currentProject, currentUser.getName());
 
         for(int i = 0; i < groups.size(); i++) {
             // is this a managergroup for this project?
@@ -4414,6 +4417,10 @@ System.err.println("ReadingpermittedGroup=" + rpgroupName);
             m_userDriver.writeUser(newUser);
             // update cache
             m_userCache.put(new CacheId(newUser), newUser);
+            // clear invalidated caches
+            m_accessControlListCache.clear();
+            m_groupCache.clear();
+            m_userGroupsCache.clear();
             return(newUser);
         } else {
             // No Access!
@@ -6439,7 +6446,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
     public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, String userName)
         throws CmsException {
 
-        CmsUser user = null;
+        CmsUser user = null, test = null;
         // try to read the user from cache
         user = (CmsUser)m_userCache.get(new CacheId(userName + C_USER_TYPE_SYSTEMUSER));
         if(user == null){
@@ -6449,8 +6456,19 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
             user = m_userDriver.readUser(userName, C_USER_TYPE_SYSTEMUSER);
             m_userCache.put(new CacheId(user), user);
         }
+
         return user;
     }
+    
+	static int hash(Object x) {
+		int h = x.hashCode();
+
+		h += ~(h << 9);
+		h ^=  (h >>> 14);
+		h +=  (h << 4);
+		h ^=  (h >>> 10);
+		return h;
+	}
      /**
      * Returns a user object.<P/>
      *
@@ -7233,7 +7251,8 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
     public boolean userInGroup(CmsUser currentUser, CmsProject currentProject,
                                String username, String groupname)
         throws CmsException {
-         Vector groups = getGroupsOfUser(currentUser, username);
+
+         Vector groups = getGroupsOfUser(currentUser, currentProject, username);
          CmsGroup group;
          for(int z = 0; z < groups.size(); z++) {
              group = (CmsGroup) groups.elementAt(z);
@@ -8347,7 +8366,7 @@ protected void validName(String name, boolean blank) throws CmsException {
                 if (result) return true;
             }
             return false;
-        }        
+        }
     }
     
     /**
@@ -8963,7 +8982,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 	public CmsPermissionSet getPermissions(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsUser user) throws CmsException {
 		
 		CmsAccessControlList acList = getAccessControlList(currentUser, currentProject, resource);
-		return acList.getPermissions(user, getGroupsOfUser(user, user.getName()));
+		return acList.getPermissions(user, getGroupsOfUser(currentUser, currentProject, user.getName()));
 	}
 	
 	//
