@@ -102,8 +102,8 @@
 					<td class="formular" colspan="3" align="center">Group</td>
 					<td class="formular" align="center">&nbsp;&nbsp;&nbsp;</td>
 					<td class="formular" colspan="3" align="center">Others</td>
-					<td class="formular" align="center">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-					<td class="formular">Visible</td>
+					<!-- <td class="formular" align="center">&nbsp;&nbsp;&nbsp;&nbsp;</td> -->
+					<!-- <td class="formular">Visible</td> -->
 				</tr>
 				<tr>
 					<td class="formular" align="center">r</td>
@@ -117,8 +117,8 @@
 					<td class="formular" align="center">r</td>
 					<td class="formular" align="center">w</td>
 					<td class="formular" align="center">v</td>
-					<td class="formular" align="center">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-					<td class="formular" align="center">v</td>
+					<!-- <td class="formular" align="center">&nbsp;&nbsp;&nbsp;&nbsp;</td> -->
+					<!-- <td class="formular" align="center">v</td> -->
 				</tr>
 				<tr>
 					<td class="formular"><input type="checkbox" name="permissions0" ]]><process>permissions_check_0</process><![CDATA[></td>
@@ -132,8 +132,8 @@
 					<td class="formular"><input type="checkbox" name="permissions6" ]]><process>permissions_check_6</process><![CDATA[></td>
 				    <td class="formular"><input type="checkbox" name="permissions7" ]]><process>permissions_check_7</process><![CDATA[></td>
 					<td class="formular"><input type="checkbox" name="permissions8" ]]><process>permissions_check_8</process><![CDATA[></td>
-					<td class="formular" align="right">&nbsp;&nbsp;&nbsp;&nbsp;</td> 
-					<td class="formular" align="center"><input type="checkbox" name="permissions9" ]]><process>permissions_check_9</process><![CDATA[></td>
+					<!-- <td class="formular" align="right">&nbsp;&nbsp;&nbsp;&nbsp;</td> --> 
+					<!-- <td class="formular" align="center"><input type="checkbox" name="permissions9" ]]><process>permissions_check_9</process><![CDATA[></td> -->
 				</tr>
 			</table>
 		</td>

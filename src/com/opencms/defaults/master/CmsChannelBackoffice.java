@@ -18,7 +18,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
     /** Default value of permission*/
     protected final static int C_DEFAULT_PERMISSIONS=383;
     // possible accessflags
-    protected final static String[] C_ACCESS_FLAGS = {"1","2","4","8","16","32","64","128","256","512"};
+    protected final static String[] C_ACCESS_FLAGS = {"1","2","4","8","16","32","64","128","256"};
     //CmsChannelContent
     private CmsChannelContent cd = null;
     //int/Integer id
@@ -278,7 +278,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
      */
     private int getAccessValue(Hashtable parameters){
         int accessFlag = 0;
-        for(int i=0; i<=9; i++){
+        for(int i=0; i<=8; i++){
             String permissionsAtI=(String)parameters.get("permissions"+i);
             if(permissionsAtI != null) {
                 if(permissionsAtI.equals("on")) {
@@ -297,7 +297,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
      */
      private void setAccessValue(CmsXmlWpTemplateFile template, int accessFlags){
         // permissions check boxes
-        for(int i=0; i<=9; i++) {
+        for(int i=0; i<=8; i++) {
             int accessValueAtI = new Integer(this.C_ACCESS_FLAGS[i]).intValue();
             if ((accessFlags & accessValueAtI) > 0) {
                 template.setData("permissions_check_"+i,"checked");
