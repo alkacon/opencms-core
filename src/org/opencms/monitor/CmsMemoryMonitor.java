@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/13 13:47:34 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/11/13 16:29:59 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.main.OpenCmsCore;
 import org.opencms.main.OpenCmsSessionManager;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
 
 import com.opencms.core.CmsCoreSession;
@@ -70,7 +71,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.15 $ $Date: 2003/11/13 13:47:34 $
+ * @version $Revision: 1.16 $ $Date: 2003/11/13 16:29:59 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -450,42 +451,50 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         }
         
         if (obj instanceof byte[]) {
-            return ((byte[])obj).length;
+            // will always be a total of 16 + 8
+            return 8 + (int)(Math.ceil(((byte[])obj).length / 16.0) * 16.0);
         }
         
         if (obj instanceof String) {
-            return ((String)obj).length() * 2;
+            // will always be a total of 16 + 24
+            return 24 + (int)(Math.ceil(((String)obj).length() / 8.0) * 16.0);
         }        
 
         if (obj instanceof CmsFile) {
             CmsFile f = (CmsFile)obj;
             if (f.getContents() != null) {
-                return f.getContents().length;
+                return f.getContents().length + 1024;
+            } else {
+                return 1024;
             }
         }
         
+        if (obj instanceof CmsUUID) {
+            return 184; // worst case if UUID String has been generated
+        }
+        
         if (obj instanceof CmsPermissionSet) {
-            return 8; // two ints
+            return 16; // two ints
         }
 
         if (obj instanceof CmsResource) {
-            return 512; // estimated size
-        }
-        
-        if (obj instanceof CmsUser) {
             return 1024; // estimated size
         }
         
+        if (obj instanceof CmsUser) {
+            return 2048; // estimated size
+        }
+        
         if (obj instanceof CmsGroup) {
-            return 260; // estimated size
+            return 512; // estimated size
         }
         
         if (obj instanceof CmsProject) {
-            return 344;
+            return 512;
         }
         
         if (obj instanceof Boolean) {
-            return 1; // one boolean
+            return 8; // one boolean
         }
         
         // System.err.println("Unresolved: " + obj.getClass().getName());
