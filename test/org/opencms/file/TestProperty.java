@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2004/05/28 15:04:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/05/28 16:02:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.List;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestProperty extends OpenCmsTestCase {
         
@@ -101,6 +101,10 @@ public class TestProperty extends OpenCmsTestCase {
         propertyList1.add(property8);
         propertyList1.add(property9);
         createProperties(this, cms, "/release/notes_5.0rc2.html", propertyList3);
+        
+        echo("Testing write property on folder");
+        CmsProperty property10 = new CmsProperty("Title", "OpenCms", null);  
+        writeProperty(this, cms, "/release/", property10);
                 
         // remove OpenCms
         removeOpenCms();
