@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/29 15:28:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,15 @@
  
 package org.opencms.file;
 
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestResourceFilter;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.extensions.TestSetup;
@@ -46,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestProjects extends OpenCmsTestCase {
   
@@ -71,6 +76,7 @@ public class TestProjects extends OpenCmsTestCase {
                 
         suite.addTest(new TestProjects("testCreateDeleteProject"));
         suite.addTest(new TestProjects("testCopyResourceToProject"));
+        suite.addTest(new TestProjects("testDeleteProjectWithResources"));        
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -101,7 +107,7 @@ public class TestProjects extends OpenCmsTestCase {
         
         CmsProject project = cms.createProject(
             projectName, 
-            "Unit test project 1", 
+            "Unit test project 2", 
             OpenCms.getDefaultUsers().getGroupUsers(), 
             OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
             I_CmsConstants.C_PROJECT_TYPE_NORMAL
@@ -146,6 +152,68 @@ public class TestProjects extends OpenCmsTestCase {
                 fail ("Project " + project.getName() + "not deleted");
             }
         }
+    }
+    
+    /**
+     * Test the "delete project with resources" function.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */    
+    public void testDeleteProjectWithResources() throws Throwable {
+        
+        CmsObject cms = getCmsObject(); 
+        
+        echo("Creating a project for deletion test with resources");
+        
+        String projectName = "UnitTest3";
+        
+        CmsProject project = cms.createProject(
+            projectName, 
+            "Unit test project 3", 
+            OpenCms.getDefaultUsers().getGroupUsers(), 
+            OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
+            I_CmsConstants.C_PROJECT_TYPE_NORMAL
+        );
+        
+        // use the main folder as start folder for the project
+        String resource = "/";
+        
+        // store the resource
+        storeResources(cms, resource);
+
+        // switch to the project
+        cms.getRequestContext().setCurrentProject(project);     
+        
+        // copy the main site folder to the project
+        cms.copyResourceToProject("/");
+        
+        // some basic project tests
+        assertEquals(projectName, project.getName());
+        assertFalse(project.isOnlineProject());                    
+        
+        // do some changes to the project
+        cms.lockResource(resource);
+        cms.touch("/folder1/", System.currentTimeMillis(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, true);
+        cms.deleteResource("/folder2/", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);        
+        cms.createResource("/folder3/", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, Collections.EMPTY_LIST);
+        cms.createResource("/folder3/test.txt", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, "".getBytes(), Collections.EMPTY_LIST);
+        cms.unlockResource(resource);
+        
+        // now delete the project - all changes in the project must be undone
+        cms.deleteProject(project.getId());
+
+        // ensure that the original resources are unchanged
+        assertFilter(cms, resource, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);      
+        
+        // all resources within the folder must  be unchanged now
+        Iterator j = cms.readResources(resource, CmsResourceFilter.ALL, true).iterator();
+        while (j.hasNext()) {
+            CmsResource res = (CmsResource)j.next();
+            String resName = cms.getSitePath(res);
+                        
+            // now evaluate the result
+            assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);
+        }            
     }
     
     /**
