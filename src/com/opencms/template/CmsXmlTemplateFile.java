@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2003/02/11 17:11:27 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,8 @@ import com.opencms.template.cache.CmsElementLink;
 import com.opencms.template.cache.CmsElementVariant;
 import com.opencms.template.cache.CmsMethodLink;
 import com.opencms.util.LinkSubstitution;
+import com.opencms.workplace.I_CmsWpConstants;
+import com.opencms.flex.util.*;
 
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -52,13 +54,15 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.62 $ $Date: 2003/02/02 15:59:53 $
+ * @version $Revision: 1.63 $ $Date: 2003/02/11 17:11:27 $
  */
-public class CmsXmlTemplateFile extends A_CmsXmlContent {
+public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConstants {
 
     /** Name of the tag for the editable templates */
     public static final String C_EDIT_TEMPLATE = "edittemplate";
@@ -1006,6 +1010,13 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 content = content.substring(startIndex, endIndex);
             }
         }
+        
+        HttpServletRequest req = (HttpServletRequest) cms.getRequestContext().getRequest().getOriginalRequest();        
+		String contextpath = req.getContextPath() + req.getServletPath() + "/";
+		// substitute contextpath with variable
+		content = CmsStringSubstitution.substitute(content,CmsStringSubstitution.escapePattern(contextpath),CmsStringSubstitution.escapePattern(C_MACRO_PATH));			
+        
+        
         StringBuffer tempXmlString = new StringBuffer();
         tempXmlString.append("<?xml version=\"1.0\"?>\n");
         tempXmlString.append("<" + getXmlDocumentTagName() + ">");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/02/04 16:17:56 $
-* Version: $Revision: 1.81 $
+* Date   : $Date: 2003/02/11 17:11:27 $
+* Version: $Revision: 1.82 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
+import com.opencms.flex.util.*;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -62,11 +63,11 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.81 $ $Date: 2003/02/04 16:17:56 $
+ * @version $Revision: 1.82 $ $Date: 2003/02/11 17:11:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
+public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
 
     protected void commitTemporaryFile(CmsObject cms, String originalFilename, String temporaryFilename,
                    int tempProject, int curProject) throws CmsException {
@@ -262,12 +263,13 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         String hostName = orgReq.getScheme() + "://" + orgReq.getServerName() + ":" + orgReq.getServerPort();
 
         // Get all URL parameters
-        String content = (String)parameters.get(C_PARA_CONTENT);
+        String content = (String)parameters.get(C_PARA_CONTENT);        
         if(content == null){
             // try to get the value from the session because we might come from errorpage
             content = (String)session.getValue(C_PARA_CONTENT);
             session.removeValue(C_PARA_CONTENT);
         }
+        
         String body = (String)parameters.get("body");
         if(body == null){
             // try to get the value from the session because we might come from errorpage
@@ -569,7 +571,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             String relativeRoot = cms.readProperty(file, C_PROPERTY_RELATIVEROOT, true);
             
             // save file contents to our temporary file.
-            content = Encoder.unescape(content, Encoder.C_URI_ENCODING);
+            content = Encoder.unescape(content, Encoder.C_URI_ENCODING);			
+			
             if((!exitRequested) || saveRequested) {
                 bodyTemplateFile.setEditedTemplateContent(cms, content, oldBody, oldEdit.equals(C_SELECTBOX_EDITORVIEWS[0]), file, relativeRoot);
             }
@@ -663,10 +666,18 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // So the "bodytag" and "style" data can be accessed by the body file.
         Element bodyTag = layoutTemplateFile.getBodyTag();
         bodyTemplateFile.setBodyTag(bodyTag);
-
-        // Load the body!
-        content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);
+		
+		// Load the body!
+		content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);
+		
+		// set the context & servlet path in editor content
+		String context = orgReq.getContextPath();
+		String servlet = orgReq.getServletPath();
+		content = CmsStringSubstitution.substitute(content,CmsStringSubstitution.escapePattern(C_MACRO_PATH),CmsStringSubstitution.escapePattern(context+servlet+"/"));
+        
+        // escape content
         content = Encoder.escapeWBlanks(content, Encoder.C_URI_ENCODING);
+        
         parameters.put(C_PARA_CONTENT, content);
 
         // put the body parameter so that the selectbox can set the correct current value
