@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/10 14:39:23 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/07/11 08:30:14 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.32 $ $Date: 2003/07/10 14:39:23 $
+ * @version $Revision: 1.33 $ $Date: 2003/07/11 08:30:14 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -3098,7 +3098,9 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
     // TODO: check why this is neccessary
     public String getReadingpermittedGroup(CmsUser currentUser, CmsProject currentProject, int projectId, String resource) throws CmsException {
 
-		CmsResource res = readFileHeaderInProject(currentUser, currentProject, projectId, resource);
+		// Not, since resource is not neccessarily in the current project
+		// CmsResource res = readFileHeaderInProject(currentUser, currentProject, projectId, resource);
+		CmsResource res = readFileHeader(currentUser, currentProject, resource);
 		CmsAccessControlList acList = getAccessControlList(currentUser, currentProject, res);
 		
 		String rpgroupName = null;
@@ -6783,13 +6785,16 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 
     /**
      * Changes the project-id of a resource to the new project
-     * for publishing the resource directly
+     * for publishing the resource directly.<p>
      *
-     * @param newProjectId The new project-id
+     * @param projectId The new project-id
      * @param resourcename The name of the resource to change
+     * @param currentUser the current user
+     * @throws CmsException if something goes wrong
      */
     public void changeLockedInProject(int projectId, String resourcename, CmsUser currentUser) throws CmsException {
-        List path = readPath(currentUser, readProject(projectId), resourcename, false);
+        // include deleted resources, otherwise publishing of them will not work
+        List path = readPath(currentUser, readProject(projectId), resourcename, true);
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
                 
         m_vfsDriver.changeLockedInProject(projectId, resource.getId());
