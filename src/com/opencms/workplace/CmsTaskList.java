@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskList.java,v $
- * Date   : $Date: 2000/04/27 16:11:19 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/05/18 14:35:01 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import java.lang.reflect.*;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.12 $ $Date: 2000/04/27 16:11:19 $
+ * @version $Revision: 1.13 $ $Date: 2000/05/18 14:35:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -139,12 +139,23 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         for(int i = 0; i < list.size(); i++) {
 			// get the actual project
 			A_CmsTask task = (A_CmsTask) list.elementAt(i);
+			A_CmsProject project = null;
 			projectname = "?";
 			try {
-				projectname = cms.readTask(task.getRoot()).getName();
+				project = cms.readProject(task);
+				
 			} catch(Exception exc) {
-				// no root?!
+				// no project - continue with next task
+				continue;
 			}
+			
+			if((project == null) || (project.getFlags() == C_PROJECT_STATE_ARCHIVE)) {
+				// project was published - continue
+				continue;
+			}
+			
+			projectname = project.getName();
+			
 			priority = listdef.getProcessedDataValue("priority" + task.getPriority(), callingObject);
 			startTime = task.getStartTime().getTime();
 			timeout = task.getTimeOut().getTime();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContent.java,v $
- * Date   : $Date: 2000/05/11 10:18:40 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/05/18 14:35:01 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/05/11 10:18:40 $
+ * @version $Revision: 1.12 $ $Date: 2000/05/18 14:35:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -175,6 +175,7 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 				retValue = cms.readTasksForUser(project, userName, C_TASKS_ALL, orderBy, groupBy);
 				break;
 		}
+		
 		if(retValue == null) {
 			return new Vector();
 		} else {
