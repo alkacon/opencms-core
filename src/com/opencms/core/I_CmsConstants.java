@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/04/02 15:09:10 $
-* Version: $Revision: 1.147 $
+* Date   : $Date: 2001/04/05 13:03:11 $
+* Version: $Revision: 1.148 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.147 $ $Date: 2001/04/02 15:09:10 $
+ * @version $Revision: 1.148 $ $Date: 2001/04/05 13:03:11 $
  */
 public interface I_CmsConstants {
 
@@ -1047,24 +1047,24 @@ public interface I_CmsConstants {
     static final int C_WHATEVER = 3;
 
     /**
-	 * The name of the synchronizationpath-tag in registry.
-	 */
-	static final String C_SYNCHRONISATION_PATH = "syncpath";
+     * The name of the synchronizationpath-tag in registry.
+     */
+    static final String C_SYNCHRONISATION_PATH = "syncpath";
 
-	/**
-	 * The name of the synchronizationproject-tag in registry.
-	 */
-	static final String C_SYNCHRONISATION_PROJECT = "syncproject";
+    /**
+     * The name of the synchronizationproject-tag in registry.
+     */
+    static final String C_SYNCHRONISATION_PROJECT = "syncproject";
 
-	/**
-	 * The name of the synchronizationresource-tag in registry.
-	 */
-	static final String C_SYNCHRONISATION_RESOURCE = "syncresource";
+    /**
+     * The name of the synchronizationresource-tag in registry.
+     */
+    static final String C_SYNCHRONISATION_RESOURCE = "syncresource";
 
-	/**
-	 * The name of the synchronizationresource-tag in registry.
-	 */
-	static final String C_SYNCHRONISATION_RESOURCETAG = "res";
+    /**
+     * The name of the synchronizationresource-tag in registry.
+     */
+    static final String C_SYNCHRONISATION_RESOURCETAG = "res";
 
 }
 
