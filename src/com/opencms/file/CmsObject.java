@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/07/04 09:58:36 $
-* Version: $Revision: 1.236 $
+* Date   : $Date: 2002/07/10 08:12:27 $
+* Version: $Revision: 1.237 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.236 $ $Date: 2002/07/04 09:58:36 $
+ * @version $Revision: 1.237 $ $Date: 2002/07/10 08:12:27 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -3968,7 +3968,7 @@ public void setContextTo(String name){
  * @return boolean Is true if history is enabled
  */
 public boolean isHistoryEnabled(){
-    return m_rb.isHistoryEnabled();
+    return m_rb.isHistoryEnabled(this);
 }
 
 /**
@@ -4140,5 +4140,15 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      */
     public Hashtable readLinkCheckTable() throws CmsException {
         return m_rb.readLinkCheckTable(m_context.currentUser(), m_context.currentProject());
+    }
+    
+    /**
+     * Deletes the versions from the backup tables that are older then the given weeks
+     * 
+     * @param weeks The number of weeks: the max age of the remaining versions
+     * @return int The oldest remaining version
+     */
+    public int deleteBackups(int weeks) throws CmsException{
+       return m_rb.deleteBackups(this, m_context.currentUser(), m_context.currentProject(), weeks);
     }
 }

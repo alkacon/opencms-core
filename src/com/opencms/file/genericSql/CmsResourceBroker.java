@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/07/04 09:58:37 $
-* Version: $Revision: 1.326 $
+* Date   : $Date: 2002/07/10 08:11:34 $
+* Version: $Revision: 1.327 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.326 $ $Date: 2002/07/04 09:58:37 $
+ * @version $Revision: 1.327 $ $Date: 2002/07/10 08:11:34 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -128,10 +128,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     // cache for resource lists
     protected CmsResourceCache m_subresCache = null; // resources in folder
 
-    /**
-    * backup published resources for history
-    */
-    protected boolean m_enableHistory = true;
 
 /**
  * Accept a task from the Cms.
@@ -3964,9 +3960,6 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         // store the limited workplace port
         m_limitedWorkplacePort = config.getInteger("workplace.limited.port", -1);
 
-        if (config.getString("history.enabled", "true").toLowerCase().equals("false")) {
-            m_enableHistory = false;
-        }
         // initialize the access-module.
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init the dbaccess-module.");
@@ -4494,6 +4487,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
         CmsPublishedResources allChanged = new CmsPublishedResources();
         Vector changedResources = new Vector();
         Vector changedModuleMasters = new Vector();
+        
 
         // check the security
         if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) &&
@@ -4510,13 +4504,13 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
             }
             try{
                 changedResources = m_dbAccess.publishProject(currentUser, id,
-                                    onlineProject(currentUser, currentProject), m_enableHistory, report);
+                                    onlineProject(currentUser, currentProject), isHistoryEnabled(cms), report);
                 // now publish the module masters
                 Vector publishModules = new Vector();
                 cms.getRegistry().getModulePublishables(publishModules, null);
                 int versionId = 0;
                 long publishDate = System.currentTimeMillis();
-                if(m_enableHistory){
+                if(isHistoryEnabled(cms)){
                     versionId = m_dbAccess.getBackupVersionId();
                     // get the version_id for the currently published version
                     if(versionId > 1){
@@ -4541,7 +4535,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                         Class.forName((String)publishModules.elementAt(i)).getMethod("publishProject",
                                                 new Class[] {CmsObject.class, Boolean.class, Integer.class, Integer.class,
                                                 Long.class, Vector.class, Vector.class}).invoke(null, new Object[] {cms,
-                                                new Boolean(m_enableHistory), new Integer(id), new Integer(versionId), new Long(publishDate),
+                                                new Boolean(isHistoryEnabled(cms)), new Integer(id), new Integer(versionId), new Long(publishDate),
                                                 changedResources, changedModuleMasters});
                     } catch(Exception ex){
                     ex.printStackTrace();
@@ -7652,12 +7646,25 @@ protected void validName(String name, boolean blank) throws CmsException {
     }
 
     /**
-     * Check if the history is enabled
-     *
-     * @return boolean Is true if history is enabled
+     * Returns true if history is enabled
+     * 
+     * @param cms The CmsObject
+     * @return boolean If true the history is enabled
      */
-    public boolean isHistoryEnabled(){
-        return this.m_enableHistory;
+    public boolean isHistoryEnabled(CmsObject cms) {
+        try{
+            Hashtable histproperties = cms.getRegistry().getSystemValues(C_REGISTRY_HISTORY);
+            if("true".equalsIgnoreCase((String)histproperties.get(C_ENABLE_HISTORY))){
+                return true;
+            } else {
+                return false;
+            }
+        } catch (CmsException e){
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "Could not get registry value for "+C_REGISTRY_HISTORY+"."+C_ENABLE_HISTORY);
+            }
+            return false;            
+        }
     }
 
     /**
@@ -8030,5 +8037,34 @@ protected void validName(String name, boolean blank) throws CmsException {
         } else {
             return retValue;
         }
+    }
+    
+    /**
+     * Deletes the versions from the backup tables that are older then the given weeks
+     * 
+     * @param cms The CmsObject for reading the registry
+     * @param currentUser The current user
+     * @param currentProject The currently used project
+     * @param weeks The number of weeks: the max age of the remaining versions
+     * @return int The oldest remaining version
+     */
+    public int deleteBackups(CmsObject cms, CmsUser currentUser, CmsProject currentProject, int weeks) throws CmsException{
+        int lastVersion = 1;
+        Hashtable histproperties = cms.getRegistry().getSystemValues(C_REGISTRY_HISTORY);
+        String delete = (String)histproperties.get(C_DELETE_HISTORY);
+        if("true".equalsIgnoreCase(delete)){
+            // only an Administrator can delete the backups
+            if(isAdmin(currentUser, currentProject)){
+                // calculate the max date by the given weeks
+                // one week has 604800000 milliseconds
+                long oneWeek = 604800000;
+                long maxDate = System.currentTimeMillis() - ((long)weeks * oneWeek);
+                //System.err.println("backup max date: "+Utils.getNiceDate(maxDate));
+                lastVersion = m_dbAccess.deleteBackups(maxDate);
+            } else {
+                throw new CmsException("No access to delete the backup versions", CmsException.C_NO_ACCESS);
+            }
+        }
+        return lastVersion;
     }
 }

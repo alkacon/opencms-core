@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/07/04 09:58:37 $
-* Version: $Revision: 1.180 $
+* Date   : $Date: 2002/07/10 08:11:59 $
+* Version: $Revision: 1.181 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.180 $ $Date: 2002/07/04 09:58:37 $
+ * @version $Revision: 1.181 $ $Date: 2002/07/10 08:11:59 $
  *
  */
 
@@ -3573,10 +3573,11 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 
     /**
      * Check if the history is enabled
-     *
+     * 
+     * @param cms The CmsObject
      * @return boolean Is true if history is enabled
      */
-    public boolean isHistoryEnabled();
+    public boolean isHistoryEnabled(CmsObject cms);
 
     /**
      * Get the next version id for the published backup resources
@@ -3738,5 +3739,17 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @return the linkchecktable.
      */
     public Hashtable readLinkCheckTable(CmsUser currentUser, CmsProject currentProject)
+        throws CmsException;
+        
+    /**
+     * Deletes the versions from the backup tables that are older then the given weeks
+     * 
+     * @param cms The CmsObject for reading the registry
+     * @param currentUser The current user
+     * @param currentProject The currently used project
+     * @param weeks The number of weeks: the max age of the remaining versions
+     * @return int The oldest remaining version
+     */
+    public int deleteBackups(CmsObject cms, CmsUser currentUser, CmsProject currentProject, int weeks) 
         throws CmsException;
 }
