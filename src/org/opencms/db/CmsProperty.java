@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/03/31 14:01:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/31 15:25:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.db;
 
-import org.opencms.util.CmsUUID;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +41,7 @@ import java.util.Map;
 import java.util.RandomAccess;
 
 /**
- * Represents a property mapped to a structure and/or resource record.<p>
+ * Represents a property mapped to a structure and/or resource record of a resource.<p>
  * 
  * A property is an object that contains three string values: a key, a property value which is mapped
  * to the structure record of a resource, and a property value which is mapped to the resource
@@ -62,11 +60,10 @@ import java.util.RandomAccess;
  * the "PROPERTY_MAPPING_ID" table attribute in the database. The "PROPERTY_MAPPING_TYPE" table 
  * attribute (see {@link #C_STRUCTURE_RECORD_MAPPING} and {@link #C_RESOURCE_RECORD_MAPPING})
  * determines whether the value of the "PROPERTY_MAPPING_ID" attribute of the current row is
- * a structure or resource record ID. A property object contains also the UUID's of the structure 
- * and/or resource record(s) where it's values are mapped to.<p>
+ * a structure or resource record ID..<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/03/31 14:01:10 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/31 15:25:38 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -106,19 +103,9 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     private String m_key;
 
     /**
-     * The UUID of the resource record where this property is mapped to.<p>
-     */
-    private CmsUUID m_resourceId;
-
-    /**
      * The value of this property attached to the structure record.<p>
      */
     private String m_resourceValue;
-
-    /**
-     * The UUID of the structure record where this property is mapped to.<p>
-     */
-    private CmsUUID m_structureId;
 
     /**
      * The value of this property attached to the resource record.<p>
@@ -136,8 +123,6 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
         m_structureValue = null;
         m_resourceValue = null;
         m_createPropertyDefinition = false;
-        m_structureId = CmsUUID.getNullUUID();
-        m_resourceId = CmsUUID.getNullUUID();
     }
 
     /**
@@ -336,30 +321,12 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     }
 
     /**
-     * Returns the UUID of the resource record where this property is mapped to.<p>
-     * 
-     * @return the UUID of the resource record where this property is mapped to
-     */
-    public CmsUUID getResourceId() {
-        return m_resourceId;
-    }
-
-    /**
      * Returns the value of this property attached to the resource record.<p>
      * 
      * @return the value of this property attached to the resource record
      */
     public String getResourceValue() {
         return m_resourceValue;
-    }
-
-    /**
-     * Returns the UUID of the structure record where this property is mapped to.<p>
-     * 
-     * @return the UUID of the structure record where this property is mapped to
-     */
-    public CmsUUID getStructureId() {
-        return m_structureId;
     }
 
     /**
@@ -401,30 +368,12 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     }
 
     /**
-     * Sets the UUID of the resource record where this property is mapped to.<p>
-     * 
-     * @param resourceId the UUID of the resource record where this property is mapped to
-     */
-    public void setResourceId(CmsUUID resourceId) {
-        m_resourceId = resourceId;
-    }
-
-    /**
      * Sets the value of this property attached to the resource record.<p>
      * 
      * @param resourceValue the value of this property attached to the resource record
      */
     public void setResourceValue(String resourceValue) {
         m_resourceValue = resourceValue;
-    }
-
-    /**
-     * Sets the UUID of the structure record where this property is mapped to.<p>
-     * 
-     * @param structureId the UUID of the structure record where this property is mapped to
-     */
-    public void setStructureId(CmsUUID structureId) {
-        m_structureId = structureId;
     }
 
     /**

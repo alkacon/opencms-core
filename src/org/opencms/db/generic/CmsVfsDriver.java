@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/03/31 14:01:10 $
- * Version: $Revision: 1.162 $
+ * Date   : $Date: 2004/03/31 15:25:38 $
+ * Version: $Revision: 1.163 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.162 $ $Date: 2004/03/31 14:01:10 $
+ * @version $Revision: 1.163 $ $Date: 2004/03/31 15:25:38 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1632,6 +1632,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_WITH_PROPERTYDEF");
             stmt.setString(1, propertyDefName);
+            stmt.setInt(2, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
+            stmt.setInt(3, CmsProperty.C_RESOURCE_RECORD_MAPPING);
             res = stmt.executeQuery();
 
             while (res.next()) {
@@ -2389,10 +2391,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
                 if (mappingType == CmsProperty.C_STRUCTURE_RECORD_MAPPING) {
                     property.setStructureValue(propertyValue);
-                    property.setStructureId(resource.getStructureId());
                 } else if (mappingType == CmsProperty.C_RESOURCE_RECORD_MAPPING) {
                     property.setResourceValue(propertyValue);
-                    property.setResourceId(resource.getResourceId());
                 } else {
                     throw new CmsException("Unknown property value mapping type found: " + mappingType, CmsException.C_UNKNOWN_EXCEPTION);
                 }
@@ -2453,11 +2453,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 if (mappingType == CmsProperty.C_STRUCTURE_RECORD_MAPPING) {
                     // this property value is mapped to a structure record
                     property.setStructureValue(propertyValue);
-                    property.setStructureId(resource.getStructureId());
                 } else if (mappingType == CmsProperty.C_RESOURCE_RECORD_MAPPING) {
                     // this property value is mapped to a resource record
                     property.setResourceValue(propertyValue);
-                    property.setResourceId(resource.getResourceId());
                 } else {
                     throw new CmsException("Unknown property value mapping type found: " + mappingType, CmsException.C_UNKNOWN_EXCEPTION);
                 }
