@@ -714,10 +714,12 @@ PACKAGE BODY opencmsresource IS
     vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     vTableName VARCHAR2(20);
     vModifiedBy NUMBER := pUserId;
+    vDateModified DATE := sysdate;
   BEGIN
     IF pProjectID = vOnlineProject THEN
       vTableName := 'CMS_ONLINE_RESOURCES';
       vModifiedBy := pResource.resource_lastmodified_by;
+      vDateModified := pResource.date_lastmodified;
     ELSE
       vTableName := 'CMS_RESOURCES';
     END IF;
@@ -739,7 +741,7 @@ PACKAGE BODY opencmsresource IS
                         ' locked_by = '||pResource.locked_by||', '||
                         ' launcher_type = '||pResource.launcher_type||', '||
                         ' launcher_classname = '''||pResource.launcher_classname||''', '||
-                        ' date_lastmodified = to_date('''||to_char(sysdate,'dd.mm.yyyy hh24:mi:ss')||
+                        ' date_lastmodified = to_date('''||to_char(vDateModified,'dd.mm.yyyy hh24:mi:ss')||
                         ''',''dd.mm.yyyy hh24:mi:ss''), '||
                         ' resource_lastmodified_by = '||vModifiedBy||', '||
                         ' resource_size = '||pResource.resource_size||', '||
@@ -768,10 +770,12 @@ PACKAGE BODY opencmsresource IS
     vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     vTableName VARCHAR2(20);
     vModifiedBy NUMBER := pUserId;
+    vDateModified DATE := sysdate;
   BEGIN
     IF pProjectId = vOnlineProject THEN
       vTableName := 'CMS_ONLINE_RESOURCES';
       vModifiedBy := pResource.resource_lastmodified_by;
+      vDateModified := pResource.date_lastmodified;
     ELSE
       vTableName := 'CMS_RESOURCES';
     END IF;
@@ -793,7 +797,7 @@ PACKAGE BODY opencmsresource IS
                         ' locked_by = '||pResource.locked_by||', '||
                         ' launcher_type = '||pResource.launcher_type||', '||
                         ' launcher_classname = '''||pResource.launcher_classname||''', '||
-                        ' date_lastmodified = to_date('''||to_char(sysdate,'dd.mm.yyyy hh24:mi:ss')||
+                        ' date_lastmodified = to_date('''||to_char(vDateModified,'dd.mm.yyyy hh24:mi:ss')||
                         ''',''dd.mm.yyyy hh24:mi:ss''), '||
                         ' resource_lastmodified_by = '||vModifiedBy||', '||
                         ' resource_size = '||pResource.resource_size||', '||

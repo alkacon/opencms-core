@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/02 13:04:25 $
-* Version: $Revision: 1.217 $
+* Date   : $Date: 2001/10/04 08:24:23 $
+* Version: $Revision: 1.218 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.217 $ $Date: 2001/10/02 13:04:25 $ *
+ * @version $Revision: 1.218 $ $Date: 2001/10/04 08:24:23 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -4596,7 +4596,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                             statement.setInt(8, currentFolder.isLockedBy());
                             statement.setInt(9, currentFolder.getLauncherType());
                             statement.setString(10, currentFolder.getLauncherClassname());
-                            statement.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
+                            statement.setTimestamp(11, new Timestamp(currentFolder.getDateLastModified()));
                             statement.setInt(12, currentFolder.getResourceLastModifiedBy());
                             statement.setInt(13, 0);
                             statement.setInt(14, onlineFolder.getFileId());
@@ -4688,7 +4688,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                     statement.setInt(8, currentFolder.isLockedBy());
                     statement.setInt(9, currentFolder.getLauncherType());
                     statement.setString(10, currentFolder.getLauncherClassname());
-                    statement.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
+                    statement.setTimestamp(11, new Timestamp(currentFolder.getDateLastModified()));
                     statement.setInt(12, currentFolder.getResourceLastModifiedBy());
                     statement.setInt(13, 0);
                     statement.setInt(14, onlineFolder.getFileId());
@@ -4818,7 +4818,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                     statement.setInt(8, currentFile.isLockedBy());
                     statement.setInt(9, currentFile.getLauncherType());
                     statement.setString(10, currentFile.getLauncherClassname());
-                    statement.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
+                    statement.setTimestamp(11, new Timestamp(currentFile.getDateLastModified()));
                     statement.setInt(12, currentFile.getResourceLastModifiedBy());
                     statement.setInt(13, currentFile.getLength());
                     statement.setInt(14, onlineFile.getFileId());
@@ -4909,7 +4909,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                             statement.setInt(8, currentFile.isLockedBy());
                             statement.setInt(9, currentFile.getLauncherType());
                             statement.setString(10, currentFile.getLauncherClassname());
-                            statement.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
+                            statement.setTimestamp(11, new Timestamp(currentFile.getDateLastModified()));
                             statement.setInt(12, currentFile.getResourceLastModifiedBy());
                             statement.setInt(13, currentFile.getLength());
                             statement.setInt(14, onlineFile.getFileId());
@@ -9634,12 +9634,14 @@ public CmsTask readTask(int id) throws CmsException {
         String usedPool;
         String usedStatement;
         int modifiedBy = userId;
+        long dateModified = System.currentTimeMillis();
         //int onlineProject = getOnlineProject(project.getId()).getId();
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (project.getId() == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
             modifiedBy = file.getResourceLastModifiedBy();
+            dateModified = file.getDateLastModified();
         } else {
             usedPool = m_poolName;
             usedStatement = "";
@@ -9668,7 +9670,7 @@ public CmsTask readTask(int id) throws CmsException {
             statementResourceUpdate.setInt(8,file.isLockedBy());
             statementResourceUpdate.setInt(9,file.getLauncherType());
             statementResourceUpdate.setString(10,file.getLauncherClassname());
-            statementResourceUpdate.setTimestamp(11,new Timestamp(System.currentTimeMillis()));
+            statementResourceUpdate.setTimestamp(11,new Timestamp(dateModified));
             statementResourceUpdate.setInt(12,modifiedBy);
             statementResourceUpdate.setInt(13,file.getLength());
             statementResourceUpdate.setInt(14,file.getFileId());
@@ -9734,12 +9736,14 @@ public CmsTask readTask(int id) throws CmsException {
         String usedPool;
         String usedStatement;
         int modifiedBy = userId;
+        long dateModified = System.currentTimeMillis();
         //int onlineProject = getOnlineProject(project.getId()).getId();
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (project.getId() == onlineProject) {
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
             modifiedBy = folder.getResourceLastModifiedBy();
+            dateModified = folder.getDateLastModified();
         } else {
             usedPool = m_poolName;
             usedStatement = "";
@@ -9767,7 +9771,7 @@ public CmsTask readTask(int id) throws CmsException {
             statement.setInt(8,folder.isLockedBy());
             statement.setInt(9,folder.getLauncherType());
             statement.setString(10,folder.getLauncherClassname());
-            statement.setTimestamp(11,new Timestamp(System.currentTimeMillis()));
+            statement.setTimestamp(11,new Timestamp(dateModified));
             statement.setInt(12,modifiedBy);
             statement.setInt(13,0);
             statement.setInt(14,C_UNKNOWN_ID);

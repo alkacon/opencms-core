@@ -259,26 +259,22 @@ PACKAGE BODY OpenCmsProject IS
                      project_id = pOnlineProjectId,
                      access_flags = recFolders.access_flags,
                      state = opencmsConstants.C_STATE_UNCHANGED,
-                     locked_by = recFolders.locked_by,
+                     locked_by = opencmsConstants.C_UNKNOWN_ID,
                      launcher_type = recFolders.launcher_type,
                      launcher_classname = recFolders.launcher_classname,
-                     date_lastmodified = sysdate,
+                     date_lastmodified = recFolders.date_lastmodified,
                      resource_lastmodified_by = recFolders.resource_lastmodified_by,
                      resource_size = 0,
                      file_id = recFolders.file_id
                      where resource_id = recNewFolder.resource_id;
               commit;
-		  	  curNewFolder := opencmsResource.readFolder(pUserId, pOnlineProjectId, recFolders.resource_name);
-			  FETCH curNewFolder INTO recNewFolder;
-			  CLOSE curNewFolder;
 		    ELSE
 			  RAISE;
 		    END IF;
         END;
-        opencmsResource.writeFolder(pOnlineProjectId, recNewFolder, 'FALSE');
         -- copy properties
         opencmsProperty.writeProperties(pOnlineProjectId, opencmsProperty.readAllProperties(pUserId, pProjectId, recFolders.resource_name),
-                                        recNewFolder.resource_id, recNewFolder.resource_type);
+                                        recNewFolder.resource_id, recFolders.resource_type);
         -- remember only one id for mark
         vCurWriteFolders := recNewFolder.resource_id;
         IF pEnableHistory = 1 THEN
@@ -289,6 +285,7 @@ PACKAGE BODY OpenCmsProject IS
       ELSIF recFolders.state = opencmsConstants.C_STATE_CHANGED THEN
         -- checkExport ???
         -- does the folder exist in the online-project?
+        recNewFolder := NULL;
         curNewFolder := opencmsResource.readFolder(pUserId, pOnlineProjectId, recFolders.resource_name);
         FETCH curNewFolder INTO recNewFolder;
         CLOSE curNewFolder;
@@ -307,7 +304,6 @@ PACKAGE BODY OpenCmsProject IS
           FETCH curNewFolder INTO recNewFolder;
           CLOSE curNewFolder;
           recNewFolder.state := opencmsConstants.C_STATE_UNCHANGED;
-          opencmsResource.writeFolder(pOnlineProjectId, recNewFolder, 'FALSE');
         END IF;
         -- update the folder in the online-project
         update cms_online_resources set
@@ -318,10 +314,10 @@ PACKAGE BODY OpenCmsProject IS
                project_id = pOnlineProjectId,
                access_flags = recFolders.access_flags,
                state = opencmsConstants.C_STATE_UNCHANGED,
-               locked_by = recFolders.locked_by,
+               locked_by = opencmsConstants.C_UNKNOWN_ID,
                launcher_type = recFolders.launcher_type,
                launcher_classname = recFolders.launcher_classname,
-               date_lastmodified = sysdate,
+               date_lastmodified = recFolders.date_lastmodified,
                resource_lastmodified_by = recFolders.resource_lastmodified_by,
                resource_size = 0,
                file_id = recFolders.file_id
@@ -409,10 +405,10 @@ PACKAGE BODY OpenCmsProject IS
                      project_id = pOnlineProjectId,
                      access_flags = recFiles.access_flags,
                      state = opencmsConstants.C_STATE_UNCHANGED,
-                     locked_by = recFiles.locked_by,
+                     locked_by = opencmsConstants.C_UNKNOWN_ID,
                      launcher_type = recFiles.launcher_type,
                      launcher_classname = recFiles.launcher_classname,
-                     date_lastmodified = sysdate,
+                     date_lastmodified = recFiles.date_lastmodified,
                      resource_lastmodified_by = recFiles.resource_lastmodified_by,
                      resource_size = recFiles.resource_size
                      where resource_id = recNewFile.resource_id;
@@ -436,11 +432,12 @@ PACKAGE BODY OpenCmsProject IS
         END IF;
       -- resource is changed
       ELSIF recFiles.state = opencmsConstants.C_STATE_CHANGED THEN
-        -- does the folder exist in the online-project?
+      	recNewFile := NULL;
+        -- does the file exist in the online-project?
         curNewFile := opencmsResource.readFileNoAccess(pUserId, pOnlineProjectId, pOnlineProjectId, recFiles.resource_name);
         FETCH curNewFile INTO recNewFile;
         CLOSE curNewFile;
-        -- folder does not exist in online-project => create folder
+        -- file does not exist in online-project => create file
         IF recNewFile.resource_id IS NULL THEN
           BEGIN
             select resource_id into vParentId
@@ -454,8 +451,6 @@ PACKAGE BODY OpenCmsProject IS
                                      vParentId, recFiles.resource_name, 'FALSE', curNewFile);
           FETCH curNewFile INTO recNewFile;
           CLOSE curNewFile;
-          update cms_online_resources set state = opencmsConstants.C_STATE_UNCHANGED
-                 where resource_id=recNewFile.resource_id;
         END IF;
         -- update the file in the online-project
         update cms_online_resources set
@@ -466,10 +461,10 @@ PACKAGE BODY OpenCmsProject IS
                project_id = pOnlineProjectId,
                access_flags = recFiles.access_flags,
                state = opencmsConstants.C_STATE_UNCHANGED,
-               locked_by = recFiles.locked_by,
+               locked_by = opencmsConstants.C_UNKNOWN_ID,
                launcher_type = recFiles.launcher_type,
                launcher_classname = recFiles.launcher_classname,
-               date_lastmodified = sysdate,
+               date_lastmodified = recFiles.date_lastmodified,
                resource_lastmodified_by = recFiles.resource_lastmodified_by,
                resource_size = recFiles.resource_size
                where resource_id = recNewFile.resource_id;

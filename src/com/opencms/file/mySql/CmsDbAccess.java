@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/02 13:04:41 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2001/10/04 08:24:33 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.64 $ $Date: 2001/10/02 13:04:41 $ *
+ * @version $Revision: 1.65 $ $Date: 2001/10/04 08:24:33 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -593,7 +593,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                             statement.setInt(8, currentFolder.isLockedBy());
                             statement.setInt(9, currentFolder.getLauncherType());
                             statement.setString(10, currentFolder.getLauncherClassname());
-                            statement.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
+                            statement.setTimestamp(11, new Timestamp(currentFolder.getDateLastModified()));
                             statement.setInt(12, currentFolder.getResourceLastModifiedBy());
                             statement.setInt(13, 0);
                             statement.setInt(14, onlineFolder.getFileId());
@@ -704,7 +704,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                         statement.setInt(8, currentFolder.isLockedBy());
                         statement.setInt(9, currentFolder.getLauncherType());
                         statement.setString(10, currentFolder.getLauncherClassname());
-                        statement.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
+                        statement.setTimestamp(11, new Timestamp(currentFolder.getDateLastModified()));
                         statement.setInt(12, currentFolder.getResourceLastModifiedBy());
                         statement.setInt(13, 0);
                         statement.setInt(14, onlineFolder.getFileId());
@@ -882,7 +882,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                         statement.setInt(8, currentFile.isLockedBy());
                         statement.setInt(9, currentFile.getLauncherType());
                         statement.setString(10, currentFile.getLauncherClassname());
-                        statement.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
+                        statement.setTimestamp(11, new Timestamp(currentFile.getDateLastModified()));
                         statement.setInt(12, currentFile.getResourceLastModifiedBy());
                         statement.setInt(13, currentFile.getLength());
                         statement.setInt(14, onlineFile.getFileId());
@@ -989,7 +989,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                                     statement.setInt(8, currentFile.isLockedBy());
                                     statement.setInt(9, currentFile.getLauncherType());
                                     statement.setString(10, currentFile.getLauncherClassname());
-                                    statement.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
+                                    statement.setTimestamp(11, new Timestamp(currentFile.getDateLastModified()));
                                     statement.setInt(12, currentFile.getResourceLastModifiedBy());
                                     statement.setInt(13, currentFile.getLength());
                                     statement.setInt(14, onlineFile.getFileId());
