@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/15 18:05:06 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/15 18:05:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsEditor extends CmsWorkplaceDefault {
@@ -82,14 +82,18 @@ public class CmsEditor extends CmsWorkplaceDefault {
         
         String content = (String)parameters.get("CONTENT");
         String file = (String)parameters.get("file");
-        String exit = (String)parameters.get("EXIT");
-        String save = (String)parameters.get("save");
+        //String exit = (String)parameters.get("EXIT");
+        //String save = (String)parameters.get("save");
+        String action = (String)parameters.get("action");
         String jsfile = (String)parameters.get("editor.jsfile");
         
         boolean existsContentParam = (content!=null && (!"".equals(content)));
         boolean existsFileParam = ((file != null) && (!"".equals(file)));
-        boolean saveRequested = ((save != null) && "1".equals(save));
-        boolean exitRequested = ((exit != null) && "1".equals(exit));
+        //boolean saveRequested = ((save != null) && "1".equals(save));
+        //boolean exitRequested = ((exit != null) && "1".equals(exit));
+        boolean saveRequested = ((action != null) && ("save".equals(action) || "saveexit".equals(action)));
+        boolean exitRequested = ((action != null) && ("exit".equals(action) || "saveexit".equals(action)));
+        
         
         // If there is a file parameter and no content, try to read the file. 
         // If the user requested a "save file", also load the file.

@@ -101,8 +101,7 @@
 			<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT>
 			</object>
 			<INPUT TYPE=HIDDEN NAME="CONTENT">
-			<INPUT TYPE=HIDDEN NAME="EXIT">
-			<INPUT TYPE=HIDDEN NAME="save">	
+			<INPUT TYPE=HIDDEN NAME="action">	
 			<INPUT TYPE=HIDDEN NAME="file" value="]]><PROCESS>file</PROCESS><![CDATA[">				
 			</td>
 	</tr>

@@ -162,6 +162,14 @@ TD.leerzeile
     PADDING-LEFT: 10px;
     PADDING-RIGHT: 10px
 }
+TD.texteditor
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: black;
+    FONT-FAMILY: fixedsys, monospace;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+}
 INPUT.button
 {
     COLOR: black;

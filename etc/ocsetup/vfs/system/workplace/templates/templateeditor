@@ -11,12 +11,11 @@
 	// which button is clicked
 	function doTemplSubmit(para)
 	{
-		document.EDITOR.newbody.value = "0";
+		document.EDITOR.action.value = "";
 		switch (para)
 		{
 		case 1:
 			doSubmit();
-			document.EDITOR.bodychanged.value = "1";
 			document.EDITOR.submit();
 			break;
 		case 2:
@@ -38,20 +37,18 @@
 			document.PREVIEW.bodyfile.value = document.EDITOR.bodyfile.value;
 			document.PREVIEW.title.value = document.EDITOR.title.value;
 			document.PREVIEW.body.value = document.EDITOR.body.value;
-			document.PREVIEW.bodychanged.value = document.EDITOR.bodychanged.value;
+			document.PREVIEW.bodytitle.value = document.EDITOR.bodytitle.value;
 			document.PREVIEW.template.value = document.EDITOR.template.value;
 			document.PREVIEW.editor.value = document.EDITOR.editor.value;
 			document.PREVIEW.CONTENT.value = document.EDITOR.CONTENT.value;
-			document.PREVIEW.EXIT.value = document.EDITOR.EXIT.value;
-			document.PREVIEW.save.value = document.EDITOR.save.value;
 			document.PREVIEW.file.value = document.EDITOR.file.value;
-			document.PREVIEW.preview.value = "1";
+			document.PREVIEW.action.value = "preview";
 			document.PREVIEW.submit();
 			break;
 		case 6:
 			// New Body;
 			doSubmit();
-			document.EDITOR.newbody.value = "1";
+			document.EDITOR.action.value = "newbody";
 			document.EDITOR.submit();
 			break;
 		}
@@ -90,15 +87,13 @@ return DisplayChanged()
 	<INPUT TYPE=HIDDEN name="bodyclass">
 	<INPUT TYPE=HIDDEN name="bodyfile">
 	<INPUT TYPE=HIDDEN name="title">
+	<INPUT TYPE=HIDDEN name="action">
 	<INPUT TYPE=HIDDEN name="body">
-	<INPUT TYPE=HIDDEN name="bodychanged">
+	<INPUT TYPE=HIDDEN name="bodytitle">
 	<INPUT TYPE=HIDDEN name="template">
 	<INPUT TYPE=HIDDEN name="editor">
 	<INPUT TYPE=HIDDEN NAME="CONTENT">
-	<INPUT TYPE=HIDDEN NAME="EXIT">
-	<INPUT TYPE=HIDDEN NAME="save">	
 	<INPUT TYPE=HIDDEN NAME="file">		
-	<INPUT TYPE=HIDDEN NAME="preview">		
 </form>
 <form 
 	name=EDITOR 
@@ -106,15 +101,12 @@ return DisplayChanged()
 	METHOD=POST>
 	<INPUT TYPE=HIDDEN name="bodyclass" value="]]><PROCESS>bodyclass</PROCESS><![CDATA[">
 	<INPUT TYPE=HIDDEN name="bodyfile" value="]]><PROCESS>bodyfile</PROCESS><![CDATA[">
-	<INPUT TYPE=HIDDEN name="newbody">
 <table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menubold><p class=einzug>]]><LABEL value="input.title"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
 		<td class=dialogtxt>]]><INPUTFIELD name="title" class="textfeld" size="10" length="255" method="setTitle"/><![CDATA[
 		<td class=menubold><p class=tab>]]><LABEL value="input.body"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
-		<td class=dialogtxt>]]><SELECT class="textfeld" name="body" width="80" method="getBodys" onchange="doTemplSubmit(1);"/><![CDATA[
-			<INPUT TYPE=HIDDEN name="bodychanged">		
-		</td>
+		<td class=dialogtxt>]]><SELECT class="textfeld" name="body" width="80" method="getBodys" onchange="doTemplSubmit(1);"/><![CDATA[</td>
 		<td class=dialogtxt>]]><INPUTFIELD name="bodytitle" class="textfeld" size="10" length="255" method="setBodyTitle"/><![CDATA[
 		<td class=menu><p class=tab>]]><BUTTON href="javascript:doTemplSubmit(6);" name="bt_newdoc" action="" alt="newbody"/><![CDATA[</td>
 		<td class=menubold><p class=tab>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>

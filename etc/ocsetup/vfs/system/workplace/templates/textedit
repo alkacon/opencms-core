@@ -42,7 +42,7 @@
 
 <!-- Inhalt -->
 <tr>
-	<td colspan=23 height="100%" width=100%>
+	<td class="texteditor" colspan=23 height="100%" width=100%>
             <OBJECT classid=clsid:EB3A74C0-5343-101D-BB4D-040224009C02 
             height=100% id=edit1 name=edit1 width=100%>
 	<PARAM NAME="_Version" VALUE="131083">
@@ -100,8 +100,7 @@
 	<PARAM NAME="ZeroSubstitute" VALUE="0">
             </OBJECT>
 	<INPUT TYPE=HIDDEN NAME="CONTENT">
-	<INPUT TYPE=HIDDEN NAME="EXIT">
-	<INPUT TYPE=HIDDEN NAME="save">	
+	<INPUT TYPE=HIDDEN NAME="action">	
 	<INPUT TYPE=HIDDEN NAME="file" value="]]><PROCESS>file</PROCESS><![CDATA[">	
 </td></tr>
 </table>
