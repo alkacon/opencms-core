@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/Attic/CmsSetupBeanTest.java,v $
- * Date   : $Date: 2004/04/05 05:42:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/25 10:12:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,23 +31,22 @@
  
 package org.opencms.setup;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.Vector;
-
-import junit.framework.TestCase;
 
 import org.apache.commons.collections.ExtendedProperties;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0
  */
-public class CmsSetupBeanTest extends TestCase {
+public class CmsSetupBeanTest extends OpenCmsTestCase {
 
     // DEBUG flag
     // private static final boolean DEBUG = true;
@@ -73,11 +72,7 @@ public class CmsSetupBeanTest extends TestCase {
         CmsSetupBean bean = new CmsSetupBean();
         bean.init("", null);
 
-        // get URL of test input resource
-        URL inputUrl = ClassLoader.getSystemResource("org/opencms/setup/");
-        inputUrl.getPath();
-        
-        String base = new File(inputUrl.getFile()).getAbsolutePath() + File.separator;
+        String base = getTestDataPath() + File.separator + "WEB-INF" + File.separator + "config" +  File.separator;
         String inputFile = base + "opencms.properties";
         String outputFile = base + "output.properties";
                
@@ -120,7 +115,10 @@ public class CmsSetupBeanTest extends TestCase {
             System.err.println(newValue);
             System.err.println("---");
             assertEquals(oldValue, newValue);   
-        }
+        }        
         
+        // clean up - remvove generated file
+        File output = new File(outputFile);
+        output.delete();
     }
 }
