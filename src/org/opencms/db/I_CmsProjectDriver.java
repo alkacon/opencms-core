@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/09/12 11:39:14 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2003/09/12 10:01:54 $
+ * @version $Revision: 1.18 $ $Date: 2003/09/12 11:39:14 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -455,11 +455,17 @@ public interface I_CmsProjectDriver {
      * @param currentProject the current project
      * @param publishId the ID of the current publishing process
      * @param tagId the current backup ID
+     * @param resourcename the name of the resource
      * @param resource the resource that was published
      * @throws CmsException if something goes wrong
      */
     void writePublishHistory(CmsProject currentProject, int publishId, int tagId, String resourcename, CmsResource resource) throws CmsException;
     
+    /**
+     * Returns the next version number of the publish history.<p>
+     * @return a new version number greater than the last used version number 
+     * @throws CmsException if something goes wrong
+     */
     int nextPublishVersionId() throws CmsException;
         
 }
