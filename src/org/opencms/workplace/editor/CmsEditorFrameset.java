@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorFrameset.java,v $
- * Date   : $Date: 2003/12/10 10:35:01 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/01/09 08:30:37 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1.12
  */
@@ -111,8 +111,12 @@ public class CmsEditorFrameset extends CmsEditor implements I_CmsEditorHandler {
             
         case CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID:
         case CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID:
-            // resource is of type "xml page", show the dhtml control
-            return C_PATH_EDITORS + "msdhtml/editor.html";
+            // resource is of type "xml page", show the dhtml control or simple page editor
+            if (BROWSER_NS.equals(getBrowserType(jsp.getCmsObject()))) {
+                return C_PATH_EDITORS + "simplehtml/editor.html";
+            } else {
+                return C_PATH_EDITORS + "msdhtml/editor.html";
+            }    
             
         case CmsResourceTypeJsp.C_RESOURCE_TYPE_ID:
         case CmsResourceTypePlain.C_RESOURCE_TYPE_ID:

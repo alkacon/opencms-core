@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/01/08 13:15:29 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/01/09 08:30:37 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,37 +30,30 @@
  */
 package org.opencms.workplace.editor;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.I_CmsWpConstants;
 
-import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
-import org.opencms.page.CmsXmlPage;
-import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-
 /**
  * Creates the output for editing a CmsDefaultPage with the MS DHTML ActiveX control editor.<p> 
  * 
- * The following files use this class:
+ * The following editor uses this class:
  * <ul>
  * <li>/jsp/editors/msdhtml/editor_html
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1.12
  */
-public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
+public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
     
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS */
     public static final String EDITOR_TYPE = "msdhtml";
@@ -73,100 +66,6 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
     public CmsMSDHtmlEditor(CmsJspActionElement jsp) {
         super(jsp);
     }
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(EDITOR_TYPE);
-        
-        // Initialize a page object from the temporary file
-        if (getParamTempfile() != null && !"null".equals(getParamTempfile())) {
-            try {
-                m_file = getCms().readFile(this.getParamTempfile());
-                m_page = CmsXmlPage.read(getCms(), m_file);
-            } catch (CmsException e) {
-                // error during initialization
-                try {
-                    showErrorPage(this, e, "read");
-                } catch (JspException exc) {
-                    // ignore this exception
-                }
-            }
-        }
-
-        // set the action for the JSP switch 
-        if (EDITOR_SAVE.equals(getParamAction())) {
-            setAction(ACTION_SAVE);
-        } else if (EDITOR_SAVEEXIT.equals(getParamAction())) {
-            setAction(ACTION_SAVEEXIT);
-        } else if (EDITOR_SAVEACTION.equals(getParamAction())) {
-            setAction(ACTION_SAVEACTION);
-            try {
-                actionDirectEdit();
-            } catch (Exception e) {
-                // ignore this exception
-            }
-        } else if (EDITOR_EXIT.equals(getParamAction())) {
-            setAction(ACTION_EXIT);
-        } else if (EDITOR_CHANGE_BODY.equals(getParamAction())) {
-            setAction(ACTION_SHOW);
-            actionChangeBodyElement();
-        } else if (EDITOR_CHANGE_TEMPLATE.equals(getParamAction())) {
-            setAction(ACTION_SHOW);
-            actionChangeTemplate();
-        } else if (EDITOR_NEW_BODY.equals(getParamAction())) {
-            setAction(ACTION_SHOW);            
-            actionNewBody();
-        } else if (EDITOR_SHOW.equals(getParamAction())) {
-            setAction(ACTION_SHOW);
-        } else if (EDITOR_PREVIEW.equals(getParamAction())) {
-            setAction(ACTION_PREVIEW);
-        } else {
-            // initial call of editor, initialize page and page parameters
-            setAction(ACTION_DEFAULT);
-            try {
-                // lock resource if autolock is enabled in configuration
-                if ("true".equals(getParamDirectedit())) {
-                    // set a temporary lock in direct edit mode
-                    checkLock(getParamResource(), CmsLock.C_MODE_TEMP);
-                } else {
-                    // set common lock
-                    checkLock(getParamResource());
-                }
-                // create the temporary file
-                setParamTempfile(createTempFile());
-                // initialize a page object from the created temporary file
-                m_file =  getCms().readFile(this.getParamTempfile());
-                m_page = CmsXmlPage.read(getCms(), m_file);
-            } catch (CmsException e) {
-                // error during initialization
-                try {
-                    showErrorPage(this, e, "read");
-                } catch (JspException exc) {
-                    // ignore this exception
-                }
-            }
-            // set the initial body language & name if not given in request parameters
-            if (getParamBodylanguage() == null) {
-                initBodyElementLanguage();
-            }
-            if (getParamBodyname() == null) {
-                initBodyElementName();
-            }
-            // initialize the editor content
-            initContent();
-            // set template and page title  
-            setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));                    
-            setParamPagetitle(getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getParamTempfile(), ""));
-        } 
-        
-        // prepare the content String for the editor
-        prepareContent(false);
-    }    
     
     /**
      * Manipulates the content String for the different editor views and the save operation.<p>
@@ -213,13 +112,6 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
         }
         return content.trim();
     }  
-    
-    /**
-     * @see org.opencms.workplace.editor.CmsEditor#getEditorResourceUri()
-     */
-    public final String getEditorResourceUri() {
-        return getSkinUri() + "editors/" + EDITOR_TYPE + "/";   
-    }
     
     /**
      * Builds the html String for the editor views available in the editor screens.<p>
