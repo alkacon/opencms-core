@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/10/14 08:22:13 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 import java.util.zip.ZipFile;
@@ -551,6 +552,29 @@ public class CmsImportVersion4 extends A_CmsImport {
         return res;
     }
 
+    /**
+     * Imports a single user.<p>
+     * @param name user name
+     * @param description user description
+     * @param flags user flags
+     * @param password user password 
+     * @param firstname firstname of the user
+     * @param lastname lastname of the user
+     * @param email user email
+     * @param address user address 
+     * @param type user type
+     * @param userInfo user info
+     * @param userGroups user groups
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    protected void importUser(String name, String description, String flags, String password, String firstname, String lastname, String email, String address, String type, Hashtable userInfo, Vector userGroups) throws CmsException {
+     
+        if (!"com.opencms.legacy.CmsLegacyPasswordHandler".equals(OpenCms.getPasswordHandler().getClass().getName())) {
+            password = convertDigestEncoding(password);
+        }
+        super.importUser(name, description, flags, password, firstname, lastname, email, address, type, userInfo, userGroups);
+    }
 
     /**
      * Convert a given timestamp from a String format to a long value.<p>

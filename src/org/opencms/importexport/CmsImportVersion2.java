@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/10/05 14:31:31 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2004/10/14 08:22:13 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -919,4 +919,27 @@ public class CmsImportVersion2 extends A_CmsImport {
         return webAppNames;
     }
 
+    /**
+     * Imports a single user.<p>
+     * @param name user name
+     * @param description user description
+     * @param flags user flags
+     * @param password user password 
+     * @param firstname firstname of the user
+     * @param lastname lastname of the user
+     * @param email user email
+     * @param address user address 
+     * @param type user type
+     * @param userInfo user info
+     * @param userGroups user groups
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    protected void importUser(String name, String description, String flags, String password, String firstname, String lastname, String email, String address, String type, Hashtable userInfo, Vector userGroups) throws CmsException {
+     
+        if (!"com.opencms.legacy.CmsLegacyPasswordHandler".equals(OpenCms.getPasswordHandler().getClass().getName())) {
+            password = convertDigestEncoding(password);
+        }
+        super.importUser(name, description, flags, password, firstname, lastname, email, address, type, userInfo, userGroups);
+    }
 }

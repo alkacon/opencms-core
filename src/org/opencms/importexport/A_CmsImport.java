@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/09/28 09:13:51 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/10/14 08:22:13 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -299,6 +299,23 @@ public abstract class A_CmsImport implements I_CmsImport {
         m_linkPropertyStorage = null;
     }
 
+    /**
+     * Converts a given digest to base64 encoding.<p>
+     * 
+     * @param value the digest value in the legacy encoding
+     * @return the digest in the new encoding
+     */
+    public String convertDigestEncoding(String value) {
+
+        byte data[] = new byte[value.length() / 2];
+                
+        for (int i = 0; i < data.length; i++) {
+            data[i] = (byte)(Integer.parseInt(value.substring(i*2, i*2+2), 16) - 128); 
+        }
+        
+        return new String(Base64.encodeBase64(data));
+    }
+    
     /**
      * Tries to read the property definition for a specified key.<p>
      * The property defintion gets created if it is missing.<p>
