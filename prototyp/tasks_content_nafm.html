@@ -76,6 +76,11 @@ function show_help()
 	
 </table>
 <!-- Ende Inhalt Aufgaben Projektbezogen -->
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<!-- Nicht implementieren, nur ein Hinweis -->
+<center>[Die Icons sind jetzt kontextsensitiv. Kontextmenues sind beispielhaft, jedoch nicht überall implementiert!]</center>
+<!-- Ende -->
 
 <!-- Layer Neue Aufgaben -->
 <DIV ID="task_new" class=kontextmenu>
@@ -85,11 +90,15 @@ function show_help()
 <table class=filekontext CELLPADDING=1 CELLSPACING=0 BORDER=0>
 <tr><td>
 <table width="150" CELLPADDING=1 CELLSPACING=1 BORDER=0>
-	<TR><TD>
-		<A class=kontextlink href="javascript:doAction(DO_TASKREQUEST);">R&uuml;ckfragen</A> 
-	</TD></TR>
+	
 	<TR><TD>
 		<A class=kontextlink href="javascript:doAction(DO_TASKACCEPT);">Annehmen</A> 
+	</TD></TR>
+	<TR><TD class=inaktiv>
+		&Uuml;bernehmen
+	</TD></TR>
+	<TR><TD class=inaktiv>
+		Weiterleiten
 	</TD></TR>
 	<tr><td><hr></td></tr>
 	<TR><TD class=inaktiv>
@@ -99,10 +108,17 @@ function show_help()
 		Priorit&auml;t
 	</TD></TR>
 	<TR><TD>
-		<A class=kontextlink href="javascript:doAction(DO_TASKCOMMENT);">Neuer Kommentar</A> 
+		<A class=kontextlink href="javascript:doAction(DO_TASKREQUEST);">R&uuml;ckfragen</A> 
 	</TD></TR>
 	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_TASKCOMMENT);">Neuer Kommentar</A> 
+	</TD></TR>
+	<tr><td><hr></td></tr>
+	<TR><TD>
 		<A class=kontextlink href="javascript:doAction(DO_TASKOK);">Abhaken</A> 
+	</TD></TR>
+	<TR><TD class=inaktiv>
+		Reaktivieren
 	</TD></TR>
 	<tr><td><hr></td></tr>
 	<TR><TD>

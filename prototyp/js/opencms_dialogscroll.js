@@ -1,5 +1,33 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms_dialogscroll.js,v $
+ * Date   : $Date: 2000/03/21 16:48:31 $
+ * Version: $Revision: 1.3 $
+ *
+ * Copyright (C) 2000  The OpenCms Group 
+ * 
+ * This File is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.com
+ * 
+ * You should have received a copy of the GNU General Public License
+ * long with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+ 
 // ===============================================
-// JAVASCRIPT-FUNCTIONEN OPENCMS
+// JAVASCRIPT-FUNKTIONEN OPENCMS
 //
 // Scrolling layer for use within dialog boxes
 //
@@ -47,7 +75,7 @@ Updated with a fix for error if moving over layer before pageload.
 var loaded;
 
 //If you want it to move faster you can set this lower:
-var speed=50;
+var speed=25;
 
 //Sets variables to keep track of what's happening
 var loop, timer, pageWidth, pageHeight;
@@ -86,7 +114,7 @@ function moveIt(x,y){
 function goDown(move){
 	if(this.y>-this.scrollHeight+oCont.clipHeight){
 		this.moveIt(0,this.y-move);
-			if(loop) setTimeout(this.obj+".down("+move+")",speed);
+		if(loop) setTimeout(this.obj+".down("+move+")",speed);
 	}
 }
 //Makes the object go down
@@ -101,7 +129,7 @@ function goUp(move){
 function scroll(speed){
 	if(loaded){
 		loop=true;
-		if(speed>0) oScroll.down(speed)
+		if(speed>0) return oScroll.down(speed)
 		else oScroll.up(speed);
 	}
 }
@@ -112,35 +140,48 @@ function noScroll(){
 	if(timer) clearTimeout(timer);
 }
 
+//Forces browser to reload page if window was resized
 function resized(){
 		pageWidth2=bw.ns4?innerWidth:document.body.offsetWidth;
 		pageHeight2=bw.ns4?innerHeight:document.body.offsetHeight;
 		if(pageWidth!=pageWidth2 || pageHeight!=pageHeight2) location.reload();
 }
 
-function centerLayer(){
+//---------------------------------------------
+// centerLayer(staticLayer,scrollLayer)
+// Method performs horizontal adjustment of 
+// the dialog box. The alignment is "center".
+//
+// author: Matthias Schreiber
+// date: 20.03.2000
+//
+// @param staticLayer: Name of the static outer layer
+// @param scrollLayer: Name of the container layer for the scrolling
+// 
+//---------------------------------------------
+function centerLayer(staticLayer,scrollLayer){
 	totalWidth=getWindowWidth();
 	if (ie) {
-		lyrWidth = document.all['frame'].offsetWidth;
-		document.all['frame'].style.left=Math.round((totalWidth-lyrWidth)/2);
-		document.all['divCont'].style.left=Math.round((totalWidth-lyrWidth)/2)+15;
+		eval('lyrWidth = document.all["'+ staticLayer +'"].offsetWidth');
+		eval('document.all["'+ staticLayer +'"].style.left=Math.round((totalWidth-lyrWidth)/2)');
+		eval('document.all["'+ scrollLayer +'"].style.left=Math.round((totalWidth-lyrWidth)/2)+15');
 	}
 	else if (ns) {
-		lyrWidth = document['frame'].clip.width;
-		document['frame'].left=Math.round((totalWidth-lyrWidth)/2);
-		document['divCont'].left=Math.round((totalWidth-lyrWidth)/2)+15;
+		eval('lyrWidth = document["'+ staticLayer +'"].clip.width');
+		eval('document["'+ staticLayer +'"].left=Math.round((totalWidth-lyrWidth)/2)');
+		eval('document["'+ scrollLayer +'"].left=Math.round((totalWidth-lyrWidth)/2)+15');
 	}
 }
 
 
 //Makes the object
-function scrollInit(){
-	oCont=new makeObj('divCont');
-	oScroll=new makeObj('divText','divCont');
+function scrollInit(staticContainer,scrollContainer,scrollContent){
+	eval('oCont=new makeObj("'+ scrollContainer +'")');
+	eval('oScroll=new makeObj("'+ scrollContent +'","'+ scrollContainer +'")');
 	oScroll.moveIt(0,0);
 	oCont.css.visibility='visible';
 	loaded=true;
-	centerLayer();
+	eval('centerLayer("'+ staticContainer +'","'+ scrollContainer +'")');
 	pageWidth=bw.ns4?innerWidth:document.body.offsetWidth;
 	pageHeight=bw.ns4?innerHeight:document.body.offsetHeight;
 	window.onresize=resized;

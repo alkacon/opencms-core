@@ -1,7 +1,7 @@
 /*
- * File   : <CVS Filename>
- * Date   : <CVS Checkout Date>
- * Version: <CVS Version>
+ * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms_piclist.js,v $
+ * Date   : $Date: 2000/03/21 16:48:32 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 

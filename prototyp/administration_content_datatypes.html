@@ -13,138 +13,167 @@ function show_help()
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+
 <link rel=stylesheet type="text/css" href="css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+
+<style type="text/css">
+#divCont{position:absolute; top:78; left:245; width:470; height:350; overflow:hidden; clip:rect(0,465,350,0); visibility:hidden; z-index:100}
+#divText{position:absolute; top:0; left:10; z-index:10}
+#frame{position:absolute; left:220; top:0; width:500; height:350; clip:rect(0,500,502,0); z-index:1}
+</style>
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT> 
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_dialogscroll.js"></SCRIPT>
 
 </HEAD>
-<BODY bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="parent.frames[0].admincontenturl='administration_content_top.html';">
+<BODY bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="parent.frames[0].admincontenturl='administration_content_top.html';scrollInit('frame','divCont','divText')">
 
-<!-- Tabelle um vertikal und horizontal zu zentrieren-->
-<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
-<tr><td align=middle valign=center>
-<br><br>
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
-<form id=DATATYPES name=DATATYPES action="administration_content_top.html" onSubmit="return checkFormData('DATATYPES','EXTENSION',null)">
-<table border=2 cellspacing=0 cellpadding=0 width=500>
-<tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
-	<tr><td class=head>Dateitypverwaltung</td></tr>
-	<tr><td class=leerzeile>&nbsp;</td></tr>
-	
-	<tr>
-		<td class=dialogtxt>
-			<table border=1 width=100%>
-				<tr><td class=dialogtxt>
+<!-- Put content for scrollable area into the "divText"-Layer -->
+
+<div id="divCont"> <!-- Beginn Container-Layer -->
+<div id="divText"> <!-- Beginn Content-Layer -->
+
 					<table border=0 cellspacing=0 cellpadding=5 width=100% >
 					<tr>
-					<td class=formular><img src="pics/ic_file_plain.gif" border=0 width=16 height=16></td>
-					<td class=formular nowrap>Typ: plain</td>
-					<td class=formular align=right width=100%><a href="administration_content_datatypes_new.html"><img src="pics/ic_admin_newext.gif" alt="Neu" border=0 width=16 heigth=16></a></td>
+					<td class=wizardbold><img src="pics/ic_file_plain.gif" border=0 width=16 height=16></td>
+					<td class=wizardbold nowrap>Typ: plain</td>
+					<td class=wizardbold align=right width=100%><a href="administration_content_datatypes_new.html"><img src="pics/bt_new_on.gif" alt="Neu" border=0 width=32 heigth=32></a></td>
 					</tr>
 					<tr>
-					<td class=dialogtxt>&nbsp;</td>
-					<td class=dialogtxt nowrap>*.xml</td>
-					<td class=dialogtxt width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
+					<td class=wizard>&nbsp;</td>
+					<td class=wizard nowrap>*.xml</td>
+					<td class=wizard width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
 					</tr>
 					<tr>
-					<td class=dialogtxt>&nbsp;</td>
-					<td class=dialogtxt nowrap>*.css</td>
-					<td class=dialogtxt width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
+					<td class=wizard>&nbsp;</td>
+					<td class=wizard nowrap>*.css</td>
+					<td class=wizard width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
 					</tr>
 					<tr>
-					<td colspan=3>
+					<td colspan=3 class=wizard>
 						<table cellspacing=0 cellpadding=0 border=0 width="100%">
 						<tr><td class="taskviewbackblack" height="1" colspan=3><spacer type=block width=10 height=1></td></tr>
 						</table>
 					</td>
 					</tr>
 					<tr>
-					<td class=formular><img src="pics/ic_file_xmltemplate.gif" border=0 width=16 height=16></td>
-					<td class=formular nowrap>Typ: XMLTemplate</td>
-					<td class=formular align=right width=100%><a href="administration_content_datatypes_new.html"><img src="pics/ic_admin_newext.gif" alt="Neu" border=0 width=16 heigth=16></a></td>
+					<td class=wizardbold><img src="pics/ic_file_xmltemplate.gif" border=0 width=16 height=16></td>
+					<td class=wizardbold nowrap>Typ: XMLTemplate</td>
+					<td class=wizardbold align=right width=100%><a href="administration_content_datatypes_new.html"><img src="pics/bt_new_on.gif" alt="Neu" border=0 width=32 heigth=32></a></td>
 					</tr>
 					<tr>
-					<td class=dialogtxt>&nbsp;</td>
-					<td class=dialogtxt nowrap>*.xmlt</td>
-					<td class=dialogtxt width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
+					<td class=wizard>&nbsp;</td>
+					<td class=wizard nowrap>*.xmlt</td>
+					<td class=wizard width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
 					</tr>
 					<tr>
-					<td colspan=3>
+					<td colspan=3 class=wizard>
 						<table cellspacing=0 cellpadding=0 border=0 width="100%">
 						<tr><td class="taskviewbackblack" height="1" colspan=3><spacer type=block width=10 height=1></td></tr>
 						</table>
 					</td>
 					</tr>
 					<tr>
-					<td class=formular><img src="pics/ic_file_page.gif" border=0 width=16 height=16></td>
-					<td class=formular nowrap>Typ: page</td>
-					<td class=formular align=right width=100%><a href="administration_content_datatypes_new.html"><img src="pics/ic_admin_newext.gif" alt="Neu" border=0 width=16 heigth=16></a></td>
+					<td class=wizardbold><img src="pics/ic_file_page.gif" border=0 width=16 height=16></td>
+					<td class=wizardbold nowrap>Typ: page</td>
+					<td class=wizardbold align=right width=100%><a href="administration_content_datatypes_new.html"><img src="pics/bt_new_on.gif" alt="Neu" border=0 width=32 heigth=32></a></td>
 					</tr>
 					<tr>
-					<td class=dialogtxt>&nbsp;</td>
-					<td class=dialogtxt nowrap>*.html</td>
-					<td class=dialogtxt width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
+					<td class=wizard>&nbsp;</td>
+					<td class=wizard nowrap>*.html</td>
+					<td class=wizard width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
 					</tr>
 					<tr>
-					<td class=dialogtxt>&nbsp;</td>
-					<td class=dialogtxt nowrap>*.htm</td>
-					<td class=dialogtxt width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
+					<td class=wizard>&nbsp;</td>
+					<td class=wizard nowrap>*.htm</td>
+					<td class=wizard width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
 					</tr>
 					<tr>
-					<td colspan=3>
+					<td colspan=3 class=wizard>
 						<table cellspacing=0 cellpadding=0 border=0 width="100%">
 						<tr><td class="taskviewbackblack" height="1" colspan=3><spacer type=block width=10 height=1></td></tr>
 						</table>
 					</td>
 					</tr>
 					<tr>
-					<td class=formular><img src="pics/ic_file_binary.gif" border=0 width=16 height=16></td>
-					<td class=formular nowrap>Typ: binary</td>
-					<td class=formular align=right width=100%><a href="administration_content_datatypes_new.html"><img src="pics/ic_admin_newext.gif" alt="Neu" border=0 width=16 heigth=16></a></td>
+					<td class=wizardbold><img src="pics/ic_file_binary.gif" border=0 width=16 height=16></td>
+					<td class=wizardbold nowrap>Typ: binary</td>
+					<td class=wizardbold align=right width=100%><a href="administration_content_datatypes_new.html"><img src="pics/bt_new_on.gif" alt="Neu" border=0 width=32 heigth=32></a></td>
 					</tr>
 					<tr>
-					<td class=dialogtxt>&nbsp;</td>
-					<td class=dialogtxt nowrap>*.gif</td>
-					<td class=dialogtxt width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
+					<td class=wizard>&nbsp;</td>
+					<td class=wizard nowrap>*.gif</td>
+					<td class=wizard width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
 					</tr>
 					<tr>
-					<td class=dialogtxt>&nbsp;</td>
-					<td class=dialogtxt nowrap>*.jpg</td>
-					<td class=dialogtxt width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
+					<td class=wizard>&nbsp;</td>
+					<td class=wizard nowrap>*.jpg</td>
+					<td class=wizard width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
 					</tr>
 					<tr>
-					<td colspan=3>
+					<td colspan=3 class=wizard>
 						<table cellspacing=0 cellpadding=0 border=0 width="100%">
 						<tr><td class="taskviewbackblack" height="1" colspan=3><spacer type=block width=10 height=1></td></tr>
 						</table>
 					</td>
 					</tr>
 					<tr>
-					<td class=formular><img src="pics/ic_file_script.gif" border=0 width=16 height=16></td>
-					<td class=formular nowrap>Typ: script</td>
-					<td class=formular align=right width=100%><a href="administration_content_datatypes_new.html"><img src="pics/ic_admin_newext.gif" alt="Neu" border=0 width=16 heigth=16></a></td>
+					<td class=wizardbold><img src="pics/ic_file_script.gif" border=0 width=16 height=16></td>
+					<td class=wizardbold nowrap>Typ: script</td>
+					<td class=wizardbold align=right width=100%><a href="administration_content_datatypes_new.html"><img src="pics/bt_new_on.gif" alt="Neu" border=0 width=32 heigth=32></a></td>
 					</tr>
 					<tr>
-					<td class=dialogtxt>&nbsp;</td>
-					<td class=dialogtxt nowrap>*.js</td>
-					<td class=dialogtxt width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
+					<td class=wizard>&nbsp;</td>
+					<td class=wizard nowrap>*.js</td>
+					<td class=wizard width=100%><a href="administration_content_datatypes_delete.html"><img src="pics/ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
 					</tr>
 					</table>
-				
-					
-				</td></tr>
-			</table>
+
+</div>
+</div>
+
+<!-- "frame"-Layer contains dialog box surrounding the scrollable area -->
+
+<div id="frame">
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td>
+<br><br>
+<form id=DATATYPES name=DATATYPES>
+<table border=2 cellspacing=0 cellpadding=0 width=500 bgcolor=#c0c0c0>
+<tr>
+	<td>
+	<table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
+	<tr>
+		<td class=head>Verwaltung von Dateitypen</td>
+	</tr>
+	<tr>
+		<td class=leerzeile>&nbsp;</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt>
+		<table border=1 width=100%>
+		<tr><td class=wizard height=355><spacer type=block width=10 height=355></td></tr>
+		</table>
 		</td>
 	</tr>
-	<tr><td class=leerzeile>&nbsp;</td></tr>
+	</table>
+	<table border=0 width=100%>
+	<tr>
+		<td align=right class=dialogtxt width=60%><INPUT class=button width=100 type="button" value="OK" id=OK name=OK onClick="location.href='administration_content_top.html'"></td>
+		<td align=right class=dialogtxt width=40%>
+		<a href="#" onmousedown="ChPush('bt_moveup','frame');scroll(-5)" onmouseup="ChOn('bt_moveup','frame');noScroll()" onMouseOver="ChOn('bt_moveup','frame')" onMouseOut="ChOff('bt_moveup','frame')"><img src="pics/bt_moveup_off.gif" name="bt_moveup" alt="" border=0 width=32 heigth=32></a>
+		<a href="#" onmousedown="ChPush('bt_movedown','frame'); scroll(5);" onmouseup="ChOn('bt_movedown','frame');noScroll();" onMouseOver="ChOn('bt_movedown','frame')" onMouseOut="ChOff('bt_movedown','frame')"><img src="pics/bt_movedown_off.gif" name="bt_movedown" alt="" border=0 width=32 heigth=32></a></td>
+		</td>
+	</tr>
 	</table>
 	</td>
 </tr>
-
 </table>
 </form>
 
 </td></tr>
 </table>
+</div>
 
 </BODY>
 </html>

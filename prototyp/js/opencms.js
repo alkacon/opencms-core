@@ -1,7 +1,7 @@
 /*
- * File   : <CVS Filename>
- * Date   : <CVS Checkout Date>
- * Version: <CVS Version>
+ * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms.js,v $
+ * Date   : $Date: 2000/03/21 16:48:31 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -87,7 +87,7 @@ function default_dateiangaben() //to set defaults in user sets for filelist
 var imgEndOn = "_on.gif";
 var imgEndOff = "_off.gif";
 var imgEndPush = "_push.gif";
-var imgEndInakitv = "_in.gif";
+var imgEndInaktiv = "_in.gif";
 var pfad="pics/";
 
 

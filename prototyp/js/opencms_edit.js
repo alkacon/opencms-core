@@ -1,7 +1,7 @@
 /*
- * File   : <CVS Filename>
- * Date   : <CVS Checkout Date>
- * Version: <CVS Version>
+ * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms_edit.js,v $
+ * Date   : $Date: 2000/03/21 16:48:31 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
