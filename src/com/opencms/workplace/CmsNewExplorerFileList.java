@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
- * Date   : $Date: 2000/12/14 09:11:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2001/01/03 09:04:13 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/12/14 09:11:43 $
+ * @version $Revision: 1.10 $ $Date: 2001/01/03 09:04:13 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate, I_CmsLogChannels, I_CmsConstants, I_CmsWpConstants {
 	
@@ -93,7 +93,7 @@ private String getChars(String value) {
 	int num;
 	for(int i=0;i<value.length();i++) {
 		num = value.charAt(i);
-		if(num > 127) {
+		if((num > 122)||(num < 48)) {
 			ret += "&#" + num + ";";
 		} else {
 			ret += value.charAt(i);
@@ -115,21 +115,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	if (C_DEBUG && A_OpenCms.isLogging()) {
 		A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file " + templateFile);
 	}
-	/*		try {
-	s = cms.readFile(templateFile).getContents();
-	} catch(Exception e) {
-	String errorMessage = "Error while reading file " + templateFile + ": " + e;
-	if(A_OpenCms.isLogging()) {
-	A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsDumpTemplate] " + errorMessage);
-	e.printStackTrace();
-	}
-	if(e instanceof CmsException) {
-	throw (CmsException)e;
-	} else {
-	throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
-	}
-	}
-	*/
+
 	I_CmsSession session = cms.getRequestContext().getSession(true);
 	CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 	CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
@@ -171,10 +157,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	content.append(" top.setOnlineProject(" + cms.onlineProject().getId() + ");\n");
 	// set the checksum for the tree
 	content.append(" top.setChecksum(" + check + ");\n");
-	
-//	int filelist=getDefaultPreferences(cms);
-//	jsOutput.append(" top.viewcfg = "+filelist+";\n");
-	
 	// the folder
 	content.append(" top.setDirectory(" + currentFolderId + ",\"" + currentFolder + "\");\n");
 	content.append(" top.rD();\n\n");
