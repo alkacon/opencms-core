@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestProperyDefinition.java,v $
- * Date   : $Date: 2004/08/27 08:57:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/11 15:24:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,22 +31,23 @@
  
 package org.opencms.file;
 
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.test.OpenCmsTestCase;
+import org.opencms.util.CmsUUID;
+
 import java.util.List;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.opencms.main.I_CmsConstants;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.util.CmsUUID;
-
 /**
  * Unit test for the "createPropertyDefinition", "readPropertyDefiniton" and
  * "readAllPropertyDefintions" methods of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestProperyDefinition extends OpenCmsTestCase {
   
@@ -70,6 +71,7 @@ public class TestProperyDefinition extends OpenCmsTestCase {
         suite.setName(TestProperyDefinition.class.getName());
                 
         suite.addTest(new TestProperyDefinition("testCreatePropertyDefinition"));
+        suite.addTest(new TestProperyDefinition("testCreateReadDeletePropertyDefinition"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -103,7 +105,7 @@ public class TestProperyDefinition extends OpenCmsTestCase {
         
         // check if the propertsdefintion was written
         tc.assertPropertydefinitionExist(cms, prop);
-        // check if all other properties are still idenitcal
+        // check if all other properties are still identical
         tc.assertPropertydefinitions(cms, allPropertydefintions , prop);
     }
     
@@ -120,5 +122,65 @@ public class TestProperyDefinition extends OpenCmsTestCase {
         createPropertyDefinition(this, cms, "NewPropertyDefinition");   
     }  
     
+    /**
+     * Test to create, read and delete a property definition through the cache driver.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateReadDeletePropertyDefinition() throws Throwable {
+        
+        CmsObject cms = getCmsObject(); 
+        
+        echo("Testing creation of a new property definition"); 
+        createReadDeletePropertyDefinition(cms);
+    }
+    
+    /**
+     * Test to create, read and delete a property definition through the cache driver.<p>
+     * 
+     * @param cms the CmsObject
+     * @throws Throwable if something goes wrong
+     */
+    public static void createReadDeletePropertyDefinition(CmsObject cms) throws Throwable {
+        
+        CmsPropertydefinition propertyDefinition = null;            
+        String propertyDefinitionName = "locale-available";
+        
+        try {
+            // create a new property definition
+            propertyDefinition = cms.createPropertydefinition(propertyDefinitionName);
+        } catch (CmsException e) {
+            fail("Error creating property definition " + propertyDefinitionName + ", " + e.toString());
+        }
+        
+        assertEquals(propertyDefinition.getName(), propertyDefinitionName);
+        
+        try {
+            // read the created property definition
+            propertyDefinition = null;
+            propertyDefinition = cms.readPropertydefinition(propertyDefinitionName);
+        } catch (CmsException e) {
+            fail("Error reading property definition " + propertyDefinitionName + ", " + e.toString());
+        }  
+        
+        assertEquals(propertyDefinition.getName(), propertyDefinitionName);
+        
+        try {
+            // delete the property definition again
+            cms.deletePropertydefinition(propertyDefinitionName);
+        } catch (CmsException e) {
+            fail("Error deleting property definition " + propertyDefinitionName + ", " + e.toString());
+        }
+        
+        try {
+            // re-read the created property definition
+            propertyDefinition = null;
+            propertyDefinition = cms.readPropertydefinition(propertyDefinitionName); 
+        } catch (CmsException e) {
+            // intentionally left blank
+        }
+        
+        assertNull(propertyDefinition);
+    }      
   
 }
