@@ -18,8 +18,12 @@ OpenCms 4.7.6 Ecaz - XX Xpril 2002
   by a property or by a part of its resourcename.
 * Fixed bug when changing the navigation of a resource. Special characters are escaped and the default
   entry for the navigation position is set to "no change".
+* Fixed bug in link launcher for static export: exporting linkfiles with link to an external url contain
+  html-code that opens the external url.
 - Added some resource types that should be exported when the default is set to dynamic. 
 - Added pic and download folder to the static export if default is set to dynamic.
+- The length of the fields for the users address and email were changed in the database table CMS_USERS 
+  and in the form for changing the user data. The street and email can now contain 100 characters.
 
 OpenCms 4.7.5 Ecaz - 12 April 2002
 ! Database import can now upload the zip file from the local client. It will be
