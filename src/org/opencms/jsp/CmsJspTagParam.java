@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParam.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,7 +103,10 @@ import javax.servlet.jsp.tagext.Tag;
  */
 public class CmsJspTagParam extends BodyTagSupport {
 
+    /** The name of the parameter */
     protected String m_name;        
+    
+    /** The value of the parameter */
     protected String m_value;
 
     /**

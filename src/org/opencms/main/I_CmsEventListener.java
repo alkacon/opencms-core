@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2003/10/21 14:55:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -108,7 +108,7 @@ public interface I_CmsEventListener {
     /** 
      * Event "a resource in the COS was published".<p>
      * 
-     * @see com.opencms.defaults.master.CmsMasterContent#publishResource(CmsObject)
+     * @see com.opencms.defaults.master.CmsMasterContent#publishResource(com.opencms.file.CmsObject)
      */    
     int EVENT_PUBLISH_BO_RESOURCE = 4;    
         
@@ -150,8 +150,6 @@ public interface I_CmsEventListener {
     
     /** 
      * Event "static export has just happened".
-     *
-     * @see com.opencms.file.CmsObject#publishProject(int, I_CmsReport)
      */
     int EVENT_STATIC_EXPORT = 10;
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 5.0 beta 2
  */
@@ -259,7 +259,7 @@ public class CmsJspActionElement {
      * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
      * @throws JspException in case there were problems including the target
      *
-     * @see com.opencms.flex.jsp.CmsJspTagInclude
+     * @see org.opencms.jsp.CmsJspTagInclude
      */
     public void include(String target) throws JspException {
         this.include(target, null, null);
@@ -273,7 +273,7 @@ public class CmsJspActionElement {
      * @param element the element (template selector) to display from the target
      * @throws JspException in case there were problems including the target
      *
-     * @see com.opencms.flex.jsp.CmsJspTagInclude
+     * @see org.opencms.jsp.CmsJspTagInclude
      */    
     public void include(String target, String element) throws JspException {
         this.include(target, element, null);
@@ -301,7 +301,7 @@ public class CmsJspActionElement {
      * @param parameterMap a map of the request parameters
      * @throws JspException in case there were problems including the target
      * 
-     * @see com.opencms.flex.jsp.CmsJspTagInclude
+     * @see org.opencms.jsp.CmsJspTagInclude
      */
     public void include(String target, String element, Map parameterMap) throws JspException {
         if (m_notInitialized) {
@@ -396,7 +396,7 @@ public class CmsJspActionElement {
      * @param link the uri in the OpenCms to link to
      * @return the translated link
      * 
-     * @see com.opencms.flex.jsp.CmsJspTagLink
+     * @see org.opencms.jsp.CmsJspTagLink
      */
     public String link(String link) {
         if (m_notInitialized) {
@@ -418,7 +418,7 @@ public class CmsJspActionElement {
      * @param property the user property to display, please see the tag documentation for valid options
      * @return the value of the selected user property
      * 
-     * @see com.opencms.flex.jsp.CmsJspTagUser
+     * @see org.opencms.jsp.CmsJspTagUser
      */
     public String user(String property) {
         if (m_notInitialized) {
@@ -441,7 +441,7 @@ public class CmsJspActionElement {
      * @return the value of the property found, or null if the property could not be found
      * 
      * @see #property(String, String, String, boolean)
-     * @see com.opencms.flex.jsp.CmsJspTagProperty
+     * @see org.opencms.jsp.CmsJspTagProperty
      */
     public String property(String name) {
         return this.property(name, null, null, false);       
@@ -457,7 +457,7 @@ public class CmsJspActionElement {
      * @return the value of the property found, or null if the property could not be found
      * 
      * @see #property(String, String, String, boolean)
-     * @see com.opencms.flex.jsp.CmsJspTagProperty
+     * @see org.opencms.jsp.CmsJspTagProperty
      */
     public String property(String name, String file) {
         return this.property(name, file, null, false);       
@@ -475,7 +475,7 @@ public class CmsJspActionElement {
      *     if the property could not be found
      *
      * @see #property(String, String, String, boolean)
-     * @see com.opencms.flex.jsp.CmsJspTagProperty
+     * @see org.opencms.jsp.CmsJspTagProperty
      */
     public String property(String name, String file, String defaultValue) {
         return this.property(name, file, defaultValue, false);
@@ -496,7 +496,7 @@ public class CmsJspActionElement {
      * @return the value of the property found, or the value of defaultValue 
      *     if the property could not be found
      *
-     * @see com.opencms.flex.jsp.CmsJspTagProperty
+     * @see org.opencms.jsp.CmsJspTagProperty
      */
     public String property(String name, String file, String defaultValue, boolean escapeHtml) {
         if (m_notInitialized) {
@@ -540,7 +540,7 @@ public class CmsJspActionElement {
      * @return Map all properties of the current file 
      *     (and optional of the folders containing the file)
      * 
-     * @see com.opencms.flex.jsp.CmsJspTagProperty
+     * @see org.opencms.jsp.CmsJspTagProperty
      */
     public Map properties(String file) {
         if (m_notInitialized) {
@@ -590,7 +590,7 @@ public class CmsJspActionElement {
      *  
      * @param property the property to look up
      * @return String the value of the system property
-     * @see com.opencms.flex.jsp.CmsJspTagInfo
+     * @see org.opencms.jsp.CmsJspTagInfo
      */
     public String info(String property) {
         try {        
@@ -611,7 +611,7 @@ public class CmsJspActionElement {
      * @param label the label to look up
      * @return label the value of the label
      * 
-     * @see com.opencms.flex.jsp.CmsJspTagLabel
+     * @see org.opencms.jsp.CmsJspTagLabel
      */
     public String label(String label) {
         if (m_notInitialized) {
@@ -632,7 +632,7 @@ public class CmsJspActionElement {
      * @param element the template element to check 
      * @return <code>true</code> if the element is active, <code>false</code> otherwise
      * 
-     * @see com.opencms.flex.jsp.CmsJspTagUser
+     * @see org.opencms.jsp.CmsJspTagUser
      */
     public boolean template(String element) {
         if (m_notInitialized) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2003/12/12 12:16:42 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,12 +64,12 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since FLEX alpha 1
  * 
- * @see com.opencms.flex.cache.CmsFlexRequest
- * @see com.opencms.flex.cache.CmsFlexResponse
- * @see com.opencms.flex.cache.CmsFlexRequestDispatcher
+ * @see org.opencms.flex.CmsFlexRequest
+ * @see org.opencms.flex.CmsFlexResponse
+ * @see org.opencms.flex.CmsFlexRequestDispatcher
  */
 public interface I_CmsResourceLoader {
     
@@ -153,7 +153,7 @@ public interface I_CmsResourceLoader {
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 
      * 
-     * @see com.opencms.flex.cache.CmsFlexRequestDispatcher
+     * @see org.opencms.flex.CmsFlexRequestDispatcher
      */   
     void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) 
     throws ServletException, IOException;

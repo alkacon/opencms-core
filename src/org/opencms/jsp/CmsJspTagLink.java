@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,9 @@
 
 package org.opencms.jsp;
 
+import org.opencms.flex.CmsFlexController;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
-
-import org.opencms.flex.CmsFlexController;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -46,7 +45,7 @@ import javax.servlet.jsp.JspException;
  * export to work properly.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
  
@@ -89,7 +88,7 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
      * @param req the current request
      * @return the calculated link
      * 
-     * @see org.opencms.staticexport.CmsLinkManager#substituteLink(CmsObject, String)
+     * @see org.opencms.staticexport.CmsLinkManager#substituteLink(com.opencms.file.CmsObject, String)
      */
     public static String linkTagAction(String link, ServletRequest req) {
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);

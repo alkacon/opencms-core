@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import javax.servlet.jsp.JspException;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -96,15 +96,31 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     private String m_defaultValue = null;
     private boolean m_escapeHtml = false;
     
-    // public accessor constants
+    /** Accessor constant: Use uri */
     public static final String USE_URI = "uri";
+    
+    /** Accessor constant: Use parent (same as USE_URI) */
     public static final String USE_PARENT = "parent";
+    
+    /** Accessor constant: Use search (same as USE_SEARCH_URI) */
     public static final String USE_SEARCH = "search";
+    
+    /** Accessor constant: Search uri */
     public static final String USE_SEARCH_URI = "search.uri";
+    
+    /** Accessor constant: Search parent (same as USE_SEARCH_URI) */
     public static final String USE_SEARCH_PARENT = "search-parent";
+    
+    /** Accessor constant: Use element uri */
     public static final String USE_ELEMENT_URI = "element.uri";
+    
+    /** Accessor constant: Use this (same as USE_ELEMENT_URI)*/
     public static final String USE_THIS = "this";
+    
+    /** Accessor constant: Use search element uri */
     public static final String USE_SEARCH_ELEMENT_URI = "search.element.uri";
+    
+    /** Accessor contant: Use seach this (same as USE_SEARCH_ELEMENT_URI)*/
     public static final String USE_SEARCH_THIS = "search-this";
     
     // DEBUG flag

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/09/24 14:19:24 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.90 $ 
+ * @version $Revision: 1.91 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -771,7 +771,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      *
      * @param projectId the ID of the project where the resource has been last modified
      * @deprecated the project state is not part of the resource in the revised resource model
-     * @see org.opencms.db.generic.CmsVfsDriver#updateResourceState(CmsProject, CmsResource, int)
      */
     public void setProjectId(int projectId) {
         OpenCms.getLog(this).warn("Deprecated method called: setProjectId(" + projectId + ")");                        

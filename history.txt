@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/12/11 16:43:16 $
- * Version: $Revision: 1.514 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.515 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ OpenCms 5.3.0 Ix - December 11, 2003
   opening of the WYSIWYG editor from the application "frontend"
 ! First public version of the JSP workplace,
   see the 5.1.x notes for all the new features of the JSP workplace
+! Added possibility to redirect handlers to pages inside the OpenCms VFS
 
 OpenCms 5.1.13 Salusa Secundus - December 11, 2003
 - Updated jug.jar to latest stable version 1.0.3

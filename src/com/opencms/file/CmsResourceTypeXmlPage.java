@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2003/11/27 16:25:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.loader.CmsXmlPageLoader;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.linkmanagement.CmsPageLinks;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -45,7 +44,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType {

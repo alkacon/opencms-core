@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,12 +83,14 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.24 $ $Date: 2003/11/03 09:05:52 $
+ * @version $Revision: 1.25 $ $Date: 2004/01/06 09:46:26 $
  */
 public class CmsExport implements Serializable {
 
-    // the tags for the manifest
+    /** Manifest tag: channels */
     public static String C_EXPORT_TAG_CHANNELS = "channels";
+    
+    /** Manifest tag: files */
     public static String C_EXPORT_TAG_FILES = "files";
 
     /** The CmsObject to do the operations */

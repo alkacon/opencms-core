@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2003/10/09 07:58:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,12 +41,17 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public abstract class A_CmsReport implements I_CmsReport {
     
+    /** Second constant */
     protected static final long C_SECONDS = 1000;
+    
+    /** Minute constant */
     protected static final long C_MINUTES = 1000 * 60;
+    
+    /** Hour constant */
     protected static final long C_HOURS = 1000 * 60 * 60;    
 
     /** Localized message access object */
@@ -97,7 +102,7 @@ public abstract class A_CmsReport implements I_CmsReport {
     }
     
     /**
-     * @see org.opencms.report.I_CmsReport#printRuntime()
+     * @see org.opencms.report.I_CmsReport#formatRuntime()
      */
     public String formatRuntime() {
         long runtime = getRuntime();

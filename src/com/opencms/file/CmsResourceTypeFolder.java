@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/11/14 10:09:09 $
-* Version: $Revision: 1.97 $
+* Date   : $Date: 2004/01/06 09:46:26 $
+* Version: $Revision: 1.98 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.97 $
+ * @version $Revision: 1.98 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -71,7 +71,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.A_CmsResourceType#getResourceTypeName()
+     * @see com.opencms.file.I_CmsResourceType#getResourceTypeName()
      */
     public String getResourceTypeName() {
         return C_RESOURCE_TYPE_NAME;
@@ -99,7 +99,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#touch(com.opencms.file.CmsObject, java.lang.String, long, boolean, com.opencms.flex.util.CmsUUID)
+     * @see com.opencms.file.I_CmsResourceType#touch(CmsObject, String, long, boolean, CmsUUID)
      */
     public void touch(CmsObject cms, String resourceName, long timestamp, boolean touchRecursive, CmsUUID user) throws CmsException {
         Vector allFolders = new Vector();

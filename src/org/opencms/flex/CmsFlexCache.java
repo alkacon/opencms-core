@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2003/11/17 07:48:39 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,12 +88,12 @@ import org.apache.commons.collections.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
- * @see com.opencms.flex.cache.CmsFlexCacheKey
- * @see com.opencms.flex.cache.CmsFlexCacheEntry
- * @see com.opencms.flex.util.CmsFlexLruCache
- * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
+ * @see org.opencms.flex.CmsFlexCacheKey
+ * @see org.opencms.flex.CmsFlexCacheEntry
+ * @see org.opencms.cache.CmsLruCache
+ * @see org.opencms.cache.I_CmsLruCacheObject
  */
 public class CmsFlexCache extends Object implements I_CmsEventListener {
     
@@ -129,13 +129,25 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     /** Debug switch */
     private static final int DEBUG = 0;
     
-    /** Static ints to trigger clearcache events */
+    /** Trigger for clearcache event: Clear complete cache */
     public static final int C_CLEAR_ALL = 0;
+
+    /** Trigger for clearcache event: Clear only entries */
     public static final int C_CLEAR_ENTRIES = 1;
+
+    /** Trigger for clearcache event: Clear complete online cache */
     public static final int C_CLEAR_ONLINE_ALL = 2;
+    
+    /** Trigger for clearcache event: Clear only online entries */    
     public static final int C_CLEAR_ONLINE_ENTRIES = 3;
+    
+    /** Trigger for clearcache event: Clear complete offine cache */    
     public static final int C_CLEAR_OFFLINE_ALL = 4;
+    
+    /** Trigger for clearcache event: Clear only offline entries */   
     public static final int C_CLEAR_OFFLINE_ENTRIES = 5;
+    
+    /** Trigger for clearcache event: Clear all workplace entries */    
     public static final int C_CLEAR_WORKPLACE_ALL = 6;
         
     /** The LRU cache to organize the cached entries. */

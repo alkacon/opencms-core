@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -467,7 +467,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * 
      * @param name the name to add
      * @param value the value to add
-     * @see com.opencms.flex.jsp.I_CmsJspTagParamParent#addParameter(String, String)
+     * @see org.opencms.jsp.I_CmsJspTagParamParent#addParameter(String, String)
      */
     public void addParameter(String name, String value) {
         // No null values allowed in parameters

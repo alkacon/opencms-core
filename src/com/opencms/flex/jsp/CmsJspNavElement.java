@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavElement.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Map;
  * Bean to collect navigation information from a resource in the OpenCms VFS.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsJspNavElement implements Comparable {
     
@@ -69,16 +69,9 @@ public class CmsJspNavElement implements Comparable {
      * navigation beans that are properly initialized with current 
      * OpenCms context.
      * 
-     * @see com.opencms.flex.jsp.CmsJspNavBuilder#getNavigationForResource
-     * (String)
-     * @see com.opencms.flex.jsp.CmsJspNavBuilder#getNavigationForFolder
-     * (String)
-     * @see com.opencms.flex.jsp.CmsJspNavBuilder#getNavigationForFolder
-     * (String, String)
-     * @see com.opencms.flex.jsp.CmsJspNavBuilder#getNavigationForFolder
-     * (String, int, String)
-     * @see com.opencms.flex.jsp.CmsJspNavBuilder#getNavigationTreeForFolder
-     * (String, int, int, String)
+     * @see CmsJspNavBuilder#getNavigationForResource()
+     * @see CmsJspNavBuilder#getNavigationForFolder()
+     * @see CmsJspNavBuilder#getNavigationTreeForFolder(int, int)
      */
     public CmsJspNavElement() {
         // empty
@@ -142,8 +135,7 @@ public class CmsJspNavElement implements Comparable {
      * @param navTreeLevel tree level of this resource, for building 
      *     navigation trees
      * 
-     * @see com.opencms.flex.jsp.CmsJspNavBuilder#getNavigationForResource
-     * (String)
+     * @see CmsJspNavBuilder#getNavigationForResource()
      */    
     public void init(String resource, Map properties, int navTreeLevel) {
         m_resource = resource;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/I_CmsLruCacheObject.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,9 @@ package org.opencms.cache;
  * CmsFlexLruCache is organized as a double linked list, that's why objects implementing this interface
  * need getters/setter for the next/previous nodes in the list of all cached objects.<p>
  *
- * @see com.opencms.flex.util.CmsFlexLruCache
+ * @see CmsLruCache
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public interface I_CmsLruCacheObject {
     

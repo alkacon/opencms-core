@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2003/11/17 07:49:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,8 +65,8 @@ import javax.servlet.ServletException;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
- * @version $Revision: 1.9 $
+ * @see org.opencms.cache.I_CmsLruCacheObject
+ * @version $Revision: 1.10 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
     
@@ -383,35 +383,35 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
     // implementation of the com.opencms.flex.util.I_CmsFlexLruCacheObject interface methods
     
     /**
-     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#setNextLruObject(com.opencms.flex.util.I_CmsFlexLruCacheObject)
+     * @see org.opencms.cache.I_CmsLruCacheObject#setNextLruObject(org.opencms.cache.I_CmsLruCacheObject)
      */
     public void setNextLruObject(I_CmsLruCacheObject theNextEntry) {
         m_next = theNextEntry;
     }
-    
+        
     /**
-     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#getNextLruObject()
+     * @see org.opencms.cache.I_CmsLruCacheObject#getNextLruObject()
      */
     public I_CmsLruCacheObject getNextLruObject() {
         return m_next;
     }
     
     /**
-     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#setPreviousLruObject(com.opencms.flex.util.I_CmsFlexLruCacheObject)
+     * @see org.opencms.cache.I_CmsLruCacheObject#setPreviousLruObject(org.opencms.cache.I_CmsLruCacheObject)
      */
     public void setPreviousLruObject(I_CmsLruCacheObject thePreviousEntry) {
         m_previous = thePreviousEntry;
     }
     
     /**
-     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#getPreviousLruObject()
+     * @see org.opencms.cache.I_CmsLruCacheObject#getPreviousLruObject()
      */
     public I_CmsLruCacheObject getPreviousLruObject() {
         return m_previous;
     }  
     
     /**
-     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#addToLruCache()
+     * @see org.opencms.cache.I_CmsLruCacheObject#addToLruCache()
      */
     public void addToLruCache() {
         // do nothing here...
@@ -421,7 +421,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
     }
     
     /**
-     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#removeFromLruCache()
+     * @see org.opencms.cache.I_CmsLruCacheObject#removeFromLruCache()
      */
     public void removeFromLruCache() {
         if ((m_variationMap != null) &&  (m_variationKey != null)) {
@@ -434,7 +434,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
     }
     
     /**
-     * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#getLruCacheCosts()
+     * @see org.opencms.cache.I_CmsLruCacheObject#getLruCacheCosts()
      */
     public int getLruCacheCosts() {
         return m_byteSize;

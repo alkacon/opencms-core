@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/10/15 09:50:42 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2004/01/06 09:46:26 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -72,46 +72,112 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.16 $ $Date: 2003/10/15 09:50:42 $
+ * @version $Revision: 1.17 $ $Date: 2004/01/06 09:46:26 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 
-    // the tags for the manifest or dataset xml files    
+    /** Manifest tag: master */   
     public static String C_EXPORT_TAG_MASTER = "master";
-    public static String C_EXPORT_TAG_MASTER_ACCESSFLAGS = "access_flags";
-    public static String C_EXPORT_TAG_MASTER_CHANNELNAME = "channelname";
-    public static String C_EXPORT_TAG_MASTER_CHANNELREL = "channelrelations";
-    public static String C_EXPORT_TAG_MASTER_DATABIG = "data_big_";
-    public static String C_EXPORT_TAG_MASTER_DATADATE = "data_date_";
-    public static String C_EXPORT_TAG_MASTER_DATAINT = "data_int_";
-    public static String C_EXPORT_TAG_MASTER_DATAMEDIUM = "data_medium_";
-    public static String C_EXPORT_TAG_MASTER_DATAREFERENCE = "data_reference_";
-    public static String C_EXPORT_TAG_MASTER_DATASET = "dataset";
-    public static String C_EXPORT_TAG_MASTER_DATASMALL = "data_small_";
-    public static String C_EXPORT_TAG_MASTER_FEEDFILENAME = "feed_filename";
-    public static String C_EXPORT_TAG_MASTER_FEEDID = "feed_id";
-    public static String C_EXPORT_TAG_MASTER_FEEDREFERENCE = "feed_reference";
-    public static String C_EXPORT_TAG_MASTER_FLAGS = "flags";
-    public static String C_EXPORT_TAG_MASTER_GROUP = "group_name";
-    public static String C_EXPORT_TAG_MASTER_MEDIA = "media";
-    public static String C_EXPORT_TAG_MASTER_MEDIASET = "mediaset";
-    public static String C_EXPORT_TAG_MASTER_PUBLICATIONDATE = "publication_date";
-    public static String C_EXPORT_TAG_MASTER_PURGEDATE = "purge_date";
-    public static String C_EXPORT_TAG_MASTER_SUBID = "sub_id";
-    public static String C_EXPORT_TAG_MASTER_TITLE = "title";
-    public static String C_EXPORT_TAG_MASTER_USER = "user_name";
-    public static String C_EXPORT_TAG_MASTERS = "masters";
-    public static String C_EXPORT_TAG_MEDIA_CONTENT = "media_content";
-    public static String C_EXPORT_TAG_MEDIA_DESCRIPTION = "media_description";
-    public static String C_EXPORT_TAG_MEDIA_HEIGHT = "media_height";
-    public static String C_EXPORT_TAG_MEDIA_MIMETYPE = "media_mimetype";
-    public static String C_EXPORT_TAG_MEDIA_NAME = "media_name";
-    public static String C_EXPORT_TAG_MEDIA_POSITION = "media_position";
-    public static String C_EXPORT_TAG_MEDIA_SIZE = "media_size";
-    public static String C_EXPORT_TAG_MEDIA_TITLE = "media_title";
-    public static String C_EXPORT_TAG_MEDIA_TYPE = "media_type";
-    public static String C_EXPORT_TAG_MEDIA_WIDTH = "media_width";
 
+    /** Manifest tag: access_flags */   
+    public static String C_EXPORT_TAG_MASTER_ACCESSFLAGS = "access_flags";
+
+    /** Manifest tag: channelname */   
+    public static String C_EXPORT_TAG_MASTER_CHANNELNAME = "channelname";
+
+    /** Manifest tag: channelrelations */   
+    public static String C_EXPORT_TAG_MASTER_CHANNELREL = "channelrelations";
+
+    /** Manifest tag: data_big_ */   
+    public static String C_EXPORT_TAG_MASTER_DATABIG = "data_big_";
+
+    /** Manifest tag: data_date_ */   
+    public static String C_EXPORT_TAG_MASTER_DATADATE = "data_date_";
+
+    /** Manifest tag: data_int_ */   
+    public static String C_EXPORT_TAG_MASTER_DATAINT = "data_int_";
+
+    /** Manifest tag: data_medium_ */   
+    public static String C_EXPORT_TAG_MASTER_DATAMEDIUM = "data_medium_";
+
+    /** Manifest tag: data_reference_ */   
+    public static String C_EXPORT_TAG_MASTER_DATAREFERENCE = "data_reference_";
+
+    /** Manifest tag: dataset */   
+    public static String C_EXPORT_TAG_MASTER_DATASET = "dataset";
+    
+    /** Manifest tag: data_small_ */   
+    public static String C_EXPORT_TAG_MASTER_DATASMALL = "data_small_";
+    
+    /** Manifest tag: feed_filename */   
+    public static String C_EXPORT_TAG_MASTER_FEEDFILENAME = "feed_filename";
+    
+    /** Manifest tag: feed_id */   
+    public static String C_EXPORT_TAG_MASTER_FEEDID = "feed_id";
+    
+    /** Manifest tag: feed_reference */   
+    public static String C_EXPORT_TAG_MASTER_FEEDREFERENCE = "feed_reference";
+    
+    /** Manifest tag: flags */   
+    public static String C_EXPORT_TAG_MASTER_FLAGS = "flags";
+    
+    /** Manifest tag: group_name */   
+    public static String C_EXPORT_TAG_MASTER_GROUP = "group_name";
+    
+    /** Manifest tag: media */   
+    public static String C_EXPORT_TAG_MASTER_MEDIA = "media";
+    
+    /** Manifest tag: mediaset */   
+    public static String C_EXPORT_TAG_MASTER_MEDIASET = "mediaset";
+    
+    /** Manifest tag: publication_date */   
+    public static String C_EXPORT_TAG_MASTER_PUBLICATIONDATE = "publication_date";
+    
+    /** Manifest tag: purge_date */   
+    public static String C_EXPORT_TAG_MASTER_PURGEDATE = "purge_date";
+    
+    /** Manifest tag: sub_id */   
+    public static String C_EXPORT_TAG_MASTER_SUBID = "sub_id";
+    
+    /** Manifest tag: title */   
+    public static String C_EXPORT_TAG_MASTER_TITLE = "title";
+    
+    /** Manifest tag: user_name */   
+    public static String C_EXPORT_TAG_MASTER_USER = "user_name";
+    
+    /** Manifest tag: masters */   
+    public static String C_EXPORT_TAG_MASTERS = "masters";
+    
+    /** Manifest tag: media_content */   
+    public static String C_EXPORT_TAG_MEDIA_CONTENT = "media_content";
+    
+    /** Manifest tag: media_description */   
+    public static String C_EXPORT_TAG_MEDIA_DESCRIPTION = "media_description";
+    
+    /** Manifest tag: media_height */   
+    public static String C_EXPORT_TAG_MEDIA_HEIGHT = "media_height";
+    
+    /** Manifest tag: media_mimetype */   
+    public static String C_EXPORT_TAG_MEDIA_MIMETYPE = "media_mimetype";
+    
+    /** Manifest tag: media_name */   
+    public static String C_EXPORT_TAG_MEDIA_NAME = "media_name";
+    
+    /** Manifest tag: media_position */   
+    public static String C_EXPORT_TAG_MEDIA_POSITION = "media_position";
+    
+    /** Manifest tag: media_size */   
+    public static String C_EXPORT_TAG_MEDIA_SIZE = "media_size";
+    
+    /** Manifest tag: media_title */   
+    public static String C_EXPORT_TAG_MEDIA_TITLE = "media_title";
+    
+    /** Manifest tag: media_type */   
+    public static String C_EXPORT_TAG_MEDIA_TYPE = "media_type";
+    
+    /** Manifest tag: media_width */   
+    public static String C_EXPORT_TAG_MEDIA_WIDTH = "media_width";
+    
     /** Holds information about contents that have already been exported */
     private Vector m_exportedMasters = new Vector();
 

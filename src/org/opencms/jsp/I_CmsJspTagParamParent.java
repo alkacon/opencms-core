@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/I_CmsJspTagParamParent.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,6 +100,9 @@ public interface I_CmsJspTagParamParent {
      * Assumes that 'name' and 'value' are appropriately encoded and do
      * not contain any meaningful metacharacters; in order words, escaping
      * is the responsibility of the caller.
+     *
+     * @param name the name of the parameter
+     * @param value the value of the parameter
      *
      * @see CmsJspTagParam
      */

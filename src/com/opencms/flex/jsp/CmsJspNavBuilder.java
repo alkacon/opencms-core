@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/01/06 09:46:26 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
@@ -246,13 +246,24 @@ public class CmsJspNavBuilder {
     }
 
     /**
-     * @see #getNavigationTreeForFolder(CmsObject, String, int, int) 
+     * Builds a tree navigation for the folders between the provided start and end level.<p>
+     * 
+     * @param startlevel the start level
+     * @param endlevel the end level
+     * @return a sorted list of nav elements with the nav tree level property set 
+     * @see #getNavigationTreeForFolder(CmsObject, String, int, int)
      */    
     public ArrayList getNavigationTreeForFolder(int startlevel, int endlevel) {
         return getNavigationTreeForFolder(m_cms, m_requestUriFolder, startlevel, endlevel);
     }
 
     /**
+     * Builds a tree navigation for the folders between the provided start and end level.<p>
+     * 
+     * @param folder the selected folder
+     * @param startlevel the start level
+     * @param endlevel the end level
+     * @return a sorted list of nav elements with the nav tree level property set 
      * @see #getNavigationTreeForFolder(CmsObject, String, int, int) 
      */
     public ArrayList getNavigationTreeForFolder(String folder, int startlevel, int endlevel) {
@@ -327,6 +338,9 @@ public class CmsJspNavBuilder {
     }
     
     /**
+     * Build a "bread crump" path navigation to the current folder.<p>
+     * 
+     * @return ArrayList sorted list of navigation elements
      * @see #getNavigationBreadCrumb(String, int, int, boolean) 
      */
     public ArrayList getNavigationBreadCrumb() {
@@ -334,6 +348,11 @@ public class CmsJspNavBuilder {
     }
     
     /**
+     * Build a "bread crump" path navigation to the current folder.<p>
+     * 
+     * @param startlevel the start level, if negative, go down |n| steps from selected folder
+     * @param endlevel the end level, if -1, build navigation to selected folder
+     * @return ArrayList sorted list of navigation elements
      * @see #getNavigationBreadCrumb(String, int, int, boolean) 
      */
     public ArrayList getNavigationBreadCrumb(int startlevel, int endlevel) {
@@ -341,6 +360,11 @@ public class CmsJspNavBuilder {
     }
     
     /**
+     * Build a "bread crump" path navigation to the current folder.<p>
+     * 
+     * @param startlevel the start level, if negative, go down |n| steps from selected folder
+     * @param currentFolder include the selected folder in navigation or not
+     * @return ArrayList sorted list of navigation elements
      * @see #getNavigationBreadCrumb(String, int, int, boolean) 
      */
     public ArrayList getNavigationBreadCrumb(int startlevel, boolean currentFolder) {
@@ -593,9 +617,11 @@ public class CmsJspNavBuilder {
      */
     private static class ResourceTitleContainer implements Comparable {
 
-        // member variables       
-        public CmsResource m_res = null;
-        public String m_title = null;
+        /** The resource */      
+        protected CmsResource m_res = null;
+        
+        /** The title of the resource */
+        protected String m_title = null;
 
         /**
          * @param cms context provider for the current request
