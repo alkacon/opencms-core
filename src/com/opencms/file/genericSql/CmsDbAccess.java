@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/14 13:29:10 $
- * Version: $Revision: 1.126 $
+ * Date   : $Date: 2000/09/15 08:47:15 $
+ * Version: $Revision: 1.127 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.126 $ $Date: 2000/09/14 13:29:10 $ * 
+ * @version $Revision: 1.127 $ $Date: 2000/09/15 08:47:15 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -326,6 +326,43 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		m_guard = createCmsConnectionGuard(m_pool, sleepTime);
 		m_guard.start();		
 	}
+/**
+ * Sorts a vector of files or folders alphabetically. 
+ * This method uses an insertion sort algorithm.
+ * NOT IN USE AT THIS TIME
+ * 
+ * @param unsortedList Array of strings containing the list of files or folders.
+ * @return Array of sorted strings.
+ */
+protected Vector SortEntrys(Vector list)
+{
+	int in, out;
+	int nElem = list.size();
+	long startTime = System.currentTimeMillis();
+	CmsResource[] unsortedList = new CmsResource[list.size()];
+	for (int i = 0; i < list.size(); i++)
+	{
+		unsortedList[i] = (CmsResource) list.elementAt(i);
+	}
+	for (out = 1; out < nElem; out++)
+	{
+		CmsResource temp = unsortedList[out];
+		in = out;
+		while (in > 0 && unsortedList[in - 1].getAbsolutePath().compareTo(temp.getAbsolutePath()) >= 0)
+		{
+			unsortedList[in] = unsortedList[in - 1];
+			--in;
+		}
+		unsortedList[in] = temp;
+	}
+	Vector sortedList = new Vector();
+	for (int i = 0; i < list.size(); i++)
+	{
+		sortedList.addElement(unsortedList[i]);
+	}
+	System.err.println("Zeit f?r SortEntrys von " + nElem + " Eintr?gen:" + (System.currentTimeMillis() - startTime));
+	return sortedList;
+}
 	/**
 	 * Creates a serializable object in the systempropertys.
 	 * 
@@ -2091,7 +2128,41 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
  */
 public int getBaseProjectId(int project) throws CmsException
 {
-	return 1;
+	PreparedStatement statement = null;
+	int baseproject = project;
+	try
+	{
+		statement = m_pool.getPreparedStatement(m_cq.C_PROJECTS_GETONLINEPROJECT_KEY);
+		statement.setInt(1, project);
+		ResultSet res = statement.executeQuery();
+		if (res.next())
+		{
+			baseproject = res.getInt(1);
+		}
+		else
+		{
+			// project not found!
+			throw new CmsException("[" + this.getClass().getName() + "] " + project, CmsException.C_NOT_FOUND);
+		}
+		res.close();
+	}
+	catch (SQLException e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	}
+	catch (Exception e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]", e);
+	}
+	finally
+	{
+		if (statement != null)
+		{
+			m_pool.putPreparedStatement(m_cq.C_PROJECTS_GETONLINEPROJECT_KEY, statement);
+		}
+	}
+
+	return baseproject;
 }
 	 /**
 	 * Returns all child groups of a groups<P/>
@@ -2374,40 +2445,7 @@ public Vector getFilesWithProperty(int projectId, String propertyDefinition, Str
  */
 public CmsProject getOnlineProject(int project) throws CmsException
 {
-	PreparedStatement statement = null;
-	int baseproject = project;
-	try
-	{
-		statement = m_pool.getPreparedStatement(m_cq.C_PROJECTS_GETONLINEPROJECT_KEY);
-		statement.setInt(1, project);
-		ResultSet res = statement.executeQuery();
-		if (res.next())
-		{
-			baseproject = res.getInt(1);
-		}
-		else
-		{
-			// project not found!
-			throw new CmsException("[" + this.getClass().getName() + "] " + project, CmsException.C_NOT_FOUND);
-		}
-		res.close();
-	}
-	catch (SQLException e)
-	{
-		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
-	}
-	catch (Exception e)
-	{
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	}
-	finally
-	{
-		if (statement != null)
-		{
-			m_pool.putPreparedStatement(m_cq.C_PROJECTS_GETONLINEPROJECT_KEY, statement);
-		}
-	}
-	return readProject(baseproject);
+		return readProject(getBaseProjectId(project));
 }
 /**
  * retrieve the correct instance of the queries holder.
@@ -2426,9 +2464,6 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 public CmsSite getSite(int projectId) throws CmsException
 {
 	int baseproject_id = getBaseProjectId(projectId);
-//JAK: This method has to be extracted from getOnlineProject so that it can be used both places !!!! 
-
-	
 	PreparedStatement statement = null;
 	CmsSite site = null;
 	try
@@ -2438,26 +2473,13 @@ public CmsSite getSite(int projectId) throws CmsException
 		ResultSet res = statement.executeQuery();
 		if (res.next())
 		{
-/*		
-			site = new CmsSite(   //JAK: all the following parameters are copied from a different method
-				res.getInt(m_cq.C_PROJECTS_PROJECT_ID), 
-				res.getString(m_cq.C_PROJECTS_PROJECT_NAME), 
-				res.getString(m_cq.C_PROJECTS_PROJECT_DESCRIPTION), 
-				res.getInt(m_cq.C_PROJECTS_TASK_ID), 
-				res.getInt(m_cq.C_PROJECTS_USER_ID), 
-				res.getInt(m_cq.C_PROJECTS_GROUP_ID), 
-				res.getInt(m_cq.C_PROJECTS_MANAGERGROUP_ID), 
-				res.getInt(m_cq.C_PROJECTS_PROJECT_FLAGS), 
-				SqlHelper.getTimestamp(res, m_cq.C_PROJECTS_PROJECT_CREATEDATE), 
-				SqlHelper.getTimestamp(res, m_cq.C_PROJECTS_PROJECT_PUBLISHDATE), 
-				res.getInt(m_cq.C_PROJECTS_PROJECT_PUBLISHED_BY), 
-				res.getInt(m_cq.C_PROJECTS_PROJECT_TYPE));
-*/				
+			//SELECT SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID FROM " + C_DATABASE_PREFIX + "SITES, " + C_DATABASE_PREFIX + "SITE_PROJECTS WHERE " + C_DATABASE_PREFIX + "SITE_PROJECTS.BASEPROJECT_ID = ? AND " + C_DATABASE_PREFIX + "SITE_PROJECTS.SITE_ID=" + C_DATABASE_PREFIX + "SITES.SITE_ID";
+			site = new CmsSite(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"));
 		}
 		else
 		{
 			// project not found!
-			throw new CmsException("[" + this.getClass().getName() + "] " + projectId, CmsException.C_NOT_FOUND);
+			throw new CmsException("[" + this.getClass().getName() + "] " + baseproject_id, CmsException.C_NOT_FOUND);
 		}
 		res.close();
 	}
@@ -5627,43 +5649,6 @@ public CmsTask readTask(int id) throws CmsException {
 		}
 		return result;
 	}
-/**
- * Sorts a vector of files or folders alphabetically. 
- * This method uses an insertion sort algorithm.
- * NOT IN USE AT THIS TIME
- * 
- * @param unsortedList Array of strings containing the list of files or folders.
- * @return Array of sorted strings.
- */
-protected Vector SortEntrys(Vector list)
-{
-	int in, out;
-	int nElem = list.size();
-	long startTime = System.currentTimeMillis();
-	CmsResource[] unsortedList = new CmsResource[list.size()];
-	for (int i = 0; i < list.size(); i++)
-	{
-		unsortedList[i] = (CmsResource) list.elementAt(i);
-	}
-	for (out = 1; out < nElem; out++)
-	{
-		CmsResource temp = unsortedList[out];
-		in = out;
-		while (in > 0 && unsortedList[in - 1].getAbsolutePath().compareTo(temp.getAbsolutePath()) >= 0)
-		{
-			unsortedList[in] = unsortedList[in - 1];
-			--in;
-		}
-		unsortedList[in] = temp;
-	}
-	Vector sortedList = new Vector();
-	for (int i = 0; i < list.size(); i++)
-	{
-		sortedList.addElement(unsortedList[i]);
-	}
-	System.err.println("Zeit für SortEntrys von " + nElem + " Einträgen:" + (System.currentTimeMillis() - startTime));
-	return sortedList;
-}
 	/**
 	 * Undeletes the file.
 	 * 

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSite.java,v $
- * Date   : $Date: 2000/08/31 15:10:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/09/15 08:47:15 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file;
  * This Class represents a site, used by the multisite functionality.
  *   
  * @author Anders Fugmann
- * @version $Revision: 1.1 $ $Date: 2000/08/31 15:10:37 $  
+ * @version $Revision: 1.2 $ $Date: 2000/09/15 08:47:15 $  
  * 
  */
 
@@ -59,6 +59,12 @@ public class CmsSite
 	private String guestUser;
 	/** The guestgroup of this site. */
 	private String guestGroup;
+/**
+ * Insert the method's description here.
+ * Creation date: (09/14/00 13:47:52)
+ */
+public CmsSite(int site_id, String name, String description, int category_id, int lang_id, int country_id)
+{}
 /**
  * Insert the method's description here.
  * Creation date: (08/31/00 %r)
