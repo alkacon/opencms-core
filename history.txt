@@ -11,7 +11,15 @@ Legend:
 OpenCms 4.5.14 Gom Jabbar   - xx September 2001
 * Temporary projects are now created with the right type and will be deleted after publish.
 * Corrupt language files will not destroy the complete system.
+* When removing resources from the database (e.g. when publish a project) the properties
+  and filecontent of the resources must be deleted (Changes in PL/SQL, too).
+* When creating and changing resources the right values for resource_lastmodified_by and
+  date_lastmodified has to be set, depending if its an online- or an offline-resource (Changes in PL/SQL, too).
+* PL/SQL-Bugfix when writing property: there were problems with some characters in the property value.
+* When restoring a page do not throw an exception if the body-file could not be restored because only
+  the control file might exist in the history.
 - System startup time decreased. The system starts faster, even with a full registry.
+- Removed unused method createResource in resourcebroker and DbAccess.
 
 OpenCms 4.5.13 Gom Jabbar   - 28 September 2001
 ! Now webusers can be read from the CmsObject and the Shell with and without password..
