@@ -229,7 +229,7 @@ ${build.inputlib.tidy}
     </target>
     
 
-    <target name="zip" depends="war" description="Creates a distribution ZIP">
+    <target name="zip" depends="war" description="Creates a binary distribution ZIP">
         <zip
             zipfile="${zip.home}/opencms_${version.number}.zip"
             basedir="${build.home}"
@@ -237,7 +237,7 @@ ${build.inputlib.tidy}
     </target>
 
 
-    <target name="all" depends="clean,zip" description="Build from scratch and create distribution ZIP"/>
+    <target name="all" depends="bindist,srcdist" description="Creates binary and source distribution ZIPs"/>
 
 
     <target name="compile" depends="copy" description="Default compile target"/>
@@ -346,9 +346,12 @@ ${build.inputlib.tidy}
         <move file="doc/documentation/OpenCmsDoc.pdf" tofile="${pdf.home}/OpenCmsDoc${timestamp}.pdf" />        
         <move file="doc/documentation/OpenCmsDoc.log" tofile="${pdf.home}/OpenCmsDoc${timestamp}.log" />        
     </target>
+
+    
+    <target name="bindist" depends="clean,zip" description="Builds from scratch and creates a binary distribution ZIP including the required libaries"/>    
     
     
-    <target name="srcdist" depends="clean" description="Creates a source distribution ZIP including the required libaries">
+    <target name="srcdist" depends="clean" description="Clean the output folder and creates a source distribution ZIP including the required libaries">
         <tstamp>
             <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
         </tstamp>
