@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2002/01/23 15:16:21 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/02/12 15:55:43 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -154,6 +154,10 @@ public class LinkSubstitution {
     public String getLinkSubstitution(CmsObject cms, String link){
         if(link == null || "".equals(link)){
             return "";
+        }
+        if(!link.startsWith("/")){
+            // this is a relative link. Lets make an absolute out of it
+            link = Utils.mergeAbsolutePath(cms.getRequestContext().getRequest().getRequestedResource(), link);
         }
         // first ask if this is the export
         int modus = cms.getMode();
