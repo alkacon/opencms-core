@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/12/07 10:30:33 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2001/12/11 09:13:05 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.70 $ $Date: 2001/12/07 10:30:33 $
+ * @version $Revision: 1.71 $ $Date: 2001/12/11 09:13:05 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -272,18 +272,34 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             String export = conf.getString("linkrules.export");
             if(export != null && !"".equals(export)){
                 c_linkRulesExport = conf.getStringArray("ruleset."+export);
+                // now replace ${WEB_APP_NAME} with the correct name of the webapplication
+                for(int i = 0; i < c_linkRulesExport.length; i++) {
+                    c_linkRulesExport[i] = Utils.replace(c_linkRulesExport[i], C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
+                }
             }
             String online = conf.getString("linkrules.online");
             if(online != null && !"".equals(online)){
                 c_linkRulesOnline = conf.getStringArray("ruleset."+online);
+                // now replace ${WEB_APP_NAME} with the correct name of the webapplication
+                for(int i = 0; i < c_linkRulesOnline.length; i++) {
+                    c_linkRulesOnline[i] = Utils.replace(c_linkRulesOnline[i], C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
+                }
             }
             String offline = conf.getString("linkrules.offline");
             if(offline != null && !"".equals(offline)){
                 c_linkRulesOffline = conf.getStringArray("ruleset."+offline);
+                // now replace ${WEB_APP_NAME} with the correct name of the webapplication
+                for(int i = 0; i < c_linkRulesOffline.length; i++) {
+                    c_linkRulesOffline[i] = Utils.replace(c_linkRulesOffline[i], C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
+                }
             }
             String extern = conf.getString("linkrules.extern");
             if(extern != null && !"".equals(extern)){
                 c_linkRulesExtern = conf.getStringArray("ruleset."+extern);
+                // now replace ${WEB_APP_NAME} with the correct name of the webapplication
+                for(int i = 0; i < c_linkRulesExtern.length; i++) {
+                    c_linkRulesExtern[i] = Utils.replace(c_linkRulesExtern[i], C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
+                }
             }
             c_linkRuleStart = conf.getString("exportfirstrule");
 
@@ -296,7 +312,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 }
             }
             // at last the target for the export
-            m_staticExportPath = com.opencms.boot.CmsBase.getAbsoluteWebPath(conf.getString(C_STATICEXPORT_PATH));
+            m_staticExportPath = com.opencms.boot.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(conf.getString(C_STATICEXPORT_PATH)));
 
             // is the static export enabled?
             c_staticExportEnabled = conf.getBoolean("staticexport.enabled", false);

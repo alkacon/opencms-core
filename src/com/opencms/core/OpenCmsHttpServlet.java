@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/12/06 09:10:57 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/12/11 09:13:05 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2001/12/06 09:10:57 $
+ * @version $Revision: 1.22 $ $Date: 2001/12/11 09:13:05 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -618,6 +618,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         String redirectlocation;
         while((redirect = (String)m_configurations.getString(C_PROPERTY_REDIRECT + "." + count)) != null) {
             redirectlocation = (String)m_configurations.getString(C_PROPERTY_REDIRECTLOCATION + "." + count);
+            redirectlocation = Utils.replace(redirectlocation, C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
             m_redirect.addElement(redirect);
             m_redirectlocation.addElement(redirectlocation);
             count++;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsBase.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/12/11 09:13:05 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -37,7 +37,7 @@ import java.io.File;
  * and helper functions, e.g. OpenCms logging oder OpenCms base path.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2001/07/31 15:50:12 $
+ * @version $Revision: 1.5 $ $Date: 2001/12/11 09:13:05 $
  */
 public class CmsBase implements I_CmsLogChannels {
 
@@ -118,6 +118,13 @@ public class CmsBase implements I_CmsLogChannels {
             webBasePath += File.separatorChar;
         }
         return webBasePath;
+    }
+
+    /** Get the OpenCms WebApplicationName */
+    public static String getWebAppName() {
+        File basePath = new File(c_basePath);
+        String webAppName = basePath.getParentFile().getName();
+        return webAppName;
     }
 
     public static String getAbsoluteWebPath(String s) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2001/11/15 17:10:16 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/12/11 09:13:05 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -145,6 +145,12 @@ public class CmsSetupUtils {
                     try {
                         /* Get the value to the given key from the properties*/
                         String value = extProp.get(key).toString();
+
+                        /* if this was a list, we need to delete leading and tailing '[]' characters */
+                        if(value.startsWith("[") && value.endsWith("]")) {
+                            value = value.substring(1, value.length() - 1);
+                        }
+
                         /* write it */
                         fw.write(value);
                     }

@@ -201,6 +201,7 @@ ${build.inputlib.tidy}
             <zipfileset dir="${build.web}/META-INF" prefix="META-INF"/>
             <zipfileset dir="${build.web}/WEB-INF" prefix="WEB-INF"/>
             <zipfileset dir="${build.web}/ocsetup" prefix="ocsetup"/>
+            <zipfileset dir="${build.web}/export" prefix="export"/>
         </zip>
     </target>
     

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/12/07 09:47:57 $
-* Version: $Revision: 1.190 $
+* Date   : $Date: 2001/12/11 09:13:05 $
+* Version: $Revision: 1.191 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.190 $ $Date: 2001/12/07 09:47:57 $
+ * @version $Revision: 1.191 $ $Date: 2001/12/11 09:13:05 $
  */
 public interface I_CmsConstants {
 
@@ -53,6 +53,11 @@ public interface I_CmsConstants {
         "further details.",
         ""
     };
+
+    /**
+     * Replacekey for the webapplication name (used in opencms.properties)
+     */
+    static final String C_WEB_APP_REPLACE_KEY = "${WEB_APP_NAME}";
 
     /**
      * The minimum-size of a passwordstring.
