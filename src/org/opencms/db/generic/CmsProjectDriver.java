@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/01/22 11:50:01 $
- * Version: $Revision: 1.144 $
+ * Date   : $Date: 2004/01/23 08:36:00 $
+ * Version: $Revision: 1.145 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.144 $ $Date: 2004/01/22 11:50:01 $
+ * @version $Revision: 1.145 $ $Date: 2004/01/23 08:36:00 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -305,8 +305,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
         return readSystemProperty(name);
     }
-
-    /****************     methods for link management            ****************************/
 
     /**
      * Deletes a project from the cms.

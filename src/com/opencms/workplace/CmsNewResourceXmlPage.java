@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
-* Date   : $Date: 2004/01/22 11:50:01 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2004/01/23 08:36:00 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.w3c.dom.Document;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2004/01/22 11:50:01 $
+ * @version $Revision: 1.4 $ $Date: 2004/01/23 08:36:00 $
  */
 public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
 
@@ -171,11 +171,6 @@ public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
                         cms.writeFile(bodyFile);
                     }
 
-                    // care about the linkmanagement if a default body was selected
-                    // if(layoutFileDefined){
-                    //    CmsPageLinks linkObject = cms.getPageLinks(currentFilelist+newFile);
-                    //    cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
-                    // }
                     // now check if navigation informations have to be added to the new page.
                     if(navtitle != null) {
                         cms.writeProperty(cms.readAbsolutePath(file), C_PROPERTY_NAVTEXT, navtitle);
