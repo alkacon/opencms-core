@@ -7,7 +7,7 @@
 <!-- Created by Alexander Kandzior (a.kandzior@alkacon.com) on 6. April 2002, 17:28 -->
 
 <taglib>
-    <tlib-version>0.9.5</tlib-version>
+    <tlib-version>0.9.6</tlib-version>
     <jsp-version>1.2</jsp-version>
     <short-name>cms</short-name>
     <uri>http://www.opencms.org/taglib/cms</uri>
@@ -19,7 +19,7 @@
 
     <tag>
         <name>property</name>
-        <tag-class>com.opencms.flex.jsp.CmsJspTagFileProperty</tag-class>
+        <tag-class>com.opencms.flex.jsp.CmsJspTagProperty</tag-class>
         <body-content>empty</body-content>
         <description>
             This tag enables read access to the current files OpenCms properties.
@@ -79,17 +79,17 @@
         <tag-class>com.opencms.flex.jsp.CmsJspTagTemplate</tag-class>
         <body-content>JSP</body-content>
         <description>
-            This tag allows conditions display of template elements.
+            This tag allows conditional display of template elements.
         </description>
         <attribute>
-            <name>part</name>
+            <name>element</name>
             <required>true</required>
         </attribute>        
     </tag>
     
     <tag>
         <name>label</name>
-        <tag-class>com.opencms.flex.jsp.CmsJspTagWpLabel</tag-class>
+        <tag-class>com.opencms.flex.jsp.CmsJspTagLabel</tag-class>
         <body-content>tagdependent</body-content>
         <description>
             This tag is used to read values from the OpenCms workplace language files.
@@ -131,7 +131,7 @@
     
     <tag>
         <name>param</name>
-        <tag-class>com.opencms.flex.jsp.CmsJspParamSupport</tag-class>
+        <tag-class>com.opencms.flex.jsp.CmsJspTagParam</tag-class>
         <body-content>JSP</body-content>
         <description>
             Adds a parameter to a containing 'import' tag's URL.
