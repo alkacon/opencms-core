@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/09/17 16:15:06 $
-* Version: $Revision: 1.273 $
+* Date   : $Date: 2003/09/18 13:19:47 $
+* Version: $Revision: 1.274 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.273 $ $Date: 2003/09/17 16:15:06 $
+ * @version $Revision: 1.274 $ $Date: 2003/09/18 13:19:47 $
  */
 public interface I_CmsConstants {
 
@@ -1223,4 +1223,7 @@ public interface I_CmsConstants {
 
     /** identifier for x-forwarded-for (i.e. proxied) request headers */
     String C_REQUEST_FORWARDED_FOR = "x-forwarded-for";
+    
+    /** localhost ip used in fallback cases */
+    String C_IP_LOCALHOST = "127.0.0.1";
 }

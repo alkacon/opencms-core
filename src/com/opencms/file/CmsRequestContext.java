@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/09/18 07:47:08 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2003/09/18 13:20:10 $
+ * Version: $Revision: 1.100 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.99 $
+ * @version $Revision: 1.100 $
  */
 public class CmsRequestContext {
 
@@ -334,7 +334,7 @@ public class CmsRequestContext {
                 }
             } catch (Throwable t) {
                 // This will happen only in very rare circumstances
-                m_remoteAddr = "0.0.0.0";
+                m_remoteAddr = I_CmsConstants.C_IP_LOCALHOST;
                 if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled()) {
                     OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn("Error reading remote ip address in request context", t);
                 }
