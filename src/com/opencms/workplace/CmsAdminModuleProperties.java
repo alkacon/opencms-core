@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/09/19 07:45:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2001/01/22 13:58:41 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -59,6 +59,47 @@ public class CmsAdminModuleProperties extends CmsWorkplaceDefault implements I_C
 	private final String C_SESSION_MODULENAME	= "modulename_error";
 	private final String C_SESSION_PARAMETER	= "moduleparameter_error";
 	
+	/**
+	 *  Checks if the type of the value is correct and returns the converted value or null.
+	 *  @param type the type that the value should have..
+	 *  @param value the value to check.
+	 */
+	private String checkType(String type, String value) {
+		type = type.toLowerCase();
+		try {
+			if("string".equals(type) ) {
+				if( (value != null) && (value.indexOf("\"") <0)) {
+					return value;
+				} else {
+					return null;
+				}				
+			} else if("int".equals(type) || "integer".equals(type)) {
+				value = "" + Integer.parseInt(value);
+				return value;
+			} else if("float".equals(type)) {
+				value = "" + Float.valueOf(value);
+				return value;
+			} else if("boolean".equals(type)) {
+				value = "" + Boolean.valueOf(value);
+				return value;
+			} else if("long".equals(type)) {
+				value = "" + Long.valueOf(value);
+				return value;
+			} else if("double".equals(type)) {
+				value = "" + Double.valueOf(value);
+				return value;
+			} else if("byte".equals(type)) {
+				value = "" + Byte.valueOf(value);
+				return value;
+			} else {
+				// the type dosen't exist
+				return null;
+			}
+		} catch(Exception exc) {
+			// the type of the value was wrong
+			return null;
+		}
+	}
 	/**
 	 * Gets the content of a defined section in a given template file and its subtemplates
 	 * with the given parameters. 
@@ -167,15 +208,16 @@ public class CmsAdminModuleProperties extends CmsWorkplaceDefault implements I_C
 			String value = (String)parameters.get("parawert");
 			xmlTemplateDocument.setData("name",module);
 			templateSelector = "done";
-			try{
-				reg.setModuleParameter(module, parameter, value);
-			}catch(CmsException e){
+			String newValue = checkType(reg.getModuleParameterType(module, parameter), value);
+			if (newValue != null){
+				reg.setModuleParameter(module, parameter, newValue);
+			}else{
 				// wrong value
 				session.putValue(C_SESSION_MODULENAME, module);
 				session.putValue(C_SESSION_PARAMETER, parameter);
 				templateSelector = "error";
 				xmlTemplateDocument.setData("paraname", parameter);
-				xmlTemplateDocument.setData("DETAILS", Utils.getStackTrace(e));
+				xmlTemplateDocument.setData("DETAILS", "");
 			}
 		}
 		// Now load the template file and start the processing
