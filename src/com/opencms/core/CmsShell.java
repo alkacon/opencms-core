@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/14 13:29:10 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/09/15 09:48:28 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.25 $ $Date: 2000/09/14 13:29:10 $
+ * @version $Revision: 1.26 $ $Date: 2000/09/15 09:48:28 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -53,6 +53,7 @@ public class CmsShell implements I_CmsConstants {
 	 * The open-cms.
 	 */
 	private A_OpenCms m_openCms;
+	
 	/**
 	 * Tests if the user can access the project.
 	 * 
@@ -991,6 +992,23 @@ public void getCurrentSite()
 			System.out.println("Conflicts: " + conflicts.size());
 			for(int i = 0; i < conflicts.size(); i++) {
 				System.out.println(conflicts.elementAt(i));
+			}
+		} catch( Exception exc ) { 
+			printException(exc);
+		}
+	}
+	/**
+	 * Checks for resources that should be copied to the import-project.
+	 * 
+	 * @param moduleZip The file-name of module to import.
+	 */
+	public void importGetResourcesForProject(String moduleZip) {
+		try {
+			I_CmsRegistry reg = m_cms.getRegistry();
+			Vector resources = reg.importGetResourcesForProject(moduleZip);
+			System.out.println("Resources: " + resources.size());
+			for(int i = 0; i < resources.size(); i++) {
+				System.out.println(resources.elementAt(i));
 			}
 		} catch( Exception exc ) { 
 			printException(exc);

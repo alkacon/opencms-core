@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/09/14 15:58:26 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/09/15 09:46:47 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.23 $ $Date: 2000/09/14 15:58:26 $
+ * @version $Revision: 1.24 $ $Date: 2000/09/15 09:46:47 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -86,7 +86,7 @@ public class CmsImport implements I_CmsConstants {
 	 * Digest for taking a fingerprint of the files
 	 */
 	private MessageDigest m_digest = null;
-	
+
 	/**
 	 * This constructs a new CmsImport-object which imports the resources.
 	 * 
@@ -259,6 +259,43 @@ public Vector getConflictingFilenames() throws CmsException {
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 	}
+/**
+ * This method returns the resource-names that are needed to create a project for this import.
+ * It calls the method getConflictingFileNames if needed, to calculate these resources.
+ */	
+public Vector getResourcesForProject() throws CmsException {
+	NodeList fileNodes;
+	Element currentElement, currentProperty;
+	String source, destination, path;
+	Vector resources = new Vector();
+	try {
+		// get all file-nodes
+		fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
+
+		// walk through all files in manifest
+		for (int i = 0; i < fileNodes.getLength(); i++) {
+			currentElement = (Element) fileNodes.item(i);
+			source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
+			destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
+			path = m_importPath + destination;
+
+			// get the resources for a project
+			try {
+				String resource = destination.substring(0, destination.indexOf("/",1) + 1);
+				resource = m_importPath + resource;
+				if((!resources.contains(resource)) && (!resource.equals(m_importPath))) {
+					// add the resource, if it dosen't already exist
+					resources.addElement(resource);
+				}
+			} catch(StringIndexOutOfBoundsException exc) {
+				// this is a resource in root-folder: ignore the excpetion
+			}
+		} 
+	} catch (Exception exc) {
+		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+	}
+	return resources;
+}
 	/**
 	 * Returns the text for this node.
 	 * 

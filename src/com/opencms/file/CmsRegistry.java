@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/09/14 08:44:27 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/09/15 09:46:47 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/09/14 08:44:27 $
+ * @version $Revision: 1.11 $ $Date: 2000/09/15 09:46:47 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -245,8 +245,9 @@ public Vector deleteCheckDependencies(String modulename) throws CmsException {
  * @param missingFiles a return value. The files that are missing.
  * @param wrongChecksum a return value. The files that should be deleted but have another checksum as at import-time.
  * @param filesInUse a return value. The files that should be deleted but are in use by other modules.
+ * @param resourcesForProject a return value. The files that should be copied to a project to delete.
  */
-public void deleteGetConflictingFileNames(String modulename, Vector filesWithProperty, Vector missingFiles, Vector wrongChecksum, Vector filesInUse) throws CmsException {
+public void deleteGetConflictingFileNames(String modulename, Vector filesWithProperty, Vector missingFiles, Vector wrongChecksum, Vector filesInUse, Vector resourcesForProject) throws CmsException {
 	// the files and checksums for this module
 	Vector moduleFiles = new Vector();
 	Vector moduleChecksums = new Vector();
@@ -269,6 +270,16 @@ public void deleteGetConflictingFileNames(String modulename, Vector filesWithPro
 		String currentFile = (String) moduleFiles.elementAt(i);
 		String currentChecksum = (String) moduleChecksums.elementAt(i);
 		CmsFile file = null;
+
+		try {
+			String resource = currentFile.substring(0, currentFile.indexOf("/",1) + 1);
+			if(!resourcesForProject.contains(resource)) {
+				// add the resource, if it dosen't already exist
+				resourcesForProject.addElement(resource);
+			}
+		} catch(StringIndexOutOfBoundsException exc) {
+			// this is a resource in root-folder: ignore the excpetion
+		}
 
 		// is it a file - then check all the possibilities
 		if (!currentFile.endsWith("/")) {
@@ -298,7 +309,7 @@ public void deleteGetConflictingFileNames(String modulename, Vector filesWithPro
 		}
 	}
 
-	// TODO: determine the files with the property for this module.
+	// determine the files with the property for this module.
 
 	Vector files = m_cms.getFilesWithProperty("module", modulename + "_" + getModuleVersion(modulename));
 	for(int i = 0; i < files.size(); i++) {
@@ -306,7 +317,16 @@ public void deleteGetConflictingFileNames(String modulename, Vector filesWithPro
 		if(!moduleFiles.contains(currentFile )) {
 			// is the file in use of another module?
 			if (!otherFiles.contains(currentFile)) {
-				wrongChecksum.addElement(currentFile);
+				filesWithProperty.addElement(currentFile);
+				try {
+					String resource = currentFile.substring(0, currentFile.indexOf("/",1) + 1);
+					if(!resourcesForProject.contains(resource)) {
+						// add the resource, if it dosen't already exist
+						resourcesForProject.addElement(resource);
+					}
+				} catch(StringIndexOutOfBoundsException exc) {
+					// this is a resource in root-folder: ignore the excpetion
+				}
 			}
 		}
 		
@@ -321,23 +341,36 @@ public void deleteGetConflictingFileNames(String modulename, Vector filesWithPro
 public synchronized void deleteModule(String module, Vector exclusion) throws CmsException {
 	// check if the user is allowed to perform this action
 	if (!hasAccess()) {
-		throw new CmsException("No access to perform the action 'importModule'", CmsException.C_REGISTRY_ERROR);
+		throw new CmsException("No access to perform the action 'deleteModule'", CmsException.C_REGISTRY_ERROR);
 	}
 
 	// TODO: invoke the event-method
 
-	// TODO: check, if deletion is allowed
+	// check, if deletion is allowed
+	Vector deps = deleteCheckDependencies(module);
+	if(deps.size() != 0) {
+		// there are dependencies - throw exception
+		throw new CmsException("There are dependencies for the module " + module + ": deletion is not allowed.", CmsException.C_REGISTRY_ERROR);
+	}
 
 	// get the files, that are belonging to the module.
 	Vector resourceNames = new Vector();
+	Vector missingFiles = new Vector();
+	Vector wrongChecksum = new Vector();
+	Vector filesInUse = new Vector();
 	Vector resourceCodes = new Vector();
+
+	// get files by property
+	deleteGetConflictingFileNames(module, resourceNames, missingFiles, wrongChecksum, filesInUse, new Vector());
+	
+	// get files by registry
 	getModuleFiles(module, resourceNames, resourceCodes);
 
 	// move through all resource-names and try to delete them
 	for (int i = resourceNames.size() - 1; i >= 0; i--) {
 		try {
 			String currentResource = (String) resourceNames.elementAt(i);
-			if (!exclusion.contains(currentResource)) {
+			if ((!exclusion.contains(currentResource)) && (!filesInUse.contains(filesInUse))) {
 				m_cms.lockResource(currentResource, true);
 				if(currentResource.endsWith("/") ) {
 					// this is a folder
@@ -349,7 +382,6 @@ public synchronized void deleteModule(String module, Vector exclusion) throws Cm
 			}
 		} catch (CmsException exc) {
 			// ignore the exception and delete the next resource.
-			exc.printStackTrace();
 		}
 	}
 
@@ -1080,6 +1112,20 @@ public Vector importGetConflictingFileNames(String moduleZip) throws CmsExceptio
 public String importGetModuleName(String moduleZip) {
 	Element newModule = getModuleElementFromImport(moduleZip);
 	return newModule.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+}
+/**
+ *  Returns all files that are needed to create a project for the module-import.
+ *
+ *  @param moduleZip The name of the zip-file to import.
+ *  @returns The complete paths for resources that should be in the import-project.
+ */
+public Vector importGetResourcesForProject(String moduleZip) throws CmsException {
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'importGetResourcesForProject'", CmsException.C_REGISTRY_ERROR);
+	}
+
+	CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms);
+	return cmsImport.getResourcesForProject();
 }
 /**
  *  Imports a module. This method is synchronized, so only one module can be imported at on time.

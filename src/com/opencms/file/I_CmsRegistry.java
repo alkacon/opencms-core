@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/09/12 11:44:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/09/15 09:46:47 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/09/12 11:44:33 $
+ * @version $Revision: 1.9 $ $Date: 2000/09/15 09:46:47 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -65,8 +65,9 @@ public Vector deleteCheckDependencies(String modulename) throws CmsException;
  * @param missingFiles a return value. The files that are missing.
  * @param wrongChecksum a return value. The files that should be deleted but have another checksum as at import-time.
  * @param filesInUse a return value. The files that should be deleted but are in use by other modules.
+ * @param resourcesForProject a return value. The files that should be copied to a project to delete.
  */
-public void deleteGetConflictingFileNames(String modulename, Vector filesWithProperty, Vector missingFiles, Vector wrongChecksum, Vector filesInUse) throws CmsException;
+public void deleteGetConflictingFileNames(String modulename, Vector filesWithProperty, Vector missingFiles, Vector wrongChecksum, Vector filesInUse, Vector resourcesForProject) throws CmsException ;
 /**
  *  Deletes a module. This method is synchronized, so only one module can be deleted at one time.
  *
@@ -424,6 +425,13 @@ public Vector importGetConflictingFileNames(String moduleZip) throws CmsExceptio
  *  @return The name of the module to be imported.
  */
 public String importGetModuleName(String moduleZip);
+/**
+ *  Returns all files that are needed to create a project for the module-import.
+ *
+ *  @param moduleZip The name of the zip-file to import.
+ *  @returns The complete paths for resources that should be in the import-project.
+ */
+public Vector importGetResourcesForProject(String moduleZip) throws CmsException;
 /**
  *  Imports a module. This method is synchronized, so only one module can be imported at on time.
  *
