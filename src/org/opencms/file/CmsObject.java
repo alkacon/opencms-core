@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/05/26 09:37:57 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/05/31 08:11:55 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  */
 public class CmsObject {
 
@@ -1717,31 +1717,7 @@ public class CmsObject {
      */
     public Vector getGroupsOfUser(String username, String remoteAddress) throws CmsException {
         return m_driverManager.getGroupsOfUser(m_context, username, remoteAddress);
-    }
-    
-    /**
-     * Returns all groups with a name like the specified pattern.<p>
-     *
-     * @param namePattern pattern for the group name
-     * @return a Vector of all groups with a name like the given pattern
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public Vector getGroupsLike(String namePattern) throws CmsException {
-        return (m_driverManager.getGroupsLike(m_context, namePattern));
-    }
-    
-    /**
-     * Checks if a user is a direct member of a group having a name like the specified pattern.<p>
-     *
-     * @param username the name of the user to get all groups for.
-     * @param groupNamePattern pattern for the group name
-     * @return <code>true</code> if the given user is a direct member of a group having a name like the specified pattern
-     * @throws CmsException if something goes wrong
-     */
-    public boolean hasDirectGroupsOfUserLike(String username, String groupNamePattern) throws CmsException {
-        return (m_driverManager.hasDirectGroupsOfUserLike(m_context, username, groupNamePattern));
-    }       
+    }     
 
     /**
      * This is the port the workplace access is limited to. With the opencms.properties

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/05/26 15:04:24 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/05/31 08:11:56 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.56 $ $Date: 2004/05/26 15:04:24 $
+ * @version $Revision: 1.57 $ $Date: 2004/05/31 08:11:56 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -676,35 +676,6 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             m_sqlManager.closeAll(conn, stmt, res);
         }
     }
-    
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#hasGroupsOfUserLike(org.opencms.util.CmsUUID, String, String)
-     */
-    public boolean hasGroupsOfUserLike(CmsUUID userId, String paramStr, String groupNamePattern) throws CmsException {
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        boolean found = false;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_HASGROUPSOFUSER_LIKE");
-
-            stmt.setString(1, userId.toString());
-            stmt.setString(2, groupNamePattern);
-
-            res = stmt.executeQuery();
-            if (res.next()) {
-                found = res.getInt(1) > 0;
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        
-        return found;
-    }    
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#readAccessControlEntry(org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
@@ -1483,36 +1454,4 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     public CmsSqlManager getSqlManager() {
         return m_sqlManager;
     }
-    
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#readGroupsLike(String)
-     */
-    public Vector readGroupsLike(String namePattern) throws CmsException {
-        Vector groups = new Vector();
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        
-        try {
-            // create statement
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_GETGROUPS_LIKE");
-            stmt.setString(1, namePattern);
-
-            res = stmt.executeQuery();
-
-            // create new Cms group objects
-            while (res.next()) {
-                groups.addElement(internalCreateGroup(res, true));
-            }
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        
-        return groups;
-    }    
-    
 }

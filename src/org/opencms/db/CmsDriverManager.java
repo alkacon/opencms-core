@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/05/28 16:00:40 $
- * Version: $Revision: 1.365 $
+ * Date   : $Date: 2004/05/31 08:11:56 $
+ * Version: $Revision: 1.366 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.365 $ $Date: 2004/05/28 16:00:40 $
+ * @version $Revision: 1.366 $ $Date: 2004/05/31 08:11:56 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3404,43 +3404,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         return allGroups;
     }
     
-
-    /**
-     * Returns all groups with a name like the specified pattern.<p>
-     *
-     * All users are granted, except the anonymous user.<p>
-     *
-     * @param context the current request context
-     * @param namePattern pattern for the group name
-     * @return a Vector of all groups with a name like the given pattern
-     * @throws CmsException if something goes wrong
-     */
-    public Vector getGroupsLike(CmsRequestContext context, String namePattern) throws CmsException {
-        // check security
-        if (!context.currentUser().isGuestUser()) {
-            return m_userDriver.readGroupsLike(namePattern);
-        } else {
-            throw new CmsSecurityException("[" + getClass().getName() + "] getGroupsLike()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
-        }
-    }   
-    
-
-    /**
-     * Checks if a user is a direct member of a group having a name like the specified pattern.<p>
-     *
-     * All users are granted.<p>
-     *
-     * @param context the current request context
-     * @param username the name of the user.
-     * @param groupNamePattern pattern for the group name
-     * @return <code>true</code> if the given user is a direct member of a group having a name like the specified pattern
-     * @throws CmsException if something goes wrong
-     */
-    public boolean hasDirectGroupsOfUserLike(CmsRequestContext context, String username, String groupNamePattern) throws CmsException {
-        CmsUser user = readUser(username);
-        return m_userDriver.hasGroupsOfUserLike(user.getId(), context.getRemoteAddress(), groupNamePattern);
-    }    
-
     /**
      * This is the port the workplace access is limited to. With the opencms.properties
      * the access to the workplace can be limited to a user defined port. With this
@@ -4142,6 +4105,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             denied |= I_CmsConstants.C_PERMISSION_WRITE;
         }
 
+        int warning = 0;
+        // this means a resource MUST NOT be locked to a user,
+        // everyone can write as long as the resource is not locked to someone else 
         if (!lock.isNullLock()) {
             // if the resource is locked by another user, write is rejected
             // read must still be possible, since the explorer file list needs some properties
