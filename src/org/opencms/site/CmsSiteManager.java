@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2004/10/05 14:31:31 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/11/26 13:39:31 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -258,14 +258,14 @@ public final class CmsSiteManager implements Cloneable {
 
         if (m_frozen) {
             throw new RuntimeException(C_MESSAGE_FROZEN);
-        }        
+        }
         CmsSiteMatcher matcher = new CmsSiteMatcher(server);
         CmsSite site = new CmsSite(uri, matcher);
         m_sites.put(site.getSiteMatcher(), site);
-        m_siteRoots.add(site.getSiteRoot());     
+        m_siteRoots.add(site.getSiteRoot());
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site root added      : " + site.toString());
-        }        
+        }
     }
 
     /**
@@ -289,6 +289,16 @@ public final class CmsSiteManager implements Cloneable {
     }
 
     /**
+     * Returns an unmodifiable set of all configured site roots (Strings).<p>
+     *  
+     * @return an unmodifiable set of all configured site roots (Strings)
+     */
+    public Set getSiteRoots() {
+
+        return m_siteRoots;
+    }
+
+    /**
      * Returns a map of configured sites.<p>
      * 
      * The map uses CmsSiteMatcher objects as key and CmsSite as value.<p>
@@ -300,16 +310,6 @@ public final class CmsSiteManager implements Cloneable {
         return m_sites;
     }
 
-    /**
-     * Returns an unmodifiable set of all configured site roots (Strings).<p>
-     *  
-     * @return an unmodifiable set of all configured site roots (Strings)
-     */
-    public Set getSiteRoots() {
-
-        return m_siteRoots;
-    }
-    
     /**
      * Returns the workplace server.<p>
      *
@@ -357,7 +357,7 @@ public final class CmsSiteManager implements Cloneable {
                 }
             }
         }
-        
+
         // check the presence of the default site in VFS
         if ((m_defaultUri == null) || "".equals(m_defaultUri.trim())) {
             m_defaultSite = null;
@@ -387,13 +387,13 @@ public final class CmsSiteManager implements Cloneable {
                 ". Site of workplace    : "
                     + (m_workplaceSiteMatcher != null ? "" + m_workplaceSiteMatcher : "(not configured)"));
         }
-        
+
         // set site lists to unmodifiable 
         m_sites = Collections.unmodifiableMap(m_sites);
         m_siteRoots = Collections.unmodifiableSet(m_siteRoots);
-        
+
         // initialization is done, set the frozen flag to true 
-        m_frozen = true;               
+        m_frozen = true;
     }
 
     /**
@@ -428,7 +428,7 @@ public final class CmsSiteManager implements Cloneable {
      */
     public CmsSite matchRequest(HttpServletRequest req) {
 
-        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getProtocol(), req.getServerName(), req.getServerPort());
+        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
         return matchSite(matcher);
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/11/17 15:07:38 $
- * Version: $Revision: 1.590 $
+ * Date   : $Date: 2004/11/26 13:39:31 $
+ * Version: $Revision: 1.591 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ OpenCms 5.x.x Caladan - xxx, 2004
   directly access an element index value > 0
 ! Property definitions can be deleted from Admin GUI even if resources still use the property
 - Optimized DB queries and index generation for MySQL
+* Fixed issue with "https" scheme not correctly working in site configuration
 
 OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 26, 2004
 ! Added 'templateone' default module as an extended template demo

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2004/06/14 15:50:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/11/26 13:39:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,38 +36,45 @@ package org.opencms.site;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.1
  */
-public final class CmsSiteMatcher implements Cloneable {   
+public final class CmsSiteMatcher implements Cloneable {
 
     /** Wildcard for string matching. */
     private static final String C_WILDCARD = "*";
     
     /** Default matcher that always matches all other Site matchers. */
     public static final CmsSiteMatcher C_DEFAULT_MATCHER = new CmsSiteMatcher(C_WILDCARD, C_WILDCARD, 0);
-   
+
+    /** Constant for "http" scheme. */
+    private static final String C_SCHEME_HTTP = "http";
+
+    /** Constant for "https" scheme. */
+    private static final String C_SCHEME_HTTPS = "https";
+
     /** Hashcode buffer to save multiple calculations. */
     private Integer m_hashCode;
-    
+
     /** The hostname (e.g. localhost) which is required to access this site. */
     private String m_serverName;
-    
+
     /** The port (e.g. 80) which is required to access this site. */
     private int m_serverPort;
-    
+
     /** The protocol (e.g. "http", "https") which is required to access this site. */
     private String m_serverProtocol;
-    
+
     /**
      * Construct a new site matcher from a String which should be in default URL notation.<p>
      * 
-     * If no port is provided, the default port 80 will be used.
+     * If no port is provided, the default port 80 or 443 will be used for http or hhtps respectively.
      * If no protocol is provided, the default protocol "http" will be used.
      * 
      * @param serverString the String, e.g. http://localhost:8080
      */
     public CmsSiteMatcher(String serverString) {
+
         if (serverString == null) {
             init(C_WILDCARD, C_WILDCARD, 0);
             return;
@@ -76,43 +83,47 @@ public final class CmsSiteMatcher implements Cloneable {
         serverString = serverString.trim();
         // cut trailing "/" 
         if (serverString.endsWith("/")) {
-            serverString = serverString.substring(0, serverString.length()-1);
+            serverString = serverString.substring(0, serverString.length() - 1);
         }
         int pos, serverPort;
         String serverProtocol, serverName;
         // check for protocol
         pos = serverString.indexOf("://");
         if (pos >= 0) {
-            serverProtocol = serverString.substring(0, pos);            
+            serverProtocol = serverString.substring(0, pos);
             serverString = serverString.substring(pos + 3);
         } else {
-            serverProtocol = "http";
+            serverProtocol = C_SCHEME_HTTP;
         }
         // check for server name and port
         pos = serverString.indexOf(":");
         if (pos >= 0) {
             serverName = serverString.substring(0, pos);
-            try { 
-                String port = serverString.substring(pos+1);
-                pos =  port.indexOf("/");
+            try {
+                String port = serverString.substring(pos + 1);
+                pos = port.indexOf("/");
                 if (pos >= 0) {
                     port = port.substring(0, pos);
                 }
                 serverPort = Integer.valueOf(port).intValue();
             } catch (NumberFormatException e) {
                 serverPort = 80;
-            }            
+            }
         } else {
             serverName = serverString;
-            serverPort = 80;
+            if (C_SCHEME_HTTPS.equals(serverProtocol)) {
+                serverPort = 443;
+            } else {
+                serverPort = 80;
+            }
         }
-        
+
         // cut trailing path in server name
         pos = serverName.indexOf("/");
         if (pos >= 0) {
             serverName = serverName.substring(0, pos);
         }
-        
+
         // initialize members
         init(serverProtocol, serverName, serverPort);
     }
@@ -125,22 +136,25 @@ public final class CmsSiteMatcher implements Cloneable {
      * @param serverPort the port required to access this site
      */
     public CmsSiteMatcher(String serverProtocol, String serverName, int serverPort) {
+
         init(serverProtocol, serverName, serverPort);
     }
-    
+
     /**
      * Returns a clone of this Objects instance.<p>
      * 
      * @return a clone of this instance
      */
     public Object clone() {
+
         return new CmsSiteMatcher(m_serverProtocol, m_serverName, m_serverPort);
     }
-    
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object o) {
+
         if ((o == null) || !(o instanceof CmsSiteMatcher)) {
             return false;
         }
@@ -151,17 +165,17 @@ public final class CmsSiteMatcher implements Cloneable {
         if (o == this) {
             return true;
         }
-        CmsSiteMatcher matcher = (CmsSiteMatcher)o;            
+        CmsSiteMatcher matcher = (CmsSiteMatcher)o;
         if (getServerPort() != matcher.getServerPort()) {
             return false;
-        }                
-        if (! getServerName().equals(matcher.getServerName())) {
-            return false;
-        }        
-        if (! getServerProtocol().equals(matcher.getServerProtocol())) {
+        }
+        if (!getServerName().equals(matcher.getServerName())) {
             return false;
         }
-        
+        if (!getServerProtocol().equals(matcher.getServerProtocol())) {
+            return false;
+        }
+
         return true;
     }
 
@@ -171,6 +185,7 @@ public final class CmsSiteMatcher implements Cloneable {
      * @return the hostname (e.g. localhost) which is required to access this site
      */
     public String getServerName() {
+
         return m_serverName;
     }
 
@@ -180,6 +195,7 @@ public final class CmsSiteMatcher implements Cloneable {
      * @return the port (e.g. 80) which is required to access this site
      */
     public int getServerPort() {
+
         return m_serverPort;
     }
 
@@ -189,40 +205,52 @@ public final class CmsSiteMatcher implements Cloneable {
      * @return the protocol (e.g. "http", "https") which is required to access this site
      */
     public String getServerProtocol() {
+
         return m_serverProtocol;
     }
-    
+
     /**
      * Returns the url of this site matcher.<p>
      * 
      * @return the url, i.e. {protocol}://{servername}[:{port}], port appened only if != 80
      */
     public String getUrl() {
-        return m_serverProtocol + "://" + m_serverName 
-            + ((m_serverPort != 80) ? ":" + m_serverPort : ""); 
+
+        return m_serverProtocol
+            + "://"
+            + m_serverName
+            + ((m_serverPort != 80 && m_serverPort != 443) ? ":" + m_serverPort : "");
     }
-    
+
     /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
+
         if (m_hashCode == null) {
             m_hashCode = new Integer(toString().hashCode());
         }
         return m_hashCode.intValue();
     }
-    
+
     /**
-     * Inits the member variables.<p>
-     * 
-     * @param serverProtocol to protocol required to access this site
-     * @param serverName the server URL prefix to which this site is mapped
-     * @param serverPort the port required to access this site
+     * @see java.lang.Object#toString()
      */
-    private void init(String serverProtocol, String serverName, int serverPort) {
-        setServerProtocol(serverProtocol);
-        setServerName(serverName);
-        setServerPort(serverPort);
+    public String toString() {
+
+        StringBuffer result = new StringBuffer(32);
+        if ((m_serverProtocol != null) && !(C_WILDCARD.equals(m_serverProtocol))) {
+            result.append(m_serverProtocol);
+            result.append("://");
+        }
+        result.append(m_serverName);
+        if ((m_serverPort > 0)
+            && (!(C_SCHEME_HTTP.equals(m_serverProtocol) && (m_serverPort == 80)))
+            && (!(C_SCHEME_HTTPS.equals(m_serverProtocol) && (m_serverPort == 443)))) {
+            result.append(":");
+            result.append(m_serverPort);
+        }
+        return result.toString();
     }
 
     /**
@@ -233,11 +261,12 @@ public final class CmsSiteMatcher implements Cloneable {
      * @param serverName the hostname (e.g. localhost) which is required to access this site
      */
     protected void setServerName(String serverName) {
+
         if ((serverName == null) || ("".equals(serverName)) || (C_WILDCARD.equals(serverName))) {
             m_serverName = C_WILDCARD;
         } else {
             m_serverName = serverName.trim();
-        }        
+        }
     }
 
     /**
@@ -248,6 +277,7 @@ public final class CmsSiteMatcher implements Cloneable {
      * @param serverPort the port (e.g. 80) which is required to access this site
      */
     protected void setServerPort(int serverPort) {
+
         m_serverPort = serverPort;
         if (m_serverPort < 0) {
             m_serverPort = 0;
@@ -262,30 +292,28 @@ public final class CmsSiteMatcher implements Cloneable {
      * @param serverProtocol the protocol (e.g. "http", "https") which is required to access this site
      */
     protected void setServerProtocol(String serverProtocol) {
+
         int pos;
         if ((serverProtocol == null) || ("".equals(serverProtocol)) || (C_WILDCARD.equals(serverProtocol))) {
             m_serverProtocol = C_WILDCARD;
         } else if ((pos = serverProtocol.indexOf("/")) > 0) {
-            m_serverProtocol = serverProtocol.substring(0, pos).toLowerCase();        
+            m_serverProtocol = serverProtocol.substring(0, pos).toLowerCase();
         } else {
             m_serverProtocol = serverProtocol.toLowerCase().trim();
-        }        
+        }
     }
-    
+
     /**
-     * @see java.lang.Object#toString()
+     * Inits the member variables.<p>
+     * 
+     * @param serverProtocol to protocol required to access this site
+     * @param serverName the server URL prefix to which this site is mapped
+     * @param serverPort the port required to access this site
      */
-    public String toString() {
-        StringBuffer result = new StringBuffer(32);
-        if ((m_serverProtocol != null) && !(C_WILDCARD.equals(m_serverProtocol))) {
-            result.append(m_serverProtocol);
-            result.append("://");
-        }
-        result.append(m_serverName);
-        if ((m_serverPort > 0) && (!("http".equals(m_serverProtocol) && (m_serverPort == 80)))) {
-            result.append(":");
-            result.append(m_serverPort);
-        }
-        return result.toString();
+    private void init(String serverProtocol, String serverName, int serverPort) {
+
+        setServerProtocol(serverProtocol);
+        setServerName(serverName);
+        setServerPort(serverPort);
     }
 }
