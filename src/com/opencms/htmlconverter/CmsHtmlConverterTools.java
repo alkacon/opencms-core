@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2002/11/16 13:19:00 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/12/04 14:50:31 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@ package com.opencms.htmlconverter;
 import java.io.*;
 import java.util.*;
 import org.w3c.dom.*;
-import com.opencms.htmlconverter.*;
+
+import com.opencms.util.LinkSubstitution;
+
 import java.net.*;
 
 /**
@@ -153,7 +155,7 @@ final class CmsHtmlConverterTools {
         return "";
     }
 
-    protected String modifyParameter(URL orgUrl, String parameter, String prefix) {
+    protected String modifyParameter(URL orgUrl, String parameter, String prefix, String relativeRoot) {
         try {
             URL myURL = new URL(parameter);
             parameter = myURL.getFile();
@@ -181,6 +183,13 @@ final class CmsHtmlConverterTools {
             if(parameter.startsWith(prefix)){
                 parameter = parameter.substring(prefix.length());
             }
+        }
+        // check if we need a relative path for this uri
+        if ((relativeRoot != null) && parameter.startsWith(relativeRoot)) {
+            // uri is located in the relative root folder
+            String source = orgUrl.getFile();
+            if (source.startsWith(prefix)) source = source.substring(prefix.length());
+            parameter = LinkSubstitution.getRelativePath(source, parameter);
         }
         return parameter;
     }

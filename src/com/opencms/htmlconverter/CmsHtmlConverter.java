@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/12/04 14:50:25 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,6 +71,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     private CmsHtmlConverterObjectReplaceBlocks m_blockObject = new CmsHtmlConverterObjectReplaceBlocks();
     // replacestring for the modifyParameter methode. Used for the html editor replacement
     private String m_servletPrefix = null;
+    // replace String for relative uris 
+    private String m_relativeRoot = null;
     //the url object for links that should not be replaced
     private URL m_url = null;
     /** Vector stores tag names, after the end-tag, a "\n" is added to the output */
@@ -119,8 +121,9 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      *
      * @param prefix The servletprefix.
      */
-    public void setServletPrefix(String prefix){
+    public void setServletPrefix(String prefix, String relativeRoot){
         m_servletPrefix = prefix;
+        m_relativeRoot = relativeRoot;
     }
 
     /**
@@ -484,7 +487,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                                 tempReplaceString = "$parameter$";
                             }
                             else {
-                                valueParam = m_tools.modifyParameter(m_url, valueParam, m_servletPrefix);
+                                valueParam = m_tools.modifyParameter(m_url, valueParam, m_servletPrefix, m_relativeRoot);
                             }
                             tempReplaceString = m_tools.reconstructTag(tempReplaceString,node,m_tagObject.getParameter(),m_configuration.getQuotationmark());
                         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2002/12/04 14:52:34 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.54 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.55 $ $Date: 2002/12/04 14:52:34 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -987,7 +987,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     /**
      *
      */
-    public void setEditedTemplateContent(CmsObject cms, String content, String templateSelector, boolean html, String filePath) throws CmsException {
+    public void setEditedTemplateContent(CmsObject cms, String content, String templateSelector, boolean html, String filePath, String relativeRoot) throws CmsException {
         //first the original only used by the editor
         String editDatablockName = getEditTemplateDatablockName(templateSelector);
         String copyOfContent = content;
@@ -1036,7 +1036,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         // now we have something for the tidy
         try{
             LinkSubstitution sub = new LinkSubstitution();
-            copyOfContent = sub.substituteEditorContent(cms, copyOfContent, filePath);
+            copyOfContent = sub.substituteEditorContent(cms, copyOfContent, filePath, relativeRoot);
         }catch(CmsException e){
             throw new CmsException("["+this.getClass().getName()+"] cant parse the content:", e);
         }

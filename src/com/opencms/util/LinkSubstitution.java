@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2002/04/10 08:22:11 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2002/12/04 14:52:46 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,14 +82,14 @@ public class LinkSubstitution {
      * and in <image src="". They will be replaced with ]]><LINK> path in opencms <LINK><![CDATA[
      */
     public String substituteEditorContent(CmsObject cms, String content)throws CmsException{
-        return substituteEditorContent(cms, content, null);
+        return substituteEditorContent(cms, content, null, null);
     }
 
    /**
      * parses the html content from the editor. It replaces the links in <a href=""
      * and in <image src="". They will be replaced with ]]><LINK> path in opencms <LINK><![CDATA[
      */
-    public String substituteEditorContent(CmsObject cms, String content, String path)throws CmsException{
+    public String substituteEditorContent(CmsObject cms, String content, String path, String relativeRoot)throws CmsException{
         CmsHtmlConverter converter = new CmsHtmlConverter();
         String retValue = null;
         if(path == null || "".equals(path)){
@@ -142,7 +142,7 @@ public class LinkSubstitution {
             String host = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
             int port = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerPort();
             URL urltool = new URL(prot, host, port, servletPrefix + path);
-            converter.setServletPrefix(servletPrefix);
+            converter.setServletPrefix(servletPrefix, relativeRoot);
             converter.setOriginalUrl(urltool);
             retValue = converter.convertHTML(content);
         }catch ( Exception e ){
@@ -268,7 +268,7 @@ public class LinkSubstitution {
      *
      * @return the relative path to the target resource.
      */
-    public String getRelativePath(String baseFile, String linkTarget){
+    public static String getRelativePath(String baseFile, String linkTarget){
 
         // use tokenizer for better performance
         java.util.StringTokenizer cur = new java.util.StringTokenizer(baseFile, "/");
