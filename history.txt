@@ -8,6 +8,16 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.43 Arakis - 07 December 2000
+
+* Bugfixing new explorer.
+- Removed old explorer.
+- Added some index to the database setupscript.
+
+OpenCms 4.1.42 Arakis - 04 December 2000
+
+* Bugfixing new explorer.
+
 OpenCms 4.1.41 Arakis - 04 December 2000
 
 ! Added a new explorer. This is experimental, if you encounter problems please switch
