@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2003/11/11 13:58:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/09 12:25:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,20 +40,31 @@ import java.util.Vector;
 
 /**
  * An access control list contains the permission sets of all principals for a distinct resource
- * that are calculated on the permissions given by various access control entries.<p>
+ * that are calculated on the permissions defined by various access control entries.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2003/11/11 13:58:59 $
+ * <p>To each single resource, access control entries of type <code>CmsAccessControlEntry</code> can be assigned.
+ * An access control entry defines the permissions (both allowed and explicitly denied) of a user or group for this resource.</p>
+ * 
+ * <p>By calling the method <code>getAccessControlList</code> the list is generated on the resource. It contains the result of 
+ * merging both access control entries defined immediately on the resource and inherited along the folder hierarchie in the 
+ * OpenCms virtual file system (controlled by flags in the entry).</p>
+ * 
+ * <p>To check the permissions of a user on a distinct resource, the method <code>hasPermissions</code> in the driver manager
+ * is called in each operation. This method acts as access guard and matches the required permissions for the operation
+ * against the allowed and denied permissions defined for the user or groups of this user.</p>
+ * 
+ * @version $Revision: 1.9 $ $Date: 2004/02/09 12:25:56 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlList {
 
-    /*
-     * Permissions of a principal on this resource 
+    /**
+     * Collected permissions of a principal on this resource 
      */
     private HashMap m_permissions;
 
     /**
-     * Constructor to create an empty access control list for a given resource
+     * Constructor to create an empty access control list for a given resource.<p>
      *
      */
     public CmsAccessControlList() {
@@ -80,7 +91,7 @@ public class CmsAccessControlList {
     }
 
     /**
-     * Adds an access control entry to the access control list.
+     * Adds an access control entry to the access control list.<p>
      * 
      * @param entry the access control entry to add
      */
@@ -95,7 +106,7 @@ public class CmsAccessControlList {
     }
 
     /**
-     * Sets the allowed permissions of a given access control entry as allowed permissions in the access control list.
+     * Sets the allowed permissions of a given access control entry as allowed permissions in the access control list.<p>
      * 
      * @param entry the access control entry
      */
@@ -110,7 +121,7 @@ public class CmsAccessControlList {
     }
 
     /**
-     * Sets the denied permissions of a given access control entry as denied permissions in the access control list.
+     * Sets the denied permissions of a given access control entry as denied permissions in the access control list.<p>
      * 
      * @param entry the access control entry
      */
@@ -124,7 +135,7 @@ public class CmsAccessControlList {
     }
 
     /**
-     * Returns the permission set of a principal as stored in the access control list.
+     * Returns the permission set of a principal as stored in the access control list.<p>
      * 
      * @param principal the principal (group or user)
      * 
@@ -135,7 +146,7 @@ public class CmsAccessControlList {
     }
 
     /**
-     * Calculates the permission set of the given user from the access control list.
+     * Calculates the permissions of the given user and his groups from the access control list.<p>
      *  
      * @param user the user
      * @param groups the groups of this user
@@ -166,8 +177,8 @@ public class CmsAccessControlList {
     }
 
     /**
-     * Calculates the permission set of the given user from the access control list
-     * and returns it as permission string in the format {{+|-}{r|w|v|c|i}}*
+     * Calculates the permissions of the given user and his groups from the access control list.<p>
+     * The permissions are returned as permission string in the format {{+|-}{r|w|v|c|i}}*.
      * 
      * @param user the user
      * @param groups the groups oft this user
@@ -181,7 +192,7 @@ public class CmsAccessControlList {
     }
 
     /**
-     * Returns the principals with specific permissions stored in this access control list.
+     * Returns the principals with specific permissions stored in this access control list.<p>
      * 
      * @return enumeration of principals (each group or user)
      */

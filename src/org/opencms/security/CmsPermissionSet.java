@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/09 12:25:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,28 +39,34 @@ import java.util.StringTokenizer;
 /**
  * A permission set contains both allowed and denied permissions as bitsets.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2003/11/08 10:32:43 $
+ * Currently supported permissions are:<br>
+ * <code>C_PERMISSION_READ</code> (r) the right to read the contents of a resource<br>
+ * <code>C_PERMISSION_WRITE</code> (w) the right to write the contents of a resource<br>
+ * <code>C_PERMISSION_VIEW</code> (v) the right to see a resource in listings (workplace)<br>
+ * <code>C_PERMISSION_CONTROL</code> (c) the right to set permissions of a resource<br>
+ * 
+ * @version $Revision: 1.9 $ $Date: 2004/02/09 12:25:56 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
 
-    /*
-     * hashtable of all available permissions
+    /**
+     * Hashtable of all available permissions
      */
     static HashMap m_permissions = null;
 
-    /*
-     * the set of allowed permissions
+    /**
+     * The set of allowed permissions
      */
     int m_allowed;
 
-    /*
-     * the set of denied permissions
+    /**
+     * The set of denied permissions
      */
     int m_denied;
 
     /**
-     * Returns the message keys of each permission known in the system.
+     * Returns the message keys of each permission known in the system.<p>
      * 
      * @return Enumeration of message keys
      */
@@ -69,7 +75,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Returns the value of a single permission.
+     * Returns the value of a single permission.<p>
      * 
      * @param key the key of the permission
      * @return the value of the given permission
@@ -79,7 +85,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Initializes and returns the hashtable of all permissions known in the system.
+     * Initializes and returns the hashtable of all permissions known in the system.<p>
      * 
      * @return hastable with permission keys and values
      */
@@ -95,7 +101,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Constructor to create an empty permission set.
+     * Constructor to create an empty permission set.<p>
      */
     public CmsPermissionSet() {
 
@@ -104,7 +110,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Constructor to create a permission set with some preset allowed permissions.
+     * Constructor to create a permission set with some preset allowed permissions.<p>
      * 
      * @param allowedPermissions bitset of allowed permissions
      */
@@ -115,7 +121,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Constructor to create a permission set with some preset allowed and denied permissions.
+     * Constructor to create a permission set with some preset allowed and denied permissions.<p>
      * 
      * @param allowedPermissions the set of permissions to allow
      * @param deniedPermissions the set of permissions to deny
@@ -127,8 +133,9 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Constructor to create a permission set with preset allowed and denied permissions
-     * from a string representation of permissions of the format {{+|-}{r|w|v|c}}*.
+     * Constructor to create a permission set with preset allowed and denied permissions.<p>
+     * The permissions are read from a string representation of permissions 
+     * in the format {{+|-}{r|w|v|c}}*.
      * 
      * @param permissionString the string representation of allowed and denied permissions
      */
@@ -195,7 +202,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Sets permissions additionally as allowed permissions.
+     * Sets permissions additionally as allowed permissions.<p>
      * 
      * @param permissions bitset of permissions to allow
      */
@@ -205,7 +212,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Sets permsissions additionally as denied permissions.
+     * Sets permissions additionally as denied permissions.<p>
      * 
      * @param permissions bitset of permissions to deny
      */
@@ -215,7 +222,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Sets permissions additionally both as allowed and denied permissions.
+     * Sets permissions additionally both as allowed and denied permissions.<p>
      * 
      * @param allowedPermissions bitset of permissions to allow
      * @param deniedPermissions  bitset of permissions to deny
@@ -227,7 +234,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Sets permissions from another permission set additionally both as allowed and denied permissions.
+     * Sets permissions from another permission set additionally both as allowed and denied permissions.<p>
      * 
      * @param permissionSet the set of permissions to set additionally.
      */
@@ -238,7 +245,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Sets permissions as allowed and denied permissions in the permission set.
+     * Sets permissions as allowed and denied permissions in the permission set.<p>
      * Permissions formerly set are overwritten.
      * 
      * @param allowedPermissions bitset of permissions to allow
@@ -251,7 +258,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Set permissions from another permission set both as allowed and denied permissions.
+     * Set permissions from another permission set both as allowed and denied permissions.<p>
      * Permissions formerly set are overwritten.
      * 
      * @param permissionSet the set of permissions
@@ -263,7 +270,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Returns the permissions calculated from this permission set.
+     * Returns the permissions calculated from this permission set.<p>
      * These are all permissions allowed but not denied.
      *  
      * @return the resulting permission set
@@ -274,7 +281,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Returns the currently allowed permissions of ths permission set.
+     * Returns the currently allowed permissions of ths permission set.<p>
      * 
      * @return the allowed permissions as bitset
      */
@@ -284,7 +291,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Returns the currently denied permissions of this permission set.
+     * Returns the currently denied permissions of this permission set.<p>
      * 
      * @return the denied permissions as bitset.
      */
@@ -294,7 +301,7 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Returns the string representation of the current permissions in this permission set.
+     * Returns the string representation of the current permissions in this permission set.<p>
      * 
      * @return string of the format {{+|-}{r|w|v|c}}*
      */
@@ -326,6 +333,8 @@ public class CmsPermissionSet {
     }
 
     /**
+     * Returns the String representation of this permission set object.<p>
+     * 
      * @see java.lang.Object#toString()
      */
     public String toString() {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/09 12:25:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,16 +33,16 @@ package org.opencms.security;
 import org.opencms.util.CmsUUID;
 
 /**
- * Representation of an identity in the cms (currently user or group) 
+ * Representation of an identity in the cms (currently user or group), 
  * used to define permissions on a resource.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2003/09/15 10:51:15 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/09 12:25:56 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public interface I_CmsPrincipal {
     
     /**
-     * Compares the given object with this principal.
+     * Compares the given object with this principal.<p>
      * 
      * @param obj object to comapre
      * @return true if the object is equal
@@ -50,19 +50,21 @@ public interface I_CmsPrincipal {
     boolean equals(Object obj);
 
     /**
+     * Returns the hash code of this object.<p>
+     * 
      * @return the hash code
      */
     int hashCode();
 
     /**
-     * Gets the id of this principal.
+     * Gets the id of this principal.<p>
      * 
      * @return the unique id of the principal.
      */
     CmsUUID getId();
 
     /**
-     * Gets the name of this principal.
+     * Gets the name of this principal.<p>
      * 
      * @return the name of the principal
      */

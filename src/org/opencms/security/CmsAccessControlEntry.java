@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/09 12:25:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,39 +37,48 @@ import com.opencms.core.I_CmsConstants;
 import java.util.StringTokenizer;
 
 /**
- * An access control entry defines the permissions of an user or group for a distinct resource.<p>
+ * An access control entry defines the permissions of a user or group for a distinct resource.<p>
  * 
- * The user or group is identified by its UUID, so any other entity may act as accessor also.
- * The access control entry contains two binary permission sets, the first grants permissions
- * and the second revokes permissions explicitly (second should have precedence)
+ * Besides the <code>CmsPermissionSet</code> to define the permissions, the access control entry
+ * contains the UUID of the resource and of the principal (user or group) who has the defined permissions.
+ * Since the principal is identified by its UUID, any other entity may act as principal also.
  * 
- * @version $Revision: 1.6 $ $Date: 2003/11/08 10:32:43 $
+ * <p>Additionally, the entry stores various flags:<br>
+ * <code>C_ACCESSFLAGS_DELETED</code> indicates that this entry is deleted<br>
+ * <code>C_ACCESSFLAGS_INHERIT</code> indicates that this entry should be inherited<br>
+ * <code>C_ACCESSFLAGS_OVERWRITE</code> indicates that this entry overwrites inherited settings<br>
+ * <code>C_ACCESSFLAGS_INHERITED</code> indicates that this entry is inherited<br>
+ * <code>C_ACCESSFLAGS_USER</code> indicates that the principal is a single user<br>
+ * <code>C_ACCESSFLAGS_GROUP</code> indicates that the principal is a group
+ * </p>
+ * 
+ * @version $Revision: 1.7 $ $Date: 2004/02/09 12:25:56 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlEntry {
 
-    /*
+    /**
      * Id of the resource
      */
     private CmsUUID m_resource;
 
-    /*
+    /**
      * Id of the principal
      */
     private CmsUUID m_principal;
 
-    /*
+    /**
      * Flags of this access control entry
      */
     private int m_flags;
 
-    /*
-     * the permission set
+    /**
+     * The permission set
      */
     private CmsPermissionSet m_permissions;
 
     /**
-     * Constructor to create a new access control entry on a given resource and a given principal.
+     * Constructor to create a new access control entry on a given resource and a given principal.<p>
      * Permissions and flags are specified as bitsets.
      * 
      * @see CmsPermissionSet
@@ -89,7 +98,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Constructor to create a new access control entry on a given resource and a given principal.
+     * Constructor to create a new access control entry on a given resource and a given principal.<p>
      * Permissions are specified as permission set, flags as bitset.
      * 
      * @param resource the resource
@@ -106,7 +115,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Constructor to create a new access control entry on a given resource and a given principal.
+     * Constructor to create a new access control entry on a given resource and a given principal.<p>
      * Permission and flags are specified as string of the format {{+|-}{r|w|v|c|i}}*
      * 
      * @param resource the resource
@@ -155,7 +164,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Sets the allowed and denied permissions of the access control entry.
+     * Sets the allowed and denied permissions of the access control entry.<p>
      * 
      * @param permissions the set of permissions
      */
@@ -165,7 +174,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Sets the allowed permissions in the access control entry.
+     * Sets the allowed permissions in the access control entry.<p>
      * 
      * @param allowed the allowed permissions as bitset
      */
@@ -175,7 +184,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Sets the explicitly denied permissions in the access control entry.
+     * Sets the explicitly denied permissions in the access control entry.<p>
      * 
      * @param denied the denied permissions as bitset
      */
@@ -184,7 +193,7 @@ public class CmsAccessControlEntry {
         m_permissions.denyPermissions(denied);
     }
     /**
-     * Returns the current permission set (both allowed and denied permissions).
+     * Returns the current permission set (both allowed and denied permissions).<p>
      * 
      * @return the set of permissions
      */
@@ -194,7 +203,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Returns the currently allowed permissions as bitset.
+     * Returns the currently allowed permissions as bitset.<p>
      * 
      * @return the allowed permissions
      */
@@ -204,7 +213,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Return the currently denied permissions as bitset.
+     * Returns the currently denied permissions as bitset.<p>
      * 
      * @return the denied permissions
      */
@@ -214,7 +223,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Returns the resource assigned with this access control entry.
+     * Returns the resource assigned with this access control entry.<p>
      * 
      * @return the resource 
      */
@@ -224,7 +233,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Returns the principal assigned with this access control entry.
+     * Returns the principal assigned with this access control entry.<p>
      * 
      * @return the principal
      */
@@ -234,7 +243,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Sets the given flags in the access control entry.
+     * Sets the given flags in the access control entry.<p>
      * 
      * @param flags bitset with flag values to set
      */
@@ -244,7 +253,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Resets the given flags in the access control entry.
+     * Resets the given flags in the access control entry.<p>
      * 
      * @param flags bitset with flag values to reset
      */
@@ -254,7 +263,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Returns the current flags of the access control entry.
+     * Returns the current flags of the access control entry.<p>
      * 
      * @return bitset with flag values
      */
@@ -264,7 +273,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Returns if this access control entry has the inherited flag set.
+     * Returns if this access control entry has the inherited flag set.<p>
      * Note: to check if an access control entry is inherited, also the
      * resource id and the id of the current resource must be different.
      * 
@@ -275,6 +284,7 @@ public class CmsAccessControlEntry {
     }
 
     /**
+     * Returns the String representation of this access control entry object.<p>
      * @see java.lang.Object#toString()
      */
     public String toString() {
