@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
-* Date   : $Date: 2001/01/24 09:41:40 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2001/02/06 13:31:18 $
+* Version: $Revision: 1.39 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -36,7 +36,7 @@ import java.util.*;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.38 $ $Date: 2001/01/24 09:41:40 $
+ * @version $Revision: 1.39 $ $Date: 2001/02/06 13:31:18 $
  */
 public class CmsException extends Exception {
     
@@ -231,6 +231,11 @@ public class CmsException extends Exception {
      * Definition of error code for user exists
      */
     public final static int C_USER_EXISTS = 35;
+    /**
+     * Definition of error code for HTTP sreaming error
+     */
+    public final static int C_STREAMING_ERROR = 36;
+
     public final static String C_EXTXT[] =  {
         "Unknown exception", "Access denied", "Not found", 
         "Bad name", "Sql exception", "Folder not empty", "Admin access required", 
@@ -245,7 +250,7 @@ public class CmsException extends Exception {
         "Error while launching template class", "OpenCms class loader error", 
         "New password is too short", "Access denied to resource", 
         "Resource deleted", "Resourcebroker-init error", "Registry error", 
-        "User already exists",
+        "User already exists", "HTTP streaming error"
     };
     
     /** 
