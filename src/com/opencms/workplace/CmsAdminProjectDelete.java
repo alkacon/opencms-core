@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
-* Date   : $Date: 2003/08/06 09:12:46 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/08/06 15:41:45 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2003/08/06 09:12:46 $
+ * @version $Revision: 1.21 $ $Date: 2003/08/06 15:41:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -121,7 +121,7 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault {
                             xmlTemplateDocument.setData("switchjavascript", xmlTemplateDocument.getProcessedDataValue("switchheadproject"));
                         } else {
                             // in an offline project, the javascript for setting the project is not needed
-                            xmlTemplateDocument.setData("switchjavascript", "");
+                            xmlTemplateDocument.setData("switchjavascript", xmlTemplateDocument.getProcessedDataValue("dontswitchheadproject"));
                         }
                         session.removeValue("delprojectid");
                     } else {
