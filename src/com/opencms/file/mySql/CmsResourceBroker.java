@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/12 11:31:15 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/09/12 11:38:44 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.34 $ $Date: 2000/09/12 11:31:15 $
+ * @version $Revision: 1.35 $ $Date: 2000/09/12 11:38:44 $
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -3361,6 +3361,9 @@ public CmsSite getSite(CmsUser user, CmsProject project, String siteName)
 			m_registry= new CmsRegistry(config.getString(C_CONFIGURATION_REGISTRY));
 		}
 		catch (CmsException ex) {
+			throw ex;
+		}
+		catch(Exception ex) {
 			// init of registry failed - throw exception
 			throw new CmsException("Init of registry failed", CmsException.C_REGISTRY_ERROR, ex);
 		}
