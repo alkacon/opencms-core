@@ -1,0 +1,1 @@
+In this folder OpenCms will store online JSP pages.

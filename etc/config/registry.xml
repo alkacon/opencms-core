@@ -44,17 +44,23 @@
             <resourceClass>com.opencms.file.CmsResourceTypeImage</resourceClass>
         </restype>
         <restype>
-            <name>pdfpage</name>
-            <launcherType>5</launcherType>
-            <launcherClass></launcherClass>
-            <resourceClass>com.opencms.file.CmsResourceTypePdfpage</resourceClass>
-        </restype>
-        <restype>
             <name>compatiblePlain</name>
             <launcherType>1</launcherType>
             <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeCompatiblePlain</resourceClass>
         </restype>
+        <restype>
+            <name>jsp</name>
+            <launcherType>6</launcherType>
+            <launcherClass/>
+            <resourceClass>com.opencms.file.CmsResourceTypeJsp</resourceClass>
+        </restype>
+        <restype>
+            <name>velocity</name>
+            <launcherType>6</launcherType>
+            <launcherClass/>
+            <resourceClass>com.opencms.file.CmsResourceTypePlain</resourceClass>
+        </restype>        
         <view>
             <name>select.explorer</name>
             <url>/system/workplace/action/explorer_new.html</url>
@@ -83,10 +89,10 @@
             <path>/system/classes/</path>
         </repository>
         <launchers>
-            <launcher1>com.opencms.launcher.CmsXmlLauncher</launcher1>
-            <launcher2>com.opencms.launcher.CmsDumpLauncher</launcher2>
+            <launcher1>com.opencms.flex.CmsXmlTemplateLoader</launcher1>
+            <launcher2>com.opencms.flex.CmsDumpLoader</launcher2>
             <launcher3>com.opencms.launcher.CmsLinkLauncher</launcher3>
-            <launcher4>com.opencms.launcher.CmsPdfLauncher</launcher4>
+            <launcher4>com.opencms.flex.CmsJspLoader</launcher4>        
         </launchers>
         <tempfileproject></tempfileproject>
         <UseWpPicturesFromVFS>false</UseWpPicturesFromVFS>

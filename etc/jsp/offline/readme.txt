@@ -1,0 +1,1 @@
+In this folder OpenCms will store offline JSP pages.

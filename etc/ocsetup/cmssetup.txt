@@ -21,12 +21,8 @@ createPropertydefinition Title folder
 createPropertydefinition Description folder
 createPropertydefinition Keywords folder
 createPropertydefinition ChannelId folder
-createPropertydefinition Title pdfpage
-createPropertydefinition NavText pdfpage
-createPropertydefinition NavPos pdfpage
 createPropertydefinition TemplateType plain
 createPropertydefinition TemplateType compatiblePlain
-createPropertydefinition TemplateType pdfpage
 createPropertydefinition TemplateType XMLTemplate
 createPropertydefinition Description page
 createPropertydefinition Keywords page
@@ -49,6 +45,18 @@ createPropertydefinition exportname plain
 createPropertydefinition exportname page
 createPropertydefinition exportname image
 createPropertydefinition exportname link
+createPropertydefinition Title jsp
+createPropertydefinition Keywords jsp
+createPropertydefinition Description jsp
+createPropertydefinition export jsp
+createPropertydefinition cache jsp
+createPropertydefinition stream jsp
+createPropertydefinition Title velocity
+createPropertydefinition Keywords velocity
+createPropertydefinition Description velocity
+createPropertydefinition export velocity
+createPropertydefinition cache velocity
+createPropertydefinition stream velocity
 addFileExtension doc binary
 addFileExtension pdf binary
 addFileExtension zip binary
@@ -59,6 +67,9 @@ addFileExtension htm plain
 addFileExtension jpeg image
 addFileExtension jpg image
 addFileExtension gif image
+addFileExtension jsp jsp
+addFileExtension vtl velocity
+addFileExtension velocity velocity
 createTempfileProject
 setCurrentProject 2
 importResources "ocsetup/vfs"

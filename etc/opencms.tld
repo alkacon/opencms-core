@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE taglib
+  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+  "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+
+<!-- Created by Alexander Kandzior (a.kandzior@alkacon.com) on 6. April 2002, 17:28 -->
+
+<taglib>
+    <tlib-version>0.3</tlib-version>
+    <jsp-version>1.2</jsp-version>
+    <short-name>cms</short-name>
+    <uri>http://www.opencms.org/taglib/cms</uri>
+    <display-name>OpenCms JSP standard taglib</display-name>
+    <description>
+        The standard OpenCms / JSP integration tag library.
+        Developed by Alkacon Software / Alexander Kandzior (a.kandzior@alkacon.de)
+    </description>
+
+    <tag>
+        <name>property</name>
+        <tag-class>com.opencms.flex.jsp.CmsJspTagFileProperty</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag enables read access to the current files OpenCms properties.
+        </description>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>file</name>
+        </attribute>        
+        <attribute>
+            <name>default</name>
+        </attribute> 
+    </tag>        
+
+    <tag>
+        <name>user</name>
+        <tag-class>com.opencms.flex.jsp.CmsJspTagUser</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag enables access to the properties of the currently logged in user.
+        </description>
+        <attribute>
+            <name>property</name>
+            <required>true</required>
+        </attribute>
+    </tag> 
+            
+    <tag>
+        <name>link</name>
+        <tag-class>com.opencms.flex.jsp.CmsJspTagLink</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag is used to wrap URLs for the OpenCms static export.
+        </description>
+    </tag>        
+
+    <tag>
+        <name>label</name>
+        <tag-class>com.opencms.flex.jsp.CmsJspTagWpLabel</tag-class>
+        <body-content>tagdependent</body-content>
+        <description>
+            This tag is used to read values from the OpenCms workplace language files.
+        </description>
+    </tag>   
+    
+    <tag>
+        <name>includevar</name>
+        <tag-class>com.opencms.flex.jsp.CmsJspTagIncludeVar</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag is used for including OpenCms Subelements in a page.
+            It is similar to the "include" JSP directive.
+            It loads the input at runtime, not at compile - time.
+        </description>
+        <attribute>
+            <name>attribute</name>
+            <required>true</required>
+        </attribute>        
+    </tag>          
+    
+    <tag>
+        <name>include</name>
+        <tag-class>com.opencms.flex.jsp.CmsJspTagInclude</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag is used for including OpenCms Subelements in a page.
+            It is similar to the "include" JSP directive.
+            It loads the input at runtime, not at compile - time.
+        </description>
+        <attribute>
+            <name>page</name>
+            <required>true</required>
+        </attribute>        
+    </tag>          
+        
+</taglib>

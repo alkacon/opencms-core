@@ -27,7 +27,6 @@ OpenCms 4.7.13 Ecaz - 25 July 2002
 - When deleting a project the files-table is not checked for unused entries any more because this
   is not necessary and it takes too much time (e.g. when publishing directly)
 
-
 OpenCms 4.7.12 Ecaz - 12 July 2002
 ! there is a select all feature when deleting modules now.
 ! now we have a nice errormessage for changing password
