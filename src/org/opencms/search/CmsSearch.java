@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2004/07/18 16:33:45 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/08/05 09:28:21 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.TreeMap;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.11 $ $Date: 2004/07/18 16:33:45 $
+ * @version $Revision: 1.12 $ $Date: 2004/08/05 09:28:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -301,12 +301,14 @@ public class CmsSearch implements Serializable, Cloneable {
             String query = replaceString(m_query, "+", "%2B");
             query = replaceString(query, "-", "%2D");
             params.append(CmsEncoder.encode(query));
-            params.append("&matchesperpage=");
+            params.append("&matchesPerPage=");
             params.append(this.getMatchesPerPage());
-            params.append("&displaypages=");
+            params.append("&displayPages=");
             params.append(this.getDisplayPages());
             params.append("&index=");
             params.append(CmsEncoder.encode(m_indexName));
+            params.append("&searchRoot=");
+            params.append(CmsEncoder.encode(this.getSearchRoot()));            
             m_searchParameters = params.toString();
             return m_searchParameters;
         } else {
