@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImportFiles.java,v $
- * Date   : $Date: 2000/03/17 09:24:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/03/24 14:22:06 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.10 $ $Date: 2000/03/17 09:24:43 $
+ * @version $Revision: 1.11 $ $Date: 2000/03/24 14:22:06 $
  */
 class CmsDbImportFiles implements I_CmsConstants {
 	
@@ -222,6 +222,7 @@ class CmsDbImportFiles implements I_CmsConstants {
 				m_RB.chgrp(m_user, m_project, newFile.getAbsolutePath(), m_fGroup);
 				m_RB.chmod(m_user, m_project, newFile.getAbsolutePath(), Integer.parseInt(m_fAccess) );
 				m_RB.unlockResource(m_user,m_project,newFile.getAbsolutePath());
+                System.err.println("File access is "+m_fAccess);
 				System.out.println(" ok");
 			} catch (CmsException e) {
 				System.out.println(" error: " + e.getMessage());
