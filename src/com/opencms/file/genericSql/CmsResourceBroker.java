@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/11 16:34:48 $
- * Version: $Revision: 1.168 $
+ * Date   : $Date: 2000/10/11 18:17:15 $
+ * Version: $Revision: 1.169 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.168 $ $Date: 2000/10/11 16:34:48 $
+ * @version $Revision: 1.169 $ $Date: 2000/10/11 18:17:15 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3004,7 +3004,7 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
  */
 public Vector getFilesInFolderRecursively(CmsUser currentUser, CmsProject currentProject, String foldername) throws CmsException
 {
-	Vector files = getFilesInFolder(currentUser, currentProject, foldername);
+	Vector files = helperGetFilesInFolder(currentUser, currentProject, foldername);
 
 	// if this is the top we return here.
 	if (currentProject.getParentId() == -1) return files;
@@ -3421,7 +3421,7 @@ public Vector getSiteUrls(CmsUser currentUser, CmsProject currentProject, int si
  */
 public Vector getSubFoldersRecursively(CmsUser currentUser, CmsProject currentProject, String foldername) throws CmsException
 {
-	Vector folders = getSubFolders(currentUser, currentProject, foldername);
+	Vector folders = helperGetSubFolders(currentUser, currentProject, foldername);
 
 	// if this is the top we return here.
 	if (currentProject.getParentId() == -1) return folders;
