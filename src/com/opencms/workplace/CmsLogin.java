@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2001/01/03 16:50:51 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2001/01/04 13:28:50 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Waruschan Babachan
- * @version $Revision: 1.37 $ $Date: 2001/01/03 16:50:51 $
+ * @version $Revision: 1.38 $ $Date: 2001/01/04 13:28:50 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants {
@@ -155,13 +155,12 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		// get user name and password
 		String name=(String)parameters.get("NAME");
 		String password=(String)parameters.get("PASSWORD");
-			
 		// try to read this user
 		if ((name != null) && (password != null)){
 			try {
 				username=cms.loginUser(name,password);
 			} catch (CmsException e) {
-			  if ((e.getType()==CmsException.C_NO_USER)||(e.getType()==CmsException.C_ACCESS_DENIED)) {
+			  if ((e.getType()==CmsException.C_NO_USER)||(e.getType()==CmsException.C_NO_ACCESS)) {
 					// there was an authentification error during login
 					// set user to null and switch to error template
 					username=null;
@@ -306,8 +305,6 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		title = title + " - " + C_VERSION; 
 		return title;            
 	}
-	
-		
 	/**
 	 * Indicates if the results of this class are cacheable.
 	 * 
