@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/18 11:13:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/06/20 16:17:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2003/06/18 11:13:32 $
+ * @version $Revision: 1.6 $ $Date: 2003/06/20 16:17:14 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -215,7 +215,9 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             m_sqlManager.closeAll(conn, stmt, null);
         }
 
-        return readUser(id);
+		// cw 20.06.2003 avoid calling upper level methods
+        // return readUser(id);
+        return this.readUser(id);
     }
 
     /**
@@ -628,7 +630,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
      * @return Vector of groups
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public Vector getGroupsOfUser(String name) throws CmsException {
+    public Vector getGroupsOfUser(CmsUUID userId) throws CmsException {
         //CmsGroup group;
         Vector groups = new Vector();
 
@@ -641,7 +643,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_GETGROUPSOFUSER");
 
             //  get all all groups of the user
-            stmt.setString(1, name);
+            stmt.setString(1, userId.toString());
 
             res = stmt.executeQuery();
 
