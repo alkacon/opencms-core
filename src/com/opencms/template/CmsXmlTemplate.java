@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/10/26 14:06:09 $
-* Version: $Revision: 1.81 $
+* Date   : $Date: 2001/10/30 08:35:38 $
+* Version: $Revision: 1.82 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.81 $ $Date: 2001/10/26 14:06:09 $
+ * @version $Revision: 1.82 $ $Date: 2001/10/30 08:35:38 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -929,8 +929,11 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * The second saveplace is the elementvariant itselv. The intern way to save.
      * There we store which resoucess affect this variant.
      *
+     * @param cms The cms object.
+     * @param templateName.
      * @param elementName only needed for getCachDirectives, if it is not used there it may be null
      * @param templateSelector only needed for getCachDirectives, if it is not used there it may be null
+     * @param parameters.
      * @param vfsDeps A vector (of CmsResource objects) with the resources that variant depends on.
      * @param cosDeps A vector (of CmsContentDefinitions) with the cd-resources that variant depends on.
      * @param cosClassDeps A vector (of Class objects) with the contentdefinitions that variant depends on.

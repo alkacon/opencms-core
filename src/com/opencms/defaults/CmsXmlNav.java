@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2001/10/24 07:46:58 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2001/10/30 08:36:10 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.35 $ $Date: 2001/10/24 07:46:58 $
+ * @version $Revision: 1.36 $ $Date: 2001/10/30 08:36:10 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -518,6 +518,11 @@ public class CmsXmlNav extends A_CmsNavBase {
         }
         // current folder
         String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
+        // register this folder for changes
+        Vector vfsDeps = new Vector();
+        vfsDeps.add(cms.readFolder(currentFolder));
+        registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
+                        (Hashtable)userObject, vfsDeps, null, null);
         // get all resources in current folder
         Vector resources=cms.getSubFolders(currentFolder);
         Vector allFile=cms.getFilesInFolder(currentFolder);
@@ -537,7 +542,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * by folders it is showed closed, if the folder is clicked then it is opened.
      *
      * @param cms CmsObject Object for accessing system resources.
-     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param tagcontent used in this special case of a user method. Can't be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
@@ -574,6 +579,11 @@ public class CmsXmlNav extends A_CmsNavBase {
         String requestedUri = cms.getRequestContext().getUri();
         String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
         String servletPath = cms.getRequestContext().getRequest().getServletUrl();
+        // register this folder for changes
+        Vector vfsDeps = new Vector();
+        vfsDeps.add(cms.readFolder(folder));
+        registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
+                        (Hashtable)userObject, vfsDeps, null, null);
         // get all resources
         Vector resources=cms.getSubFolders(folder);
         Vector allFile=cms.getFilesInFolder(folder);
@@ -602,7 +612,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * gets the navigation of specified level of parent folder.
      *
      * @param cms CmsObject Object for accessing system resources.
-     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param tagcontent used in this special case of a user method. Can't be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
@@ -638,6 +648,11 @@ public class CmsXmlNav extends A_CmsNavBase {
             // positive number determines the level starting ftom root folder.
             currentFolder=extractFolder(cms,((-1)*level));
         }
+        // register this folder for changes
+        Vector vfsDeps = new Vector();
+        vfsDeps.add(cms.readFolder(currentFolder));
+        registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
+                        (Hashtable)userObject, vfsDeps, null, null);
         Vector resources=cms.getSubFolders(currentFolder);
         Vector allFile=cms.getFilesInFolder(currentFolder);
 
@@ -688,6 +703,11 @@ public class CmsXmlNav extends A_CmsNavBase {
         } else {
             currentFolder=extractFolder(cms,level);
         }
+        // register this folder for changes
+        Vector vfsDeps = new Vector();
+        vfsDeps.add(cms.readFolder(currentFolder));
+        registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
+                        (Hashtable)userObject, vfsDeps, null, null);
         // get all resources, it means all files and folders.
         Vector resources=cms.getSubFolders(currentFolder);
         Vector allFile=cms.getFilesInFolder(currentFolder);
@@ -754,6 +774,11 @@ public class CmsXmlNav extends A_CmsNavBase {
         if (depth>0) {
             depthIsNull=false;
         }
+        // register this folder for changes
+        Vector vfsDeps = new Vector();
+        vfsDeps.add(cms.readFolder(folder));
+        registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
+                        (Hashtable)userObject, vfsDeps, null, null);
         // get all folders in specified folder
         Vector resources=cms.getSubFolders(folder);
         // get all files in specified folder
@@ -805,6 +830,11 @@ public class CmsXmlNav extends A_CmsNavBase {
             String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
             property=cms.readProperty(currentFolder, tagcontent);
             property=(property!=null?property:"");
+            // register this folder for changes
+            Vector vfsDeps = new Vector();
+            vfsDeps.add(cms.readFolder(currentFolder));
+            registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
+                            (Hashtable)userObject, vfsDeps, null, null);
         }
         return (property.getBytes());
     }
@@ -844,6 +874,11 @@ public class CmsXmlNav extends A_CmsNavBase {
             }
             property=cms.readProperty(currentFolder, tagcontent.substring(tagcontent.indexOf(",")+1));
             property=(property!=null?property:"");
+            // register this folder for changes
+            Vector vfsDeps = new Vector();
+            vfsDeps.add(cms.readFolder(currentFolder));
+            registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
+                            (Hashtable)userObject, vfsDeps, null, null);
         }
         return (property.getBytes());
     }
@@ -878,6 +913,11 @@ public class CmsXmlNav extends A_CmsNavBase {
             }
             property=cms.readProperty(currentFolder, tagcontent.substring(tagcontent.indexOf(",")+1));
             property=(property!=null?property:"");
+            // register this folder for changes
+            Vector vfsDeps = new Vector();
+            vfsDeps.add(cms.readFolder(currentFolder));
+            registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
+                            (Hashtable)userObject, vfsDeps, null, null);
         }
         return (property.getBytes());
     }
@@ -899,6 +939,11 @@ public class CmsXmlNav extends A_CmsNavBase {
         String requestedUri = cms.getRequestContext().getUri();
         property=cms.readProperty(requestedUri, tagcontent);
         property=(property!=null?property:"");
+        // register this folder for changes
+        Vector vfsDeps = new Vector();
+        vfsDeps.add(cms.readFileHeader(requestedUri));
+        registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
+                        (Hashtable)userObject, vfsDeps, null, null);
         return (property.getBytes());
     }
 
@@ -917,7 +962,8 @@ public class CmsXmlNav extends A_CmsNavBase {
         // First build our own cache directives.
         CmsCacheDirectives result = new CmsCacheDirectives(true);
         result.setCacheUri(true);
-        result.renewAfterEveryPublish();
+        // we don't need the renewAfterPublish function becource we use the new dependencies feature.
+        result.noAutoRenewAfterPublish();
         return result;
     }
 }

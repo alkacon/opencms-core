@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/08/15 13:51:40 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/10/30 08:35:38 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -140,11 +140,20 @@ public abstract class A_CmsCacheDirectives implements I_CmsLogChannels{
     }
 
     /**
+     * Switches off the renewAfterPublish function. If someone needs the uri in the key
+     * but don't need the renew function he has to use this to get rid of it. To stay
+     * compatible to old versions we can't remove it from the setUri method.
+     */
+    public void noAutoRenewAfterPublish(){
+        renewAfterEveryPublish = false;
+    }
+
+    /**
      * returns true if this element has to be deleted from cache every time a project
      * is published. This is when the uri is part of the cacheKey or if the user says so.
      */
     public boolean shouldRenew(){
-        return renewAfterEveryPublish || m_uri;
+        return renewAfterEveryPublish;
     }
 
     /**
@@ -248,6 +257,7 @@ public abstract class A_CmsCacheDirectives implements I_CmsLogChannels{
      */
     public void setCacheUri(boolean uriCache){
         m_uri = uriCache;
+        renewAfterEveryPublish = true;
     }
 
     /**
