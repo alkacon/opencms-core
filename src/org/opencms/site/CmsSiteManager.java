@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2004/11/26 13:39:31 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/02/04 14:54:21 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,12 +51,14 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Manages all configured sites in OpenCms.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -84,6 +86,9 @@ public final class CmsSiteManager implements Cloneable {
 
     /** The site matcher that matches the workplace site. */
     private CmsSiteMatcher m_workplaceSiteMatcher;
+    
+    /** The log object for this class. */
+    private static Log m_log;
 
     /**
      * Creates a new CmsSiteManager.<p>
@@ -93,6 +98,10 @@ public final class CmsSiteManager implements Cloneable {
 
         m_sites = new HashMap();
         m_siteRoots = new HashSet();
+        
+        if (m_log == null) {
+            m_log = OpenCms.getLog(this);
+        }
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site configuration   : starting");
@@ -167,8 +176,8 @@ public final class CmsSiteManager implements Cloneable {
                 }
             }
         } catch (Throwable t) {
-            if (OpenCms.getLog(CmsSiteManager.class).isErrorEnabled()) {
-                OpenCms.getLog(CmsSiteManager.class).error("Error reading site properties", t);
+            if (m_log.isErrorEnabled()) {
+                m_log.error("Error reading site properties", t);
             }
         } finally {
             // restore the user's current context 
@@ -429,7 +438,12 @@ public final class CmsSiteManager implements Cloneable {
     public CmsSite matchRequest(HttpServletRequest req) {
 
         CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
-        return matchSite(matcher);
+        CmsSite site = matchSite(matcher);
+        if (m_log.isDebugEnabled()) {
+            String requestServer = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort();
+            m_log.debug("Matching request [" + requestServer + "] to site " + site.toString());
+        }
+        return site;
     }
 
     /**
