@@ -7,7 +7,7 @@
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
 <script language=JavaScript>
-
+<!--
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
@@ -56,9 +56,6 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
             <!-- Begin dropdown-->
             <tr>
                 <td class=formular>]]><LABEL value="input.moveto" /><![CDATA[:</td>             
-                <!--<td class=dialogtxt>
-                    ]]><SELECT class="textfeld" name="folder" width="150" method="getFolder" /><![CDATA[
-                </td>-->
                 <td class=dialogtxt>
                     <input type="text" name="folder" class="textfeld" size=31>  
                 </td>
@@ -163,9 +160,6 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
             <!-- Begin dropdown-->
             <tr>
                 <td class=formular>]]><LABEL value="input.moveto" /><![CDATA[:</td>             
-                <!--<td class=dialogtxt>
-                    ]]><SELECT class="textfeld" name="folder" width="150" method="getFolder" /><![CDATA[
-                </td>-->
                 <td class=dialogtxt>
                     <input onKeyUp="SubmitIfCR(this.form,event.which);" type="text" name="folder" class="textfeld" size=31> 
                 </td>
