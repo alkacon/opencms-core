@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/12/04 09:55:37 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,11 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -59,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -230,6 +232,25 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#prepareForWrite(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.file.CmsFile)
+     */
+    public CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException {
+
+        // validate the xml structure before writing the file         
+        // an exception will be thrown if the structure is invalid
+        content.validateXmlStructure(new CmsXmlEntityResolver(cms));
+        // read the content-conversion property
+        String contentConversion = CmsHtmlConverter.getConversionSettings(cms, file);
+        content.setConversion(contentConversion);
+        // correct the HTML structure 
+        file = content.correctXmlStructure(cms);
+        // resolve the file mappings
+        content.resolveAppInfo(cms);
+
+        return file;
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#resolveAppInfo(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent)
      */
     public void resolveAppInfo(CmsObject cms, CmsXmlContent content) throws CmsException {
@@ -310,74 +331,16 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         CmsXmlContentErrorHandler errorHandler) {
 
         if (errorHandler == null) {
-            // init new error handler if required
+            // init a new error handler if required
             errorHandler = new CmsXmlContentErrorHandler();
         }
 
-        String valueStr = null;
+        // validate the error rules
+        errorHandler = validateValue(cms, value, errorHandler, m_validationErrorRules, false);
+        // validate the warning rules
+        errorHandler = validateValue(cms, value, errorHandler, m_validationWarningRules, true);
 
-        String regex = (String)m_validationErrorRules.get(value.getElementName());
-        if (regex != null) {
-
-            Pattern pattern;
-            boolean matchResult = true;
-            if (regex.charAt(0) == '!') {
-                // negate the pattern
-                matchResult = false;
-                regex = regex.substring(1);
-            }
-            try {
-                valueStr = value.getStringValue(cms);
-                pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-            } catch (Exception e) {
-                // if the value can not be accessed it's useless to continue
-                errorHandler.addError(value, e.getMessage());
-                return errorHandler;
-            }
-
-            // this value uses a special validation pattern
-            if (matchResult != pattern.matcher(valueStr).matches()) {
-                // the value does not match the given regular expression
-                errorHandler.addError(value, "Invalid value '"
-                    + valueStr
-                    + "' according to regex '"
-                    + (matchResult ? "" : "!")
-                    + regex
-                    + "'");
-            }
-        }
-
-        regex = (String)m_validationWarningRules.get(value.getElementName());
-        if (regex != null) {
-
-            Pattern pattern;
-            boolean matchResult = true;
-            if (regex.charAt(0) == '!') {
-                // negate the pattern
-                matchResult = false;
-                regex = regex.substring(1);
-            }
-            try {
-                valueStr = value.getStringValue(cms);
-                pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-            } catch (Exception e) {
-                // if the value can not be accessed it's useless to continue
-                errorHandler.addError(value, e.getMessage());
-                return errorHandler;
-            }
-
-            // this value uses a special validation pattern
-            if (matchResult != pattern.matcher(valueStr).matches()) {
-                // the value does not match the given regular expression
-                errorHandler.addWarning(value, "Bad value '"
-                    + valueStr
-                    + "' according to regex '"
-                    + (matchResult ? "" : "!")
-                    + regex
-                    + "'");
-            }
-        }
-
+        // return the result
         return errorHandler;
     }
 
@@ -473,6 +436,48 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 + contentDefinition.getSchemaLocation());
         }
         m_elementWidgets.put(elementName, widget);
+    }
+
+    /**
+     * Returns the validation message to be displayed if a certain rule was vialoted.<p> 
+     * 
+     * @param cms the current users OpenCms context
+     * @param value the value to validate
+     * @param regex the rule that was vialoted
+     * @param valueStr the string value of the given value
+     * @param matchResult if false, the rule was negated
+     * @param isWarning if true, this validation indicate a warning, otherwise an error
+     * 
+     * @return the validation message to be displayed 
+     */
+    protected String getValidationMessage(
+        CmsObject cms,
+        I_CmsXmlContentValue value,
+        String regex,
+        String valueStr,
+        boolean matchResult,
+        boolean isWarning) {
+
+        // TODO: Allow customized error messages based on localization keys
+        StringBuffer result = new StringBuffer(64);
+        if (isWarning) {
+            result.append("Bad value ");
+        } else {
+            result.append("Invalid value \"");
+        }
+        result.append(valueStr);
+        result.append("\" according to rule [");
+        if (!matchResult) {
+            result.append('!');
+        }
+        result.append(regex);
+        result.append(']');
+
+        if ((value == null) && (cms == null)) {
+            // these parametres are reserved in case a more sophisticated message generation is required
+        }
+
+        return result.toString();
     }
 
     /**
@@ -615,5 +620,59 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 addValidationRule(contentDefinition, elementName, regex, APPINFO_ATTR_TYPE_WARNING.equals(type));
             }
         }
+    }
+
+    /**
+     * Validates the given rules against the given value.<p> 
+     * 
+     * @param cms the current users OpenCms context
+     * @param value the value to validate
+     * @param errorHandler the error handler to use in case errors or warnings are detected
+     * @param rules the rules to validate the value against
+     * @param isWarning if true, this validation should be stored as a warning, otherwise as an error
+     * 
+     * @return the updated error handler
+     */
+    protected CmsXmlContentErrorHandler validateValue(
+        CmsObject cms,
+        I_CmsXmlContentValue value,
+        CmsXmlContentErrorHandler errorHandler,
+        Map rules,
+        boolean isWarning) {
+
+        String regex = (String)rules.get(value.getElementName());
+        if (regex == null) {
+            return errorHandler;
+        }
+
+        boolean matchResult = true;
+        if (regex.charAt(0) == '!') {
+            // negate the pattern
+            matchResult = false;
+            regex = regex.substring(1);
+        }
+
+        String valueStr;
+        try {
+            valueStr = value.getStringValue(cms);
+        } catch (Exception e) {
+            // if the value can not be accessed it's useless to continue
+            errorHandler.addError(value, e.getMessage());
+            // return true to avoid adding the error twice
+            return errorHandler;
+        }
+
+        // use the custom validation pattern
+        if (matchResult != Pattern.matches(regex, valueStr)) {
+            // generate the message
+            String message = getValidationMessage(cms, value, regex, valueStr, matchResult, isWarning);
+            if (isWarning) {
+                errorHandler.addWarning(value, message);
+            } else {
+                errorHandler.addError(value, message);
+            }
+        }
+
+        return errorHandler;
     }
 }

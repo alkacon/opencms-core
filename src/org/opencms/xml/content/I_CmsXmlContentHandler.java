@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/12/04 09:55:37 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
@@ -51,7 +52,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentHandler {
@@ -118,6 +119,23 @@ public interface I_CmsXmlContentHandler {
      * @return the preview URI for the given XML content value object to be displayed in the editor
      */
     String getPreviewUri(CmsObject cms, CmsXmlContent content, String resourcename);
+
+    /**
+     * Prepares the given XML content to be written to the OpenCms VFS.<p>
+     * 
+     * This method is alway called before any content gets written.
+     * It can be used to perform XML validation, pretty - printing 
+     * or customized actions on the given XML content.<p>  
+     * 
+     * @param cms the current OpenCms user context
+     * @param content the XML content to be written
+     * @param file the resource the XML content in it's current state was unmarshalled from 
+     * 
+     * @return the file to write to the OpenCms VFS, this will replace the parameter file in the VFS
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException;
 
     /**
      * Resolves the "appinfo" schema node of the XML content definition according 

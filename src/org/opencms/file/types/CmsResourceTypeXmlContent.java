@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2004/11/19 15:05:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/12/04 09:55:37 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,7 @@ import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.util.CmsHtmlConverter;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -57,7 +55,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.5
  */
@@ -205,18 +203,10 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
         // check if the user has write access and if resource is locked
         // done here so that all the XML operations are not performed if permissions not granted
         securityManager.checkPermissions(cms.getRequestContext(), resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
-        // read the xml page, use the encoding set in the property       
+        // read the xml content, use the encoding set in the property       
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, false);
-        // validate the xml structure before writing the file         
-        // an exception will be thrown if the structure is invalid
-        xmlContent.validateXmlStructure(new CmsXmlEntityResolver(cms));
-        // read the content-conversion property
-        String contentConversion = CmsHtmlConverter.getConversionSettings(cms, resource);               
-        xmlContent.setConversion(contentConversion);   
-        // correct the HTML structure 
-        resource = xmlContent.correctXmlStructure(cms);        
-        // resolve the file mappings
-        xmlContent.resolveAppInfo(cms);        
+        // call the content handler for post-processing
+        resource = xmlContent.getContentDefinition().getContentHandler().prepareForWrite(cms, xmlContent, resource);        
         // now write the file
         return super.writeFile(cms, securityManager, resource);
     }
