@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/09/11 06:33:29 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2001/09/12 09:02:20 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.55 $ $Date: 2001/09/11 06:33:29 $
+ * @version $Revision: 1.56 $ $Date: 2001/09/12 09:02:20 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -287,22 +287,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             projectType = ""+I_CmsConstants.C_PROJECT_TYPE_TEMPORARY;
         }
 
-        // first we look if the thread is allready running
-        if((action != null) && ("working".equals(action))) {
-            // project ready; clear the session
-            session.removeValue(C_NEWNAME);
-            session.removeValue(C_NEWGROUP);
-            session.removeValue(C_NEWDESCRIPTION);
-            session.removeValue(C_NEWMANAGERGROUP);
-            session.removeValue(C_NEWFOLDER);
-            session.removeValue(C_NEWTYPE);
-            session.removeValue("lasturl");
-            session.removeValue("newProjectCallingFrom");
-            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "done");
-        }
-
         if(parameters.get("submitform") != null) {
-
             // the form has just been submitted, store the data in the session
             session.putValue(C_NEWNAME, newName);
             session.putValue(C_NEWGROUP, newGroup);
@@ -315,7 +300,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             }
             else {
                 session.putValue(C_NEWRESOURCES, allResources);
-
                 // all the required data has been entered, display 'Please wait'
                 templateSelector = "wait";
                 action = "start";
@@ -323,7 +307,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         }
 
         // is the wait-page showing?
-        if("start".equals(action)) {
+        if("working".equals(action)) {
             // YES: get the stored data
             newName = (String)session.getValue(C_NEWNAME);
             newGroup = (String)session.getValue(C_NEWGROUP);
@@ -358,15 +342,13 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                         newManagerGroup, Integer.parseInt(projectType));
                 // change the current project
                 reqCont.setCurrentProject(project.getId());
-                templateSelector = "wait";
-                // copy the resources to the actual project
+                // copy the resources to the current project
                 try {
-                    // copy the resources to the actual project
                     for(int i = 0;i < folders.size();i++) {
                         cms.copyResourceToProject((String)folders.elementAt(i));
                     }
                 } catch(CmsException e) {
-                    // if there are no projectresources in the project then delete the project
+                    // if there are no projectresources in the project delete the project
                     Vector projectResources = cms.readAllProjectResources(project.getId());
                     if((projectResources == null) || (projectResources.size() == 0)){
                         cms.deleteProject(project.getId());
@@ -375,10 +357,18 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                         A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
                     }
-                    xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
-                    templateSelector = "errornewproject"+errorTemplateAddOn;
-                    //throw e;
+                    throw e;
                 }
+                // project ready; clear the session
+                session.removeValue(C_NEWNAME);
+                session.removeValue(C_NEWGROUP);
+                session.removeValue(C_NEWDESCRIPTION);
+                session.removeValue(C_NEWMANAGERGROUP);
+                session.removeValue(C_NEWFOLDER);
+                session.removeValue(C_NEWTYPE);
+                session.removeValue("lasturl");
+                session.removeValue("newProjectCallingFrom");
+                return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "done");
             } catch(CmsException exc) {
                 xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
                 templateSelector = "errornewproject"+errorTemplateAddOn;
