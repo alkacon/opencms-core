@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/03/09 15:36:14 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2001/03/13 10:13:23 $
+* Version: $Revision: 1.44 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.43 $ $Date: 2001/03/09 15:36:14 $
+ * @version $Revision: 1.44 $ $Date: 2001/03/13 10:13:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -594,15 +594,32 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         }
         try{
             Vector allProjects = cms.getAllAccessibleProjects();
+            Vector theNames = new Vector();
+            // count all projects starting with the same name
             int count = 0;
             for (int i = 0; i < allProjects.size(); i++){
                 String currProject = ((CmsProject)allProjects.elementAt(i)).getName();
                 if (currProject.startsWith(ret)){
                     count++;
+                    theNames.addElement(currProject);
                 }
             }
             if ((count > 0) && (count < 99)){
-                ret = ret + "_" + (count+1);
+                // get the highest version nummber
+                int version = 1;
+                for (int i = 0; i<theNames.size(); i++){
+                    int currVersion = 0;
+                    try{
+                        currVersion = Integer.parseInt(((String)theNames.elementAt(i)).substring(ret.length()+1));
+                    }catch(Exception e){
+                    }
+                    if ((currVersion > version)&& (currVersion < 100)){
+                        version = currVersion;
+                    }
+                }
+                if (version < 99){
+                    ret = ret + "_" + (version + 1);
+                }
             }
         }catch(CmsException e){
         }
