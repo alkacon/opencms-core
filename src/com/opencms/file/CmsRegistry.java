@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/08/31 07:31:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/09/05 17:13:05 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -31,6 +31,7 @@ package com.opencms.file;
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
+import java.text.*;
 import org.w3c.dom.*;
 import com.opencms.template.*;
 import com.opencms.core.*;
@@ -39,7 +40,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/08/31 07:31:15 $
+ * @version $Revision: 1.7 $ $Date: 2000/09/05 17:13:05 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -63,6 +64,11 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 	 *  The cms-object to get access to the system with the context of the current user.
 	 */
 	private CmsObject m_cms = null;
+
+	/**
+	 *  The date-format to use.
+	 */
+	private SimpleDateFormat m_dateFormat = new java.text.SimpleDateFormat("MM.dd.yyyy");
 
 /**
  * Creates a new CmsRegistry for a user. The cms-object represents the current state of the current user.
@@ -200,34 +206,37 @@ public I_CmsRegistry clone(CmsObject cms) {
  *  @param exclusion a Vector with resource-names that should be excluded from this deletion.
  */
 public synchronized void deleteModule(String module, Vector exclusion) throws CmsException {
-	// check if the user is allowed to set parameters
-
+	// check if the user is allowed to perform this action
 	if (!hasAccess()) {
 		throw new CmsException("No access to perform the action 'importModule'", CmsException.C_REGISTRY_ERROR);
 	}
 
 	// TODO: invoke the event-method
 
+	// TODO: check, if deletion is allowed
+
 	// get the files, that are belonging to the module.
 	Vector resourceNames = new Vector();
 	Vector resourceCodes = new Vector();
 	getModuleFiles(module, resourceNames, resourceCodes);
 
-	// move backwarts through all resource-names and try to delete them
-	for (int i = resourceNames.size() - 1; i > 0; i--) {
+	// move through all resource-names and try to delete them
+	for (int i = resourceNames.size() - 1; i >= 0; i--) {
 		try {
 			String currentResource = (String) resourceNames.elementAt(i);
-			m_cms.lockResource(currentResource, true);
-			if (currentResource.endsWith("/")) {
-				// this is a folder
-				m_cms.deleteFolder(currentResource);
-			} else {
-				// this is a file
-				m_cms.deleteFile(currentResource);
+			if (!exclusion.contains(currentResource)) {
+				m_cms.lockResource(currentResource, true);
+				if(currentResource.endsWith("/") ) {
+					// this is a folder
+					m_cms.deleteFolder(currentResource);
+				} else {
+					// this is a file
+					m_cms.deleteFile(currentResource);
+				}
 			}
 		} catch (CmsException exc) {
 			// ignore the exception and delete the next resource.
-			// exc.printStackTrace();
+			exc.printStackTrace();
 		}
 	}
 
@@ -290,7 +299,7 @@ public long getModuleCreateDate(String modulname) {
 	long retValue = -1;
 	try {
 		String value = getModuleData(modulname, "creationdate");
-		retValue = Long.parseLong(value);
+		retValue = m_dateFormat.parse(value).getTime();
 	} catch (Exception exc) {
 		// ignore the exception - reg is not welformed
 	}
@@ -809,7 +818,7 @@ public long getModuleUploadDate(String modulname) {
 	long retValue = -1;
 	try {
 		String value = getModuleData(modulname, "uploaddate");
-		retValue = Long.parseLong(value);
+		retValue = m_dateFormat.parse(value).getTime();
 	} catch (Exception exc) {
 		// ignore the exception - reg is not welformed
 	}
@@ -903,10 +912,14 @@ public int getViews(Vector views, Vector urls) {
 	try {
 		NodeList viewList = m_xmlReg.getElementsByTagName("view");
 		for (int x = 0; x < viewList.getLength(); x++) {
-			String name = ((Element) viewList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-			String url = ((Element) viewList.item(x)).getElementsByTagName("url").item(0).getFirstChild().getNodeValue();
-			views.addElement(name);
-			urls.addElement(url);
+			try {
+				String name = ((Element) viewList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+				String url = ((Element) viewList.item(x)).getElementsByTagName("url").item(0).getFirstChild().getNodeValue();
+				views.addElement(name);
+				urls.addElement(url);
+			} catch(Exception exc) {
+				// ignore the exception and try the next view-pair.
+			}
 		}
 		return views.size();
 	} catch (Exception exc) {
@@ -983,7 +996,8 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
 	Element regModules = (Element) (m_xmlReg.getElementsByTagName("modules").item(0));
 	// set the import-date
 	Node uploadDate = newModule.getOwnerDocument().createElement("uploaddate");
-	uploadDate.appendChild(newModule.getOwnerDocument().createTextNode(System.currentTimeMillis() + ""));
+
+	uploadDate.appendChild(newModule.getOwnerDocument().createTextNode(m_dateFormat.format(new java.util.Date())));
 	newModule.appendChild(uploadDate);
 
 	// set the import-user
@@ -1003,7 +1017,7 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
 		Node checksum = newModule.getOwnerDocument().createElement("checksum");
 		file.appendChild(checksum);
 		name.appendChild(newModule.getOwnerDocument().createTextNode((String) resourceNames.elementAt(i)));
-		checksum.appendChild(newModule.getOwnerDocument().createCDATASection((String) resourceCodes.elementAt(i)));
+		checksum.appendChild(newModule.getOwnerDocument().createTextNode(com.opencms.util.Encoder.escape( (String) resourceCodes.elementAt(i))));
 	}
 
 	// append the files to the module-entry
@@ -1026,7 +1040,6 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
  *  Inits all member-variables for the instance.
  */
 private void init() throws Exception {
-	System.err.println("init()");
 	// get the entry-points for the modules
 	NodeList modules = m_xmlReg.getElementsByTagName("module");
 	// create the hashtable for the shortcuts

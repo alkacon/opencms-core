@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/04 10:55:45 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/09/05 17:13:05 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -28,7 +28,7 @@ package com.opencms.core;
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import java.util.*;
+import java.util.*; 
 import java.io.*;
 import com.opencms.file.*;
 import java.lang.reflect.*;
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.22 $ $Date: 2000/09/04 10:55:45 $
+ * @version $Revision: 1.23 $ $Date: 2000/09/05 17:13:05 $
  */
 public class CmsShell implements I_CmsConstants {
 

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/09/01 08:29:29 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/09/05 17:13:05 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2000/09/01 08:29:29 $
+ * @version $Revision: 1.21 $ $Date: 2000/09/05 17:13:05 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -304,8 +304,7 @@ public Vector getConflictingFilenames() throws CmsException {
  * @param fileCodes code of the written files (for the registry) 
  *       not used when null
  */
-private void importFile(String source, String destination, String type, String user, String group, String access, 
-					Hashtable properties, Vector writtenFilenames, Vector fileCodes) {
+private void importFile(String source, String destination, String type, String user, String group, String access, Hashtable properties, Vector writtenFilenames, Vector fileCodes) {
 	// print out the information for shell-users
 	System.out.print("Importing ");
 	System.out.print(source + ", ");
@@ -316,10 +315,10 @@ private void importFile(String source, String destination, String type, String u
 	System.out.print(access + "... ");
 	boolean success = false;
 	byte[] content = null;
+	String fullname = null;
 	try {
 		String path = m_importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
 		String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
-		String fullname = null;
 		int state = C_STATE_NEW;
 		if (source == null) {
 			// this is a directory
@@ -368,13 +367,13 @@ private void importFile(String source, String destination, String type, String u
 	byte[] digestContent = {0};
 	if (content != null) {
 		digestContent = m_digest.digest(content);
-	} 
+	}
 	if (success) {
 		if (writtenFilenames != null) {
-			writtenFilenames.addElement(m_importPath + destination);
+			writtenFilenames.addElement(fullname);
 		}
 		if (fileCodes != null) {
-			fileCodes.addElement(digestContent.toString());
+			fileCodes.addElement(new String(digestContent));
 		}
 	}
 }
