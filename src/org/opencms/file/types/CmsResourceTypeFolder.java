@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/11/02 15:08:17 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/11/16 16:07:18 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,14 +42,16 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Resource type descriptor for the type "folder".<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsResourceTypeFolder extends A_CmsResourceType {
 
@@ -184,15 +186,24 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
 
         // collect all resources in the folder (but exclude deleted ones)
         List resources = securityManager.readChildResources(
-            cms.getRequestContext(),            
+            cms.getRequestContext(),
             resource,
-            CmsResourceFilter.IGNORE_EXPIRATION, 
-            true, 
+            CmsResourceFilter.IGNORE_EXPIRATION,
+            true,
             true); 
+        
+        Set deletedResources = new HashSet();
         
         // now walk through all sub-resources in the folder
         for (int i = 0; i < resources.size(); i++) {
             CmsResource childResource = (CmsResource)resources.get(i);
+            
+            if (siblingMode == I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS && deletedResources.contains(childResource.getResourceId())) {
+                // sibling mode is "delete all siblings" and another sibling of the current child resource has already
+                // been deleted- do nothing and continue with the next child resource.
+                continue;
+            }
+            
             if (childResource.isFolder()) {
                 // recurse into this method for subfolders
                 deleteResource(cms, securityManager, childResource, siblingMode);
@@ -201,8 +212,12 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
                 getResourceType(
                     childResource.getTypeId()
                 ).deleteResource(cms, securityManager, childResource, siblingMode);
-            }            
+            }  
+            
+            deletedResources.add(childResource.getResourceId());
         }  
+        
+        deletedResources.clear();
 
         // handle the folder itself
         super.deleteResource(cms, securityManager, resource, siblingMode);
