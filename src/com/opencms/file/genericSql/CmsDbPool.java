@@ -3,8 +3,8 @@ package com.opencms.file.genericSql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/10/26 09:58:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/11/17 11:31:25 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -208,15 +208,19 @@ public Connection getConnectionOfStatement(PreparedStatement statement) throws C
 	 * @return a prepared statement matching the key
 	 */
 	public PreparedStatement getPreparedStatement(Integer key) {
+		// Debugging-Informations:
+		int cycle = 0;
+		int marker = (int)(java.lang.Math.random() * 10000);
 		
 		PreparedStatement pstmt = null;
 		synchronized(m_prepStatements) {
 			while(m_prepStatements.size() == 0) {
 				try {
 					if(A_OpenCms.isLogging()) {
-						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbPool] no connections available - have to wait.");
+						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbPool] no connections available - have to wait. marker:" + marker + " key:" + key + " cycle:" + cycle );
 					}
-					m_prepStatements.wait(100);					
+					int waittime = (int)(java.lang.Math.random()*1000) + 100;
+					m_prepStatements.wait(waittime);
 				} catch(InterruptedException exc) {
 				}
 			}
