@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/11/17 13:56:07 $
-* Version: $Revision: 1.343 $
+* Date   : $Date: 2002/11/17 14:51:53 $
+* Version: $Revision: 1.344 $
 
 *
 * This library is part of OpenCms -
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.343 $ $Date: 2002/11/17 13:56:07 $
+ * @version $Revision: 1.344 $ $Date: 2002/11/17 14:51:53 $
 
  *
  */
@@ -6265,9 +6265,10 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
         if (search) {
             String value;
             boolean cont;
+            siteRoot += "/";
             do {
                 value = readProperty(currentUser, currentProject, resource, property);
-                cont = (value == null) && (! siteRoot.equals(resource));
+                cont = !((value != null) || siteRoot.equals(resource));
                 if (cont) resource = CmsResource.getParent(resource);
             } while (cont);
             return value;
