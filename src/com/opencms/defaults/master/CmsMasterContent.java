@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/10/24 13:20:57 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/11/12 17:37:14 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.49 $
- * $Date: 2003/10/24 13:20:57 $
+ * $Revision: 1.50 $
+ * $Date: 2003/11/12 17:37:14 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -628,25 +628,32 @@ public abstract class CmsMasterContent
         Vector changedModuleData = new Vector();
         int versionId = 0;
         long publishDate = System.currentTimeMillis();
-        boolean enableHistory = cms.isHistoryEnabled();
-        if (enableHistory){
-            // Get the next version id
-            versionId = cms.getBackupTagId();
-            // backup the current project
-            cms.backupProject(cms.getRequestContext().currentProject().getId(), versionId, publishDate);
-        }
-        // now publish the content definition
-        getDbAccessObject(getSubId()).publishResource(cms, m_dataSet, getSubId(), this.getClass().getName(),
-        enableHistory, versionId, publishDate, changedResources, changedModuleData);
-        // update the cache
-        if (CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
-            CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleData);
-        }
+        boolean historyEnabled = cms.isHistoryEnabled();
 
-        CmsUUID publishId = new CmsUUID();
-        cms.postPublishBoResource(new CmsPublishedResource(this.getClass().getName(), m_dataSet.m_masterId, getSubId(), m_dataSet.m_state), publishId, versionId);        
-        
-        //OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE, Collections.EMPTY_MAP));        
+        try {
+            if (historyEnabled) {
+                // Get the next version id
+                versionId = cms.getBackupTagId();
+                // backup the current project
+                cms.backupProject(cms.getRequestContext().currentProject().getId(), versionId, publishDate);
+            }
+            
+            // now publish the content definition
+            getDbAccessObject(getSubId()).publishResource(cms, m_dataSet, getSubId(), this.getClass().getName(), historyEnabled, versionId, publishDate, changedResources, changedModuleData);
+            
+            // update the cache
+            if (CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
+                CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleData);
+            }
+        } catch (Exception e) {
+            // this is a dummy try-catch block to have a finally clause below
+            throw e;
+        } finally {
+            CmsUUID publishId = new CmsUUID();
+            cms.postPublishBoResource(new CmsPublishedResource(this.getClass().getName(), m_dataSet.m_masterId, getSubId(), m_dataSet.m_state), publishId, versionId);
+
+            //OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE, Collections.EMPTY_MAP));
+        }
     }
 
     /**
