@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/10/02 08:43:53 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2003/10/02 14:47:24 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.65 $ $Date: 2003/10/02 08:43:53 $
+ * @version $Revision: 1.66 $ $Date: 2003/10/02 14:47:24 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -373,18 +373,22 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
 
     /**
     * Internal method to write the backup content.<p>
-    *  
+    * 
     * @param backupId the backup id
-    * @param fileId the id of the file
+    * @param resource the resource to backup
     * @param fileContent the content of the file
     * @param tagId the tag revision
     * @param versionId the version revision
     * @throws CmsException if something goes wrong
     */
-    protected void internalWriteBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int tagId, int versionId) throws CmsException {
+    protected void internalWriteBackupFileContent(CmsUUID backupId, CmsResource resource, byte[] fileContent, int tagId, int versionId) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
+        // CmsFile offlineFile = m_driverManager.getVfsDriver().readFile(projectId, false, resource.getStructureId());
+        CmsUUID fileId = resource.getFileId();
+        // byte[] fileContent = offlineFile.getContents();
+        
         try {
             conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_WRITE_BACKUP");
@@ -995,8 +999,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             if (!this.internalValidateBackupResource(resource, tagId)) {
 
                     // write the file content
-                    content = ((CmsFile)resource).getContents();
-                    internalWriteBackupFileContent(backupPkId, resource.getFileId(), content, tagId, versionId);
+                    if (resource instanceof CmsFile)
+                        content = ((CmsFile)resource).getContents();
+                    internalWriteBackupFileContent(backupPkId, resource/* .getFileId() */, content, tagId, versionId);
 
                     // write the resource
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_BACKUP");
@@ -1063,10 +1068,16 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
      */
     public void writeBackupResourceContent(int projectId, CmsResource resource, CmsBackupResource backupResource) throws CmsException {
         // get the offline file
-        CmsFile offlineFile = m_driverManager.getVfsDriver().readFile(projectId, false, resource.getStructureId());
+        // CmsFile offlineFile = m_driverManager.getVfsDriver().readFile(projectId, false, resource.getStructureId());
         // write the file content
+        byte[] content = null;
+        if (resource instanceof CmsFile)
+            content = ((CmsFile)resource).getContents();
+            
         if (!this.internalValidateBackupResource(resource, backupResource.getTagId())) {
-            internalWriteBackupFileContent(backupResource.getBackupId(), resource.getFileId(), offlineFile.getContents(), backupResource.getTagId(), backupResource.getVersionId());
+            // internalWriteBackupFileContent(backupResource.getBackupId(), resource.getFileId(), offlineFile.getContents(), backupResource.getTagId(), backupResource.getVersionId());
+            internalWriteBackupFileContent(backupResource.getBackupId(), resource, content, backupResource.getTagId(), backupResource.getVersionId());
+
         }
 
     }

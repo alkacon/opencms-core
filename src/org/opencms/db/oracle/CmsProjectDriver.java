@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/22 12:34:33 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/10/02 14:47:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,14 @@
 
 package org.opencms.db.oracle;
 
+import org.opencms.db.CmsDriverManager;
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsProject;
+import com.opencms.file.CmsResource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -43,19 +50,28 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.dbcp.DelegatingResultSet;
+
+import source.org.apache.java.util.Configurations;
 
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.11 $ $Date: 2003/09/22 12:34:33 $
+ * @version $Revision: 1.12 $ $Date: 2003/10/02 14:47:24 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
  */
 public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {    
 
+    /*
+     * Indicates that server side copying should be used
+     */
+    private boolean m_enableServerCopy = false;
+    
     /**
      * @see org.opencms.db.I_CmsProjectDriver#addSystemProperty(java.lang.String, java.io.Serializable)
      */
@@ -155,10 +171,109 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
+     */
+    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
+
+        m_enableServerCopy = "true".equals(config.getString("db.oracle.servercopy"));
+        super.init(config, successiveDrivers, driverManager);
+    }
+    
+    /**
      * @see org.opencms.db.I_CmsProjectDriver#initQueries(java.lang.String)
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.oracle.CmsSqlManager();
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(com.opencms.file.CmsRequestContext, com.opencms.file.CmsProject, com.opencms.file.CmsResource, java.util.Set)
+     */
+    public CmsFile publishFileContent(CmsProject offlineProject, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds) throws Exception {
+        CmsFile newFile = null;
+        PreparedStatement stmt = null, stmt2 = null;
+        Connection conn = null;
+        ResultSet res = null;
+
+        if (!m_enableServerCopy)
+            return super.publishFileContent(offlineProject, onlineProject, offlineFileHeader, publishedContentIds);
+                            
+        try {
+            // binary content gets only published once while a project is published
+            if (!offlineFileHeader.getFileId().isNullUUID() && !publishedContentIds.contains(offlineFileHeader.getFileId())) {
+
+                // create the file online, but without content              
+                // newFile = (CmsFile) offlineFile.clone();
+                newFile = new CmsFile(
+                    offlineFileHeader.getStructureId(),
+                    offlineFileHeader.getResourceId(),
+                    offlineFileHeader.getParentStructureId(),
+                    offlineFileHeader.getFileId(),
+                    offlineFileHeader.getName(),
+                    offlineFileHeader.getType(),
+                    offlineFileHeader.getFlags(),
+                    offlineFileHeader.getProjectLastModified(),
+                    I_CmsConstants.C_STATE_UNCHANGED,
+                    offlineFileHeader.getLoaderId(),
+                    offlineFileHeader.getDateCreated(),
+                    offlineFileHeader.getUserCreated(),
+                    offlineFileHeader.getDateLastModified(),
+                    offlineFileHeader.getUserLastModified(),
+                    offlineFileHeader.getLength(),            
+                    offlineFileHeader.getLinkCount(),
+                    new byte[0]
+                );
+                newFile.setFullResourceName(offlineFileHeader.getRootPath());                
+                m_driverManager.getVfsDriver().createFile(onlineProject, newFile, offlineFileHeader.getUserCreated(), newFile.getParentStructureId(), newFile.getName());
+
+                conn = m_sqlManager.getConnection();
+            
+                // read the content blob
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILES_READCONTENT");
+                stmt.setString(1, offlineFileHeader.getFileId().toString());
+                res = stmt.executeQuery();
+                if (res.next()) {
+                    Blob content = res.getBlob(1);
+                    // publish the content
+                    stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILES_PUBLISHCONTENT");
+                    stmt2.setBlob(1, content);
+                    stmt2.setString(2, offlineFileHeader.getFileId().toString());
+                    stmt2.executeUpdate();
+                    stmt2.close();
+                    stmt2 = null;                    
+                }
+                
+                stmt.close();
+                stmt = null;
+                                
+                // read the file offline
+                // offlineFile = m_driverManager.getVfsDriver().readFile(offlineProject.getId(), false, offlineFileHeader.getStructureId());
+                // offlineFile.setFullResourceName(offlineFileHeader.getRootPath());
+
+
+                // update the online/offline structure and resource records of the file
+                // TODO: functionality to write content in writeResource is obsolete ?
+                // m_driverManager.getVfsDriver().writeResource(onlineProject, newFile, offlineFile, false);
+
+                // add the content ID to the content IDs that got already published
+                publishedContentIds.add(offlineFileHeader.getFileId());
+                
+            } else {
+                // create the sibling online
+                m_driverManager.getVfsDriver().createSibling(onlineProject, offlineFileHeader, offlineFileHeader.getUserCreated(), offlineFileHeader.getParentStructureId(), offlineFileHeader.getName());
+
+                newFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), false, offlineFileHeader.getStructureId());
+                newFile.setFullResourceName(offlineFileHeader.getRootPath());                
+            }
+        } catch (Exception e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error creating file content " + offlineFileHeader.toString(), e);
+            }
+
+            throw e;
+        }
+        
+        return newFile;
     }
 
     /**
