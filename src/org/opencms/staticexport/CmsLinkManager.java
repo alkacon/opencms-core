@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/04/05 12:18:11 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/04/07 07:39:37 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class CmsLinkManager {
     
@@ -89,7 +89,7 @@ public class CmsLinkManager {
      * @return an absolute uri calculated from "uri" and "baseUri"
      */
     public static String getAbsoluteUri(String relativeUri, String baseUri) {
-        if ((relativeUri == null) || (relativeUri.charAt(0) == '/')) {
+        if ((relativeUri == null) || (relativeUri.length() >= 1 && relativeUri.charAt(0) == '/')) {
             // uri is null or already absolute
             return relativeUri;
         }
