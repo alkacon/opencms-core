@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2003/11/07 13:17:33 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/11/07 16:30:21 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -172,7 +172,7 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
     public boolean performDeleteOperation() throws CmsException {
         int deleteOption = -1;     
         
-        // on folder copy display "please wait" screen, not for simple file copy
+        // on folder deletion display "please wait" screen, not for simple file deletion
         CmsResource sourceRes = getCms().readFileHeader(getParamResource());
         if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen

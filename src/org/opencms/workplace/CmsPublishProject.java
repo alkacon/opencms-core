@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2003/11/07 13:17:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/11/07 16:30:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.opencms.threads.CmsPublishThread;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.12
  */
@@ -227,7 +227,7 @@ public class CmsPublishProject extends CmsReport {
     } 
         
     /**
-     * Performs the move report, will be called by the JSP page.<p>
+     * Performs the publish report, will be called by the JSP page.<p>
      * 
      * @throws JspException if problems including sub-elements occur
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2003/11/07 13:17:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/11/07 16:30:21 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.opencms.site.CmsSiteManager;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
@@ -138,7 +138,7 @@ public class CmsMove extends CmsDialog {
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
             if (performMoveOperation())  {
-                // if no exception is caused and "true" is returned copy operation was successful
+                // if no exception is caused and "true" is returned move operation was successful
                 getJsp().include(C_FILE_EXPLORER_FILELIST);
             } else  {
                 // "false" returned, display "please wait" screen
@@ -151,11 +151,11 @@ public class CmsMove extends CmsDialog {
                 + key("target") + ": " + getParamTarget() + "\n</p>\n";
             // check if this exception requires a confirmation or error screen
             if ((e.getType() == CmsException.C_FILE_EXISTS)) {
-                // file copy but file already exists, show confirmation dialog
+                // file move operation but file already exists, show confirmation dialog
                 setParamMessage(message + key("confirm.message.copy"));
                 getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM);        
             } else {                
-                // error during copy, show error dialog
+                // error during move operation, show error dialog
                 setParamErrorstack(e.getStackTraceAsString());
                 setParamMessage(message + key("error.message." + getParamDialogtype()));
                 setParamReasonSuggestion(getErrorSuggestionDefault());
@@ -172,7 +172,7 @@ public class CmsMove extends CmsDialog {
      */
     private boolean performMoveOperation() throws CmsException {
 
-        // on folder copy display "please wait" screen, not for simple file copy
+        // on folder move operation display "please wait" screen, not for simple file move operation
         CmsResource sourceRes = getCms().readFileHeader(getParamResource());
         if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
