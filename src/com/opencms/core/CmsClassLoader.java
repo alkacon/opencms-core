@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
- * Date   : $Date: 2000/08/30 09:38:29 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/08/31 15:10:36 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -111,7 +111,7 @@ import com.opencms.file.*;
  * with a parent classloader. Normally this should be the classloader 
  * that loaded this loader. 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/08/30 09:38:29 $
+ * @version $Revision: 1.15 $ $Date: 2000/08/31 15:10:36 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -145,6 +145,61 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 	
 	private CmsObject m_cms;
 
+	/**
+	 * Loads all the bytes of an InputStream.
+	 */
+	private void copyStream(InputStream in, OutputStream out)
+		throws IOException
+	{
+		synchronized (in) {
+			synchronized (out) {
+				byte[] buffer = new byte[256];
+				while (true) {
+					int bytesRead = in.read(buffer);
+					if (bytesRead == -1) break;
+					out.write(buffer,0,bytesRead);
+				}
+			}
+		}
+	}
+	/**
+	 * Get an InputStream on a given resource.  Will return null if no
+	 * resource with this name is found.
+	 * <p>
+	 * To be implemented.
+	 *
+	 * @see     java.lang.Class#getResourceAsStream(String)
+	 * @param   name    the name of the resource, to be used as is.
+	 * @return  an InputStream on the resource, or null if not found.
+	 */
+	public InputStream getResourceAsStream(String name) {
+		return null;
+	}
+	/**
+	 * Find a resource with a given name.  The return is a URL to the
+	 * resource. Doing a getContent() on the URL may return an Image,
+	 * an AudioClip,or an InputStream.
+	 * <P>
+	 * To be implemented
+	 * 
+	 * @param   name    the name of the resource, to be used as is.
+	 * @return  an URL on the resource, or null if not found.
+	 */
+	public URL getResource(String name) {
+		return null;
+	}
+	/**
+	 * Test if a file is a ZIP or JAR archive.
+	 *
+	 * @param file the file to be tested.
+	 * @return true if the file is a ZIP/JAR archive, false otherwise.
+	 */
+	private boolean isZipOrJarArchive(String file) {
+		boolean isArchive = false;
+		if(file.endsWith(".zip")||file.endsWith(".jar"))
+			isArchive = true;
+		return isArchive;
+	}
 	/**
 	 * Creates a new class loader that will load classes from specified
 	 * class repositories.
@@ -200,60 +255,36 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 		
 		this.m_cms = cms;        
 	}
-	/**
-	 * Loads all the bytes of an InputStream.
+	 /**
+	 * Tries to load the class from a zip file.
+	 *
+	 * @param file The zipfile that contains classes.
+	 * @param name The classname
+	 * @param cache The cache entry to set the file if successful.
 	 */
-	private void copyStream(InputStream in, OutputStream out)
-		throws IOException
+	private byte[] loadClassFromZipFile(CmsFile file, String name)
+			throws IOException
 	{
-		synchronized (in) {
-			synchronized (out) {
-				byte[] buffer = new byte[256];
-				while (true) {
-					int bytesRead = in.read(buffer);
-					if (bytesRead == -1) break;
-					out.write(buffer,0,bytesRead);
-				}
+		String className = name.replace('.', '/') + ".class"; 
+		InputStream in = new ByteArrayInputStream(file.getContents());
+		ZipInputStream zipStream = new ZipInputStream(in);
+		
+		try {
+			ZipEntry entry = zipStream.getNextEntry(); 
+			while ((!entry.getName().equals(className))&&(entry != null)) {
+				entry = zipStream.getNextEntry();
 			}
+			if (entry != null) {
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				copyStream(zipStream, out);
+				return out.toByteArray();
+			} 
+			else {
+				return null;
+				}
+		} finally {
+			zipStream.close();
 		}
-	}
-	/**
-	 * Find a resource with a given name.  The return is a URL to the
-	 * resource. Doing a getContent() on the URL may return an Image,
-	 * an AudioClip,or an InputStream.
-	 * <P>
-	 * To be implemented
-	 * 
-	 * @param   name    the name of the resource, to be used as is.
-	 * @return  an URL on the resource, or null if not found.
-	 */
-	public URL getResource(String name) {
-		return null;
-	}
-	/**
-	 * Get an InputStream on a given resource.  Will return null if no
-	 * resource with this name is found.
-	 * <p>
-	 * To be implemented.
-	 *
-	 * @see     java.lang.Class#getResourceAsStream(String)
-	 * @param   name    the name of the resource, to be used as is.
-	 * @return  an InputStream on the resource, or null if not found.
-	 */
-	public InputStream getResourceAsStream(String name) {
-		return null;
-	}
-	/**
-	 * Test if a file is a ZIP or JAR archive.
-	 *
-	 * @param file the file to be tested.
-	 * @return true if the file is a ZIP/JAR archive, false otherwise.
-	 */
-	private boolean isZipOrJarArchive(String file) {
-		boolean isArchive = false;
-		if(file.endsWith(".zip")||file.endsWith(".jar"))
-			isArchive = true;
-		return isArchive;
 	}
 	/**
 	 * Resolves the specified name to a Class. The method loadClass()
@@ -384,36 +415,5 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 			return c;
 		}
 		throw new ClassNotFoundException(name);
-	}
-	 /**
-	 * Tries to load the class from a zip file.
-	 *
-	 * @param file The zipfile that contains classes.
-	 * @param name The classname
-	 * @param cache The cache entry to set the file if successful.
-	 */
-	private byte[] loadClassFromZipFile(CmsFile file, String name)
-			throws IOException
-	{
-		String className = name.replace('.', '/') + ".class"; 
-		InputStream in = new ByteArrayInputStream(file.getContents());
-		ZipInputStream zipStream = new ZipInputStream(in);
-		
-		try {
-			ZipEntry entry = zipStream.getNextEntry(); 
-			while ((!entry.getName().equals(className))&&(entry != null)) {
-				entry = zipStream.getNextEntry();
-			}
-			if (entry != null) {
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				copyStream(zipStream, out);
-				return out.toByteArray();
-			} 
-			else {
-				return null;
-				}
-		} finally {
-			zipStream.close();
-		}
 	}
 }

@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/08/15 16:25:30 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2000/08/31 15:10:36 $
+ * Version: $Revision: 1.55 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.54 $ $Date: 2000/08/15 16:25:30 $  
+* @version $Revision: 1.55 $ $Date: 2000/08/31 15:10:36 $  
 * 
 * */
 
@@ -344,7 +344,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		output.append("</HEAD>\n");
 		output.append("<BODY onLoad=\"errorinit();\" bgcolor=\"#ffffff\" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>\n");
 		output.append("<div id=\"errormain\">\n");
-		output.append("<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->\n");
+		output.append("<!-- Tabellenaufbau f?r Dialog mit OK und Abbrechen-->\n");
 		output.append("<form id=ERROR name=ERROR>\n");
 		output.append("<table cellspacing=0 cellpadding=0 border=2 width=350>\n");
 		output.append("<tr><td class=dialogtxt>\n");
@@ -440,7 +440,12 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(req,res,m_clusterurl);
 
 		try {
-		   cms=initUser(cmsReq,cmsRes);
+			 //determine wether to use multisite functionality or not.
+			 if (CmsConstants.USE_MULTISITE)
+			 	  cms=initMultisite(cmsReq,cmsRes);
+			 else
+			 	  cms=initUser(cmsReq,cmsRes);
+			 	  
 		   checkRelocation(cms);
 		   CmsFile file=m_opencms.initResource(cms); 
 		   m_opencms.setResponse(cms,file);
@@ -476,7 +481,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		 CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(req,res,m_clusterurl);
 		 
 		try {
-			cms=initUser(cmsReq,cmsRes);
+		
+			//determine wether to use multisite functionality or not.
+			if (CmsConstants.USE_MULTISITE)
+			  cms=initMultisite(cmsReq,cmsRes);
+			else
+			  cms=initUser(cmsReq,cmsRes);
+			 	  
 			checkRelocation(cms);
 			CmsFile file=m_opencms.initResource(cms); 
 			m_opencms.setResponse(cms,file);
@@ -594,6 +605,187 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing... DONE");
 		}
 	}
+/**
+ * This method handled the user authentification for each request sent to the
+ * OpenCms. <p>
+ * The method handeles multisite functionality.
+ * 
+ * User authentification is done in three steps:
+ * <ul>
+ * <li> Session Authentification: OpenCms stores all active sessions of authentificated
+ * users in an internal storage. During the session authetification phase, it is checked
+ * if the session of the active user is stored there. </li>
+ * <li> HTTP Autheification: If session authentification fails, it is checked if the current
+ * user has loged in using HTTP authentification. If this check is positive, the user account is
+ * checked. </li>
+ * <li> Default user: When both authentification methods fail, the current user is
+ * set to the default (guest) user, depending on which site the user has requested. </li>
+ * </ul>
+ * 
+ * @param req   The clints request.
+ * @param res   The servlets response.
+ * @return The CmsObject
+ * @exception IOException Thrown if user autherization fails.
+ */
+private CmsObject initMultisite(I_CmsRequest cmsReq, I_CmsResponse cmsRes) throws IOException
+{
+	HttpSession session;
+	String user = null;
+	String group = null;
+	Integer project = null;
+	String loginParameter;
+
+	// get the original ServletRequest and response
+	HttpServletRequest req = (HttpServletRequest) cmsReq.getOriginalRequest();
+	HttpServletResponse res = (HttpServletResponse) cmsRes.getOriginalResponse();
+	CmsObject cms = new CmsObject(m_sessionStorage);
+
+	//set up the default Cms object, based on the default site.
+	try
+	{
+		//get the called URL.
+		StringBuffer requestUrl = HttpUtils.getRequestURL(req);
+		CmsSite site = cms.getSite(requestUrl);
+		m_opencms.initUser(cms, cmsReq, cmsRes, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
+
+		// check if a parameter "opencms=login" was included in the request.
+		// this is used to force the HTTP-Authentification to appear.
+		loginParameter = cmsReq.getParameter("opencms");
+		if (loginParameter != null)
+		{
+			// do only show the authentication box if user is not already 
+			// authenticated.
+			if (req.getHeader("Authorization") == null)
+			{
+				if (loginParameter.equals("login"))
+				{
+					requestAuthorization(req, res);
+				}
+			}
+		}
+
+		// check for the clearcache parameter
+		loginParameter = cmsReq.getParameter("_clearcache");
+		if (loginParameter != null)
+		{
+			cms.clearcache();
+		}
+
+		// get the actual session
+		session = req.getSession(false);
+
+		// there is no session
+		if ((session == null))
+		{
+			// was there an old session-id?
+			String oldSessionId = req.getRequestedSessionId();
+			if (oldSessionId != null)
+			{
+				// yes - try to load that session
+				Hashtable sessionData = null;
+				try
+				{
+					sessionData = m_opencms.restoreSession(oldSessionId);
+				}
+				catch (CmsException exc)
+				{
+					if (A_OpenCms.isLogging())
+					{
+						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] cannot restore session: " + com.opencms.util.Utils.getStackTrace(exc));
+					}
+				}
+
+				// can the session be restored?
+				if (sessionData != null)
+				{
+					// create a new session first
+					session = req.getSession(true);
+					m_sessionStorage.putUser(session.getId(), sessionData);
+
+					// restore the session-data
+					session.putValue(C_SESSION_DATA, sessionData.get(C_SESSION_DATA));
+				}
+			}
+		}
+
+
+		// there was a session returned, now check if this user is already authorized
+		if (session != null)
+		{
+			// get the username
+			user = m_sessionStorage.getUserName(session.getId());
+			//System.err.println("Session authentifcation "+user.toString());
+
+			//check if a user was returned, i.e. the user is authenticated
+			if (user != null)
+			{
+				group = m_sessionStorage.getCurrentGroup(session.getId());
+				project = m_sessionStorage.getCurrentProject(session.getId());
+				m_opencms.initUser(cms, cmsReq, cmsRes, user, group, project.intValue());
+			}
+		}
+		else
+		{
+
+			// there was either no session returned or this session was not 
+			// found in the CmsCoreSession storage
+
+			String auth = req.getHeader("Authorization");
+			// User is authenticated, check password	
+			if (auth != null)
+			{
+				// only do basic authentification
+				if (auth.toUpperCase().startsWith("BASIC "))
+				{
+					// Get encoded user and password, following after "BASIC "
+					String userpassEncoded = auth.substring(6);
+					// Decode it, using any base 64 decoder
+					sun.misc.BASE64Decoder dec = new sun.misc.BASE64Decoder();
+					String userstr = new String(dec.decodeBuffer(userpassEncoded));
+					String username = null;
+					String password = null;
+					StringTokenizer st = new StringTokenizer(userstr, ":");
+					if (st.hasMoreTokens())
+					{
+						username = st.nextToken();
+					}
+					if (st.hasMoreTokens())
+					{
+						password = st.nextToken();
+					}
+					// autheification in the DB
+					try
+					{
+						user = cms.loginUser(username, password);
+						// System.err.println("HTTP authentifcation "+user.toString());
+						// authentification was successful create a session 
+						session = req.getSession(true);
+						OpenCmsServletNotify notify = new OpenCmsServletNotify(session.getId(), m_sessionStorage);
+						session.putValue("NOTIFY", notify);
+					}
+					catch (CmsException e)
+					{
+						if (e.getType() == CmsException.C_NO_ACCESS)
+						{
+							// authentification failed, so display a login screen
+							requestAuthorization(req, res);
+							// System.err.println("HTTP authentifcation login required");
+						}
+						else
+						{
+							throw e;
+						}
+					}
+				}
+			}
+		}
+	}
+	catch (CmsException e)
+	{
+		errorHandling(cms, cmsReq, cmsRes, e);
+	}
+	return cms;
+}
 	/**
 	 * This method handled the user authentification for each request sent to the
 	 * OpenCms. <p>

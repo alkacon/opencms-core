@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2000/08/08 14:08:23 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/08/31 15:10:37 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,9 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2000/08/08 14:08:23 $
+ * @author Anders Fugmann
+ *
+ * @version $Revision: 1.27 $ $Date: 2000/08/31 15:10:37 $
  * 
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -76,6 +78,11 @@ public class CmsRequestContext implements I_CmsConstants {
 	 * The current project.
 	 */
 	private CmsProject m_currentProject;
+
+	/**
+	 * The current site.
+	 */
+	//private CmsSite m_currentSite;
 		
 	/**
 	 * Returns the current folder object.

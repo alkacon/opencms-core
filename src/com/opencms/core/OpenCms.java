@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/08/22 13:33:57 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2000/08/31 15:10:36 $
+ * Version: $Revision: 1.37 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.36 $ $Date: 2000/08/22 13:33:57 $  
+* @version $Revision: 1.37 $ $Date: 2000/08/31 15:10:36 $  
 * 
 * */
 
@@ -98,61 +98,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 	  */
 	 private boolean m_sessionFailover = false;
 	 
-	 /**
-	  * Constructor, creates a new OpenCms object.
-	  * 
-	  * It gets the configurations and inits a rb via the CmsRbManager.
-	  * 
-	  * @param conf The configurations from the property-file.
-	  */
-	 OpenCms(Configurations conf) 
-		 throws Exception {
-		// invoke the ResourceBroker via the initalizer
-		try {
-			
-			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] creating first cms-object");
-			}
-			CmsObject cms=new CmsObject();
-			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the main resource-broker");
-			}
-			
-			m_sessionFailover = conf.getBoolean("sessionfailover.enabled", false);
-
-			// init the rb via the manager with the configuration 			
-			// and init the cms-object with the rb.
-			c_rb = CmsRbManager.init(conf);
-
-			printCopyrightInformation(cms);
-			// initalize the Hashtable with all available mimetypes
-			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] read mime types");
-			}
-
-			m_mt = c_rb.readMimeTypes(null, null);
-			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] found " + m_mt.size() + " mime-type entrys");			
-			}
-		} catch (Exception e) {
-			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
-			}
-			throw e;
-		}
-		
-		// try to initialize the launchers.
-		try {
-			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initialize launchers...");			
-			}
-			m_launcherManager = new CmsLauncherManager();
-		} catch (Exception e) {
-			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
-			}
-		}            
-	 }
 	/**
 	 * Destructor, called when the the servlet is shut down.
 	 * @exception CmsException Throws CmsException if something goes wrong.
@@ -222,20 +167,75 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 			
 		return file;
 	}
-	/**
-	 * Inits a new user and sets it into the overgiven cms-object.
-	 * 
-	 * @param cms the cms-object to use.
-	 * @param cmsReq the cms-request for this http-request.
-	 * @param cmsRes the cms-response for this http-request.
-	 * @param user The name of the user to init.
-	 * @param group The name of the current group.
-	 * @param project The id of the current project.
-	 */
-	public void initUser(CmsObject cms,I_CmsRequest cmsReq,I_CmsResponse cmsRes,String user,String group,int project) 
-		throws CmsException {
-		cms.init(c_rb, cmsReq, cmsRes, user, group, project);
-	}
+/**
+ * Inits a new user and sets it into the overgiven cms-object.
+ * 
+ * @param cms the cms-object to use.
+ * @param cmsReq the cms-request for this http-request.
+ * @param cmsRes the cms-response for this http-request.
+ * @param user The name of the user to init.
+ * @param group The name of the current group.
+ * @param project The id of the current project.
+ */
+public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, String user, String group, int project) throws CmsException
+{
+	cms.init(c_rb, cmsReq, cmsRes, user, group, project);
+}
+	 /**
+	  * Constructor, creates a new OpenCms object.
+	  * 
+	  * It gets the configurations and inits a rb via the CmsRbManager.
+	  * 
+	  * @param conf The configurations from the property-file.
+	  */
+	 OpenCms(Configurations conf) 
+		 throws Exception {
+		// invoke the ResourceBroker via the initalizer
+		try {
+			
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] creating first cms-object");
+			}
+			CmsObject cms=new CmsObject();
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the main resource-broker");
+			}
+			
+			m_sessionFailover = conf.getBoolean("sessionfailover.enabled", false);
+
+			// init the rb via the manager with the configuration 			
+			// and init the cms-object with the rb.
+			c_rb = CmsRbManager.init(conf);
+
+			printCopyrightInformation(cms);
+			// initalize the Hashtable with all available mimetypes
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] read mime types");
+			}
+
+			m_mt = c_rb.readMimeTypes(null, null);
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] found " + m_mt.size() + " mime-type entrys");			
+			}
+		} catch (Exception e) {
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
+			}
+			throw e;
+		}
+		
+		// try to initialize the launchers.
+		try {
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initialize launchers...");			
+			}
+			m_launcherManager = new CmsLauncherManager();
+		} catch (Exception e) {
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
+			}
+		}            
+	 }
 	/**
 	 * Prints a copyright information to all log-files.
 	 */
