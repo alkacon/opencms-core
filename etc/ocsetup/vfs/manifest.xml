@@ -3246,6 +3246,15 @@
             <access>15</access>
             <properties/>
         </file>
+       <file>
+            <source>system/workplace/action/edit_html_changetable.html</source>
+            <destination>system/workplace/action/edit_html_changetable.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>     
         <file>
             <source>system/workplace/action/edit_html_main.html</source>
             <destination>system/workplace/action/edit_html_main.html</destination>
@@ -10167,6 +10176,15 @@
             <access>79</access>
             <properties/>
         </file>
+        <file>
+            <source>system/workplace/templates/edit_html_changetable</source>
+            <destination>system/workplace/templates/edit_html_changetable</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>        
         <file>
             <source>system/workplace/templates/edit_html_main</source>
             <destination>system/workplace/templates/edit_html_main</destination>
