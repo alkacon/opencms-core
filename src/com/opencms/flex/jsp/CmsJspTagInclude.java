@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2003/02/10 15:50:26 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/02/12 17:22:41 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,13 +49,12 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
     // Attribute member variables
     private String m_target = null;
-    private String m_page = null;
     private String m_suffix = null;
     private String m_property = null;    
     private String m_attribute = null;    
@@ -71,51 +70,58 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     public final static String C_BODYLOADER_URI = "/system/shared/bodyloader.html";
         
     /**
-     * Sets the include page/file target.
-     * @param target The target to set
+     * Sets the include page target.<p>
+     * 
+     * @param target the target to set
      */
-    public void setPage(String page) {
-        if (page != null) {
-            m_page = page.toLowerCase();
-            updateTarget();
+    public void setPage(String target) {
+        if (target != null) {
+            m_target = target.toLowerCase();
         }
     }
     
     /**
-     * Returns the include page/file target.
-     * @return String
+     * Returns the include page target.<p>
+     * 
+     * @return the include page target
      */
     public String getPage() {
-        return m_page!=null?m_page:"";
+        return m_target!=null?m_target:"";
     }
 
     /**
-     * Sets the include page/file target.
-     * @param target The target to set
+     * Sets the file, same aus using <code>setPage()</code>
+     * 
+     * @param target the file to set
+     * @see #setPage(String)
      */
     public void setFile(String file) {
         setPage(file);
     }
     
     /**
-     * Returns the include page/file target.
-     * @return String
+     * Returns the value of <code>getPage()</code>.<p>
+     * 
+     * @return the value of <code>getPage()</code>
+     * @see #getPage()
      */
     public String getFile() {
         return getPage();
     }
 
     /**
-     * Returns the property.
-     * @return String
+     * Returns the property.<p>
+     * 
+     * @return the property
      */
     public String getProperty() {
         return m_property!=null?m_property:"";
     }
 
     /**
-     * Sets the property.
-     * @param property The property to set
+     * Sets the property.<p>
+     * 
+     * @param property the property to set
      */
     public void setProperty(String property) {
         if (property != null) {
@@ -124,16 +130,18 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     }
     
     /**
-     * Returns the attribute.
-     * @return String
+     * Returns the attribute.<p>
+     * 
+     * @return the attribute
      */
     public String getAttribute() {
         return m_attribute!=null?m_attribute:"";
     }
 
     /**
-     * Sets the attribute.
-     * @param property The property to set
+     * Sets the attribute.<p>
+     * 
+     * @param attribute the attribute to set
      */
     public void setAttribute(String attribute) {
         if (attribute != null) {
@@ -142,67 +150,69 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     }    
 
     /**
-     * Returns the suffix.
-     * @return String
+     * Returns the suffix.<p>
+     * 
+     * @return the suffix
      */
     public String getSuffix() {
         return m_suffix!=null?m_suffix:"";
     }
 
     /**
-     * Sets the suffix.
-     * @param suffix The suffix to set
+     * Sets the suffix.<p>
+     * 
+     * @param suffix the suffix to set
      */
     public void setSuffix(String suffix) {
         if (suffix != null) {
             this.m_suffix = suffix.toLowerCase();
-            updateTarget();
         }
     }
 
     /**
-     * Returns the part.
-     * @return String
-     */
+     * Returns the element.<p>
+     * 
+     * @return the element
+     */ 
     public String getElement() {
         return m_element;
     }
 
     /**
-     * Sets the part
-     * @param part the part to set
+     * Sets the element.<p>
+     * 
+     * @param element the element to set
      */
     public void setElement(String element) {
         if (element != null) {
-            this.m_element = element.toLowerCase();
-        }
-    }
-
-    /**
-     * Internal utility method to update the target.
-     */
-    private void updateTarget() {
-        if ((m_page != null) && (m_suffix != null)) {
-            m_target = m_page + m_suffix;
-        } else if (m_page != null) {
-            m_target = m_page;
+            this.m_element = element;
         }
     }
     
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#release()
+     */
     public void release() {
         super.release();
         m_target = null;
-        m_page = null;
         m_suffix = null;
         m_property = null;           
         m_element = null;
         m_parameterMap = null;
-    }    
-    
+    }  
+      
+    /**
+     * @return <code>EVAL_BODY_BUFFERED</code>
+     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     */    
     public int doStartTag() throws JspException {
         return EVAL_BODY_BUFFERED;
     }    
-
+    
+    /**
+     * @return <code>EVAL_PAGE</code>
+     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     */
     public int doEndTag() throws JspException {
         
         javax.servlet.ServletRequest req = pageContext.getRequest();
@@ -220,12 +230,12 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             // Try to find out what to do
             if (m_target != null) {
                 // Option 1: target is set with "page" or "file" parameter
-                target = m_target;
+                target = m_target + getSuffix();
             } else if (m_property != null) {            
                 // Option 2: target is set with "property" parameter
                 try { 
                     String prop = c_req.getCmsObject().readProperty(c_req.getCmsRequestedResource(), m_property, true);
-                    target = prop + getSuffix();
+                    if (prop != null) target = prop + getSuffix();
                 } catch (Exception e) {} // target will be null
             } else if (m_attribute != null) {            
                 // Option 3: target is set in "attribute" parameter
@@ -240,12 +250,13 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                     body = getBodyContent().getString();
                     if ((body != null) && (! "".equals(body.trim()))) {
                         // target IS set in body
-                        target = body;
+                        target = body + getSuffix();
                     } 
                     // else target is not set at all, default will be used 
                 }
             } 
               
+            // no perfrom the include action
             includeTagAction(pageContext, target, m_element, m_parameterMap, c_req, c_res);
             
             // must call release here manually to make sure m_parameterMap is cleared
@@ -256,7 +267,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     }
     
     /**
-     * Include action method.
+     * Include action method.<p>
      * 
      * @param context the current JSP page context
      * @param target the target for the include, might be <code>null</code>
@@ -339,10 +350,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             }
             // for other cases setting of "target" is fine             
         }
-        
-        java.util.Map oldParamterMap = null;        
+          
         // Check parameters and update if required
-        oldParamterMap = req.getParameterMap();
+        Map oldParamterMap = req.getParameterMap();
         req.addParameterMap(parameterMap);                
                                             
         try {         
