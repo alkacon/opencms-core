@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/10 16:12:32 $
- * Version: $Revision: 1.441 $
+ * Date   : $Date: 2004/11/11 15:23:18 $
+ * Version: $Revision: 1.442 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.441 $ $Date: 2004/11/10 16:12:32 $
+ * @version $Revision: 1.442 $ $Date: 2004/11/11 15:23:18 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7552,7 +7552,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     try {
                         driver.closePool(pools[j]);
                         if (OpenCms.getLog(this).isDebugEnabled()) {
-                            OpenCms.getLog(this).debug("Closed connection pool '" + pools[j] + "'");
+                            OpenCms.getLog(this).debug(". Shutting down        : closed connection pool '" + pools[j] + "'");
                         }
                     } catch (Throwable t) {
                         OpenCms.getLog(this).error("Error closing connection pool '" + pools[j] + "'", t);
