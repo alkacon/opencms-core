@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorFrameset.java,v $
- * Date   : $Date: 2003/11/21 16:42:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/11/24 16:40:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,10 @@ package org.opencms.workplace.editor;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeJsp;
 import com.opencms.file.CmsResourceTypeNewPage;
+import com.opencms.file.CmsResourceTypePlain;
+import com.opencms.file.CmsResourceTypeXMLTemplate;
 import com.opencms.file.CmsResourceTypeXmlPage;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
@@ -49,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.12
  */
@@ -80,30 +83,40 @@ public class CmsEditorFrameset extends CmsEditor {
      * @return URI of the editor which will be used for the selected resource
      */
     public String getEditorUri() {
+        int resTypeId = -1;
         try {
+            // get the type of the edited resource
             CmsResource res = getCms().readFileHeader(getParamResource());
-            if (res.getType() == CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID 
-                || res.getType() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
-                // resource a of type "new page", show the dhtml control
-                return C_PATH_EDITORS + "msdhtml/editor.html";
-            } else {
-                // resource is text or xml style, return ledit editor or simple text editor
-                if (BROWSER_IE.equals(getBrowserType())) {
-                    return C_PATH_EDITORS + "ledit/editor.html";
-                } else {
-                    return C_PATH_EDITORS + "simple/editor.html";
-                }
-            }
+            resTypeId = res.getType();
         } catch (CmsException e) {
             // do nothing here
         }
-        // return default (text) editor
-        if (BROWSER_IE.equals(getBrowserType())) {
-            return C_PATH_EDITORS + "ledit/editor.html";
-        } else {
-            return C_PATH_EDITORS + "simple/editor.html";
+        
+        switch (resTypeId) {
+            
+        case CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID:
+        case CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID:
+            // resource is of type "xml page", show the dhtml control
+            return C_PATH_EDITORS + "msdhtml/editor.html";
+            
+        case CmsResourceTypeJsp.C_RESOURCE_TYPE_ID:
+        case CmsResourceTypePlain.C_RESOURCE_TYPE_ID:
+        case CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID:
+        default:
+            // resource is text or xml type, return ledit editor or simple text editor
+            if (BROWSER_IE.equals(getBrowserType()) && !"true".equals(getParamNoactivex())) {
+                return C_PATH_EDITORS + "ledit/editor.html";
+            } else {
+                return C_PATH_EDITORS + "simple/editor.html";
+            }
+            
         }
     }
+    
+    /**
+     * @see org.opencms.workplace.editor.CmsEditor#actionExit()
+     */
+    public void actionExit() { }
     
     /**
      * @see org.opencms.workplace.editor.CmsEditor#actionSave()

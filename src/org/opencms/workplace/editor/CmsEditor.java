@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2003/11/21 16:21:58 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/24 16:40:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,16 +32,13 @@ package org.opencms.workplace.editor;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.template.A_CmsXmlContent;
 import com.opencms.workplace.CmsHelperMastertemplates;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsWorkplaceAction;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,12 +48,13 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
 
 /**
  * Provides methods for building the file editors of OpenCms.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
@@ -92,12 +90,16 @@ public abstract class CmsEditor extends CmsDialog {
     private String m_paramPageTemplate;
     private String m_paramTempFile;
     private String m_paramContent;
+    private String m_paramNoActiveX;
     
     /** Helper variable to store the html content for the template selector.<p> */
     private String m_selectTemplates = null;
     
     /** Helper variable to store the clients browser type.<p> */
     private String m_browserType = null;
+    
+    /** Helper variable to store the id of the current project */
+    private int m_currentProjectId = -1;
     
     /**
      * Public constructor.<p>
@@ -168,6 +170,9 @@ public abstract class CmsEditor extends CmsDialog {
      * @return the page title
      */
     public String getParamPagetitle() {
+        if (m_paramPageTitle == null) {
+            m_paramPageTitle = "";
+        }
         return m_paramPageTitle;
     }
     
@@ -234,7 +239,25 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
-     * Writes the content of the temporary file back to the original file.<p>
+     * Returns the "no ActiveX" parameter to determine the presence of ActiveX functionality.<p>
+     * 
+     * @return the "no ActiveX" parameter
+     */
+    public String getParamNoactivex() {
+        return m_paramNoActiveX;
+    }
+    
+    /**
+     * Sets the "no ActiveX" parameter to determine the presence of ActiveX functionality.<p>
+     * 
+     * @param noActiveX the "no ActiveX" parameter
+     */
+    public void setParamNoactivex(String noActiveX) {
+        m_paramNoActiveX = noActiveX;
+    }
+       
+    /**
+     * Writes the content of a temporary file back to the original file.<p>
      * 
      * @throws CmsException if something goes wrong
      */
@@ -269,14 +292,11 @@ public abstract class CmsEditor extends CmsDialog {
             String keyName = (String)keys.next();
             getCms().writeProperty(getParamResource(), keyName, (String)properties.get(keyName));
         }
-        // don't forget to clear the cache.
-        A_CmsXmlContent.clearFileCache(getCms().getRequestContext().currentProject().getName()+":"
-                +  getCms().getRequestContext().addSiteRoot(getParamResource()));
     }
 
     
     /**
-     * Creates the temporary file which is needed while working in an editor.<p>
+     * Creates a temporary file which is needed while working in an editor with preview option.<p>
      * 
      * @return the file name of the temporary file
      * @throws CmsException if something goes wrong
@@ -284,8 +304,6 @@ public abstract class CmsEditor extends CmsDialog {
     protected String createTempFile() throws CmsException {
         // read the selected file
         CmsResource file = getCms().readFileHeader(getParamResource());
-        // get the current project id
-        int curProject = getSettings().getProject();
         
         // Create the filename of the temporary file
         String temporaryFilename = CmsResource.getFolderPath(getCms().readAbsolutePath(file)) + I_CmsConstants.C_TEMP_PREFIX + file.getName();
@@ -306,7 +324,7 @@ public abstract class CmsEditor extends CmsDialog {
                     ok = false;
                 }
             } else {
-                getCms().getRequestContext().setCurrentProject(curProject);
+                switchToCurrentProject();
                 throw e;
             }
         }
@@ -323,7 +341,7 @@ public abstract class CmsEditor extends CmsDialog {
                 getCms().copyResource(getCms().readAbsolutePath(file), extendedTempFile);
             } catch (CmsException e) {
                 if ((e.getType() != CmsException.C_FILE_EXISTS) && (e.getType() != CmsException.C_SQL_ERROR)) {
-                    getCms().getRequestContext().setCurrentProject(curProject);
+                    switchToCurrentProject();
                     // This was not a "file exists" exception. Very bad.
                     // We should not continue here since we may run into an endless loop.
                     throw e;
@@ -334,7 +352,7 @@ public abstract class CmsEditor extends CmsDialog {
             }
         }
 
-        getCms().getRequestContext().setCurrentProject(curProject);
+        switchToCurrentProject();
         // Oh how lucky we are! We have found a temporary file!
         temporaryFilename = extendedTempFile;
 
@@ -360,14 +378,28 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
-     * Helper class to change the current project to the temporary file project.<p>
+     * Helper method to change back from the temporary project to the current project.<p>
      * 
-     * Keep in mind to store the id of the old project to switch back.<p>
+     * @throws CmsException if switching back fails
+     */
+    protected void switchToCurrentProject() throws CmsException {
+        if (m_currentProjectId != -1) {
+            // switch back to the current users project
+            getCms().getRequestContext().setCurrentProject(m_currentProjectId); 
+        }
+    }
+    
+    /**
+     * Helper method to change the current project to the temporary file project.<p>
+     * 
+     * The id of the old project is stored in a member variable to switch back.<p>
      * 
      * @return the id of the tempfileproject
      * @throws CmsException if getting the tempfileproject id fails
      */
     protected int switchToTempProject() throws CmsException {
+        // store the current project id in member variable
+        m_currentProjectId = getSettings().getProject();
         // get the temporary file project id
         int tempProject = 0;
         try {
@@ -379,54 +411,7 @@ public abstract class CmsEditor extends CmsDialog {
         return tempProject;
     }
     
-    /**
-     * Gets all views available in the workplace screen.
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * <P>
-     * <code>names</code> will contain language specific view descriptions
-     * and <code>values</code> will contain the correspondig URL for each
-     * of these views after returning from this method.
-     * <P>
-     *
-     * @param cms CmsObject Object for accessing system resources.
-     * @param lang reference to the currently valid language file
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the user's current workplace view in the vectors.
-     * @throws CmsException
-     */
-
-    public String buildSelectBody() throws CmsException {
-        Vector names = new Vector();
-        Vector values = new Vector();
-        I_CmsSession session = getCms().getRequestContext().getSession(true);
-        String currentBodySection = getParamBodyelement();
-//        String bodyClassName = (String)parameters.get("bodyclass");
-//        String tempBodyFilename = (String)session.getValue("te_tempbodyfile");
-//        Object tempObj = CmsTemplateClassManager.getClassInstance(bodyClassName);
-//        CmsXmlTemplate bodyElementClassObject = (CmsXmlTemplate)tempObj;
-//        CmsXmlTemplateFile bodyTemplateFile = bodyElementClassObject.getOwnTemplateFile(cms,
-//                tempBodyFilename, C_BODY_ELEMENT, parameters, null);
-//        Vector allBodys = bodyTemplateFile.getAllSections();
-//        int loop = 0;
-//        int currentBodySectionIndex = 0;
-//        int numBodys = allBodys.size();
-//        for(int i = 0;i < numBodys;i++) {
-//            String bodyname = (String)allBodys.elementAt(i);
-//            String encodedBodyname = Encoder.escapeXml(bodyname);
-//            if(bodyname.equals(currentBodySection)) {
-//                currentBodySectionIndex = loop;
-//            }
-//            values.addElement(encodedBodyname);
-//            names.addElement(encodedBodyname);
-//            loop++;
-//        }
-        return "";
-    }
+    
     
     /**
      * Builds the html for the font face select box of the WYSIWYG editor.<p>
@@ -480,56 +465,19 @@ public abstract class CmsEditor extends CmsDialog {
         }
         return m_selectTemplates;
     }
-    
-    /**
-     * Performs the change template action.<p>
-     */
-    public void actionChangeBodyElement() {
-    
-    }
    
     /**
-     * Performs the change template action.<p>
+     * Performs a change template action.<p>
      * 
      * @throws CmsException if changing the template fails
      */
     public void actionChangeTemplate() throws CmsException {
-        // get the current project id
-        int curProject = getSettings().getProject();
         // switch to the temporary file project
-        switchToTempProject();
-        
+        switchToTempProject();       
         // write the changed template property to the temporary file
-        getCms().writeProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, getParamPagetemplate());
-        
+        getCms().writeProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, getParamPagetemplate());        
         // switch back to the current users project
-        getCms().getRequestContext().setCurrentProject(curProject);        
-    }
-    
-    /**
-     * Performs the exit editor action and deletes the temporary file.<p>
-     * 
-     * @throws CmsException if temporary file project couldn't be obtained
-     * @throws IOException if redirect to workplace fails
-     */
-    public void actionExit() throws CmsException, IOException {
-        // get the current project id
-        int curProject = getSettings().getProject();
-        // switch to the temporary file project
-        switchToTempProject();
-        try {
-            // delete the temporary file
-            getCms().deleteResource(getParamTempfile(), I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
-        } catch (CmsException e) {
-            // ignore this exception
-        }
-        
-        // switch back to the current project
-        getCms().getRequestContext().setCurrentProject(curProject);
-        
-        // now redirect to the workplace explorer view
-        getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));
-        
+        switchToCurrentProject();     
     }
     
     /**
@@ -545,10 +493,21 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
+     * Performs the exit editor action.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws IOException if a redirection fails
+     * @throws JspException if something goes wrong
+     */
+    public abstract void actionExit() throws CmsException, IOException, JspException;
+    
+    /**
      * Performs the save content action.<p>
      * 
-     * @throws CmsException if saving the modified content fails
+     * @throws CmsException if something goes wrong
+     * @throws IOException if a redirection fails
+     * @throws JspException if something goes wrong
      */
-    public abstract void actionSave() throws CmsException; 
+    public abstract void actionSave() throws CmsException, IOException, JspException; 
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/11/21 16:42:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/11/24 16:42:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,16 @@ package org.opencms.workplace.editor;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -54,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.12
  */
@@ -101,23 +104,23 @@ public class CmsMSDHtmlEditor extends CmsEditor {
                 setAction(ACTION_DEFAULT);
                 
                     setParamTempfile(createTempFile());
-                    
                     // TODO: get the contents of the default body from the temporary file...
+                    setParamContent("<h2>TEST!!!</h2><p>Ein kleiner Text...</p>");
                     CmsXmlPage page = new CmsXmlPage(getCms().readFile(this.getParamTempfile()));
                     setParamContent(new String(page.getElementData("Body", "de")));
  
                     //setParamPagetemplate("/system/modules/com.lgt.intranet.modules.frontend/templates/lgt_intranet_main");
-                    setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));
-                    //setParamPagetitle("A test title!");
+                    setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));                    
                     setParamPagetitle(getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getParamTempfile(), ""));
+                    
+                    
                 
             } 
         } catch (CmsException e) {
             // TODO: show error page!
         }
-        prepareContent(false);
-        System.err.println("Action param: " + getParamAction());
-        
+        prepareContent(false);       
+        setParamContent(Encoder.escapeWBlanks(getParamContent(), Encoder.C_UTF8_ENCODING));        
     }
     
     /**
@@ -150,10 +153,35 @@ public class CmsMSDHtmlEditor extends CmsEditor {
                 content += "</body></html>";
             }  
         }
-        if (!save) {
-            content = Encoder.escapeWBlanks(content, Encoder.C_UTF8_ENCODING);
-        }
         setParamContent(content);
+    }
+    
+    public String buildSelectBody() throws CmsException {
+        Vector names = new Vector();
+        Vector values = new Vector();
+        I_CmsSession session = getCms().getRequestContext().getSession(true);
+        String currentBodySection = getParamBodyelement();
+//            String bodyClassName = (String)parameters.get("bodyclass");
+//            String tempBodyFilename = (String)session.getValue("te_tempbodyfile");
+//            Object tempObj = CmsTemplateClassManager.getClassInstance(bodyClassName);
+//            CmsXmlTemplate bodyElementClassObject = (CmsXmlTemplate)tempObj;
+//            CmsXmlTemplateFile bodyTemplateFile = bodyElementClassObject.getOwnTemplateFile(cms,
+//                    tempBodyFilename, C_BODY_ELEMENT, parameters, null);
+//            Vector allBodys = bodyTemplateFile.getAllSections();
+//            int loop = 0;
+//            int currentBodySectionIndex = 0;
+//            int numBodys = allBodys.size();
+//            for(int i = 0;i < numBodys;i++) {
+//                String bodyname = (String)allBodys.elementAt(i);
+//                String encodedBodyname = Encoder.escapeXml(bodyname);
+//                if(bodyname.equals(currentBodySection)) {
+//                    currentBodySectionIndex = loop;
+//                }
+//                values.addElement(encodedBodyname);
+//                names.addElement(encodedBodyname);
+//                loop++;
+//            }
+        return "";
     }
     
     
@@ -201,6 +229,36 @@ public class CmsMSDHtmlEditor extends CmsEditor {
         }
         int currentIndex = valuesFinal.indexOf(getParamEditormode());
         return buildSelect(attributes, namesFinal, valuesFinal, currentIndex, false);
+    }
+    
+    /**
+     * Performs the change body element action.<p>
+     */
+    public void actionChangeBodyElement() {
+
+    }
+    
+    /**
+     * Performs the exit editor action and deletes the temporary file.<p>
+     * 
+     * @see org.opencms.workplace.editor.CmsEditor#actionExit()
+     */
+    public void actionExit() throws CmsException, IOException {
+        // switch to the temporary file project
+        switchToTempProject();
+        try {
+            // delete the temporary file
+            getCms().deleteResource(getParamTempfile(), I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+        } catch (CmsException e) {
+            // ignore this exception
+        }
+    
+        // switch back to the current project
+        switchToCurrentProject();
+    
+        // now redirect to the workplace explorer view
+        getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));
+    
     }
 
     /**
