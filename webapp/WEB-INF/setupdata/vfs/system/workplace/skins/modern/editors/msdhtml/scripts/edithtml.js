@@ -386,7 +386,7 @@ function doEditHTML(para) {
 		openWindow.focus();
 		break;
 	case 45:
-		_editor.ExecCommand(DECMD_HYPERLINK, 0, EDITOR.URL.value);
+		_editor.ExecCommand(DECMD_HYPERLINK, 2, EDITOR.URL.value);
 		break;
 	case 46:
 		vfslink = window.open(workplacePath + 'action/edit_html_vfslink.html','SetLink', "width=450, height=300, resizable=no, top=300, left=250");
@@ -786,7 +786,7 @@ function makeImageLinks() {
 		var el = col[i];
 		var href = el.getAttribute("src");
 		href = href.replace(systemPath, "");
-		El.setAttribute("src", href);
+		el.setAttribute("src", href);
 		// el.removeAttribute("style");
 	}
 }
