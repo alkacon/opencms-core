@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/I_CmsLogChannels.java,v $
-* Date   : $Date: 2002/08/22 09:58:46 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/10/30 10:01:12 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,12 +30,13 @@ package com.opencms.boot;
 
 
 /**
- * Common interface for OpenCms logging.
- * Constants used for logging purposes are defined here.
+ * Common interface for OpenCms logging,
+ * constants used for logging purposes are defined here.
  *
  * @author Alexander Lucas
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2002/08/22 09:58:46 $
+ * 
+ * @version $Revision: 1.11 $ $Date: 2002/10/30 10:01:12 $
  */
 public interface I_CmsLogChannels {
 
@@ -53,7 +54,8 @@ public interface I_CmsLogChannels {
      * This value should generally be set to true!
      */
     public static final boolean C_PREPROCESSOR_IS_LOGGING = true;
-
+    public static final boolean C_LOGGING = C_PREPROCESSOR_IS_LOGGING;
+    
     /** Debugging messages */
     public static final String C_OPENCMS_INIT = "opencms_init";
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsDumpLoader.java,v $
- * Date   : $Date: 2002/09/12 08:58:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2002/10/30 09:57:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,12 @@
 
 package com.opencms.flex;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.*;
 import com.opencms.file.*;
 
 import com.opencms.flex.cache.*;
+import com.opencms.flex.util.I_CmsFlexLruCacheObject;
 
 import java.io.IOException;
 
@@ -42,37 +44,76 @@ import javax.servlet.ServletException;
 
 
 /**
- * Description of the class CmsDumpLoader here.
+ * Dump loader for binary or other unprocessed resource types.<p>
+ * 
+ * This loader is used to deliver static sub-elements of pages processed 
+ * by other loaders. 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implements I_CmsResourceLoader {
     
-    private static CmsFlexCache m_cache;    
+    /** The CmsFlexCache used to store generated cache entries in */
+    private static CmsFlexCache m_cache;
     
-    private static int DEBUG = 0;
+    /** Flag for debugging output. Set to 9 for maximum verbosity. */ 
+    private static final int DEBUG = 0;
     
-    // ---------------------------- Implementation of interface com.opencms.launcher.I_CmsLauncher          
-    
-    /** Destroy this ResourceLoder  */
+    /**
+     * The constructor of the class is empty and does nothing.
+     */
+    public CmsDumpLoader() {
+        // NOOP
+    }
+        
+    /** Destroy this ResourceLoder, this is a NOOP so far.  */
     public void destroy() {
         // NOOP
     }
     
-    /** Return a String describing the ResourceLoader  */
+    /**
+     * Return a String describing the ResourceLoader,
+     * which is <code>"A simple dump loader that extends from com.opencms.launcher.CmsDumpLauncher"</code>
+     * 
+     * @return a describing String for the ResourceLoader 
+     */
     public String getResourceLoaderInfo() {
-        return "A dump loader that extends from com.opencms.launcher.CmsDumpLauncher";
+        return "A simple dump loader that extends from com.opencms.launcher.CmsDumpLauncher";
     }
     
-    /** Initialize the ResourceLoader  */
+    /** 
+     * Initialize the ResourceLoader,
+     * not much done here, only the FlexCache is initialized for dump elements.
+     *
+     * @param openCms An OpenCms object to use for initalizing.
+     */
     public void init(A_OpenCms openCms) {
         m_cache = (CmsFlexCache)openCms.getRuntimeProperty(this.C_LOADER_CACHENAME);  
               
-        log(this.getClass().getName() + " initialized!");        
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) 
+            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, this.getClass().getName() + " initialized!");        
     }
     
-    /** Basic top-call processing method for Cms */
+    
+    /**
+     * Basic top-page processing method for this I_CmsResourceLoader,
+     * this method is called if the page is called as a sub-element 
+     * on a page not already loded with a I_CmsResourceLoader,
+     * which most often would be a I_CmsLauncher then.
+     *
+     * @param cms The initialized CmsObject which provides user permissions
+     * @param file The requested OpenCms VFS resource
+     * @param req The original servlet request
+     * @param res The original servlet response
+     * 
+     * @throws ServletException might be thrown in the process of including the JSP 
+     * @throws IOException might be thrown in the process of including the JSP 
+     * 
+     * @see I_CmsResourceLoader
+     * @see com.opencms.launcher.I_CmsLauncher
+     * @see #service(CmsObject, CmsResource, CmsFlexRequest, CmsFlexResponse)
+     */
     public void load(com.opencms.file.CmsObject cms, com.opencms.file.CmsFile file, javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse res) 
     throws ServletException, IOException {           
         CmsFlexRequest w_req = new CmsFlexRequest(req, file, m_cache, cms); 
@@ -80,12 +121,21 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
         service(cms, file, w_req, w_res);
     }   
     
-    // --------------------------- Overloaded methods from launcher interface
-
-    public void setOpenCms(A_OpenCms openCms) {
-        init(openCms);
-    }
-    
+    /**
+     * Does the job of dumping the contents of the requested file to the
+     * output stream, this method is called directly if the element is 
+     * called as a sub-element from another I_CmsResourceLoader.
+     * 
+     * @param cms Used to access the OpenCms VFS
+     * @param file The reqested JSP file resource in the VFS
+     * @param req The current request
+     * @param res The current response
+     * 
+     * @throws ServletException might be thrown in the process of including the JSP 
+     * @throws IOException might be thrown in the process of including the JSP 
+     * 
+     * @see com.opencms.flex.cache.CmsFlexRequestDispatcher
+     */     
     public void service(CmsObject cms, CmsResource file, CmsFlexRequest req, CmsFlexResponse res)
     throws ServletException, IOException {
         long timer1 = 0;
@@ -106,9 +156,10 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
         }
     }
     
-    private void log(String message) {
-        if (com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-            com.opencms.boot.CmsBase.log(com.opencms.boot.CmsBase.C_FLEX_LOADER, "[CmsDumpLoader] " + message);
-        }
-    }
+    // --------------------------- Overloaded methods from launcher interface
+    /*
+    public void setOpenCms(A_OpenCms openCms) {
+        init(openCms);
+    } 
+    */   
  }
