@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2002/05/29 12:24:44 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/07/11 07:18:51 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import java.util.*;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.9 $ $Date: 2002/05/29 12:24:44 $
+ * @version $Name:  $ $Revision: 1.10 $ $Date: 2002/07/11 07:18:51 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -510,12 +510,14 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
             }
             for(int i = 0;i < size;i++) {
                 String filename = (String)v.elementAt(i);
-                MimetypesFileTypeMap mimeTypeMap = new MimetypesFileTypeMap();
-                String mimeType = mimeTypeMap.getContentType(filename);
-                MimeBodyPart mbp = new MimeBodyPart();
-                mbp.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CMS.getRequestContext().getRequest().getFile(filename), mimeType)));
-                mbp.setFileName(filename);
-                mp.addBodyPart(mbp);
+                if (!"unknown".equalsIgnoreCase(filename)) {
+                    MimetypesFileTypeMap mimeTypeMap = new MimetypesFileTypeMap();
+                    String mimeType = mimeTypeMap.getContentType(filename);
+                    MimeBodyPart mbp = new MimeBodyPart();
+                    mbp.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CMS.getRequestContext().getRequest().getFile(filename), mimeType)));
+                    mbp.setFileName(filename);
+                    mp.addBodyPart(mbp);
+                }
             }
             msg.setContent(mp);
         }
