@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/08 10:19:29 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/06/08 12:25:55 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.30 $ $Date: 2000/06/08 10:19:29 $ * 
+ * @version $Revision: 1.31 $ $Date: 2000/06/08 12:25:55 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -1600,7 +1600,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public CmsPropertydefinition createPropertydefinitions(String name,
+	public CmsPropertydefinition createPropertydefinition(String name,
 													 CmsResourceType resourcetype, int type)
 		throws CmsException {
 		PreparedStatement statement = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/08 09:54:22 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/06/08 12:25:55 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2000/06/08 09:54:22 $
+ * @version $Revision: 1.26 $ $Date: 2000/06/08 12:25:55 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -360,7 +360,17 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 													String resourcetype, 
 													int type)
         throws CmsException {
-     return null;
+        // check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			return( m_dbAccess.createPropertydefinition(name, 
+													    getResourceType(currentUser, 
+														         		currentProject, 
+																	    resourcetype),
+													     type) );
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + name, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 		
 	/**
@@ -380,6 +390,15 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void deletePropertydefinition(CmsUser currentUser, CmsProject currentProject, 
 									 String name, String resourcetype)
         throws CmsException {
+        // check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			// first read and then delete the metadefinition.
+			m_dbAccess.deletePropertydefinition(
+			    readPropertydefinition(currentUser,currentProject,name,resourcetype));
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + name,
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
     
@@ -400,6 +419,27 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 										  CmsProject currentProject, 
 										  String resource)
         throws CmsException {
+        
+		// read the resource
+		CmsResource res = readFileHeader(currentUser,currentProject, resource);
+		
+		// check the security
+		if( ! accessWrite(currentUser, currentProject, res) ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
+				CmsException.C_NO_ACCESS);
+		}
+		
+		// are there some mandatory metadefs?
+		if(readAllPropertydefinitions(currentUser, currentProject,res.getName(), 
+											   C_PROPERTYDEF_TYPE_MANDATORY).size() == 0  ) {
+			// no - delete them all
+			m_dbAccess.deleteAllProperties(res.getResourceId());
+
+		} else {
+			// yes - throw exception
+			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
+				CmsException.C_MANDATORY_PROPERTY);
+		}
     }
 
 	/**
@@ -419,6 +459,29 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void deleteProperty(CmsUser currentUser, CmsProject currentProject, 
 									  String resource, String property)
         throws CmsException {
+        // read the resource
+		CmsResource res = readFileHeader(currentUser,currentProject, resource);
+		
+		// check the security
+		if( ! accessWrite(currentUser, currentProject, res) ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
+				CmsException.C_NO_ACCESS);
+		}
+
+		// read the metadefinition
+		CmsPropertydefinition metadef = readPropertydefinition(currentUser,currentProject,property, res.getName());
+		
+		// is this a mandatory metadefinition?
+		if(  (metadef != null) && 
+			 (metadef.getPropertydefType() != C_PROPERTYDEF_TYPE_MANDATORY )  ) {
+			// no - delete the information
+			m_dbAccess.deleteProperty(property,res.getResourceId(),res.getType());
+	
+		} else {
+			// yes - throw exception
+			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
+				CmsException.C_MANDATORY_PROPERTY);
+		}
     }
     
     /**
@@ -439,7 +502,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
 										 String resourcetype)
         throws CmsException {
-         return null;
+        return m_dbAccess.readAllPropertydefinitions(getResourceType(currentUser, 
+												                     currentProject, 
+																     resourcetype));
     }
 	
 	/**
@@ -461,7 +526,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
 										 String resourcetype, int type)
         throws CmsException {
-     return null;
+        return m_dbAccess.readAllPropertydefinitions(type);
     }
     
     /**
@@ -507,7 +572,30 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Hashtable readAllProperties(CmsUser currentUser, CmsProject currentProject, 
 											 String resource)
         throws CmsException {
-     return null;
+     
+		CmsResource res;
+		// read the resource from the currentProject, or the online-project
+		try {
+			res = readFileHeader(currentUser,currentProject, resource);
+		} catch(CmsException exc) {
+			// the resource was not readable
+			if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+				// this IS the onlineproject - throw the exception
+				throw exc;
+			} else {
+				// try to read the resource in the onlineproject
+				res = readFileHeader(currentUser,onlineProject(currentUser, currentProject),
+											  resource);
+			}
+		}
+		
+		// check the security
+		if( ! accessRead(currentUser, currentProject, res) ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
+				CmsException.C_NO_ACCESS);
+		}
+		
+		return( m_dbAccess.readAllProperties(res.getResourceId(),res.getType()) );
     }
 	
     
@@ -530,7 +618,29 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public String readProperty(CmsUser currentUser, CmsProject currentProject, 
 									  String resource, String property)
         throws CmsException {
-     return null;
+        CmsResource res;
+		// read the resource from the currentProject, or the online-project
+		try {
+			res = readFileHeader(currentUser,currentProject, resource);
+		} catch(CmsException exc) {
+			// the resource was not readable
+			if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+				// this IS the onlineproject - throw the exception
+				throw exc;
+			} else {
+				// try to read the resource in the onlineproject
+				res = readFileHeader(currentUser,onlineProject(currentUser, currentProject),
+											  resource);
+			}
+		}
+		
+		// check the security
+		if( ! accessRead(currentUser, currentProject, res) ) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
+				CmsException.C_NO_ACCESS);
+		}
+		
+		return m_dbAccess.readProperty(property,res.getResourceId(),res.getType());
     }
     
     
@@ -552,7 +662,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 												   CmsProject currentProject, 
 												   CmsPropertydefinition propertydef)
         throws CmsException {
-     return null;
+     // check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			return( m_dbAccess.writePropertydefinition(propertydef) );
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + propertydef.getName(), 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
 
@@ -574,6 +690,25 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void writeProperty(CmsUser currentUser, CmsProject currentProject, 
 									 String resource, String property, String value)
         throws CmsException {
+        
+       // read the resource
+        CmsResource res = readFileHeader(currentUser,currentProject, resource);
+		
+		// check the security
+		if( ! accessWrite(currentUser, currentProject, res) ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
+				CmsException.C_NO_ACCESS);
+		}
+	
+		m_dbAccess.writeProperty(property, value, res.getResourceId(),res.getType());
+		// set the file-state to changed
+		if(res.isFile()){
+            //todo: implement these functions
+			//m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
+		} else {
+			//m_dbAccess.writeFolder(currentProject, m_fileRb.readFolder(currentProject, resource), true);
+		}
+
     }
 
 	/**
@@ -593,6 +728,23 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void writeProperties(CmsUser currentUser, CmsProject currentProject, 
 									  String resource, Hashtable propertyinfos)
         throws CmsException {
+        // read the resource
+		CmsResource res = readFileHeader(currentUser,currentProject, resource);
+		
+		// check the security
+		if( ! accessWrite(currentUser, currentProject, res) ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
+				CmsException.C_NO_ACCESS);
+		}
+		
+		m_dbAccess.writeProperties(propertyinfos,res.getResourceId(),res.getType());
+		// set the file-state to changed
+		if(res.isFile()){
+            // todo: implement this
+			//m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
+		} else {
+			//m_dbAccess.writeFolder(currentProject, m_fileRb.readFolder(currentProject, resource), true);			
+		}
     }
 
 
