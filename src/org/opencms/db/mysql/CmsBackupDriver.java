@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/02/13 15:29:14 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/04/23 13:26:46 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,15 +32,17 @@
 package org.opencms.db.mysql;
 
 import org.opencms.db.CmsDbUtil;
-import org.opencms.util.CmsUUID;
-
 import org.opencms.file.CmsBackupProject;
+import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsProperty;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -48,7 +50,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.13 $ $Date: 2004/02/13 15:29:14 $
+ * @version $Revision: 1.14 $ $Date: 2004/04/23 13:26:46 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -104,5 +106,23 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         }
         return (projects);
     }
+    
+    /**
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupProperties(org.opencms.file.CmsBackupResource)
+     */
+    public List readBackupProperties(CmsBackupResource resource) throws CmsException {
+
+        List properties = super.readBackupProperties(resource);
+        CmsProperty property = null;
+
+        for (int i = 0; i < properties.size(); i++) {
+            property = (CmsProperty)properties.get(i);
+
+            property.setStructureValue(CmsSqlManager.unescape(property.getStructureValue()));
+            property.setResourceValue(CmsSqlManager.unescape(property.getResourceValue()));
+        }
+
+        return properties;
+    }    
 
 }
