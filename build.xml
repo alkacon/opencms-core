@@ -148,18 +148,13 @@ ${build.inputlib.tidy}
 
     <target name="jar" depends="compileclasses" description="Generate OpenCms JARs">
         <jar
-            jarfile="${build.lib}/opencmsboot.jar"
-            basedir="${build.classes}"
-            includes="com/opencms/boot/**,source/**"
-            manifest="${build.classes}/mainClass.txt"
-            />
-
-        <jar
             jarfile="${build.lib}/opencms.jar"
             basedir="${build.classes}"
-            includes="com/opencms/**"
+            includes="com/opencms/**,source/**"
             excludes="com/opencms/build/**"
-            />
+            >            
+            <metainf dir="etc" includes="opencms.tld"/>
+        </jar>            
     </target>
 
 
