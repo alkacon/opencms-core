@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/08/01 10:33:30 $
-* Version: $Revision: 1.104 $
+* Date   : $Date: 2003/08/01 15:42:18 $
+* Version: $Revision: 1.105 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.104 $ $Date: 2003/08/01 10:33:30 $
+ * @version $Revision: 1.105 $ $Date: 2003/08/01 15:42:18 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -83,7 +83,7 @@ class CmsShellCommands {
     public CmsShellCommands(OpenCms openCms, CmsObject cms) throws Exception {
         m_openCms = openCms;
         m_cms = cms;
-        m_openCms.initUser(m_cms, null, null, I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_GROUP_GUEST, A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+        m_openCms.initUser(m_cms, null, null, I_CmsConstants.C_USER_GUEST, A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
 
         // print the version-string
         version();
@@ -2896,19 +2896,6 @@ class CmsShellCommands {
     }
 
     /**
-     * Sets the current group of the current user.
-     * 
-     * @param groupname the name of the group
-     */
-    public void setUserCurrentGroup(String groupname) {
-        try {
-            m_cms.getRequestContext().setCurrentGroup(groupname);
-        } catch(Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
      * Echos the input to output.
      *
      * @param param The echo to be written to output.
@@ -2995,13 +2982,6 @@ class CmsShellCommands {
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
-    }
-
-    /**
-     * Returns the current group of the current user.
-     */
-    public void userCurrentGroup() {
-        System.out.println(m_cms.getRequestContext().currentGroup());
     }
 
     /**

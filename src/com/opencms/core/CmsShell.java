@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
-* Date   : $Date: 2003/08/01 10:33:30 $
-* Version: $Revision: 1.81 $
+* Date   : $Date: 2003/08/01 15:42:18 $
+* Version: $Revision: 1.82 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.81 $ $Date: 2003/08/01 10:33:30 $
+ * @version $Revision: 1.82 $ $Date: 2003/08/01 15:42:18 $
  */
 public class CmsShell {
 
@@ -107,7 +107,7 @@ public class CmsShell {
 
             m_logMemory = conf.getBoolean("log.memory", false);
             //log in default user.
-            m_openCms.initUser(m_cms, null, null, I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_GROUP_GUEST, A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            m_openCms.initUser(m_cms, null, null, I_CmsConstants.C_USER_GUEST, A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
         }
         catch(Exception exc) {
             printException(exc);

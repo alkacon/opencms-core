@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/08/01 15:42:18 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.defaults.A_CmsBackoffice;
-import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
@@ -220,26 +219,26 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             m_channel.setAccessFlags(accessFlags);
         }
         //get values of the user for new entry
-        String defaultGroup=cms.getRequestContext().currentGroup().getName();
+//        String defaultGroup=cms.getRequestContext().currentGroup().getName();
         String defaultUser=cms.getRequestContext().currentUser().getName();
         //get all groups
-        Vector cmsGroups=cms.getGroups();
+//        Vector cmsGroups=cms.getGroups();
         // select box of group
         String groupOptions="";
-        for (int i=0; i<cmsGroups.size(); i++) {
-            String groupName=((CmsGroup)cmsGroups.elementAt(i)).getName();
-            CmsUUID groupId=((CmsGroup)cmsGroups.elementAt(i)).getId();
-            template.setData("name",groupName);
-            template.setData("value",groupId.toString());
-            if (!group.equals("") && (cms.readGroup(new CmsUUID(group)).getName()).equals(groupName)) {
-                template.setData("check","selected");
-            }else if(m_channelId.equals(I_CmsConstants.C_UNKNOWN_ID+"") && groupName.equals(defaultGroup)){
-                template.setData("check","selected");
-            }else{
-                template.setData("check","");
-            }
-            groupOptions=groupOptions+template.getProcessedDataValue("selectoption",this);
-        }
+//        for (int i=0; i<cmsGroups.size(); i++) {
+//            String groupName=((CmsGroup)cmsGroups.elementAt(i)).getName();
+//            CmsUUID groupId=((CmsGroup)cmsGroups.elementAt(i)).getId();
+//            template.setData("name",groupName);
+//            template.setData("value",groupId.toString());
+//            if (!group.equals("") && (cms.readGroup(new CmsUUID(group)).getName()).equals(groupName)) {
+//                template.setData("check","selected");
+//            }else if(m_channelId.equals(I_CmsConstants.C_UNKNOWN_ID+"") && groupName.equals(defaultGroup)){
+//                template.setData("check","selected");
+//            }else{
+//                template.setData("check","");
+//            }
+//            groupOptions=groupOptions+template.getProcessedDataValue("selectoption",this);
+//        }
         template.setData("groups",groupOptions);
         // select box of owner
         String userOptions="";

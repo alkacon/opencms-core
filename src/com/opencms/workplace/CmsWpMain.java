@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2003/08/01 15:42:18 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.54 $ $Date: 2003/07/31 17:02:45 $
+ * @version $Revision: 1.55 $ $Date: 2003/08/01 15:42:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -87,17 +87,17 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 
 		I_CmsSession session = cms.getRequestContext().getSession(true);
 		CmsRequestContext reqCont = cms.getRequestContext();
-		String newGroup = (String) parameters.get("group");
+//		String newGroup = (String) parameters.get("group");
 		String newProject = (String) parameters.get("project");
 		String newView = (String) parameters.get(C_PARA_VIEW);
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 
 		// Check if the user requested a group change
-		if (newGroup != null && !("".equals(newGroup))) {
-			if (!(newGroup.equals(reqCont.currentGroup().getName()))) {
-				reqCont.setCurrentGroup(newGroup);
-			}
-		}
+//		if (newGroup != null && !("".equals(newGroup))) {
+//			if (!(newGroup.equals(reqCont.currentGroup().getName()))) {
+//				reqCont.setCurrentGroup(newGroup);
+//			}
+//		}
 
 		// Check if the user requested a project change
 		if (newProject != null && !("".equals(newProject))) {
@@ -194,24 +194,24 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 
 		// Get a vector of all of the user's groups by asking the request context
 		CmsRequestContext reqCont = cms.getRequestContext();
-		CmsGroup currentGroup = reqCont.currentGroup();
+//		CmsGroup currentGroup = reqCont.currentGroup();
 		Vector allGroups = cms.getGroupsOfUser(reqCont.currentUser().getName());
 
 		// Now loop through all groups and fill the result vectors
 		int numGroups = allGroups.size();
-		int currentGroupNum = 0;
+//		int currentGroupNum = 0;
 		for (int i = 0; i < numGroups; i++) {
 			CmsGroup loopGroup = (CmsGroup) allGroups.elementAt(i);
 			String loopGroupName = loopGroup.getName();
 			values.addElement(loopGroupName);
 			names.addElement(loopGroupName);
-			if (loopGroup.equals(currentGroup)) {
-
-				// Fine. The group of this loop is the user's current group. Save it!
-				currentGroupNum = i;
-			}
+//			if (loopGroup.equals(currentGroup)) {
+//
+//				// Fine. The group of this loop is the user's current group. Save it!
+//				currentGroupNum = i;
+//			}
 		}
-		return new Integer(currentGroupNum);
+		return new Integer(0);
 	}
 
 	/**

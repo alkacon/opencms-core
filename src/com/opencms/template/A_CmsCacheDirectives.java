@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsCacheDirectives.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/08/01 15:42:18 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,8 +57,6 @@ public abstract class A_CmsCacheDirectives {
     private boolean m_user = false;
     // indicates if the groupname is part of the cache key
     private boolean m_group = false;
-    //the groupnames for which the element is cacheable
-    private Vector m_cacheGroups;
     //indicates if the uri is part of the cache key
     private boolean m_uri = false;
     //the parameters for which the element is cacheable
@@ -185,14 +183,14 @@ public abstract class A_CmsCacheDirectives {
         }
         CmsRequestContext reqContext = cms.getRequestContext();
         String groupKey = "";
-        if(m_group){
-            groupKey = reqContext.currentGroup().getName();
-            if((m_cacheGroups != null) && (!m_cacheGroups.isEmpty())){
-                if(!m_cacheGroups.contains(groupKey)){
-                    return null;
-                }
-            }
-        }
+//        if(m_group){
+//            groupKey = reqContext.currentGroup().getName();
+//            if((m_cacheGroups != null) && (!m_cacheGroups.isEmpty())){
+//                if(!m_cacheGroups.contains(groupKey)){
+//                    return null;
+//                }
+//            }
+//        }
 
         // ok, a cachekey exists. lets put it together
         // first we need the scheme of the request
@@ -250,8 +248,8 @@ public abstract class A_CmsCacheDirectives {
      * @param groupNames A Vector with the names of the groups for which the element is cacheable.
      */
     public void setCacheGroups(Vector groupNames){
-        m_group = true;
-        m_cacheGroups = groupNames;
+//        m_group = true;
+//        m_cacheGroups = groupNames;
     }
 
     /**

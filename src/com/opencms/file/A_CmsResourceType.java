@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/01 10:33:30 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/08/01 15:42:18 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -202,7 +202,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         if (changed) {
             // if the resource already exists it must be updated
             lockResource(cms, destination, true);
-            cms.doWriteResource(destination, properties, null, null, -1, getResourceType(), content);
+            cms.doWriteResource(destination, properties, null, getResourceType(), content);
             importedResource = cms.readFileHeader(destination);
             cms.touch(destination, resource.getDateLastModified(), false, resource.getUserLastModified());
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2003/07/23 10:07:46 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/08/01 15:42:18 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsFlexCacheKey {
     
@@ -67,9 +67,6 @@ public class CmsFlexCacheKey {
     
     /** Cache key variable: The user id */
     public CmsUUID m_user = null;
-    
-    /** Cache key variable: List of groups */
-    public java.util.Set m_groups = null;
 
     /** Cache key variable: List of parameters */
     public java.util.Map m_params = null;
@@ -91,8 +88,8 @@ public class CmsFlexCacheKey {
 
     /** The list of keywords of the Flex cache language */
     private List m_cacheCmds = Arrays.asList(new String[] {
-        "always", "never", "uri", "user", "groups", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error", "true"});
-    //   0         1        2      3       4         5         6            7          8                9          10       11       12             13
+        "always", "never", "uri", "user", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error", "true"});
+    //   0         1        2      3       4         5            6          7                8          9        10       11             12
     
     /** Flag raised in case a key parse error occured */
     private boolean m_parseError = false;
@@ -125,8 +122,6 @@ public class CmsFlexCacheKey {
         m_uri = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
         // Fetch user from the current cms
         m_user = cms.getRequestContext().currentUser().getId();        
-        // Fetch group. Must have unique names, so the String is ok
-        m_groups = java.util.Collections.singleton(cms.getRequestContext().currentGroup().getName().toLowerCase());
         // Get the params
         m_params = request.getParameterMap();
         if (m_params.size() == 0) m_params = null;
@@ -240,16 +235,6 @@ public class CmsFlexCacheKey {
             if (DEBUG) System.err.println("keymatch: cache=always");
             str.append("always");
             return str.toString();
-        }
-        
-        if (DEBUG) System.err.println("keymatch: Checking groups");
-        if (m_groups != null) {
-            String g = (String)key.m_groups.iterator().next();
-            if (DEBUG) System.err.println("keymatch: Request group is " + g);
-            if ((m_groups.size() > 0) && ! m_groups.contains(g)) return null;
-            str.append("groups=(");
-            str.append(g);
-            str.append(");");
         }
         
         if (m_uri != null) {
@@ -378,20 +363,6 @@ public class CmsFlexCacheKey {
                 str.append(m_user);
                 str.append(");");
             }
-        }
-        if (m_groups != null) {
-            // Add group data
-            if (m_groups.size() == 0) {
-                str.append("groups;");
-            } else {
-                str.append("groups=(");
-                Iterator i = m_groups.iterator();
-                while (i.hasNext()) {
-                    str.append(i.next());
-                    if (i.hasNext()) str.append(",");
-                }
-                str.append(");");
-            }
         }               
         if (m_params != null) {
             // Add parameters
@@ -487,12 +458,12 @@ public class CmsFlexCacheKey {
                 if (DEBUG) System.err.println("Parsing token:" + t + " key=" + k + " value=" + v);
                 switch (m_cacheCmds.indexOf(k)) {
                     case 0: // always
-                    case 13:                    
+                    case 12:                    
                         m_always = 1;
                         // Continue processing (make sure we find a "never" behind "always")
                         break;
                     case 1: // never
-                    case 11:
+                    case 10:
                         m_always = -1;
                         // No need for any further processing
                         return;
@@ -504,19 +475,10 @@ public class CmsFlexCacheKey {
                         m_user = CmsUUID.getNullUUID();
                         // being > 0 is enough
                         break;
-                    case 4: // groups
-                        if (v != null) {
-                            // A list of groups is present
-                            m_groups = parseValueMap(v).keySet();
-                        } else {
-                            // Cache all groups
-                            m_groups = new java.util.HashSet(0);
-                        }
-                        break;
-                    case 5: // params
+                    case 4: // params
                         m_params = parseValueMap(v);
                         break;
-                    case 6: // no-params
+                    case 5: // no-params
                         if (v != null) {
                             // No-params are present
                             m_noparams = parseValueMap(v).keySet();
@@ -525,19 +487,19 @@ public class CmsFlexCacheKey {
                             m_noparams = new java.util.HashSet(0);
                         }
                         break;
-                    case 7: // timeout
+                    case 6: // timeout
                         m_timeout = Integer.parseInt(v);
                         break;
-                    case 8: // publish
+                    case 7: // publish
                         m_publish = true;
                         break;
-                    case 9: // schemes
+                    case 8: // schemes
                         m_schemes = parseValueMap(v).keySet();
                         break;
-                    case 10: // ports
+                    case 9: // ports
                         m_ports = parseValueMap(v).keySet();
                         break;
-                    case 12: // previous parse error - ignore
+                    case 11: // previous parse error - ignore
                         break;
                     default: // unknown directive, throw error
                         m_parseError = true;

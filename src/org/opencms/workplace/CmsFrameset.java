@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/07/31 17:02:45 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/08/01 15:42:18 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1
  */
@@ -82,12 +82,6 @@ public class CmsFrameset extends CmsWorkplace {
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // check if the user requested a group change
-        String newGroup = request.getParameter("wpGroup");
-        if (newGroup != null) {
-            settings.setGroup(newGroup);
-        }
-
         // check if the user requested a project change
         String newProject = request.getParameter("wpProject");
         if (newProject != null) {
@@ -363,7 +357,6 @@ public class CmsFrameset extends CmsWorkplace {
 
         List options = new ArrayList();
         List values = new ArrayList();        
-        int selectedIndex = 0;
         
         // loop through all groups and build the result vectors
         int numGroups = allGroups.size();
@@ -372,12 +365,9 @@ public class CmsFrameset extends CmsWorkplace {
             String loopGroupName = loopGroup.getName();
             values.add(loopGroupName);
             options.add(loopGroupName);
-            if (loopGroupName.equals(getSettings().getGroup())) {
-                selectedIndex = i;
-            }
         }
 
-        return buildSelect(htmlAttributes, options, values, selectedIndex);                             
+        return buildSelect(htmlAttributes, options, values, 0);                             
     }
     
     /**

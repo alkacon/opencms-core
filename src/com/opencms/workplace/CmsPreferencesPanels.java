@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2003/08/01 15:42:18 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.56 $ $Date: 2003/07/31 17:02:45 $
+ * @version $Revision: 1.57 $ $Date: 2003/08/01 15:42:18 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault {
@@ -241,8 +241,8 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault {
             Hashtable startSettings = (Hashtable)session.getValue(C_PARA_STARTSETTINGS);
             if(startSettings != null) {
                 reqCont.currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS, startSettings);
-                String defaultGroup = (String)startSettings.get(C_START_DEFAULTGROUP);
-                reqCont.currentUser().setDefaultGroup(cms.readGroup(defaultGroup));
+//                String defaultGroup = (String)startSettings.get(C_START_DEFAULTGROUP);
+//                reqCont.currentUser().setDefaultGroup(cms.readGroup(defaultGroup));
             }
 
             // finally store the updated user object in the database
@@ -362,7 +362,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault {
     public Integer getDefaultGroup(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+//        I_CmsSession session = cms.getRequestContext().getSession(true);
         String group = null;
 
         // Get a vector of all of the user's groups by asking the request context
@@ -370,16 +370,16 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault {
         Vector allGroups = cms.getGroupsOfUser(reqCont.currentUser().getName());
 
         // try to get an existing value for the default value
-        Hashtable startSettings = null;
-        startSettings = (Hashtable)session.getValue("STARTSETTINGS");
+//        Hashtable startSettings = null;
+//        startSettings = (Hashtable)session.getValue("STARTSETTINGS");
 
         // if this fails, get the settings from the user obeject
-        if(startSettings == null) {
-            startSettings = (Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-        }
-        if(startSettings != null) {
-            group = (String)startSettings.get(C_START_DEFAULTGROUP);
-        }
+//        if(startSettings == null) {
+//            startSettings = (Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+//        }
+//        if(startSettings != null) {
+//            group = (String)startSettings.get(C_START_DEFAULTGROUP);
+//        }
         if(group == null) {
             group = currentGroup.getName();
         }
@@ -572,31 +572,31 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault {
     public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
             Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
-        I_CmsSession session = cms.getRequestContext().getSession(true);
-        String group = (String)session.getValue("USERSETTINGS");
+//        I_CmsSession session = cms.getRequestContext().getSession(true);
+//        String group = (String)session.getValue("USERSETTINGS");
 
         // Get a vector of all of the user's groups by asking the request context
-        CmsGroup currentGroup = reqCont.currentGroup();
+//        CmsGroup currentGroup = reqCont.currentGroup();
         Vector allGroups = cms.getGroupsOfUser(reqCont.currentUser().getName());
-        if(group == null) {
-            group = currentGroup.getName();
-        }
+//        if(group == null) {
+//            group = currentGroup.getName();
+//        }
 
         // Now loop through all groups and fill the result vectors
         int numGroups = allGroups.size();
-        int currentGroupNum = 0;
+//        int currentGroupNum = 0;
         for(int i = 0;i < numGroups;i++) {
             CmsGroup loopGroup = (CmsGroup)allGroups.elementAt(i);
             String loopGroupName = loopGroup.getName();
             values.addElement(loopGroupName);
             names.addElement(loopGroupName);
-            if(loopGroup.getName().equals(group)) {
-
-                // Fine. The group of this loop is the user's current group. Save it!
-                currentGroupNum = i;
-            }
+//            if(loopGroup.getName().equals(group)) {
+//
+//                // Fine. The group of this loop is the user's current group. Save it!
+//                currentGroupNum = i;
+//            }
         }
-        return new Integer(currentGroupNum);
+        return new Integer(0);
     }
 
     /**
@@ -719,7 +719,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault {
         startSettings.put(C_START_LANGUAGE, parameters.get("LANGUAGE"));
         startSettings.put(C_START_PROJECT, new Integer(Integer.parseInt((String)parameters.get("project"))));
         startSettings.put(C_START_VIEW, parameters.get("view"));
-        startSettings.put(C_START_DEFAULTGROUP, parameters.get("dgroup"));
+//        startSettings.put(C_START_DEFAULTGROUP, parameters.get("dgroup"));
         String lockstuff = (String)parameters.get("lockdialog");
         if (lockstuff == null){
             lockstuff = "";
@@ -740,9 +740,9 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault {
         int flag = 0;
 
         // now check and set all flags
-        flag += C_PERMISSION_READ;
-        flag += C_PERMISSION_WRITE;
-        flag += C_PERMISSION_VIEW;
+//        flag += C_PERMISSION_READ;
+//        flag += C_PERMISSION_WRITE;
+//        flag += C_PERMISSION_VIEW;
 //		TODO: reimplement using acl ?
 /*
         if(gr != null) {
@@ -1043,9 +1043,9 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault {
         // if this fails, get the settings from the user object
         if(startSettings == null) {
             startSettings = (Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-            if(startSettings != null) {
-                startSettings.put(C_START_DEFAULTGROUP, reqCont.currentUser().getDefaultGroup().getName());
-            }
+//            if(startSettings != null) {
+//                startSettings.put(C_START_DEFAULTGROUP, reqCont.currentUser().getDefaultGroup().getName());
+//            }
         }
 
         // if the settings are still empty, set them to default
@@ -1058,7 +1058,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault {
                 currentView = C_VFS_PATH_WORKPLACE + "action/explorer.html";
             }
             startSettings.put(C_START_VIEW, currentView);
-            startSettings.put(C_START_DEFAULTGROUP, reqCont.currentUser().getDefaultGroup().getName());
+//            startSettings.put(C_START_DEFAULTGROUP, reqCont.currentUser().getDefaultGroup().getName());
             startSettings.put(C_START_LOCKDIALOG, "");
             startSettings.put(C_START_ACCESSFLAGS, new Integer(C_ACCESS_DEFAULT_FLAGS));
         }
@@ -1226,6 +1226,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault {
         xmlTemplateDocument.setData("DESCRIPTION", user.getDescription());
         xmlTemplateDocument.setData("EMAIL", user.getEmail());
         xmlTemplateDocument.setData("ADRESS", user.getAddress());
-        xmlTemplateDocument.setData("CURRENTGROUP", reqCont.currentGroup().getName());
+//        xmlTemplateDocument.setData("CURRENTGROUP", reqCont.currentGroup().getName());
     }
 }

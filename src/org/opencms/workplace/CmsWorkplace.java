@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/07/31 17:02:45 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/08/01 15:42:18 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1
  */
@@ -210,9 +210,6 @@ public abstract class CmsWorkplace {
         // save current workplace user
         settings.setUser(cms.getRequestContext().currentUser());
 
-        // save current default group
-        settings.setGroup(cms.getRequestContext().currentGroup().getName());        
-        
         // save current project
         settings.setProject(cms.getRequestContext().currentProject().getId());
         
@@ -254,15 +251,6 @@ public abstract class CmsWorkplace {
             } catch (CmsException e) {
                 // do nothing
             }                    
-        }
-
-        // check group setting
-        if (!(settings.getGroup().equals(reqCont.currentGroup().getName()))) {
-            try {
-                reqCont.setCurrentGroup(settings.getGroup());
-            } catch (CmsException e) {
-                // do nothing
-            }
         }
         
         // check site setting

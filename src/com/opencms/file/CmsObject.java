@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/01 09:55:34 $
-* Version: $Revision: 1.356 $
+* Date   : $Date: 2003/08/01 15:42:18 $
+* Version: $Revision: 1.357 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.356 $
+ * @version $Revision: 1.357 $
  */
 public class CmsObject {
 
@@ -127,7 +127,6 @@ public class CmsObject {
      * @param req the CmsRequest
      * @param resp the CmsResponse
      * @param user the current user for this request
-     * @param group the current group for this request
      * @param projectId the current projectId for this request
      * @param site the current site root of the user
      * @param directoryTranslator Translator for directories (file with full path)
@@ -139,7 +138,6 @@ public class CmsObject {
         I_CmsRequest req, 
         I_CmsResponse resp, 
         String user, 
-        String group, 
         int projectId, 
         String site, 
         CmsCoreSession sessionStorage, 
@@ -149,7 +147,7 @@ public class CmsObject {
         m_sessionStorage = sessionStorage;
         m_driverManager = driverManager;
         m_context = new CmsRequestContext();
-        m_context.init(m_driverManager, req, resp, user, group, projectId, site, directoryTranslator, fileTranslator);
+        m_context.init(m_driverManager, req, resp, user, projectId, site, directoryTranslator, fileTranslator);
         try {
             m_linkChecker = new LinkChecker();
         } catch (java.lang.NoClassDefFoundError error) {
@@ -1481,15 +1479,13 @@ public class CmsObject {
     * @param resourcename The name of the resource to write.
     * @param properties The properties of the resource.
     * @param username The name of the new owner of the resource
-    * @param groupname The name of the new group of the resource
-    * @param accessFlags The new accessFlags of the resource
     * @param resourceType The new type of the resource
     * @param filecontent The new filecontent of the resource
     *
     * @throws CmsException  Throws CmsException if operation was not succesful.
     */
-    protected void doWriteResource(String resourcename, Map properties, String username, String groupname, int accessFlags, int resourceType, byte[] filecontent) throws CmsException {
-        m_driverManager.writeResource(m_context, addSiteRoot(resourcename), properties, username, groupname, accessFlags, resourceType, filecontent);
+    protected void doWriteResource(String resourcename, Map properties, String username, int resourceType, byte[] filecontent) throws CmsException {
+        m_driverManager.writeResource(m_context, addSiteRoot(resourcename), properties, username, resourceType, filecontent);
     }
 
     /**
@@ -1849,7 +1845,7 @@ public class CmsObject {
     public CmsObject getCmsObjectForStaticExport(CmsExportRequest dReq, CmsExportResponse dRes) throws CmsException {
 
         CmsObject cmsForStaticExport = new CmsObject();
-        cmsForStaticExport.init(m_driverManager, dReq, dRes, I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_GROUP_GUEST, I_CmsConstants.C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        cmsForStaticExport.init(m_driverManager, dReq, dRes, I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         return cmsForStaticExport;
     }
 
@@ -2611,7 +2607,7 @@ public class CmsObject {
         // login the user
         CmsUser newUser = m_driverManager.loginUser(m_context, username, password, m_context.getRemoteAddress());
         // init the new user
-        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
 
         this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
 
@@ -2633,7 +2629,7 @@ public class CmsObject {
         // login the user
         CmsUser newUser = m_driverManager.loginWebUser(m_context, username, password, m_context.getRemoteAddress());
         // init the new user
-        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         // return the user-name
         return (newUser.getName());
     }

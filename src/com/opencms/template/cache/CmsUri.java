@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/08/01 15:42:18 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,13 +31,11 @@ package com.opencms.template.cache;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsResponse;
-import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.template.CmsCacheDirectives;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Vector;
 
 /**
  * An instance of CmsUri represents an requestable ressource in the OpenCms
@@ -50,11 +48,6 @@ import java.util.Vector;
  * @author Andreas Schouten
  */
 public class CmsUri {
-
-    /**
-     * The name of the group that can read this ressource,
-     */
-    private String m_readAccessGroup;
 
     /**
      * The Key to the Element used to start the contentgeneration for
@@ -97,7 +90,6 @@ public class CmsUri {
     public CmsUri(CmsElementDescriptor startingElement, String readAccessGroup,
         CmsElementDefinitionCollection definitions, boolean https) {
         m_startingElement = startingElement;
-        m_readAccessGroup = readAccessGroup;
         m_elementDefinitions = definitions;
         m_https = https;
     }
@@ -188,41 +180,42 @@ public class CmsUri {
      * @throws CmsException if no read access.
      */
     public void checkReadAccess(CmsObject cms) throws CmsException{
-        if (m_readAccessGroup == null || "".equals(m_readAccessGroup )){
-            // everyone can read this
-            return;
-        }
-        CmsGroup currentGroup = cms.getRequestContext().currentGroup();
-        if (m_readAccessGroup.equals(currentGroup.getName())){
-            // easy: same group; access granted
-            return;
-        }
-        // maybe it is an Admin
-        if(currentGroup.getName().equals(I_CmsConstants.C_GROUP_ADMIN)){
-            // ok Admins can read everything
-            return;
-        }
-        // limited access and not the same group, but maybe parentgroup?
-        CmsGroup group1 = currentGroup;
-        CmsGroup group2 = cms.readGroup(m_readAccessGroup);
-        do{
-            group1 = cms.getParent(group1.getName());
-            if(group1 != null && group1.getId() == group2.getId()){
-                // is parent; access granted
-                return;
-            }
-        }while(group1 != null);
-
-        // maybe an other group of this user has access
-        Vector allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName());
-        for(int i=0; i<allGroups.size(); i++){
-            if(m_readAccessGroup.equals(((CmsGroup)allGroups.elementAt(i)).getName())){
-                return;
-            }
-        }
-        // no way to read this sorry
-        throw new CmsException(currentGroup.getName()+" has no read access. ",
-                                CmsException.C_ACCESS_DENIED);
+        return;
+//        if (m_readAccessGroup == null || "".equals(m_readAccessGroup )){
+//            // everyone can read this
+//            return;
+//        }
+//        CmsGroup currentGroup = cms.getRequestContext().currentGroup();
+//        if (m_readAccessGroup.equals(currentGroup.getName())){
+//            // easy: same group; access granted
+//            return;
+//        }
+//        // maybe it is an Admin
+//        if(currentGroup.getName().equals(I_CmsConstants.C_GROUP_ADMIN)){
+//            // ok Admins can read everything
+//            return;
+//        }
+//        // limited access and not the same group, but maybe parentgroup?
+//        CmsGroup group1 = currentGroup;
+//        CmsGroup group2 = cms.readGroup(m_readAccessGroup);
+//        do{
+//            group1 = cms.getParent(group1.getName());
+//            if(group1 != null && group1.getId() == group2.getId()){
+//                // is parent; access granted
+//                return;
+//            }
+//        }while(group1 != null);
+//
+//        // maybe an other group of this user has access
+//        Vector allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName());
+//        for(int i=0; i<allGroups.size(); i++){
+//            if(m_readAccessGroup.equals(((CmsGroup)allGroups.elementAt(i)).getName())){
+//                return;
+//            }
+//        }
+//        // no way to read this sorry
+//        throw new CmsException(currentGroup.getName()+" has no read access. ",
+//                                CmsException.C_ACCESS_DENIED);
     }
 
     /**

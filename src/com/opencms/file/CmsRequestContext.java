@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/08/01 10:33:30 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2003/08/01 15:42:18 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,15 +59,12 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.88 $
+ * @version $Revision: 1.89 $
  */
 public class CmsRequestContext {
 
     /** A map for storing (optional) request context attributes */
     private HashMap m_attributeMap; 
-
-    /** The current group of the user */
-    private CmsGroup m_currentGroup;
 
     /** The current project */
     private CmsProject m_currentProject;
@@ -176,12 +173,14 @@ public class CmsRequestContext {
     }
     
     /**
-     * Returns the current group of the current user.
+     * Used to return the current group of the current user,
+     * deprecated, will return <code>null</code>.<p>
      *
-     * @return the current group of the current user.
+     * @return null
+     * @deprecated the "current group" concept is not longer used in the ACL permission model
      */
     public CmsGroup currentGroup() {
-        return (m_currentGroup);
+        return null;
     }
     
     /**
@@ -401,7 +400,6 @@ public class CmsRequestContext {
      * @param req the CmsRequest
      * @param resp the CmsResponse
      * @param user the current user for this request
-     * @param group the current group for this request
      * @param projectId the id of the current project for this request
      * @param site the current site root
      * @param directoryTranslator Translator for directories (file with full path)
@@ -413,7 +411,6 @@ public class CmsRequestContext {
         I_CmsRequest req, 
         I_CmsResponse resp, 
         String user, 
-        String group, 
         int projectId, 
         String site, 
         CmsResourceTranslator directoryTranslator, 
@@ -450,8 +447,7 @@ public class CmsRequestContext {
             // there was a problem to set the needed project - using the online one
             setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         }
-        
-        m_currentGroup = m_driverManager.readGroup(this, group);
+
         m_directoryTranslator = directoryTranslator;
         m_fileTranslator = fileTranslator;
 
@@ -619,28 +615,15 @@ public class CmsRequestContext {
     } 
 
     /**
-     * Sets the current group of the current user.
+     * Used to set the current group of the current user,
+     * deprecated, does nothing.<p>
      *
      * @param groupname the name of the group to be set as current group.
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException never 
+     * @deprecated the "current group" concept is not longer used in the ACL permission model
      */
     public void setCurrentGroup(String groupname) throws CmsException {
-
-        // is the user in that group?
-        if (m_driverManager
-            .userInGroup(
-                this,
-                m_user.getName(),
-                groupname)) {
-            // Yes - set it to the current Group.
-            m_currentGroup =
-                m_driverManager.readGroup(this, groupname);
-        } else {
-            // No - throw exception.
-            throw new CmsException(
-                "[" + this.getClass().getName() + "] " + groupname,
-                CmsException.C_NO_ACCESS);
-        }
+        return;
     }
 
     /**

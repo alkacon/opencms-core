@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/01 13:57:22 $
- * Version: $Revision: 1.119 $
+ * Date   : $Date: 2003/08/01 15:42:18 $
+ * Version: $Revision: 1.120 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.119 $ $Date: 2003/08/01 13:57:22 $
+ * @version $Revision: 1.120 $ $Date: 2003/08/01 15:42:18 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -7996,14 +7996,12 @@ public class CmsDriverManager extends Object {
      * @param resourcename The name of the resource to write.
      * @param properties The properties of the resource.
      * @param username The name of the new owner of the resource
-     * @param groupname The name of the new group of the resource
-     * @param accessFlags The new accessFlags of the resource
      * @param resourceType The new type of the resource
      * @param filecontent The new filecontent of the resource
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void writeResource(CmsRequestContext context, String resourcename, Map properties, String username, String groupname, int accessFlags, int resourceType, byte[] filecontent) throws CmsException {
+    public void writeResource(CmsRequestContext context, String resourcename, Map properties, String username, int resourceType, byte[] filecontent) throws CmsException {
         CmsResource resource = readFileHeader(context, resourcename, true);
         readPath(context,resource,true);
         // check if the user has write access 

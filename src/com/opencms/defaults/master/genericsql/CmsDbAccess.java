@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/07/31 19:20:09 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/08/01 15:42:18 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -140,7 +140,17 @@ public class CmsDbAccess {
         // filling some default-values for new dataset's
         dataset.m_masterId = newMasterId;
         dataset.m_userId = currentUserId;
-        dataset.m_groupId = cms.getRequestContext().currentGroup().getId();
+        // dataset.m_groupId = cms.getRequestContext().currentGroup().getId();
+        
+        CmsUUID groupId = CmsUUID.getNullUUID();        
+        try {
+            CmsGroup users = cms.readGroup(I_CmsConstants.C_GROUP_USERS);
+            groupId = users.getId();
+        } catch (CmsException e) {
+            // null UUID will be used 
+        } 
+        dataset.m_groupId = groupId;
+        
         dataset.m_projectId = projectId;
         dataset.m_lockedInProject = projectId;
         dataset.m_state = I_CmsConstants.C_STATE_NEW;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/08/01 10:33:30 $
-* Version: $Revision: 1.81 $
+* Date   : $Date: 2003/08/01 15:42:18 $
+* Version: $Revision: 1.82 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.81 $
+ * @version $Revision: 1.82 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -369,7 +369,6 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             destination += I_CmsConstants.C_FOLDER_SEPARATOR;
 
         boolean changed = true;
-        int resaccess = 0;
         //try to create the resource
         try {
             importedResource = cms.doImportResource(resource, content, properties, destination);
@@ -415,12 +414,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             // update the folder if something has changed
             if (changed) {
                 lockResource(cms, cms.readAbsolutePath(importedResource), true);
-                cms.doWriteResource(cms.readAbsolutePath(importedResource), properties, cms.getRequestContext().currentUser().getName(), cms.getRequestContext().currentGroup().getName(), resaccess, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, new byte[0]);
+                cms.doWriteResource(cms.readAbsolutePath(importedResource), properties, cms.getRequestContext().currentUser().getName(), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, new byte[0]);
             } 
-            //cms.touch(destination,resource.getDateLastModified(),false,resource.getUserLastModified());
         }
         // get the updated folder
-        //importedResource = cms.readFolder(destination);
         return importedResource;
     }
 

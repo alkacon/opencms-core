@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/08/01 13:57:22 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/08/01 15:42:18 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.template.A_CmsCacheDirectives;
@@ -165,49 +164,50 @@ public abstract class A_CmsElement {
      * @throws CmsException if no read access.
      */
     public void checkReadAccess(CmsObject cms) throws CmsException{
-        if (m_readAccessGroup == null || "".equals(m_readAccessGroup )){
-            // everyone can read this
-            return;
-        }
-        CmsGroup currentGroup = cms.getRequestContext().currentGroup();
-        if (m_readAccessGroup.equals(currentGroup.getName())){
-            // easy: same group; access granted
-            return;
-        }
-        // maybe it is an Admin
-        if(currentGroup.getName().equals(I_CmsConstants.C_GROUP_ADMIN)){
-            // ok Admins can read everything
-            return;
-        }
-        // limited access and not the same group, but maybe parentgroup?
-        CmsGroup group1 = currentGroup;
-        CmsGroup group2 = cms.readGroup(m_readAccessGroup);
-        do{
-            group1 = cms.getParent(group1.getName());
-            if(group1 != null && group1.getId() == group2.getId()){
-                // is parent; access granted
-                return;
-            }
-        }while(group1 != null);
-
-        // ok. last chance. It could be the owner of the file
-        boolean readError = false;
-        try{
-            //if(m_templateName == null){then the readAccessGroup should be null, so we dont have to care here
-            cms.readFileHeader(m_templateName);
-        }catch(CmsException e){
-            readError = true;
-        }
-        if ( !readError){
-            return;
-        }
-
-        // no way to read this sorry
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " no read access. ");
-        }
-        throw new CmsException(currentGroup.getName()+" has no read access to "+m_templateName+". ",
-                                CmsException.C_ACCESS_DENIED);
+        return;
+//        if (m_readAccessGroup == null || "".equals(m_readAccessGroup )){
+//            // everyone can read this
+//            return;
+//        }
+//        CmsGroup currentGroup = cms.getRequestContext().currentGroup();
+//        if (m_readAccessGroup.equals(currentGroup.getName())){
+//            // easy: same group; access granted
+//            return;
+//        }
+//        // maybe it is an Admin
+//        if(currentGroup.getName().equals(I_CmsConstants.C_GROUP_ADMIN)){
+//            // ok Admins can read everything
+//            return;
+//        }
+//        // limited access and not the same group, but maybe parentgroup?
+//        CmsGroup group1 = currentGroup;
+//        CmsGroup group2 = cms.readGroup(m_readAccessGroup);
+//        do{
+//            group1 = cms.getParent(group1.getName());
+//            if(group1 != null && group1.getId() == group2.getId()){
+//                // is parent; access granted
+//                return;
+//            }
+//        }while(group1 != null);
+//
+//        // ok. last chance. It could be the owner of the file
+//        boolean readError = false;
+//        try{
+//            //if(m_templateName == null){then the readAccessGroup should be null, so we dont have to care here
+//            cms.readFileHeader(m_templateName);
+//        }catch(CmsException e){
+//            readError = true;
+//        }
+//        if ( !readError){
+//            return;
+//        }
+//
+//        // no way to read this sorry
+//        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " no read access. ");
+//        }
+//        throw new CmsException(currentGroup.getName()+" has no read access to "+m_templateName+". ",
+//                                CmsException.C_ACCESS_DENIED);
     }
 
     /**
@@ -468,7 +468,7 @@ public abstract class A_CmsElement {
                                 // An error occured while getting the element's content.
                                 // Do some error handling here.
                                 if(I_CmsConstants.C_USER_TYPE_SYSTEMUSER == cms.getRequestContext().currentUser().getType()
-                                    && !I_CmsConstants.C_GROUP_GUEST.equals(cms.getRequestContext().currentGroup().getName())){
+                                    && !I_CmsConstants.C_USER_GUEST.equals(cms.getRequestContext().currentUser().getName())){
                                     // a systemuser gets the real message.(except guests)
                                     errorMessage = e.toString();
                                 }

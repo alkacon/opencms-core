@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/08/01 10:33:30 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/08/01 15:42:18 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
@@ -48,7 +48,6 @@ public class CmsWorkplaceSettings {
     private String m_language;
     private CmsWorkplaceMessages m_messages;
     private int m_project;
-    private String m_group;
     private CmsUser m_user; 
     private String m_currentView;
     private String m_explorerResource;
@@ -142,24 +141,6 @@ public class CmsWorkplaceSettings {
      */
     public synchronized void setSite(String value) {
         m_currentSite = value;
-    }
-
-    /**
-     * Returns the currently selected default group of the workplace user.<p>
-     * 
-     * @return the currently selected default group of the workplace user
-     */
-    public synchronized String getGroup() {
-        return m_group;
-    }
-
-    /**
-     * Sets the default group of the workplace user.<p>
-     * 
-     * @param group the default group of the workplace user
-     */
-    public synchronized void setGroup(String group) {
-        m_group = group;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCoreSession.java,v $
- * Date   : $Date: 2003/08/01 10:33:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/08/01 15:42:18 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <code>sendBroadcastMessage()</code> method.
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @see #sendBroadcastMessage(String message)
  */
@@ -76,26 +76,6 @@ public class CmsCoreSession {
      */
     public void deleteUser(String sessionId) {
         m_sessions.remove(sessionId);
-    }
-
-    /**
-     * Returns the current group of a user from the session storage.<p>
-     *
-     * @param sessionId the users session id
-     * @return the current group of a user from the session storage
-     */
-    public String getCurrentGroup(String sessionId) {
-        String currentGroup = null;
-        Hashtable userinfo = getUser(sessionId);
-        // this user does exist, so get his current group
-        if (userinfo != null) {
-            currentGroup = (String)userinfo.get(I_CmsConstants.C_SESSION_CURRENTGROUP);
-        }
-        if (currentGroup == null) {
-            return I_CmsConstants.C_GROUP_GUEST;
-        } else {
-            return currentGroup;
-        }
     }
 
     /**

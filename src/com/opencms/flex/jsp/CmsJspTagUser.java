@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagUser.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/08/01 15:42:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package com.opencms.flex.jsp;
 
 import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.cache.CmsFlexController;
@@ -43,7 +42,7 @@ import javax.servlet.ServletRequest;
  * Provides access to the data of the currently logged in user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -134,7 +133,6 @@ public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
 
         CmsObject cms = controller.getCmsObject();
         CmsUser user = cms.getRequestContext().currentUser();
-        CmsGroup group = cms.getRequestContext().currentGroup();
 
         if (property == null)
             property = m_userProperties[0];
@@ -167,7 +165,7 @@ public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
                 break;
             case 8 : // group
             case 9 : // currentgroup
-                result = group.getName();
+                result = "";
                 break;
             case 10 : // defaultgroup
                 result = user.getDefaultGroup().getName();

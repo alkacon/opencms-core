@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/08/01 15:42:18 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.NodeList;
  * @author Edna Falkenhan
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.17 $ $Date: 2003/08/01 15:42:18 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -265,15 +265,28 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         } catch (Exception e){
         }
         newDataset.m_userId = userId;
-        // get the id of the group or set the group to the current user
+        // get the id of the group or set the group to the current user        
         groupname = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_GROUP);
-        CmsUUID groupId = m_cms.getRequestContext().currentGroup().getId();
+        
+//        CmsUUID groupId = m_cms.getRequestContext().currentGroup().getId();
+//        try{
+//            if((groupname != null) && !("".equals(groupname.trim()))){
+//                groupId = m_cms.readGroup(groupname).getId();
+//            }
+//        } catch (Exception e){
+//        }
+        
+        CmsUUID groupId = CmsUUID.getNullUUID();
         try{
             if((groupname != null) && !("".equals(groupname.trim()))){
                 groupId = m_cms.readGroup(groupname).getId();
             }
         } catch (Exception e){
+            try {
+                groupId = m_cms.readGroup(I_CmsConstants.C_GROUP_USERS).getId();
+            } catch (Exception e2) { }
         }
+                
         newDataset.m_groupId = groupId;
         // set the accessflags or the default flags
         accessFlags = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_ACCESSFLAGS);

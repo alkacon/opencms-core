@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/08/01 13:57:22 $
- * Version: $Revision: 1.154 $
+ * Date   : $Date: 2003/08/01 15:42:18 $
+ * Version: $Revision: 1.155 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.154 $
+ * @version $Revision: 1.155 $
  */
 public final class OpenCms extends A_OpenCms {
 
@@ -594,7 +594,7 @@ public final class OpenCms extends A_OpenCms {
         CmsObject cms = new CmsObject();
         try {
             // TODO: Check for correct site root setting here
-            initUser(cms, null, null, I_CmsConstants.C_USER_ADMIN, I_CmsConstants.C_GROUP_ADMIN, I_CmsConstants.VFS_FOLDER_DEFAULT_SITE, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            initUser(cms, null, null, I_CmsConstants.C_USER_ADMIN, I_CmsConstants.VFS_FOLDER_DEFAULT_SITE, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
             new CmsStaticExport(cms, null, false, null, null, null, null);
         } catch (Exception e) {
             if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
@@ -862,12 +862,11 @@ public final class OpenCms extends A_OpenCms {
         I_CmsRequest cmsReq,
         I_CmsResponse cmsRes, 
         String user, 
-        String group, 
         String currentSite, 
         int project, 
         CmsCoreSession sessionStorage
     ) throws CmsException {
-        cms.init(m_driverManager, cmsReq, cmsRes, user, group, project, currentSite, sessionStorage, m_directoryTranslator, m_fileTranslator);
+        cms.init(m_driverManager, cmsReq, cmsRes, user, project, currentSite, sessionStorage, m_directoryTranslator, m_fileTranslator);
     }
 
     /**
@@ -932,7 +931,7 @@ public final class OpenCms extends A_OpenCms {
         CmsObject cms = new CmsObject();
         try {
             // TODO: Maybe implement site root as a parameter in cron job table 
-            initUser(cms, null, null, entry.getUserName(), entry.getGroupName(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            initUser(cms, null, null, entry.getUserName(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);
             // create a new ScheduleJob and start it
             CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
             job.start();
