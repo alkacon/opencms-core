@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/02/06 13:57:28 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2001/02/28 14:24:31 $
+* Version: $Revision: 1.48 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.47 $ $Date: 2001/02/06 13:57:28 $
+ * @version $Revision: 1.48 $ $Date: 2001/02/28 14:24:31 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -756,14 +756,14 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         boolean isExportable = isExportable(cms, templateFile, elementName, parameters, templateSelector);
         boolean isStreamable = isStreamable(cms, templateFile, elementName, parameters, templateSelector);
         CmsCacheDirectives result = new CmsCacheDirectives(isCacheable, isProxyPrivateCacheable, isProxyPublicCacheable, isExportable, isStreamable);
-        
+
         // Collect all subelements of this page
         CmsXmlTemplateFile doc = null;
         Vector subtemplates = null;
         try {
             doc = this.getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
             doc.init(cms, templateFile);
-            subtemplates = doc.getAllSubElements(templateSelector);
+            subtemplates = doc.getAllSubElements();
         }
         catch(Exception e) {
             System.err.println(e);
@@ -941,7 +941,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         try {
             doc = this.getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
             doc.init(cms, templateFile);
-            subtemplates = doc.getAllSubElements(templateSelector);
+            subtemplates = doc.getAllSubElements();
         }
         catch(Exception e) {
             System.err.println(e);

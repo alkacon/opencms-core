@@ -1,11 +1,11 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/02/06 13:57:28 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2001/02/28 14:24:31 $
+* Version: $Revision: 1.32 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -38,23 +38,23 @@ import java.io.*;
 
 /**
  * Content definition for XML template files.
- * 
+ *
  * @author Alexander Lucas
- * @version $Revision: 1.31 $ $Date: 2001/02/06 13:57:28 $
+ * @version $Revision: 1.32 $ $Date: 2001/02/28 14:24:31 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
-    
+
     /**
      * Default constructor.
      */
     public CmsXmlTemplateFile() throws CmsException {
         registerTag("ELEMENT", CmsXmlTemplateFile.class, "handleElementTag", C_REGISTER_MAIN_RUN);
     }
-    
+
     /**
      * Constructor for creating a new object containing the content
      * of the given filename.
-     * 
+     *
      * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */
@@ -63,11 +63,11 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         registerMyTags();
         init(cms, file);
     }
-    
+
     /**
      * Constructor for creating a new object containing the content
      * of the given filename.
-     * 
+     *
      * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */
@@ -91,17 +91,18 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         NodeList nl = ((Element)getXmlDocument().getDocumentElement()).getChildNodes();
         return getNamesFromNodeList(nl, "TEMPLATE", true);
     }
-    
+
     /**
-     * Gets an enumeration of all used subelements in the default section
-     * of a template file.
+     * Gets an enumeration of all used subelements in all sections of
+     * of this template file.
      * @return Vector of all subtemplate names.
      * @exception CmsException
      */
     public Vector getAllSubElements() throws CmsException {
-        return getAllSubElements(null);
+        NodeList nl = getXmlDocument().getDocumentElement().getElementsByTagName("*");
+        return getNamesFromNodeList(nl, "ELEMENT", false);
     }
-    
+
     /**
      * Gets an enumeration of all used subelements in the given section
      * of a template file.
@@ -127,7 +128,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         }
         return result;
     }
-    
+
     /**
      * Gets a description of this content type.
      * @return Content type description.
@@ -135,22 +136,22 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public String getContentDescription() {
         return "OpenCms XML template file";
     }
-    
+
     /**
      * Gets a complete datablock from the datablock hashtable.
-     * 
+     *
      * @param tag Key for the datablocks hashtable.
-     * @return Complete DOM element of the datablock for the given key 
+     * @return Complete DOM element of the datablock for the given key
      * or null if no datablock is found for this key.
      */
     public Element getData(String tag) throws CmsException {
         return super.getData(tag);
     }
-    
+
     /**
-     * Gets the text and CDATA content of a datablock from the 
+     * Gets the text and CDATA content of a datablock from the
      * datablock hashtable.
-     * 
+     *
      * @param tag Key for the datablocks hashtable.
      * @return Datablock content for the given key or null if no datablock
      * is found for this key.
@@ -174,7 +175,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         data = (Element)getXmlParser().importNode(tempDoc, data);
         rootElem.appendChild(data);
         if(html) {
-            
+
             // Scan for cdatas
             Node n = data;
             while(n != null) {
@@ -215,7 +216,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             while(cdataStart != -1) {
                 String tempString = xmlString.substring(currentPos, cdataStart);
                 tempString = myReplace(tempString);
-                
+
                 //result.append(xmlString.substring(currentPos, cdataStart).replace('<', '[').replace('>', ']'));
                 result.append(tempString);
                 result.append((String)cdatas.elementAt(loop++));
@@ -224,18 +225,18 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             }
             String tempString = xmlString.substring(currentPos);
             tempString = myReplace(tempString);
-            
+
             //result.append(xmlString.substring(currentPos).replace('<', '[').replace('>', ']'));
             result.append(tempString);
             result.append("\n</BODY>\n</HTML>");
             xmlString = result.toString();
         }
         else {
-            
+
             // We are in text mode.
-            
+
             // Check, if there is any content in this body.
-            
+
             // Otherwise, set empty CDATA blocks.
             if(xmlString.trim().equals("")) {
                 xmlString = "<![CDATA[\n]]>";
@@ -243,7 +244,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         }
         return xmlString;
     }
-    
+
     /**
      * Internal utility method to extract the values of the "name" attribute
      * from defined nodes of a given nodelist.
@@ -262,7 +263,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             if(n.getNodeType() == n.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(tag.toLowerCase())) {
                 String name = ((Element)n).getAttribute("name");
                 if(name == null || "".equals(name)) {
-                    
+
                     // unnamed element found.
                     if(unnamedAllowed) {
                         name = "(default)";
@@ -279,7 +280,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         }
         return collectNames;
     }
-    
+
     /**
      * Gets the value of a single parameter of a given subelement definition.
      * @param elementName Name of the subelement.
@@ -288,7 +289,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public String getParameter(String elementName, String parameterName) throws CmsException {
         return getDataValue("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName);
     }
-    
+
     /**
      * Gets an enumeration of all parameter names of a given subelement definition.
      * @param elementName Name of the subelement.
@@ -305,10 +306,10 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             return null;
         }
     }
-    
+
     /**
      * Gets a processed datablock from the datablock hashtable.
-     * 
+     *
      * @param tag Key for the datablocks hashtable.
      * @return Processed datablock for the given key.
      * @exception CmsException
@@ -316,10 +317,10 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public Element getProcessedData(String tag) throws CmsException {
         return super.getProcessedData(tag);
     }
-    
+
     /**
      * Gets a processed datablock from the datablock hashtable.
-     * 
+     *
      * @param tag Key for the datablocks hashtable.
      * @param callingObject Object that should be used to look up user methods.
      * @return Processed datablock for the given key.
@@ -328,13 +329,13 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public Element getProcessedData(String tag, Object callingObject) throws CmsException {
         return super.getProcessedData(tag, callingObject);
     }
-    
+
     /**
      * Gets a processed datablock from the datablock hashtable.
      * <P>
      * The userObj Object is passed to all called user methods.
      * By using this, the initiating class can pass customized data to its methods.
-     * 
+     *
      * @param tag Key for the datablocks hashtable.
      * @param callingObject Object that should be used to look up user methods.
      * @param userObj any object that should be passed to user methods
@@ -344,11 +345,11 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public Element getProcessedData(String tag, Object callingObject, Object userObj) throws CmsException {
         return super.getProcessedData(tag, callingObject, userObj);
     }
-    
+
     /**
-     * Gets the text and CDATA content of a processed datablock from the 
+     * Gets the text and CDATA content of a processed datablock from the
      * datablock hashtable.
-     * 
+     *
      * @param tag Key for the datablocks hashtable.
      * @return Processed datablock for the given key.
      * @exception CmsException
@@ -356,11 +357,11 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public String getProcessedDataValue(String tag) throws CmsException {
         return super.getProcessedDataValue(tag);
     }
-    
+
     /**
-     * Gets the text and CDATA content of a processed datablock from the 
+     * Gets the text and CDATA content of a processed datablock from the
      * datablock hashtable.
-     * 
+     *
      * @param tag Key for the datablocks hashtable.
      * @param callingObject Object that should be used to look up user methods.
      * @return Processed datablock for the given key.
@@ -369,14 +370,14 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public String getProcessedDataValue(String tag, Object callingObject) throws CmsException {
         return super.getProcessedDataValue(tag, callingObject);
     }
-    
+
     /**
-     * Gets the text and CDATA content of a processed datablock from the 
+     * Gets the text and CDATA content of a processed datablock from the
      * datablock hashtable.
      * <P>
      * The userObj Object is passed to all called user methods.
      * By using this, the initiating class can pass customized data to its methods.
-     * 
+     *
      * @param tag Key for the datablocks hashtable.
      * @param callingObject Object that should be used to look up user methods.
      * @param userObj any object that should be passed to user methods
@@ -386,14 +387,14 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public String getProcessedDataValue(String tag, Object callingObject, Object userObj) throws CmsException {
         return super.getProcessedDataValue(tag, callingObject, userObj);
     }
-    
+
     /**
      * Gets the processed data of the default <code>&lt;TEMPLATE&gt;</code> section of
      * this workplace template file.
      * <P>
      * The correct datablock name for the template datablock will be taken
      * from <code>getTemplateDatablockName</code>.
-     * 
+     *
      * @param callingObject reference to the calling object. Used to look up user methods while processing.
      * @param parameters hashtable containing all user parameters.
      * @return Processed template data.
@@ -403,14 +404,14 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public String getProcessedTemplateContent(Object callingObject, Hashtable parameters) throws CmsException {
         return getProcessedTemplateContent(callingObject, parameters, null);
     }
-    
+
     /**
      * Gets the processed data of the appropriate <code>&lt;TEMPLATE&gt;</code> section of
      * this workplace template file.
      * <P>
      * The correct datablock name for the template datablock will be taken
      * from <code>getTemplateDatablockName</code>.
-     * 
+     *
      * @param callingObject reference to the calling object. Used to look up user methods while processing.
      * @param parameters hashtable containing all user parameters.
      * @param templateSelector Name of the template section or null if the default section is requested.
@@ -422,7 +423,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         OutputStream os = null;
         if(m_cms.getRequestContext().isStreaming()) {
             if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_STREAMING, getClassName() + "Entering streaming mode for file: " + getAbsoluteFilename());           
+                A_OpenCms.log(C_OPENCMS_STREAMING, getClassName() + "Entering streaming mode for file: " + getAbsoluteFilename());
             }
             try {
                 os = m_cms.getRequestContext().getResponse().getOutputStream();
@@ -431,7 +432,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             }
         } else {
             if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_STREAMING, getClassName() + "Disabled streaming mode for file: " + getAbsoluteFilename());           
+                A_OpenCms.log(C_OPENCMS_STREAMING, getClassName() + "Disabled streaming mode for file: " + getAbsoluteFilename());
             }
         }
         String datablockName = this.getTemplateDatablockName(templateSelector);
@@ -448,13 +449,13 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             result = data.getAttribute("title");
         }
         catch(Exception e) {
-            
+
             // The given section doesn't exist. Ignore.
             result = "";
         }
         return result;
     }
-    
+
     /**
      * Gets the template class of a given subelement definition.
      * @param elementName Name of the subelement.
@@ -464,7 +465,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         String className = getDataValue("ELEMENTDEF." + name + ".CLASS");
         return className;
     }
-    
+
     /**
      * Gets the filename of the master template file of a given subelement definition.
      * @param elementName Name of the subelement.
@@ -474,7 +475,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         String className = getDataValue("ELEMENTDEF." + name + ".TEMPLATE");
         return className;
     }
-    
+
     /**
      * Gets the template selector of the master template file of a given subelement definition.
      * @param elementName Name of the subelement.
@@ -484,14 +485,14 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         String templateSelector = getDataValue("ELEMENTDEF." + name + ".TEMPLATESELECTOR");
         return templateSelector;
     }
-    
+
     /**
      * Gets the data of the appropriate <code>&lt;TEMPLATE&gt;</code> section of
      * this workplace template file.
      * <P>
      * The correct datablock name for the template datablock will be taken
      * from <code>getTemplateDatablockName</code>.
-     * 
+     *
      * @param callingObject reference to the calling object. Used to look up user methods while processing.
      * @param parameters hashtable containing all user parameters.
      * @param templateSelector Name of the template section or null if the default section is requested.
@@ -503,13 +504,13 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         String datablockName = this.getTemplateDatablockName(templateSelector);
         return getDataValue(datablockName);
     }
-    
+
     /**
      * Utility method to get the correct datablock name for a given selector.<BR>
      * If no selector is given or the selected section is not found, the template section
      * with no name will be returned. If even this is not found the section named "default"
      * will be returned.
-     * 
+     *
      * @param templateSelector Name of the template section or null if the default section is requested.
      * @return Appropriate name of the template datablock.
      * @exception CmsException
@@ -540,7 +541,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         }
         return templateDatablockName;
     }
-    
+
     /**
      * Gets the expected tagname for the XML documents of this content type
      * @return Expected XML tagname.
@@ -548,12 +549,12 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public String getXmlDocumentTagName() {
         return "XMLTEMPLATE";
     }
-    
+
     /**
      * Handling of the <CODE>&lt;ELEMENT&gt;</CODE> tags.
      * Calls the user method <code>elementTag</code> that has to be
-     * defined in the XML template class. 
-     * 
+     * defined in the XML template class.
+     *
      * @param n XML element containing the <code>&lt;PROCESS&gt;</code> tag.
      * @param callingObject Reference to the object requesting the node processing.
      * @param userObj Customizable user object that will be passed through to handling and user methods.
@@ -564,7 +565,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         String tagcontent = n.getAttribute("name");
         return callUserMethod("templateElement", tagcontent, callingObject, userObj);
     }
-    
+
     /**
      * Checks if this Template owns a datablock with the given key.
      * @param key Datablock key to be checked.
@@ -573,7 +574,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public boolean hasData(String key) {
         return super.hasData(key);
     }
-    
+
     /**
      * Checks if the section with the given name is defined
      * in this XML template file.
@@ -583,7 +584,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public boolean hasSection(String name) {
         return hasData("template." + name);
     }
-    
+
     /**
      * Check if there is the template class of a given subelement defined.
      * @param elementName Name of the subelement.
@@ -592,7 +593,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public boolean hasSubtemplateClass(String name) throws CmsException {
         return hasData("ELEMENTDEF." + name + ".CLASS");
     }
-    
+
     /**
      * Check if there is the template filename of a given subelement defined.
      * @param elementName Name of the subelement.
@@ -601,7 +602,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public boolean hasSubtemplateFilename(String name) throws CmsException {
         return hasData("ELEMENTDEF." + name + ".TEMPLATE");
     }
-    
+
     /**
      * Checks if there is a template selector defined in the subelement definition of
      * this template file.
@@ -622,7 +623,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     }
     private String myReplace(String s) {
         StringBuffer tempContent = new StringBuffer();
-        
+
         //int index = s.indexOf(search);
         int index = min(s.indexOf("<"), s.indexOf(">"));
         index = min(index, s.indexOf("\""));
@@ -631,14 +632,14 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             String sub = s.substring(lastindex, index);
             tempContent.append(sub);
             if(s.charAt(index) == '>') {
-                
+
                 //tempContent.append("]</CODE>");
                 tempContent.append("]]");
                 lastindex = index + 1;
             }
             else {
                 if(s.charAt(index) == '<') {
-                    
+
                     //tempContent.append("<CODE>[");
                     tempContent.append("[[");
                     lastindex = index + 1;
@@ -648,16 +649,16 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                     lastindex = index + 1;
                 }
             }
-            
+
             //index = s.indexOf(search, index+1);
-            
+
             //index = min(s.indexOf("<", index+1), s.indexOf(">", index+1));
             index = min(s.indexOf("<", index + 1), min(s.indexOf(">", index + 1), s.indexOf("\"", index + 1)));
         }
         tempContent.append(s.substring(lastindex));
         return new String(tempContent);
     }
-    
+
     /**
      * Registers the special tag <CODE>&lt;ELEMENT&gt;</CODE> for processing with
      * processNode().
@@ -665,7 +666,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     private void registerMyTags() {
         registerTag("ELEMENT", CmsXmlTemplateFile.class, "handleElementTag", C_REGISTER_MAIN_RUN);
     }
-    
+
     /**
      * Remove a datablock from the internal hashtable and
      * from the XML document
@@ -688,7 +689,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     }
     private String replace(String s, String search, String replace) {
         StringBuffer tempContent = new StringBuffer();
-        
+
         //int index = s.indexOf(search);
         int index = min(s.indexOf("[["), s.indexOf("]]"));
         index = min(index, s.indexOf("&quot;"));
@@ -710,7 +711,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                     lastindex = index + 6;
                 }
             }
-            
+
             //index = s.indexOf(search, index+1);
             index = min(s.indexOf("[[", index + 1), min(s.indexOf("]]", index + 1), s.indexOf("&quot;", index + 1)));
         }
@@ -720,21 +721,21 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public void setBodyTag(Element data) throws CmsException {
         setData("bodytag", data);
     }
-    
+
     /**
-     * Creates a datablock consisting of a single TextNode containing 
+     * Creates a datablock consisting of a single TextNode containing
      * data and stores this block into the datablock-hashtable.
-     * 
+     *
      * @param tag Key for this datablock.
      * @param data String to be put in the datablock.
      */
     public void setData(String tag, String data) {
         super.setData(tag, data);
     }
-    
+
     /**
      * Stores a given datablock element in the datablock hashtable.
-     * 
+     *
      * @param tag Key for this datablock.
      * @param data DOM element node for this datablock.
      */
@@ -743,7 +744,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     }
     public void setEditedTemplateContent(String content, String templateSelector, boolean html) throws CmsException {
         String datablockName = this.getTemplateDatablockName(templateSelector);
-        
+
         // TODO:is this needed? Element data = getData(datablockName);
         if(html) {
             int startIndex = content.indexOf("<BODY");
@@ -787,7 +788,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             data = getData(datablockName);
         }
         catch(Exception e) {
-            
+
             // The given section doesn't exist. Ignore.
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, "Cannot set title for template section \"" + sectionName + "\" in file " + getAbsoluteFilename() + ". Section doesn't exist.");
