@@ -139,4 +139,7 @@
 	<TEMPLATE>/system/workplace/templates/edit_options</TEMPLATE>
 </ELEMENTDEF>
 
+<HELP_DISABLED />
+<HELP_ENABLED />
+
 </WORKPLACE>

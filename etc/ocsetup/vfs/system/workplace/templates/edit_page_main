@@ -250,7 +250,10 @@ End Sub
 						if (USE_BODYSELECTOR) {
 							document.write('<td>]]><LABEL value="input.body"/><![CDATA[:&nbsp;&nbsp;</td>');
 							document.write('<td>]]><SELECT class="textfeld" name="body" width="80" method="getBodys" onchange="doTemplSubmit(1);"/><![CDATA[</td>');
-							document.write('<td><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="10" height="1"></td>');
+							document.write('<td><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="10" height="1"></td>')
+						}
+						if (! USE_NEWBODYOPTION) {
+							document.write('<td><INPUT TYPE=HIDDEN name="bodytitle" value="]]><PROCESS>bodytitle</PROCESS><![CDATA["></td>');						
 						}
 						if (USE_BODYSELECTOR && USE_NEWBODYOPTION) {
 							document.write('<td>]]><INPUTFIELD name="bodytitle" class="textfeld" size="8" length="255" method="setBodyTitle"/><![CDATA[</td>');
@@ -306,5 +309,8 @@ End Sub
 	<CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
 	<TEMPLATE>/system/workplace/templates/edit_options</TEMPLATE>
 </ELEMENTDEF>
+
+<HELP_DISABLED />
+<HELP_ENABLED />
 
 </workplace>
