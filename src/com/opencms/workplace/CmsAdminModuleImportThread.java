@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleImportThread.java,v $
- * Date   : $Date: 2003/08/14 15:37:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
-import com.opencms.file.I_CmsRegistry;
+import com.opencms.file.CmsRegistry;
 import com.opencms.report.A_CmsReportThread;
 import com.opencms.report.CmsHtmlReport;
 import com.opencms.report.I_CmsReport;
@@ -47,7 +47,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleImportThread extends A_CmsReportThread {
@@ -55,7 +55,7 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
     private String m_moduleName;
     private String m_zipName;
     private Vector m_conflictFiles;
-    private I_CmsRegistry m_registry;
+    private CmsRegistry m_registry;
     private CmsObject m_cms;
     private I_CmsReport m_report;
     
@@ -71,7 +71,7 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
      * @param zipName the name of the module ZIP file
      * @param conflictFiles vector of conflict files 
      */
-    public CmsAdminModuleImportThread(CmsObject cms, I_CmsRegistry reg, String moduleName, String zipName, Vector conflictFiles) {
+    public CmsAdminModuleImportThread(CmsObject cms, CmsRegistry reg, String moduleName, String zipName, Vector conflictFiles) {
         super("OpenCms: Module import of " + moduleName);
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2003/08/14 15:37:26 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsUser;
-import com.opencms.file.I_CmsRegistry;
 import com.opencms.util.CmsByteArrayDataSource;
 import com.opencms.util.Utils;
 
@@ -91,7 +91,7 @@ import javax.mail.internet.MimeMultipart;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.19 $ $Date: 2003/08/14 15:37:26 $
+ * @version $Name:  $ $Revision: 1.20 $ $Date: 2003/08/30 11:30:08 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread {
@@ -201,7 +201,7 @@ public class CmsMail extends Thread {
         super("OpenCms: Sending mail from " + from.getName());
         
         // Get Registry
-        I_CmsRegistry reg = OpenCms.getRegistry();
+        CmsRegistry reg = OpenCms.getRegistry();
 
         // check sender email address
         String fromAddress = from.getEmail();
@@ -263,7 +263,7 @@ public class CmsMail extends Thread {
     public CmsMail(CmsObject cms, CmsUser from, CmsGroup to, String subject, String content, String type) throws CmsException {
 
         // Get Registry
-        I_CmsRegistry reg = OpenCms.getRegistry();
+        CmsRegistry reg = OpenCms.getRegistry();
 
         // check sender email address
         String fromAddress = from.getEmail();
@@ -481,7 +481,7 @@ public class CmsMail extends Thread {
         m_to = users;
         m_subject = (subject == null ? "" : subject);
         m_content = (content == null ? "" : content);
-        I_CmsRegistry reg = OpenCms.getRegistry();
+        CmsRegistry reg = OpenCms.getRegistry();
         m_mailserver = reg.getSystemValue("smtpserver");
         m_alternativeMailserver = reg.getSystemValue("smtpserver2");
         m_type = type;

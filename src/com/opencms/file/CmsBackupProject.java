@@ -1,30 +1,33 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupProject.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.6 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupProject.java,v $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.7 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.file;
 
@@ -35,114 +38,178 @@ import java.sql.Timestamp;
 import java.util.Vector;
 
 /**
- * Describes a backup project. A project is used to handle versions of
- * one resource.
+ * Describes an OpenCms backup project.<p>
  *
- * @author Edna Falkenhan
- * @version $Revision: 1.6 $ $Date: 2003/07/31 13:19:37 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ *
+ * @version $Revision: 1.7 $
  */
-public class CmsBackupProject extends CmsProject implements Cloneable{
+public class CmsBackupProject extends CmsProject implements Cloneable {
+
+    /** The publishing date of this project */
+    private long m_datePublished;
+
+    /** The name of the managergroup */
+    private String m_nameGroupManagers;
+
+    /** The name of the group */
+    private String m_nameGroupUsers;
+
+    /** The name, firstname and lastname of the project owner */
+    private String m_nameOwner;
+
+    /** The name, firstname and lastname of the user who has published the project */
+    private String m_namePublisher;
+
+    /** The resources of the project */
+    private Vector m_projectResources;
+
+    /** The user id of the publisher */
+    private CmsUUID m_userPublished;
+
+    /** The version id of the published project */
+    private int m_versionId;
 
     /**
-     * The publishing date of this project.
+     * Creates a new CmsBackupProject.<p>
+     * 
+     * @param versionId thw version id for this backup project
+     * @param projectId the id to use for this project
+     * @param name the name for this project
+     * @param description the description for this project
+     * @param taskId the task id for this project
+     * @param ownerId the owner id for this project
+     * @param groupId the group id for this project
+     * @param managerGroupId the manager group id for this project
+     * @param dateCreated the creation date of this project
+     * @param type the type of this project
+     * @param datePublished the date this backup project was published
+     * @param userPublished the id of the user who published
+     * @param namePublisher the name of the user who published
+     * @param nameOwner the name of the project owner
+     * @param nameGroupUsers the name of the project user group
+     * @param nameGroupManagers the name of the project manager group
+     * @param projectResources a Vector of resources that are the project "view"
      */
-    private long m_publishingdate = I_CmsConstants.C_UNKNOWN_LONG;
-
-    /**
-     * The user-id of the publisher
-     */
-    private CmsUUID m_publishedByUserId;
-
-    /**
-     * The version of the published project
-     */
-    private int m_versionId = I_CmsConstants.C_UNKNOWN_ID;
-
-    /**
-     * The resources of the project
-     */
-    private Vector m_projectresources = null;
-
-    /**
-     * The name, firstname and lastname of the owner
-     */
-    private String m_ownerName = new String();
-
-    /**
-     * The name, firstname and lastname of the user who has published the project
-     */
-    private String m_publishedByName = new String();
-
-    /**
-     * The name of the group
-     */
-    private String m_groupName = new String();
-
-    /**
-     * The name of the managergroup
-     */
-    private String m_managerGroupName = new String();
-
-    /**
-     * Construct a new CmsProject including publishing data.
-     */
-    public CmsBackupProject(int versionId, int projectId, String name, Timestamp publishingdate, CmsUUID publishedByUserId,
-                      String publishedByName, String description, int taskId,
-                      CmsUUID ownerId, String ownerName, CmsUUID groupId, String groupName,
-                      CmsUUID managerGroupId, String managerGroupName, Timestamp createdate, int type,
-                      Vector projectresources) {
-
-        super(projectId, name, description, taskId,
-              ownerId, groupId, managerGroupId, 0,
-              createdate, type);
+    public CmsBackupProject(
+        int versionId, 
+        int projectId, 
+        String name, 
+        String description, 
+        int taskId,
+        CmsUUID ownerId, 
+        CmsUUID groupId, 
+        CmsUUID managerGroupId,
+        Timestamp dateCreated, 
+        int type, 
+        Timestamp datePublished, 
+        CmsUUID userPublished,
+        String namePublisher, 
+        String nameOwner, 
+        String nameGroupUsers, 
+        String nameGroupManagers,
+        Vector projectResources
+    ) {
+        super(
+            projectId, 
+            name, 
+            description, 
+            taskId,
+            ownerId, 
+            groupId, 
+            managerGroupId, 
+            0,
+            dateCreated, 
+            type
+        );
 
         m_versionId = versionId;
-        m_ownerName = ownerName;
-        m_groupName = groupName;
-        m_managerGroupName=managerGroupName;
-        m_publishedByUserId = publishedByUserId;
-        m_publishedByName = publishedByName;
-
-        if( publishingdate != null) {
-            m_publishingdate = publishingdate.getTime();
+        if (datePublished != null) {
+            m_datePublished = datePublished.getTime();
         } else {
-            m_publishingdate = I_CmsConstants.C_UNKNOWN_LONG;
+            m_datePublished = I_CmsConstants.C_UNKNOWN_LONG;
         }
-        m_projectresources = projectresources;
+        m_userPublished = userPublished;
+        m_namePublisher = namePublisher;
+        m_nameOwner = nameOwner;
+        m_nameGroupUsers = nameGroupUsers;
+        m_nameGroupManagers = nameGroupManagers;
+        m_projectResources = projectResources;
     }
 
     /**
-    * Clones the CmsProject by creating a new CmsProject Object.
-    * @return Cloned CmsProject.
-    */
+     * @see java.lang.Object#clone()
+     */
     public Object clone() {
-        CmsBackupProject project=new CmsBackupProject(this.m_versionId, this.getId(),
-                                       new String (this.getName()), new Timestamp(this.m_publishingdate),
-                                       this.m_publishedByUserId, new String(this.m_publishedByName),
-                                       new String(this.getDescription()),this.getTaskId(),
-                                       this.getOwnerId(), new String(this.m_ownerName),this.getGroupId(),
-                                       new String(this.m_groupName), this.getManagerGroupId(),
-                                       new String(this.m_managerGroupName),new Timestamp(this.getCreateDate()),
-                                       this.getType(), this.m_projectresources);
-        return project;
+        return new CmsBackupProject(
+            m_versionId, 
+            getId(),
+            getName(), 
+            getDescription(),
+            getTaskId(), 
+            getOwnerId(),
+            getGroupId(),
+            getManagerGroupId(),
+            new Timestamp(this.getCreateDate()),
+            getType(),
+            new Timestamp(this.m_datePublished),
+            m_userPublished, 
+            m_namePublisher,
+            m_nameOwner,
+            m_nameGroupUsers,
+            m_nameGroupManagers, 
+            m_projectResources
+        );
     }
 
     /**
-     * Compares the overgiven object with this object.
-     *
-     * @return true, if the object is identically else it returns false.
+     * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        boolean equal=false;
         // check if the object is a CmsProject object
         if (obj instanceof CmsBackupProject) {
             // same ID than the current project?
-            if (((CmsBackupProject)obj).getId() == this.getId()){
-                equal = true;
-            }
+            return ((CmsBackupProject)obj).getId() == this.getId();
         }
-        return equal;
+        return false;
     }
+
+    /**
+     * Returns the projects user group name.<p>
+     *
+     * @return the projects user group name
+     */
+    public String getGroupName() {
+        return m_nameGroupUsers;
+    }
+
+    /**
+     * Gets the project manager grou pname.<p>
+     *
+     * @return the projects manager group name
+     */
+    public String getManagerGroupName() {
+        return m_nameGroupManagers;
+    }
+
+    /**
+     * Gets the ownername.
+     *
+     * @return the ownername.
+     */
+    public String getOwnerName() {
+        return m_nameOwner;
+    }
+
+    /**
+     * Returns the project resources (i.e. the "view" of the project).<p>
+     * 
+     * @return the project resources 
+     */
+    public Vector getProjectResources() {
+        return m_projectResources;
+    }
+
 
     /**
      * Gets the published-by value.
@@ -150,7 +217,16 @@ public class CmsBackupProject extends CmsProject implements Cloneable{
      * @return the published-by value.
      */
     public CmsUUID getPublishedBy() {
-        return m_publishedByUserId;
+        return m_userPublished;
+    }
+
+    /**
+     * Gets the publishers name.
+     *
+     * @return the publishers name.
+     */
+    public String getPublishedByName() {
+        return m_namePublisher;
     }
     /**
      * Returns the publishing date of this project.
@@ -158,7 +234,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable{
      * @return the publishing date of this project.
      */
     public long getPublishingDate() {
-        return(m_publishingdate);
+        return m_datePublished;
     }
 
     /**
@@ -171,45 +247,9 @@ public class CmsBackupProject extends CmsProject implements Cloneable{
     }
 
     /**
-     * Gets the ownername.
-     *
-     * @return the ownername.
+     * @see java.lang.Object#hashCode()
      */
-    public String getOwnerName() {
-        return m_ownerName;
-    }
-
-    /**
-     * Gets the publishers name.
-     *
-     * @return the publishers name.
-     */
-    public String getPublishedByName() {
-        return m_publishedByName;
-    }
-
-    /**
-     * Gets the groupname.
-     *
-     * @return the groupname.
-     */
-    public String getGroupName() {
-        return m_groupName;
-    }
-
-    /**
-     * Gets the managergroupname.
-     *
-     * @return the managergroupname.
-     */
-    public String getManagerGroupName() {
-        return m_managerGroupName;
-    }
-
-    /**
-     * Gets the projectresources
-     */
-    public Vector getProjectResources(){
-        return m_projectresources;
+    public int hashCode() {
+        return (new Long(m_datePublished)).hashCode();
     }
 }

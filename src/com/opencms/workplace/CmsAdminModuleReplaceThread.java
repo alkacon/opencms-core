@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleReplaceThread.java,v $
- * Date   : $Date: 2003/08/25 15:12:18 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
 package com.opencms.workplace;
 
 import com.opencms.file.CmsObject;
-import com.opencms.file.I_CmsRegistry;
+import com.opencms.file.CmsRegistry;
 import com.opencms.report.A_CmsReportThread;
 
 import java.util.Vector;
@@ -39,7 +39,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.0
  */
 public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
@@ -48,7 +48,7 @@ public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
     private String m_zipName;
     private Vector m_conflictFiles;
     private Vector m_projectFiles;
-    private I_CmsRegistry m_registry;
+    private CmsRegistry m_registry;
     private CmsObject m_cms;
     private A_CmsReportThread m_deleteThread;
     private A_CmsReportThread m_importThread;
@@ -67,7 +67,7 @@ public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
      * @param moduleName the name of the module 
      * @param conflictFiles vector of conflict files 
      */
-    public CmsAdminModuleReplaceThread(CmsObject cms, I_CmsRegistry reg, String moduleName, String zipName, Vector conflictFiles) {
+    public CmsAdminModuleReplaceThread(CmsObject cms, CmsRegistry reg, String moduleName, String zipName, Vector conflictFiles) {
         super("OpenCms: Module replacement of " + moduleName);
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);

@@ -1,272 +1,288 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsGroup.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.21 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsGroup.java,v $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.22 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 package com.opencms.file;
-
 
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 import org.opencms.security.I_CmsPrincipal;
 
 /**
- * Describes a Cms user group and the methods to access it.
+ * A group in the OpenCms system.<p>
+ *
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.22 $
  */
- public class CmsGroup implements I_CmsPrincipal { 
-    
-    /**
-     * The name of the user group.
-     */
-    private String m_name=null;
-    
-    /**
-     * The id of the user group.
-     */
+public class CmsGroup implements I_CmsPrincipal {
+
+    /** The description of the group */
+    private String m_description;
+
+    /** The flags of the group */
+    private int m_flags;
+
+    /** The id of the group */
     private CmsUUID m_id;
-    
-     /**
-     * The parent id of the user group.
-     */
+
+    /** The name of the group */
+    private String m_name;
+
+    /** The parent id of the group */
     private CmsUUID m_parentId;
-    
+
     /**
-     * The description of the user group.
-     */
-    private String m_description=null;
-    
-    /**
-     * The flags of the user group.
-     */
-    private int m_flags = I_CmsConstants.C_UNKNOWN_INT;
-    
-        
-     /**
      * Constructor, creates a new Cms group object.
      * 
-     * @param id The id of the new group.
-     * @param parent The parent group of the new group (or C_UNKNOWN_ID).
-     * @param name The name of the new group.
-     * @param description The description of the new group.
-     * @param flags The flags of the new group.
-     
+     * @param id the id of the group
+     * @param parentId the parent group of the group (or C_UNKNOWN_ID)
+     * @param name the name of the group
+     * @param description the description of the group
+     * @param flags the flags of the group    
      */
-    public CmsGroup (CmsUUID id, CmsUUID parentId,String name, String description, 
-                     int flags) {
-        m_id=id;
-        m_name=name;
-        m_description=description;
-        m_flags=flags;
-        m_parentId=parentId;
-       
+    public CmsGroup(
+        CmsUUID id, 
+        CmsUUID parentId, 
+        String name, 
+        String description, 
+        int flags
+    ) {
+        m_id = id;
+        m_name = name;
+        m_description = description;
+        m_flags = flags;
+        m_parentId = parentId;
     }
-    /** 
-    * Clones the CmsGroup by creating a new CmsGroup Object.
-    * @return Cloned CmsGroup.
-    */
+    
+    /**
+     * @see java.lang.Object#clone()
+     */
     public Object clone() {
-        CmsGroup group= new CmsGroup(m_id,m_parentId,new String(m_name),
-                                     new String(m_description),m_flags); 
-        return group;   
+        return new CmsGroup(
+            m_id, 
+            m_parentId, 
+            m_name, 
+            m_description, 
+            m_flags
+        );
     }
+    
     /**
-     * Compares the overgiven object with this object.
-     * 
-     * @return true, if the object is identically else it returns false.
-     */
-     public boolean equals(Object obj) {
-         boolean equal=false;
-        // check if the object is a CmsGroup object
+     * @see java.lang.Object#equals(java.lang.Object)
+     */    
+    public boolean equals(Object obj) {
         if (obj instanceof CmsGroup) {
-            // same ID than the current user?
-            if (((CmsGroup)obj).getId().equals(m_id)){
-                equal = true;
-            }
+            return ((CmsGroup)obj).getId().equals(m_id);
         }
-        return equal;
-     } 
+        return false;
+    }
+    
     /**
-     * Returns the description of this group.
+     * Returns the description of this group.<p>
      * 
-     * @return description The description of this group.
+     * @return the description of this group
      */
-     public String getDescription(){
-         return m_description;
-     } 
+    public String getDescription() {
+        return m_description;
+    }
+    
     /**
-     * Decides, if this group is disabled.
+     * Returns true if this group is disabled.<p>
      * 
-     * @return GROUP_FLAGS == C_FLAG_DISABLED
+     * @return true if this group is disabled
      */
-     public boolean getDisabled() {
-         if ((m_flags & I_CmsConstants.C_FLAG_DISABLED) != 0) 
-             return true;
-         else
-             return false;
-     } 
+    public boolean getDisabled() {
+        return (m_flags & I_CmsConstants.C_FLAG_DISABLED) != 0;
+    }
+    
+    
     /**
-     * Returns the GROUP_FLAGS.
+     * Returns this groups flags.<p>
      * 
-     * @return the GROUP_FLAGS.
+     * @return this groups flags
      */
-     public int getFlags() {
-         return m_flags;
-     } 
+    public int getFlags() {
+        return m_flags;
+    }
+    
     /**
-     * Returns the id of a group. 
+     * Returns the id of this group.<p> 
      * 
-     * @return id The id of this group.
+     * @return id the id of this group
      */
-     public CmsUUID getId(){
-         return m_id;
-     } 
+    public CmsUUID getId() {
+        return m_id;        
+    }
+       
     /**
-     * Returns the name of this group.
+     * Returns the name of this group.<p>
      * 
-     * @return name The name of the group.
+     * @return name the name of this group
      */
-     public String getName(){
-         return m_name;
-     } 
+    public String getName() {
+        return m_name;
+    }
+    
     /**
-     * Returns the id of the parent group of the actual Cms group object, 
-     * or C_UNKNOWN_ID.
+     * Returns the parent id of this group, or C_UNKNOWN_ID.<p>
      * 
-     * @return PARENT_GROUP_ID or C_UNKNOWN_ID
+     * @return the parent id of this group
      */
-     public CmsUUID getParentId() {
-      return m_parentId;         
-     } 
+    public CmsUUID getParentId() {
+        return m_parentId;
+    }
+    
     /**
-     * Is the Flag ProjectCoWorker set?
+     * Returns true if this group is enabled as a project user group.<p> 
      * 
-     * @return true if C_FLAG_GROUP_PROJECTCOWORKER is set 
+     * @return true if this group is enabled as a project user group 
      */
-    public boolean getProjectCoWorker(){
-        if ((m_flags & I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER) != 0) {
-             return true;
-         } else
-             return false;
-     } 
+    public boolean getProjectCoWorker() {
+        return (m_flags & I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER) != 0;
+    }
+    
     /**
-     * Is the Flag Projectmanager set?
+     * Returns true if this group is enabled as a project manager group.<p> 
      * 
-     * @return true if C_FLAG_GROUP_PROJECTMANAGER is set 
+     * @return true if this group is enabled as a project manager group
      */
     public boolean getProjectmanager() {
-        if ((m_flags & I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER) != 0) {
-             return true;
-         } else
-             return false;
-     } 
+        return (m_flags & I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER) != 0;
+    }
+
     /**
-     * Is the Flag Role set?
+     * Returns true if this group is enabled as a role for tasks group
      * 
-     * @return true if C_FLAG_GROUP_ROLE is set 
+     * @return true if this group is enabled as a role for tasks group 
      */
-    public boolean getRole(){
-        if ((m_flags & I_CmsConstants.C_FLAG_GROUP_ROLE) != 0) {
-             return true;
-         } else
-             return false;
-     } 
+    public boolean getRole() {
+        return (m_flags & I_CmsConstants.C_FLAG_GROUP_ROLE) != 0;
+    }
+    
     /**
-     * Sets the description of this group.
+     * @see java.lang.Object#hashCode()
      */
-     public void setDescription(String description){
-         m_description = description;
-     } 
+    public int hashCode() {
+        if (m_id != null) {
+            return m_id.hashCode();
+        } 
+        return CmsUUID.getNullUUID().hashCode();
+    }    
+
     /**
-     * Disables the group by setting the C_FLAG_DISABLED flag.
+     * Sets the description of this group.<p>
+     * 
+     * @param description the description of this group
      */
-    public void  setDisabled() {
+    public void setDescription(String description) {
+        m_description = description;
+    }
+
+    /**
+     * Disables this group by setting the C_FLAG_DISABLED flag.<p>
+     */
+    public void setDisabled() {
         setFlags(I_CmsConstants.C_FLAG_DISABLED);
     }
+    
     /**
-     * Enables the flags by setting them to C_FLAG_ENABLED.
+     * Enables this group by setting the C_FLAG_ENABLED flag.<p>
      */
-    public void  setEnabled() {
+    public void setEnabled() {
         setFlags(I_CmsConstants.C_FLAG_ENABLED);
+    }    
+    
+    /**
+     * Sets this groups flags.<p>
+     * 
+     * @param flags the flags to set
+     */
+    void setFlags(int flags) {
+        m_flags = flags;
     }
+
     /**
-     * Sets the GROUP_FLAGS.
+     * Sets the parent group id of this group.<p>
      * 
-     * @param flags The flags to be set.
-     * 
+     * @param parentId the parent group id to set
      */
-     void setFlags(int flags) {
-         m_flags=flags;
-     } 
+    public void setParentId(CmsUUID parentId) {
+        m_parentId = parentId;
+    }
+    
     /**
-     * Sets the id of the parent group of the actual Cms group object.
+     * Sets the project user flag for this group to the given value.<p>
      * 
-     * @param id The parent-groupid
+     * @param value the value to set
      */
-     public void setParentId(CmsUUID parentGroupId) {
-      m_parentId = parentGroupId;
-     } 
-    /**
-     * sets the PROJECTCOWORKER flag of the group
-     */
-    public void setProjectCoWorker(boolean f){
-        if (getProjectCoWorker() != f) 
+    public void setProjectCoWorker(boolean value) {
+        if (getProjectCoWorker() != value) {
             setFlags(getFlags() ^ I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER);
+        }
     }
+    
     /**
-     * sets the PROJECTMANAGER flag of the group
-     */
-    public void setProjectManager(boolean f) {
-        if (getProjectmanager() != f)
-            setFlags(getFlags() ^ I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER);
-    }
-    /**
-     *  sets the ROLE flag of the group
-     */
-    public void setRole(boolean f){
-        if (getRole() != f) 
-            setFlags(getFlags() ^ I_CmsConstants.C_FLAG_GROUP_ROLE);
-    }
-    /**
-     * Returns a string-representation for this object.
-     * This can be used for debugging.
+     * Sets the project manager flag for this group to the given value.<p>
      * 
-     * @return string-representation for this object.
+     * @param value the value to set
      */
-     public String toString() {
-        StringBuffer output=new StringBuffer();
-        output.append("[Group]:");
-        output.append(m_name);
-        output.append(" , Id=");
-        output.append(m_id);
-        output.append(" :");
-        output.append(m_description);
-        return output.toString();
-      } 
-       
+    public void setProjectManager(boolean value) {
+        if (getProjectmanager() != value) {
+            setFlags(getFlags() ^ I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER);
+        }
+    }
+    
+    /**
+     * Sets the "role for tasks" flag for this group to the given value.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setRole(boolean value) {
+        if (getRole() != value) {
+            setFlags(getFlags() ^ I_CmsConstants.C_FLAG_GROUP_ROLE);
+        }
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */    
+    public String toString() {
+        StringBuffer result = new StringBuffer();
+        result.append("[Group]");
+        result.append(" name:");
+        result.append(m_name);
+        result.append(" id:");
+        result.append(m_id);
+        result.append(" description:");
+        result.append(m_description);
+        return result.toString();
+    }
 }

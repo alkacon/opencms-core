@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2003/08/18 19:19:55 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,9 @@ import org.opencms.security.I_CmsPrincipal;
  * A user in the OpenCms system.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -85,10 +86,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /** The lastname of this user */
     private String m_lastname;
 
-    /** The lastu sed date of this user */
-    private long m_lastused;
-
-    /** The login-name of this user */
+    /** The unique user name of this user */
     private String m_name;
 
     /** The password of this user */
@@ -101,7 +99,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     private String m_section;
 
     /**
-     * Defines if the user is a webuser or a systemuser.
+     * Defines if the user is a webuser or a systemuser.<p>
      * C_USER_TYPE_SYSTEMUSER for systemuser (incl. guest).
      * C_USER_TYPE_WEBUSER for webuser.
      */
@@ -128,7 +126,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         m_lastip = null;
         m_lastlogin = I_CmsConstants.C_UNKNOWN_LONG;            
         m_lastname = "";
-        m_lastused = I_CmsConstants.C_UNKNOWN_LONG;
         m_password = "";
         m_recoveryPassword = "";
         m_section = null;
@@ -147,7 +144,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * @param lastname the last name
      * @param email the email address
      * @param lastlogin time stamp 
-     * @param lastused time stamp (deprecated)
      * @param flags flags
      * @param additionalInfo user related information
      * @param defaultGroup default group of the user
@@ -155,8 +151,23 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * @param section (deprecated)
      * @param type the type of this user
      */
-    public CmsUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfo, CmsGroup defaultGroup, String address, String section, int type) {
-
+    public CmsUser(
+        CmsUUID id, 
+        String name, 
+        String password, 
+        String recoveryPassword, 
+        String description, 
+        String firstname, 
+        String lastname, 
+        String email, 
+        long lastlogin, 
+        int flags, 
+        Hashtable additionalInfo, 
+        CmsGroup defaultGroup, 
+        String address, 
+        String section, 
+        int type
+    ) {
         m_id = id;
         m_name = name;
         m_password = password;
@@ -166,7 +177,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         m_lastname = lastname;
         m_email = email;
         m_lastlogin = lastlogin;
-        m_lastused = lastused;
         m_flags = flags;
         m_defaultGroup = defaultGroup;
         m_defaultGroupId = (defaultGroup != null) ? defaultGroup.getId() : CmsUUID.getNullUUID();
@@ -178,12 +188,32 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         // TODO: initialize this with parameter
         m_lastip = null;
     }
+    
+    /**
+     * Returns <code>true</code> if the provided user type indicates a system user type.<p>
+     * 
+     * @param type the user type
+     * @return true if the provided user type indicates a system user type
+     */      
+    public static boolean isSystemUser(int type) {
+        return (type & 1) > 0;
+    }
+    
+    /**
+     * Returns <code>true</code> if the provided user type indicates a web user type.<p>
+     * 
+     * @param type the user type
+     * @return true if the provided user type indicates a web user type
+     */    
+    public static boolean isWebUser(int type) {
+        return (type & 2) > 0;
+    }
 
     /**
      * @see java.lang.Object#clone()
      */
     public Object clone() {
-        CmsUser user = new CmsUser(m_id, new String(m_name), new String(m_password), new String(m_recoveryPassword), new String(m_description), new String(m_firstname), new String(m_lastname), new String(m_email), m_lastlogin, m_lastused, m_flags, getAdditionalInfo(), m_defaultGroup, new String(m_address), new String(m_section), m_type);
+        CmsUser user = new CmsUser(m_id, new String(m_name), new String(m_password), new String(m_recoveryPassword), new String(m_description), new String(m_firstname), new String(m_lastname), new String(m_email), m_lastlogin, m_flags, getAdditionalInfo(), m_defaultGroup, new String(m_address), new String(m_section), m_type);
         return user;
     }
 
@@ -226,7 +256,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
             startSettings.put(I_CmsConstants.C_START_LANGUAGE, OpenCms.getUserDefaultLanguage());
             startSettings.put(I_CmsConstants.C_START_PROJECT, new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID));
             startSettings.put(I_CmsConstants.C_START_VIEW, I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/explorer.html");
-            //            startSettings.put(I_CmsConstants.C_START_DEFAULTGROUP, this.getDefaultGroup().getName());
             startSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "");
             startSettings.put(I_CmsConstants.C_START_ACCESSFLAGS, new Integer(OpenCms.getUserDefaultAccessFlags()));
             m_additionalInfo.put(key, startSettings);
@@ -254,10 +283,10 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-    * Gets the defaultgroup id.<p>
-    *
-    * @return the USER_DEFAULTGROUP_ID, or null.
-    */
+     * Gets the default group id.<p>
+     *
+     * @return the default group id, or null.
+     */
     public CmsUUID getDefaultGroupId() {
         return m_defaultGroupId;
     }
@@ -272,7 +301,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Decides, if this user is disabled.<p>
+     * Decides if this user is disabled.<p>
      *
      * @return USER_FLAGS == C_FLAG_DISABLED
      */
@@ -285,75 +314,66 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Gets the email.<p>
+     * Returns the email address of this user.<p>
      *
-     * @return the USER_EMAIL, or null.
+     * @return the email address of this user
      */
     public String getEmail() {
         return m_email;
     }
 
     /**
-     * Gets the firstname.<p>
+     * Returns the firstname of this user.<p>
      *
-     * @return the USER_FIRSTNAME, or null.
+     * @return the firstname of this user
      */
     public String getFirstname() {
         return m_firstname;
     }
 
     /**
-     * Gets the flags.<p>
+     * Returns the flags of this user.<p>
      *
-     * @return the USER_FLAGS, or C_UNKNOWN_INT.
+     * @return the flags of this user
      */
     public int getFlags() {
         return m_flags;
     }
 
     /**
-     * Gets the id of this user.<p>
+     * Returns the id of this user.<p>
      *
-     * @return the id of this user.
+     * @return the id of this user
      */
     public CmsUUID getId() {
         return m_id;
     }
 
     /**
-     * Gets the lastlogin.<p>
+     * Returns the time of the last login of this user.<p>
      *
-     * @return the USER_LASTLOGIN, or C_UNKNOWN_LONG.
+     * @return the time of the last login of this user, or C_UNKNOWN_LONG.
      */
     public long getLastlogin() {
         return m_lastlogin;
     }
 
     /**
-     * Gets the lastname.<p>
+     * Returns the lastname of this user.<p>
      *
-     * @return the USER_SURNAME, or null.
+     * @return the lastname of this user
      */
     public String getLastname() {
         return m_lastname;
     }
 
     /**
-     * Gets the ip address of the last login.<p>
+     * Returns the ip address of the last login of this user.<p>
      * 
      * @return the ip address of the last login
      */
     public String getLastRemoteAddress() {
         return m_lastip;
-    }
-
-    /**
-     * Gets the lastlogin - DEPRECATED, don't use.<p>
-     *
-     * @return the USER_LASTLOGIN, or C_UNKNOWN_LONG.
-     */
-    public long getLastUsed() {
-        return m_lastused;
     }
 
     /**
@@ -407,7 +427,10 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return m_id.hashCode();
+        if (m_id != null) {
+            return m_id.hashCode();
+        } 
+        return CmsUUID.getNullUUID().hashCode();
     }
     
     /**
@@ -435,26 +458,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */      
     public boolean isWebUser() {
         return isWebUser(m_type);
-    }
-    
-    /**
-     * Returns <code>true</code> if the provided user type indicates a system user type.<p>
-     * 
-     * @param type the user type
-     * @return true if the provided user type indicates a system user type
-     */      
-    public static boolean isSystemUser(int type) {
-        return (type & 1) > 0;
-    }
-    
-    /**
-     * Returns <code>true</code> if the provided user type indicates a web user type.<p>
-     * 
-     * @param type the user type
-     * @return true if the provided user type indicates a web user type
-     */    
-    public static boolean isWebUser(int type) {
-        return (type & 2) > 0;
     }
 
     /**
@@ -582,15 +585,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets the lastlogin - DEPRECATED, don't use.<p>
-     *
-     * @param value the time stamp
-     */
-    void setLastUsed(long value) {
-        m_lastused = value;
-    }
-
-    /**
      * Sets the password.<p>
      *
      * @param value The new password.
@@ -609,32 +603,30 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets the typ.<p>
+     * Sets the typ of this user.<p>
      *
-     * @param value The new user typ.
+     * @param value the type of this user
      */
     void setType(int value) {
         m_type = value;
     }
 
     /**
-     * Returns a string-representation for this object.<p>
-     * This can be used for debugging.
-     *
-     * @return string-representation for this object.
+     * @see java.lang.Object#toString()
      */
     public String toString() {
-        StringBuffer output = new StringBuffer();
-        output.append("[User]:");
-        output.append(m_name);
-        output.append(" , Id=");
-        output.append(m_id);
-        output.append(" , flags=");
-        output.append(getFlags());
-        output.append(" , type=");
-        output.append(getType());
-        output.append(" :");
-        output.append(m_description);
-        return output.toString();
+        StringBuffer result = new StringBuffer();
+        result.append("[User]");
+        result.append(" name:");
+        result.append(m_name);
+        result.append(" id:");
+        result.append(m_id);
+        result.append(" flags:");
+        result.append(getFlags());
+        result.append(" type:");
+        result.append(getType());
+        result.append(" description:");
+        result.append(m_description);
+        return result.toString();
     }
 }

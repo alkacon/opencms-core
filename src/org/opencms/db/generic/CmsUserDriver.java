@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/08/20 16:51:16 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.19 $ $Date: 2003/08/20 16:51:16 $
+ * @version $Revision: 1.20 $ $Date: 2003/08/30 11:30:08 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -244,7 +244,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @return the created user.
      * @throws CmsException if something goes wrong.
      */
-    public CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+    public CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         byte[] value = null;
         //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
         CmsUUID id = new CmsUUID();
@@ -270,7 +270,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             stmt.setString(7, m_sqlManager.validateNull(lastname));
             stmt.setString(8, m_sqlManager.validateNull(email));
             stmt.setTimestamp(9, new Timestamp(lastlogin));
-            stmt.setTimestamp(10, new Timestamp(lastused));
+            stmt.setTimestamp(10, new Timestamp(0));
             stmt.setInt(11, flags);
             m_sqlManager.setBytes(stmt, 12, value);
             stmt.setString(13, defaultGroup.getId().toString());
@@ -404,7 +404,6 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             res.getString(m_sqlManager.get("C_USERS_USER_LASTNAME")),
             res.getString(m_sqlManager.get("C_USERS_USER_EMAIL")),
             SqlHelper.getTimestamp(res, m_sqlManager.get("C_USERS_USER_LASTLOGIN")).getTime(),
-            SqlHelper.getTimestamp(res, m_sqlManager.get("C_USERS_USER_LASTUSED")).getTime(),
             res.getInt(m_sqlManager.get("C_USERS_USER_FLAGS")),
             info,
             createCmsGroupFromResultSet(res, hasGroupIdInResultSet),
@@ -1363,7 +1362,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             stmt.setString(3, m_sqlManager.validateNull(user.getLastname()));
             stmt.setString(4, m_sqlManager.validateNull(user.getEmail()));
             stmt.setTimestamp(5, new Timestamp(user.getLastlogin()));
-            stmt.setTimestamp(6, new Timestamp(user.getLastUsed()));
+            stmt.setTimestamp(6, new Timestamp(0));
             stmt.setInt(7, user.getFlags());
             m_sqlManager.setBytes(stmt, 8, value);
             stmt.setString(9, user.getDefaultGroupId().toString());

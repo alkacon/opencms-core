@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2003/08/25 10:28:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle/OCI implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2003/08/25 10:28:43 $
+ * @version $Revision: 1.8 $ $Date: 2003/08/30 11:30:08 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -178,7 +178,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#addUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
      */
-    public CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+    public CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
         CmsUUID id = new CmsUUID();
         byte[] value = null;
@@ -208,7 +208,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(7, m_sqlManager.validateNull(lastname));
             stmt.setString(8, m_sqlManager.validateNull(email));
             stmt.setTimestamp(9, new Timestamp(lastlogin));
-            stmt.setTimestamp(10, new Timestamp(lastused));
+            stmt.setTimestamp(10, new Timestamp(0));
             stmt.setInt(11, flags);
             stmt.setString(12, defaultGroup.getId().toString());
             stmt.setString(13, m_sqlManager.validateNull(address));
@@ -298,7 +298,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(3, m_sqlManager.validateNull(user.getLastname()));
             stmt.setString(4, m_sqlManager.validateNull(user.getEmail()));
             stmt.setTimestamp(5, new Timestamp(user.getLastlogin()));
-            stmt.setTimestamp(6, new Timestamp(user.getLastUsed()));
+            stmt.setTimestamp(6, new Timestamp(0));
             stmt.setInt(7, user.getFlags());
             stmt.setString(8, user.getDefaultGroupId().toString());
             stmt.setString(9, m_sqlManager.validateNull(user.getAddress()));

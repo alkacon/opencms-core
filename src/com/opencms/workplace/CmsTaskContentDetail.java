@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,13 +30,13 @@
 package com.opencms.workplace;
 
 import org.opencms.main.OpenCms;
+import org.opencms.workflow.CmsTask;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsTask;
 import com.opencms.file.CmsUser;
 import com.opencms.util.Utils;
 
@@ -52,7 +52,7 @@ import java.util.Hashtable;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.32 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.33 $ $Date: 2003/08/30 11:30:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/18 10:50:48 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -196,25 +196,22 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         }
 
         if (changed) { 
-            // the resource already exists.
+            // the resource already exists
             // check if the resource uuids are the same, if so, update the content
-            CmsResource existingResource=cms.readFileHeader(destination);
+            CmsResource existingResource = cms.readFileHeader(destination);
             if (existingResource.getResourceId().equals(resource.getResourceId())) {
+                // resource with the same name and same uuid does exist,
+                // update the existing resource
                 cms.lockResource(destination);
                 cms.doWriteResource(destination, properties, null, getResourceType(), content);
                 importedResource = cms.readFileHeader(destination);
                 cms.touch(destination, resource.getDateLastModified(), false, resource.getUserLastModified());
             } else {
-                // a resource with the same name but different uuid does exist, so
+                // a resource with the same name but different uuid does exist,
                 // copy the new resource to the lost&found folder 
-                String des=copyToLostAndFound(cms, destination, false); 
-                            
-                CmsResource newRes = new CmsResource(resource.getId(), resource.getResourceId(), resource.getParentId(), resource.getFileId(),  CmsResource.getName(des), resource.getType(), resource.getFlags(), resource.getProjectId(), resource.getState(), resource.getLoaderId(), resource.getDateLastModified(), resource.getUserLastModified(), resource.getDateCreated(), resource.getUserCreated(), resource.getLength(), 1);
-                        
-                importedResource = cms.doImportResource(newRes, content, properties, des);
-                //cms.lockResource(destination);  
-                //importedResource = cms.readFileHeader(destination);
-                     
+                String target = copyToLostAndFound(cms, destination, false);                             
+                CmsResource newRes = new CmsResource(resource.getId(), resource.getResourceId(), resource.getParentId(), resource.getFileId(),  CmsResource.getName(target), resource.getType(), resource.getFlags(), resource.getProjectId(), resource.getState(), resource.getLoaderId(), resource.getDateLastModified(), resource.getUserLastModified(), resource.getDateCreated(), resource.getUserCreated(), resource.getLength(), 1);                        
+                importedResource = cms.doImportResource(newRes, content, properties, target);
             }       
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/08/20 16:51:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * MySQL implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/08/20 16:51:16 $
+ * @version $Revision: 1.6 $ $Date: 2003/08/30 11:30:08 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {       
@@ -73,19 +73,19 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                         res.getInt("VERSION_ID"),
                         res.getInt("PROJECT_ID"),
                         res.getString("PROJECT_NAME"),
-                        SqlHelper.getTimestamp(res, "PROJECT_PUBLISHDATE"),
-                        new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
-                        res.getString("PROJECT_PUBLISHED_BY_NAME"),
                         res.getString("PROJECT_DESCRIPTION"),
                         res.getInt("TASK_ID"),
                         new CmsUUID(res.getString("USER_ID")),
-                        res.getString("USER_NAME"),
                         new CmsUUID(res.getString("GROUP_ID")),
-                        res.getString("GROUP_NAME"),
                         new CmsUUID(res.getString("MANAGERGROUP_ID")),
-                        res.getString("MANAGERGROUP_NAME"),
                         SqlHelper.getTimestamp(res, "PROJECT_CREATEDATE"),
                         res.getInt("PROJECT_TYPE"),
+                        SqlHelper.getTimestamp(res, "PROJECT_PUBLISHDATE"),
+                        new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
+                        res.getString("PROJECT_PUBLISHED_BY_NAME"),
+                        res.getString("USER_NAME"),
+                        res.getString("GROUP_NAME"),
+                        res.getString("MANAGERGROUP_NAME"),
                         resources));
             }
         } catch (SQLException exc) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,10 +35,10 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsResourceTypeImage;
-import com.opencms.file.I_CmsRegistry;
 import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.50 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.51 $ $Date: 2003/08/30 11:30:08 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault {
@@ -80,7 +80,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        I_CmsRegistry registry = cms.getRegistry();
+        CmsRegistry registry = cms.getRegistry();
         boolean extendedNavigation = "on".equals(registry.getSystemValue("extendedNavigation"));
 
         // clear the session on first call

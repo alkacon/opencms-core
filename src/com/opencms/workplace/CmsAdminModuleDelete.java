@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2003/08/25 15:12:18 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,19 +28,19 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsRequestContext;
-import com.opencms.file.I_CmsRegistry;
 import com.opencms.report.A_CmsReportThread;
 
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-import org.opencms.main.OpenCms;
 
 /**
  * Template class for displaying OpenCms workplace administration module delete.
@@ -77,7 +77,7 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
         
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsRequestContext reqCont = cms.getRequestContext();
-        I_CmsRegistry reg = cms.getRegistry();
+        CmsRegistry reg = cms.getRegistry();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String step = (String)parameters.get(C_STEP);
         String moduleName = (String)parameters.get(C_MODULE);
@@ -170,13 +170,13 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
      * @param moduleName the name of the module
      * @return Vector with path Strings of resources
      */
-    protected static Vector getProjectResources(CmsObject cms, I_CmsRegistry reg, String moduleName) {
+    protected static Vector getProjectResources(CmsObject cms, CmsRegistry reg, String moduleName) {
         Vector resNames = new Vector();
         
         // add the module folder to the project resources
         resNames.add(C_VFS_PATH_MODULES + moduleName + "/");
         
-        if (reg.getModuleType(moduleName).equals(I_CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
+        if (reg.getModuleType(moduleName).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
             // SIMPLE MODULE
            
             // check if additional resources outside the system/modules/{exportName} folder were 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModuleDemos.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@ import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
-import com.opencms.file.I_CmsRegistry;
+import com.opencms.file.CmsRegistry;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Enumeration;
@@ -64,7 +64,7 @@ public class CmsModuleDemos extends CmsWorkplaceDefault {
             OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        I_CmsRegistry reg = cms.getRegistry();
+        CmsRegistry reg = cms.getRegistry();
         String currentname;
         Enumeration modules = reg.getModuleNames();
         String completeList = "";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,8 +35,8 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResourceTypeFolder;
-import com.opencms.file.I_CmsRegistry;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Utils;
 
@@ -78,7 +78,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
      * @return java.util.Hashtable
      * @param param java.lang.String
      */
-    private void fillHashtable(CmsObject cms, I_CmsRegistry reg, Hashtable table, String module) {
+    private void fillHashtable(CmsObject cms, CmsRegistry reg, Hashtable table, String module) {
         table.put(C_MODULE_PACKETNAME, module);
         table.put(C_VERSION, getStringValue("" + reg.getModuleVersion(module)));
         table.put(C_MODULENAME, getStringValue(reg.getModuleNiceName(module)));
@@ -134,7 +134,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
         table.put(C_SESSION_MODULE_ADMIN_PROP_VAL, paraVal);
         
         String moduleType = reg.getModuleType(module);
-        if (moduleType!=null && moduleType.equals(I_CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
+        if (moduleType!=null && moduleType.equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
             table.put( C_MODULE_TYPE, "checked" );
         }
         else {
@@ -160,7 +160,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
             OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        I_CmsRegistry reg = cms.getRegistry();
+        CmsRegistry reg = cms.getRegistry();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String stepTo = "";
         String from = (String)parameters.get(C_FROM);
@@ -330,7 +330,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
      * @return java.util.Hashtable
      * @param param java.lang.String
      */
-    private void updateTheModule(CmsObject cms, I_CmsRegistry reg, Hashtable table, String module) {
+    private void updateTheModule(CmsObject cms, CmsRegistry reg, Hashtable table, String module) {
         SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd.MM.yyyy");
         String name = (String)table.get(C_MODULE_PACKETNAME);
         String modulePath = C_VFS_PATH_MODULES + name + "/";
@@ -425,10 +425,10 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
             // set the module type
             String moduleType = (String)table.get(C_MODULE_TYPE);
             if (moduleType!=null && moduleType.equals("checked")) {
-                reg.setModuleType( name, I_CmsRegistry.C_MODULE_TYPE_SIMPLE );
+                reg.setModuleType( name, CmsRegistry.C_MODULE_TYPE_SIMPLE );
             }
             else {
-                reg.setModuleType( name, I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL );
+                reg.setModuleType( name, CmsRegistry.C_MODULE_TYPE_TRADITIONAL );
             }               
         }catch(CmsException e) {
              if(OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,9 +37,9 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
+import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
-import com.opencms.file.I_CmsRegistry;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Utils;
 
@@ -54,7 +54,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.82 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.83 $ $Date: 2003/08/30 11:30:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -159,7 +159,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         CmsRequestContext reqCont = cms.getRequestContext();
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         // flag for extended features in the editor, e.g. list of external links
-        I_CmsRegistry registry = cms.getRegistry();
+        CmsRegistry registry = cms.getRegistry();
         boolean extendedNavigation = "on".equals(registry.getSystemValue("extendedNavigation"));
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);

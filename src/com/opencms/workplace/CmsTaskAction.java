@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,14 +30,14 @@
 package com.opencms.workplace;
 
 import org.opencms.main.OpenCms;
+import org.opencms.workflow.CmsTask;
+import org.opencms.workflow.CmsTaskLog;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsTask;
-import com.opencms.file.CmsTaskLog;
 import com.opencms.file.CmsUser;
 import com.opencms.util.Utils;
 
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.39 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.40 $ $Date: 2003/08/30 11:30:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

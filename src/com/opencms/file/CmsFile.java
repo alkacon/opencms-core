@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
- * Date   : $Date: 2003/08/29 16:12:04 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -86,23 +86,23 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
    /**
     * Constructor, creates a new CmsFile object.<p>
     *
-    * @param structureId the id of the structure record
-    * @param resourceId the id of the resource record
-    * @param parentId the id of the parent folder
-    * @param fileId the id of the content
-    * @param name the name (including complete path) of the resouce
+    * @param structureId the id of this resources structure record
+    * @param resourceId the id of this resources resource record
+    * @param parentId the id of this resources parent folder
+    * @param fileId the id of this resources content record
+    * @param name the filename of this resouce
     * @param type the type of this resource
     * @param flags the flags of this resource
-    * @param projectId the project id this resource belongs to.
+    * @param projectId the project id this resource was last modified in
     * @param state the state of this resource
-    * @param loaderId the loader that is used to process this recource
+    * @param loaderId the id for the that is used to load this recource
     * @param dateCreated the creation date of this resource
     * @param userCreated the id of the user who created this resource
-    * @param dateLastModified the date of the last modification of the resource
-    * @param userLastModified the id of the user who did the last modification
-    * @param size the size of the file content
-    * @param linkCount the count of vfs links
-    * @param content the content of the file
+    * @param dateLastModified the date of the last modification of this resource
+    * @param userLastModified the id of the user who did the last modification of this resource
+    * @param size the size of the file content of this resource
+    * @param linkCount the count of all siblings of this resource 
+    * @param content the binary content data of this file
     */
     public CmsFile(
         CmsUUID structureId,
@@ -149,7 +149,8 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     /**
      * Clones this CmsFile.<p>
      * 
-     * @return the colned CmsFile
+     * @return the cloned CmsFile
+     * @see java.lang.Object#clone()
      */
     public Object clone() {
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/08/29 16:12:04 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.81 $ 
+ * @version $Revision: 1.82 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -104,22 +104,22 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Constructor, creates a new CmsRecource object.<p>
      *
-     * @param structureId the structure id of the resource
-     * @param resourceId the resource id of the resource
-     * @param parentId the id of the parent resource in the structure table
-     * @param fileId the file content id of the resource 
-     * @param name the name (including complete path) of the resouce
-     * @param type the type of the resource
-     * @param flags the flags of the resource
-     * @param projectId the project id this resource belongs to
-     * @param state the state of this resource
-     * @param loaderId the loader that is require to process this recource     
-     * @param dateCreated the creation date of this resource
-     * @param userCreated the user who created this resource
-     * @param dateLastModified the date of the last modification of the resource
-     * @param userLastModified the user who changed the file
-     * @param size the file content size of the resource
-     * @param linkCount the number of references
+    * @param structureId the id of this resources structure record
+    * @param resourceId the id of this resources resource record
+    * @param parentId the id of this resources parent folder
+    * @param fileId the id of this resources content record
+    * @param name the filename of this resouce
+    * @param type the type of this resource
+    * @param flags the flags of this resource
+    * @param projectId the project id this resource was last modified in
+    * @param state the state of this resource
+    * @param loaderId the id for the that is used to load this recource
+    * @param dateCreated the creation date of this resource
+    * @param userCreated the id of the user who created this resource
+    * @param dateLastModified the date of the last modification of this resource
+    * @param userLastModified the id of the user who did the last modification of this resource
+    * @param size the size of the file content of this resource
+    * @param linkCount the count of all siblings of this resource 
      */
     public CmsResource(
         CmsUUID structureId, 
@@ -293,6 +293,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
+     * Clones this CmsResource.<p>
+     * 
+     * @return the cloned CmsResource
      * @see java.lang.Object#clone()
      */
     public Object clone() {
@@ -335,11 +338,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public boolean equals(Object obj) {
         if (obj instanceof CmsResource) {
-            if (((CmsResource)obj).getId().equals(this.getId())) {
-                return true;
-            }
+            return ((CmsResource)obj).getId().equals(getId());
         }
-
         return false;
     }
 
@@ -566,7 +566,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         if (m_structureId != null) {
             return m_structureId.hashCode();
         }
-
         return CmsUUID.getNullUUID().hashCode();
     }
 

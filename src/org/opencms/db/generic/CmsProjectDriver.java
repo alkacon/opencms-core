@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/28 11:19:14 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
+import org.opencms.workflow.*;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
@@ -76,7 +77,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.70 $ $Date: 2003/08/28 11:19:14 $
+ * @version $Revision: 1.71 $ $Date: 2003/08/30 11:30:08 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1264,7 +1265,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                     m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), currentFolder);
 
-                    OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)currentFolder)));
+                    OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", currentFolder)));
 
                     i.remove();
 
@@ -1562,7 +1563,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                     m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), currentFile);
 
-                    OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)currentFile)));
+                    OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", currentFile)));
                     
                     i.remove();
 
@@ -1640,7 +1641,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, delOnlineFolder.getResourceAceId());
                 m_driverManager.getUserDriver().removeAllAccessControlEntries(context.currentProject(), currentFolder.getResourceAceId());
                 
-                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)currentFolder)));
+                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", currentFolder)));
                 
                 i.remove();
                 
@@ -1673,7 +1674,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
             
             // clear all caches to reclaim memory
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, (Map) new HashMap(), false));
+            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap(), false));
 
             // force a complete object finalization and garbage collection 
             System.runFinalization();

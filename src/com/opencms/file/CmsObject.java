@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/28 11:19:15 $
-* Version: $Revision: 1.389 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.390 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.synchronize.CmsSynchronize;
+import org.opencms.workflow.*;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsCoreSession;
@@ -79,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.389 $
+ * @version $Revision: 1.390 $
  */
 public class CmsObject {
 
@@ -2048,8 +2049,8 @@ public class CmsObject {
      * @throws CmsException if access is not allowed.
      */
 
-    public I_CmsRegistry getRegistry() throws CmsException {
-        return (m_driverManager.getRegistry(this));
+    public CmsRegistry getRegistry() throws CmsException {
+        return m_driverManager.getRegistry(this);
     }
 
     /**

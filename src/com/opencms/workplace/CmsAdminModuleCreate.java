@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,8 +33,8 @@ import org.opencms.main.OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResourceTypeFolder;
-import com.opencms.file.I_CmsRegistry;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Utils;
 
@@ -104,7 +104,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
         }
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         //CmsRequestContext reqCont = cms.getRequestContext();
-        I_CmsRegistry reg = cms.getRegistry();
+        CmsRegistry reg = cms.getRegistry();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String step = (String)parameters.get(C_STEP);
         SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd.MM.yyyy");
@@ -197,7 +197,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                         createDateLong = (new Date()).getTime();
                     }
                     
-                    String type = isSimpleModule?I_CmsRegistry.C_MODULE_TYPE_SIMPLE:I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+                    String type = isSimpleModule?CmsRegistry.C_MODULE_TYPE_SIMPLE:CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
 
                     HashMap exportPoints = new HashMap();
                     if (mustExportClasses) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/29 16:12:04 $
- * Version: $Revision: 1.184 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.185 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.workflow.*;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
@@ -81,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.184 $ $Date: 2003/08/29 16:12:04 $
+ * @version $Revision: 1.185 $ $Date: 2003/08/30 11:30:08 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -133,7 +134,7 @@ public class CmsDriverManager extends Object {
     /**
     * The Registry
     */
-    protected I_CmsRegistry m_registry = null;
+    protected CmsRegistry m_registry = null;
 
     /**
      * Hashtable with resource-types.
@@ -574,7 +575,7 @@ public class CmsDriverManager extends Object {
             Utils.validateNewPassword(cms, password, null);
             if (name.length() > 0) {
                 CmsGroup defaultGroup = readGroup(context, group);
-                CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+                CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
                 addUserToGroup(context, newUser.getName(), defaultGroup.getName());
                 return newUser;
             } else {
@@ -662,7 +663,7 @@ public class CmsDriverManager extends Object {
         Utils.validateNewPassword(cms, password, null);
         if ((name.length() > 0)) {
             CmsGroup defaultGroup = readGroup(context, group);
-            CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_WEBUSER);
+            CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_WEBUSER);
             CmsUser user;
             CmsGroup usergroup;
 
@@ -720,7 +721,7 @@ public class CmsDriverManager extends Object {
         Utils.validateNewPassword(cms, password, null);
         if ((name.length() > 0)) {
             CmsGroup defaultGroup = readGroup(context, group);
-            CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_WEBUSER);
+            CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_WEBUSER);
             CmsUser user;
             CmsGroup usergroup;
             CmsGroup addGroup;
@@ -1424,7 +1425,7 @@ public class CmsDriverManager extends Object {
         // write the metainfos
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), file, file.getType());
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", (CmsResource)cmsFolder)));        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", cmsFolder)));        
         
         return file;
     }
@@ -1482,7 +1483,7 @@ public class CmsDriverManager extends Object {
         // write metainfos for the folder
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newFolder, newFolder.getType());
 
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", (CmsResource)cmsFolder)));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", cmsFolder)));
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", context.currentProject())));        
         
         // return the folder        
@@ -1818,7 +1819,7 @@ public class CmsDriverManager extends Object {
         // if the source
         clearResourceCache();
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", (CmsResource)parentFolder)));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", parentFolder)));
 
         return linkResource;
     }
@@ -2077,7 +2078,7 @@ public class CmsDriverManager extends Object {
         clearResourceCache();
         m_accessCache.clear();
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)cmsFolder)));        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", cmsFolder)));        
     }
 
     /**
@@ -3428,7 +3429,7 @@ public class CmsDriverManager extends Object {
      * @param cms The actual CmsObject
      * @throws Throws CmsException if access is not allowed.
      */
-    public I_CmsRegistry getRegistry(CmsObject cms) throws CmsException {
+    public CmsRegistry getRegistry(CmsObject cms) throws CmsException {
         return m_registry.clone(cms);
     }
 
@@ -4120,7 +4121,7 @@ public class CmsDriverManager extends Object {
          // write metainfos for the folder
          m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newResource, newResource.getType(), true);
          
-         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", (CmsResource)parentFolder)));         
+         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", parentFolder)));         
          
          // return the folder
          return newResource;
@@ -6499,7 +6500,7 @@ public class CmsDriverManager extends Object {
         // check if we have the result already cached
         HashMap value = null;
     
-        String cacheKey = getCacheKey(C_CACHE_ALL_PROPERTIES + search, null, new CmsProject(context.currentProject().getId(), -1), res.getFullResourceName());
+        String cacheKey = getCacheKey(C_CACHE_ALL_PROPERTIES + search, null, context.currentProject().getId(), res.getFullResourceName());
         value = (HashMap) m_propertyCache.get(cacheKey);
     
         if (value == null) {
@@ -6560,12 +6561,12 @@ public class CmsDriverManager extends Object {
     
         search = search && (siteRoot != null);
         // check if we have the result already cached
-        String cacheKey = getCacheKey(property + search, null, new CmsProject(context.currentProject().getId(), -1), res.getFullResourceName());
+        String cacheKey = getCacheKey(property + search, null, context.currentProject().getId(), res.getFullResourceName());
         String value = (String) m_propertyCache.get(cacheKey);
     
         if (value == null) {
             // check if the map of all properties for this resource is alreday cached
-            String cacheKey2 = getCacheKey(C_CACHE_ALL_PROPERTIES + search, null, new CmsProject(context.currentProject().getId(), -1), res.getFullResourceName());
+            String cacheKey2 = getCacheKey(C_CACHE_ALL_PROPERTIES + search, null, context.currentProject().getId(), res.getFullResourceName());
             Map allProperties = (HashMap) m_propertyCache.get(cacheKey2);
     
             if (allProperties != null) {
@@ -6587,7 +6588,7 @@ public class CmsDriverManager extends Object {
                 }
             } else if (search) {
                 // result not cached, look it up recursivly with search enabled
-                String cacheKey3 = getCacheKey(property + false, null, new CmsProject(context.currentProject().getId(), -1), res.getFullResourceName());
+                String cacheKey3 = getCacheKey(property + false, null, context.currentProject().getId(), res.getFullResourceName());
                 value = (String) m_propertyCache.get(cacheKey3);
                 if ((value == null) || (value == C_CACHE_NULL_PROPERTY_VALUE)) {
                     boolean cont;
@@ -8034,7 +8035,7 @@ public class CmsDriverManager extends Object {
         clearResourceCache();
         m_accessCache.clear();
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)file)));        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", file)));        
     }
 
     /**
@@ -8108,7 +8109,7 @@ public class CmsDriverManager extends Object {
         // inform about the file-system-change
         m_accessCache.clear();
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)file)));        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", file)));        
     }
 
     /**

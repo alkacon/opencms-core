@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/08/25 10:40:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,8 @@ import com.opencms.core.exceptions.CmsResourceInitException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResource;
-import com.opencms.file.I_CmsRegistry;
 import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
 import com.opencms.flex.cache.CmsFlexCache;
@@ -89,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -771,7 +771,7 @@ public class OpenCmsCore {
      * @return the registry
      * @throws CmsException if the registry can not be returned
      */
-    public I_CmsRegistry getRegistry() throws CmsException {
+    public CmsRegistry getRegistry() throws CmsException {
         if (m_driverManager == null) {
             return null;
         }

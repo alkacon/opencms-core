@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/08/25 10:28:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.db.I_CmsVfsDriver;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.workflow.CmsTask;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.core.CmsException;
@@ -44,11 +45,10 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
+import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
-import com.opencms.file.CmsTask;
 import com.opencms.file.CmsUser;
-import com.opencms.file.I_CmsRegistry;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.report.CmsShellReport;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -73,7 +73,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $ $Date: 2003/08/25 10:28:43 $ 
+ * @version $Revision: 1.7 $ $Date: 2003/08/30 11:30:08 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -545,7 +545,7 @@ class CmsShellCommands {
 
         // create the module
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             int ver = Integer.parseInt(version);
             long date = Long.parseLong(createDate);
             reg.createModule(modulename, niceModulename, description, author, type, new HashMap(), date, ver);
@@ -763,7 +763,7 @@ class CmsShellCommands {
      */
     public void deleteModule(String module) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             reg.deleteModule(module, new Vector(), false, new CmsShellReport());
         } catch (Exception exc) {
             CmsShell.printException(exc);
@@ -777,7 +777,7 @@ class CmsShellCommands {
      */
     public void deleteModuleView(String modulename) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             reg.deleteModuleView(modulename);
         } catch (Exception exc) {
             CmsShell.printException(exc);
@@ -953,7 +953,7 @@ class CmsShellCommands {
     public void exportModule(String modulename, String resource, String filename) {
         try {
             String[] resources = {resource};
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             reg.exportModule(modulename, resources, filename, new CmsShellReport());
         } catch (Exception exc) {
             CmsShell.printException(exc);
@@ -1304,7 +1304,7 @@ class CmsShellCommands {
      */
     public void getModuleFiles(String name) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             Vector names = new Vector();
             Vector codes = new Vector();
             reg.getModuleFiles(name, names, codes);
@@ -1323,7 +1323,7 @@ class CmsShellCommands {
      */
     public void getModuleInfo() {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             java.util.Enumeration names = reg.getModuleNames();
 
             // print out the available modules
@@ -1356,7 +1356,7 @@ class CmsShellCommands {
      */
     public void getModuleInfo(String name) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             if (reg.moduleExists(name)) {
                 System.out.println("\nModule: " + name + " v" + reg.getModuleVersion(name));
                 System.out.println("\tNice Name: " + reg.getModuleNiceName(name));
@@ -1503,7 +1503,7 @@ class CmsShellCommands {
      */
     public void getSystemValue(String key) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             System.out.println(reg.getSystemValue(key));
         } catch (Exception exc) {
             CmsShell.printException(exc);
@@ -1517,7 +1517,7 @@ class CmsShellCommands {
      */
     public void getSystemValues(String sysKey) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             Hashtable res = reg.getSystemValues(sysKey);
             Enumeration keys = res.keys();
             while (keys.hasMoreElements()) {
@@ -1668,7 +1668,7 @@ class CmsShellCommands {
      */
     public void getViews() {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             java.util.Vector views = new java.util.Vector();
             java.util.Vector urls = new java.util.Vector();
             int max = reg.getViews(views, urls);
@@ -1774,7 +1774,7 @@ class CmsShellCommands {
      */
     public void importGetConflictingFileNames(String moduleZip) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             Vector conflicts = reg.importGetConflictingFileNames(moduleZip);
             System.out.println("Conflicts: " + conflicts.size());
             for (int i = 0; i < conflicts.size(); i++) {
@@ -1792,7 +1792,7 @@ class CmsShellCommands {
      */
     public void importGetResourcesForProject(String moduleZip) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             Vector resources = reg.importGetResourcesForProject(moduleZip);
             System.out.println("Resources: " + resources.size());
             for (int i = 0; i < resources.size(); i++) {
@@ -1812,7 +1812,7 @@ class CmsShellCommands {
 
         // import the module
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             reg.importModule(importFile, new Vector(), new CmsShellReport());
         } catch (Exception exc) {
             CmsShell.printException(exc);
@@ -1834,7 +1834,7 @@ class CmsShellCommands {
             CmsShell.printException(e);
             return;
         }
-        String fileName = CmsBase.getAbsolutePath(exportPath) + I_CmsRegistry.C_MODULE_PATH + importFile;
+        String fileName = CmsBase.getAbsolutePath(exportPath) + CmsRegistry.C_MODULE_PATH + importFile;
         System.out.println("Importing module: " + fileName);
         // import the module
         try {
@@ -1853,7 +1853,7 @@ class CmsShellCommands {
             m_cms.copyResourceToProject("/");
             m_cms.getRequestContext().restoreSiteRoot();
             // import the module
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             reg.importModule(fileName, new Vector(), new CmsShellReport());
             // finally publish the project
             m_cms.unlockProject(id);
@@ -2910,7 +2910,7 @@ class CmsShellCommands {
      */
     public void setModuleAuthor(String modulename, String author) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleAuthor(modulename, author);
         } catch (Exception exc) {
             CmsShell.printException(exc);
@@ -2925,7 +2925,7 @@ class CmsShellCommands {
      */
     public void setModuleAuthorEmail(String modulename, String email) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleAuthorEmail(modulename, email);
         } catch (Exception exc) {
             CmsShell.printException(exc);
@@ -2940,7 +2940,7 @@ class CmsShellCommands {
      */
     public void setModuleCreateDate(String modulname, String createdate) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             long date = Long.parseLong(createdate);
             reg.setModuleCreateDate(modulname, date);
         } catch (Exception exc) {
@@ -2956,7 +2956,7 @@ class CmsShellCommands {
      */
     public void setModuleDescription(String module, String description) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleDescription(module, description);
         } catch (Exception exc) {
             CmsShell.printException(exc);
@@ -2971,7 +2971,7 @@ class CmsShellCommands {
      */
     public void setModuleDocumentPath(String modulename, String url) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleDocumentPath(modulename, url);
         } catch (Exception exc) {
             CmsShell.printException(exc);
@@ -2986,7 +2986,7 @@ class CmsShellCommands {
      */
     public void setModuleMaintenanceEventClass(String modulname, String classname) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleMaintenanceEventClass(modulname, classname);
         } catch (Exception exc) {
             CmsShell.printException(exc);
@@ -3001,7 +3001,7 @@ class CmsShellCommands {
      */
     public void setModuleNiceName(String module, String nicename) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleNiceName(module, nicename);
         } catch (Exception exc) {
             CmsShell.printException(exc);
@@ -3016,7 +3016,7 @@ class CmsShellCommands {
      */
     public void setModuleVersion(String modulename, String version) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleVersion(modulename, version);
         } catch (Exception exc) {
             CmsShell.printException(exc);
@@ -3032,7 +3032,7 @@ class CmsShellCommands {
      */
     public void setModuleView(String modulename, String viewname, String viewurl) {
         try {
-            I_CmsRegistry reg = m_cms.getRegistry();
+            CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleView(modulename, viewname, viewurl);
         } catch (Exception exc) {
             CmsShell.printException(exc);
@@ -3263,13 +3263,6 @@ class CmsShellCommands {
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }
-    }
-
-    /**
-     * Returns the default group of the current user.
-     */
-    public void userDefaultGroup() {
-        System.out.println(m_cms.getRequestContext().currentUser().getDefaultGroup());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/14 12:50:53 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,23 +100,25 @@ public interface I_CmsResourceType {
     void unlockResource(CmsObject cms, String resourcename, boolean recursive) throws CmsException;
     
     /**
-     * Copies a Resource.
-     *
-     * @param cms the current cms context
-     * @param resourcename the name of the resource to apply this operation to
-     * @param destination the complete path of the destinationfolder
-     * @param keeppermissions <code>true</code> if the copy should keep the source file's permissions,
-     *        <code>false</code> if the copy should get the user's default flags
-     * @param copyMode mode of the copy operation, described how to handle linked resourced during copy.
-     * Possible values are: 
+     * Copies a Resource.<p>
+     * 
+     * Possible values for the copyMode parameter are: 
      * <ul>
      * <li>C_COPY_AS_NEW</li>
      * <li>C_COPY_AS_LINK</li>
      * <li>C_COPY_PRESERVE_LINK</li>
      * </ul>
+     * 
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @param destination the complete path of the destinationfolder
+     * @param keepPermissions <code>true</code> if the copy should keep the source file's permissions,
+     *        <code>false</code> if the copy should get the user's default flags
+     * @param copyMode mode of the copy operation, described how to handle linked resourced during copy
+     * @param lockCopy if true the copy should be locked to the current user
      * @throws CmsException if something goes wrong
      */
-    void copyResource(CmsObject cms, String resourcename, String destination, boolean keeppermissions, boolean lockCopy, int copyMode) throws CmsException;
+    void copyResource(CmsObject cms, String resourcename, String destination, boolean keepPermissions, boolean lockCopy, int copyMode) throws CmsException;
 
     /**
      * Moves a file to the given destination.<p>
@@ -154,6 +156,7 @@ public interface I_CmsResourceType {
      *
      * @param cms the current cms context
      * @param resourcename the name of the resource to apply this operation to
+     * @param deleteOption the delete option to use
      * @throws CmsException if something goes wrong
      */
     void deleteResource(CmsObject cms, String resourcename, int deleteOption) throws CmsException;
@@ -257,7 +260,7 @@ public interface I_CmsResourceType {
     /**
      * Imports a resource to the cms.<p>
      *
-     * @param the current cms object
+     * @param cms the current cms object
      * @param resource the resource to be imported
      * @param content the content of the resource
      * @param properties the properties of the resource
@@ -265,5 +268,5 @@ public interface I_CmsResourceType {
      * @return the imported CmsResource
      * @throws CmsException if operation was not successful
      */
-    CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destinition) throws CmsException;
+    CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException;
 }

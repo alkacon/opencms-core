@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/08/18 10:50:48 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.I_CmsLifeCycle;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsUser;
-import com.opencms.file.I_CmsRegistry;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -213,7 +213,7 @@ public final class Utils {
      * @param reg the current registry
      * @throws CmsException if something goes wrong
      */
-    public static void getModulShutdownMethods(I_CmsRegistry reg) throws CmsException {
+    public static void getModulShutdownMethods(CmsRegistry reg) throws CmsException {
         Vector startUpModules = new Vector();
         reg.getModuleLifeCycle(startUpModules);
         for (int i = 0; i < startUpModules.size(); i++) {

@@ -1,35 +1,40 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/08/19 12:04:41 $
-* Version: $Revision: 1.87 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.88 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.file;
 
-import org.opencms.importexport.*;
+import org.opencms.importexport.CmsExport;
+import org.opencms.importexport.CmsImport;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
@@ -59,75 +64,77 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Implements the registry for OpenCms.<p>
+ * The OpenCms registry.<p>
  * 
- * The OpenCms registry contains information about the installed modules in the system,
- * the mail server settings for the task management,
- * the workplace views and some other items.<p>
+ * This registry contains information about the installed OpenCms modules,
+ * and also important other system information
+ * e.g. the mail server settings for the task management,
+ * the workplace views and other items.<p>
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.87 $ $Date: 2003/08/19 12:04:41 $
+ * @version $Revision: 1.88 $
  */
-public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
+public class CmsRegistry extends A_CmsXmlContent {
 
-    /**
-     *  The xml-document representing the registry.
-     */
-    private Document m_xmlReg;
+    /** Id to identify that the version is not important */
+    public static final int C_ANY_VERSION = -1;
 
-    /**
-     *  The filename for the registry.
-     */
-    private String m_regFileName;
+    /** Declaration of an empty module in the registry */
+    private static final String[] C_EMPTY_MODULE = {"<module><type>", "</type><name>", "</name><nicename>", "</nicename><version>", "</version><description><![CDATA[ ", "]]></description><author>", "</author><email/><creationdate>", "</creationdate>", "<view/><publishclass/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>"};
 
-    /**
-     *  A hashtable with shortcuts into the dom-structure for each module.
-     */
-    private Hashtable m_modules = new Hashtable();
+    /** Event marker to identify a module deletion */
+    private static final String C_EVENT_METHOD_NAME_DELETE = "moduleWasDeleted";
 
-    /**
-     *  A hashtable with all exportpoints and paths.
-     */
-    private Hashtable m_exportpoints = new Hashtable();
+    /** Event marker to identify a module parameter update */
+    private static final String C_EVENT_METHOD_NAME_UPDATE_PARAMETER = "moduleParameterWasUpdated";
 
-    /**
-     *  The cms-object to get access to the system with the context of the current user.
-     */
-    private CmsObject m_cms = null;
-
-    /**
-     *  The date-format to use.
-     */
-    private SimpleDateFormat m_dateFormat = new java.text.SimpleDateFormat("MM.dd.yyyy");
-
-    /**
-     *  A message digest to check the resource-codes
-     */
-    private MessageDigest m_digest;
-
-    // Module event-method names.
-    private static final String C_UPLOAD_EVENT_METHOD_NAME = "moduleWasUploaded";
-    private static final String C_UPDATE_PARAMETER_EVENT_METHOD_NAME = "moduleParameterWasUpdated";
-    private static final String C_DELETE_EVENT_METHOD_NAME = "moduleWasDeleted";
-
-    /**
-     * Declaration of an empty module in the registry.
-     */
-    private static final String[] C_EMPTY_MODULE = { "<module><type>", "</type><name>", "</name><nicename>", "</nicename><version>", "</version><description><![CDATA[ ", "]]></description><author>", "</author><email/><creationdate>", "</creationdate>", "<view/><publishclass/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>" };
+    /** Event marker to identify a module upload */
+    private static final String C_EVENT_METHOD_NAME_UPLOAD = "moduleWasUploaded";
 
     /** XML to create an export point */
-    private static final String[] C_EXPORTPOINT = { "<exportpoint><source>", "</source><destination>", "</destination></exportpoint>" };
+    private static final String[] C_EXPORTPOINT = {"<exportpoint><source>", "</source><destination>", "</destination></exportpoint>"};
+
+    /** The name of the folder to extend the exportpath */
+    public static final String C_MODULE_PATH = "modules/";
+
+    /** Type identificator for "simple" (5.0 style) modules */
+    public static final String C_MODULE_TYPE_SIMPLE = "simple";
+
+    /** Type identificator for "traditional" modules */
+    public static final String C_MODULE_TYPE_TRADITIONAL = "traditional";
 
     /** Debug flag, set to 9 for maximum vebosity */
     private static final int DEBUG = 0;
 
+    /** The OpenCms contect object to get access to the system with the context of the current user */
+    private CmsObject m_cms = null;
+
+    /** The date format to use */
+    private SimpleDateFormat m_dateFormat = new java.text.SimpleDateFormat("MM.dd.yyyy");
+
+    /** A message digest to check the resource codes */
+    private MessageDigest m_digest;
+
+    /** A hashtable with all exportpoints and paths */
+    private Hashtable m_exportpoints = new Hashtable();
+
+    /** A hashtable with shortcuts into the dom-structure for each module */
+    private Hashtable m_modules = new Hashtable();
+
+    /** The filename for this registry */
+    private String m_regFileName;
+
+    /** The xml-document representing this registry */
+    private Document m_xmlReg;
+
     /**
-     * Creates a new CmsRegistry for a user. The cms-object represents 
-     * the current state of the current user.<p>
+     * Creates a new CmsRegistry for a user based on an existing instance, 
+     * this is used for cloning of the registry.<p>
      *
-     * @param CmsObject the cms-object to get access to the system
+     * @param reg another registry instance
+     * @param cms the OpenCms context object 
      */
     public CmsRegistry(CmsRegistry reg, CmsObject cms) {
         super();
@@ -146,10 +153,10 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Creates a new CmsRegistry. The regFileName is the path to the registry-file in
-     * the server filesystem.
-     *
-     *  @param String regFileName the path to the registry-file in the server fs.
+     * Creates a new CmsRegistry that is stored a file with the given filename.<p> 
+     * 
+     * @param regFileName the path to the registry file
+     * @throws CmsException in case somthing goes wrong
      */
     public CmsRegistry(String regFileName) throws CmsException {
         super();
@@ -170,13 +177,14 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Checks if the dependencies are fullfilled.<p>
+     * Checks if the dependencies of a module are fullfilled.<p>
      * 
-     * @param module the dom-element describing the new module
+     * @param module the DOM element describing the module
      * @param replaceMode if <code>true</code> this is for module replacement, 
-     * if <code>false</code> it is form module deletion
+     *      if <code>false</code> it is form module deletion
      * @return a Vector of conflict description Strings, if this is an empty vector, 
-     * there are no conficts (i.e. the dependencies are fullfilled)
+     *      there are no conficts (i.e. the dependencies are fullfilled)
+     * @throws CmsException in case something goes wrong
      */
     private Vector checkDependencies(Element module, boolean replaceMode) throws CmsException {
 
@@ -184,13 +192,14 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
         String versionString = module.getElementsByTagName("version").item(0).getFirstChild().getNodeValue();
         try {
             newVersion = Float.parseFloat(versionString);
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+            // nothing we can do about this
+        }
 
         Vector retValue = new Vector();
 
         if (replaceMode) {
             // replace mode, just ensure new version number is larger then the old number
-            // TODO: check dependencies of all other installed modules for "maxversion"
             String name = module.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
             // get the version of the module to replace
             float currentVersion = getModuleVersion(name);
@@ -222,24 +231,21 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
                 throw new CmsException("Could not check the dependencies", CmsException.C_REGISTRY_ERROR, exc);
             }
         }
-
         return retValue;
     }
 
     /**
-     *  Checks if the type of the value is correct.
-     *  @param type the type that the value should have..
-     *  @param value the value to check.
+     * Checks if the type of the value is correct.<p>
+     * 
+     * @param type the type that the value should have
+     * @param value the value to check
+     * @return true if the value is correct
      */
     private boolean checkType(String type, String value) {
         type = type.toLowerCase();
         try {
             if ("string".equals(type)) {
-                if (value != null) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return value != null;
             } else if ("int".equals(type) || "integer".equals(type)) {
                 Integer.parseInt(value);
                 return true;
@@ -271,10 +277,10 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     /**
      * Clones the registry.<p>
      *
-     * @param CmsObject the current cms-object to get access to the system
+     * @param cms an initialized OpenCms context object 
      * @return the cloned registry
      */
-    public I_CmsRegistry clone(CmsObject cms) {
+    public CmsRegistry clone(CmsObject cms) {
         return new CmsRegistry(this, cms);
     }
 
@@ -291,12 +297,30 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
      * @param version the version number of the module
      * @throws CmsException if the user has no right to create a new module
      */
-    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, long createDate, float version) throws CmsException {
-        createModule(modulename, niceModulename, description, author, type, exportPoints, m_dateFormat.format(new Date(createDate)), version);
+    public void createModule(
+        String modulename, 
+        String niceModulename, 
+        String description, 
+        String author, 
+        String type, 
+        Map exportPoints, 
+        long createDate, 
+        float version
+    ) throws CmsException {
+        createModule(
+            modulename, 
+            niceModulename, 
+            description, 
+            author, 
+            type, 
+            exportPoints, 
+            m_dateFormat.format(new Date(createDate)), 
+            version
+        );
     }
 
     /**
-     * This method creates a new module in the repository.
+     * This method creates a new module in the repository.<p>
      *
      * @param modulename the name of the module
      * @param niceModulename another name of the module
@@ -308,7 +332,16 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
      * @param version the version number of the module
      * @throws CmsException if the user has no right to create a new module
      */
-    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, String createDate, float version) throws CmsException {
+    public void createModule(
+        String modulename,
+        String niceModulename, 
+        String description, 
+        String author, 
+        String type, 
+        Map exportPoints, 
+        String createDate, 
+        float version
+    ) throws CmsException {
 
         // find out if the module exists already
         if (moduleExists(modulename)) {
@@ -317,7 +350,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 
         // check if the user is allowed to perform this action
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'createModule'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
 
         // create the new module in the registry
@@ -357,10 +390,17 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * @see com.opencms.file.I_CmsRegistry#deleteCheckDependencies(String, boolean)
+     * Checks which modules depend on a module.<p>
+     * 
+     * If a module depends on this module, the name will be returned in the vector.<p>
+     *
+     * @param modulename the name of the module 
+     * @param replaceMode if <code>true</code> this is for module replacement, 
+     *      if <code>false</code> it is form module deletion
+     * @return a Vector with modulenames that depends on the overgiven module
+     * @throws CmsException in case something goes wrong
      */
     public Vector deleteCheckDependencies(String modulename, boolean replaceMode) throws CmsException {
-
         Vector result = new Vector();
         if (replaceMode)
             return result;
@@ -385,20 +425,27 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * This method checks for conflicting files before the deletion of a module.
-     * It uses several Vectors to return the different conflicting files.
+     * This method checks for conflicting files before the deletion of a module,
+     * it uses several Vectors to return the different conflicting files.<p>
      *
-     * @param modulename the name of the module that should be deleted.
-     * @param filesWithProperty a return value. The files that are marked with the module-property for this module.
-     * @param missingFiles a return value. The files that are missing.
-     * @param wrongChecksum a return value. The files that should be deleted but have another checksum as at import-time.
-     * @param filesInUse a return value. The files that should be deleted but are in use by other modules.
-     * @param resourcesForProject a return value. The files that should be copied to a project to delete.
+     * @param modulename the name of the module that should be deleted
+     * @param filesWithProperty the files that are marked with the module property for this module are returned in this Vector
+     * @param missingFiles the files that are missing are returned in this Vector
+     * @param wrongChecksum the files that should be deleted but have another checksum as at import time are returned in this Vector
+     * @param filesInUse the files that should be deleted but are in use by other modules are returned in this Vector
+     * @param resourcesForProject the files that should be copied to a project to delete are returned in this Vector
+     * @throws CmsException in case something goes wrong
      */
-    public void deleteGetConflictingFileNames(String modulename, Vector filesWithProperty, Vector missingFiles, Vector wrongChecksum, Vector filesInUse, Vector resourcesForProject) throws CmsException {
-
-        // Module type SIMPLE? Just do nothing here, as SIMPLE modules do not support file conflicts
-        if (this.getModuleType(modulename).equals(I_CmsRegistry.C_MODULE_TYPE_SIMPLE))
+    public void deleteGetConflictingFileNames(
+        String modulename, 
+        Vector filesWithProperty, 
+        Vector missingFiles, 
+        Vector wrongChecksum, 
+        Vector filesInUse, 
+        Vector resourcesForProject
+    ) throws CmsException {
+        // module type SIMPLE - just do nothing here, as SIMPLE modules do not require file conflict checks
+        if (this.getModuleType(modulename).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE))
             return;
 
         // the files and checksums for this module
@@ -496,10 +543,21 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * @see com.opencms.file.I_CmsRegistry#deleteModule(String, Vector, boolean, I_CmsReport)
+     * Deletes a module.<p>
+     *
+     * @param module the name of the module to be deleted
+     * @param exclusion a Vector with resource names that should be excluded from this deletion
+     * @param replaceMode if <code>true</code> this is for module replacement, so no dependencies will be checked
+     * @param report a report for the output
+     * 
+     * @throws CmsException in case of an error during deletion
      */
-    public synchronized void deleteModule(String module, Vector exclusion, boolean replaceMode, I_CmsReport report) throws CmsException {
-
+    public synchronized void deleteModule(
+        String module, 
+        Vector exclusion, 
+        boolean replaceMode, 
+        I_CmsReport report
+    ) throws CmsException {
         if (DEBUG > 2)
             System.err.println("[" + this.getClass().getName() + ".deleteModule()] Starting to delete module " + module);
 
@@ -510,7 +568,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 
         // check if the user is allowed to perform this action
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'deleteModule'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
 
         // check, if deletion is allowed
@@ -524,15 +582,15 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
         Class eventClass = getModuleMaintenanceEventClass(module);
 
         try {
-            Class declaration[] = { CmsObject.class };
-            Object arguments[] = { m_cms };
-            Method eventMethod = eventClass.getMethod(C_DELETE_EVENT_METHOD_NAME, declaration);
+            Class declaration[] = {CmsObject.class};
+            Object arguments[] = {m_cms};
+            Method eventMethod = eventClass.getMethod(C_EVENT_METHOD_NAME_DELETE, declaration);
             eventMethod.invoke(null, arguments);
         } catch (Exception exc) {
             // ignore the exception.
         }
 
-        if (this.getModuleType(module).equals(I_CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
+        if (this.getModuleType(module).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
             // SIMPLE module: Just delete all the folders of the module
 
             // check if additional resources outside the system/modules/{exportName} folder were 
@@ -639,14 +697,15 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Deletes the view for a module.
+     * Deletes the view for a module.<p>
      *
-     * @param String the name of the module.
+     * @param modulename the name of the module
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void deleteModuleView(String modulename) throws CmsException {
+    public void deleteModuleView(String modulename) throws CmsSecurityException {
         // check if the user is allowed to perform this action
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'deleteModuleView'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
         try {
             Element module = getModuleElement(modulename);
@@ -663,22 +722,27 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * This method exports a module to the filesystem.<p>
+     * This method exports a module to the file system.<p>
      *
-     * @param moduleName the name of the module to be exported
-     * @param String[] an array of resources to be exported
-     * @param fileName the name of the file to write the export to
+     * @param modulename the name of the module to be exported
+     * @param resources an array of resources to be exported
+     * @param filename the name of the file to write the export to
      * @param report a report for the output 
      * 
      * @throws CmsException in case of an error during export
      */
-    public void exportModule(String moduleName, String[] resources, String fileName, I_CmsReport report) throws CmsException {
+    public void exportModule(
+        String modulename, 
+        String[] resources, 
+        String filename, 
+        I_CmsReport report
+    ) throws CmsException {
         // check if the user is allowed to import a module.
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'exportModule'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
         // remove all "uploaddate" and "uploadby" nodes
-        Element module = getModuleElement(moduleName);
+        Element module = getModuleElement(modulename);
         Element moduleCopy = (Element)module.cloneNode(true);
         NodeList list = moduleCopy.getChildNodes();
         for (int i = (list.getLength() - 1); i >= 0; i--) {
@@ -688,49 +752,83 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
             }
         }
         // export the module using the standard export        
-        new CmsExport(m_cms, fileName, resources, false, false, moduleCopy, false, 0, report);
+        new CmsExport(m_cms, filename, resources, false, false, moduleCopy, false, 0, report);
     }
 
     /**
-     * Gets a description of this content type.
-     * For OpenCms internal use only.<p>
-     * 
-     * @return Content type description.
+     * @see com.opencms.template.A_CmsXmlContent#getContentDescription()
      */
     public String getContentDescription() {
         return "Registry";
     }
 
     /**
-     * This method returns the author of the module.
+     * Returns all exportpoints and paths.<p>
      *
-     * @param String the name of the module.
-     * @return java.lang.String the author of the module.
+     * @return Hashtable the exportpoints and the paths
+     */
+    public Hashtable getExportpoints() {
+        if ((m_exportpoints == null) || (m_exportpoints.size() == 0)) {
+            m_exportpoints = new Hashtable();
+            try {
+                NodeList exportpointsList = m_xmlReg.getElementsByTagName("exportpoint");
+                for (int x = 0; x < exportpointsList.getLength(); x++) {
+                    try {
+                        String curExportpoint = ((Element)exportpointsList.item(x)).getElementsByTagName("source").item(0).getFirstChild().getNodeValue();
+                        String curPath = ((Element)exportpointsList.item(x)).getElementsByTagName("destination").item(0).getFirstChild().getNodeValue();
+                        m_exportpoints.put(curExportpoint, com.opencms.boot.CmsBase.getAbsoluteWebPath(curPath));
+                    } catch (Exception exc) {
+                        exc.printStackTrace();
+                        // ignore the exception and try the next view-pair.
+                    }
+                }
+            } catch (Exception exc) {
+                exc.printStackTrace();
+                // no return-values
+            }
+        }
+        return m_exportpoints;
+    }
+
+    /**
+     * Returns a list of all configured import classes.<p>
+     *
+     * @return a list of all configured import classes
+     */
+    public List getImportClasses() {
+        return getSystemSubNodesClasses("importclasses");
+    }
+
+    /**
+     * Returns the author of a module.<p>
+     *
+     * @param modulename the name of the module
+     * @return the author of the module
      */
     public String getModuleAuthor(String modulename) {
         return getModuleData(modulename, "author");
     }
 
     /**
-     * This method returns the email of author of the module.
+     * Returns the email of a module author.<p>
      *
-     * @param String the name of the module.
-     * @return java.lang.String the email of author of the module.
+     * @param modulename the name of the module
+     * @return the email of the module author
      */
     public String getModuleAuthorEmail(String modulename) {
         return getModuleData(modulename, "email");
     }
 
     /**
-     * Gets the create date of the module.
+     * Gets the create date of a module.<p>
      *
-     * @param String the name of the module.
-     * @return long the create date of the module.
+     * @param modulename the name of the module
+     * @return the create date of the module
      */
-    public long getModuleCreateDate(String modulname) {
+    public long getModuleCreateDate(String modulename) {
         long retValue = -1;
         try {
-            String value = getModuleData(modulname, "creationdate");
+            String value = getModuleData(modulename, "creationdate");
             retValue = m_dateFormat.parse(value).getTime();
         } catch (Exception exc) {
             // ignore the exception - reg is not welformed
@@ -739,17 +837,17 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     *  Private method to return module data like author.
+     * Returns module data.<p>
      *
-     * @param String modulename the name of the module.
-     * @param String dataName the name of the tag to get the data from.
-     * @return String the value for the requested data.
+     * @param modulename the name of the module
+     * @param dataname the name of the tag to get the data from
+     * @return the value for the requested data
      */
-    private String getModuleData(String module, String dataName) {
+    private String getModuleData(String modulename, String dataname) {
         String retValue = null;
         try {
-            Element moduleElement = getModuleElement(module);
-            retValue = moduleElement.getElementsByTagName(dataName).item(0).getFirstChild().getNodeValue();
+            Element moduleElement = getModuleElement(modulename);
+            retValue = moduleElement.getElementsByTagName(dataname).item(0).getFirstChild().getNodeValue();
         } catch (Exception exc) {
             // ignore the exception - registry is not wellformed
         }
@@ -757,15 +855,20 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns the module dependencies for the module.
+     * Returns the module dependencies for a module.<p>
      *
-     * @param module String the name of the module to check.
-     * @param modules Vector in this parameter the names of the dependend modules will be returned.
-     * @param minVersions Vector in this parameter the minimum versions of the dependend modules will be returned.
-     * @param maxVersions Vector in this parameter the maximum versions of the dependend modules will be returned.
+     * @param modulename the name of the module to check
+     * @param modules in this Vector the names of the dependend modules are returned
+     * @param minVersions in this Vector the minimum versions of the dependend modules are returned
+     * @param maxVersions in this Vector the maximum versions of the dependend modules are returned
      * @return int the amount of dependencies for the module will be returned.
      */
-    public int getModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions) {
+    public int getModuleDependencies(
+        String modulename, 
+        Vector modules, 
+        Vector minVersions, 
+        Vector maxVersions
+    ) {
         try {
             Element module = getModuleElement(modulename);
             Element dependencies = (Element) (module.getElementsByTagName("dependencies").item(0));
@@ -782,39 +885,40 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns the description of the module.
+     * Returns the description of a module.<p>
      *
-     * @param String the name of the module.
-     * @return java.lang.String the description of the module.
+     * @param modulename the name of the module
+     * @return the description of the module
      */
-    public String getModuleDescription(String module) {
-        return getModuleData(module, "description");
+    public String getModuleDescription(String modulename) {
+        return getModuleData(modulename, "description");
     }
 
     /**
-     * Gets the url to the documentation of the module.
+     * Gets the uri to the documentation of a module.<p>
      *
-     * @param String the name of the module.
-     * @return java.lang.String the url to the documentation of the module.
+     * @param modulename the name of the module
+     * @return the uri to the documentation of the module
      */
     public String getModuleDocumentPath(String modulename) {
         return getModuleData(modulename, "documentation");
     }
 
     /**
-     *  Private method to get the Element representing a module.
+     * Private method to get the Element representing a module in the registry.<p>
      *
-     * @param String the name of the module.
-     *
+     * @param name the name of the module
+     * @return the Element representing a module in the registry
      */
     private Element getModuleElement(String name) {
         return (Element)m_modules.get(name);
     }
 
     /**
-     * Reads the module-element from the manifest in the zip-file.
-     * @param string the name of the zip-file to read from.
-     * @return the module-element or null if it dosen't exist.
+     * Reads the module element from the manifest in the zip file.<p>
+     * 
+     * @param filename the name of the zip file to read from
+     * @return the module element or null if it dosen't exist
      */
     private Element getModuleElementFromImport(String filename) {
         try {
@@ -834,12 +938,42 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns all filenames and hashcodes belonging to the module.
+     * Returns all exportable classes for all modules.<p>
      *
-     * @param String modulname the name of the module.
-     * @param retNames the names of the resources belonging to the module.
-     * @param retCodes the hashcodes of the resources belonging to the module.
-     * @return the amount of entrys.
+     * @param classes in this Hashtable the classes will be returned
+     * @return int the number of classes
+     */
+    public int getModuleExportables(Hashtable classes) {
+        try {
+            Enumeration allModules = m_modules.keys();
+            while (allModules.hasMoreElements()) {
+                String nicename = (String)allModules.nextElement();
+                NodeList classList = ((Element)m_modules.get(nicename)).getElementsByTagName("publishclass");
+                if (classList.getLength() > 0) {
+                    try {
+                        String classname = ((Element)classList.item(0)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+                        if (classname != null && !"".equalsIgnoreCase(classname)) {
+                            classes.put(nicename, classname);
+                        }
+                    } catch (Exception exc) {
+                        // ignore the exception and try the next view-pair.
+                    }
+                }
+            }
+            return classes.size();
+        } catch (Exception exc) {
+            // no return-values
+            return 0;
+        }
+    }
+
+    /**
+     * Returns all filenames and hashcodes belonging to a module.<p>
+     *
+     * @param modulename the name of the module
+     * @param retNames in this Vector the names of the resources belonging to the module are returned
+     * @param retCodes in this Vector the hashcodes of the resources belonging to the module are returned
+     * @return the number of entries
      */
     public int getModuleFiles(String modulename, Vector retNames, Vector retCodes) {
         try {
@@ -857,12 +991,36 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns the class, that receives all maintenance-events for the module.
+     * Returns all lifecycle classes for all modules.<p>
      *
-     * @param String the name of the module.
-     * @return java.lang.Class that receives all maintenance-events for the module.
+     * @param classes in this Vector the classes will be returned
+     * @return int the number of classes
      */
-    public Class getModuleMaintenanceEventClass(String modulname) {
+    public int getModuleLifeCycle(Vector classes) {
+        try {
+            NodeList classList = m_xmlReg.getElementsByTagName("lifecycleclass");
+            for (int x = 0; x < classList.getLength(); x++) {
+                try {
+                    String name = ((Element)classList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+                    classes.addElement(name);
+                } catch (Exception exc) {
+                    // ignore the exception and try the next view-pair.
+                }
+            }
+            return classes.size();
+        } catch (Exception exc) {
+            // no return-values
+            return 0;
+        }
+    }
+
+    /**
+     * Returns the class that receives all maintenance events for the module.<p>
+     *
+     * @param modulename the name of the module
+     * @return the Class that receives all maintenance events for the module
+     */
+    public Class getModuleMaintenanceEventClass(String modulename) {
         try {
 
             Vector repositories = new Vector();
@@ -872,7 +1030,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
             }
             ClassLoader loader = this.getClass().getClassLoader();
 
-            return loader.loadClass(getModuleData(modulname, "maintenance_class"));
+            return loader.loadClass(getModuleData(modulename, "maintenance_class"));
 
         } catch (Exception exc) {
             return null;
@@ -880,40 +1038,40 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns the name of the class, that receives all maintenance-events for the module.
+     * Returns the name of the class that receives all maintenance events for a module.
      *
-     * @param String the name of the module.
-     * @return java.lang.Class that receives all maintenance-events for the module.
+     * @param modulename the name of the module
+     * @return name of the class that receives all maintenance events for the module
      */
-    public String getModuleMaintenanceEventName(String modulname) {
-        return getModuleData(modulname, "maintenance_class");
+    public String getModuleMaintenanceEventName(String modulename) {
+        return getModuleData(modulename, "maintenance_class");
     }
 
     /**
-     * Returns the names of all available modules.
+     * Returns the names of all available modules.<p>
      *
-     * @return Enumeration the names of all available modules.
+     * @return the names of all available modules
      */
     public Enumeration getModuleNames() {
         return m_modules.keys();
     }
 
     /**
-     * Returns the nice name of the module.
+     * Returns the nice name of a module.<p>
      *
-     * @param String the name of the module.
-     * @return java.lang.String the description of the module.
+     * @param modulename the name of the module
+     * @return the description of the module
      */
-    public String getModuleNiceName(String module) {
-        return getModuleData(module, "nicename");
+    public String getModuleNiceName(String modulename) {
+        return getModuleData(modulename, "nicename");
     }
 
     /**
-     * Gets a parameter for a module.
+     * Returns a parameter for a module.<p>
      *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @return value java.lang.String the value to set for the parameter.
+     * @param modulename the name of the module
+     * @param parameter the name of the parameter to set
+     * @return the value to set for the parameter
      */
     public String getModuleParameter(String modulename, String parameter) {
         String retValue = null;
@@ -927,12 +1085,12 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Gets a parameter for a module.
+     * Returns a parameter for a module.<p>
      *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param defaultValue the default value.
-     * @return value java.lang.String the value to set for the parameter.
+     * @param modulename the name of the module
+     * @param parameter the name of the parameter to set
+     * @param defaultValue the default value
+     * @return the value to set for the parameter
      */
     public String getModuleParameter(String modulename, String parameter, String defaultValue) {
         String retValue = null;
@@ -947,86 +1105,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @return boolean the value for the parameter in the module.
-     */
-    public boolean getModuleParameterBoolean(String modulname, String parameter) {
-        if ("true".equals(getModuleParameter(modulname, parameter).toLowerCase())) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public Boolean getModuleParameterBoolean(String modulname, String parameter, Boolean defaultValue) {
-        return new Boolean(getModuleParameterBoolean(modulname, parameter, defaultValue.booleanValue()));
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public boolean getModuleParameterBoolean(String modulname, String parameter, boolean defaultValue) {
-        if (getModuleParameterBoolean(modulname, parameter)) {
-            return true;
-        } else {
-            return defaultValue;
-        }
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public byte getModuleParameterByte(String modulname, String parameter) {
-        return Byte.parseByte(getModuleParameter(modulname, parameter));
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public byte getModuleParameterByte(String modulname, String parameter, byte defaultValue) {
-        return Byte.parseByte(getModuleParameter(modulname, parameter, Byte.toString(defaultValue)));
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public Byte getModuleParameterByte(String modulname, String parameter, Byte defaultValue) {
-        return new Byte(getModuleParameterByte(modulname, parameter, defaultValue.byteValue()));
-    }
-
-    /**
-     * Returns a description for parameter in a module.
+     * Returns a description for parameter in a module.<p>
      *
      * @param modulname String the name of the module.
      * @param parameter String the name of the parameter.
@@ -1038,52 +1117,17 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
             Element param = getModuleParameterElement(modulname, parameter);
             retValue = param.getElementsByTagName("description").item(0).getFirstChild().getNodeValue();
         } catch (Exception exc) {
-            // ignore the exception - parameter is not existent
+            // ignore the exception - parameter does not exist
         }
         return retValue;
     }
 
     /**
-     * Returns a parameter for a module.
+     * Private method to get a XML element for a parameter in a module.<p>
      *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @return boolean the value for the parameter in the module.
-     */
-    public double getModuleParameterDouble(String modulname, String parameter) {
-        return Double.valueOf(getModuleParameter(modulname, parameter)).doubleValue();
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public double getModuleParameterDouble(String modulname, String parameter, double defaultValue) {
-        return Double.valueOf(getModuleParameter(modulname, parameter, Double.toString(defaultValue))).doubleValue();
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public Double getModuleParameterDouble(String modulname, String parameter, Double defaultValue) {
-        return new Double(getModuleParameterDouble(modulname, parameter, defaultValue.doubleValue()));
-    }
-
-    /**
-     * Private method to get them XML-Element for a parameter in a module.
-     *
-     * @param modulename String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @return Element the XML-Element corresponding to the parameter.
+     * @param modulename the name of the module
+     * @param parameter the name of the parameter
+     * @return the XML element corresponding to the parameter
      */
     private Element getModuleParameterElement(String modulename, String parameter) {
         Element retValue = null;
@@ -1106,116 +1150,10 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns a parameter for a module.
+     * Returns all parameter names for a module.<p>
      *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public float getModuleParameterFloat(String modulname, String parameter) {
-        return Float.valueOf(getModuleParameter(modulname, parameter)).floatValue();
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public float getModuleParameterFloat(String modulname, String parameter, float defaultValue) {
-        return Float.valueOf(getModuleParameter(modulname, parameter, Float.toString(defaultValue))).floatValue();
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public Float getModuleParameterFloat(String modulname, String parameter, Float defaultValue) {
-        return new Float(getModuleParameterFloat(modulname, parameter, defaultValue.floatValue()));
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @return boolean the value for the parameter in the module.
-     */
-    public int getModuleParameterInteger(String modulname, String parameter) {
-        return Integer.parseInt(getModuleParameter(modulname, parameter));
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public int getModuleParameterInteger(String modulname, String parameter, int defaultValue) {
-        return Integer.parseInt(getModuleParameter(modulname, parameter, Integer.toString(defaultValue)));
-    }
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public Integer getModuleParameterInteger(String modulname, String parameter, Integer defaultValue) {
-        return new Integer(getModuleParameterInteger(modulname, parameter, defaultValue.intValue()));
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public long getModuleParameterLong(String modulname, String parameter) {
-        return Long.valueOf(getModuleParameter(modulname, parameter)).longValue();
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public long getModuleParameterLong(String modulname, String parameter, long defaultValue) {
-        return Long.valueOf(getModuleParameter(modulname, parameter, Long.toString(defaultValue))).longValue();
-    }
-
-    /**
-     * Returns a parameter for a module.
-     *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
-     */
-    public Long getModuleParameterLong(String modulname, String parameter, Long defaultValue) {
-        return new Long(getModuleParameterLong(modulname, parameter, defaultValue.longValue()));
-    }
-
-    /**
-     * Gets all parameter-names for a module.
-     *
-     * @param modulename String the name of the module.
-     * @return value String[] the names of the parameters for a module.
+     * @param modulename the name of the module
+     * @return the names of the parameters for a module
      */
     public String[] getModuleParameterNames(String modulename) {
         String[] retValue = null;
@@ -1234,34 +1172,34 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns a parameter for a module.
+     * Returns a parameter for a module.<p>
      *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @return boolean the value for the parameter in the module.
+     * @param modulename the name of the module
+     * @param parameter the name of the parameter
+     * @return the value for the parameter in the module
      */
-    public String getModuleParameterString(String modulname, String parameter) {
-        return getModuleParameter(modulname, parameter);
+    public String getModuleParameterString(String modulename, String parameter) {
+        return getModuleParameter(modulename, parameter);
     }
 
     /**
-     * Returns a parameter for a module.
+     * Returns a parameter for a module.<p>
      *
-     * @param modulname String the name of the module.
-     * @param parameter String the name of the parameter.
-     * @param default the default value.
-     * @return boolean the value for the parameter in the module.
+     * @param modulename the name of the module
+     * @param parameter the name of the parameter
+     * @param defaultValue the default value
+     * @return the value for the parameter in the module, or the default in case the value is not set
      */
-    public String getModuleParameterString(String modulname, String parameter, String defaultValue) {
-        return getModuleParameter(modulname, parameter, defaultValue);
+    public String getModuleParameterString(String modulename, String parameter, String defaultValue) {
+        return getModuleParameter(modulename, parameter, defaultValue);
     }
 
     /**
-     * This method returns the type of a parameter in a module.
+     * This method returns the type of a parameter in a module.<p>
      *
-     * @param modulename the name of the module.
-     * @param parameter the name of the parameter.
-     * @return the type of the parameter.
+     * @param modulename the name of the module
+     * @param parameter the name of the parameter
+     * @return the type of the parameter
      */
     public String getModuleParameterType(String modulename, String parameter) {
         String retValue = null;
@@ -1275,167 +1213,11 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns all repositories for a module.
+     * Returns all publishable classes for all modules.<p>
      *
-     * @param String modulname the name of the module.
-     * @return java.lang.String[] the reprositories of a module.
-     */
-    public java.lang.String[] getModuleRepositories(String modulename) {
-        String[] retValue = null;
-        try {
-            Element module = getModuleElement(modulename);
-            Element repository = (Element) (module.getElementsByTagName("repository").item(0));
-            NodeList paths = repository.getElementsByTagName("path");
-            retValue = new String[paths.getLength()];
-            for (int i = 0; i < paths.getLength(); i++) {
-                retValue[i] = paths.item(i).getFirstChild().getNodeValue();
-            }
-        } catch (Exception exc) {
-            // ignore the exception - reg is not welformed
-        }
-        return retValue;
-    }
-
-    /**
-     * Returns the upload-date for the module.
-     *
-     * @param String the name of the module.
-     * @return java.lang.String the upload-date for the module.
-     */
-    public long getModuleUploadDate(String modulname) {
-        long retValue = -1;
-        try {
-            //String value = getModuleData(modulname, "uploaddate");
-            Element moduleElement = getModuleElement(modulname);
-            NodeList allUploadDates = moduleElement.getElementsByTagName("uploaddate");
-            String value = allUploadDates.item((allUploadDates.getLength() - 1)).getFirstChild().getNodeValue();
-
-            retValue = m_dateFormat.parse(value).getTime();
-        } catch (Exception exc) {
-            // ignore the exception - reg is not welformed
-        }
-        return retValue;
-    }
-
-    /**
-     * Returns the user-name of the user who had uploaded the module.
-     *
-     * @param String the name of the module.
-     * @return java.lang.String the user-name of the user who had uploaded the module.
-     */
-    public String getModuleUploadedBy(String modulename) {
-        String retValue = "";
-        try {
-            Element moduleElement = getModuleElement(modulename);
-            NodeList allUploadDates = moduleElement.getElementsByTagName("uploadedby");
-            retValue = allUploadDates.item((allUploadDates.getLength() - 1)).getFirstChild().getNodeValue();
-        } catch (Exception e) {}
-        return retValue;
-    }
-
-    /**
-     * This method returns the version of the module.
-     *
-     * @param String the name of the module.
-     * @return java.lang.String the version of the module.
-     */
-    public float getModuleVersion(String modulename) {
-        float retValue = -1;
-        try {
-            retValue = Float.parseFloat(getModuleData(modulename, "version"));
-        } catch (Exception exc) {
-            // ignore the exception - reg is not welformed
-        }
-        return retValue;
-    }
-
-    /**
-     * Returns the name of the view, that is implemented by the module.
-     *
-     * @param String the name of the module.
-     * @return java.lang.String the name of the view, that is implemented by the module.
-     */
-    public String getModuleViewName(String modulename) {
-        String retValue = null;
-        try {
-            Element module = getModuleElement(modulename);
-            Element view = (Element) (module.getElementsByTagName("view").item(0));
-            retValue = view.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-        } catch (Exception exc) {
-            // ignore the exception - reg is not welformed
-        }
-        return retValue;
-    }
-
-    /**
-     * Returns the url to the view-url for the module within the system.
-     *
-     * @param String the name of the module.
-     * @return java.lang.String the view-url to the module.
-     */
-    public String getModuleViewUrl(String modulname) {
-        String retValue = null;
-        try {
-            Element module = getModuleElement(modulname);
-            Element view = (Element) (module.getElementsByTagName("view").item(0));
-            retValue = view.getElementsByTagName("url").item(0).getFirstChild().getNodeValue();
-        } catch (Exception exc) {
-            // ignore the exception - reg is not welformed
-        }
-        return retValue;
-    }
-
-    /**
-     * Returns all lifecycle classes for all modules.
-     *
-     * @param Vector classes in this parameter the classes will be returned.
-     * @return int the amount of classes.
-     */
-    public int getModuleLifeCycle(Vector classes) {
-        try {
-            NodeList classList = m_xmlReg.getElementsByTagName("lifecycleclass");
-            for (int x = 0; x < classList.getLength(); x++) {
-                try {
-                    String name = ((Element)classList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-                    classes.addElement(name);
-                } catch (Exception exc) {
-                    // ignore the exception and try the next view-pair.
-                }
-            }
-            return classes.size();
-        } catch (Exception exc) {
-            // no return-values
-            return 0;
-        }
-    }
-
-    /**
-     * Returns the name of the class, that contains the publish method of the module.
-     *
-     * @param String the name of the module.
-     * @return java.lang.Class that contains the publish method of the module.
-     */
-    public String getModulePublishClass(String modulname) {
-        String retValue = null;
-        try {
-            Element module = getModuleElement(modulname);
-            Element publishClass = (Element) (module.getElementsByTagName("publishclass").item(0));
-            retValue = publishClass.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-        } catch (Exception exc) {
-            // ignore the exception - reg is not welformed
-        }
-        return retValue;
-    }
-
-    /**
-     * Returns all publishable classes for all modules.
-     *
-     * @param Vector classes in this parameter the classes will be returned.
-     * @param String requiredMethod The value of the methodTag for the different
-     *      methods useable after publish.
-     *          null means the standard publish method
-     *          "linkpublish" means the method that needs the changed links as parameter (i.e. search)
-     * @return int the amount of classes.
+     * @param classes in this Vector the classes will be returned
+     * @param requiredMethod the value of the methodTag for the different methods useable after publish
+     * @return the number of classes
      */
     public int getModulePublishables(Vector classes, String requiredMethod) {
         if (requiredMethod == null) {
@@ -1466,63 +1248,167 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns all exportable classes for all modules.
+     * Returns the name of the class that contains the publish method of a module.<p>
      *
-     * @param Hashtable classes in this parameter the classes will be returned.
-     * @return int the amount of classes.
+     * @param modulename the name of the module
+     * @return the name of the Class that contains the publish method of the module
      */
-    public int getModuleExportables(Hashtable classes) {
+    public String getModulePublishClass(String modulename) {
+        String retValue = null;
         try {
-            Enumeration allModules = m_modules.keys();
-            while (allModules.hasMoreElements()) {
-                String nicename = (String)allModules.nextElement();
-                NodeList classList = ((Element)m_modules.get(nicename)).getElementsByTagName("publishclass");
-                if (classList.getLength() > 0) {
-                    try {
-                        String classname = ((Element)classList.item(0)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-                        if (classname != null && !"".equalsIgnoreCase(classname)) {
-                            classes.put(nicename, classname);
-                        }
-                    } catch (Exception exc) {
-                        // ignore the exception and try the next view-pair.
-                    }
-                }
-            }
-            return classes.size();
+            Element module = getModuleElement(modulename);
+            Element publishClass = (Element) (module.getElementsByTagName("publishclass").item(0));
+            retValue = publishClass.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
         } catch (Exception exc) {
-            // no return-values
-            return 0;
+            // ignore the exception - reg is not welformed
         }
+        return retValue;
     }
 
     /**
-     * Returns all exportpoints and paths.
+     * Returns all repositories for a module.<p>
      *
-     *
-     * @return Hashtable The exportpoints and the paths.
+     * @param modulename the name of the module
+     * @return the reprositories of a module
      */
-    public Hashtable getExportpoints() {
-        if ((m_exportpoints == null) || (m_exportpoints.size() == 0)) {
-            m_exportpoints = new Hashtable();
-            try {
-                NodeList exportpointsList = m_xmlReg.getElementsByTagName("exportpoint");
-                for (int x = 0; x < exportpointsList.getLength(); x++) {
-                    try {
-                        String curExportpoint = ((Element)exportpointsList.item(x)).getElementsByTagName("source").item(0).getFirstChild().getNodeValue();
-                        String curPath = ((Element)exportpointsList.item(x)).getElementsByTagName("destination").item(0).getFirstChild().getNodeValue();
-                        m_exportpoints.put(curExportpoint, com.opencms.boot.CmsBase.getAbsoluteWebPath(curPath));
-                    } catch (Exception exc) {
-                        exc.printStackTrace();
-                        // ignore the exception and try the next view-pair.
-                    }
-                }
-            } catch (Exception exc) {
-                exc.printStackTrace();
-                // no return-values
+    public String[] getModuleRepositories(String modulename) {
+        String[] retValue = null;
+        try {
+            Element module = getModuleElement(modulename);
+            Element repository = (Element) (module.getElementsByTagName("repository").item(0));
+            NodeList paths = repository.getElementsByTagName("path");
+            retValue = new String[paths.getLength()];
+            for (int i = 0; i < paths.getLength(); i++) {
+                retValue[i] = paths.item(i).getFirstChild().getNodeValue();
             }
+        } catch (Exception exc) {
+            // ignore the exception - reg is not welformed
+        }
+        return retValue;
+    }
+
+    /**
+     * Returns the value of the "type" node for a module.<p>
+     * 
+     * @param modulename the name of the module
+     * @return the value of the "type" node for a module
+     */
+    public String getModuleType(String modulename) {
+        String moduleType = null;
+
+        try {
+            if ((moduleType = this.getModuleData(modulename, "type")) == null) {
+                // the default type is "traditional"
+                moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+            }
+        } catch (Exception e) {
+            // the default type is "traditional"
+            moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
         }
 
-        return m_exportpoints;
+        return moduleType;
+    }
+
+    /**
+     * Returns the upload date for a module.<p>
+     *
+     * @param modulename the name of the module
+     * @return the upload date for the module
+     */
+    public long getModuleUploadDate(String modulename) {
+        long retValue = -1;
+        try {
+            //String value = getModuleData(modulname, "uploaddate");
+            Element moduleElement = getModuleElement(modulename);
+            NodeList allUploadDates = moduleElement.getElementsByTagName("uploaddate");
+            String value = allUploadDates.item((allUploadDates.getLength() - 1)).getFirstChild().getNodeValue();
+
+            retValue = m_dateFormat.parse(value).getTime();
+        } catch (Exception exc) {
+            // ignore the exception - reg is not welformed
+        }
+        return retValue;
+    }
+
+    /**
+     * Returns the user name of the user who uploaded a module.<p>
+     *
+     * @param modulename the name of the module
+     * @return the user name of the user who uploaded the module
+     */
+    public String getModuleUploadedBy(String modulename) {
+        String retValue = "";
+        try {
+            Element moduleElement = getModuleElement(modulename);
+            NodeList allUploadDates = moduleElement.getElementsByTagName("uploadedby");
+            retValue = allUploadDates.item((allUploadDates.getLength() - 1)).getFirstChild().getNodeValue();
+        } catch (Exception e) {
+            // nothing we can do about this
+        }
+        return retValue;
+    }
+
+    /**
+     * This method returns the version of a module.<p>
+     *
+     * @param modulename the name of the module
+     * @return the version of the module
+     */
+    public float getModuleVersion(String modulename) {
+        float retValue = -1;
+        try {
+            retValue = Float.parseFloat(getModuleData(modulename, "version"));
+        } catch (Exception exc) {
+            // ignore the exception - reg is not welformed
+        }
+        return retValue;
+    }
+
+    /**
+     * Returns the name of the view that is implemented by a module.<p>
+     *
+     * @param modulename the name of the module
+     * @return the name of the view that is implemented by the module
+     */
+    public String getModuleViewName(String modulename) {
+        String retValue = null;
+        try {
+            Element module = getModuleElement(modulename);
+            Element view = (Element) (module.getElementsByTagName("view").item(0));
+            retValue = view.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+        } catch (Exception exc) {
+            // ignore the exception - reg is not welformed
+        }
+        return retValue;
+    }
+
+    /**
+     * Returns the url to the view for a module within the system.<p>
+     *
+     * @param modulename the name of the module
+     * @return the view url of the module
+     */
+    public String getModuleViewUrl(String modulename) {
+        String retValue = null;
+        try {
+            Element module = getModuleElement(modulename);
+            Element view = (Element) (module.getElementsByTagName("view").item(0));
+            retValue = view.getElementsByTagName("url").item(0).getFirstChild().getNodeValue();
+        } catch (Exception exc) {
+            // ignore the exception - reg is not welformed
+        }
+        return retValue;
+    }
+
+    /**
+     * Returns the class name of the property dialog handler as String.<p>
+     * 
+     * @return the class name of the property dialog handler
+     */
+    public String getPropertyDialogHandler() {
+        Element systemElement = getSystemElement();
+        String className = systemElement.getElementsByTagName("propertydialoghandler").item(0).getFirstChild().getFirstChild().getNodeValue();
+        return className;
     }
 
     /**
@@ -1546,7 +1432,27 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * @see com.opencms.file.I_CmsRegistry#getResourceTypes()
+     * Returns a list of all configured resource init classes.<p>
+     *
+     * @return a list of all configured resource init classes
+     */
+    public List getResourceInit() {
+        return getSystemSubNodes("resourceinit");
+    }
+
+    /**
+     * Returns a list of all configured resource loader classes.<p>
+     *
+     * @return a list of all configured resource loader classes
+     */
+    public List getResourceLoaders() {
+        return getSystemSubNodes("resourceloader");
+    }
+
+    /**
+     * Returns a list of all configured resource type classes.<p>
+     *
+     * @return a list of all configured resource type classes
      */
     public List getResourceTypes() {
         List result = new ArrayList();
@@ -1570,42 +1476,21 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * @see com.opencms.file.I_CmsRegistry#getResourceLoaders()
-     */
-    public List getResourceLoaders() {
-        return getSystemSubNodes("resourceloader");
-    }
-
-    /**
-     * @see com.opencms.file.I_CmsRegistry#getSynchronizeModifications()
+     * Returns a list of all configured synchronize modification classes.<p>
+     *
+     * @return a list of all configured synchronize modification classes
      */
     public List getSynchronizeModifications() {
         return getSystemSubNodesClasses("synchronizemodifications");
     }
 
     /**
-     * Returns a list of all configured import classes.<p>
-     *
-     * @return a list of all configured import classes
+     * Return the XML "system" node Element from the registry for further
+     * processing in another class.
+     * @return the system node.
      */
-    public List getImportClasses() {
-        return getSystemSubNodesClasses("importclasses");
-    }
-
-    /**
-     * @see com.opencms.file.I_CmsRegistry#getCheckResource()
-     */
-    public List getResourceInit() {
-        return getSystemSubNodes("resourceinit");
-    }
-    
-    /**
-     * @see com.opencms.file.I_CmsRegistry#getPropertyDialogHandler()
-     */
-    public String getPropertyDialogHandler() {
-        Element systemElement = getSystemElement();
-        String className = systemElement.getElementsByTagName("propertydialoghandler").item(0).getFirstChild().getFirstChild().getNodeValue();
-        return className;
+    public Element getSystemElement() {
+        return (Element)m_xmlReg.getElementsByTagName("system").item(0);
     }
 
     /**
@@ -1619,21 +1504,21 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
         try {
             Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
             NodeList resTypes = systemElement.getElementsByTagName(node).item(0).getChildNodes();
-            if (resTypes!=null) {
+            if (resTypes != null) {
                 for (int x = 0; x < resTypes.getLength(); x++) {
                     try {
                         String className = ((Element)resTypes.item(x)).getFirstChild().getNodeValue();
                         result.add(className);
                     } catch (Exception exc) {
                         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
-                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". Error getting registry node "+node);
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". Error getting registry node " + node);
                     }
                 }
             }
         } catch (Exception e) {
             // no returnvalues
             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". Error getting registry node "+node);
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". Error getting registry node " + node);
         }
         return result;
     }
@@ -1663,12 +1548,13 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns a value for a system-key.
+     * Returns a value for a system key.<p>
+     * 
      * E.g. <code>&lt;system&gt;&lt;mailserver&gt;mail.server.com&lt;/mailserver&gt;&lt;/system&gt;</code>
-     * can be requested via <code>getSystemValue("mailserver");</code> and returns "mail.server.com".
+     * can be requested via <code>getSystemValue("mailserver");</code> and returns "mail.server.com".<p>
      *
-     * @param String the key of the system-value.
-     * @return the value for that system-key.
+     * @param key the key of the system value
+     * @return the system value for that key
      */
     public String getSystemValue(String key) {
         String retValue = null;
@@ -1682,10 +1568,10 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns a vector of value for a system-key.
+     * Returns a vector of values for a system key.<p>
      *
-     * @param String the key of the system-value.
-     * @return the values for that system-key.
+     * @param key the key of the system value
+     * @return the values for that system key
      */
     public Hashtable getSystemValues(String key) {
         Hashtable retValue = new Hashtable();
@@ -1702,22 +1588,13 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Return the XML "system" node Element from the registry for further
-     * processing in another class.
-     * @return the system node.
-     */
-    public Element getSystemElement() {
-        return (Element)m_xmlReg.getElementsByTagName("system").item(0);
-    }
-
-    /**
-     * Returns all views and korresponding urls for all modules.
+     * Returns all views and uris for all installed modules.<p>
      *
-     * @param String[] views in this parameter the views will be returned.
-     * @param String[] urls in this parameters the urls vor the views will be returned.
-     * @return int the amount of views.
+     * @param views in this Vector the views will be returned
+     * @param uris in this Vector the uris vor the views will be returned
+     * @return int the number of views
      */
-    public int getViews(Vector views, Vector urls) {
+    public int getViews(Vector views, Vector uris) {
         try {
             NodeList viewList = m_xmlReg.getElementsByTagName("view");
             for (int x = 0; x < viewList.getLength(); x++) {
@@ -1725,7 +1602,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
                     String name = ((Element)viewList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
                     String url = ((Element)viewList.item(x)).getElementsByTagName("url").item(0).getFirstChild().getNodeValue();
                     views.addElement(name);
-                    urls.addElement(url);
+                    uris.addElement(url);
                 } catch (Exception exc) {
                     // ignore the exception and try the next view-pair.
                 }
@@ -1746,22 +1623,29 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns true if the user has write-access to the registry. Otherwise false.
-     * @return true if access is granted, else false.
+     * Returns true if the current user has write-access to the registry,
+     * which is only the case if he is a menber of the default 
+     * administrators group.<p>
+
+     * @return true if the current user has write-access to the registry
      */
     private boolean hasAccess() {
-        // check the access - only the admin has write access.
-        boolean retValue = false;
         try {
-            retValue = m_cms.isAdmin();
+            return m_cms.isAdmin();
         } catch (CmsException exc) {
             // ignore the exception - no access granted
         }
-        return retValue;
+        return false;
     }
 
     /**
-     * @see com.opencms.file.I_CmsRegistry#importCheckDependencies(String, boolean)
+     * Checks the dependencies for a new or replaced module.<p>
+     * 
+     * @param moduleZip the name of the zipfile for the new module.
+     * @param replaceMode if <code>true</code> this is for module replacement, 
+     *      if <code>false</code> it is form module deletion
+     * @return a Vector with dependencies that are not fullfilled.
+     * @throws CmsException in case something goes wrong
      */
     public Vector importCheckDependencies(String moduleZip, boolean replaceMode) throws CmsException {
         Element newModule = getModuleElementFromImport(moduleZip);
@@ -1769,14 +1653,15 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     *  Checks for files that already exist in the system but should be replaced by the module.
+     * Checks for files that already exist in the system but should be replaced by the module.<p>
      *
-     *  @param moduleZip The name of the zip-file to import.
-     *  @return The complete paths to the resources that have conflicts.
+     * @param moduleZip the name of the zip-file to import
+     * @return the complete paths to the resources that have conflicts
+     * @throws CmsException in case something goes wrong
      */
     public Vector importGetConflictingFileNames(String moduleZip) throws CmsException {
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'getConflictingFileNames'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
 
         CmsImport cmsImport = new CmsImport(m_cms, moduleZip, "/", new CmsShellReport());
@@ -1784,7 +1669,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Returns a map of information about the module to be imported.<p>
+     * Returns a map with information about the module to be imported.<p>
      *
      * The map contains the following values:
      * <ul>
@@ -1824,14 +1709,15 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     *  Returns all files that are needed to create a project for the module-import.
+     * Returns all files that are required to create a project for the module import.<p>
      *
-     *  @param moduleZip The name of the zip-file to import.
-     *  @return The complete paths for resources that should be in the import-project.
+     * @param moduleZip the name of the zip file to import
+     * @return the complete paths for resources that should be in the import project
+     * @throws CmsException in case something goes wrong
      */
     public Vector importGetResourcesForProject(String moduleZip) throws CmsException {
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'importGetResourcesForProject'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
 
         CmsImport cmsImport = new CmsImport(m_cms, moduleZip, "/", new CmsShellReport());
@@ -1839,16 +1725,21 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     *  Imports a module. This method is synchronized, so only one module can be imported at on time.
+     * Imports a module.<p>
      *
-     *  @param moduleZip the name of the zip-file to import from.
-     *  @param exclusion a Vector with resource-names that should be excluded from this import.
+     * @param moduleZip the name of the zip file to import from
+     * @param exclusion a Vector with resource names that should be excluded from this import
+     * @param report a report to write the progess information to
+     * @throws CmsException in case something goes wrong
      */
-    public synchronized void importModule(String moduleZip, Vector exclusion, I_CmsReport report) throws CmsException {
+    public synchronized void importModule(
+        String moduleZip, 
+        Vector exclusion, 
+        I_CmsReport report
+    ) throws CmsException {
         // check if the user is allowed to import a module.
-
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'importModule'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
         Element newModule = getModuleElementFromImport(moduleZip);
         String newModuleName = newModule.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
@@ -1874,7 +1765,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
         // check for module type SIMPLE or TRADITIONAL
         boolean isSimpleModule = false;
         try {
-            isSimpleModule = I_CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(newModule.getElementsByTagName("type").item(0).getFirstChild().getNodeValue());
+            isSimpleModule = CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(newModule.getElementsByTagName("type").item(0).getFirstChild().getNodeValue());
         } catch (Exception e) {
             // value of "isSimpleModule" will be false, so traditional module is the default         
         }
@@ -1902,7 +1793,8 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
             // get list of unwanted properties
             List deleteProperties = (List)OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
             if ((deleteProperties != null) && (deleteProperties.contains("module"))) {
-                propertyName = propertyValue = null;
+                propertyName = null;
+                propertyValue = null;
             } else {
                 propertyName = "module";
                 propertyValue = newModuleName + "_" + newModuleVersion;
@@ -1961,9 +1853,9 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
         Class eventClass = getModuleMaintenanceEventClass(newModuleName);
 
         try {
-            Class declaration[] = { CmsObject.class };
-            Object arguments[] = { m_cms };
-            Method eventMethod = eventClass.getMethod(C_UPLOAD_EVENT_METHOD_NAME, declaration);
+            Class declaration[] = {CmsObject.class};
+            Object arguments[] = {m_cms};
+            Method eventMethod = eventClass.getMethod(C_EVENT_METHOD_NAME_UPLOAD, declaration);
             eventMethod.invoke(null, arguments);
         } catch (Exception exc) {
             // ignore the exception.
@@ -1971,7 +1863,10 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     *  Inits all member-variables for the instance.
+     * Initializes all registry values.<p>
+     * 
+     * @param booting indicates if the system is booting 
+     * @throws Exception in case something goes wrong
      */
     private void init(boolean booting) throws Exception {
         // clear and refill the hashtable for the exportpoints
@@ -1993,17 +1888,19 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Checks if the module exists already in the repository.
+     * Checks if a module already exists in the repository.<p>
      *
-     * @param String the name of the module.
-     * @return true if the module exists, else false.
+     * @param modulename the name of the module
+     * @return true if the module exists, false otherwise
      */
     public boolean moduleExists(String modulename) {
         return m_modules.containsKey(modulename);
     }
 
     /**
-     *  Saves the registry and stores it to the registry-file.
+     * Saves the registry and stores it to the registry-file.<p>
+     * 
+     * @throws CmsException in case of IO errors
      */
     private void saveRegistry() throws CmsException {
         try {
@@ -2022,55 +1919,60 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * This method sets the author of the module.
+     * Sets the author of a module.<p>
      *
-     * @param String the name of the module.
-     * @param String the name of the author.
+     * @param modulename the name of the module
+     * @param author the name of the module author
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setModuleAuthor(String modulename, String author) throws CmsException {
+    public void setModuleAuthor(String modulename, String author) throws CmsSecurityException {
         setModuleData(modulename, "author", author);
     }
 
     /**
-     * This method sets the email of author of the module.
+     * Sets the email of the author of a module.<p>
      *
-     * @param String the name of the module.
-     * @param String the email of author of the module.
+     * @param modulename the name of the module
+     * @param email the email of the author of the module
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setModuleAuthorEmail(String modulename, String email) throws CmsException {
+    public void setModuleAuthorEmail(String modulename, String email) throws CmsSecurityException {
         setModuleData(modulename, "email", email);
     }
 
     /**
-     * Sets the create date of the module.
+     * Sets the create date of a module.<p>
      *
-     * @param String the name of the module.
-     * @param long the create date of the module.
+     * @param modulename the name of the module.
+     * @param createdate the create date of the module.
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setModuleCreateDate(String modulname, long createdate) throws CmsException {
-        setModuleData(modulname, "creationdate", m_dateFormat.format(new Date(createdate)));
+    public void setModuleCreateDate(String modulename, long createdate) throws CmsSecurityException {
+        setModuleData(modulename, "creationdate", m_dateFormat.format(new Date(createdate)));
     }
 
     /**
-     * Sets the create date of the module.
+     * Sets the create date of a module.<p>
      *
-     * @param String the name of the module.
-     * @param String the create date of the module. Format: mm.dd.yyyy
+     * @param modulename the name of the module
+     * @param createdate the create date of the module
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setModuleCreateDate(String modulname, String createdate) throws CmsException {
-        setModuleData(modulname, "creationdate", createdate);
+    public void setModuleCreateDate(String modulename, String createdate) throws CmsSecurityException {
+        setModuleData(modulename, "creationdate", createdate);
     }
 
     /**
-     * Private method to set module data like author.
+     * Sets module data values.<p>
      *
-     * @param String modulename the name of the module.
-     * @param String dataName the name of the tag to set the data for.
-     * @param String the value to be set.
+     * @param module the name of the module
+     * @param dataName the name of the tag to set the data for
+     * @param value the value to be set
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    private void setModuleData(String module, String dataName, String value) throws CmsException {
+    private void setModuleData(String module, String dataName, String value) throws CmsSecurityException {
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'setModuleData'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
         try {
             Element moduleElement = getModuleElement(module);
@@ -2084,16 +1986,22 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Sets the module dependencies for the module.
+     * Sets the dependencies for a module.<p>
      *
-     * @param module String the name of the module to check.
-     * @param modules Vector in this parameter the names of the dependend modules will be returned.
-     * @param minVersions Vector in this parameter the minimum versions of the dependend modules will be returned.
-     * @param maxVersions Vector in this parameter the maximum versions of the dependend modules will be returned.
+     * @param modulename the name of the module to check
+     * @param modules in this Vector the names of the dependend modules will be returned
+     * @param minVersions in this Vector the minimum versions of the dependend modules will be returned
+     * @param maxVersions in this Vector the maximum versions of the dependend modules will be returned
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions) throws CmsException {
+    public void setModuleDependencies(
+        String modulename, 
+        Vector modules, 
+        Vector minVersions, 
+        Vector maxVersions
+    ) throws CmsSecurityException {
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'setModuleDependencies'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
         try {
             Element module = getModuleElement(modulename);
@@ -2127,206 +2035,61 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Sets the description of the module.
+     * Sets the description of a module.<p>
      *
-     * @param String the name of the module.
-     * @param String the description of the module.
+     * @param modulename the name of the module
+     * @param description the description of the module
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setModuleDescription(String module, String description) throws CmsException {
-        setModuleData(module, "description", description);
+    public void setModuleDescription(String modulename, String description) throws CmsSecurityException {
+        setModuleData(modulename, "description", description);
     }
 
     /**
-     * Sets the url to the documentation of the module.
+     * Sets the uri to the documentation of a module.<p>
      *
-     * @param String the name of the module.
-     * @param java.lang.String the url to the documentation of the module.
+     * @param modulename the name of the module
+     * @param uri the uri to the documentation of the module.
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setModuleDocumentPath(String modulename, String url) throws CmsException {
-        setModuleData(modulename, "documentation", url);
+    public void setModuleDocumentPath(String modulename, String uri) throws CmsSecurityException {
+        setModuleData(modulename, "documentation", uri);
     }
 
     /**
-     * Sets the classname, that receives all maintenance-events for the module.
+     * Sets the classname that receives all maintenance events for a module.<p>
      *
-     * @param String the name of the module.
-     * @param String the name of the class that receives all maintenance-events for the module.
+     * @param modulename the name of the module
+     * @param classname the name of the class that receives all maintenance-events for the module
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setModuleMaintenanceEventClass(String modulname, String classname) throws CmsException {
-        setModuleData(modulname, "maintenance_class", classname);
+    public void setModuleMaintenanceEventClass(String modulename, String classname) throws CmsSecurityException {
+        setModuleData(modulename, "maintenance_class", classname);
     }
 
     /**
-     * Sets the classname, that contains the publish method of the module.
+     * Sets the description of a module.<p>
      *
-     * @param String the name of the module.
-     * @param String the name of the class that contains the publish method of the module.
+     * @param modulename the name of the module
+     * @param nicename the nice name of the module
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setModulePublishClass(String modulname, String classname) throws CmsException {
-        try {
-            Element module = getModuleElement(modulname);
-            Element pubClass = (Element) (module.getElementsByTagName("publishclass").item(0));
-
-            // delete all subnodes
-            while (pubClass.hasChildNodes()) {
-                pubClass.removeChild(pubClass.getFirstChild());
-            }
-
-            // create the new repository
-            Element path = m_xmlReg.createElement("name");
-            path.appendChild(m_xmlReg.createTextNode(classname));
-            pubClass.appendChild(path);
-
-            // save the registry
-            saveRegistry();
-        } catch (Exception exc) {
-            // ignore the exception - reg is not welformed
-        }
+    public void setModuleNiceName(String modulename, String nicename) throws CmsSecurityException {
+        setModuleData(modulename, "nicename", nicename);
     }
 
     /**
-     * Sets the description of the module.
+     * Sets a parameter for a module.<p>
      *
-     * @param String the name of the module.
-     * @param String the nice name of the module.
-     */
-    public void setModuleNiceName(String module, String nicename) throws CmsException {
-        setModuleData(module, "nicename", nicename);
-    }
-
-    /**
-     * Sets a parameter for a module.
-     *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param the value to set for the parameter.
-     */
-    public void setModuleParameter(String modulename, String parameter, byte value) throws CmsException {
-        setModuleParameter(modulename, parameter, value + "");
-    }
-
-    /**
-     * Sets a parameter for a module.
-     *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param the value to set for the parameter.
-     */
-    public void setModuleParameter(String modulename, String parameter, double value) throws CmsException {
-        setModuleParameter(modulename, parameter, value + "");
-    }
-
-    /**
-     * Sets a parameter for a module.
-     *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param the value to set for the parameter.
-     */
-    public void setModuleParameter(String modulename, String parameter, float value) throws CmsException {
-        setModuleParameter(modulename, parameter, value + "");
-    }
-
-    /**
-     * Sets a parameter for a module.
-     *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param the value to set for the parameter.
-     */
-    public void setModuleParameter(String modulename, String parameter, int value) throws CmsException {
-        setModuleParameter(modulename, parameter, value + "");
-    }
-
-    /**
-     * Sets a parameter for a module.
-     *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param the value to set for the parameter.
-     */
-    public void setModuleParameter(String modulename, String parameter, long value) throws CmsException {
-        setModuleParameter(modulename, parameter, value + "");
-    }
-
-    /**
-     * Sets a parameter for a module.
-     *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param the value to set for the parameter.
-     */
-    public void setModuleParameter(String modulename, String parameter, Boolean value) throws CmsException {
-        setModuleParameter(modulename, parameter, value.toString());
-    }
-
-    /**
-     * Sets a parameter for a module.
-     *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param the value to set for the parameter.
-     */
-    public void setModuleParameter(String modulename, String parameter, Byte value) throws CmsException {
-        setModuleParameter(modulename, parameter, value.toString());
-    }
-
-    /**
-     * Sets a parameter for a module.
-     *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param the value to set for the parameter.
-     */
-    public void setModuleParameter(String modulename, String parameter, Double value) throws CmsException {
-        setModuleParameter(modulename, parameter, value.toString());
-    }
-
-    /**
-     * Sets a parameter for a module.
-     *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param the value to set for the parameter.
-     */
-    public void setModuleParameter(String modulename, String parameter, Float value) throws CmsException {
-        setModuleParameter(modulename, parameter, value.toString());
-    }
-
-    /**
-     * Sets a parameter for a module.
-     *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param the value to set for the parameter.
-     */
-    public void setModuleParameter(String modulename, String parameter, Integer value) throws CmsException {
-        setModuleParameter(modulename, parameter, value.toString());
-    }
-
-    /**
-     * Sets a parameter for a module.
-     *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param the value to set for the parameter.
-     */
-    public void setModuleParameter(String modulename, String parameter, Long value) throws CmsException {
-        setModuleParameter(modulename, parameter, value.toString());
-    }
-
-    /**
-     * Sets a parameter for a module.
-     *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param value java.lang.String the value to set for the parameter.
+     * @param modulename the name of the module
+     * @param parameter the name of the parameter to set
+     * @param value the value to set for the parameter
+     * @throws CmsException in case something goes wrong
      */
     public void setModuleParameter(String modulename, String parameter, String value) throws CmsException {
         // check if the user is allowed to set parameters
-
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'setModuleParameter'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
         try {
             Element param = getModuleParameterElement(modulename, parameter);
@@ -2339,9 +2102,9 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
             // try to invoke the event-method for setting parameters on this class.
             Class eventClass = getModuleMaintenanceEventClass(modulename);
             try {
-                Class declaration[] = { CmsObject.class };
-                Object arguments[] = { m_cms };
-                Method eventMethod = eventClass.getMethod(C_UPDATE_PARAMETER_EVENT_METHOD_NAME, declaration);
+                Class declaration[] = {CmsObject.class};
+                Object arguments[] = {m_cms};
+                Method eventMethod = eventClass.getMethod(C_EVENT_METHOD_NAME_UPDATE_PARAMETER, declaration);
                 eventMethod.invoke(null, arguments);
             } catch (Exception exc) {
                 // ignore the exception.
@@ -2355,28 +2118,24 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Sets a parameter for a module.
+     * Sets the dependencies for a module.<p>
      *
-     * @param modulename java.lang.String the name of the module.
-     * @param parameter java.lang.String the name of the parameter to set.
-     * @param the value to set for the parameter.
-     */
-    public void setModuleParameter(String modulename, String parameter, boolean value) throws CmsException {
-        setModuleParameter(modulename, parameter, value + "");
-    }
-
-    /**
-     * Sets the module dependencies for the module.
-     *
-     * @param module String the name of the module to check.
+     * @param modulename the name of the module to check
      * @param names Vector with parameternames
      * @param descriptions Vector with parameterdescriptions
      * @param types Vector with parametertypes (string, float,...)
-     * @param values Vector with defaultvalues for parameters
+     * @param values Vector with default values for parameters
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setModuleParameterdef(String modulename, Vector names, Vector descriptions, Vector types, Vector values) throws CmsException {
+    public void setModuleParameterdef(
+        String modulename, 
+        Vector names, 
+        Vector descriptions, 
+        Vector types, 
+        Vector values
+    ) throws CmsSecurityException {
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'setModuleParameterdef'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
         try {
             Element module = getModuleElement(modulename);
@@ -2410,9 +2169,9 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
             // try to invoke the event-method for setting parameters on this class.
             Class eventClass = getModuleMaintenanceEventClass(modulename);
             try {
-                Class declaration[] = { CmsObject.class };
-                Object arguments[] = { m_cms };
-                Method eventMethod = eventClass.getMethod(C_UPDATE_PARAMETER_EVENT_METHOD_NAME, declaration);
+                Class declaration[] = {CmsObject.class};
+                Object arguments[] = {m_cms};
+                Method eventMethod = eventClass.getMethod(C_EVENT_METHOD_NAME_UPDATE_PARAMETER, declaration);
                 eventMethod.invoke(null, arguments);
             } catch (Exception exc) {
                 // ignore the exception.
@@ -2423,14 +2182,44 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Sets all repositories for a module.
+     * Sets the classname for the publish method of a module.<p>
      *
-     * @param String modulname the name of the module.
-     * @param String[] the reprositories of a module.
+     * @param modulname the name of the module
+     * @param classname the name of the class that contains the publish method of the module
+     * @throws CmsException in case something goes wrong
      */
-    public void setModuleRepositories(String modulename, String[] repositories) throws CmsException {
+    public void setModulePublishClass(String modulname, String classname) throws CmsException {
+        try {
+            Element module = getModuleElement(modulname);
+            Element pubClass = (Element) (module.getElementsByTagName("publishclass").item(0));
+
+            // delete all subnodes
+            while (pubClass.hasChildNodes()) {
+                pubClass.removeChild(pubClass.getFirstChild());
+            }
+
+            // create the new repository
+            Element path = m_xmlReg.createElement("name");
+            path.appendChild(m_xmlReg.createTextNode(classname));
+            pubClass.appendChild(path);
+
+            // save the registry
+            saveRegistry();
+        } catch (Exception exc) {
+            // ignore the exception - reg is not welformed
+        }
+    }
+
+    /**
+     * Sets all repositories for a module.<p>
+     *
+     * @param modulename the name of the module
+     * @param repositories the reprositories of a module
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
+     */
+    public void setModuleRepositories(String modulename, String[] repositories) throws CmsSecurityException {
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'setModuleRepositories'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
         try {
             Element module = getModuleElement(modulename);
@@ -2456,10 +2245,48 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * This method sets the version of the module.
+     * Sets the type for a given module.<p>
+     * 
+     * @param modulename the name of the module
+     * @param moduletype the new type of the module
+     */
+    public void setModuleType(String modulename, String moduletype) {
+        if (moduletype == null || moduletype.equals("")) {
+            moduletype = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+        }
+        try {
+            // for backward compatibility issues: check if the module has already
+            // a type node or not, add a type node in this case...            
+            Element moduleElement = getModuleElement(modulename);
+            NodeList list = moduleElement.getChildNodes();
+            Node typeNode = null;
+            for (int i = 0; i < list.getLength(); i++) {
+                Element e = (Element)list.item(i);
+                if ("type".equals(e.getNodeName())) {
+                    typeNode = (Node)e;
+                    i = list.getLength();
+                }
+            }
+
+            if (typeNode == null) {
+                Element newTypeNode = m_xmlReg.createElement("type");
+                Node firstNode = moduleElement.getFirstChild();
+                moduleElement.insertBefore(newTypeNode, firstNode);
+            }
+
+            // now it is save to set the value of the module type node                    
+            this.setModuleData(modulename, "type", moduletype);
+        } catch (CmsException e) {
+            // we don't have valid permissions for this operation
+        }
+    }
+
+    /**
+     * This method sets the version of the module.<p>
      *
-     * @param modulename the name of the module.
-     * @param version the version of the module.
+     * @param modulename the name of the module
+     * @param version the version of the module
+     * @throws CmsException in case something goes wrong
      */
     public void setModuleVersion(String modulename, String version) throws CmsException {
         if (version == null)
@@ -2474,15 +2301,16 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Sets a view for a module
+     * Sets a view for a module.<p>
      *
-     * @param String the name of the module.
-     * @param String the name of the view, that is implemented by the module.
-     * @param String the url of the view, that is implemented by the module.
+     * @param modulename the name of the module
+     * @param viewname the name of the module view
+     * @param viewuri the uri in the vfs of the module view
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setModuleView(String modulename, String viewname, String viewurl) throws CmsException {
+    public void setModuleView(String modulename, String viewname, String viewuri) throws CmsSecurityException {
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'setModuleView'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
         try {
             Element module = getModuleElement(modulename);
@@ -2492,7 +2320,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
                 view.appendChild(m_xmlReg.createElement("url"));
             }
             setTagValue(view.getElementsByTagName("name").item(0), viewname);
-            setTagValue(view.getElementsByTagName("url").item(0), viewurl);
+            setTagValue(view.getElementsByTagName("url").item(0), viewuri);
             saveRegistry();
         } catch (Exception exc) {
             // ignore the exception - reg is not welformed
@@ -2500,14 +2328,15 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Public method to set system values.
+     * Public method to set system values.<p>
      *
-     * @param String dataName the name of the tag to set the data for.
-     * @param String the value to be set.
+     * @param dataName the name of the tag to set the data for
+     * @param value the value to be set
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setSystemValue(String dataName, String value) throws CmsException {
+    public void setSystemValue(String dataName, String value) throws CmsSecurityException {
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'setSystemValue'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
         try {
             Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
@@ -2515,7 +2344,9 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
             try {
                 Node oldTag = systemElement.getElementsByTagName(dataName).item(0);
                 oldTag.getParentNode().removeChild(oldTag);
-            } catch (Exception exc) {}
+            } catch (Exception exc) {
+                // nothing we can do about this
+            }
             Element newTag = m_xmlReg.createElement(dataName);
             systemElement.appendChild(newTag);
             Node tag = systemElement.getElementsByTagName(dataName).item(0);
@@ -2530,12 +2361,13 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     /**
      * Public method to set system values with hashtable.
      *
-     * @param String dataName the name of the tag to set the data for.
-     * @param Hashtable the value to be set.
+     * @param dataName the name of the tag to set the data for
+     * @param values the values to set
+     * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
-    public void setSystemValues(String dataName, Hashtable values) throws CmsException {
+    public void setSystemValues(String dataName, Hashtable values) throws CmsSecurityException {
         if (!hasAccess()) {
-            throw new CmsException("No access to perform the action 'setSystemValues'", CmsException.C_REGISTRY_ERROR);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
         try {
             Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
@@ -2543,7 +2375,9 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
             try {
                 Node oldTag = systemElement.getElementsByTagName(dataName).item(0);
                 oldTag.getParentNode().removeChild(oldTag);
-            } catch (Exception exc) {}
+            } catch (Exception exc) {
+                // nothing we can do about this
+            }
             Element newTag = m_xmlReg.createElement(dataName);
             systemElement.appendChild(newTag);
             Node parentTag = systemElement.getElementsByTagName(dataName).item(0);
@@ -2563,9 +2397,10 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     }
 
     /**
-     * Creates or replaces a textvalue for a parent node.
-     * @param Node to set the textvalue.
-     * @param String the value to be set.
+     * Creates or replaces a text value for a parent node.<p>
+     * 
+     * @param node the node to use
+     * @param value the value to set
      */
     private void setTagValue(Node node, String value) {
         if (node.hasChildNodes()) {
@@ -2576,63 +2411,6 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
             } else {
                 node.appendChild(m_xmlReg.createTextNode(value));
             }
-        }
-    }
-
-    /**
-     * Returns the value of the "type" node of a module subtree in the registry.
-     * @return the value of the "type" node of a module
-     */
-    public String getModuleType(String theModulename) {
-        String moduleType = null;
-
-        try {
-            if ((moduleType = this.getModuleData(theModulename, "type")) == null) {
-                // the default type is "traditional"
-                moduleType = I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
-            }
-        } catch (Exception e) {
-            // the default type is "traditional"
-            moduleType = I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
-        }
-
-        return moduleType;
-    }
-
-    /**
-     * Sets the type for a given module.<p>
-     * 
-     * @param theModuleName the name of the module
-     * @param theModuleType the new type of the module
-     */
-    public void setModuleType(String theModulename, String theModuleType) {
-        if (theModuleType == null || theModuleType.equals("")) {
-            theModuleType = I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
-        }
-        try {
-            // for backward compatibility issues: check if the module has already
-            // a type node or not, add a type node in this case...            
-            Element moduleElement = getModuleElement(theModulename);
-            NodeList list = moduleElement.getChildNodes();
-            Node typeNode = null;
-            for (int i = 0; i < list.getLength(); i++) {
-                Element e = (Element)list.item(i);
-                if ("type".equals(e.getNodeName())) {
-                    typeNode = (Node)e;
-                    i = list.getLength();
-                }
-            }
-
-            if (typeNode == null) {
-                Element newTypeNode = m_xmlReg.createElement("type");
-                Node firstNode = moduleElement.getFirstChild();
-                moduleElement.insertBefore(newTypeNode, firstNode);
-            }
-
-            // now it is save to set the value of the module type node                    
-            this.setModuleData(theModulename, "type", theModuleType);
-        } catch (CmsException e) {
-            // we don't have valid permissions for this operation
         }
     }
 }

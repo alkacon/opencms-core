@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/08/20 16:01:56 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import com.opencms.file.I_CmsRegistry;
+import com.opencms.file.CmsRegistry;
 import com.opencms.report.A_CmsReportThread;
 import com.opencms.util.Utils;
 
@@ -84,7 +84,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
 		}
         
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        I_CmsRegistry reg = cms.getRegistry();
+        CmsRegistry reg = cms.getRegistry();
         I_CmsSession session = cms.getRequestContext().getSession(true);
 
 		String step = (String) parameters.get(C_ACTION);
@@ -121,7 +121,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
 			int resourceCount = 0;
 			int i = 0;
 
-			if (reg.getModuleType(moduleName).equals(I_CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
+			if (reg.getModuleType(moduleName).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
 				// SIMPLE MODULE
 				if (DEBUG > 0) {
 					System.out.println(moduleName + " is a simple module");
@@ -205,7 +205,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
                 } 
             }                            
             
-            String filename = CmsBase.getAbsolutePath(cms.readPackagePath()) + "/" + I_CmsRegistry.C_MODULE_PATH + moduleName + "_" + reg.getModuleVersion(moduleName);
+            String filename = CmsBase.getAbsolutePath(cms.readPackagePath()) + "/" + CmsRegistry.C_MODULE_PATH + moduleName + "_" + reg.getModuleVersion(moduleName);
             A_CmsReportThread doExport = new CmsAdminModuleExportThread(cms, reg, moduleName, resourcen, filename);
             doExport.start();
             session.putValue(C_MODULE_THREAD, doExport);

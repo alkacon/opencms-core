@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/08/20 16:01:56 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import com.opencms.file.I_CmsRegistry;
+import com.opencms.file.CmsRegistry;
 import com.opencms.report.A_CmsReportThread;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -92,7 +92,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
         // get the registry
-        I_CmsRegistry reg = cms.getRegistry();
+        CmsRegistry reg = cms.getRegistry();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String errorNavigation = (String)parameters.get(C_FROMERRORPAGE);
         if(errorNavigation != null) {
@@ -123,7 +123,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 new File(
                     com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
                         + "/"
-                        + I_CmsRegistry.C_MODULE_PATH);
+                        + CmsRegistry.C_MODULE_PATH);
             if (!modulefolder.exists()) {
                 boolean success = modulefolder.mkdir();
                 if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)
@@ -133,7 +133,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                         "[CmsExportPointDriver] Couldn't create folder "
                             + com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
                             + "/"
-                            + I_CmsRegistry.C_MODULE_PATH
+                            + CmsRegistry.C_MODULE_PATH
                             + ".");
                 }
             }
@@ -178,7 +178,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 new File(
                     com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
                         + "/"
-                        + I_CmsRegistry.C_MODULE_PATH);
+                        + CmsRegistry.C_MODULE_PATH);
             if (!discFolder.exists()) {
                 boolean success = discFolder.mkdir();
                 if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)
@@ -187,7 +187,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                         "[CmsExportPointDriver] Couldn't create folder "
                             + com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
                             + "/"
-                            + I_CmsRegistry.C_MODULE_PATH
+                            + CmsRegistry.C_MODULE_PATH
                             + ".");
                 }
             }
@@ -195,7 +195,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             // now write the file into the modules dierectory in the exportpaht
             File discFile =
                 new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
-                    + "/" + I_CmsRegistry.C_MODULE_PATH + filename);
+                    + "/" + CmsRegistry.C_MODULE_PATH + filename);
             try {
 
                 // write the new file to disk
@@ -210,7 +210,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 importModule(cms, reg, xmlTemplateDocument, session,
                     com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
                         + "/"
-                        + I_CmsRegistry.C_MODULE_PATH
+                        + CmsRegistry.C_MODULE_PATH
                         + filename);
                         
         } else if ("serverupload".equals(step)) {
@@ -223,7 +223,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                     importModule(cms, reg, xmlTemplateDocument, session,
                         com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
                             + "/"
-                            + I_CmsRegistry.C_MODULE_PATH
+                            + CmsRegistry.C_MODULE_PATH
                             + filename);
             }
         }
@@ -239,12 +239,12 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
      * @param zipName the complete path and name of the zip-file to import.
      * @return the new templateSelector.
      */
-    private String importModule(CmsObject cms, I_CmsRegistry reg, CmsXmlTemplateFile xmlDocument, I_CmsSession session, String zipName) throws CmsException {
+    private String importModule(CmsObject cms, CmsRegistry reg, CmsXmlTemplateFile xmlDocument, I_CmsSession session, String zipName) throws CmsException {
         String nav = (String)session.getValue(C_MODULE_NAV);
         Vector conflictFiles = null;
         String moduleName = null;
         boolean importNewModule = true;
-        String moduleType = I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+        String moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
         
         if(nav == null) {
             // this is the first go. Try to import the module and if it dont't work return the corresponding errorpage
@@ -254,7 +254,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             moduleType = (String)moduleInfo.get("type");
             
             if(reg.moduleExists(moduleName)) {
-                if (! I_CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(moduleType)) {
+                if (! CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(moduleType)) {
                     // not a simple module, can not be replaced
                     xmlDocument.setData("name", moduleName);
                     xmlDocument.setData("version", "" + reg.getModuleVersion(moduleName));
@@ -279,7 +279,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 session.removeValue(C_MODULE_NAV);
                 return C_ERRORDEP;
             }
-            if (! I_CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(moduleType)) {
+            if (! CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(moduleType)) {
                 conflictFiles = reg.importGetConflictingFileNames(zipName);
                 if (!conflictFiles.isEmpty()) {
                     session.putValue(C_SESSION_MODULE_VECTOR, conflictFiles);

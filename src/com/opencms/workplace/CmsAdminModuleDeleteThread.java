@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
- * Date   : $Date: 2003/08/25 15:12:18 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
-import com.opencms.file.I_CmsRegistry;
+import com.opencms.file.CmsRegistry;
 import com.opencms.report.A_CmsReportThread;
 import com.opencms.report.CmsHtmlReport;
 import com.opencms.report.I_CmsReport;
@@ -48,7 +48,7 @@ import java.util.Vector;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
@@ -56,7 +56,7 @@ public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
     private String m_moduleName;
     private Vector m_conflictFiles;
     private Vector m_projectFiles;
-    private I_CmsRegistry m_registry;
+    private CmsRegistry m_registry;
     private CmsObject m_cms;
     private I_CmsReport m_report;
     private boolean m_replaceMode;
@@ -74,7 +74,7 @@ public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
      * @param projectFiles vector of project files
      * @param replaceMode the replace mode
      */
-    public CmsAdminModuleDeleteThread(CmsObject cms, I_CmsRegistry reg, String moduleName, Vector conflictFiles, Vector projectFiles, boolean replaceMode) {
+    public CmsAdminModuleDeleteThread(CmsObject cms, CmsRegistry reg, String moduleName, Vector conflictFiles, Vector projectFiles, boolean replaceMode) {
         super("OpenCms: Module deletion of " + moduleName);
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);

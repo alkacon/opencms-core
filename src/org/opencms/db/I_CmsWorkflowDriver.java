@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/08/25 09:10:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,12 @@
 
 package org.opencms.db;
 
+import org.opencms.workflow.CmsTask;
+import org.opencms.workflow.CmsTaskLog;
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
-import com.opencms.file.CmsTask;
-import com.opencms.file.CmsTaskLog;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
 
@@ -45,7 +46,7 @@ import java.util.Vector;
  * Definitions of all required workflow driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/08/25 09:10:43 $
+ * @version $Revision: 1.8 $ $Date: 2003/08/30 11:30:08 $
  * @since 5.1
  */
 public interface I_CmsWorkflowDriver {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
- * Date   : $Date: 2003/08/29 16:12:04 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,20 +77,20 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
    /**
     * Constructor, creates a new CmsFolder object.<p>
     *
-    * @param structureId the id of the structure record
-    * @param resourceId the database Id
-    * @param parentId the database Id of the parent folder
-    * @param fileId the id of the content
-    * @param name the name (including complete path) of the resouce
+    * @param structureId the id of this resources structure record
+    * @param resourceId the id of this resources resource record
+    * @param parentId the id of this resources parent folder
+    * @param fileId the id of this resources content record
+    * @param name the filename of this resouce
     * @param type the type of this resource
-    * @param flags the flags of the resource
-    * @param projectId the project id this resource belongs to
+    * @param flags the flags of this resource
+    * @param projectId the project id this resource was last modified in
     * @param state the state of this resource
     * @param dateCreated the creation date of this resource
-    * @param userCreated the user who created the file
-    * @param dateLastModified the date of the last modification of the resource
-    * @param userLastModified the user who changed the file
-    * @param linkCount the count of vfs links
+    * @param userCreated the id of the user who created this resource
+    * @param dateLastModified the date of the last modification of this resource
+    * @param userLastModified the id of the user who did the last modification of this resource    * @param size the size of the file content of this resource
+    * @param linkCount the count of all siblings of this resource 
     */
     public CmsFolder(
         CmsUUID structureId,
@@ -131,6 +131,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
      * Clones this CmsFolder.<p>
      * 
      * @return the cloned CmsFolder
+     * @see java.lang.Object#clone()     
      */
     public Object clone() {
         return new CmsFolder(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExportThread.java,v $
- * Date   : $Date: 2003/08/14 15:37:24 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/08/30 11:30:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ import org.opencms.main.OpenCms;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
-import com.opencms.file.I_CmsRegistry;
+import com.opencms.file.CmsRegistry;
 import com.opencms.report.A_CmsReportThread;
 import com.opencms.report.CmsHtmlReport;
 import com.opencms.report.I_CmsReport;
@@ -43,13 +43,13 @@ import com.opencms.report.I_CmsReport;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleExportThread extends A_CmsReportThread {
 
     private String m_moduleName;
-    private I_CmsRegistry m_registry;
+    private CmsRegistry m_registry;
     private CmsObject m_cms;
     private String[] m_resources;
     private String m_filename;
@@ -68,7 +68,7 @@ public class CmsAdminModuleExportThread extends A_CmsReportThread {
      * @param exclusion vector of files to exclude
      * @param projectFiles vector of project files
      */
-    public CmsAdminModuleExportThread(CmsObject cms, I_CmsRegistry reg, String moduleName, String[] resources, String filename) {
+    public CmsAdminModuleExportThread(CmsObject cms, CmsRegistry reg, String moduleName, String[] resources, String filename) {
         super("OpenCms: Module export of " + moduleName);
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);

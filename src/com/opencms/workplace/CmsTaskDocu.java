@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskDocu.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/08/30 11:30:08 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,10 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workflow.CmsTaskLog;
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsTaskLog;
 import com.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Utils;
@@ -46,7 +47,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TASKDOCU&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.15 $ $Date: 2003/08/30 11:30:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
