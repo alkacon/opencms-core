@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/02/14 14:36:52 $
-* Version: $Revision: 1.220 $
+* Date   : $Date: 2002/03/07 15:51:27 $
+* Version: $Revision: 1.221 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.220 $ $Date: 2002/02/14 14:36:52 $
+ * @version $Revision: 1.221 $ $Date: 2002/03/07 15:51:27 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1384,7 +1384,7 @@ public void exportResources(String exportFile, String[] exportPaths, boolean inc
 }
 
 /**
- *
+ * Exports a resource.
  */
 public CmsFile exportResource(CmsFile file) throws CmsException {
     I_CmsResourceType rt = getResourceType(file.getType());
@@ -1708,7 +1708,8 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
     }
 
     /**
-     *
+     * Returns true, if the static export is enabled.
+     * @return true, if the static export is enabled.
      */
     public boolean isStaticExportEnabled(){
         return OpenCms.isStaticExportEnabled();
