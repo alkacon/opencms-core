@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlContentLoader.java,v $
- * Date   : $Date: 2004/09/27 17:11:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/02 10:55:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,18 +31,14 @@
 
 package org.opencms.loader;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.xml.page.CmsXmlPage;
-import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -58,7 +54,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public class CmsXmlContentLoader implements I_CmsResourceLoader {   
@@ -83,26 +79,10 @@ public class CmsXmlContentLoader implements I_CmsResourceLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public byte[] dump(CmsObject cms, CmsResource resource, String element, Locale locale, HttpServletRequest req, HttpServletResponse res)
-    throws CmsException, IOException {
+    public byte[] dump(CmsObject cms, CmsResource resource, String element, Locale locale, HttpServletRequest req, HttpServletResponse res) {
         
-        // get the absolute path of the resource
-        String absolutePath = cms.getSitePath(resource);
-        
-        // get the requested page
-        CmsXmlPage page = (CmsXmlPage)req.getAttribute(absolutePath);
-
-        if (page == null) {
-            // make sure a page is only read once (not every time for each element)
-            page = CmsXmlPageFactory.unmarshal(cms, CmsFile.upgrade(resource, cms));
-            req.setAttribute(absolutePath, page);
-        }    
-
-        // get the appropriate content and convert it to bytes
-        String value = page.getStringValue(cms, element, locale);
-        if (value != null) {
-            return value.getBytes(page.getEncoding());
-        } 
+        // TODO: implement this
+        int todo = 0;
         return new byte[0];
     }
 
@@ -194,40 +174,9 @@ public class CmsXmlContentLoader implements I_CmsResourceLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#service(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
-    public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res) 
-    throws IOException, CmsException {
+    public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res) {
         
-        // get the absolute path of the resource
-        String absolutePath = cms.getSitePath(resource);
-        
-        // get the requested page
-        CmsXmlPage page = (CmsXmlPage)req.getAttribute(absolutePath);
-            
-        if (page == null) {      
-            // make sure a page is only read once (not every time for each element)
-            page = CmsXmlPageFactory.unmarshal(cms, CmsFile.upgrade(resource, cms));
-            req.setAttribute(absolutePath, page);
-        }        
-        
-        // get the element selector
-        String element = req.getParameter(I_CmsConstants.C_PARAMETER_ELEMENT);
-        
-        // check the current locales
-        List locales = page.getLocales(element);
-        Locale locale;
-        if ((locales == null) || (locales.size() == 0)) {
-            // no content for the selected element is available
-            return;                    
-        } else { 
-            locale = OpenCms.getLocaleManager().getBestMatchingLocale(cms.getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath), locales);
-        }        
-        
-        // get the appropriate content
-        String value = page.getStringValue(cms, element, locale);
-        // append the result to the output stream
-        if (value != null) {
-            byte[] result = value.getBytes(page.getEncoding());
-            res.getOutputStream().write(result);
-        }     
+        // TODO: implement this
+        int todo = 0;
     }
 }
