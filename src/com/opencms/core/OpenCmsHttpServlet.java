@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
- * Date   : $Date: 2003/07/18 12:44:46 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2003/07/20 15:45:00 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@
  */
 
 package com.opencms.core;
+
+import org.opencms.site.CmsSite;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.CmsMain;
@@ -79,7 +81,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I_CmsLogChannels {
     
@@ -231,7 +233,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
         try {
             m_opencms.initStartupClasses(req, res);
             cms = initUser(req, res, cmsReq, cmsRes);
-            // no redirect was done - deliver the ressource normally
+            // user is initialized, now deliver the requested resource
             CmsFile file = m_opencms.initResource(cms);
             if (file != null) {
                 // a file was read, go on process it
@@ -487,16 +489,24 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
             // session exists, try to reuse the user from the session
             user = m_sessionStorage.getUserName(session.getId());
         }
-            
+                   
         if (user != null) {
             // a user name is found in the session, reuse this user
             String group = m_sessionStorage.getCurrentGroup(session.getId());
             Integer project = m_sessionStorage.getCurrentProject(session.getId());
-            String currentSite = m_sessionStorage.getCurrentSite(session.getId());
-            m_opencms.initUser(cms, cmsReq, cmsRes, user, group, currentSite, project.intValue(), m_sessionStorage);
+            // initialize the requested site root from session if available
+            String siteroot = m_sessionStorage.getCurrentSite(session.getId());
+            if (siteroot == null) {
+                // initialize site root from request
+                CmsSite site = A_OpenCms.getSiteManager().matchRequest(req);
+                siteroot = site.getSiteRoot();
+            }        
+            m_opencms.initUser(cms, cmsReq, cmsRes, user, group, siteroot, project.intValue(), m_sessionStorage);
         } else {
+            // initialize the requested site root
+            CmsSite site = A_OpenCms.getSiteManager().matchRequest(req);
             // no user name found in session or no session, login the user as "Guest"
-            m_opencms.initUser(cms, cmsReq, cmsRes, C_USER_GUEST, C_GROUP_GUEST, C_VFS_DEFAULT, C_PROJECT_ONLINE_ID, m_sessionStorage);            
+            m_opencms.initUser(cms, cmsReq, cmsRes, C_USER_GUEST, C_GROUP_GUEST, site.getSiteRoot(), C_PROJECT_ONLINE_ID, m_sessionStorage);            
             if (m_useBasicAuthentication) {
                 // check if basic authorization data was provided
                 checkBasicAuthorization(cms, session, req, res);

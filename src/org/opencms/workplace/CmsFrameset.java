@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/07/16 18:08:55 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/07/20 15:45:00 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace;
 
 import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -59,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -223,14 +224,14 @@ public class CmsFrameset extends CmsWorkplace {
         List values = new ArrayList();    
         int selectedIndex = 0;                   
 
-        List sites = CmsSite.getAvailableSites(getCms());
+        List sites = CmsSiteManager.getAvailableSites(getCms());
 
         Iterator i = sites.iterator();
         int pos = 0;
         while (i.hasNext()) {
             CmsSite site = (CmsSite)i.next();
             values.add(site.getSiteRoot());
-            options.add(site.getName());
+            options.add(site.getTitle());
             if (site.getSiteRoot().equals(getSettings().getSite())) { 
                 // this is the user's current site
                 selectedIndex = pos;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/19 01:51:38 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2003/07/20 15:45:00 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.71 $ $Date: 2003/07/19 01:51:38 $
+ * @version $Revision: 1.72 $ $Date: 2003/07/20 15:45:00 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -6491,7 +6491,8 @@ public class CmsDriverManager extends Object {
                     value.clear();
                     value.putAll(parentValue);
                     resource = CmsResource.getParent(resource);
-                    cont = (! ((resource.length() < siteRoot.length()) || (resource == null)));
+                    // cont = (! ((resource.length() < siteRoot.length()) || (resource == null)));
+                    cont = (! "/".equals(resource));
                 } while (cont);
             } else {
                 value = m_vfsDriver.readProperties(context.currentProject().getId(), res, res.getType());
@@ -6565,7 +6566,8 @@ public class CmsDriverManager extends Object {
                     siteRoot += "/";
                     do {
                         value = readProperty(context, resource, siteRoot, property, false);
-                        cont = !((value != null) || (resource.length() < siteRoot.length()) || "/".equals(resource));
+                        // cont = !((value != null) || (resource.length() < siteRoot.length()) || "/".equals(resource));
+                        cont = ((value == null) && (! "/".equals(resource)));
                         if (cont) resource = CmsResource.getParent(resource);
                     } while (cont);
                 }

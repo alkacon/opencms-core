@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/07/20 15:45:00 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.50 $ $Date: 2003/07/19 01:51:37 $
+ * @version $Revision: 1.51 $ $Date: 2003/07/20 15:45:00 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -358,6 +358,7 @@ public class CmsStaticExport implements I_CmsConstants{
                     CmsResource resource = (CmsResource)resWithProp.elementAt(i);
                     String resName = m_cms.readAbsolutePath(resource);
                     String propertyValue = m_cms.readProperty(resName, C_PROPERTY_EXPORT);
+                    resName = m_cms.getRequestContext().addSiteRoot(resName);
                     if(propertyValue != null){
                         if(propertyValue.equalsIgnoreCase("dynamic")){
                             m_dynamicExportRulesExtern.addElement("s#^"+resName+".*##");//1

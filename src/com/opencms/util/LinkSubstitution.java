@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2003/07/15 16:04:01 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/07/20 15:45:00 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -190,18 +190,25 @@ public final class LinkSubstitution {
         return body;
     }
 
-   /**
-     * parses the html content from the editor. It replaces the links in <a href=""
-     * and in <image src="". They will be replaced with ]]><LINK> path in opencms <LINK><![CDATA[
+    /**
+     * Parses the html content from the editor and replaces the links in 'a href=..'
+     * and in 'image src=..' with XMLTemplate mechanism &lt;LINK&gt; tags.<p>
+     * 
+     * @param cms the cms context
+     * @param content the content of the editor
+     * @param path the path of the file
+     * @param relativeRoot the relative root
+     * @return the parsed content
+     * @throws CmsException if something goes wrong
      */
-    public static String substituteEditorContent(CmsObject cms, String content, String path, String relativeRoot)throws CmsException{
+    public static String substituteEditorContent(CmsObject cms, String content, String path, String relativeRoot) throws CmsException {
         CmsHtmlConverter converter = new CmsHtmlConverter();
         String retValue = null;
-        if(path == null || "".equals(path)){
+        if (path == null || "".equals(path)) {
             path = "/";
         }
-        try{
-            if(converter.hasErrors(content)){
+        try {
+            if (converter.hasErrors(content)) {
                 String errors = converter.showErrors(content);
                 throw new CmsException(errors);
             }
@@ -215,38 +222,42 @@ public final class LinkSubstitution {
             converter.setServletPrefix(servletPrefix, relativeRoot);
             converter.setOriginalUrl(urltool);
             retValue = converter.convertHTML(content);
-        }catch ( Exception e ){
+        } catch (Exception e) {
             throw new CmsException("[LinkSubstitution] can't convert the editor content:"+e.toString());
         }
         return retValue;
     }
+    
     /**
      * Replaces the link according to the rules and registers it to the
-     * requestcontex if we are in export modus.
-     * @param cms. The cms object.
-     * @param link. The link to process.
-     * @return String The substituded link.
+     * requestcontex if we are in export modus.<p>
+     * 
+     * @param cms the cms context
+     * @param link the link to process
+     * @return the substituted link
      */
-    public static String getLinkSubstitution(CmsObject cms, String link){
-        if(link == null || "".equals(link)){
+    public static String getLinkSubstitution(CmsObject cms, String link) {
+        if (link == null || "".equals(link)) {
             return "";
-        }
-        if(!link.startsWith("/")){
+        }        
+        if (!link.startsWith("/")) {
             // this is a relative link, lets make an absolute out of it
             link = Utils.mergeAbsolutePath(cms.getRequestContext().getRequest().getRequestedResource(), link);
         }
+        link = cms.getRequestContext().addSiteRoot(link);
+        String siteRoot = cms.getRequestContext().getAdjustedFullSiteRoot(link);
         // first ask if this is the export
         int modus = cms.getMode();
-        if(modus == I_CmsConstants.C_MODUS_EXPORT){
+        if (modus == I_CmsConstants.C_MODUS_EXPORT) {
             // we have to register this link to the request context
             cms.getRequestContext().addLink(link);
             // and we have to process the startrule
             String startRule = OpenCms.getStaticExportProperties().getStartRule();
-            if(startRule != null && !"".equals(startRule)){
-                try{
+            if (startRule != null && !"".equals(startRule)) {
+                try {
                     link = c_perlUtil.substitute(startRule, link);
-                }catch(Exception e){
-                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                } catch (Exception e) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[LinkSubstitution.getLinkSubstitution()/1] problems with startrule:\""+startRule+"\" (" + e + "). ");
                     }
                 }
@@ -255,14 +266,14 @@ public final class LinkSubstitution {
         // check if we are in a https page, then we have to set the http
         // protocol ahead the "not-https-links" in this page
         boolean httpsMode = false;
-        if(modus == I_CmsConstants.C_MODUS_ONLINE){
+        if (modus == I_CmsConstants.C_MODUS_ONLINE) {
             // https pages are always online
             try {
                 // HACK: Original request might be unavailable here. 
                 // If you start the export in a Thread (what is done most of the time now)
                 // the original request might be gone here and a NullPointer Exception will raised.
                 String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
-                if("https".equalsIgnoreCase(scheme)){
+                if ("https".equalsIgnoreCase(scheme)) {
                     httpsMode = true;
                 }
             } catch (Exception e) {
@@ -270,97 +281,113 @@ public final class LinkSubstitution {
             }
         }
         boolean needsScheme = true;
-        if(httpsMode){
+        if (httpsMode) {
             needsScheme = CmsStaticExport.needsScheme(link);
         }
         String[] rules = CmsStaticExportProperties.getLinkRules(modus);
-        if(rules == null || rules.length == 0){
-            return link;
+        if (rules == null || rules.length == 0) {
+            return cms.getRequestContext().removeSiteRoot(link);
         }
         String retValue = link;
-        for(int i=0; i<rules.length; i++){
-            try{
+        for (int i=0; i<rules.length; i++) {
+            try {
                 boolean nextRule = true;
-                if("*dynamicRules*".equals(rules[i])){
+                if ("*dynamicRules*".equals(rules[i])) {
                     // here we go trough our dynamic rules
                     Vector booleanReplace = new Vector();
                     retValue = CmsStaticExport.handleDynamicRules(cms, link, modus, booleanReplace);
                     Boolean goOn =(Boolean)booleanReplace.firstElement();
-                    if(goOn.booleanValue()){
+                    if (goOn.booleanValue()) {
                         link = retValue;
-                    }else{
+                    } else {
                         nextRule = false;
                     }
-                }else{
+                } else {
                     StringBuffer result = new StringBuffer();
                     int matches = c_perlUtil.substitute(result, rules[i], link);
-                    if(matches != 0){
+                    if (matches != 0) {
                         retValue = result.toString();
                         nextRule = false;
                     }
                 }
-                if(!nextRule){
+                if (!nextRule) {
                     // found the match
-                    if(httpsMode && !retValue.startsWith("http")){
-                        if(needsScheme){
+                    if (httpsMode && !retValue.startsWith("http")) {
+                        if (needsScheme) {
                             retValue = CmsObject.getStaticExportProperties().getUrlPrefixArray()[3] + retValue;
                         }
-                    }else{
-                        if(CmsObject.getStaticExportProperties().relativLinksInExport() && modus == I_CmsConstants.C_MODUS_EXPORT
-                                && (retValue != null) && retValue.startsWith(CmsObject.getStaticExportProperties().getUrlPrefixArray()[0])){
+                    } else {
+                        if (CmsObject.getStaticExportProperties().relativLinksInExport() && modus == I_CmsConstants.C_MODUS_EXPORT
+                                && (retValue != null) && retValue.startsWith(CmsObject.getStaticExportProperties().getUrlPrefixArray()[0])) {
                             // we want the path relative
                             retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((CmsObject.getStaticExportProperties().getUrlPrefixArray()[0]).length()));
                         }
                     }
+                    if (modus != I_CmsConstants.C_MODUS_EXPORT) {
+                        // HACK: The site root must be removed, but the servlet context might have been appended as prefix
+                        int pos = retValue.indexOf(siteRoot);
+                        if (pos > 0) {
+                            retValue = retValue.substring(0, pos) + retValue.substring(pos + siteRoot.length());                            
+                        }
+                    } 
+                   
                     return retValue;
                 }
-            }catch(MalformedPerl5PatternException e){
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            } catch (MalformedPerl5PatternException e) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[LinkSubstitution.getLinkSubstitution()/2] problems with rule:\""+rules[i]+"\" (" + e + "). ");
                 }
             }
         }
-        if(httpsMode && !retValue.startsWith("http")){
-            if(needsScheme){
+        if (httpsMode && !retValue.startsWith("http")) {
+            if (needsScheme) {
                 retValue = CmsObject.getStaticExportProperties().getUrlPrefixArray()[3] + retValue;
             }
-        }else{
-            if(CmsObject.getStaticExportProperties().relativLinksInExport() && modus == I_CmsConstants.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(CmsObject.getStaticExportProperties().getUrlPrefixArray()[0])){
+        } else {
+            if (CmsObject.getStaticExportProperties().relativLinksInExport() && modus == I_CmsConstants.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(CmsObject.getStaticExportProperties().getUrlPrefixArray()[0])) {
                 // we want the path relative
                 retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((CmsObject.getStaticExportProperties().getUrlPrefixArray()[0]).length()));
             }
         }
+        if (modus != I_CmsConstants.C_MODUS_EXPORT) {
+            // HACK: The site root must be removed, but the servlet context might have been appended as prefix
+            int pos = retValue.indexOf(siteRoot);
+            if (pos > 0) {
+                retValue = retValue.substring(0, pos) + retValue.substring(pos + siteRoot.length());                            
+            }
+        }         
         return retValue;
     }
 
     /**
      * This methood calculates the relative path to a resource in OpenCms
-     * depending on the page where it is used.
+     * depending on the page where it is used.<p>
+     * 
      * i.e.: baseFile  = "/folder1/folder2/index.html"
      *       linkTarget= "/folder1/pics/pic.gif"
      *       returns: "../pics/pic.gif"
      *
-     * @param baseFile: the name(incl. path) of the page containing the link
-     * @param linkTarget: the name(incl. path) of the resource to link to.
+     * @param baseFile the name (incl. path) of the page containing the link
+     * @param linkTarget the name (incl. path) of the resource to link to
      *
      * @return the relative path to the target resource.
      */
-    public static String getRelativePath(String baseFile, String linkTarget){
+    public static String getRelativePath(String baseFile, String linkTarget) {
 
         // use tokenizer for better performance
         java.util.StringTokenizer cur = new java.util.StringTokenizer(baseFile, "/");
-        java.util.StringTokenizer tar = new java.util.StringTokenizer(linkTarget,"/");
+        java.util.StringTokenizer tar = new java.util.StringTokenizer(linkTarget, "/");
 
         // get the minimum of the number of tokens for both paths
         int maxAllowed = cur.countTokens();
-        if(maxAllowed > tar.countTokens()){
+        if (maxAllowed > tar.countTokens()) {
             maxAllowed = tar.countTokens();
         }
         // serch for the part of the path they have in common.
         String currentToken = cur.nextToken();
         String targetToken = tar.nextToken();
         int counter = 1;
-        while(currentToken.equals(targetToken) && counter < maxAllowed){
+        while (currentToken.equals(targetToken) && counter < maxAllowed) {
             currentToken = cur.nextToken();
             targetToken = tar.nextToken();
             counter++;
@@ -369,13 +396,13 @@ public final class LinkSubstitution {
 
         // link to the shared root path
         counter = cur .countTokens();
-        for(int i=0; i < counter; i++){
+        for (int i=0; i < counter; i++) {
             result.append("../");
         }
 
         // finaly add the link to the target from the shared root path
         result.append(targetToken);
-        while(tar.hasMoreTokens()){
+        while (tar.hasMoreTokens()) {
             result.append("/" +tar.nextToken());
         }
         return result.toString();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/07/19 01:51:37 $
- * Version: $Revision: 1.143 $
+ * Date   : $Date: 2003/07/20 15:45:00 $
+ * Version: $Revision: 1.144 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.lock.CmsLockDispatcher;
+import org.opencms.site.CmsSiteManager;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
@@ -87,9 +88,9 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.143 $
+ * @version $Revision: 1.144 $
  */
-public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
+public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
     /** The default mimetype */
     private static final String C_DEFAULT_MIMETYPE = "text/html";
@@ -280,6 +281,124 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             if (C_LOGGING && isLogging(C_OPENCMS_INIT))
                 log(C_OPENCMS_INIT, ". ResourceLoader init  : non-critical error " + e.toString());
         }
+
+        // try to initialize directory translations
+        try {
+            boolean translationEnabled = conf.getBoolean("directory.translation.enabled", false);
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". Directory translation: " + (translationEnabled ? "enabled" : "disabled"));
+            if (translationEnabled) {
+                String[] translations = conf.getStringArray("directory.translation.rules");
+                // Directory translation stops after fist match, hence the "false" parameter
+                m_directoryTranslator = new CmsResourceTranslator(translations, false);
+            }
+        } catch (Exception e) {
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". Directory translation: non-critical error " + e.toString());
+        }
+        // make sure we always have at least an empty array      
+        if (m_directoryTranslator == null)
+            m_directoryTranslator = new CmsResourceTranslator(new String[0], false);
+
+        // try to initialize filename translations
+        try {
+            boolean translationEnabled = conf.getBoolean("filename.translation.enabled", false);
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". Filename translation : " + (translationEnabled ? "enabled" : "disabled"));
+            if (translationEnabled) {
+                String[] translations = conf.getStringArray("filename.translation.rules");
+                // Filename translations applies all rules, hence the true patameters
+                m_fileTranslator = new CmsResourceTranslator(translations, true);
+            }
+        } catch (Exception e) {
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". Filename translation : non-critical error " + e.toString());
+        }
+        // make sure we always have at last an emtpy array      
+        if (m_fileTranslator == null)
+            m_fileTranslator = new CmsResourceTranslator(new String[0], false);
+
+        // try to initialize default directory file names (e.g. index.html)
+        try {
+            m_defaultFilenames = conf.getStringArray("directory.default.files");
+            for (int i = 0; i < m_defaultFilenames.length; i++) {
+                // remove possible white space
+                m_defaultFilenames[i] = m_defaultFilenames[i].trim();
+                if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                    log(C_OPENCMS_INIT, ". Default file         : " + (i + 1) + " - " + m_defaultFilenames[i]);
+            }
+        } catch (Exception e) {
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". Default file         : non-critical error " + e.toString());
+        }
+        // make sure we always have at last an emtpy array      
+        if (m_defaultFilenames == null)
+            m_defaultFilenames = new String[0];
+            
+        // read the immutable import resources
+        String[] immuResources = conf.getStringArray("import.immutable.resources");
+        if (immuResources == null)
+            immuResources = new String[0];
+        List immutableResourcesOri = java.util.Arrays.asList(immuResources);
+        ArrayList immutableResources = new ArrayList();
+        for (int i = 0; i < immutableResourcesOri.size(); i++) {
+            // remove possible white space
+            String path = ((String)immutableResourcesOri.get(i)).trim();
+            if (path != null && !"".equals(path)) {
+                immutableResources.add(path);
+                if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                    log(C_OPENCMS_INIT, ". Immutable resource   : " + (i + 1) + " - " + path);
+            }
+        }
+        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+            log(C_OPENCMS_INIT, ". Immutable resources  : " + ((immutableResources.size() > 0) ? "enabled" : "disabled"));
+        setRuntimeProperty("import.immutable.resources", immutableResources);
+        
+        // read the default user settings
+        try {
+            String userDefaultLanguage = conf.getString("workplace.user.default.language", I_CmsWpConstants.C_DEFAULT_LANGUAGE);
+            setUserDefaultLanguage(userDefaultLanguage);
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". User data init       : Default language is '" + userDefaultLanguage + "'");
+        } catch (Exception e) {
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". User data init       : non-critical error " + e.toString());
+        }
+                
+        // read the password validating class
+        c_passwordValidatingClass = conf.getString("passwordvalidatingclass", "com.opencms.util.PasswordValidtation");
+        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+            log(C_OPENCMS_INIT, ". Password validation  : " + c_passwordValidatingClass);
+        
+        // read the maximum file upload size limit
+        Integer fileMaxUploadSize = new Integer(conf.getInteger("workplace.file.maxuploadsize", -1));
+        setRuntimeProperty("workplace.file.maxuploadsize", fileMaxUploadSize);
+        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+            log(C_OPENCMS_INIT, ". File max. upload size: " + (fileMaxUploadSize.intValue() > 0 ? (fileMaxUploadSize + " KB") : "unlimited"));
+        
+        // initialize "checkresource" registry classes
+        try {
+            Hashtable checkresourceNode = getRegistry().getSystemValues("checkresource");
+            if (checkresourceNode != null) {
+                for (int i = 1; i <= checkresourceNode.size(); i++) {
+                    String currentClass = (String)checkresourceNode.get("class" + i);
+                    try {
+                        m_checkFile.add(Class.forName(currentClass).newInstance());
+                        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                            log(C_OPENCMS_INIT, ". Checkfile class init : " + currentClass + " instanciated");
+                    } catch (Exception e1) {
+                        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                            log(C_OPENCMS_INIT, ". Checkfile class init : non-critical error " + e1.toString());
+                    }
+                }
+            }
+        } catch (Exception e2) {
+            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, ". Checkfile class init : non-critical error " + e2.toString());
+        }        
+        
+        // initialize the site manager
+        setSiteManager(CmsSiteManager.initialize(this, conf));        
         
         // read old (proprietary XML-style) locale backward compatibily support flag
         Boolean supportOldLocales = (Boolean)conf.getBoolean("compatibility.support.oldlocales", new Boolean(false));
@@ -295,7 +414,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         if (C_LOGGING && isLogging(C_OPENCMS_INIT))
             log(C_OPENCMS_INIT, ". Old webapp URL       : " + ((webappUrl == null) ? "not set!" : webappUrl));
 
-        // Unwanted resource properties which are deleted during import
+        // unwanted resource properties which are deleted during import
         String[] propNames = conf.getStringArray("compatibility.support.import.remove.propertytags");
         if (propNames == null)
             propNames = new String[0];
@@ -332,104 +451,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         if (C_LOGGING && isLogging(C_OPENCMS_INIT))
             log(C_OPENCMS_INIT, ". Old context support  : " + ((webAppNames.size() > 0) ? "enabled" : "disabled"));
         setRuntimeProperty("compatibility.support.webAppNames", webAppNames);
-
-        // Immutable import resources
-        String[] immuResources = conf.getStringArray("import.immutable.resources");
-        if (immuResources == null)
-            immuResources = new String[0];
-        List immutableResourcesOri = java.util.Arrays.asList(immuResources);
-        ArrayList immutableResources = new ArrayList();
-        for (int i = 0; i < immutableResourcesOri.size(); i++) {
-            // remove possible white space
-            String path = ((String)immutableResourcesOri.get(i)).trim();
-            if (path != null && !"".equals(path)) {
-                immutableResources.add(path);
-                if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                    log(C_OPENCMS_INIT, ". Immutable resource   : " + (i + 1) + " - " + path);
-            }
-        }
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". Immutable resources  : " + ((immutableResources.size() > 0) ? "enabled" : "disabled"));
-        setRuntimeProperty("import.immutable.resources", immutableResources);
-
-        // try to initialize directory translations
-        try {
-            boolean translationEnabled = conf.getBoolean("directory.translation.enabled", false);
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Directory translation: " + (translationEnabled ? "enabled" : "disabled"));
-            if (translationEnabled) {
-                String[] translations = conf.getStringArray("directory.translation.rules");
-                // Directory translation stops after fist match, hence the "false" parameter
-                m_directoryTranslator = new CmsResourceTranslator(translations, false);
-            }
-        } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Directory translation: non-critical error " + e.toString());
-        }
-        // make sure we always have at least an empty array      
-        if (m_directoryTranslator == null)
-            m_directoryTranslator = new CmsResourceTranslator(new String[0], false);
-
-        // read the maximum file upload size limit
-        Integer fileMaxUploadSize = new Integer(conf.getInteger("workplace.file.maxuploadsize", -1));
-        setRuntimeProperty("workplace.file.maxuploadsize", fileMaxUploadSize);
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". File max. upload size: " + (fileMaxUploadSize.intValue() > 0 ? (fileMaxUploadSize + " KB") : "unlimited"));
-
-        // try to initialize filename translations
-        try {
-            boolean translationEnabled = conf.getBoolean("filename.translation.enabled", false);
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Filename translation : " + (translationEnabled ? "enabled" : "disabled"));
-            if (translationEnabled) {
-                String[] translations = conf.getStringArray("filename.translation.rules");
-                // Filename translations applies all rules, hence the true patameters
-                m_fileTranslator = new CmsResourceTranslator(translations, true);
-            }
-        } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Filename translation : non-critical error " + e.toString());
-        }
-        // make sure we always have at last an emtpy array      
-        if (m_fileTranslator == null)
-            m_fileTranslator = new CmsResourceTranslator(new String[0], false);
-
-        // try to initialize default file names
-        try {
-            m_defaultFilenames = conf.getStringArray("directory.default.files");
-            for (int i = 0; i < m_defaultFilenames.length; i++) {
-                // remove possible white space
-                m_defaultFilenames[i] = m_defaultFilenames[i].trim();
-                if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                    log(C_OPENCMS_INIT, ". Default file         : " + (i + 1) + " - " + m_defaultFilenames[i]);
-            }
-        } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Default file         : non-critical error " + e.toString());
-        }
-        // make sure we always have at last an emtpy array      
-        if (m_defaultFilenames == null)
-            m_defaultFilenames = new String[0];
-
-        // get the password validating class
-        c_passwordValidatingClass = conf.getString("passwordvalidatingclass", "com.opencms.util.PasswordValidtation");
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". Password validation  : " + c_passwordValidatingClass);
-
-        // read the default user settings
-        try {
-            int userDefaultAccessFlags = conf.getInteger("workplace.user.default.flags", C_ACCESS_DEFAULT_FLAGS);
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". User permission init : Default access flags are " + userDefaultAccessFlags);
-            setUserDefaultAccessFlags(userDefaultAccessFlags);
-            String userDefaultLanguage = conf.getString("workplace.user.default.language", I_CmsWpConstants.C_DEFAULT_LANGUAGE);
-            setUserDefaultLanguage(userDefaultLanguage);
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". User permission init : Default language is '" + userDefaultLanguage + "'");
-        } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". User permission init : non-critical error " + e.toString());
-        }
 
         // now for the link replacement rules there are up to three rulesets for export online and offline
         try {
@@ -545,27 +566,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         } catch (Exception e) {
             if (C_LOGGING && isLogging(C_OPENCMS_INIT))
                 log(C_OPENCMS_INIT, ". Link rules init      : non-critical error " + e.toString());
-        }
-
-        // initialize 1 instance per class listed in the checkresource node
-        try {
-            Hashtable checkresourceNode = getRegistry().getSystemValues("checkresource");
-            if (checkresourceNode != null) {
-                for (int i = 1; i <= checkresourceNode.size(); i++) {
-                    String currentClass = (String)checkresourceNode.get("class" + i);
-                    try {
-                        m_checkFile.add(Class.forName(currentClass).newInstance());
-                        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                            log(C_OPENCMS_INIT, ". Checkfile class init : " + currentClass + " instanciated");
-                    } catch (Exception e1) {
-                        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                            log(C_OPENCMS_INIT, ". Checkfile class init : non-critical error " + e1.toString());
-                    }
-                }
-            }
-        } catch (Exception e2) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Checkfile class init : non-critical error " + e2.toString());
         }
     }
 
@@ -821,6 +821,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             // check for the JSP export URL runtime property
             String jspExportUrl = (String)getRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL);
             if (jspExportUrl == null) {
+                // not initialized yet, so we use the value from the first request
                 StringBuffer url = new StringBuffer(256);
                 url.append(req.getScheme());
                 url.append("://");
@@ -909,7 +910,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         int lastDot = file.getResourceName().lastIndexOf(".");
         // check if there was a file extension
         if ((lastDot > 0) && (lastDot < (file.getResourceName().length() - 1))) {
-            String ext = file.getResourceName().substring(lastDot + 1, file.getResourceName().length());
+            String ext = file.getResourceName().substring(lastDot + 1);
             mimetype = (String)m_mt.get(ext);
             // was there a mimetype fo this extension?
             if (mimetype == null) {

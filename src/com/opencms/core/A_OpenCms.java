@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2003/07/20 15:45:00 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package com.opencms.core;
 
 import org.opencms.db.CmsDriverManager;
 import org.opencms.loader.CmsLoaderManager;
+import org.opencms.site.CmsSiteManager;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
@@ -58,7 +59,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
@@ -88,6 +89,9 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
 
     /** A Map for the storage of various runtime properties */
     private static Map m_runtimeProperties = null;
+    
+    /** The site manager contains information about all configured sites */
+    private static CmsSiteManager m_siteManager;
 
     /** The default setting for the user access flags */
     private static int m_userDefaultaccessFlags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
@@ -220,6 +224,16 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
         if (m_runtimeProperties == null)
             return null;
         return m_runtimeProperties.get(key);
+    }
+
+    /**
+     * Returns the initialized site manager, 
+     * which contains information about all configured sites.<p> 
+     * 
+     * @return the initialized site manager
+     */
+    public static CmsSiteManager getSiteManager() {
+        return m_siteManager;
     }
 
     /**
@@ -360,6 +374,16 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
             m_runtimeProperties = Collections.synchronizedMap(new HashMap());
         }
         m_runtimeProperties.put(key, value);
+    }
+
+    /**
+     * Sets the site manager, 
+     * which contains information about all configured sites.<p> 
+     * 
+     * @param siteManager the site manager to set
+     */
+    protected static void setSiteManager(CmsSiteManager siteManager) {
+        m_siteManager = siteManager;
     }
 
     /**

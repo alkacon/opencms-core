@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/07/20 15:45:00 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -262,7 +262,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 }
             } 
               
-            // no perfrom the include action
+            // now perfrom the include action
             includeTagAction(pageContext, target, m_element, m_parameterMap, req, res);
             
             // must call release here manually to make sure m_parameterMap is cleared
@@ -325,9 +325,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         try {
             target = controller.getCurrentRequest().toAbsolute(target);
             CmsResource resource = controller.getCmsObject().readFileHeader(target);
-            isPageTarget = ((CmsResourceTypePage.C_RESOURCE_TYPE_ID == resource.getType()));
-            if (! isPageTarget) {
-                isNewPageTarget = (CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID  == resource.getType());
+            isNewPageTarget = (CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID  == resource.getType());
+            if (! isNewPageTarget) {
+                isPageTarget = ((CmsResourceTypePage.C_RESOURCE_TYPE_ID == resource.getType()));
             }
         } catch (CmsException e) {
             // any exception here and we will treat his as non-Page file

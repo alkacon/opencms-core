@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/20 15:45:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.workplace;
 
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsUser;
 
 
@@ -38,7 +39,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -57,7 +58,7 @@ public class CmsWorkplaceSettings {
     private int m_explorerChecksum = -1;
     private String m_explorerFlaturl;
     private String m_permissionDetailView;
-    private String m_currentSite = "/default/vfs";
+    private String m_currentSite = I_CmsConstants.C_VFS_DEFAULT;
         
     /**
      * Constructor, only package visible.<p>

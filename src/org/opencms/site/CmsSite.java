@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2003/07/17 15:30:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/20 15:45:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,26 +31,17 @@
 
 package org.opencms.site;
 
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
 import com.opencms.flex.util.CmsUUID;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Describes a configures site in OpenCms.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1
  */
-public class CmsSite implements Cloneable {   
+public final class CmsSite implements Cloneable {   
 
     /** Name of the property to use for defining directories as site roots */
     public static final String C_PROPERTY_SITE = "siteroot";
@@ -61,34 +52,63 @@ public class CmsSite implements Cloneable {
     /** UUID of this site's root directory in the OpenCms VFS */
     private CmsUUID m_siteRootUUID;
 
-    /** Display name of this site */    
-    private String m_name;
+    /** Display title of this site */    
+    private String m_title;
     
-    /** The server URL prefix to which this site is mapped */
-    private String m_serverPrefix;
+    /** The site matcher that describes the site */ 
+    private CmsSiteMatcher m_siteMatcher;
 
     /**
      * Constructs a new site object.<p>
      * 
      * @param siteRoot root directory of this site in the OpenCms VFS
      * @param siteRootUUID UUID of this site's root directory in the OpenCms VFS
-     * @param name display name of this site
-     * @param serverPrefix the server URL prefix to which this site is mapped
+     * @param title display name of this site
+     * @param siteMatcher the site matcher for this site
      */
-    public CmsSite(String siteRoot, CmsUUID siteRootUUID, String name, String serverPrefix) {
+    public CmsSite(String siteRoot, CmsUUID siteRootUUID, String title, CmsSiteMatcher siteMatcher) {
         setSiteRoot(siteRoot);
         setSiteRootUUID(siteRootUUID);
-        setName(name);
-        setServerPrefix(serverPrefix);
+        setTitle(title);
+        setSiteMatcher(siteMatcher);
     }
+
+    /**
+     * Constructs a new site object without title and id information,
+     * this is to be used for lookup purposes only.<p>
+     * 
+     * @param siteRoot root directory of this site in the OpenCms VFS
+     * @param siteMatcher the site matcher for this site
+     */
+    public CmsSite(String siteRoot, CmsSiteMatcher siteMatcher) {
+        setSiteRoot(siteRoot);
+        setSiteRootUUID(CmsUUID.getNullUUID());
+        setTitle(siteRoot);
+        setSiteMatcher(siteMatcher);
+    }
+        
+    /**
+     * Constructs a new site object with a default (wildcard) a site matcher,
+     * this is to be used for display purposes only.<p>
+     * 
+     * @param siteRoot root directory of this site in the OpenCms VFS
+     * @param siteRootUUID UUID of this site's root directory in the OpenCms VFS
+     * @param title display name of this site
+     */
+    public CmsSite(String siteRoot, CmsUUID siteRootUUID, String title) {
+        setSiteRoot(siteRoot);
+        setSiteRootUUID(siteRootUUID);
+        setTitle(title);
+        setSiteMatcher(CmsSiteMatcher.C_DEFAULT_MATCHER);
+    }    
 
     /**
      * Returns the root directory of this site in the OpenCms VFS.<p>
      * 
      * @return the root directory of this site in the OpenCms VFS
      */
-    public String getName() {
-        return m_name;
+    public String getTitle() {
+        return m_title;
     }
 
     /**
@@ -96,26 +116,26 @@ public class CmsSite implements Cloneable {
      * 
      * @param name the root directory of this site in the OpenCms VFS
      */
-    public void setName(String name) {
-        m_name = name;
+    protected void setTitle(String name) {
+        m_title = name;
     }
 
     /**
-     * Returns the display name of this site.<p>
+     * Returns the site matcher that describes the URL of this site.<p>
      * 
-     * @return the display name of this site
+     * @return the site matcher that describes the URL of this site
      */
-    public String getServerPrefix() {
-        return m_serverPrefix;
+    public CmsSiteMatcher getSiteMatcher() {
+        return m_siteMatcher;
     }
 
     /**
-     * Sets the display name of this site.<p>
+     * Sets the site matcher that describes the URL of this site.<p>
      * 
-     * @param serverPrefix the display name of this site
+     * @param siteMatcher the site matcher that describes the URL of this site
      */
-    public void setServerPrefix(String serverPrefix) {
-        m_serverPrefix = serverPrefix;
+    protected void setSiteMatcher(CmsSiteMatcher siteMatcher) {
+        m_siteMatcher = siteMatcher;
     }
 
     /**
@@ -132,7 +152,7 @@ public class CmsSite implements Cloneable {
      * 
      * @param siteRoot the server URL prefix to which this site is mapped
      */
-    public void setSiteRoot(String siteRoot) {
+    protected void setSiteRoot(String siteRoot) {
         // site roots must never end with a "/"
         if (siteRoot.endsWith("/")) {
             m_siteRoot = siteRoot.substring(0, siteRoot.length()-1);
@@ -155,7 +175,7 @@ public class CmsSite implements Cloneable {
      * 
      * @param siteRootUUID the UUID of this site's root directory in the OpenCms VFS
      */
-    public void setSiteRootUUID(CmsUUID siteRootUUID) {
+    protected void setSiteRootUUID(CmsUUID siteRootUUID) {
         m_siteRootUUID = siteRootUUID;
     }
     
@@ -163,83 +183,25 @@ public class CmsSite implements Cloneable {
      * @see java.lang.Object#clone()
      */
     public Object clone() {
-        return new CmsSite(getSiteRoot(), (CmsUUID)getSiteRootUUID().clone(), getName(), getServerPrefix());
+        return new CmsSite(
+            getSiteRoot(), 
+            (CmsUUID)getSiteRootUUID().clone(), 
+            getTitle(), 
+            (CmsSiteMatcher)getSiteMatcher().clone()
+        );
     }
     
     /**
-     * Returns a list of all site available for the current user.<p>
-     * 
-     * @param cms the current cms context 
-     * @return a list of all site available for the current user
+     * @see java.lang.Object#toString()
      */
-    public static List getAvailableSites(CmsObject cms) {
-        return getAvailableSites(cms, true);    
-    }
-    
-    /**
-     * Returns a list of all site available for the current user.<p>
-     * 
-     * @param cms the current cms context 
-     * @param includeRoot if true, the root and current site is included for the admin user
-     * @return a list of all site available for the current user
-     */
-    public static List getAvailableSites(CmsObject cms, boolean includeRoot) {
-        List result = new ArrayList();
-        List resources;
-        try {
-            resources = cms.getResourcesWithProperty(C_PROPERTY_SITE);
-        } catch (CmsException e) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "CmsSite.getAvailableSites() - Error reading sites: " + e.getMessage());
-            }            
-            // ensure that we can go on even in case of an exception  
-            resources = new ArrayList();
-        }
-        Iterator i = resources.iterator();
-        String currentRoot = cms.getRequestContext().getSiteRoot();
-        try {
-            // for all operations here we need no context
-            cms.getRequestContext().setSiteRoot("/");
-            if (cms.getRequestContext().isAdmin() && includeRoot) {
-                CmsResource res = cms.readFileHeader("/");                
-                result.add(new CmsSite("/", res.getId(), "/ (root site)", "*"));
-                if (! "".equals(currentRoot)) {
-                    res = cms.readFileHeader(currentRoot);
-                    result.add(new CmsSite(currentRoot, res.getId(), currentRoot + " (current site)", "*"));
-                }     
-            }
-            while (i.hasNext()) {
-                CmsResource res = (CmsResource)i.next();
-                if (res.isFolder()) {
-                    // only folders can be valid site roots
-                    String siteRoot = cms.readAbsolutePath(res);    
-                    String property = cms.readProperty(siteRoot, C_PROPERTY_SITE);
-                    String name;
-                    String serverPrefix = "*";
-                    if ((property == null) || ("".equals(property.trim()))) {
-                        name = siteRoot;
-                    } else {
-                        // Format is: (name)|(serverPrefix)                    
-                        int pos = property.indexOf('|');
-                        if (pos < 0) {
-                            name = property.trim();
-                        } else {
-                            name = property.substring(0, pos).trim();
-                            serverPrefix = property.substring(pos+1).trim();
-                        }
-                    }
-                    result.add(new CmsSite(siteRoot, res.getId(), name, serverPrefix));                           
-                }
-            }
-        } catch (Throwable t) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "CmsSite.getAvailableSites() - Error reading site properties: " + t.getMessage());
-            }            
-        } finally {
-            // restore the user's current context 
-            cms.getRequestContext().setSiteRoot(currentRoot);
-        }
-        return result;
+    public String toString() {
+        StringBuffer result = new StringBuffer(128);
+        result.append(m_siteMatcher.toString());
+        result.append("|");
+        result.append(m_siteRoot);
+        result.append("|");
+        result.append(m_title);
+        return result.toString();
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/20 15:45:00 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -216,7 +216,10 @@ public abstract class CmsWorkplace {
         // save current project
         settings.setProject(cms.getRequestContext().currentProject().getId());
         
-        // check out the user infor1ation if a default view is stored there
+        // save current site
+        settings.setSite(cms.getRequestContext().getSiteRoot());
+        
+        // check out the user information for a default view that might be stored there
         if (startSettings != null) {
             settings.setCurrentView(LinkSubstitution.getLinkSubstitution(cms, (String)startSettings.get(I_CmsConstants.C_START_VIEW)));
         }
