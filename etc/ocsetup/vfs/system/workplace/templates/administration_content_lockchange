@@ -94,7 +94,7 @@ function show_help()
 <HEAD>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 </HEAD>
-<BODY onload="updateFrame('head', 'head.html');">
+<BODY onload="updateFrame('body.admin_content', 'administration_content_projectresent.html');">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>

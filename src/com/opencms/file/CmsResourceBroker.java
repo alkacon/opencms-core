@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/05/18 13:30:39 $
- * Version: $Revision: 1.119 $
+ * Date   : $Date: 2000/05/19 11:19:38 $
+ * Version: $Revision: 1.120 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.119 $ $Date: 2000/05/18 13:30:39 $
+ * @version $Revision: 1.120 $ $Date: 2000/05/19 11:19:38 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4150,6 +4150,30 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		throws CmsException {
 		if(isAdmin(currentUser, currentProject)) {
 			new CmsExport(exportFile, exportPath, cms);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] exportResources",
+				 CmsException.C_NO_ACCESS);
+		}
+	}
+	/**
+	 * Exports cms-resources to zip.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param exportFile the name (absolute Path) of the export resource (zip)
+	 * @param exportPath the name (absolute Path) of folder from which should be exported
+	 * @param cms the cms-object to use for the export.
+	 * @param includeSystem, desides if to include the system resources to the export.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void exportResources(A_CmsUser currentUser,  A_CmsProject currentProject, String exportFile, String exportPath, A_CmsObject cms, boolean includeSystem)
+		throws CmsException {
+		if(isAdmin(currentUser, currentProject)) {
+			new CmsExport(exportFile, exportPath, cms, includeSystem);
 		} else {
 			 throw new CmsException("[" + this.getClass().getName() + "] exportResources",
 				 CmsException.C_NO_ACCESS);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/05/18 12:37:41 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2000/05/19 11:19:38 $
+ * Version: $Revision: 1.73 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.72 $ $Date: 2000/05/18 12:37:41 $ 
+ * @version $Revision: 1.73 $ $Date: 2000/05/19 11:19:38 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -2062,6 +2062,21 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		c_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPath, this);
 	}
 	
+	/**
+	 * Exports cms-resources to zip.
+	 * 
+	 * @param exportFile the name (absolute Path) of the export resource (zip)
+	 * @param exportPath the name (absolute Path) of folder from which should be exported
+	 * @param includeSystem, desides if to include the system resources to the export.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void exportResources(String exportFile, String exportPath, boolean includeSystem)
+		throws CmsException {
+		// export the resources
+		c_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPath, this, includeSystem);
+	}
+
 	/**
 	 * Checks, if the user may read this resource.
 	 * 

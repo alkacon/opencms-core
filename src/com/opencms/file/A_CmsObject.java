@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/05/18 12:37:40 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2000/05/19 11:19:38 $
+ * Version: $Revision: 1.70 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.69 $ $Date: 2000/05/18 12:37:40 $ 
+ * @version $Revision: 1.70 $ $Date: 2000/05/19 11:19:38 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1633,6 +1633,18 @@ public abstract class A_CmsObject {
 	abstract public void exportResources(String exportFile, String exportPath)
 		throws CmsException;
 	
+	/**
+	 * Exports cms-resources to zip.
+	 * 
+	 * @param exportFile the name (absolute Path) of the export resource (zip)
+	 * @param exportPath the name (absolute Path) of folder from which should be exported
+	 * @param includeSystem, desides if to include the system resources to the export.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	abstract public void exportResources(String exportFile, String exportPath, boolean includeSystem)
+		throws CmsException;
+
 	/**
 	 * Checks, if the user may read this resource.
 	 * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
- * Date   : $Date: 2000/04/07 15:22:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/05/19 11:19:38 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/04/07 15:22:18 $
+ * @version $Revision: 1.5 $ $Date: 2000/05/19 11:19:38 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -100,11 +100,11 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
 		try{
 			if("export".equals(action)) {
 				// export the database
-				cms.exportDb(cms.readExportPath() + fileName, folder, C_EXPORTONLYFILES); 
+				cms.exportResources(cms.readExportPath() + fileName, folder); 
 				templateSelector = "done";
 			} else if("import".equals(action)) {
 				// import the database
-				cms.importDb(cms.readExportPath() + existingFile, folder); 
+				cms.importResources(cms.readExportPath() + existingFile, folder); 
 				templateSelector = "done";
 			}
 		}

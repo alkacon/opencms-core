@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/05/18 12:37:41 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2000/05/19 11:19:38 $
+ * Version: $Revision: 1.41 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.40 $ $Date: 2000/05/18 12:37:41 $
+ * @version $Revision: 1.41 $ $Date: 2000/05/19 11:19:38 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1524,6 +1524,23 @@ public class CmsShell implements I_CmsConstants {
 		// export the resources
 		try {
 			m_cms.exportResources(exportFile, exportPath);
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	
+	/**
+	 * Exports cms-resources to zip. In the zip-file the system - path will be included.
+	 * 
+	 * @param exportFile the name (absolute Path) of the export resource (zip)
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void exportAllResources(String exportFile)
+		throws CmsException {
+		// export the resources
+		try {
+			m_cms.exportResources(exportFile, C_ROOT, true);
 		} catch( Exception exc ) {
 			printException(exc);
 		}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2000/05/18 12:37:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/05/19 11:19:38 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/05/18 12:37:41 $
+ * @version $Revision: 1.2 $ $Date: 2000/05/19 11:19:38 $
  */
 class CmsExport implements I_CmsImportExport, I_CmsConstants {
 	
@@ -77,18 +77,39 @@ class CmsExport implements I_CmsImportExport, I_CmsConstants {
 	private Element m_filesElement;
 	
 	/**
+	 * Decides, if the system should be included to the export.
+	 */
+	private boolean m_includeSystem;
+	
+	/**
 	 * This constructs a new CmsImport-object which imports the resources.
 	 * 
 	 * @param importFile the file or folder to import from.
 	 * @param importPath the path to the cms to import into.
+	 * @param cms the cms-object to work with.
 	 * @exception CmsException the CmsException is thrown if something goes wrong.
 	 */
 	CmsExport(String exportFile, String exportPath, A_CmsObject cms) 
+		throws CmsException {
+		this(exportFile, exportPath, cms, false);
+	}
+	
+	/**
+	 * This constructs a new CmsImport-object which imports the resources.
+	 * 
+	 * @param importFile the file or folder to import from.
+	 * @param importPath the path to the cms to import into.
+	 * @param cms the cms-object to work with.
+	 * @param includeSystem desides, if to include the system-stuff.
+	 * @exception CmsException the CmsException is thrown if something goes wrong.
+	 */
+	CmsExport(String exportFile, String exportPath, A_CmsObject cms, boolean includeSystem) 
 		throws CmsException {
 
 		m_exportFile = exportFile;
 		m_exportPath = exportPath;
 		m_cms = cms;
+		m_includeSystem = includeSystem;
 
 		// open the import resource
 		getExportResource();
@@ -190,10 +211,21 @@ class CmsExport implements I_CmsImportExport, I_CmsConstants {
 		// walk through all subfolders and export them
 		for(int i = 0; i < subFolders.size(); i++) {
 			A_CmsResource folder = (A_CmsResource) subFolders.elementAt(i);
-			// export this folder
-			writeXmlEntrys(folder);
-			// export all resources in this folder
-			exportResources(folder.getAbsolutePath());			
+	
+			// check if this is a system-folder and if it should be included.
+			if(folder.getAbsolutePath().startsWith("/system/")) {
+				if(m_includeSystem) {
+					// export this folder
+					writeXmlEntrys(folder);
+					// export all resources in this folder
+					exportResources(folder.getAbsolutePath());			
+				}
+			} else {
+				// export this folder
+				writeXmlEntrys(folder);
+				// export all resources in this folder
+				exportResources(folder.getAbsolutePath());			
+			}
 		}		
 	}
 
