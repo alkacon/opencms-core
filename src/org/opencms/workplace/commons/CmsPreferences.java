@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/29 14:23:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsTabDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -75,7 +76,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
@@ -531,12 +532,17 @@ public class CmsPreferences extends CmsTabDialog {
         int checkedIndex = 0;
         int counter = 0;
         Iterator i = locales.iterator();
+        Locale setLocale = getSettings().getUserSettings().getLocale();
         while (i.hasNext()) {
             Locale currentLocale = (Locale)i.next();
             // add all locales to the select box
-            options.add(currentLocale.getDisplayLanguage(getSettings().getUserSettings().getLocale()));
-            values.add(currentLocale.getLanguage());
-            if (getParamTabWpLanguage().equals(currentLocale.getLanguage())) {
+            String language = currentLocale.getDisplayLanguage(setLocale);
+            if (CmsStringUtil.isNotEmpty(currentLocale.getCountry())) {
+                language = language + " (" + currentLocale.getDisplayCountry(setLocale) + ")";
+            }            
+            options.add(language);
+            values.add(currentLocale.toString());
+            if (getParamTabWpLanguage().equals(currentLocale.toString())) {
                 // mark the currently active locale
                 checkedIndex = counter;
             }
