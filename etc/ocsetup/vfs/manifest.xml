@@ -486,6 +486,33 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/bt_chars_off.gif</source>
+            <destination>pics/system/bt_chars_off.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_chars_on.gif</source>
+            <destination>pics/system/bt_chars_on.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_chars_push.gif</source>
+            <destination>pics/system/bt_chars_push.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>          
+        <file>
             <source>pics/system/bt_close_off.gif</source>
             <destination>pics/system/bt_close_off.gif</destination>
             <type>image</type>
@@ -611,6 +638,33 @@
             <access>79</access>
             <properties/>
         </file>
+        <file>
+            <source>pics/system/bt_details_off.gif</source>
+            <destination>pics/system/bt_details_off.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_details_on.gif</source>
+            <destination>pics/system/bt_details_on.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_details_push.gif</source>
+            <destination>pics/system/bt_details_push.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>        
         <file>
             <source>pics/system/bt_docpreview_in.gif</source>
             <destination>pics/system/bt_docpreview_in.gif</destination>
@@ -3254,7 +3308,25 @@
             <group>Users</group>
             <access>15</access>
             <properties/>
-        </file>     
+        </file>  
+       <file>
+            <source>system/workplace/action/edit_html_chars.html</source>
+            <destination>system/workplace/action/edit_html_chars.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>           
+        <file>
+            <source>system/workplace/action/edit_html_link.html</source>
+            <destination>system/workplace/action/edit_html_link.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>        
         <file>
             <source>system/workplace/action/edit_html_main.html</source>
             <destination>system/workplace/action/edit_html_main.html</destination>
@@ -3290,7 +3362,7 @@
             <group>Users</group>
             <access>15</access>
             <properties/>
-        </file>
+        </file>        
         <file>
             <source>system/workplace/action/edit_page.html</source>
             <destination>system/workplace/action/edit_page.html</destination>
@@ -10184,7 +10256,25 @@
             <group>Users</group>
             <access>79</access>
             <properties/>
-        </file>        
+        </file>  
+        <file>
+            <source>system/workplace/templates/edit_html_chars</source>
+            <destination>system/workplace/templates/edit_html_chars</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>          
+        <file>
+            <source>system/workplace/templates/edit_html_link</source>
+            <destination>system/workplace/templates/edit_html_link</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>            
         <file>
             <source>system/workplace/templates/edit_html_main</source>
             <destination>system/workplace/templates/edit_html_main</destination>
@@ -10220,7 +10310,7 @@
             <group>Users</group>
             <access>79</access>
             <properties/>
-        </file>
+        </file>        
         <file>
             <source>system/workplace/templates/edit_layout</source>
             <destination>system/workplace/templates/edit_layout</destination>
