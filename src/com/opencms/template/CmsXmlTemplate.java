@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2002/12/13 17:38:13 $
-* Version: $Revision: 1.103 $
+* Date   : $Date: 2002/12/15 14:22:28 $
+* Version: $Revision: 1.104 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import com.opencms.template.cache.CmsElementDefinitionCollection;
 import com.opencms.template.cache.CmsElementDescriptor;
 import com.opencms.template.cache.CmsElementVariant;
 import com.opencms.template.cache.CmsElementXml;
+import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Enumeration;
@@ -59,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.103 $ $Date: 2002/12/13 17:38:13 $
+ * @version $Revision: 1.104 $ $Date: 2002/12/15 14:22:28 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -722,7 +723,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     }
 
     /**
-     * Inserts the correct document title into the template.
+     * Inserts the document title into the template.
      * <P>
      * This method can be called using <code>&lt;METHOD name="getTitle"&gt;</code>
      * in the template file.
@@ -738,11 +739,34 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         String requestedUri = cms.getRequestContext().getUri();
         String title = cms.readProperty(requestedUri, C_PROPERTY_TITLE);
         if(title == null) {
-            title = "";
+            return "";
         }
         return title;
     }
-
+    
+    /**
+     * Inserts the document title into the template, escaping special and non - ASCII characters
+     * with their HTML number representation (e.g. &amp; becomes &amp;#38;).<p>
+     * 
+     * This method can be called using <code>&lt;METHOD name="getTitleEscaped"&gt;</code>
+     * in the template file.
+     *
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getTitleEscaped(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+        String requestedUri = cms.getRequestContext().getUri();
+        String title = cms.readProperty(requestedUri, C_PROPERTY_TITLE);
+        if(title == null) {
+            return "";
+        }
+        return Encoder.escapeHtml(title);
+    }
+    
     /**
      * Inserts the correct document description into the template.
      * <P>
