@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/12/07 09:49:00 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2001/12/07 10:32:06 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.60 $ $Date: 2001/12/07 09:49:00 $
+ * @version $Revision: 1.61 $ $Date: 2001/12/07 10:32:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -267,8 +267,11 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         }
 
         xmlTemplateDocument.setData("onlineId", "" + cms.onlineProject().getId());
-        xmlTemplateDocument.setData("projectstatexp",xmlTemplateDocument.getProcessedDataValue("statexp_enabled", this));
-
+        if(cms.isStaticExportEnabled()){
+            xmlTemplateDocument.setData("projectstatexp",xmlTemplateDocument.getProcessedDataValue("statexp_enabled", this));
+        } else {
+            xmlTemplateDocument.setData("projectstatexp",xmlTemplateDocument.getProcessedDataValue("statexp_disabled", this));
+        }
         newGroup = (String)parameters.get(C_PROJECTNEW_GROUP);
         newDescription = (String)parameters.get(C_PROJECTNEW_DESCRIPTION);
         newManagerGroup = (String)parameters.get(C_PROJECTNEW_MANAGERGROUP);
