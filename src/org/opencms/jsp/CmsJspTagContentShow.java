@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/01/13 12:44:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/01/20 09:49:50 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public class CmsJspTagContentShow extends TagSupport {
@@ -142,6 +142,9 @@ public class CmsJspTagContentShow extends TagSupport {
 
             // this is an EL like string
             content = m_stringMapper.map(element, contentContainer, true);
+        } else if (xmlContent == null) {
+            // no XML content- no output
+            content = null;
         } else {
 
             // now get the content element value to display
@@ -154,7 +157,9 @@ public class CmsJspTagContentShow extends TagSupport {
         }
 
         try {
-            pageContext.getOut().print(content);
+            if (content != null) {
+                pageContext.getOut().print(content);
+            }
         } catch (IOException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error in Jsp <contentshow> tag processing", e);

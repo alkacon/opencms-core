@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/01/13 12:44:56 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/01/20 09:49:50 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer {
@@ -213,6 +213,12 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         // get the next resource from the collector
         CmsResource resource = getNextResource();
+        if (resource == null) {
+            m_resourceName = null;
+            m_content = null;
+            return;
+        }
+        
         // set the resource name
         m_resourceName = m_cms.getSitePath(resource);
 
@@ -294,17 +300,15 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             m_collectorResult = CmsJspTagContentLoad.limitCollectorResult(m_contentInfoBean, m_collectorResult);            
             m_contentInfoBean.initPageNavIndexes();
             
-            if ((m_collectorResult == null) || (m_collectorResult.size() == 0)) {
-                // the collector returned an empty list, there's no content to iterate
-                return SKIP_BODY;
-            }
             String createParam = collector.getCreateParam(m_cms, collectorName, param);
             if (createParam != null) {
                 // use "create link" only if collector supports it
                 m_directEditCreateLink = CmsEncoder.encode(collectorName + "|" + createParam);
             }
             
-            doLoadNextFile();
+            if (m_collectorResult != null && m_collectorResult.size() > 0) {  
+                doLoadNextFile();
+            }
         } catch (CmsException e) {
             m_controller.setThrowable(e, m_cms.getRequestContext().getUri());
             throw new JspException(e);
