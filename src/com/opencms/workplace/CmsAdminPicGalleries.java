@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2003/07/11 14:01:12 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/07/15 10:42:59 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsImportFolder;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResourceTypeFolder;
+import com.opencms.file.CmsResourceTypeImage;
 import com.opencms.util.Utils;
 
 import java.util.Enumeration;
@@ -47,7 +49,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.38 $ $Date: 2003/07/11 14:01:12 $
+ * @version $Revision: 1.39 $ $Date: 2003/07/15 10:42:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -163,7 +165,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
 
                     // get the path from the workplace.ini
                     String superfolder = getConfigFile(cms).getPicGalleryPath();
-                    CmsFolder folder = (CmsFolder)cms.createResource(superfolder, galleryname, C_TYPE_FOLDER_NAME);
+                    CmsFolder folder = (CmsFolder)cms.createResource(superfolder, galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME);
                     if(title != null) {
                         cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                     }
@@ -307,7 +309,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                                 filename = newname;
                             }
                             try {
-                                CmsFile file = (CmsFile)cms.createResource(foldername, filename, C_TYPE_IMAGE_NAME, null, filecontent);
+                                CmsFile file = (CmsFile)cms.createResource(foldername, filename, CmsResourceTypeImage.C_RESOURCE_TYPE_NAME, null, filecontent);
                                 if(title != null) {
                                     String filepath = cms.readAbsolutePath(file);
                                     cms.writeProperty(filepath, C_PROPERTY_TITLE, title);

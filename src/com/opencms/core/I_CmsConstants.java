@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/14 11:05:23 $
-* Version: $Revision: 1.243 $
+* Date   : $Date: 2003/07/15 10:42:58 $
+* Version: $Revision: 1.244 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.243 $ $Date: 2003/07/14 11:05:23 $
+ * @version $Revision: 1.244 $ $Date: 2003/07/15 10:42:58 $
  */
 public interface I_CmsConstants {
 
@@ -106,46 +106,6 @@ public interface I_CmsConstants {
 
     /** prefix for temporary files */
     String C_TEMP_PREFIX = "~";
-
-    /**
-     * The last index, that was used for resource-types.
-     */
-    String C_TYPE_LAST_INDEX = "lastIndex";
-
-    /**
-     * The resource type-id for a folder.
-     */
-    int C_TYPE_FOLDER = 0;
-
-    /**
-     * The resource type-id for a folder.
-     */
-    String C_TYPE_FOLDER_NAME = "folder";
-
-    /** The resource type-name for an image. */
-    String C_TYPE_IMAGE_NAME = "image";
-
-    /**
-     * The resource type-name for a page file.
-     */
-    String C_TYPE_PAGE_NAME = "page";
-
-    /**
-     * The resource type-name for plain files.
-     */
-    String C_TYPE_PLAIN_NAME = "plain";
-
-    /**
-     * The resource type-name for compatiblePlain files. This type is
-     * used by the opencms system to show the user that this resource doesent
-     * fit to the new standard in the folder content.
-     */
-    String C_TYPE_COMPATIBLEPLAIN_NAME = "compatiblePlain";
-
-    /**
-     * The resource type-name for body files.
-     */
-    String C_TYPE_BODY_NAME = "body";
 
     /**
      * Property for resource title

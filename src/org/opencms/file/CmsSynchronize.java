@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/12 12:49:03 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/15 10:42:59 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,15 @@
 
 package org.opencms.file;
 
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeFolder;
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,19 +56,11 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
-
 /**
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/07/12 12:49:03 $
+ * @version $Revision: 1.7 $ $Date: 2003/07/15 10:42:59 $
  */
 public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
@@ -295,7 +296,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         } catch (CmsException e) {
             // the folder could not be read, so create it
             // extract the foldername
-            CmsResource newFolder = m_cms.createResource(translate(folder), C_TYPE_FOLDER_NAME, new HashMap(), new byte[0], null);
+            CmsResource newFolder = m_cms.createResource(translate(folder), CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME, new HashMap(), new byte[0], null);
             // now check if there is some external method to be called which 
             // should modify the imported resource in the VFS
             Iterator i = m_checkFile.iterator();

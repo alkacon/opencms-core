@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePdfpage.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/07/15 10:42:59 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.I_CmsXmlParser;
 import com.opencms.util.Encoder;
@@ -60,7 +61,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.31 $ $Date: 2003/07/15 10:42:59 $
  */
 
 public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -97,7 +98,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
                 // the folder could not be read, so create it.
                 String orgFolder = completePath + foldername + "/";
                 orgFolder = orgFolder.substring(C_VFS_PATH_BODIES.length() - 1);
-                CmsFolder newfolder = (CmsFolder)cms.createResource(completePath, foldername, C_TYPE_FOLDER_NAME);
+                CmsFolder newfolder = (CmsFolder)cms.createResource(completePath, foldername, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME);
 //                CmsFolder folder = cms.readFolder(orgFolder);
                 cms.lockResource(cms.readAbsolutePath(newfolder));
 //                cms.chown(cms.readAbsolutePath(newfolder), cms.readOwner(folder).getName());

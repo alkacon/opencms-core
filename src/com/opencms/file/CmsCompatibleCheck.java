@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCompatibleCheck.java,v $
-* Date   : $Date: 2003/07/11 21:35:49 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/07/15 10:42:59 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,13 @@
 
 package com.opencms.file;
 
-import com.opencms.template.*;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.template.A_CmsXmlContent;
 import com.opencms.workplace.I_CmsWpConstants;
-import com.opencms.core.*;
-import org.w3c.dom.*;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 /**
@@ -61,7 +64,7 @@ public class CmsCompatibleCheck implements I_CmsConstants{
     public boolean isTemplateCompatible(String name, byte[] content, String type){
 
         // dont check folders
-        if (C_TYPE_FOLDER_NAME.equals(type)){
+        if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)){
             return true;
         }
         if ( name == null){
@@ -69,7 +72,7 @@ public class CmsCompatibleCheck implements I_CmsConstants{
         }
         if (name.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)){
             // this is a body file
-            if (!C_TYPE_PLAIN_NAME.equals(type)){
+            if (!CmsResourceTypePlain.C_RESOURCE_TYPE_NAME.equals(type)){
                 // only plain files allowed in content/bodys
                 return false;
             }
@@ -97,7 +100,7 @@ public class CmsCompatibleCheck implements I_CmsConstants{
         } else if (name.startsWith(I_CmsWpConstants.C_VFS_PATH_DEFAULT_TEMPLATES)
                     || (name.startsWith(I_CmsWpConstants.C_VFS_PATH_MODULES) && name.indexOf("/" + I_CmsWpConstants.C_VFS_DIR_TEMPLATES) > -1)){
             // this is a template file
-            if (!C_TYPE_PLAIN_NAME.equals(type)){
+            if (!CmsResourceTypePlain.C_RESOURCE_TYPE_NAME.equals(type)){
                 // only plain templates are allowed
                 return false;
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/14 11:05:23 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/07/15 10:42:59 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.util.CmsUUID;
@@ -57,7 +58,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
 
@@ -65,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.28 $ $Date: 2003/07/14 11:05:23 $
+ * @version $Revision: 1.29 $ $Date: 2003/07/15 10:42:59 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -673,7 +681,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             parentId,
             CmsUUID.getNullUUID(),
             folderName,
-            com.opencms.core.I_CmsConstants.C_TYPE_FOLDER,
+            CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
             flags,
             user.getId(),
             user.getDefaultGroupId(),
@@ -3358,7 +3366,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         boolean isFolder = false;
         //Savepoint savepoint = null;
 
-        if (resource.getType() == I_CmsConstants.C_TYPE_FOLDER) {
+        if (resource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
             isFolder = true;
         }
         if (filecontent == null) {

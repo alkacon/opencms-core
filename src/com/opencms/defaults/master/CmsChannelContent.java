@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/07/15 09:31:38 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/07/15 10:42:59 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.defaults.I_CmsExtendedContentDefinition;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.template.I_CmsContent;
 
@@ -54,8 +55,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.36 $
- * $Date: 2003/07/15 09:31:38 $
+ * $Revision: 1.37 $
+ * $Date: 2003/07/15 10:42:59 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -211,7 +212,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
         // int lockedBy, int launcherType, String launcherClassname, long dateCreated,
         // long dateLastModified, int resourceLastModifiedBy,int size, int lockedInProject
         m_channel = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(),
-                                     CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "", I_CmsConstants.C_TYPE_FOLDER,
+                                     CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
                                      0,
                                      /* m_cms.getRequestContext().currentUser().getId(), */
                                      /* m_cms.getRequestContext().currentGroup().getId(), */
@@ -348,7 +349,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
                 // this is a new row - call the create statement
                 // first set the new channelId
                 setNewChannelId();
-                newChannel = cms.createResource(m_parentchannel, m_channelname, I_CmsConstants.C_TYPE_FOLDER_NAME, m_properties);
+                newChannel = cms.createResource(m_parentchannel, m_channelname, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME, m_properties);
                 cms.lockResource(cms.readAbsolutePath(newChannel), true);
             } else {
                 if (!"".equals(m_channel.getResourceName())) {

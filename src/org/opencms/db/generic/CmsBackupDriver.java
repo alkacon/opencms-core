@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/14 18:43:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/07/15 10:42:59 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import com.opencms.file.CmsBackupResource;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.SqlHelper;
@@ -65,7 +66,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2003/07/14 18:43:54 $
+ * @version $Revision: 1.15 $ $Date: 2003/07/15 10:42:59 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -575,7 +576,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             conn = m_sqlManager.getConnectionForBackup();           
             
             if (resource.isHardLink()) {
-                if (resource.getType() != I_CmsConstants.C_TYPE_FOLDER) {
+                if (resource.getType() != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
     				// write the file content
     				content = ((CmsFile)resource).getContents();
     				writeBackupFileContent(backupPkId,resource.getFileId(),content,versionId);               

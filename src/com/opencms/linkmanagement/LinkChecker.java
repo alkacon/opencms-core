@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2003/07/11 21:35:49 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/07/15 10:42:59 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,20 +76,20 @@ public class LinkChecker {
         if (isSimplePage) {
             
             CmsXmlTemplate bodyClassObject = (CmsXmlTemplate)CmsTemplateClassManager.getClassInstance(cms, I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
-            bodyTemplateFile = bodyClassObject.getOwnTemplateFile(cms, page, I_CmsConstants.C_TYPE_BODY_NAME, null, null);
+            bodyTemplateFile = bodyClassObject.getOwnTemplateFile(cms, page, I_CmsConstants.C_XML_BODY_ELEMENT, null, null);
 
         } else {
         
             CmsXmlControlFile pageControlFile = new CmsXmlControlFile(cms, page);
-            if(pageControlFile.isElementTemplateDefined(I_CmsConstants.C_TYPE_BODY_NAME)){
-                bodyFileName = pageControlFile.getElementTemplate(I_CmsConstants.C_TYPE_BODY_NAME);
+            if(pageControlFile.isElementTemplateDefined(I_CmsConstants.C_XML_BODY_ELEMENT)){
+                bodyFileName = pageControlFile.getElementTemplate(I_CmsConstants.C_XML_BODY_ELEMENT);
                 bodyFileName = pageControlFile.validateBodyPath(cms, bodyFileName, resource);
             }
-            if(pageControlFile.isElementClassDefined(I_CmsConstants.C_TYPE_BODY_NAME)){
-                bodyClassName = pageControlFile.getElementClass(I_CmsConstants.C_TYPE_BODY_NAME);
+            if(pageControlFile.isElementClassDefined(I_CmsConstants.C_XML_BODY_ELEMENT)){
+                bodyClassName = pageControlFile.getElementClass(I_CmsConstants.C_XML_BODY_ELEMENT);
             }
             CmsXmlTemplate bodyClassObject = (CmsXmlTemplate)CmsTemplateClassManager.getClassInstance(cms, bodyClassName);
-            bodyTemplateFile = bodyClassObject.getOwnTemplateFile(cms,bodyFileName, I_CmsConstants.C_TYPE_BODY_NAME, null, null);
+            bodyTemplateFile = bodyClassObject.getOwnTemplateFile(cms,bodyFileName, I_CmsConstants.C_XML_BODY_ELEMENT, null, null);
         
         }
         

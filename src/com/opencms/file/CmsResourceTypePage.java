@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/15 10:17:20 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2003/07/15 10:42:59 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -197,7 +197,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         checkFolders(cms, folderName);
 
         // Create the new body file
-        cms.doCreateFile(bodyFolder + pageName, (getDefaultBodyStart() + new String(contents) + getDefaultBodyEnd()).getBytes(), I_CmsConstants.C_TYPE_PLAIN_NAME, new Hashtable());
+        cms.doCreateFile(bodyFolder + pageName, (getDefaultBodyStart() + new String(contents) + getDefaultBodyEnd()).getBytes(), CmsResourceTypePlain.C_RESOURCE_TYPE_NAME, new Hashtable());
         cms.doLockResource(bodyFolder + pageName, true);        
 
         // linkmanagement: create the links of the new page (for the case that the content was not empty

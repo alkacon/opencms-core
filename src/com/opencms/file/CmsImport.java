@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/10 12:28:51 $
-* Version: $Revision: 1.102 $
+* Date   : $Date: 2003/07/15 10:42:59 $
+* Version: $Revision: 1.103 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.102 $ $Date: 2003/07/10 12:28:51 $
+ * @version $Revision: 1.103 $ $Date: 2003/07/15 10:42:59 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -569,7 +569,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 // try to read an existing channel to get the channel id
                 String channelId = null;
                 try {
-                    if ((type.equalsIgnoreCase(C_TYPE_FOLDER_NAME)) && (! destination.endsWith(C_FOLDER_SEPARATOR))) {
+                    if ((type.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME)) && (! destination.endsWith(C_FOLDER_SEPARATOR))) {
                         destination += C_FOLDER_SEPARATOR;
                     }
                     CmsResource channel = m_cms.readFileHeader(C_ROOT + destination);
@@ -605,8 +605,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 if(m_importVersion == 0){
                     // ok, a (very) old system exported this, check if the file is ok
                     if(!(new CmsCompatibleCheck()).isTemplateCompatible(m_importPath + destination, content, type)){
-                        type = C_TYPE_COMPATIBLEPLAIN_NAME;
-                        m_report.print(m_report.key("report.must_set_to") + C_TYPE_COMPATIBLEPLAIN_NAME + " ", I_CmsReport.C_FORMAT_WARNING);
+                        type = CmsResourceTypeCompatiblePlain.C_RESOURCE_TYPE_NAME;
+                        m_report.print(m_report.key("report.must_set_to") + type + " ", I_CmsReport.C_FORMAT_WARNING);
                     }
                 }   
             } 
@@ -616,7 +616,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                                         properties, launcherStartClass, content, m_importPath);
 
             if(res != null){
-                if(C_TYPE_PAGE_NAME.equals(type)){
+                if(CmsResourceTypePage.C_RESOURCE_TYPE_NAME.equals(type)){
                     m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
                 }
             }
@@ -734,11 +734,11 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 
                 // if the type is "script" set it to plain
                 if("script".equals(type)){
-                    type = C_TYPE_PLAIN_NAME;
+                    type = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
                 }
                 
                 String translatedName = C_VFS_DEFAULT + m_importPath + destination;
-                if (C_TYPE_FOLDER_NAME.equals(type)) {
+                if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
                     translatedName += C_FOLDER_SEPARATOR;                    
                 }                    
                 translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);

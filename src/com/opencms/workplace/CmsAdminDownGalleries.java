@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2003/07/11 14:01:12 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/07/15 10:42:59 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsImportFolder;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResourceTypeFolder;
+import com.opencms.file.CmsResourceTypeImage;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.util.Utils;
 
@@ -47,7 +49,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.32 $ $Date: 2003/07/11 14:01:12 $
+ * @version $Revision: 1.33 $ $Date: 2003/07/15 10:42:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -160,7 +162,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
 
                 // get the path from the workplace.ini
                 String superfolder = getConfigFile(cms).getDownGalleryPath();
-                CmsFolder folder = (CmsFolder)cms.createResource(superfolder, galleryname, C_TYPE_FOLDER_NAME);
+                CmsFolder folder = (CmsFolder)cms.createResource(superfolder, galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME);
                 cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                 // TODO: check how to set the appropriate access using acl 
                 /*
@@ -282,7 +284,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
 
                             // get the selected resource and check if it is an image
                             I_CmsResourceType type = cms.getResourceType(newtype);
-                            if(newtype.equals(C_TYPE_IMAGE_NAME)) {
+                            if(newtype.equals(CmsResourceTypeImage.C_RESOURCE_TYPE_NAME)) {
 
                                 // the file type is an image
                                 templateSelector = "image";

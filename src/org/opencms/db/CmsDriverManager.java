@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/15 10:17:20 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2003/07/15 10:42:59 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.44 $ $Date: 2003/07/15 10:17:20 $
+ * @version $Revision: 1.45 $ $Date: 2003/07/15 10:42:59 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4121,7 +4121,7 @@ public class CmsDriverManager extends Object {
         String folderName = null;
         String resourceName = null;
 
-        boolean isFolder = (resourceType == I_CmsConstants.C_TYPE_FOLDER);
+        boolean isFolder = (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
         if (isFolder) {
             // append I_CmsConstants.C_FOLDER_SEPARATOR if required
             if (!newResourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))
@@ -6147,7 +6147,7 @@ public class CmsDriverManager extends Object {
         // the path + resourceName is the full resource name 
         String resourceName = currentResource.getResourceName();
         // add an optional / to the path if the resource is a folder
-        boolean isFolder = currentResource.getType() == I_CmsConstants.C_TYPE_FOLDER;
+        boolean isFolder = currentResource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
 
         while (!(currentParentId = currentResource.getParentId()).equals(CmsUUID.getNullUUID())) {
             // see if we can find an already cached path for the current parent-ID

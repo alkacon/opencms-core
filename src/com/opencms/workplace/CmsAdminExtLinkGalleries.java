@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2003/07/11 14:01:12 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/07/15 10:42:59 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsLinkCheck;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -45,7 +46,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.13 $ $Date: 2003/07/11 14:01:12 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/15 10:42:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -138,7 +139,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                 try {
 
                     // create the folder
-                    CmsResource folder = cms.createResource(C_VFS_GALLERY_EXTERNALLINKS, galleryname, C_TYPE_FOLDER_NAME);
+                    CmsResource folder = cms.createResource(C_VFS_GALLERY_EXTERNALLINKS, galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME);
                     if(title != null) {
                         cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                     }

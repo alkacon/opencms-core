@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/15 10:17:20 $
-* Version: $Revision: 1.318 $
+* Date   : $Date: 2003/07/15 10:42:58 $
+* Version: $Revision: 1.319 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
 package com.opencms.file;
 
 import org.opencms.db.CmsDriverManager;
-import org.opencms.file.*;
+import org.opencms.file.CmsSynchronize;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.318 $
+ * @version $Revision: 1.319 $
  */
 public class CmsObject extends Object {
 
@@ -613,7 +613,7 @@ public class CmsObject extends Object {
             Hashtable properties = new Hashtable();
             int newChannelId = org.opencms.db.CmsIdGenerator.nextId(com.opencms.defaults.master.CmsChannelBackoffice.C_TABLE_CHANNELID);
             properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId + "");
-            return (CmsFolder) createResource(parentChannel, newChannelName, I_CmsConstants.C_TYPE_FOLDER_NAME, properties);
+            return (CmsFolder) createResource(parentChannel, newChannelName, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME, properties);
         } finally {
             setContextToVfs();
         }
@@ -675,7 +675,7 @@ public class CmsObject extends Object {
      * @deprecated Use createResource instead.
      */
     public CmsFolder createFolder(String folder, String newFolderName) throws CmsException {
-        return (CmsFolder) createResource(folder, newFolderName, I_CmsConstants.C_TYPE_FOLDER_NAME);
+        return (CmsFolder) createResource(folder, newFolderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME);
     }
     /**
      * Adds a new group to the Cms.<p>
@@ -2207,7 +2207,16 @@ public class CmsObject extends Object {
      * @throws CmsException if operation was not successful.
      */
     public I_CmsResourceType getResourceType(int resourceType) throws CmsException {
-        return (m_driverManager.getResourceType(m_context, resourceType));
+        return m_driverManager.getResourceType(m_context, resourceType);
+    }
+    
+    public int getResourceTypeId(String resourceType) throws CmsException {
+        I_CmsResourceType type = m_driverManager.getResourceType(m_context, resourceType);
+        if (type != null) {
+            return type.getResourceType();
+        } else {
+            return I_CmsConstants.C_UNKNOWN_ID;
+        }
     }
     
     /**
@@ -2218,9 +2227,10 @@ public class CmsObject extends Object {
      * @return a CmsResourceType.
      *
      * @throws CmsException if operation was not successful.
+     * @deprecated use {@link #getResourceType(int)} instead
      */
     public I_CmsResourceType getResourceType(String resourceType) throws CmsException {
-        return (m_driverManager.getResourceType(m_context, resourceType));
+        return m_driverManager.getResourceType(m_context, resourceType);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/07/07 18:07:33 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/07/15 10:42:59 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsImportFolder;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResourceTypeImage;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.util.Encoder;
 
@@ -50,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2003/07/07 18:07:33 $
+ * @version $Revision: 1.42 $ $Date: 2003/07/15 10:42:59 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
     
@@ -259,7 +260,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
 
                     // get the selected resource and check if it is an image
                     I_CmsResourceType type = cms.getResourceType(newtype);
-                    if(newtype.equals(C_TYPE_IMAGE_NAME)) {
+                    if(newtype.equals(CmsResourceTypeImage.C_RESOURCE_TYPE_NAME)) {
                         // check if the resource already exists to get its title
                         try {
                             String oldTitle = cms.readProperty( currentFolder + filename, I_CmsConstants.C_PROPERTY_TITLE );

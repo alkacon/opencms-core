@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/14 18:43:54 $
-* Version: $Revision: 1.90 $
+* Date   : $Date: 2003/07/15 10:42:58 $
+* Version: $Revision: 1.91 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.90 $ $Date: 2003/07/14 18:43:54 $
+ * @version $Revision: 1.91 $ $Date: 2003/07/15 10:42:58 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -419,7 +419,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void createFolder(String folder, String newFolderName) {
         try {
-            System.out.println((CmsFolder)m_cms.createResource(folder, newFolderName, C_TYPE_FOLDER_NAME));
+            System.out.println((CmsFolder)m_cms.createResource(folder, newFolderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME));
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
