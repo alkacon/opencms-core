@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/18 13:57:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagContentContainer {
@@ -62,8 +62,8 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
     /** Refenence to the currently selected locale. */
     private Locale m_locale;
 
-    /** Reference to the resource name the looped content element was loaded from. */
-    private String m_resourceName;
+    /** Reference to the parent 'contentload' tag. */
+    private I_CmsJspTagContentContainer m_parentTag;
 
     /**
      * @see javax.servlet.jsp.tagext.TagSupport#doAfterBody()
@@ -86,16 +86,15 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
     public int doStartTag() throws JspException {
 
         // get a reference to the parent "content container" class
-        Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
+        Tag ancestor = findAncestorWithClass(this, CmsJspTagContentLoad.class);
         if (ancestor == null) {
-            throw new JspTagException("Tag <contentloop> without required parent tag <contentload> found!");
+            throw new JspTagException("Tag 'contentloop' without required parent tag 'contentload' found!");
         }
-        I_CmsJspTagContentContainer contentContainer = (I_CmsJspTagContentContainer)ancestor;
+        m_parentTag = (I_CmsJspTagContentContainer)ancestor;
 
         // get loaded content from parent <contentload> tag
-        m_content = contentContainer.getXmlDocument();
-        m_resourceName = contentContainer.getResourceName();
-        m_locale = contentContainer.getXmlDocumentLocale();
+        m_content = m_parentTag.getXmlDocument();
+        m_locale = m_parentTag.getXmlDocumentLocale();
         m_index = 0;
 
         if (m_content.hasValue(m_element, m_locale)) {
@@ -122,7 +121,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
      */
     public String getResourceName() {
 
-        return m_resourceName;
+        return m_parentTag.getResourceName();
     }
 
     /**
@@ -165,8 +164,17 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
         super.release();
         m_element = null;
         m_content = null;
-        m_resourceName = null;
+        m_locale = null;
+        m_parentTag = null;
         m_index = 0;
+    }
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#resolveMagicName(java.lang.String)
+     */
+    public String resolveMagicName(String name) {
+
+        return m_parentTag.resolveMagicName(name);
     }
 
     /**

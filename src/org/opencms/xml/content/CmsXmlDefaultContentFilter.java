@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Attic/CmsXmlDefaultContentFilter.java,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/18 13:57:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsXmlDefaultContentFilter extends A_CmsXmlContentFilter {
@@ -58,19 +58,11 @@ public class CmsXmlDefaultContentFilter extends A_CmsXmlContentFilter {
     private static final PrintfFormat C_FORMAT_NUMBER = new PrintfFormat("%0.4d");
 
     /** Static array of the possible filters. */
-    private static final String[] m_filterNames = {"allInFolder"};
+    private static final String[] m_filterNames = {"singleFile", "allInFolder"};
 
     /** Array list for fast filter name lookup. */
-    private static final List m_filters = Collections.unmodifiableList(Arrays.asList(m_filterNames));    
-    
-    /**
-     * @see org.opencms.xml.content.I_CmsXmlContentFilter#getFilterNames()
-     */
-    public List getFilterNames() {
+    private static final List m_filters = Collections.unmodifiableList(Arrays.asList(m_filterNames));
 
-        return m_filters;
-    }
-    
     /**
      * @see org.opencms.xml.content.I_CmsXmlContentFilter#getCreateLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
@@ -83,10 +75,21 @@ public class CmsXmlDefaultContentFilter extends A_CmsXmlContentFilter {
 
         switch (m_filters.indexOf(filterName)) {
             case 0:
+                // "singleFile" (does not support create link)
+                return null;
+            case 1:
                 return getAllInFolderCreate(cms, param);
             default:
                 throw new CmsException("Invalid XML content filter selected: " + filterName);
         }
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentFilter#getFilterNames()
+     */
+    public List getFilterNames() {
+
+        return m_filters;
     }
 
     /**
@@ -101,9 +104,11 @@ public class CmsXmlDefaultContentFilter extends A_CmsXmlContentFilter {
 
         switch (m_filters.indexOf(filterName)) {
             case 0:
+                return getSingleFile(cms, param);
+            case 1:
                 return getAllInFolder(cms, param);
             default:
-                throw new CmsException("Invalid XML content filter selected: " + filterName);                    
+                throw new CmsException("Invalid XML content filter selected: " + filterName);
         }
     }
 
@@ -118,12 +123,12 @@ public class CmsXmlDefaultContentFilter extends A_CmsXmlContentFilter {
     protected List getAllInFolder(CmsObject cms, String param) throws CmsException {
 
         if (param == null) {
-            throw new CmsException("Filter requires a parameter in the form '/sites/default/myfolder/|11'");            
+            throw new IllegalArgumentException("Filter requires a parameter in the form '/sites/default/myfolder/|11'");
         }
-        
+
         int pos1 = param.indexOf('|');
         if (pos1 == -1) {
-            throw new CmsException("Malformed filter parameter '" + param + "'");
+            throw new IllegalArgumentException("Malformed filter parameter '" + param + "'");
         }
 
         String foldername = CmsResource.getFolderPath(param.substring(0, pos1));
@@ -167,12 +172,13 @@ public class CmsXmlDefaultContentFilter extends A_CmsXmlContentFilter {
     protected String getAllInFolderCreate(CmsObject cms, String param) throws CmsException {
 
         if (param == null) {
-            throw new CmsException("Filter requires a parameter e.g. in the form '/sites/default/myfolder/file_${number}.html|11'");            
+            throw new IllegalArgumentException(
+                "Filter requires a parameter e.g. in the form '/sites/default/myfolder/file_${number}.html|11'");
         }
-        
+
         int pos1 = param.indexOf('|');
         if (pos1 == -1) {
-            throw new CmsException("Malformed filter parameter '" + param + "'");
+            throw new IllegalArgumentException("Malformed filter parameter '" + param + "'");
         }
 
         String path = param.substring(0, pos1);
@@ -205,5 +211,24 @@ public class CmsXmlDefaultContentFilter extends A_CmsXmlContentFilter {
         } while (result.contains(checkName));
 
         return checkName.substring(cms.getRequestContext().getSiteRoot().length());
+    }
+
+    /**
+     * Returns a List with a single file name containing given parameter.<p>
+     * 
+     * @param cms the current CmsObject
+     * @param param the name of the file to load
+     * @return a List with a single file name containing given parameter
+     */
+    protected List getSingleFile(CmsObject cms, String param) {
+
+        if ((param == null) || (cms == null)) {
+            throw new IllegalArgumentException("Filter requires a parameter in the form '/myfolder/file.html'");
+        }
+
+        // create a list and return it
+        ArrayList result = new ArrayList(1);
+        result.add(param);
+        return result;
     }
 }

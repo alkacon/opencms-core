@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/18 13:57:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,32 +31,21 @@
 
 package org.opencms.jsp;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.flex.CmsFlexResponse;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.editors.I_CmsEditorActionHandler;
 import org.opencms.xml.A_CmsXmlDocument;
-import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentFilter;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
@@ -64,298 +53,165 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
-public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer { 
-    
+public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer {
+
     /** The link for creation of a new element, specified by the selected filter. */
-    private String m_createLink;
+    private String m_directEditCreateLink;
     
+    /** The CmsObject for the current user. */
+    private CmsObject m_cms;
+
+    /** Reference to the last loaded content element. */
+    private A_CmsXmlDocument m_content;
+
+    /** The FlexController for the current request. */
+    private CmsFlexController m_controller;
+
     /** The editable flag. */
     private boolean m_editable;
     
-    /** The file to load the content value from. */
+    /** Indicates if the last element was ediable (including user permissions etc.). */
+    private String m_directEditPermissions;    
+
+    /** The file name to load the current content value from. */
     private String m_file;
-    
+
     /** The name of the filter to use for list building. */
     private String m_filter;
-    
+
     /** The list of filtered content items. */
     private List m_filterContentList;
-    
-    /** Paramter used for filters. */
-    private String m_param;
-    
-    /** Indicated if the last element was ediable (could be page attribute). */
-    private boolean m_wasEditable;
-    
-    /** Reference to the last loaded content element. */
-    private A_CmsXmlDocument m_content;
-    
-    /** Reference to the resource name the last content element was loaded from. */
-    private String m_resourceName;
-    
+
     /** Refenence to the currently selected locale. */
     private Locale m_locale;
-    
-    /**
-     * Adds parameters to a parameter Map that can be used for a http request.<p>
-     * 
-     * @param parameters the Map to add the parameters to
-     * @param name the name to add
-     * @param value the value to add
-     * @param overwrite if <code>true</code>, a parameter in the map will be overwritten by
-     *      a parameter with the same name, otherwise the request will have multiple parameters 
-     *      with the same name (which is possible in http requests)
-     */
-    public static void addParameter(Map parameters, String name, String value, boolean overwrite) {
-        // No null values allowed in parameters
-        if ((parameters == null) || (name == null) || (value == null)) {
-            return;
-        }
-        
-        // Check if the parameter name (key) exists
-        if (parameters.containsKey(name) && (! overwrite)) {
-            // Yes: Check name values if value exists, if so do nothing, else add new value
-            String[] values = (String[]) parameters.get(name);
-            String[] newValues = new String[values.length+1];
-            System.arraycopy(values, 0, newValues, 0, values.length);
-            newValues[values.length] = value;
-            parameters.put(name, newValues);
-        } else {
-            // No: Add new parameter name / value pair
-            String[] values = new String[] {value};
-            parameters.put(name, values);
-        } 
-    }    
 
-    /**
-     * Internal action method to load an XML content file.<p>
-     * 
-     * @param context the current JSP page context
-     * @param filename the XML content item file to load
-     * @param editable if true, the element should be direct editable
-     * @param req the current request 
-     * @param editOptions the edit options to use
-     * @param createLink  the link for creating new contents
-     * 
-     * @throws JspException in case somthing goes wrong
-     * 
-     * @return true if the element was editable
-     */    
-    public boolean contentItemTagFileAction(PageContext context, String filename, boolean editable, String editOptions, String createLink, ServletRequest req) throws JspException {
+    /** Paramter used for filters. */
+    private String m_param;
 
-        int todo = 0;
-        // TODO: this method must be re-written
-        
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-        CmsObject cms = controller.getCmsObject();
-        
-        CmsFile contentFile;
-        CmsXmlContent content;
-        
-        if ("uri".equals(filename)) {
-            filename = cms.getRequestContext().getUri();
-        }
-        
-        try {
-            // try to read and initialize the XML content
-            contentFile = cms.readFile(filename);
-            content = CmsXmlContentFactory.unmarshal(cms, contentFile);
-        } catch (CmsException e) {
-            controller.setThrowable(e, filename);
-            throw new JspException(e);
-        }
-        
-        // store the loaded XML file name and the content object        
-        m_resourceName = filename;
-        m_content = content;
-        m_locale = cms.getRequestContext().getLocale();
-        
-        // check the "direct edit" mode
-        String directEditPermissions = null;
-        String directEditIncludeFile = null;          
-        
-        if (editable) {
-            // get the include file where the direct edit HTML is stored in
-            directEditIncludeFile = (String)context.getRequest().getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI);
-            if (directEditIncludeFile != null) {
-                // check the direct edit permissions of the current user                    
-                directEditPermissions = OpenCms.getWorkplaceManager().getEditorActionHandler().getEditMode(controller.getCmsObject(), filename, null, req);
-            }
-            if (directEditPermissions == null) {
-                // "editable" is true only if both direct edit include file and direct edit permissions are available
-                editable = false;
-            }            
-        }        
-        
-        // include direct edit "start" element (if enabled)
-        if (editable) {                
-            includeDirectEditElement(context, directEditIncludeFile, I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START + "_" + directEditPermissions, filename, editOptions, createLink, req, context.getResponse());
-        }
-        
-        return editable;
-    }
-    
-    /**
-     * Returns an option String for the direct editor generated from the provided values.<p>
-     * 
-     * @param showEdit indicates that the edit button should be shown 
-     * @param showDelete indicates that the delete button should be shown 
-     * @param showNew indicates that the new button should be shown 
-     * @return an option String for the direct editor generated from the provided values
-     */
-    public static String createEditOptions(boolean showEdit, boolean showDelete, boolean showNew) {
-        StringBuffer result = new StringBuffer(32);
-        if (showEdit) {
-            result.append(I_CmsEditorActionHandler.C_DIRECT_EDIT_OPTION_EDIT);
-        }
-        result.append('|');            
-        if (showDelete) {
-            result.append(I_CmsEditorActionHandler.C_DIRECT_EDIT_OPTION_DELETE);
-        }            
-        result.append('|');            
-        if (showNew) {
-            result.append(I_CmsEditorActionHandler.C_DIRECT_EDIT_OPTION_NEW);
-        }
-        return result.toString();
-    }
-    
-    /**
-     * Includes the "direct edit" element that add HTML for the editable area to 
-     * the output page.<p>
-     * 
-     * @param context the current JSP page context
-     * @param target the source of the element
-     * @param element the editor element to include       
-     * @param req the current request
-     * @param res the current response
-     * @throws JspException in case something goes wrong         
-     */
-    private static void includeDirectEditElement(PageContext context, String target, String element, String editTarget, String editOptions, String createLink, ServletRequest req, ServletResponse res) 
-    throws JspException {
-
-        CmsFlexController controller = (CmsFlexController) req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-        
-        Map parameterMap = new HashMap();
-        addParameter(parameterMap, I_CmsConstants.C_PARAMETER_ELEMENT, element, true);
-        // set additional request parameters required by the included direct edit JSP 
-        addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET, editTarget, true);        
-        addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE, controller.getCmsObject().getRequestContext().getLocale().toString(), true);        
-        CmsUserSettings settings = new CmsUserSettings(controller.getCmsObject().getRequestContext().currentUser());        
-        addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE, String.valueOf(settings.getDirectEditButtonStyle()), true);
-        if (editOptions != null) {
-            addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_OPTIONS, editOptions, true);
-        }
-        if (createLink != null) {
-            addParameter(parameterMap, I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_NEWLINK, createLink, true);
-        }
-        
-        try {
-            
-            controller.getCurrentRequest().addParameterMap(parameterMap); 
-            context.getOut().print(CmsFlexResponse.C_FLEX_CACHE_DELIMITER);
-            controller.getCurrentResponse().addToIncludeList(target, parameterMap);
-            controller.getCurrentRequest().getRequestDispatcher(target).include(req, res);
-            
-        } catch (ServletException e) {
-            Throwable t;
-            if (e.getRootCause() != null) {
-                t = e.getRootCause();
-            } else {
-                t = e;
-            }
-            t = controller.setThrowable(t, target);
-            throw new JspException(t); 
-        } catch (IOException e) {
-            Throwable t = controller.setThrowable(e, target);
-            throw new JspException(t);
-        }
-    }    
-    
-    
     /**
      * @see javax.servlet.jsp.tagext.BodyTagSupport#doAfterBody()
      */
     public int doAfterBody() throws JspException {
+
+        if (m_directEditPermissions != null) {
+            // last element was direct editable, close it
+            CmsJspTagEditable.includeDirectEditElement(
+                pageContext,
+                I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_END, 
+                m_file, 
+                null, 
+                null, 
+                m_directEditPermissions,
+                null);            
+            m_directEditPermissions = null;
+        }
         
-        doEndTag();
-        m_file = getNextFilname(); 
-        if (m_file != null) {
-            m_wasEditable = contentItemTagFileAction(pageContext, m_file, m_editable, createEditOptions(true, true, false), null, pageContext.getRequest());            
+        // check if there are more files to iterate
+        if (m_filterContentList.size() > 0) {
+            
+            // there are more files available...
+            try {
+                doLoadNextFile();
+            } catch (CmsException e) {
+                m_controller.setThrowable(e, m_file);
+                throw new JspException(e);
+            }
+            
+            // check "direct edit" support
+            if (m_editable) {
+                m_directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
+                    pageContext, 
+                    I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START, 
+                    m_file, 
+                    null, 
+                    CmsJspTagEditable.createEditOptions(true, true, false),  
+                    null,
+                    m_directEditCreateLink);
+            }             
+            
+            // another loop is required
             return EVAL_BODY_AGAIN;
         }
+        
+        // no more files are available, so skip the body and finish the loop
         return SKIP_BODY;
     }
-    
+
     /**
-     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     * Load the next file name fomr the initialized list of file names.<p>
+     * 
+     * @throws CmsException if something goes wring
      */
-    public int doEndTag() throws JspException {
-        
-        if (getFile() != null) {            
-            // include direct edit "end" element (if enabled)
-            if (m_wasEditable) {
-                
-                CmsFlexController controller = (CmsFlexController)pageContext.getRequest().getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-                
-                // check the "direct edit" mode
-                String directEditPermissions = null;
-                String directEditIncludeFile = null;          
-                
-                // get the include file where the direct edit HTML is stored in
-                directEditIncludeFile = (String)pageContext.getRequest().getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI);
-                if (directEditIncludeFile != null) {
-                    // check the direct edit permissions of the current user                    
-                    directEditPermissions = OpenCms.getWorkplaceManager().getEditorActionHandler().getEditMode(controller.getCmsObject(), getFile(), null,  pageContext.getRequest());
-                }    
-                includeDirectEditElement(pageContext, directEditIncludeFile, I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_END + "_" + directEditPermissions,  getFile(), null, null, pageContext.getRequest(), pageContext.getResponse());
-            }
-        }  
-        
-        return EVAL_PAGE;
+    public void doLoadNextFile() throws CmsException {
+
+        // ge the next file name from the current list
+        m_file = getNextFilname();
+
+        // try to read and initialize the XML content
+        CmsFile file = m_cms.readFile(m_file);
+        m_content = CmsXmlContentFactory.unmarshal(m_cms, file);        
     }
-    
+
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     public int doStartTag() throws JspException {
-        
-        if (getFilter() != null) {
-            
-            // check if this is already initialized
-            m_file = getNextFilname();
-            
-            if (m_file == null) {            
-                CmsFlexController controller = (CmsFlexController)pageContext.getRequest().getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-                I_CmsXmlContentFilter filter;
-    
-                // HACK: Need to improve this
-                filter = OpenCms.getXmlContentTypeManager().getContentFilter(getFilter());        
-                try {
-                    m_filterContentList = filter.getFilterResults(controller.getCmsObject(), getFilter(), getParam());
-                    m_createLink = CmsEncoder.encode(getFilter() + "|" + getParam());
-                } catch (CmsException e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error in Jsp 'contentitem' filter tag processing", e);
-                    }                
-                    throw new javax.servlet.jsp.JspException(e);
-                }
-            }
 
-            m_file = getNextFilname(); 
-            m_wasEditable = contentItemTagFileAction(pageContext, getFile(), m_editable, createEditOptions(true, true, true), m_createLink, pageContext.getRequest());            
-            return EVAL_BODY_INCLUDE;
-        } 
-        
-        if (getFile() != null) {
-            m_wasEditable = contentItemTagFileAction(pageContext, getFile(), m_editable, createEditOptions(true, false, false), null, pageContext.getRequest());
-       
-            return EVAL_BODY_INCLUDE;
+        if (getFilter() == null) {
+            throw new IllegalArgumentException("'contentload' tag requires 'filter' attribute");
+        }
+
+        // initialize OpenCms access objects
+        m_controller = (CmsFlexController)pageContext.getRequest().getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        m_cms = m_controller.getCmsObject();
+
+        // store the current locale    
+        m_locale = m_cms.getRequestContext().getLocale();
+
+        // get the selected filter class
+        String filterName = getFilter();
+        String param = resolveMagicName(getParam());
+        I_CmsXmlContentFilter filter = OpenCms.getXmlContentTypeManager().getContentFilter(filterName);
+
+        try {
+            // execute the filter
+            m_filterContentList = filter.getFilterResults(m_cms, filterName, param);
+            if (filter.getCreateLink(m_cms, filterName, param) != null) {
+                // use "create link" only if filter supports it
+                m_directEditCreateLink = CmsEncoder.encode(getFilter() + "|" + getParam());
+            }
+            doLoadNextFile();
+        } catch (CmsException e) {
+            m_controller.setThrowable(e, m_cms.getRequestContext().getUri());
+            throw new JspException(e);
         }
         
-        return SKIP_BODY;
+        // check options for first element
+        String directEditOptions;
+        if (m_directEditCreateLink != null) {
+            // if create link is not null, show "edit", "delete" and "new" button for first element
+            directEditOptions = CmsJspTagEditable.createEditOptions(true, true, true);
+        } else {
+            // if create link is null, show onle "edit" button for first element
+            directEditOptions = CmsJspTagEditable.createEditOptions(true, false, false);
+        }
+        
+        // check "direct edit" support
+        if (m_editable) {
+            m_directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
+                pageContext, 
+                I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START, 
+                m_file, 
+                null, 
+                directEditOptions,
+                null,
+                m_directEditCreateLink);
+        }        
+
+        return EVAL_BODY_INCLUDE;
     }
 
     /**
@@ -364,10 +220,10 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
      * @return the editable flag
      */
     public String getEditable() {
-        
+
         return String.valueOf(m_editable);
     }
-    
+
     /**
      * Returns the file.<p>
      *
@@ -376,8 +232,8 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     public String getFile() {
 
         return m_file;
-    }    
-    
+    }
+
     /**
      * Returns the filter.<p>
      *
@@ -387,7 +243,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         return m_filter;
     }
-        
+
     /**
      * Returns the filter parameter.<p>
      *
@@ -397,7 +253,15 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         return m_param;
     }
-        
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getResourceName()
+     */
+    public String getResourceName() {
+
+        return m_file;
+    }
+
     /**
      * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocument()
      */
@@ -405,33 +269,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         return m_content;
     }
-        
-    /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getResourceName()
-     */
-    public String getResourceName() {
 
-        return m_resourceName;
-    }    
-    
-    /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocumentLocale()
-     */
-    public Locale getXmlDocumentLocale() {
-
-        return m_locale;
-    }
-        
-    /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocumentIndex()
-     */
-    public int getXmlDocumentIndex() {
-        
-        // index must be set in "loop" or "show" class
-        return 0;
-    }
-    
-    
     /**
      * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocumentElement()
      */
@@ -440,21 +278,68 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         // value must be set in "loop" or "show" class
         return null;
     }
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocumentIndex()
+     */
+    public int getXmlDocumentIndex() {
+
+        // index must be set in "loop" or "show" class
+        return 0;
+    }
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocumentLocale()
+     */
+    public Locale getXmlDocumentLocale() {
+
+        return m_locale;
+    }
     
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
-     */ 
+     */
     public void release() {
-        
-        super.release();        
+
+        super.release();
         m_file = null;
         m_filter = null;
-        m_createLink = null;
         m_filterContentList = null;
         m_param = null;
-        m_editable = false;
-        m_wasEditable = false;
-    }    
+        m_cms = null;
+        m_controller = null;
+        m_editable = false;    
+        m_directEditPermissions = null;
+    }
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#resolveMagicName(java.lang.String)
+     */
+    public String resolveMagicName(String name) {
+
+        if (name == null) {
+            return name;
+        }
+
+        if (!name.startsWith(I_CmsJspTagContentContainer.C_MAGIC_PREFIX)) {
+            return name;
+        }
+
+        String command = name.substring(I_CmsJspTagContentContainer.C_MAGIC_PREFIX.length());
+        int index = I_CmsJspTagContentContainer.C_MAGIC_LIST.indexOf(command);
+
+        switch (index) {
+            case 0:
+                // "uri"
+                return m_cms.getRequestContext().getUri();
+            case 1:
+                // "filename"
+                return m_file;
+            default:
+                // just return the name, unchanged
+                return name;
+        }
+    }
 
     /**
      * Sets the editable flag.<p>
@@ -462,10 +347,10 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
      * @param editable the flag to set
      */
     public void setEditable(String editable) {
-        
-        m_editable = Boolean.valueOf(editable).booleanValue();    
+
+        m_editable = Boolean.valueOf(editable).booleanValue();
     }
-    
+
     /**
      * Sets the file.<p>
      *
@@ -475,7 +360,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         m_file = file;
     }
-    
+
     /**
      * Sets the filter.<p>
      *
@@ -485,7 +370,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         m_filter = filter;
     }
-    
+
     /**
      * Sets the filter parameter.<p>
      *
@@ -494,17 +379,18 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     public void setParam(String param) {
 
         m_param = param;
-    }    
-    
+    }
+
     /**
      * Returns the next file name from the filter.<p>
      * 
      * @return the next file name from the filter
      */
     private String getNextFilname() {
+
         if ((m_filterContentList != null) && (m_filterContentList.size() > 0)) {
-            return (String)m_filterContentList.remove(0);            
+            return (String)m_filterContentList.remove(0);
         }
-        return null;        
+        return null;
     }
- }
+}

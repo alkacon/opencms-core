@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/I_CmsJspTagContentContainer.java,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/18 13:57:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,24 @@ package org.opencms.jsp;
 
 import org.opencms.xml.A_CmsXmlDocument;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * Provides access to a XML content document that was loaded by a parent tag.<p>
  */
 public interface I_CmsJspTagContentContainer {
+
+    /** Identified for "magiac" parameter commands. */
+    String[] C_MAGIC_COMMANDS = {"uri", "filename"};
+
+    /** The "magic" commands wrapped in a List. */
+    List C_MAGIC_LIST = Collections.unmodifiableList(Arrays.asList(C_MAGIC_COMMANDS));
+
+    /** Identifier for "magic" parameter names. */
+    String C_MAGIC_PREFIX = "opencms:";
 
     /**
      * Returns the resource name in the VFS for the currently loaded XML content document.<p>
@@ -74,4 +86,15 @@ public interface I_CmsJspTagContentContainer {
      * @return the currently selected locale for the current content
      */
     Locale getXmlDocumentLocale();
+
+    /**
+     * Resolves the "magic" names that can be used as values for "param" and "element" attributes.<p> 
+     * 
+     * If the given name is not a "magic" name, it is returned unchanged.
+     * Otherwise the value of the selected "magic" command is returned.<p>
+     * 
+     * @param name the name to resolve
+     * @return the resolved "magic" name 
+     */
+    String resolveMagicName(String name);
 }
