@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/11/05 16:10:47 $
-* Version: $Revision: 1.201 $
+* Date   : $Date: 2001/11/07 09:29:31 $
+* Version: $Revision: 1.202 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.201 $ $Date: 2001/11/05 16:10:47 $
+ * @version $Revision: 1.202 $ $Date: 2001/11/07 09:29:31 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -288,6 +288,29 @@ public void addUserToGroup(String username, String groupname) throws CmsExceptio
  */
 public CmsUser addWebUser(String name, String password, String group, String description, Hashtable additionalInfos, int flags) throws CmsException {
     return (m_rb.addWebUser(m_context.currentUser(), m_context.currentProject(), name, password, group, description, additionalInfos, flags));
+}
+/**
+ * Adds a web user to the Cms.
+ * <br>
+ * A web user has no access to the workplace but is able to access personalized
+ * functions controlled by the OpenCms.
+ *
+ * @param name the new name for the user.
+ * @param password the new password for the user.
+ * @param group the default groupname for the user.
+ * @param additionalGroup An additional group for the user.
+ * @param description the description for the user.
+ * @param additionalInfos a Hashtable with additional infos for the user. These
+ * Infos may be stored into the Usertables (depending on the implementation).
+ * @param flags the flags for a user (e.g. C_FLAG_ENABLED)
+ *
+ * @return a <code>CmsUser</code> object representing the newly created user.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public CmsUser addWebUser(String name, String password, String group, String additionalGroup, String description, Hashtable additionalInfos, int flags) throws CmsException {
+    CmsUser newWebUser = m_rb.addWebUser(m_context.currentUser(), m_context.currentProject(), name, password, group, additionalGroup, description, additionalInfos, flags);
+    return newWebUser;
 }
 /**
  * Returns the anonymous user object.

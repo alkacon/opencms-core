@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2001/11/05 16:10:47 $
-* Version: $Revision: 1.160 $
+* Date   : $Date: 2001/11/07 09:29:31 $
+* Version: $Revision: 1.161 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.160 $ $Date: 2001/11/05 16:10:47 $
+ * @version $Revision: 1.161 $ $Date: 2001/11/07 09:29:31 $
  *
  */
 
@@ -265,6 +265,32 @@ public interface I_CmsResourceBroker {
                              String name, String password,
                       String group, String description,
                       Hashtable additionalInfos, int flags)
+        throws CmsException;
+     /**
+     * Adds a web user to the Cms. <br>
+     *
+     * A web user has no access to the workplace but is able to access personalized
+     * functions controlled by the OpenCms.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param name The new name for the user.
+     * @param password The new password for the user.
+     * @param group The default groupname for the user.
+     * @param additionalGroup An additional group for the user.
+     * @param description The description for the user.
+     * @param additionalInfos A Hashtable with additional infos for the user. These
+     * Infos may be stored into the Usertables (depending on the implementation).
+     * @param flags The flags for a user (e.g. C_FLAG_ENABLED)
+     *
+     * @return user The added user will be returned.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesfull.
+     */
+    public CmsUser addWebUser(CmsUser currentUser, CmsProject currentProject,
+                             String name, String password,
+                             String group, String additionalGroup, String description,
+                             Hashtable additionalInfos, int flags)
         throws CmsException;
     /**
      * Returns the anonymous user object.<P/>
@@ -2936,11 +2962,10 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
     /**
      * Sets the password for a user.
      *
-     * Only a adminstrator or the curretuser can do this.<P/>
+     * Every user who knows the username and the password can do this.<P/>
      *
      * <B>Security:</B>
-     * Users, which are in the group "administrators" are granted.<BR/>
-     * Current users can change their own password.
+     * Users, who knows the username and the password are granted.<BR/>
      *
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.

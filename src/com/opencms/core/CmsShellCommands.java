@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/10/25 10:28:48 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2001/11/07 09:28:56 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.43 $ $Date: 2001/10/25 10:28:48 $
+ * @version $Revision: 1.44 $ $Date: 2001/11/07 09:28:56 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -304,6 +304,30 @@ public class CmsShellCommands implements I_CmsConstants {
         try {
             int intFlags = Integer.parseInt(flags);
             System.out.println(m_cms.addWebUser(name, password, group, description, new Hashtable(), intFlags));
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Adds a web user to the Cms.
+     * <br>
+     * A web user has no access to the workplace but is able to access personalized
+     * functions controlled by the OpenCms.
+     *
+     * @param name the new name for the user.
+     * @param password the new password for the user.
+     * @param group the default groupname for the user.
+     * @param additionalGroup the additional group for the user.
+     * @param description the description for the user.
+     * @param flags the flags for a user (e.g. C_FLAG_ENABLED)
+     *
+     */
+    public void addWebUser(String name, String password, String group, String additionalGroup, String description, String flags) {
+        try {
+            int intFlags = Integer.parseInt(flags);
+            System.out.println(m_cms.addWebUser(name, password, group, additionalGroup, description, new Hashtable(), intFlags));
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
