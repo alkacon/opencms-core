@@ -9,6 +9,8 @@ Legend:
 - General comment
 
 OpenCms 4.5.23 Chusuk       - xx November 2001
+! Added the Tidy to Opencms. 
+! The html editor can handle link tags now.
 * Bugfixing mastermodule.
 
 OpenCms 4.5.22 Chusuk       - 20 November 2001
