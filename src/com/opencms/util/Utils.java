@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
- * Date   : $Date: 2000/03/13 15:41:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/03/15 13:57:26 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -29,6 +29,7 @@
 package com.opencms.util;
 
 import com.opencms.file.*;
+import com.opencms.core.*;
 
 import java.util.*;
 
@@ -36,10 +37,16 @@ import java.util.*;
  * This is a general helper class.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/03/13 15:41:06 $
+ * @version $Revision: 1.6 $ $Date: 2000/03/15 13:57:26 $
  */
-public class Utils {
-	/**
+public class Utils implements I_CmsConstants, I_CmsLogChannels {
+	/** Constant for sorting files upward by name */
+    public static final int C_SORT_NAME_UP = 1;
+    
+	/** Constant for sorting files downward by name */
+    public static final int C_SORT_NAME_DOWN = 2;
+
+    /**
 	 * This method splits a overgiven string into substrings. 
 	 * 
 	 * @param toSplit the String to split.
@@ -124,6 +131,91 @@ public class Utils {
          niceTime.append(year+" ");
          return niceTime.toString();
      }
+     
+     /**
+      * Sorts a Vector of CmsFile objects according to an included sorting method.
+      * @param cms Cms Object for accessign files.
+      * @param unsortedFiles Vector containing a list of unsorted files
+      * @param sorting The sorting method to be used.
+      * @return Vector of sorted CmsFile objects
+      */
+     public static Vector sort(A_CmsObject cms, Vector unsortedFiles, int sorting){
+         Vector v=new Vector();
+     
+         Enumeration enu =unsortedFiles.elements();
+         CmsFile [] field=new CmsFile[unsortedFiles.size()];
+         CmsFile file;
+         String docloader;
+         
+         int max=0;
+         try{
+             
+            // create an array with all unsorted files in it. This arre is later sorted in with
+            // the sorting algorithem.
+            while (enu.hasMoreElements()) {
+                file=(CmsFile)enu.nextElement();
+                field[max]=file;
+                max++;
+            }
+         
+            // Sorting algorithm
+            // This method uses an insertion sort algorithem
+            int in,out;
+		    int nElem = max;
+		    for(out=1; out < nElem; out++){
+			    CmsFile temp= field[out];
+			    in = out;
+                while (in >0 && compare(cms,sorting,field[in-1],temp)) {
+                    field[in]=field[in-1];
+				    --in;
+			    }
+			    field[in]=temp;
+			}
+    
+            // take sorted array and create a new vector of files out of it
+            for (int i=0;i<max;i++) {           
+                v.addElement(field[i]);
+            }
+                                     
+         }catch (Exception e){
+            if(OpenCms.isLogging()) {               
+                 OpenCms.log(C_OPENCMS_CRITICAL, "[MhtXmlDocloader] :"+e.toString());
+            }
+        }
+         return v;
+     }
+     
+     /**
+      * This method makes the sorting desicion for the creation of index and archive pages,
+      * depending on the sorting method to be used.
+      * @param cms Cms Object for accessign files.
+      * @param sorting The sorting method to be used.
+      * @param fileA One of the two CmsFile objects to be compared.
+      * @param fileB The second of the two CmsFile objects to be compared.
+      * @return <code>true</code> or <code>false</code>, depending if the two file objects have to be sorted.
+      * @exception CmsException Is thrown when file access failed.
+      * 
+      */
+     private static boolean compare(A_CmsObject cms, int sorting, CmsFile fileA, CmsFile fileB)
+         throws CmsException {
+       
+         boolean cmp=false;
+         
+         String titleA = fileA.getName();
+         String titleB = fileB.getName();
+
+         switch(sorting) {
+         case C_SORT_NAME_UP:                      
+             cmp = (titleA.compareTo(titleB) > 0);
+             break;
+         case C_SORT_NAME_DOWN:
+             cmp = (titleB.compareTo(titleA) > 0 );
+             break;
+         default:
+             cmp = false;    
+         }
+         return cmp;
+     }              
 	 
 	 /**
 	  * Returns a string representation of the full name of a user.
