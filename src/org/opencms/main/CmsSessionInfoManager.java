@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsSessionInfoManager.java,v $
- * Date   : $Date: 2005/03/04 15:11:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/03/04 16:29:08 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import java.util.Set;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  */
 public class CmsSessionInfoManager {
 
@@ -279,8 +279,56 @@ public class CmsSessionInfoManager {
             long sendTime = System.currentTimeMillis();
             while (i.hasNext()) {
                 CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
+                if (sessionInfo != null) {
+                    // double check for concurrent modification
+                    sessionInfo.getBroadcastMessageQueue().addBroadcastMessage(
+                        new CmsBroadcastMessage(cms.getRequestContext().currentUser(), message, sendTime));
+                }
+            }
+        }
+    }
+
+    /**
+     * Broadcast a message to all sessions of a given user.<p>
+     * 
+     * @param cms the OpenCms user context of the user sending the message
+     * 
+     * @param message the message to be send
+     * @param user the target (reciever) of the message
+     */
+    public void sendBroadcastMessage(CmsObject cms, String message, CmsUser user) {
+
+        List userSessions = getSessionInfosForUser(user.getId());
+        Iterator i = userSessions.iterator();
+        long sendTime = System.currentTimeMillis();
+        synchronized (m_sessions) {
+            while (i.hasNext()) {
+                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
+                if (sessionInfo != null) {
+                    // double check for concurrent modification
+                    sessionInfo.getBroadcastMessageQueue().addBroadcastMessage(
+                        new CmsBroadcastMessage(cms.getRequestContext().currentUser(), message, sendTime));
+                }
+            }
+        }
+    }
+
+    /**
+     * Broadcast a message to the specified user session.<p>
+     * 
+     * @param cms the OpenCms user context of the user sending the message
+     * 
+     * @param message the message to be send
+     * @param sessionId the session id target (reciever) of the message
+     */
+    public void sendBroadcastMessage(CmsObject cms, String message, String sessionId) {
+
+        synchronized (m_sessions) {
+            CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
+            if (sessionInfo != null) {
+                // double check for concurrent modification
                 sessionInfo.getBroadcastMessageQueue().addBroadcastMessage(
-                    new CmsBroadcastMessage(cms.getRequestContext().currentUser(), message, sendTime));
+                    new CmsBroadcastMessage(cms.getRequestContext().currentUser(), message));
             }
         }
     }
