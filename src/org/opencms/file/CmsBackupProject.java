@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupProject.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/27 08:57:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsBackupProject extends CmsProject implements Cloneable {
 
@@ -101,7 +101,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
         CmsUUID ownerId, 
         CmsUUID groupId, 
         CmsUUID managerGroupId,
-        Timestamp dateCreated, 
+        long dateCreated, 
         int type, 
         Timestamp datePublished, 
         CmsUUID userPublished,
@@ -153,7 +153,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
             getOwnerId(),
             getGroupId(),
             getManagerGroupId(),
-            new Timestamp(this.getCreateDate()),
+            this.getCreateDate(),
             getType(),
             new Timestamp(this.m_datePublished),
             m_userPublished, 

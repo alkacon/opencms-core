@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2004/08/11 16:54:44 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/08/27 08:57:22 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * that is written during each publishing process.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.16 $ $Date: 2004/08/11 16:54:44 $
+ * @version $Revision: 1.17 $ $Date: 2004/08/27 08:57:22 $
  * @since 5.1.11
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(int, CmsUUID)
  */
@@ -56,15 +56,6 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     
     /** The backup tag ID of the published resource. */
     private int m_backupTagId;
-    
-    /** The full package and class name of the content definition class of the published module data. */
-    private String m_contentDefinitionName;
-
-    /** The content ID of the published resource.<p> */
-    // private CmsUUID m_contentId;
-    
-    /** The content ID of the published module data.<p> */
-    private CmsUUID m_masterId;
 
     /** The resource ID of the published resource.<p> */
     private CmsUUID m_resourceId;
@@ -103,8 +94,6 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
         m_resourceType = resourceType;
         m_resourceState = resourceState;
         m_siblingCount = siblingCount;
-        m_masterId = CmsUUID.getNullUUID();
-        m_contentDefinitionName = "";
     }
     
     /**
@@ -120,31 +109,6 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
         m_resourceType = resource.getTypeId();
         m_resourceState = resource.getState();
         m_siblingCount = resource.getSiblingCount();
-        m_masterId = CmsUUID.getNullUUID();
-        m_contentDefinitionName = "";
-    }
-    
-    
-    /**
-     * Creates an object for published COS resources.<p>
-     * 
-     * @param contentDefinitionName full package and class name of the content definition class
-     * @param masterId the content ID of the published module data
-     * @param subId the module ID of the published module data
-     * @param resourceState the state of the resource *before* it was published
-     */
-    public CmsPublishedResource(String contentDefinitionName, CmsUUID masterId, int subId, int resourceState) {
-        int todo = 0;
-        // TODO: remove this / make this a static factory method in legacy package
-        m_structureId = CmsUUID.getNullUUID();
-        m_resourceId = CmsUUID.getNullUUID();
-        m_backupTagId = I_CmsConstants.C_UNKNOWN_ID;
-        m_rootPath = "";
-        m_resourceType = subId;
-        m_resourceState = resourceState;
-        m_siblingCount = 0;
-        m_masterId = masterId; 
-        m_contentDefinitionName = contentDefinitionName;       
     }
 
     /**
@@ -184,42 +148,15 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     public int getBackupTagId() {
         return m_backupTagId;
     }
-    
-    /**
-     * Returns the full package and class name of the content definition class of the published module data.<p>
-     * 
-     * @return the full package and class name of the content definition class
-     */
-    public String getContentDefinitionName() {
-        return m_contentDefinitionName;
-    }
-
-    /**
-     * Returns the content ID of the published resource.<p>
-     * 
-     * @return the content ID of the published resource
-     *//*
-    public CmsUUID getContentId() {
-        return m_contentId;
-    }*/
 
     /**
      * Returns the count of siblings of the published resource.<p>
      * 
      * @return the count of siblings of the published resource
      */
-    public int getLinkCount() {
+    public int getSiblingCount() {
         return m_siblingCount;
-    }
-    
-    /**
-     * Returns the content ID of the published module data.<p>
-     * 
-     * @return the content ID of the published module data
-     */
-    public CmsUUID getMasterId() {
-        return m_masterId;
-    }    
+    } 
 
     /**
      * Returns the resource ID of the published resource.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/08/23 15:37:02 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2004/08/27 08:57:22 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,8 +59,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.64 $
- * $Date: 2004/08/23 15:37:02 $
+ * $Revision: 1.65 $
+ * $Date: 2004/08/27 08:57:22 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -658,7 +658,17 @@ public abstract class CmsMasterContent
             throw e;
         } finally {
             CmsUUID publishId = new CmsUUID();
-            cms.postPublishBoResource(new CmsPublishedResource(this.getClass().getName(), m_dataSet.m_masterId, getSubId(), m_dataSet.m_state), publishId, versionId);
+            cms.postPublishBoResource(
+                new CmsPublishedResource(
+                    CmsUUID.getNullUUID(), // identifies cos resource
+                    m_dataSet.m_masterId, 
+                    I_CmsConstants.C_UNKNOWN_ID,
+                    this.getClass().getName(), 
+                    getSubId(),
+                    m_dataSet.m_state,
+                    1), 
+                publishId, 
+                versionId);
             Map eventData = new HashMap();
             eventData.put(I_CmsEventListener.KEY_PUBLISHID, publishId.toString());  
             eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(cms.getRequestContext().currentProject().getId()));

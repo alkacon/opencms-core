@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2004/08/27 08:57:22 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1862,7 +1862,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             }
 
             List siblings = Collections.singletonList(res.getRootPath());
-            if (res.getLinkCount() > 1) {
+            if (res.getSiblingCount() > 1) {
                 // ensure all siblings are scrubbed if the resource has one 
                 try {
                     List li = cms.readSiblings(res.getRootPath(), CmsResourceFilter.ALL);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2004/08/27 08:57:22 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -399,12 +399,18 @@ public class CmsImportVersion2 extends A_CmsImport {
                 } catch (Exception e) {
                     // ignore the exception, a new channel id will be generated
                 }
+                // TODO: CW: remove
+                /*
                 if (channelId == null) {
                     // the channel id does not exist, so generate a new one
                     int newChannelId = CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
                     channelId = "" + newChannelId;
                 }
                 properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CHANNELID, channelId, null));
+                */
+                if (channelId != null) {
+                    properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CHANNELID, channelId, null));
+                }
             }
 
             // get the file content

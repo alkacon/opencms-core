@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsPropertydefinition.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/08/27 08:57:22 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,20 +31,22 @@
 
 package org.opencms.file;
 
+import org.opencms.util.CmsUUID;
+
 /**
  * Describes a Propertydefinition in the Cms.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsPropertydefinition implements Cloneable, Comparable {
 
     /** The null property definition object. */
-    private static final CmsPropertydefinition C_NULL_PROPERTY_DEFINITION = new CmsPropertydefinition(-1, "", -1);
+    private static final CmsPropertydefinition C_NULL_PROPERTY_DEFINITION = new CmsPropertydefinition(CmsUUID.getNullUUID(), "", -1);
 
     /** The id of this property definition. */
-    private int m_id;
+    private CmsUUID m_id;
     
     /** The name of this property definition. */
     private String m_name;
@@ -59,7 +61,7 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
      * @param name the name of the property definition
      * @param mappingtype the type of the resource for this property definition
      */
-    public CmsPropertydefinition(int id, String name, int mappingtype) {
+    public CmsPropertydefinition(CmsUUID id, String name, int mappingtype) {
         m_id = id;
         m_name = name;
         m_mappingType = mappingtype;
@@ -101,7 +103,7 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
      *
      * @return id the id of this Propertydefinition
      */
-    public int getId() {
+    public CmsUUID getId() {
         return m_id;
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.203 $
+ * Date   : $Date: 2004/08/27 08:57:21 $
+ * Version: $Revision: 1.204 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.203 $ $Date: 2004/08/25 07:47:21 $
+ * @version $Revision: 1.204 $ $Date: 2004/08/27 08:57:21 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -267,7 +267,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTYDEF_CREATE");
-            stmt.setInt(1, m_sqlManager.nextId(projectId, m_sqlManager.readQuery("C_TABLE_PROPERTYDEF")));
+            stmt.setString(1, new CmsUUID().toString());
             stmt.setString(2, name);
             stmt.setInt(3, mappingtype);
             stmt.executeUpdate();         
@@ -475,7 +475,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     conn = m_sqlManager.getConnectionForBackup();
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_DELETE_BACKUP");
                 }
-                stmt.setInt(1, metadef.getId());
+                stmt.setString(1, metadef.getId().toString());
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(conn, stmt, null);
             }
@@ -578,7 +578,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             // create statement
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_READALL_COUNT");
-            stmt.setInt(1, metadef.getId());
+            stmt.setString(1, metadef.getId().toString());
             res = stmt.executeQuery();
 
             if (res.next()) {
@@ -1099,7 +1099,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
             // if resultset exists - return it
             if (res.next()) {
-                propDef = new CmsPropertydefinition(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_ID")), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_PROPERTYDEF_MAPPING_TYPE")));
+                propDef = new CmsPropertydefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_PROPERTYDEF_MAPPING_TYPE")));
             } else {
                 res.close();
                 res = null;
@@ -1131,7 +1131,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             
             res = stmt.executeQuery();
             while (res.next()) {
-                propertyDefinitions.add(new CmsPropertydefinition(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_ID")), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_PROPERTYDEF_MAPPING_TYPE"))));
+                propertyDefinitions.add(new CmsPropertydefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_PROPERTYDEF_MAPPING_TYPE"))));
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -2194,12 +2194,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                         stmt.setString(1, m_sqlManager.validateEmpty(value));
                         stmt.setString(2, id.toString());
                         stmt.setInt(3, mappingType);
-                        stmt.setInt(4, propertyDefinition.getId());
+                        stmt.setString(4, propertyDefinition.getId().toString());
                     } else {
                         // {structure|resource} property value doesen't exist- use create statement
                         stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_PROPERTIES_CREATE");
-                        stmt.setInt(1, m_sqlManager.nextId(project.getId(), m_sqlManager.readQuery(project.getId(), "C_TABLE_PROPERTIES")));
-                        stmt.setInt(2, propertyDefinition.getId());
+                        stmt.setString(1, new CmsUUID().toString());
+                        stmt.setString(2, propertyDefinition.getId().toString());
                         stmt.setString(3, id.toString());
                         stmt.setInt(4, mappingType);
                         stmt.setString(5, m_sqlManager.validateEmpty(value));
@@ -2207,7 +2207,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 } else {
                     // {structure|resource} property value marked as deleted- use delete statement
                     stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_PROPERTIES_DELETE");
-                    stmt.setInt(1, propertyDefinition.getId());
+                    stmt.setString(1, propertyDefinition.getId().toString());
                     stmt.setString(2, id.toString());
                     stmt.setInt(3, mappingType);                    
                 }

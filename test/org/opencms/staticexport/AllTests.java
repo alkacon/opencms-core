@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/AllTests.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/08/27 08:57:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.8
  */
@@ -58,7 +58,7 @@ public final class AllTests {
         TestSuite suite = new TestSuite("Tests for package org.opencms.staticexport");
         //$JUnit-BEGIN$
         suite.addTestSuite(TestCmsLinkManager.class);
-        suite.addTestSuite(TestExportFile.class);
+        suite.addTest(TestExportFile.suite());
         //$JUnit-END$
         return suite;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.184 $
+ * Date   : $Date: 2004/08/27 08:57:17 $
+ * Version: $Revision: 1.185 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -71,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.184 $ $Date: 2004/08/25 07:47:21 $
+ * @version $Revision: 1.185 $ $Date: 2004/08/27 08:57:17 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -103,7 +102,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             description = " ";
         }
 
-        Timestamp createTime = new Timestamp(new java.util.Date().getTime());
+        long createTime = System.currentTimeMillis();
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -111,10 +110,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         try {
             if (reservedParam == null) {
-                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-            conn = m_sqlManager.getConnection();
-                // get a new primary key ID          
+                // get a new primary key ID
                 id = m_sqlManager.nextId(C_TABLE_PROJECTS);
+                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
+                conn = m_sqlManager.getConnection();
             } else {
                 // use the primary key ID passed in the params Map
                 id = ((Integer)((Map) reservedParam).get("pkProjectId")).intValue();                               
@@ -133,7 +132,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setString(6, name);
             stmt.setString(7, description);
             stmt.setInt(8, flags);
-            stmt.setTimestamp(9, createTime);
+            stmt.setLong(9, createTime);
             stmt.setInt(10, type);
             stmt.executeUpdate();
             
@@ -1372,7 +1371,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
                         new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
                         res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_FLAGS")),
-                        CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_PROJECTS_PROJECT_CREATEDATE")),
+                        res.getLong(m_sqlManager.readQuery("C_PROJECTS_DATE_CREATED")),
                         res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE")));
             } else {
                 // project not found!
@@ -1413,7 +1412,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
                             new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
                             res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_FLAGS")),
-                            CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_PROJECTS_PROJECT_CREATEDATE")),
+                            res.getLong(m_sqlManager.readQuery("C_PROJECTS_DATE_CREATED")),
                             res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE")));
             } else {
                 // project not found!
@@ -1573,7 +1572,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
                         new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
                         res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_FLAGS")),
-                        CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_PROJECTS_PROJECT_CREATEDATE")),
+                        res.getLong(m_sqlManager.readQuery("C_PROJECTS_DATE_CREATED")),
                         res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE"))));
             }
         } catch (SQLException exc) {
@@ -1751,9 +1750,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         int resourceType = I_CmsConstants.C_UNKNOWN_ID;
         int resourceState = I_CmsConstants.C_UNKNOWN_ID;
         List publishedResources = new ArrayList();
-        int siblingCount = I_CmsConstants.C_UNKNOWN_ID;  
-        CmsUUID masterId = CmsUUID.getNullUUID();
-        String contentDefinitionName = null;   
+        int siblingCount = I_CmsConstants.C_UNKNOWN_ID;     
         int backupTagId = I_CmsConstants.C_UNKNOWN_ID;  
 
         try {
@@ -1768,16 +1765,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 rootPath = res.getString("RESOURCE_PATH");
                 resourceState = res.getInt("RESOURCE_STATE");
                 resourceType = res.getInt("RESOURCE_TYPE");
-                siblingCount = res.getInt("SIBLING_COUNT");
-                masterId = new CmsUUID(res.getString("MASTER_ID"));
-                contentDefinitionName = res.getString("CONTENT_DEFINITION_NAME");
-                backupTagId = res.getInt("TAG_ID");
+                siblingCount = res.getInt("SIBLING_COUNT");;
+                backupTagId = res.getInt("PUBLISH_TAG");
                 
-                if (masterId.equals(CmsUUID.getNullUUID())) {
-                    publishedResources.add(new CmsPublishedResource(structureId, resourceId, backupTagId, rootPath, resourceType, resourceState, siblingCount));
-                } else {
-                    publishedResources.add(new CmsPublishedResource(contentDefinitionName, masterId, resourceType, resourceState));
-                }
+                publishedResources.add(new CmsPublishedResource(structureId, resourceId, backupTagId, rootPath, resourceType, resourceState, siblingCount));
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1887,8 +1878,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(6, resource.getTypeId());
             stmt.setString(7, publishId.toString());
             stmt.setInt(8, resource.getSiblingCount());
-            stmt.setString(9, CmsUUID.getNullUUID().toString());
-            stmt.setString(10, "");
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1911,15 +1900,16 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             conn = m_sqlManager.getConnection(currentProject);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_PUBLISH_HISTORY");
             stmt.setInt(1, tagId);
+            // cos content: structure id is null
             stmt.setString(2, CmsUUID.getNullUUID().toString());
-            stmt.setString(3, CmsUUID.getNullUUID().toString());
-            stmt.setString(4, "");
+            // cos content: resource id is master id
+            stmt.setString(3, masterId.toString());
+            // cos content: path is content definition name
+            stmt.setString(4, contentDefinitionName);
             stmt.setInt(5, state);
             stmt.setInt(6, subId);
             stmt.setString(7, publishId.toString());
             stmt.setInt(8, 0);
-            stmt.setString(9, masterId.toString());
-            stmt.setString(10, contentDefinitionName);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);

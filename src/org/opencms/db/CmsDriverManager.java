@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.413 $
+ * Date   : $Date: 2004/08/27 08:57:21 $
+ * Version: $Revision: 1.414 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.413 $ $Date: 2004/08/25 07:47:21 $
+ * @version $Revision: 1.414 $ $Date: 2004/08/27 08:57:21 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5489,7 +5489,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void postPublishBoResource(CmsRequestContext context, CmsPublishedResource publishedBoResource, CmsUUID publishId, int tagId) throws CmsException {
         int todo = 0;
         // TODO: move COS stuff to legacy package                
-        m_projectDriver.writePublishHistory(context.currentProject(), publishId, tagId, publishedBoResource.getContentDefinitionName(), publishedBoResource.getMasterId(), publishedBoResource.getType(), publishedBoResource.getState());
+        m_projectDriver.writePublishHistory(context.currentProject(), publishId, tagId, publishedBoResource.getRootPath(), publishedBoResource.getResourceId(), publishedBoResource.getType(), publishedBoResource.getState());
     }   
 
     /**

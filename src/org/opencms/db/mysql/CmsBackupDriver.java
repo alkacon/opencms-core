@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/06/08 16:53:01 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/08/27 08:57:22 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.15 $ $Date: 2004/06/08 16:53:01 $
+ * @version $Revision: 1.16 $ $Date: 2004/08/27 08:57:22 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -75,10 +75,10 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
             while (res.next()) {
-                Vector resources = m_driverManager.getBackupDriver().readBackupProjectResources(res.getInt("TAG_ID"));
+                Vector resources = m_driverManager.getBackupDriver().readBackupProjectResources(res.getInt("PUBLISH_TAG"));
                 projects.addElement(
                     new CmsBackupProject(
-                        res.getInt("TAG_ID"),
+                        res.getInt("PUBLISH_TAG"),
                         res.getInt("PROJECT_ID"),
                         res.getString("PROJECT_NAME"),
                         res.getString("PROJECT_DESCRIPTION"),
@@ -86,7 +86,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                         new CmsUUID(res.getString("USER_ID")),
                         new CmsUUID(res.getString("GROUP_ID")),
                         new CmsUUID(res.getString("MANAGERGROUP_ID")),
-                        CmsDbUtil.getTimestamp(res, "PROJECT_CREATEDATE"),
+                        res.getLong("DATE_CREATED"),
                         res.getInt("PROJECT_TYPE"),
                         CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
                         new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),

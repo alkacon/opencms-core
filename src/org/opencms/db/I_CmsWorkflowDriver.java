@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/08/27 08:57:22 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.15 $ $Date: 2004/08/27 08:57:22 $
  * @since 5.1
  */
 public interface I_CmsWorkflowDriver {
@@ -223,11 +223,9 @@ public interface I_CmsWorkflowDriver {
      * @param parname the name of the parameter
      * @param parvalue the value of the parameter
      *
-     * @return The id of the inserted parameter or 0 if the parameter exists for this task.
-     *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    int writeTaskParameter(int taskId, String parname, String parvalue) throws CmsException;
+    void writeTaskParameter(int taskId, String parname, String parvalue) throws CmsException;
 
     /**
      * Creates a new tasktype set in the database.<p>
@@ -239,10 +237,8 @@ public interface I_CmsWorkflowDriver {
      * @param permission tbd
      * @param priorityref tbd
      * @param roleref tbd
-     * @return The id of the inserted parameter or 0 if the parameter exists for this task.
-     *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    int writeTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsException;
+    void writeTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsException;
 
 }

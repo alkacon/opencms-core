@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.102 $
+ * Date   : $Date: 2004/08/27 08:57:19 $
+ * Version: $Revision: 1.103 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.102 $ $Date: 2004/08/25 07:47:21 $
+ * @version $Revision: 1.103 $ $Date: 2004/08/27 08:57:19 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -93,7 +93,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
 
         CmsUUID backupId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_BACKUP_ID")));
         int versionId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION_ID"));
-        int tagId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_TAG_ID"));
+        int tagId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PUBLISH_TAG"));
         CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_ID")));
         CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_ID")));
         String resourcePath = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_PATH"));
@@ -154,7 +154,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             // create the backup property definition
             conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_CREATE_BACKUP");
-            stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTYDEF_BACKUP")));
+            stmt.setString(1, new CmsUUID().toString());
             stmt.setString(2, name);
             stmt.setInt(3, mappingtype);
             stmt.executeUpdate();
@@ -641,7 +641,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                 Vector projectresources = readBackupProjectResources(tagId);
                 project =
                     new CmsBackupProject(
-                        res.getInt("TAG_ID"),
+                        res.getInt("PUBLISH_TAG"),
                         res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
                         res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
                         res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
@@ -649,7 +649,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                         new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_USER_ID"))),
                         new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
                         new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
-                        CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_PROJECTS_PROJECT_CREATEDATE")),
+                        res.getLong(m_sqlManager.readQuery("C_PROJECTS_DATE_CREATED")),
                         res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE")),
                         CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
                         new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
@@ -718,10 +718,10 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             int max = 300;
 
             while (res.next() && (i < max)) {
-                Vector resources = readBackupProjectResources(res.getInt("TAG_ID"));
+                Vector resources = readBackupProjectResources(res.getInt("PUBLISH_TAG"));
                 projects.addElement(
                     new CmsBackupProject(
-                        res.getInt("TAG_ID"),
+                        res.getInt("PUBLISH_TAG"),
                         res.getInt("PROJECT_ID"),
                         res.getString("PROJECT_NAME"),
                         res.getString("PROJECT_DESCRIPTION"),
@@ -729,7 +729,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                         new CmsUUID(res.getString("USER_ID")),
                         new CmsUUID(res.getString("GROUP_ID")),
                         new CmsUUID(res.getString("MANAGERGROUP_ID")),
-                        CmsDbUtil.getTimestamp(res, "PROJECT_CREATEDATE"),
+                        res.getLong("DATE_CREATED"),
                         res.getInt("PROJECT_TYPE"),
                         CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
                         new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
@@ -867,7 +867,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             res = stmt.executeQuery();
 
             if (res.next()) {
-                propDef = new CmsPropertydefinition(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_ID")), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_PROPERTYDEF_MAPPING_TYPE")));
+                propDef = new CmsPropertydefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_PROPERTYDEF_MAPPING_TYPE")));
             } else {
                 throw new CmsException("[" + this.getClass().getName() + ".readBackupPropertyDefinition] " + name, CmsException.C_NOT_FOUND);
             }
@@ -1040,8 +1040,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                         stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_CREATE_BACKUP");
                         
                         stmt.setString(1, backupId.toString());
-                        stmt.setInt(2, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTIES_BACKUP")));
-                        stmt.setInt(3, propdef.getId());
+                        stmt.setString(2, new CmsUUID().toString());
+                        stmt.setString(3, propdef.getId().toString());
                         stmt.setString(4, id.toString());
                         stmt.setInt(5, mappingType);
                         stmt.setString(6, m_sqlManager.validateEmpty(value));
@@ -1175,7 +1175,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
 
         try {
             conn = m_sqlManager.getConnectionForBackup();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_MAX_TAG_ID");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_MAX_PUBLISH_TAG");
             stmt.setString(1, resource.getResourceId().toString());
             res = stmt.executeQuery();
             

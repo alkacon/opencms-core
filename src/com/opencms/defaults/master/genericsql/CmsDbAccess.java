@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/08/05 11:17:37 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2004/08/27 08:57:22 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1682,7 +1682,15 @@ public class CmsDbAccess {
         }
 
         // update changedModuleData Vector
-        changedModuleData.add(new CmsPublishedResource(contentDefinitionName, dataset.m_masterId, subId, state));
+        changedModuleData.add(
+            new CmsPublishedResource(
+                CmsUUID.getNullUUID(),
+                dataset.m_masterId, 
+                I_CmsConstants.C_UNKNOWN_ID,
+                contentDefinitionName,
+                subId, 
+                state,
+                1));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/27 08:57:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsProject implements Cloneable {
 
@@ -105,7 +105,7 @@ public class CmsProject implements Cloneable {
         CmsUUID groupId, 
         CmsUUID managerGroupId, 
         int flags,
-        Timestamp dateCreated, 
+        long dateCreated, 
         int type
     ) {
         m_id = projectId;
@@ -118,12 +118,7 @@ public class CmsProject implements Cloneable {
         m_groupManagersId = managerGroupId;
         m_flags = flags;
         m_type = type;
-        
-        if (dateCreated != null) {
-            m_dateCreated = dateCreated.getTime();
-        } else {
-            m_dateCreated = I_CmsConstants.C_UNKNOWN_LONG;
-        }
+        m_dateCreated = dateCreated;
     }
 
     /**
@@ -143,7 +138,7 @@ public class CmsProject implements Cloneable {
             new CmsUUID(res.getString(sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
             new CmsUUID(res.getString(sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
             res.getInt(sqlManager.readQuery("C_PROJECTS_PROJECT_FLAGS")),
-            CmsDbUtil.getTimestamp(res, sqlManager.readQuery("C_PROJECTS_PROJECT_CREATEDATE")),
+            res.getLong(sqlManager.readQuery("C_PROJECTS_DATE_CREATED")),
             res.getInt(sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE"))
         );
     }
@@ -213,7 +208,7 @@ public class CmsProject implements Cloneable {
             m_groupUsersId,
             m_groupManagersId,
             m_flags,
-            new Timestamp(m_dateCreated),
+            m_dateCreated,
             m_type
         );
     }

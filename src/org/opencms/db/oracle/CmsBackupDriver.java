@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/08/27 08:57:22 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.34 $ $Date: 2004/08/12 11:01:30 $
+ * @version $Revision: 1.35 $ $Date: 2004/08/27 08:57:22 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -318,7 +318,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 Vector resources = m_driverManager.getBackupDriver().readBackupProjectResources(res.getInt("TAG_ID"));
                 projects.addElement(
                     new CmsBackupProject(
-                        res.getInt("TAG_ID"),
+                        res.getInt("PUBLISH_TAG"),
                         res.getInt("PROJECT_ID"),
                         res.getString("PROJECT_NAME"),
                         res.getString("PROJECT_DESCRIPTION"),
@@ -326,7 +326,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                         new CmsUUID(res.getString("USER_ID")),
                         new CmsUUID(res.getString("GROUP_ID")),
                         new CmsUUID(res.getString("MANAGERGROUP_ID")),
-                        CmsDbUtil.getTimestamp(res, "PROJECT_CREATEDATE"),
+                        res.getLong("DATE_CREATED"),
                         res.getInt("PROJECT_TYPE"),
                         CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
                         new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2004/08/18 11:54:19 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/08/27 08:57:21 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.32 $ $Date: 2004/08/18 11:54:19 $
+ * @version $Revision: 1.33 $ $Date: 2004/08/27 08:57:21 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -743,14 +743,13 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      */
     public void writeTaskLog(int taskId, CmsUUID userId, java.sql.Timestamp starttime, String comment, int type) throws CmsException {
 
-        int newId = I_CmsConstants.C_UNKNOWN_ID;
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_TASKLOG_WRITE");
-            newId = m_sqlManager.nextId(C_TABLE_TASKLOG);
-            stmt.setInt(1, newId);
+
+            stmt.setInt(1, m_sqlManager.nextId(C_TABLE_TASKLOG));
             stmt.setInt(2, taskId);
             if (!userId.isNullUUID()) {
                 stmt.setString(3, userId.toString());
@@ -774,10 +773,9 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#writeTaskParameter(int, java.lang.String, java.lang.String)
      */
-    public int writeTaskParameter(int taskId, String parname, String parvalue) throws CmsException {
+    public void writeTaskParameter(int taskId, String parname, String parvalue) throws CmsException {
 
         ResultSet res = null;
-        int result = 0;
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -794,7 +792,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
                 internalWriteTaskParameter(res.getInt(m_sqlManager.readQuery("C_PAR_ID")), parvalue);
             } else {
                 //Parameter is not exisiting, so make an insert
-                result = internalWriteTaskParameter(taskId, parname, parvalue);
+                internalWriteTaskParameter(taskId, parname, parvalue);
 
             }
         } catch (SQLException exc) {
@@ -803,15 +801,13 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
         }
-        return result;
     }
 
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#writeTaskType(int, int, java.lang.String, java.lang.String, java.lang.String, int, int)
      */
-    public int writeTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsException {
+    public void writeTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsException {
         ResultSet res = null;
-        int result = 0;
         PreparedStatement stmt = null;
         Connection conn = null;
 
@@ -828,7 +824,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
 
             } else {
                 //Parameter is not existing, so make an insert
-                result = internalWriteTaskType(autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);
+                internalWriteTaskType(autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);
 
             }
         } catch (SQLException exc) {
@@ -837,7 +833,5 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
         }
-        return result;
     }
-
 }

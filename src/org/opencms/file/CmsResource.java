@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/08/27 08:57:22 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -316,11 +316,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_dateExpired,
             m_siblingCount,
             m_length);
-        
+
         if (isTouched()) {
             clone.setDateLastModified(m_dateLastModified);
         }
-        
+
         return clone;
     }
 
@@ -416,11 +416,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the name of this resource
      */
     public String getName() {
-        // TODO: CW inconsistent behaviour:
-        // static getName returns folder name with trailing "/", this method without !
+
         String name = getName(m_rootPath);
         if (name.endsWith("/")) {
-            return name.substring(0, name.length()-1);
+            return name.substring(0, name.length() - 1);
         } else {
             return name;
         }
@@ -463,6 +462,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see CmsRequestContext#removeSiteRoot(String) 
      */
     public String getRootPath() {
+
         return m_rootPath;
     }
 
@@ -638,26 +638,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Sets the resource name including the full root path.<p>
-     * 
-     * @param rootPath the resource name including the full root path to set
-     * 
-     * @see #getRootPath()
-     * @see CmsObject#getSitePath(CmsResource)
-     * @see CmsRequestContext#getSitePath(CmsResource)
-     * @see CmsRequestContext#removeSiteRoot(String)
-     */
-    public void setRootPath(String rootPath) {
-
-        if (isFolder() && !CmsResource.isFolder(rootPath)) {
-            // ensure a folder always ends with a /
-            m_rootPath = rootPath.concat("/");
-        } else {
-            m_rootPath = rootPath;
-        }
-    }
-
-    /**
      * Sets the state of this resource.<p>
      *
      * @param state the state to set
@@ -716,12 +696,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         result.append(m_userCreated);
         result.append(", date lastmodified: ");
         result.append(new java.util.Date(m_dateLastModified));
-        result.append(", user lastmodified: ");        
+        result.append(", user lastmodified: ");
         result.append(m_userLastModified);
         result.append(", date released: ");
-        result.append(new java.util.Date(m_dateReleased));        
+        result.append(new java.util.Date(m_dateReleased));
         result.append(", date expired: ");
-        result.append(new java.util.Date(m_dateExpired));        
+        result.append(new java.util.Date(m_dateExpired));
         result.append(", size: ");
         result.append(m_length);
         result.append(" sibling count: ");
