@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/07 07:59:42 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -441,6 +441,11 @@ public class CmsSystemInfo {
         } else {
             m_contextPath = "/" + m_webApplicationName;
         }
+        
+        // this fixes an issue with context names in Jboss
+        if (m_contextPath.endsWith(".war")) {
+            m_contextPath = m_contextPath.substring(0, m_contextPath.length()-4);
+        }        
 
         // set the OpenCms context
         m_openCmsContext = m_contextPath + m_servletPath;
