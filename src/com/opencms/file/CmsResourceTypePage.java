@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/08/02 11:29:06 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -45,7 +45,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.9 $ $Date: 2001/08/02 11:29:06 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -781,7 +781,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 
         // Unlock the page file, if neccessary
         //if(pageLocker != null || bodyLocker == null) {
-            cms.doUnlockResource(resource);
+        //cms.doUnlockResource(resource);
         //}
     }
 
@@ -881,7 +881,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                   cms.doChown(newfolder.getAbsolutePath(),cms.readOwner(folder).getName());
                   cms.doChgrp(newfolder.getAbsolutePath(),cms.readGroup(folder).getName());
                   cms.doChmod(newfolder.getAbsolutePath(),folder.getAccessFlags());
-                  //cms.doUnlockResource(newfolder.getAbsolutePath());
+                  cms.doUnlockResource(newfolder.getAbsolutePath());
               }
               completePath+=foldername+"/";
           }
