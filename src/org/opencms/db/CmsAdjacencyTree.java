@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsAdjacencyTree.java,v $
- * Date   : $Date: 2003/07/07 18:08:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/07 18:27:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import com.opencms.file.CmsResource;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,7 +48,7 @@ import java.util.Map;
  * ArrayLists of child CmsResources.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/07/07 18:08:24 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/07 18:27:51 $
  * @since 5.1.3
  */
 public class CmsAdjacencyTree extends Object implements Serializable, Cloneable {
@@ -156,21 +155,6 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
             result.addAll(toList(currentChild));
         }
 
-        return result;
-    }
-    
-    public List toList() {
-        List result = (List) new ArrayList();
-        List parentIdList = Arrays.asList(m_treeMap.keySet().toArray());
-                
-        Collections.sort(parentIdList);
-        Iterator i = parentIdList.iterator();
-        while (i.hasNext()) {
-            String parentId = (String) i.next();
-            List children = (List) m_treeMap.get(parentId);
-            result.addAll(children);
-        }
-        
         return result;
     }    
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/07 16:00:24 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/07/07 18:27:51 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.24 $ $Date: 2003/07/07 16:00:24 $
+ * @version $Revision: 1.25 $ $Date: 2003/07/07 18:27:51 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1158,6 +1158,7 @@ public class CmsDriverManager extends Object {
     public void copyFile(CmsUser currentUser, CmsProject currentProject, String source, String destination) throws CmsException {
         String destinationFileName = null;
         String destinationFolderName = null;
+        CmsResource newResource = null;
 //        String sourceFileName = null;
 //        String sourceFolderName = null;
         
@@ -1192,7 +1193,7 @@ public class CmsDriverManager extends Object {
         this.clearResourceCache(destination, currentProject, currentUser);
 
         // copy the metainfos/properties
-        CmsResource newResource = lockResource(currentUser, currentProject, destination, true);
+        newResource = lockResource(currentUser, currentProject, destination, true);
         writeProperties(currentUser, currentProject, destination, readProperties(currentUser, currentProject, source, null, false));
 
         // copy the access control entries

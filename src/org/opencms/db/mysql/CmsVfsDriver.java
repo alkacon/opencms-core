@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/03 13:29:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/07 18:27:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Iterator;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/07/03 13:29:45 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/07 18:27:51 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
@@ -104,15 +104,12 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             stmt.setString(1, resourceId.toString());
             stmt.setInt(2, resourceType.getResourceType());
             stmt.setInt(3, flags);
-            stmt.setString(4, user.getId().toString());
-            stmt.setString(5, user.getDefaultGroupId().toString());
-            stmt.setString(6, fileId.toString());
-            stmt.setInt(7, I_CmsConstants.C_ACCESS_DEFAULT_FLAGS);
-            stmt.setInt(8, resourceType.getLauncherType());
-            stmt.setString(9, resourceType.getLauncherClass());
-            stmt.setTimestamp(10, new Timestamp(System.currentTimeMillis()));
-            stmt.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
-            stmt.setInt(12, contents.length);
+            stmt.setString(4, fileId.toString());
+            stmt.setInt(5, resourceType.getLauncherType());
+            stmt.setString(6, resourceType.getLauncherClass());
+            stmt.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
+            stmt.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
+            stmt.setInt(9, contents.length);
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
 
@@ -127,6 +124,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             stmt.setInt(7, state);
             stmt.setString(8, CmsUUID.getNullUUID().toString());
             stmt.setString(9, user.getId().toString());
+            stmt.setString(10, user.getId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);

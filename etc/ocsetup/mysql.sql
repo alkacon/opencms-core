@@ -128,10 +128,7 @@ create table CMS_BACKUP_PROPERTIES      (PROPERTY_ID int not null,
 create table CMS_OFFLINE_RESOURCES      (RESOURCE_ID VARCHAR(36) NOT NULL,
                                          RESOURCE_TYPE int not null,
                                          RESOURCE_FLAGS int not null,
-                                         USER_ID VARCHAR(36) NOT NULL,
-                                         GROUP_ID VARCHAR(36) NOT NULL,
                                          FILE_ID VARCHAR(36) NOT NULL,
-                                         ACCESS_FLAGS int not null,
                                          LAUNCHER_TYPE int not null,
                                          LAUNCHER_CLASSNAME VARCHAR(255) not null,
                                          DATE_CREATED datetime not null,
@@ -139,17 +136,12 @@ create table CMS_OFFLINE_RESOURCES      (RESOURCE_ID VARCHAR(36) NOT NULL,
                                          RESOURCE_SIZE int not null,                                         
                                          primary key(RESOURCE_ID),
                                          key resource_fileid (FILE_ID),
-                                         key resource_group (GROUP_ID),
-                                         key resources_type (RESOURCE_TYPE),
-                                         key resource_userid (USER_ID));
+                                         key resources_type (RESOURCE_TYPE));
 
 create table CMS_ONLINE_RESOURCES       (RESOURCE_ID VARCHAR(36) NOT NULL,
                                          RESOURCE_TYPE int not null,
                                          RESOURCE_FLAGS int not null,
-                                         USER_ID VARCHAR(36) NOT NULL,
-                                         GROUP_ID VARCHAR(36) NOT NULL,
                                          FILE_ID VARCHAR(36) NOT NULL,
-                                         ACCESS_FLAGS int not null,
                                          LAUNCHER_TYPE int not null,
                                          LAUNCHER_CLASSNAME VARCHAR(255) not null,
                                          DATE_CREATED datetime not null,
@@ -157,9 +149,7 @@ create table CMS_ONLINE_RESOURCES       (RESOURCE_ID VARCHAR(36) NOT NULL,
                                          RESOURCE_SIZE int not null,
                                          primary key(RESOURCE_ID),
                                          key resource_fileid (FILE_ID),
-                                         key resource_group (GROUP_ID),
-                                         key resources_type (RESOURCE_TYPE),
-                                         key resource_userid (USER_ID));
+                                         key resources_type (RESOURCE_TYPE));
                                          
 create table CMS_BACKUP_RESOURCES       (ID VARCHAR(36) NOT NULL,
 										 RESOURCE_ID VARCHAR(36) NOT NULL,
@@ -745,8 +735,9 @@ CREATE TABLE CMS_OFFLINE_STRUCTURE (
 	RESOURCE_NAME			VARCHAR(255) NOT NULL,
 	LINK_TYPE				SMALLINT UNSIGNED DEFAULT 0,
 	STATE 					SMALLINT UNSIGNED NOT NULL,
-    LOCKED_BY VARCHAR(36) 	NOT NULL,
-	RESOURCE_LASTMODIFIED_BY	VARCHAR(36) NOT NULL,	
+    LOCKED_BY				VARCHAR(36) NOT NULL,
+    USER_CREATED			VARCHAR(36) NOT NULL,
+	USER_LASTMODIFIED		VARCHAR(36) NOT NULL,	
 	PRIMARY KEY				(STRUCTURE_ID),
 	INDEX IDX1 				(STRUCTURE_ID, RESOURCE_NAME),
 	INDEX IDX2 				(RESOURCE_NAME, RESOURCE_ID),
@@ -754,7 +745,8 @@ CREATE TABLE CMS_OFFLINE_STRUCTURE (
 	INDEX IDX4 				(STRUCTURE_ID, RESOURCE_ID),
 	INDEX IDX5				(LOCKED_BY),
 	INDEX IDX6				(PROJECT_ID),
-	INDEX IDX7				(STATE)
+	INDEX IDX7				(STATE),
+	INDEX IDX8 				(PARENT_ID)
 );
 
 CREATE TABLE CMS_ONLINE_STRUCTURE (
@@ -765,8 +757,9 @@ CREATE TABLE CMS_ONLINE_STRUCTURE (
 	RESOURCE_NAME			VARCHAR(255) NOT NULL,
 	LINK_TYPE				SMALLINT UNSIGNED DEFAULT 0,
 	STATE 					SMALLINT UNSIGNED NOT NULL,
-    LOCKED_BY VARCHAR(36) 	NOT NULL,
-	RESOURCE_LASTMODIFIED_BY	VARCHAR(36) NOT NULL,
+    LOCKED_BY				VARCHAR(36) NOT NULL,
+    USER_CREATED			VARCHAR(36) NOT NULL,
+	USER_LASTMODIFIED		VARCHAR(36) NOT NULL,	
 	PRIMARY KEY				(STRUCTURE_ID),
 	INDEX IDX1 				(STRUCTURE_ID, RESOURCE_NAME),
 	INDEX IDX2 				(RESOURCE_NAME, RESOURCE_ID),
@@ -774,7 +767,8 @@ CREATE TABLE CMS_ONLINE_STRUCTURE (
 	INDEX IDX4 				(STRUCTURE_ID, RESOURCE_ID),
 	INDEX IDX5				(LOCKED_BY),
 	INDEX IDX6				(PROJECT_ID),
-	INDEX IDX7				(STATE)
+	INDEX IDX7				(STATE),
+	INDEX IDX8 				(PARENT_ID)
 );
 
 CREATE TABLE CMS_BACKUP_STRUCTURE (
@@ -787,9 +781,11 @@ CREATE TABLE CMS_BACKUP_STRUCTURE (
 	RESOURCE_NAME			VARCHAR(255) NOT NULL,
 	LINK_TYPE				SMALLINT UNSIGNED DEFAULT 0,
 	STATE 					SMALLINT UNSIGNED NOT NULL,
-    LOCKED_BY VARCHAR(36) 	NOT NULL,
-	RESOURCE_LASTMODIFIED_BY			VARCHAR(36) NOT NULL,
-	RESOURCE_LASTMODIFIED_BY_NAME		VARCHAR(167),
+    LOCKED_BY				VARCHAR(36) NOT NULL,
+	USER_LASTMODIFIED		VARCHAR(36) NOT NULL,
+	USER_LASTMODIFIED_NAME	VARCHAR(167),
+	USER_CREATED			VARCHAR(36) NOT NULL,
+	USER_CREATED_NAME		VARCHAR(167),	
 	PRIMARY KEY				(ID),
 	INDEX IDX1 				(STRUCTURE_ID, RESOURCE_NAME),
 	INDEX IDX2 				(RESOURCE_NAME, RESOURCE_ID),
