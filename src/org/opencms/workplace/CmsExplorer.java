@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/30 15:10:07 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/07/30 15:52:38 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.1
  */
@@ -113,7 +113,8 @@ public class CmsExplorer extends CmsWorkplace {
                 }
             }
         }
-        
+        settings.setExplorerShowLinks(showLinks);
+              
         String selectedPage = request.getParameter("page");
         if (selectedPage != null) {
             int page = 1;
@@ -191,8 +192,8 @@ public class CmsExplorer extends CmsWorkplace {
         boolean galleryView = "galleryview".equals(getSettings().getExplorerMode()); 
         // if mode is "projectview", all changed files in that project will be shown
         boolean projectView = "projectview".equals(getSettings().getExplorerMode());
-        // if mode is "vfslinks", the vfs links to a target file will be shown
-        boolean vfslinkView = "vfslink".equals(getSettings().getExplorerMode());
+        // if VFS links should be displayed, this is true
+        boolean showVfsLinks = getSettings().getExplorerShowLinks();
 
         CmsResource currentResource = null;
                 
@@ -205,14 +206,14 @@ public class CmsExplorer extends CmsWorkplace {
             found = false;
         }
         if (found) {
-            if (vfslinkView) {
+            if (showVfsLinks) {
                 // file / folder exists and is readable
                 currentFolder = "vfslink:" + currentFolder;
             }
         } else {
             // show the root folder in case of an error and reset the state
             currentFolder = "/";
-            vfslinkView = false;
+            showVfsLinks = false;
             try {
                 currentResource = getCms().readFileHeader(currentFolder);
             } catch (CmsException e) {
@@ -241,18 +242,26 @@ public class CmsExplorer extends CmsWorkplace {
 //            content.append("top.openfolderMethod='openthisfolder';\n");
 //        }
         
+
         content.append("top.mode=\"");        
         content.append(getSettings().getExplorerMode());
         content.append("\";\n");
 
-//        // the flaturl
-//        if (getSettings().getExplorerFlaturl() != null) {
-//            content.append("top.flaturl='");
-//            content.append(getSettings().getExplorerFlaturl());
-//            content.append("';\n");
-//        } else if (!galleryView) {
-//            content.append("top.flaturl='';\n");
-//        }
+        content.append("top.showlinks=\"");        
+        content.append(showVfsLinks);
+        content.append("\";\n");
+        System.err.println(showVfsLinks);
+
+        
+
+//      // the flaturl
+//      if (getSettings().getExplorerFlaturl() != null) {
+//          content.append("top.flaturl='");
+//          content.append(getSettings().getExplorerFlaturl());
+//          content.append("';\n");
+//      } else if (!galleryView) {
+//          content.append("top.flaturl='';\n");
+//      }
 
         // the help_url
         content.append("top.head.helpUrl='explorer/index.html';\n");
@@ -268,9 +277,9 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.setChecksum(");
         content.append(check);
         content.append(");\n");
-        // set the writeAccess for the current Folder
+        // set the writeAccess for the current Folder       
         boolean writeAccess = "explorerview".equals(getSettings().getExplorerMode());
-        if (writeAccess && (! vfslinkView)) {        
+        if (writeAccess && (! showVfsLinks)) {        
             try {
                 CmsFolder test = getCms().readFolder(currentFolder);
                 //writeAccess = test.getProjectId() == getSettings().getProject();
@@ -288,7 +297,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("\",\"");
         content.append(CmsResource.getPath(getSettings().getExplorerResource()));
         content.append("\");\n");
-        if (vfslinkView) {
+        if (showVfsLinks) {
             content.append("top.addHist('");
             content.append(CmsResource.getPath(getSettings().getExplorerResource()));
             content.append("')\n");
@@ -308,7 +317,7 @@ public class CmsExplorer extends CmsWorkplace {
         boolean showUserWhoCreated = (preferences & I_CmsWpConstants.C_FILELIST_USER_CREATED) > 0;
 
         // now get the entries for the filelist
-        Vector resources = getRessources(getSettings().getExplorerMode(), getSettings().getExplorerResource());
+        Vector resources = getRessources(getSettings().getExplorerResource());
 
         // if a folder contains to much entrys we split them to pages of C_ENTRYS_PER_PAGE length
         int startat = 0;
@@ -317,7 +326,7 @@ public class CmsExplorer extends CmsWorkplace {
         int numberOfPages = 0;
         int maxEntrys = C_ENTRYS_PER_PAGE;
         
-        if (!(galleryView || projectView || vfslinkView)) {
+        if (!(galleryView || projectView || showVfsLinks)) {
             selectedPage = getSettings().getExplorerPage();
             if (stopat > maxEntrys) {
                 // we have to splitt
@@ -356,7 +365,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(res.getResourceName());
             content.append("\",");
             // position 2: path
-            if (projectView || vfslinkView) {
+            if (projectView || showVfsLinks) {
                 content.append("\"");
                 // TODO: Check this (won't work with new repository)
                 content.append(path);
@@ -499,7 +508,7 @@ public class CmsExplorer extends CmsWorkplace {
         }
 
         // now the tree, only if changed
-        if (newTreePlease && (!(galleryView || projectView || vfslinkView))) {
+        if (newTreePlease && (!(galleryView || projectView || showVfsLinks))) {
             content.append("\ntop.rT();\n");
             List tree = null;
             try {
@@ -630,13 +639,12 @@ public class CmsExplorer extends CmsWorkplace {
      * Get the resources in the folder stored in parameter param
      * or in the project shown in the projectview
      *
-     * @param mode the mode to use
-     * @param folder the fodler to read the files from
+     * @param resource the resource to read the files from
      * @return a vector with ressources to display
      */
-    private Vector getRessources(String mode, String resource) {
+    private Vector getRessources(String resource) {
         
-        if ("vfslink".equals(mode)) {
+        if (getSettings().getExplorerShowLinks()) {
             try {
                 return new Vector(getCms().getAllVfsLinks(resource));
             } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/07/30 11:56:16 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/30 15:52:38 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -51,8 +51,10 @@ public class CmsWorkplaceSettings {
     private String m_group;
     private CmsUser m_user; 
     private String m_currentView;
-    private String m_explorerFolder;
+    private String m_explorerResource;
     private String m_explorerMode;
+    private boolean m_explorerShowLinks;
+    
     private int m_explorerPage = 1;
     private int m_explorerChecksum = -1;
     private String m_explorerFlaturl;
@@ -198,7 +200,7 @@ public class CmsWorkplaceSettings {
      * @return the current resource to be displayed in the explorer
      */
     public synchronized String getExplorerResource() {
-        return m_explorerFolder;
+        return m_explorerResource;
     }
     
     /**
@@ -207,7 +209,7 @@ public class CmsWorkplaceSettings {
      * @param value the current resource to be displayed in the explorer
      */
     public synchronized void setExplorerResource(String value) {
-        m_explorerFolder = value;
+        m_explorerResource = value;
     }
     
     /**
@@ -282,6 +284,8 @@ public class CmsWorkplaceSettings {
         m_explorerFlaturl = value;
     }
     
+    
+    
     /**
      * Returns the current detail grade of the view.<p>
      *  
@@ -300,4 +304,22 @@ public class CmsWorkplaceSettings {
         m_permissionDetailView = value;
     }
         
+    /**
+     * Returns if the explorer should display VFS links.<p>
+     * 
+     * @return true, if VFS links should be shown, otherwise false
+     */
+    public boolean getExplorerShowLinks() {
+        return m_explorerShowLinks;
+    }
+
+    /**
+     * Sets the explorer view to show VFS links.<p>
+     * 
+     * @param b true, if VFS links should be shown, otherwise false
+     */
+    public void setExplorerShowLinks(boolean b) {
+        m_explorerShowLinks = b;
+    }
+
 }
