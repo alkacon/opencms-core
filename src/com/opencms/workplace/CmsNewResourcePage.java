@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/17 12:13:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/17 13:39:17 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/17 12:13:23 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/17 13:39:17 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -85,7 +85,8 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         String title=(String)parameters.get(C_PARA_TITLE);
         String flags=(String)parameters.get(C_PARA_FLAGS);
         String templatefile=(String)parameters.get(C_PARA_TEMPLATE);
-               
+        String navtitle=(String)parameters.get(C_PARA_NAVTITLE);       
+        
         // get the current phase of this wizard
         String step=cms.getRequestContext().getRequest().getParameter("step");
        
@@ -97,36 +98,34 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 }
                 try {
                    // create the content for the page file
-                   System.err.println("create content");
                    content=createPagefile(C_CLASSNAME,                                          templatefile,
                                           C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length())+newFile);              
                    // check if the nescessary folders for the content files are existing.
                    // if not, create the missing folders.
-                   System.err.println("check folders");
                    checkFolders(cms,currentFilelist);
                    
                    // create the page file
-                   System.err.println("create file "+currentFilelist+newFile);
                    CmsFile file=cms.createFile(currentFilelist,newFile,content,"page");
-                   System.err.println("lock file "+file);
                    cms.lockResource(file.getAbsolutePath());
-                   System.err.println("write metainfo file "+file);
                    cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE,title);
                    
                    // now create the page content file
-                   System.err.println("create content "+C_CONTENTBODYPATH+currentFilelist+newFile);
                    CmsFile contentfile=cms.createFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile,new byte[0],"plain");
                    
                    // set the flags for the content file to internal use, the content 
                    // should not be loaded 
-           /*        System.err.println("set flags");
                    cms.lockResource(contentfile.getAbsolutePath());
-                   contentfile.setAccessFlags(contentfile.getAccessFlags()+C_ACCESS_INTERNAL_READ);
-                   System.err.println("update file "+contentfile.getAbsolutePath());
-                   cms.writeFile(contentfile);
-                   cms.unlockResource(contentfile.getAbsolutePath());
-                   System.err.println("done");*/
-                } catch (CmsException ex) {
+                   
+                   // TODO: This does not work yet. Change it when the bug in the RB or access module is removed
+                   //contentfile.setAccessFlags(contentfile.getAccessFlags()+C_ACCESS_INTERNAL_READ);
+                   //cms.writeFile(contentfile);
+                   
+                   // now check if navigation informations have to be added to the new page.
+                   if (navtitle != null) {
+                        cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_NAVTITLE,navtitle);                       
+                   }
+                   
+                  } catch (CmsException ex) {
                     throw new CmsException("###"+ex.getMessage(),ex.getType(),ex);
                 }
             
