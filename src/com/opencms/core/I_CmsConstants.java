@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.231 $
+* Date   : $Date: 2003/06/13 16:15:55 $
+* Version: $Revision: 1.232 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.231 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.232 $ $Date: 2003/06/13 16:15:55 $
  */
 public interface I_CmsConstants {
 
@@ -366,22 +366,42 @@ public interface I_CmsConstants {
     /**
      * The permission to read a resource
      */
-    final static int C_PERMISSION_READ = 1;
+    int C_PERMISSION_READ = 1;
 
     /**
      * The permission to write a resource
      */
-    final static int C_PERMISSION_WRITE = 2;
+    int C_PERMISSION_WRITE = 2;
 
     /**
      * The permission to view a resource
      */
-    final static int C_PERMISSION_VIEW = 4;
+    int C_PERMISSION_VIEW = 4;
+    
+    /**
+     * The permission to control a resource
+     */
+    int C_PERMISSION_CONTROL = 8;
 
-	// Constants used for checking access
-	final static CmsPermissionSet C_READ_ACCESS = new CmsPermissionSet(I_CmsConstants.C_PERMISSION_READ);
-	final static CmsPermissionSet C_WRITE_ACCESS = new CmsPermissionSet(I_CmsConstants.C_PERMISSION_WRITE);
-	final static CmsPermissionSet C_VIEW_ACCESS = new CmsPermissionSet(I_CmsConstants.C_PERMISSION_VIEW);
+	/**
+	 * Permission set to check read acces
+	 */
+	CmsPermissionSet C_READ_ACCESS = new CmsPermissionSet(C_PERMISSION_READ);
+	
+	/**
+	 * Permission set to check write access
+	 */
+	CmsPermissionSet C_WRITE_ACCESS = new CmsPermissionSet(C_PERMISSION_WRITE);
+	
+	/**
+	 * Permission set to check view access
+	 */
+	CmsPermissionSet C_VIEW_ACCESS = new CmsPermissionSet(C_PERMISSION_VIEW);
+	
+	/**
+	 * Permission set to check control access
+	 */
+	CmsPermissionSet C_CONTROL_ACCESS = new CmsPermissionSet(C_PERMISSION_CONTROL);
  
     /**
      * Group may read this resource

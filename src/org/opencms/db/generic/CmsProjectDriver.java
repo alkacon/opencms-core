@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/06/13 14:48:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/13 16:17:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.2 $ $Date: 2003/06/13 14:48:16 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/13 16:17:55 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -742,9 +742,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 		siteRootId = rootFolder.getId();
 		
 		// create the access control entries
-        m_driverManager.getUserDriver().createAccessControlEntry(online,rootFolder.getResourceAceId(),administrators.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERITED);
-        m_driverManager.getUserDriver().createAccessControlEntry(online,rootFolder.getResourceAceId(),projectleader.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERITED);
-        m_driverManager.getUserDriver().createAccessControlEntry(online,rootFolder.getResourceAceId(),users.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERITED);
+        m_driverManager.getUserDriver().createAccessControlEntry(online,rootFolder.getResourceAceId(),administrators.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERITED);
+        m_driverManager.getUserDriver().createAccessControlEntry(online,rootFolder.getResourceAceId(),projectleader.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERITED);
+        m_driverManager.getUserDriver().createAccessControlEntry(online,rootFolder.getResourceAceId(),users.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERITED);
         m_driverManager.getUserDriver().createAccessControlEntry(online,rootFolder.getResourceAceId(),guests.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERITED);
 
         // create the folder for the virtual file system

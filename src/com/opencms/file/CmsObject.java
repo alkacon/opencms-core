@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.284 $
+* Date   : $Date: 2003/06/13 16:17:05 $
+* Version: $Revision: 1.285 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.284 $
+ * @version $Revision: 1.285 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -140,36 +140,7 @@ public class CmsObject implements I_CmsConstants {
 public void acceptTask(int taskId) throws CmsException {
     m_driverManager.acceptTask(m_context.currentUser(), m_context.currentProject(), taskId);
 }
-/**
- * Checks, if the user may create this resource.
- *
- * @param resource the resource to check.
- * @return <code>true</code> if the user has the appropriate rigths to create the resource; <code>false</code> otherwise
- *
- * @throws CmsException if operation was not successful.
- */
-public boolean accessCreate(String resource) throws CmsException {
-    try {
-        return m_driverManager.accessCreate(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource));
-    } catch (Exception exc) {
-        throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-    }
-}
-/**
- * Checks, if the user may lock this resource.
- *
- * @param resource the resource to check.
- * @return <code>true</code> if the user has the appropriate rights to lock this resource; <code>false</code> otherwise
- *
- * @throws CmsException if operation was not successful.
- */
-public boolean accessLock(String resource) throws CmsException {
-    try {
-        return m_driverManager.accessLock(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource));
-    } catch (Exception exc) {
-        throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-    }
-}
+
 /**
  * Checks if the user can access the project.
  *
@@ -181,21 +152,7 @@ public boolean accessLock(String resource) throws CmsException {
 public boolean accessProject(int projectId) throws CmsException {
     return (m_driverManager.accessProject(m_context.currentUser(), m_context.currentProject(), projectId));
 }
-/**
- * Checks, if the user may read this resource.
- *
- * @param resource The resource to check.
- * @return <code>true</code>, if the user has the appropriate rigths to read the resource; <code>false</code> otherwise.
- *
- * @throws CmsException if operation was not successful.
- */
-public boolean accessRead(String resource) throws CmsException {
-    try {
-        return m_driverManager.accessRead(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource));
-    } catch (Exception exc) {
-        throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-    }
-}
+
 /**
  * Checks, if the user may write this resource.
  *

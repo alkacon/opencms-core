@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/13 13:17:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/13 16:17:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.3 $ $Date: 2003/06/13 13:17:22 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/13 16:17:55 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -109,7 +109,7 @@ public class CmsDriverManager implements I_CmsConstants {
     /**
      * Inner class to define the access policy when checking permissions on vfs operations.
      * 
-	 * @version $Revision: 1.3 $ $Date: 2003/06/13 13:17:22 $
+	 * @version $Revision: 1.4 $ $Date: 2003/06/13 16:17:55 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
     class VfsAccessGuard extends CmsAccessGuard {
@@ -215,6 +215,55 @@ public class CmsDriverManager implements I_CmsConstants {
 			return permissions;
 		}
     } 
+
+	/**
+	 * Inner class to define the access policy when checking permissions on user operations.
+	 * 
+	 * @version $Revision: 1.4 $ $Date: 2003/06/13 16:17:55 $
+	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
+	 */
+	class UserAccessGuard extends CmsAccessGuard {
+
+		/*
+		 * Sets of checks
+		 */
+		public static final int C_CHECK_DEFAULT = 0;
+				    	
+		/**
+		 * Constructor to create a new access guard to secure user access operations for a given user in a given project.
+		 * 
+		 * @param user		the user that requests access (typically the current user)
+		 * @param project	the project in which the permissions are evaluated (typically the current project)
+		 * @param checks	flags to define which permission constraints are performed
+		 */
+		public UserAccessGuard(CmsUser user, CmsProject project, int checks) {
+			super(user, project, checks);    	
+		}
+		
+		/**
+		 * Evaluates the permissions of the given user on a resource within a given project by 
+		 * calculating a permission set following a certain policy.
+		 * 
+		 * @param resource		the resource on which permissions are required
+		 * @param checks 		flags to define the checks performed when evaluating the permissions
+		 * 
+		 * @return a set of allowed and denied permissions for the given user on the resource  
+		 * @throws CmsException if something goes wrong
+		 * @see org.opencms.security.CmsAccessGuard#evaluatePermissions(com.opencms.file.CmsResource, int)
+		 */
+		public CmsPermissionSet evaluatePermissions(CmsResource resource, int checks)  throws CmsException {
+
+			if (isAdmin(getUser(),getProject())) {
+				// if the current user is administrator, anything is allowed
+				return new CmsPermissionSet(~0);
+				
+			} else {	
+				// otherwise, get the permissions from the access control list
+				CmsAccessControlList acl = getAccessControlList(getUser(), getProject(), resource);
+				return acl.getPermissions(getUser(), getGroupsOfUser(getUser(),getUser().getName()));
+			}
+		}
+	}
 
     /**
      * Constant to count the file-system changes.
@@ -556,252 +605,7 @@ public class CmsDriverManager implements I_CmsConstants {
         task = m_workflowDriver.writeTask(task);
         m_workflowDriver.writeSystemTaskLog(taskId, "Task was accepted from " + currentUser.getFirstname() + " " + currentUser.getLastname() + ".");
     }
-    
-    /**
-     * Checks, if the user may create this resource.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The resource to check.
-     *
-     * @return wether the user has access, or not.
-     */
-    public boolean accessCreate(CmsUser currentUser, CmsProject currentProject,
-                                CmsResource resource) throws CmsException {
-
-        // check, if this is the onlineproject
-        if(currentProject.isOnlineProject()){
-            // the online-project is not writeable!
-            return(false);
-        }
-
-        // check the access to the project
-        if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
-            // no access to the project!
-            return(false);
-        }
-
-        // check if the resource belongs to the current project
-        if(resource.getProjectId() != currentProject.getId()) {
-            return false;
-        }
-        
-        // is the resource locked?
-        if( resource.isLocked() && (!resource.isLockedBy().equals(currentUser.getId()) ||
-            (resource.getLockedInProject() != currentProject.getId() &&
-            currentProject.getFlags() != C_PROJECT_STATE_INVISIBLE)) ) {
-            // resource locked by another user, no creation allowed
-            return(false);
-        }
-
-         // check the rights for the current resource
-		if (! getVfsAccessGuard(currentUser, currentProject).check(resource, C_WRITE_ACCESS,  false))
-            return false;
-
-        // TODO: remove old access check 
-        //if( ! ( accessOther(resource, C_ACCESS_PUBLIC_WRITE) ||
-        //        accessOwner(currentUser, currentProject, resource, C_PERMISSION_WRITE) ||
-        //        accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) ) {
-        //    // no write access to this resource!
-        //    return false;
-        //}
-
-        // read the parent folder
-        if(resource.getParent() != null) {
-            // readFolder without checking access
-            resource = m_vfsDriver.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
-        } else {
-            // no parent folder!
-            return true;
-        }
-
-        // check the rights and if the resource is not locked
-        do {
-            //if( accessOther(resource, C_ACCESS_PUBLIC_READ) ||
-            //    accessOwner(currentUser, currentProject, resource, C_PERMISSION_READ) ||
-            //    accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
-
-                // is the resource locked?
-                if( resource.isLocked() && !resource.isLockedBy().equals(currentUser.getId()) ) {
-                    // resource locked by anopther user, no creation allowed
-                    return(false);
-                }
-
-                // read next resource
-                if(resource.getParent() != null) {
-                    // readFolder without checking access
-                    resource = m_vfsDriver.readFolder(resource.getProjectId(),  resource.getRootName()+resource.getParent());
-                }
-            // } else {
-                // last check was negative
-            //    return(false);
-            // }
-        } while(resource.getParent() != null);
-
-        // all checks are done positive
-        return(true);
-    }
-    /**
-     * Checks, if the user may create this resource.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The resource to check.
-     *
-     * @return wether the user has access, or not.
-     */
-    public boolean accessCreate(CmsUser currentUser, CmsProject currentProject,
-                                String resourceName) throws CmsException {
-
-        CmsResource resource = m_vfsDriver.readFileHeader(currentProject.getId(), resourceName, false);
-        return accessCreate(currentUser, currentProject, resource);
-    }
-    /**
-     * Checks, if the group may access this resource.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The resource to check.
-     * @param flags The flags to check.
-     *
-     * @return wether the user has access, or not.
-     *//*
-    protected boolean accessGroup(CmsUser currentUser, CmsProject currentProject,
-                                CmsResource resource, int flags)
-        throws CmsException {
-
-        // is the user in the group for the resource?
-        if(userInGroup(currentUser, currentProject, currentUser.getName(),
-                       readGroup(currentUser, currentProject,
-                                 resource).getName())) {
-            if( (resource.getAccessFlags() & flags) == flags ) {
-                return true;
-            }
-        }
-        // the resource isn't accesible by the user.
-
-        return false;
-
-    }*/
-    /**
-     * Checks, if the user may lock this resource.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The resource to check.
-     *
-     * @return wether the user may lock this resource, or not.
-     */
-    public boolean accessLock(CmsUser currentUser, CmsProject currentProject,
-                              CmsResource resource) throws CmsException {
-        // check, if this is the onlineproject
-        if(currentProject.isOnlineProject()){
-            // the online-project is not writeable!
-            return(false);
-        }
-
-        // check the access to the project
-        if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
-            // no access to the project!
-            return(false);
-        }
-
-        // check if the resource belongs to the current project
-        if(resource.getProjectId() != currentProject.getId()) {
-            return false;
-        }
-
-        // read the parent folder
-        if(resource.getParent() != null) {
-            // readFolder without checking access
-            resource = m_vfsDriver.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
-        } else {
-            // no parent folder!
-            return true;
-        }
-
-        // check the rights and if the resource is not locked
-        do {
-            // is the resource locked?
-            if( resource.isLocked() && ((!resource.isLockedBy().equals(currentUser.getId())) ||
-                (resource.getLockedInProject() != currentProject.getId() &&
-                 currentProject.getFlags() != C_PROJECT_STATE_INVISIBLE)) ) {
-                // resource locked by anopther user, no creation allowed
-                return(false);
-            }
-
-            // read next resource
-            if(resource.getParent() != null) {
-                // readFolder without checking access
-                resource = m_vfsDriver.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
-            }
-        } while(resource.getParent() != null);
-
-        // all checks are done positive
-        return(true);
-    }
-    /**
-     * Checks, if the user may lock this resource.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The resource to check.
-     *
-     * @return wether the user may lock this resource, or not.
-     */
-    public boolean accessLock(CmsUser currentUser, CmsProject currentProject,
-                              String resourceName) throws CmsException {
-
-        CmsResource resource = m_vfsDriver.readFileHeader(currentProject.getId(), resourceName, false);
-        return accessLock(currentUser,currentProject,resource);
-    }
-/**
- * Checks, if others may access this resource.
- *
- * @param resource The resource to check.
- * @param flags The flags to check.
- *
- * @return wether the user has access, or not.
-	 *//*
-protected boolean accessOther(CmsResource resource, int flags) throws CmsException
-{
-    if ((resource.getAccessFlags() & flags) == flags)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-	}*/
-	
-        /**
-     * Checks, if the owner may access this resource.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The resource to check.
-     * @param flags The flags to check.
-     *
-     * @return wether the user has access, or not.
-     *//*
-    protected boolean accessOwner(CmsUser currentUser, CmsProject currentProject,
-                                CmsResource resource, int flags)
-        throws CmsException {
-        // The Admin has always access
-        if( isAdmin(currentUser, currentProject) ) {
-            return(true);
-        }
-        // is the resource owned by this user?
-        if(resource.getOwnerId().equals(currentUser.getId())) {
-            if( (resource.getAccessFlags() & flags) == flags ) {
-                return true ;
-            }
-        }
-        // the resource isn't accesible by the user.
-        return false;
-    }*/
-    
+    	    
     // Methods working with projects
 
     /**
@@ -845,137 +649,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
         }
         return (false);
     }
-    
-    /**
-     * Checks if the user may read this resource.
-     * NOTE: If the ressource is in the project you never have to fallback.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The resource to check.
-     *
-     * @return weather the user has access, or not.
-     */
-    public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
-        String cacheKey = getCacheKey(null, currentUser, new CmsProject(currentProject.getId(), -1), resource.getResourceName());
-        Boolean access = (Boolean)m_accessCache.get(cacheKey);
-        
-        if (access != null) {
-            return access.booleanValue();
-        } else {                       
-            if ( (resource == null) 
-                 || !accessProject(currentUser, currentProject, resource.getProjectId()) 
-                 || ! getVfsAccessGuard(currentUser, currentProject).check(resource, C_READ_ACCESS,  false)) {
 
-               //  ( !accessOther(resource, C_ACCESS_PUBLIC_READ) 
-               //       && !accessOwner(currentUser, currentProject, resource, C_PERMISSION_READ) 
-               //       && !accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ))) {
-
-                m_accessCache.put(cacheKey, new Boolean(false));
-                return false;
-            }
-            
-            // check the rights for all
-            /*
-            CmsResource res = resource; // save the original resource name to be used if an error occurs.
-            while (res.getParent() != null) {
-                // readFolder without checking access
-                res = m_vfsDriver.readFolder(currentProject.getId(), res.getRootName() + res.getParent());
-                if (res == null) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                        A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "Resource has no parent: " + resource.getAbsolutePath());
-                    }
-                    throw new CmsException(getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
-                }
-                if ( !accessOther(res, C_ACCESS_PUBLIC_READ) 
-                     && !accessOwner(currentUser, currentProject, res, C_PERMISSION_READ) 
-                     && !accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ)) {
-                    
-                    m_accessCache.put(cacheKey, new Boolean(false));
-                    return false;
-                }
-
-            }
-            */
-            m_accessCache.put(cacheKey, new Boolean(true));
-            return true;
-        }
-    }
-    
-    /**
-     * Checks if the user may read this resource.
-     * NOTE: If the ressource is in the project you never have to fallback.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The resource to check.
-     *
-     * @return weather the user has access, or not.
-     */
-    public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String resourceName) throws CmsException {
-
-		//System.err.println("Accessing: " + currentProject.getId() + resourceName);
-        CmsResource resource = m_vfsDriver.readFileHeader(currentProject.getId(), resourceName, false);
-        return accessRead(currentUser, currentProject, resource);
-    }
-
-    /**
-     * Checks, if the user may unlock this resource.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The resource to check.
-     *
-     * @return wether the user may unlock this resource, or not.
-     */
-    public boolean accessUnlock(CmsUser currentUser, CmsProject currentProject,
-                                CmsResource resource)
-        throws CmsException {
-            // check, if this is the onlineproject
-        if(currentProject.isOnlineProject()){
-            // the online-project is not writeable!
-            return(false);
-        }
-
-        // check the access to the project
-        if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
-            // no access to the project!
-            return(false);
-        }
-
-        // check if the resource belongs to the current project
-        if(resource.getProjectId() != currentProject.getId()) {
-            return false;
-        }
-
-        // read the parent folder
-        if(resource.getParent() != null) {
-            // readFolder without checking access
-            resource = m_vfsDriver.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
-        } else {
-            // no parent folder!
-            return true;
-        }
-
-
-        // check if the resource is not locked
-        do {
-            // is the resource locked?
-            if( resource.isLocked() ) {
-                // resource locked by anopther user, no creation allowed
-                return(false);
-            }
-
-            // read next resource
-            if(resource.getParent() != null) {
-                // readFolder without checking access
-                resource = m_vfsDriver.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
-            }
-        } while(resource.getParent() != null);
-
-        // all checks are done positive
-        return(true);
-    }
     /**
      * Checks, if the user may write this resource.
      *
@@ -997,7 +671,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
         }
 
         // check the access to the project
-        if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
+        if(! accessProject(currentUser, currentProject, currentProject.getId())) {
             // no access to the project!
             return(false);
         }
@@ -1067,12 +741,13 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
         // all checks are done positive
         return(true);
     }
+    
     /**
      * Checks, if the user may write this resource.
      *
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
-     * @param resource The resource to check.
+     * @param resourceName The name of the resource to check.
      *
      * @return wether the user has access, or not.
      */
@@ -1082,81 +757,27 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
         CmsResource resource = m_vfsDriver.readFileHeader(currentProject.getId(), resourceName, false);
         return accessWrite(currentUser,currentProject,resource);
     }
+    
     /**
-     * Checks, if the user may write the unlocked resource.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The resource to check.
-     *
-     * @return wether the user has access, or not.
-     */
-    public boolean accessWriteUnlocked(CmsUser currentUser, CmsProject currentProject,
-                               CmsResource resource) throws CmsException {
-
-
-        // check, if this is the onlineproject
-
-        if(currentProject.isOnlineProject()){
-            // the online-project is not writeable!
-            return(false);
-        }
-
-        // check the access to the project
-        if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
-            // no access to the project!
-            return(false);
-        }
-
-        // check if the resource belongs to the current project
-        if(resource.getProjectId() != currentProject.getId()) {
-            return false;
-        }
-
-        // check the rights for the current resource
-		if (!getVfsAccessGuard(currentUser, currentProject).check(resource, C_WRITE_ACCESS,  false))
-            return false;
-
-        // read the parent folder
-        if(resource.getParent() != null) {
-            // readFolder without checking access
-            resource = m_vfsDriver.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
-        } else {
-            // no parent folder!
-            return true;
-        }
-
-
-        // check the rights and if the resource is not locked
-        // for parent folders only read access is needed
-        do {
-           //if( accessOther(resource, C_ACCESS_PUBLIC_READ) ||
-           //     accessOwner(currentUser, currentProject, resource, C_PERMISSION_READ) ||
-           //     accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
-
-                // is the resource locked?
-                if( resource.isLocked() && (!resource.isLockedBy().equals(currentUser.getId()) ) ) {
-                    // resource locked by anopther user, no creation allowed
-                    return(false);
-                }
-
-                // read next resource
-                if(resource.getParent() != null) {
-                    // readFolder without checking access
-                    resource = m_vfsDriver.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
-                }
-            //} else {
-            //    // last check was negative
-            //    return(false);
-            //}
-        } while(resource.getParent() != null);
-
-        // all checks are done positive
-        return(true);
+     * Returns an instance of the vfs access guard performing permission checks for vfs operations.
+     * 
+	 * @param currentUser		the user who requested this method
+	 * @param currentProject	the current project of the user
+	 * @return					an initialized instance of CmsAccessGuard
+	 */
+	public CmsAccessGuard getVfsAccessGuard(CmsUser currentUser, CmsProject currentProject) {
+    	return new VfsAccessGuard(currentUser, currentProject, VfsAccessGuard.C_CHECK_DEFAULT);
     }
     
-    public CmsAccessGuard getVfsAccessGuard(CmsUser currentUser, CmsProject currentProject) {
-    	return new VfsAccessGuard(currentUser, currentProject, VfsAccessGuard.C_CHECK_DEFAULT);
+    /**
+     * Returns an instance of the user access guard performing permission checks for user operations.
+     * 
+	 * @param currentUser		the user who requested this method
+	 * @param currentProject	the current project of the user
+	 * @return					an initialized instance of CmsAccessGuard
+	 */
+	public CmsAccessGuard getUserAccessGuard(CmsUser currentUser, CmsProject currentProject) {
+    	return new UserAccessGuard(currentUser, currentProject, UserAccessGuard.C_CHECK_DEFAULT);
     }
     
     /**
@@ -1845,9 +1466,11 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
         ListIterator aceList = m_userDriver.getAccessControlEntries(currentProject, sourceFile.getResourceAceId(), false).listIterator();
         while (aceList.hasNext()) {
             CmsAccessControlEntry ace = (CmsAccessControlEntry) aceList.next();
-            createAccessControlEntry(currentUser, currentProject, newResource, ace.getPrincipal(), ace.getPermissions(), ace.getFlags());
+			m_userDriver.createAccessControlEntry(currentProject, newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
+			
         }
-
+        
+		clearAccessControlListCache();
         m_accessCache.clear();
         // inform about the file-system-change
         fileSystemChanged(sourceFile.isFolder());
@@ -1900,9 +1523,10 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
                 ListIterator aceList = getAccessControlEntries(currentUser, currentProject, folder,false).listIterator();
 				while (aceList.hasNext()) {
 					CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
-			createAccessControlEntry(currentUser, currentProject, newResource, ace.getPrincipal(), ace.getPermissions(), ace.getFlags());
+					m_userDriver.createAccessControlEntry(currentProject, newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
 				}
-					                            
+
+				clearAccessControlListCache();					                            
                 m_resourceListCache.clear();
                 m_accessCache.clear();
                 // inform about the file-system-change
@@ -2030,9 +1654,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
      * @param currentUser The user who owns this file.
      * @param currentGroup The group who owns this file.
      * @param currentProject The project in which the resource will be used.
-     * @param folder The complete m_path to the folder in which the new folder will
-     * be created.
-     * @param file The name of the new file (No pathinformation allowed).
+     * @param newFileName The name of the new file
      * @param contents The contents of the new file.
      * @param type The name of the resourcetype of the new file.
      * @param propertyinfos A Hashtable of propertyinfos, that should be set for this folder.
@@ -2050,7 +1672,16 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 
         // checks, if the filename is valid, if not it throws a exception
         validFilename(resourceName);
-
+        
+        // checks, if the type is valid, i.e. the user can create files of this type
+        // we can't utilize the access guard to do this, since it needs a resource to check
+        // TODO: preliminary version - improve later
+		I_CmsResourceType resType = getResourceType(currentUser, currentProject, type);
+		if(("XMLTemplate".equals(resType.getResourceTypeName())||"jsp".equals(resType.getResourceTypeName())) 
+			&& !isAdmin(currentUser, currentProject)) {
+				throw new CmsException("[" + this.getClass().getName() + "] " + resourceName, CmsException.C_NO_ACCESS);
+		}
+        
         CmsFolder cmsFolder = readFolder(currentUser, currentProject, folderName);
 
         // check if the user has write access to the destination folder
@@ -2610,14 +2241,15 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 deleteAllProperties(currentUser,currentProject,file.getResourceName());
                 m_vfsDriver.removeFile(currentProject.getId(), filename);
 				// remove the access control entries
-				removeAllAccessControlEntries(currentUser, currentProject, file);
+				m_userDriver.removeAllAccessControlEntries(currentProject,file.getResourceAceId());		
             } else {
                 m_vfsDriver.deleteFile(currentProject, filename);
 				// delete the access control entries
 				deleteAllAccessControlEntries(currentUser, currentProject, file);
             }
             // update the cache
-            this.clearResourceCache(filename, currentProject, currentUser);
+			clearAccessControlListCache();
+            clearResourceCache(filename, currentProject, currentUser);
             m_accessCache.clear();
 
             // inform about the file-system-change
@@ -2670,14 +2302,16 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 deleteAllProperties(currentUser,currentProject, cmsFolder.getResourceName());
                 m_vfsDriver.removeFolder(currentProject.getId(),cmsFolder);
 				// remove the access control entries
-				removeAllAccessControlEntries(currentUser, currentProject, cmsFolder);
+				m_userDriver.removeAllAccessControlEntries(currentProject,cmsFolder.getResourceAceId());		
+				
             } else {
                 m_vfsDriver.deleteFolder(currentProject,cmsFolder);
 				// delete the access control entries
 				deleteAllAccessControlEntries(currentUser, currentProject, cmsFolder);
             }
             // update cache
-            this.clearResourceCache(foldername, currentProject, currentUser);
+			clearAccessControlListCache();
+            clearResourceCache(foldername, currentProject, currentUser);
             m_accessCache.clear();
             // inform about the file-system-change
             fileSystemChanged(true);
@@ -2810,7 +2444,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                     // delete the file
                     m_vfsDriver.removeFile(id, currentFile.getResourceName());
                     // remove the access control entries
-                    removeAllAccessControlEntries(currentUser, currentProject, currentFile);
+					m_userDriver.removeAllAccessControlEntries(currentProject,currentFile.getResourceAceId());		                   
                 } else if (currentFile.getState() == C_STATE_CHANGED){
                     if(!currentFile.isLocked()){
                         // lock the resource
@@ -2860,11 +2494,12 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 CmsFolder delFolder = ((CmsFolder) deletedFolders.elementAt(i));
                 m_vfsDriver.removeFolder(id, delFolder);
                 // remove the access control entries
-                removeAllAccessControlEntries(currentUser, currentProject, delFolder);
+				m_userDriver.removeAllAccessControlEntries(currentProject,delFolder.getResourceAceId());		
             }
             // unlock all resources in the project
             m_projectDriver.unlockProject(deleteProject);
-            this.clearResourceCache();
+			clearAccessControlListCache();
+            clearResourceCache();
             // delete the project
             m_projectDriver.deleteProject(deleteProject);
             m_projectCache.remove(new Integer(id));
@@ -6434,12 +6069,15 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, CmsU
      * Looks up a specified property with optional direcory upward cascading.<p>
      * 
      * <b>Security:</b>
-     * Only a user is granted who has the right to read the resource.
+     * Only a user is granted who has the right to read or to view the resource.
+     * 
+     * Note: view instead of read permission is required intentionally, since the
+     * workplace needs properties when displaying file and folder lists.
      * 
      * @param currentUser the current user
      * @param currentProject the current project of the user
      * @param resource the resource to look up the property for
-     * @param siteroot the site root where to stop the cascading
+     * @param siteRoot the site root where to stop the cascading
      * @param property the name of the property to look up
      * @param search if <code>true</code>, the property will be looked up on all parent folders
      *   if it is not attached to the the resource, if false not (ie. normal 
@@ -6452,8 +6090,10 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, CmsU
         // read the resource
         CmsResource res = readFileHeader(currentUser, currentProject, resource);
 
-        // check the security
-		getVfsAccessGuard(currentUser, currentProject).check(res, C_READ_ACCESS);
+		// check the security
+		CmsAccessGuard accessGuard = getVfsAccessGuard(currentUser, currentProject);
+		if (!(accessGuard.check(res, C_VIEW_ACCESS, false) && accessGuard.check(res,C_READ_ACCESS, false)))
+			throw new CmsException("[" + this.getClass().getName() + "] " + resource, CmsException.C_NO_ACCESS);
         
         search = search && (siteRoot != null);
         // check if we have the result already cached
@@ -6512,12 +6152,15 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, CmsU
      * resource (or it's parent folders in case search is set to <code>true</code>).<p>
      * 
      * <b>Security:</b>
-     * Only a user is granted who has the right to read the resource.
+     * Only a user is granted who has the right to read or to view the resource.
+     * 
+     * Note: view instead of read permission is required intentionally, since the
+     * workplace needs properties when displaying file and folder lists.
      * 
      * @param currentUser the current user
      * @param currentProject the current project of the user
      * @param resource the resource to look up the property for
-     * @param siteroot the site root where to stop the cascading
+     * @param siteRoot the site root where to stop the cascading
      * @param property the name of the property to look up
      * @param search if <code>true</code>, the property will be looked up on all parent folders
      *   if it is not attached to the the resource, if <code>false</code> not (ie. normal 
@@ -6540,7 +6183,10 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, CmsU
      * Looks up all properties for a resource with optional direcory upward cascading.<p>
      * 
      * <b>Security:</b>
-     * Only a user is granted who has the right to read the resource.
+     * Only a user is granted who has the right to read or to view the resource.
+     * 
+     * Note: view instead of read permission is required intentionally, since the
+     * workplace needs properties when displaying file and folder lists.
      * 
      * @param currentUser the current user
      * @param currentProject the current project of the user
@@ -6557,7 +6203,10 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, CmsU
         CmsResource res = readFileHeader(currentUser, currentProject, resource);
 
         // check the security
-		getVfsAccessGuard(currentUser, currentProject).check(res, C_READ_ACCESS);
+		CmsAccessGuard accessGuard = getVfsAccessGuard(currentUser, currentProject);
+		if (!accessGuard.check(res, C_VIEW_ACCESS, false) || !accessGuard.check(res,C_READ_ACCESS, false))
+			throw new CmsException("[" + this.getClass().getName() + "] " + resource, CmsException.C_NO_ACCESS);
+		
         
         search = search && (siteRoot != null);
         // check if we have the result already cached
@@ -7508,14 +7157,15 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      * <B>Security:</B>
      * Access is granted, if:
      * <ul>
+     * <li>the user has write permission on the resource
      * <li>the user had locked the resource before</li>
      * </ul>
      *
-     * @param user The user who wants to lock the file.
-     * @param project The project in which the resource will be used.
-     * @param resourcename The complete m_path to the resource to lock.
+     * @param currentUser 		The user who wants to lock the file.
+     * @param currentProject 	The project in which the resource will be used.
+     * @param resourcename 		The complete m_path to the resource to lock.
      *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  	if operation was not succesful.
      */
     public void unlockResource(CmsUser currentUser,CmsProject currentProject,
                                String resourcename)
@@ -7530,54 +7180,49 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
               cmsResource = (CmsFile)readFileHeader(currentUser,currentProject,resourcename);
         }
 
-        // check, if the user may lock the resource
-        if( accessUnlock(currentUser, currentProject, cmsResource) ) {
-            // unlock the resource.
-            if (cmsResource.isLocked()){
-                // check if the resource is locked by the actual user
-                if (cmsResource.isLockedBy().equals(currentUser.getId())) {
+		// check if the user has write access to the resource
+		getVfsAccessGuard(currentUser, currentProject).check(cmsResource, C_WRITE_ACCESS, VfsAccessGuard.C_CHECK_IGNORE_LOCK, true);
 
-                // unlock the resource
-                cmsResource.setLocked(CmsUUID.getNullUUID());
+        // unlock the resource if it is locked by this user
+        if(cmsResource.isLockedBy().equals(currentUser.getId())) {
 
-                //update resource
-                m_vfsDriver.updateLockstate(cmsResource, cmsResource.getLockedInProject());
-
-                // update the cache
-                this.clearResourceCache(resourcename, currentProject, currentUser);
-            } else {
-                 throw new CmsException("[" + this.getClass().getName() + "] " +
-                    resourcename + CmsException.C_NO_ACCESS);
-            }
+	        // unlock the resource
+	        cmsResource.setLocked(CmsUUID.getNullUUID());
+	
+	        //update resource
+	        m_vfsDriver.updateLockstate(cmsResource, cmsResource.getLockedInProject());
+	
+	        // update the cache
+	        this.clearResourceCache(resourcename, currentProject, currentUser);
+        } else {
+        	// ignore attempts to unlock not locked resources
+			return;
         }
 
-            // if this resource is a folder -> lock all subresources, too
-            if(cmsResource.isFolder()) {
-                Vector files = getFilesInFolder(currentUser,currentProject, cmsResource.getResourceName());
-                Vector folders = getSubFolders(currentUser,currentProject, cmsResource.getResourceName());
-                CmsResource currentResource;
+        // if this resource is a folder -> lock all subresources, too
+        if(cmsResource.isFolder()) {
+            Vector files = getFilesInFolder(currentUser,currentProject, cmsResource.getResourceName());
+            Vector folders = getSubFolders(currentUser,currentProject, cmsResource.getResourceName());
+            CmsResource currentResource;
 
-                // lock all files in this folder
-                for(int i = 0; i < files.size(); i++ ) {
-                    currentResource = (CmsResource)files.elementAt(i);
-                    if (currentResource.getState() != C_STATE_DELETED) {
-                        unlockResource(currentUser, currentProject, currentResource.getResourceName());
-                    }
-                }
-
-                // lock all files in this folder
-                for(int i = 0; i < folders.size(); i++) {
-                    currentResource = (CmsResource)folders.elementAt(i);
-                    if (currentResource.getState() != C_STATE_DELETED) {
-                        unlockResource(currentUser, currentProject, currentResource.getResourceName());
-                    }
+            // unlock all files in this folder
+            for(int i = 0; i < files.size(); i++) {
+                currentResource = (CmsResource)files.elementAt(i);
+                if (currentResource.getState() != C_STATE_DELETED) {
+                    unlockResource(currentUser, currentProject, currentResource.getResourceName());
                 }
             }
-        } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + resourcename,
-                CmsException.C_NO_ACCESS);
+
+            // unlock all files in this folder
+            for(int i = 0; i < folders.size(); i++) {
+                currentResource = (CmsResource)folders.elementAt(i);
+                if (currentResource.getState() != C_STATE_DELETED) {
+                    unlockResource(currentUser, currentProject, currentResource.getResourceName());
+                }
+            }
         }
     }
+    
     /**
      * Checks if a user is member of a group.<P/>
      *
@@ -9075,6 +8720,12 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Creates a new access control entry for a given resource.
 	 * 
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the current user has control permission on the resource
+     * </ul>
+     * 
 	 * @param currentUser	 	the user requesting the action
 	 * @param currentProject 	the project in which the action is performed	
 	 * @param resource			the resource 
@@ -9085,6 +8736,8 @@ protected void validName(String name, boolean blank) throws CmsException {
 	 * @throws	CmsException	if something goes wrong 
 	 */
 	public CmsAccessControlEntry createAccessControlEntry(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsUUID principal, CmsPermissionSet permissions, int flags) throws CmsException {
+
+		getUserAccessGuard(currentUser, currentProject).check(resource, I_CmsConstants.C_CONTROL_ACCESS);
 		
         m_userDriver.createAccessControlEntry(currentProject, resource.getResourceAceId(), principal, permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
         clearAccessControlListCache();
@@ -9094,6 +8747,12 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Removes an access control entry for a given resource and principal
 	 * 
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the current user has control permission on the resource
+     * </ul>
+     * 
 	 * @param currentUser	 	the user requesting the action
 	 * @param currentProject 	the project in which the action is performed		 
 	 * @param resource			the resource
@@ -9101,48 +8760,52 @@ protected void validName(String name, boolean blank) throws CmsException {
 	 * @throws CmsException		if something goes wrong
 	 */
 	public void removeAccessControlEntry(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsUUID principal) throws CmsException {
-		
-        m_userDriver.removeAccessControlEntry(currentProject,resource.getResourceAceId(), principal);
-        clearAccessControlListCache();
-	}
-	
-	/**
-	 * Removes all access control entries for a given resource
-	 * 
-	 * @param currentUser	 	the user requesting the action
-	 * @param currentProject	the project in which the action is performed		  
-	 * @param resource			the resource
-	 * @throws CmsException		if something goes wrong
-	 */
-	public void removeAllAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
-		
-        m_userDriver.removeAllAccessControlEntries(currentProject,resource.getResourceAceId());		
-        clearAccessControlListCache();
+
+		getUserAccessGuard(currentUser, currentProject).check(resource, I_CmsConstants.C_CONTROL_ACCESS);
+			
+		m_userDriver.removeAccessControlEntry(currentProject,resource.getResourceAceId(), principal);
+		clearAccessControlListCache();
 	}
 	
 	/**
 	 * Marks all access control entries belonging to a resource as deleted
 	 * 
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the current user has write permission on the resource
+     * </ul>
+     * 
 	 * @param currentUser	 	the user requesting the action
 	 * @param currentProject 	the project in which the action is performed	
 	 * @param resource			the resource
 	 * @throws CmsException		if something goes wrong
 	 */
 	public void deleteAllAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
-		
+
+		getVfsAccessGuard(currentUser, currentProject).check(resource, I_CmsConstants.C_WRITE_ACCESS);
+				
         m_userDriver.deleteAllAccessControlEntries(currentProject,resource.getResourceAceId());
         clearAccessControlListCache();
 	}
 	
 	/**
 	 * Removes the deleted mark for all access control entries of a given resource
-	 *
+	 * 
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the current user has write permission on the resource
+     * </ul>
+     * 
 	 * @param currentUser	 	the user requesting the action
 	 * @param currentProject 	the project in which the action is performed	
 	 * @param resource			the resource
 	 * @throws CmsException		if something goes wrong
 	 */
 	public void undeleteAllAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
+
+		getVfsAccessGuard(currentUser, currentProject).check(resource, I_CmsConstants.C_WRITE_ACCESS);
 		
         m_userDriver.undeleteAllAccessControlEntries(currentProject,resource.getResourceAceId());		
         clearAccessControlListCache();
@@ -9151,6 +8814,12 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Writes an access control entry to the cms.
 	 * 
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the current user has control permission on the resource
+     * </ul>
+     * 
 	 * @param currentUser	 	the user requesting the action
 	 * @param currentProject 	the project in which the action is performed
 	 * @param resource			the resource	 
@@ -9158,6 +8827,8 @@ protected void validName(String name, boolean blank) throws CmsException {
 	 * @throws CmsException		if something goes wrong
 	 */
 	public void writeAccessControlEntry(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsAccessControlEntry acEntry) throws CmsException {
+
+		getUserAccessGuard(currentUser, currentProject).check(resource, I_CmsConstants.C_CONTROL_ACCESS);
 
 		m_userDriver.writeAccessControlEntry(currentProject,acEntry);
 		clearAccessControlListCache();
@@ -9167,6 +8838,12 @@ protected void validName(String name, boolean blank) throws CmsException {
 	 * Writes a vector of access control entries as new access control entries of a given resource.
 	 * Already existing access control entries of this resource are removed before.
 	 * 
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the current user has control permission on the resource
+     * </ul>
+     * 
 	 * @param currentUser		the user requesting the action
 	 * @param currentProject	the project in which the action is performed
 	 * @param resource			the resource
@@ -9174,15 +8851,24 @@ protected void validName(String name, boolean blank) throws CmsException {
 	 * @throws CmsException		if something goes wrong
 	 */
 	public void writeAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource, Vector acEntries) throws CmsException {
-		removeAllAccessControlEntries(currentUser, currentProject, resource);
+
+		getUserAccessGuard(currentUser, currentProject).check(resource, I_CmsConstants.C_CONTROL_ACCESS);
+
+		m_userDriver.removeAllAccessControlEntries(currentProject,resource.getResourceAceId());		
+				
 		Iterator i = acEntries.iterator();
 		while (i.hasNext()) {
 			m_userDriver.writeAccessControlEntry(currentProject, (CmsAccessControlEntry)i.next());		
 		}
+
+		clearAccessControlListCache();
 	}	
 	
 	/**
 	 * Reads an access control entry from the cms.
+	 * 
+	 * <B>Security:</B>
+     * The access control entries of a resource are readable by everyone.
 	 * 
 	 * @param currentUser	 	the user requesting the action
 	 * @param currentProject 	the project in which the action is performed	
@@ -9199,6 +8885,9 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Reads all relevant access control entries for a given resource.
 	 * 
+	 * <B>Security:</B>
+     * The access control entries of a resource are readable by everyone.
+     * 
 	 * @param currentUser	 	the user requesting the action
 	 * @param currentProject 	the project in which the action is performed	
 	 * @param resource			the resource
@@ -9229,6 +8918,12 @@ protected void validName(String name, boolean blank) throws CmsException {
 	 * Copies the access control entries of a given resource to another resorce.
 	 * Already existing access control entries of this resource are removed.
 	 * 
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the current user has control permission on the destination resource
+     * </ul>
+     * 
 	 * @param currentUser		the user requesting the action
 	 * @param currentProject	the project in which the action is performed
 	 * @param source			the resource which access control entries are copied
@@ -9236,8 +8931,14 @@ protected void validName(String name, boolean blank) throws CmsException {
 	 * @throws CmsException		if something goes wrong
 	 */
 	public void copyAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource source, CmsResource dest) throws CmsException {
+
+		getUserAccessGuard(currentUser, currentProject).check(dest, I_CmsConstants.C_CONTROL_ACCESS);
+		
 		ListIterator acEntries = m_userDriver.getAccessControlEntries(currentProject, source.getResourceAceId(), false).listIterator();
-		removeAllAccessControlEntries(currentUser, currentProject, dest);
+
+		m_userDriver.removeAllAccessControlEntries(currentProject,dest.getResourceAceId());		
+		clearAccessControlListCache();
+		
 		while (acEntries.hasNext()) {
 			writeAccessControlEntry(currentUser, currentProject, dest, (CmsAccessControlEntry)acEntries.next());
 		}
@@ -9252,6 +8953,9 @@ protected void validName(String name, boolean blank) throws CmsException {
 	 * Returns the access control list of a given resource.
 	 * Note: the current project must be the project the resource belongs to !
 	 * 
+	 * <B>Security:</B>
+     * The access control list of a resource is readable by everyone.
+     * 
 	 * @param currentUser	 	the user requesting the action
 	 * @param currentProject 	the project in which the action is performed	
 	 * @param resource			the resource 
@@ -9297,6 +9001,9 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Returns the current permissions of an user on the given resource
 	 * 
+     * <B>Security:</B>
+     * Permissions are readable by everyone.
+     * 
 	 * @param currentUser	 	the user requesting the action
 	 * @param currentProject 	the project in which the action is performed	
 	 * @param resource			the resource

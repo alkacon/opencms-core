@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2003/06/13 16:15:55 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.opencms.security.I_CmsPrincipal;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.76 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.77 $ $Date: 2003/06/13 16:15:55 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -113,34 +113,6 @@ class CmsShellCommands implements I_CmsConstants {
     }
 
     /**
-     * Checks, if the user may create this resource.
-     *
-     * @param resource the resource to check.
-     */
-    public void accessCreate(String resource) {
-        try {
-            System.out.println(m_cms.accessCreate(resource));
-        }
-        catch(Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Checks, if the user may lock this resource.
-     *
-     * @param resource the resource to check.
-     */
-    public void accessLock(String resource) {
-        try {
-            System.out.println(m_cms.accessLock(resource));
-        }
-        catch(Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
      * Tests if the user can access the project.
      *
      * @param id the id of the project.
@@ -149,20 +121,6 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             int projectId = Integer.parseInt(id);
             System.out.println(m_cms.accessProject(projectId));
-        }
-        catch(Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Checks, if the user may read this resource.
-     *
-     * @param resource The resource to check.
-     */
-    public void accessRead(String resource) {
-        try {
-            System.out.println(m_cms.accessRead(resource));
         }
         catch(Exception exc) {
             CmsShell.printException(exc);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2003/06/13 10:03:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/13 16:17:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import java.util.StringTokenizer;
 /**
  * A permission set contains both allowed and denied permissions as bitsets.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2003/06/13 10:03:10 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/13 16:17:55 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
@@ -52,9 +52,6 @@ public class CmsPermissionSet {
 	 */
 	int m_denied;
 	
-	int m_flags;
-	
-	
 	/**
 	 * Constructor to create an empty permission set.
 	 */
@@ -62,7 +59,6 @@ public class CmsPermissionSet {
 		
 		m_allowed = 0;
 		m_denied = 0;
-		m_flags = 0;
 	}
 	
 	/**
@@ -74,7 +70,6 @@ public class CmsPermissionSet {
 		
 		m_allowed = allowedPermissions;
 		m_denied = 0;
-		m_flags = 0;
 	}
 	
 	/**
@@ -87,7 +82,6 @@ public class CmsPermissionSet {
 		
 		m_allowed = allowedPermissions;
 		m_denied = deniedPermissions;
-		m_flags = 0;
 	}
 	
 	/**
@@ -101,7 +95,6 @@ public class CmsPermissionSet {
 		StringTokenizer tok = new StringTokenizer(permissionString, "+-", true);
 		m_allowed = 0;
 		m_denied = 0;
-		m_flags = 0;
 		
 		while(tok.hasMoreElements()) {
 			String prefix = tok.nextToken();
@@ -118,6 +111,10 @@ public class CmsPermissionSet {
 				case 'V': case 'v':
 					if (prefix.charAt(0) == '+') m_allowed |= I_CmsConstants.C_PERMISSION_VIEW;
 					if (prefix.charAt(0) == '-') m_denied |= I_CmsConstants.C_PERMISSION_VIEW;
+					break;
+				case 'C': case 'c':
+					if (prefix.charAt(0) == '+') m_allowed |= I_CmsConstants.C_PERMISSION_CONTROL;
+					if (prefix.charAt(0) == '-') m_denied |= I_CmsConstants.C_PERMISSION_CONTROL;
 					break;
 				default:
 					// ignore
@@ -228,21 +225,24 @@ public class CmsPermissionSet {
 	/**
 	 * Returns the string representation of the current permissions in this permission set.
 	 * 
-	 * @return string of the format {{+|-}{r|w|v}}*
+	 * @return string of the format {{+|-}{r|w|v|c}}*
 	 */
 	public String getPermissionString() {
 		
 		StringBuffer p = new StringBuffer("");
 		
-		if ((m_denied & I_CmsConstants.C_PERMISSION_READ)>0)		p.append("-r");
-		else if ((m_allowed & I_CmsConstants.C_PERMISSION_READ)>0)	p.append("+r");
+		if ((m_denied & I_CmsConstants.C_PERMISSION_READ)>0)			p.append("-r");
+		else if ((m_allowed & I_CmsConstants.C_PERMISSION_READ)>0)		p.append("+r");
 			
-		if ((m_denied & I_CmsConstants.C_PERMISSION_WRITE)>0) 		p.append("-w");
-		else if ((m_allowed & I_CmsConstants.C_PERMISSION_WRITE)>0)	p.append("+w");
+		if ((m_denied & I_CmsConstants.C_PERMISSION_WRITE)>0) 			p.append("-w");
+		else if ((m_allowed & I_CmsConstants.C_PERMISSION_WRITE)>0)		p.append("+w");
 			
-		if ((m_denied & I_CmsConstants.C_PERMISSION_VIEW)>0) 		p.append("-v");
-		else if ((m_allowed & I_CmsConstants.C_PERMISSION_VIEW)>0)	p.append("+v");
-			
+		if ((m_denied & I_CmsConstants.C_PERMISSION_VIEW)>0) 			p.append("-v");
+		else if ((m_allowed & I_CmsConstants.C_PERMISSION_VIEW)>0)		p.append("+v");
+
+		if ((m_denied & I_CmsConstants.C_PERMISSION_CONTROL)>0) 		p.append("-c");
+		else if ((m_allowed & I_CmsConstants.C_PERMISSION_CONTROL)>0)	p.append("+c");
+					
 		return p.toString();			
 	}
 	
