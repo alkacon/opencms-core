@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<LANGUAGE>
+		<name>Englisch</name>
+		<com_opencms_modules_homepage_news_NewsChannelBackoffice>			
+			<label>
+				<id>Id</id>
+				<name>Name</name>
+				<description>Description</description>
+				<author>Author</author>
+				<date>Date</date>
+				<changed>last changed</changed> 
+				<headline>Headline</headline>
+				<text>Content</text>
+				<title>Title</title>
+				<type>Type</type>
+				<owner>Owner</owner>
+				<size>Size</size>
+				<filter>Filter</filter> 
+				<filterparameter>Filterparameter</filterparameter>
+			</label>						
+			<icon>
+				<news>NewsChannel</news>
+			</icon>			
+			<select>
+				<news>News Administration</news>
+			</select>			
+			<dialog>
+					<lock>
+						<title>Change lockstate</title>
+						<dialog>You are changing the lockstate for this entry!</dialog>
+						<error>Error occured at:</error>
+						<lockuser>Steal lock from other user?</lockuser>
+						<lock>Unlock the entry?</lock>
+						<nolock>Lock the entry?</nolock>
+					</lock>
+					<delete>
+						<title>Delete entry</title>
+						<dialog>You are going to delete this entry!</dialog>
+						<error>Error occured at:</error>
+					</delete>
+					<edit>
+						<missing>Please insert name and description!</missing>
+						<title>Create/Edit entry</title>
+					</edit>								
+			</dialog>			
+			<error>
+				<message>Entry could not be deleted!</message>
+			</error>			
+		</com_opencms_modules_homepage_news_NewsChannelBackoffice>	
+		<com_opencms_modules_homepage_news_NewsBackoffice>
+			<label>
+				<id>Id</id>
+				<name>Name</name>
+				<description>Description</description>
+				<author>Author</author>
+				<date>Date</date>
+				<changed>last changed</changed> 
+				<headline>Headline</headline>
+				<text>Content</text>
+				<title>Title</title>
+				<type>Type</type>
+				<owner>Owner</owner>
+				<size>Size</size>
+				<filter>Filter</filter> 
+				<filterparameter>Filterparameter</filterparameter>
+				<link>Link</link>
+				<linkText>Linktext</linkText>
+				<channel>Channel</channel>
+				<a_info1>Additional Information 1</a_info1>
+				<a_info2>Additional Information 2</a_info2>
+				<a_info3>Additional Information 3</a_info3>
+			</label>						
+			<icon>
+				<news>News</news>
+			</icon>			
+			<select>
+				<news>News Administration</news>
+			</select>			
+			<dialog>
+					<lock>
+						<title>Change lockstate</title>
+						<dialog>You are changing the lockstate for this entry!</dialog>
+						<error>Error occured at:</error>
+						<lockuser>Steal lock from other user?</lockuser>
+						<lock>Unlock the entry?</lock>
+						<nolock>Lock the entry?</nolock>
+					</lock>
+					<delete>
+						<title>Delete entry</title>
+						<dialog>You are going to delete this entry!</dialog>
+						<error>Error occured at:</error>
+					</delete>
+					<edit>
+						<title>Create/Edit entry</title>
+						<error>An Error occured!</error>
+						<missing>Please insert the headline!</missing>
+						<dateError>Please insert a correct date!</dateError>
+						<channelError>A Channel has to be defined!</channelError>
+					</edit>					
+			</dialog>			
+			<error>
+					<message>Entry could not be deleted!</message>
+			</error>			
+		</com_opencms_modules_homepage_news_NewsBackoffice>	
+</LANGUAGE>

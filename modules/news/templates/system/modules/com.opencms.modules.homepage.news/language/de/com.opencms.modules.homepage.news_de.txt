@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<LANGUAGE>
+		<name>Deutsch</name>
+		<com_opencms_modules_homepage_news_NewsChannelBackoffice>			
+			<label>
+				<id>Id</id>
+				<name>Name</name>
+				<description>Beschreibung</description>
+				<author>Autor</author>
+				<date>Datum</date>
+				<changed>Geändert am</changed> 
+				<headline>Schlagzeile</headline>
+				<text>Inhalt</text>
+				<title>Titel</title>
+				<type>Typ</type>
+				<owner>Besitzer</owner>
+				<size>Größe</size>
+				<filter>Filter</filter> 
+				<filterparameter>Filterparameter</filterparameter>
+			</label>						
+			<icon>
+				<news>NewsChannel</news>
+			</icon>			
+			<select>
+				<news>Newsverwaltung</news>
+			</select>			
+			<dialog>
+					<lock>
+						<title>Sperrung ändern</title>
+						<dialog>Sie sind im Begriff, eine Sperrungsänderung vorzunehmen!</dialog>
+						<error>Falsche Eingabe für:</error>
+						<lockuser>Sperrung übernehmen?</lockuser>
+						<lock>Eintrag freigeben?</lock>
+						<nolock>Eintrag sperren?</nolock>
+					</lock>
+					<delete>
+						<title>Eintrag löschen</title>
+						<dialog>Diesen Eintrag wirklich löschen?</dialog>
+						<error>Falsche Eingabe für:</error>
+					</delete>
+					<edit>
+						<missing>Bitte geben Sie Namen und Beschreibung an!</missing>
+						<title>Eintrag anlegen/editieren</title>
+					</edit>					
+			</dialog>			
+			<error>
+				<message>Eintrag konnte nicht gelöscht werden!</message>
+			</error>			
+		</com_opencms_modules_homepage_news_NewsChannelBackoffice>	
+		<com_opencms_modules_homepage_news_NewsBackoffice>
+			<label>
+				<id>Id</id>
+				<name>Name</name>
+				<description>Beschreibung</description>
+				<author>Autor</author>
+				<date>Datum</date>
+				<changed>Geändert am</changed> 
+				<headline>Schlagzeile</headline>
+				<text>Inhalt</text>
+				<title>Titel</title>
+				<type>Typ</type>
+				<owner>Besitzer</owner>
+				<size>Größe</size>
+				<filter>Filter</filter> 
+				<filterparameter>Filterparameter</filterparameter>
+				<link>Link</link>
+				<linkText>Linktext</linkText>
+				<channel>Channel</channel>
+				<a_info1>Zusatzinformation 1</a_info1>
+				<a_info2>Zusatzinformation 2</a_info2>
+				<a_info3>Zusatzinformation 3</a_info3>
+			</label>						
+			<icon>
+				<news>News</news>
+			</icon>			
+			<select>
+				<news>Newsverwaltung</news>
+			</select>			
+			<dialog>
+					<lock>
+						<title>Sperrung ändern</title>
+						<dialog>Sie sind im Begriff, eine Sperrungsänderung vorzunehmen!</dialog>
+						<error>Falsche Eingabe für:</error>
+						<lockuser>Sperrung übernehmen?</lockuser>
+						<lock>Eintrag freigeben?</lock>
+						<nolock>Eintrag sperren?</nolock>
+					</lock>
+					<delete>
+						<title>Eintrag löschen</title>
+						<dialog>Diesen Eintrag wirklich löschen?</dialog>
+						<error>Falsche Eingabe für:</error>
+					</delete>
+					<edit>
+						<title>Eintrag anlegen/editieren</title>
+						<error>Es ist ein Fehler aufgetreten!</error>
+						<missing>Bitte geben Sie die Schlagzeile an!</missing>
+						<dateError>Bitte geben Sie ein gültiges Datum an!</dateError>
+						<channelError>Es muss ein Channel angegeben werden!</channelError>
+					</edit>					
+			</dialog>			
+			<error>
+				<message>Eintrag konnte nicht gelöscht werden!</message>
+			</error>			
+		</com_opencms_modules_homepage_news_NewsBackoffice>	
+</LANGUAGE>
