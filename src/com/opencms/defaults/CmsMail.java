@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2003/01/20 23:59:22 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/02/08 15:32:14 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.*;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.12 $ $Date: 2003/01/20 23:59:22 $
+ * @version $Name:  $ $Revision: 1.13 $ $Date: 2003/02/08 15:32:14 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -91,7 +91,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
     private String m_defaultSender = null;
     private Vector attachContent = new Vector();
     private Vector attachType = new Vector();
-
+ 
     /**
      * The constuctors without CmsObject
      */
@@ -432,6 +432,9 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
      */
     private Message buildMessage(String smtpHost) throws Exception {
 
+        // Default encoding for new mail message
+        String mail_encoding = "ISO-8859-1";
+        
         // First check the smtpHost parameter
         if(smtpHost == null || "".equals(smtpHost)) {
             throw new CmsException("No SMTP server given.");
@@ -470,7 +473,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         }
 
         // Set subject
-        msg.setSubject(c_SUBJECT, "ISO-8859-1");
+        msg.setSubject(c_SUBJECT, mail_encoding);
 
         // Set content and attachments
         Vector v = new Vector();
@@ -488,10 +491,10 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
             MimeBodyPart mbp1 = new MimeBodyPart();
             Multipart mp = new MimeMultipart();
             if(c_TYPE.equals("text/html")) {
-                mbp1.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CONTENT, c_TYPE)));
+                mbp1.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CONTENT, c_TYPE, mail_encoding)));
             }
             else {
-                mbp1.setText(c_CONTENT, "ISO-8859-1");
+                mbp1.setText(c_CONTENT, mail_encoding);
             }
             mp.addBodyPart(mbp1);
 
@@ -502,10 +505,10 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
                 // attach the file to the message
                 MimeBodyPart mbpAttach = new MimeBodyPart();
                 if("text/html".equals((String)attachType.elementAt(i))) {
-                    mbpAttach.setDataHandler(new DataHandler(new CmsByteArrayDataSource((String)attachContent.elementAt(i), "text/html")));
+                    mbpAttach.setDataHandler(new DataHandler(new CmsByteArrayDataSource((String)attachContent.elementAt(i), "text/html", mail_encoding)));
                 }
                 else {
-                    mbpAttach.setText((String)attachContent.elementAt(i), "ISO-8859-1");
+                    mbpAttach.setText((String)attachContent.elementAt(i), mail_encoding);
                 }
                 mp.addBodyPart(mbpAttach);
             }
@@ -524,7 +527,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         }
         else {
             if(c_TYPE.equals("text/html")) {
-                msg.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CONTENT, c_TYPE)));
+                msg.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CONTENT, c_TYPE, mail_encoding)));
             }
             else {
                 msg.setContent(c_CONTENT, c_TYPE);

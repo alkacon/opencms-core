@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/02/08 15:32:14 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -467,7 +467,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                         valueParam = m_tools.scanNodeAttrs(node,m_tagObject.getParameter());
                         // HACK: only replace attribute value of parameter attribute!
                         if (m_tagObject.getReplaceParamAttr()) {
-                            if (!m_tools.shouldReplaceUrl(m_url,valueParam)) {
+                            if (!m_tools.shouldReplaceUrl(m_url, valueParam, m_servletPrefix)) {
                                 tempReplaceString = "$parameter$";
                             }
                             else {

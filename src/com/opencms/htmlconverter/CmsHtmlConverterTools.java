@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2003/01/24 20:37:58 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/02/08 15:32:14 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -196,7 +196,7 @@ final class CmsHtmlConverterTools {
         return parameter;
     }
 
-    protected boolean shouldReplaceUrl(URL orgUrl, String valueParam) {
+    protected boolean shouldReplaceUrl(URL orgUrl, String valueParam, String servletUri) {
 
         // HACK: if this link has already a link tag in it don't replace it
         // this is only for a special project and should be removed sometime...
@@ -257,8 +257,13 @@ final class CmsHtmlConverterTools {
         } catch (MalformedURLException e) {
             return true;
         }
+
+        System.err.println("orgUrl: " + orgUrl + " paramUrl: " + paramUrl + " file: " + paramUrl.getFile() + " prefix: " + servletUri);
+
         if (orgUrl.getProtocol().equalsIgnoreCase(protocol)
-            && orgUrl.getHost().equalsIgnoreCase(paramUrl.getHost())) {
+            && orgUrl.getHost().equalsIgnoreCase(paramUrl.getHost())
+            && paramUrl.getFile().startsWith(servletUri) 
+            ) {
             if (paramUrl.getFile() == null || "".equals(paramUrl.getFile())) {
                 return false;
             } else {
