@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
- * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/05 08:46:19 $
- * Version: $Revision: 1.3 $
+ * Author : $Author: a.schouten $
+ * Date   : $Date: 2001/11/05 08:47:35 $
+ * Version: $Revision: 1.4 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -288,7 +288,7 @@ public class CmsDbAccess {
                 dataset.m_lockedInProject = res.getInt(1);
                 dataset.m_lockedBy = res.getInt(2);
             } else {
-                throw new CmsException("Row not found: " + dataset.m_masterId + " " + subId, CmsException.C_NOT_FOUND);
+                // no values found - this is a new row
             }
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
