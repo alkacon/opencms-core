@@ -26,6 +26,10 @@ function aW(message) {
 	parent.appendWarning(message);
 }
 
+function aE(message) {
+	parent.appendError(message);
+}
+
 function aN(message) {
 	parent.appendNote(message);
 }
@@ -146,6 +150,7 @@ var FORMAT_NOTE = 3;
 var FORMAT_OK = 4;
 var FORMAT_NEWLINE = 5;
 var FORMAT_THROWABLE = 6;
+var FORMAT_ERROR = 7;
 
 // saves the type of this report, which is either {simple|extended}
 var reportType = "<%= wp.getParamReportType() %>";
@@ -166,6 +171,13 @@ function appendHead(message) {
 
 function appendWarning(message) {
 	reportOutputFormats.push(FORMAT_WARNING);
+	reportOutputMessages.push(message);
+	hasError = true;
+	lastError = message;
+}
+
+function appendError(message) {
+	reportOutputFormats.push(FORMAT_ERROR);
 	reportOutputMessages.push(message);
 	hasError = true;
 	lastError = message;
@@ -215,7 +227,8 @@ var cssStyle =
     "span.head  { color: #000099; font-weight: bold; }\n" +
     "span.note  { color: #666666; }\n" +
     "span.ok    { color: #009900; }\n" +
-    "span.warn  { color: #990000; padding-left: 40px; }\n" +    
+    "span.warn  { color: #990000; padding-left: 40px; }\n" + 
+    "span.err   { color: #990000; font-weight: bold; padding-left: 40px; }\n" +   
     "span.throw { color: #990000; font-weight: bold; }\n" +
     "span.link1 { color: #666666; }\n" +
     "span.link2 { color: #666666; padding-left: 40px; }\n" +    
@@ -353,6 +366,11 @@ function getContentExtended() {
 		switch (reportOutputFormats[i]) {
 			case FORMAT_WARNING :
 				htmlStr += "<span class='warn'>";
+				htmlStr += reportOutputMessages[i];
+				htmlStr += "</span>";
+				break;
+			case FORMAT_ERROR :
+				htmlStr += "<span class='err'>";
 				htmlStr += reportOutputMessages[i];
 				htmlStr += "</span>";
 				break;
