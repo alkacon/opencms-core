@@ -14,13 +14,16 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/02/13 12:36:16 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/14 10:18:39 $
  */
 public class CmsNewResource extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
     
-    private Vector m_names = null;
-    private Vector m_values = null;
+     /** Vector containing all names of the radiobuttons */
+     private Vector m_names = null;
+     
+     /** Vector containing all links attached to the radiobuttons */
+     private Vector m_values = null;
  
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
@@ -30,7 +33,7 @@ public class CmsNewResource extends CmsWorkplaceDefault implements I_CmsWpConsta
      * @param elementName not used
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
-     * @return Bytearre containgine the processed data of the template.
+     * @return Bytearray containing the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
@@ -41,28 +44,7 @@ public class CmsNewResource extends CmsWorkplaceDefault implements I_CmsWpConsta
         
         // the template to be displayed
         String template=null;
-  /*      
-        String lock=(String)parameters.get(C_PARA_LOCK);
-        String filename=(String)parameters.get(C_PARA_FILE);
-        if (filename != null) {
-            session.putValue(C_PARA_FILE,filename);        
-        }
-        //check if the lock parameter was included in the request
-        // if not, the lock page is shown for the first time
-        filename=(String)session.getValue(C_PARA_FILE);
-        if (lock != null) {
-            if (lock.equals("true")) {
-                   cms.lockResource(filename);
-            }
-             // TODO: ErrorHandling
-             // return to filelist
-            try {
-                cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
-            } catch (Exception e) {
-                  throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
-            }
-        }
-*/
+
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
        
         // process the selected template 

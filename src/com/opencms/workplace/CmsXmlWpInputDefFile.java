@@ -10,10 +10,10 @@ import org.xml.sax.*;
 import java.util.*;
 
 /**
- *  Content definition for the workplace input element definition file.
+ * Content definition for the workplace input element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/02/07 10:46:45 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/14 10:18:40 $
  */
 public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
                                                                      I_CmsWpConstants {
@@ -72,16 +72,19 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogCha
      * @param size The size of this input field
      * @param length The input length of this input field.
      * @param value The value of this input field.
+     * @param action The action of this input field.
      * @return Processed input field.
      * @exception CmsException
      */
-    public String getInput(String styleClass, String name, String size, String length, String value)
+    public String getInput(String styleClass, String name, String size, String length, 
+                           String value, String action)
         throws CmsException {
         setData(C_INPUT_CLASS, styleClass);
         setData(C_INPUT_NAME, name);
         setData(C_INPUT_SIZE, size);
         setData(C_INPUT_LENGTH, length);
         setData(C_INPUT_VALUE, value);
+        setData(C_INPUT_ACTION, action);
         return getProcessedDataValue(C_TAG_INPUTFIELD);                
      }  
 

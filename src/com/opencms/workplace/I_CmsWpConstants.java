@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2000/02/13 12:36:16 $
+ * @version $Revision: 1.33 $ $Date: 2000/02/14 10:18:40 $
  */
 public interface I_CmsWpConstants {
 
@@ -218,6 +218,8 @@ public interface I_CmsWpConstants {
     /** Method of the radio buttons */
     public static final String C_RADIO_METHOD = "method";
 
+    
+    
     // Parameters for input fields
     
     /** Name of the input field */
@@ -237,6 +239,9 @@ public interface I_CmsWpConstants {
     
     /**  Method of the input field  */
     public static final String C_INPUT_METHOD = "method";    
+    
+    /**  Action of the input field  */
+    public static final String C_INPUT_ACTION = "action";    
     
     /**  Method of the projectlist field  */
     public static final String C_PROJECTLIST_METHOD = "method";    

@@ -170,6 +170,65 @@
 </contextmenue>
 <!-- context menues for XMLTemplates end -->
 
+<!-- context menues for script files start -->
+<contextmenue name="script">
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.edit"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="#"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.type"/>
+	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.property" href="#"/>	
+</contextmenue>
+
+<contextmenue name="scriptlock">
+	<contextentry name="explorer.context.overridelock" href="#"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.edit"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="#"/>
+	<contextdisabled name="explorer.context.rename"/>
+	<contextdisabled name="explorer.context.move"/>
+	<contextdisabled name="explorer.context.delete"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.chown"/>
+	<contextdisabled name="explorer.context.chgrp"/>
+	<contextdisabled name="explorer.context.access"/>
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.type"/>
+	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.property" href="#"/>	
+</contextmenue>
+
+<contextmenue name="scriptlockuser">
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.edit" href="javascript:doAction(DO_EDIT)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
+	<contextentry name="explorer.context.move" href="#"/>
+	<contextentry name="explorer.context.delete" href="#"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.chown" href="#"/>
+	<contextentry name="explorer.context.chgrp" href="#"/>
+	<contextentry name="explorer.context.access" href="#"/>
+	<contextspacer/>	
+	<contextentry name="explorer.context.type" href="#"/>
+	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.property" href="#"/>	
+</contextmenue>
+<!-- context menues for script files end -->
+
 <!-- context menues for pages start -->
 <contextmenue name="page">
 	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>

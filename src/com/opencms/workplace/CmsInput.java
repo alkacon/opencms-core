@@ -15,7 +15,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;INPUT&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/02/03 11:04:13 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/14 10:18:39 $
  */
 public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -45,6 +45,7 @@ public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
         String length=n.getAttribute(C_INPUT_LENGTH);
         String value=n.getAttribute(C_INPUT_VALUE);
         String method=n.getAttribute(C_INPUT_METHOD);
+        String action=n.getAttribute(C_INPUT_ACTION);
 		
 		if( (method != null) && (method.length() != 0) ) {
 			// call the method for generating value
@@ -78,7 +79,7 @@ public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
 		}
         
         CmsXmlWpInputDefFile inputdef = getInputDefinitions(cms); 
-        String result = inputdef.getInput(styleClass,name,size,length,value);
+        String result = inputdef.getInput(styleClass,name,size,length,value,action);
 
         return result; 
     }                    
