@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/10/09 13:12:46 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/10/11 12:10:11 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.util.SqlHelper;
  * @author Michael Emmerich
  * @author Anders Fugmann
  * @author Jan Krag
- * @version $Revision: 1.25 $ $Date: 2000/10/09 13:12:46 $
+ * @version $Revision: 1.26 $ $Date: 2000/10/11 12:10:11 $
  */
 public class CmsProject implements I_CmsConstants, Cloneable{
 	
@@ -117,6 +117,55 @@ public class CmsProject implements I_CmsConstants, Cloneable{
 	 
 	
 
+	public CmsProject(int projectId, String name, String description, int taskId, 
+					  int ownerId, int group, int managerGroup, int flags, 
+					  Timestamp createdate, Timestamp publishingdate, int publishedBy, 
+					  int type, int parentId) {
+		
+		m_id = projectId;
+		m_name = name;
+		m_description = description;
+		m_taskId = taskId;
+		m_ownerId = ownerId;
+		m_groupId = group;
+		m_groupId=group;
+		m_managergroupId = managerGroup;
+		m_managerGroupId=managerGroup;
+		m_flags = flags;
+		m_publishedBy = publishedBy;
+		m_type = type;
+		this.parentId = parentId;
+		if( createdate != null) {
+			m_createdate = createdate.getTime();
+		} else {
+			m_createdate = C_UNKNOWN_LONG;
+		}
+		if( publishingdate != null) {
+			m_publishingdate = publishingdate.getTime();
+		} else {
+			m_publishingdate = C_UNKNOWN_LONG;
+		}
+	}
+/**
+ * Construct a new CmsProject, from a ResultSet.
+ * Creation date: (10/02/00)
+ * @param rs java.sql.ResultSet
+ */
+public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) throws SQLException {
+				 this(res.getInt(m_cq.C_PROJECTS_PROJECT_ID),
+							res.getString(m_cq.C_PROJECTS_PROJECT_NAME),
+							res.getString(m_cq.C_PROJECTS_PROJECT_DESCRIPTION),
+							res.getInt(m_cq.C_PROJECTS_TASK_ID),
+							res.getInt(m_cq.C_PROJECTS_USER_ID),
+							res.getInt(m_cq.C_PROJECTS_GROUP_ID),
+							res.getInt(m_cq.C_PROJECTS_MANAGERGROUP_ID),
+							res.getInt(m_cq.C_PROJECTS_PROJECT_FLAGS),
+							SqlHelper.getTimestamp(res,m_cq.C_PROJECTS_PROJECT_CREATEDATE),
+							SqlHelper.getTimestamp(res,m_cq.C_PROJECTS_PROJECT_PUBLISHDATE),
+							res.getInt(m_cq.C_PROJECTS_PROJECT_PUBLISHED_BY),
+							res.getInt(m_cq.C_PROJECTS_PROJECT_TYPE),
+							res.getInt(m_cq.C_PROJECTS_PARENT_ID) );
+}
 	/** 
 	* Clones the CmsProject by creating a new CmsProject Object.
 	* @return Cloned CmsProject.
@@ -217,6 +266,29 @@ public class CmsProject implements I_CmsConstants, Cloneable{
 		return(m_ownerId);
 	}
 /**
+ * Returns the parent of a project, skipping projects belonging to deleted sites.
+ * Creation date: (10/10/00 11:22:21)
+ * @author Finn Nielsen
+ * @return The parent project
+ * @param cms A CmsObject needed to make database access.
+ */
+public CmsProject getParent(CmsObject cms) throws CmsException
+{
+	// This is the default online master project.
+	if (parentId == -1) return null;
+
+	// get the first parent (will allways be an onlineproject, since offline projects will be leafs in the tree).
+	//CmsSite site = cms.getSite(parentId);
+	//CmsProject project = cms.readProject(site.getOnlineProjectId());
+
+	// skip deleted sites
+	//if (site.isDeleted())
+	//	return project.getParent(cms);
+	//else
+	//	return project;
+	return cms.readProject(parentId);
+}
+/**
  * return the id of the parent project.
  * Creation date: (10/02/00)
  * @return int the id of the parent project, -1 if none.
@@ -256,55 +328,6 @@ public int getParentId() {
 	int getType() {
 		return m_type;
 	}
-	public CmsProject(int projectId, String name, String description, int taskId, 
-					  int ownerId, int group, int managerGroup, int flags, 
-					  Timestamp createdate, Timestamp publishingdate, int publishedBy, 
-					  int type, int parentId) {
-		
-		m_id = projectId;
-		m_name = name;
-		m_description = description;
-		m_taskId = taskId;
-		m_ownerId = ownerId;
-		m_groupId = group;
-		m_groupId=group;
-		m_managergroupId = managerGroup;
-		m_managerGroupId=managerGroup;
-		m_flags = flags;
-		m_publishedBy = publishedBy;
-		m_type = type;
-		this.parentId = parentId;
-		if( createdate != null) {
-			m_createdate = createdate.getTime();
-		} else {
-			m_createdate = C_UNKNOWN_LONG;
-		}
-		if( publishingdate != null) {
-			m_publishingdate = publishingdate.getTime();
-		} else {
-			m_publishingdate = C_UNKNOWN_LONG;
-		}
-	}
-/**
- * Construct a new CmsProject, from a ResultSet.
- * Creation date: (10/02/00)
- * @param rs java.sql.ResultSet
- */
-public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) throws SQLException {
-				 this(res.getInt(m_cq.C_PROJECTS_PROJECT_ID),
-							res.getString(m_cq.C_PROJECTS_PROJECT_NAME),
-							res.getString(m_cq.C_PROJECTS_PROJECT_DESCRIPTION),
-							res.getInt(m_cq.C_PROJECTS_TASK_ID),
-							res.getInt(m_cq.C_PROJECTS_USER_ID),
-							res.getInt(m_cq.C_PROJECTS_GROUP_ID),
-							res.getInt(m_cq.C_PROJECTS_MANAGERGROUP_ID),
-							res.getInt(m_cq.C_PROJECTS_PROJECT_FLAGS),
-							SqlHelper.getTimestamp(res,m_cq.C_PROJECTS_PROJECT_CREATEDATE),
-							SqlHelper.getTimestamp(res,m_cq.C_PROJECTS_PROJECT_PUBLISHDATE),
-							res.getInt(m_cq.C_PROJECTS_PROJECT_PUBLISHED_BY),
-							res.getInt(m_cq.C_PROJECTS_PROJECT_TYPE),
-							res.getInt(m_cq.C_PROJECTS_PARENT_ID) );
-}
 	/**
 	 * Sets the description of this project.
 	 * 

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSite.java,v $
- * Date   : $Date: 2000/10/04 14:48:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/10/11 12:10:11 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import java.sql.*;
  *   
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.7 $ $Date: 2000/10/04 14:48:39 $  
+ * @version $Revision: 1.8 $ $Date: 2000/10/11 12:10:11 $  
  * 
  */
 
@@ -71,11 +71,13 @@ public class CmsSite
 	 */
 
 	private String guestGroup = com.opencms.core.CmsConstants.C_GROUP_GUEST;
+
+	private boolean isDeleted = false;
 /**
  * Insert the method's description here.
  * Creation date: (09/14/00 13:47:52)
  */
-public CmsSite(int site_id, String name, String description, int category_id, int lang_id, int country_id, int onlineProjectId)
+public CmsSite(int site_id, String name, String description, int category_id, int lang_id, int country_id, int onlineProjectId, int deleted)
 {
 	this.id = site_id;
 	this.name = name;
@@ -84,6 +86,7 @@ public CmsSite(int site_id, String name, String description, int category_id, in
 	this.languageId = lang_id;
 	this.countryId = country_id;
 	this.onlineProjectId = onlineProjectId;
+	this.isDeleted = (deleted != 0);
 }
 /**
  * Insert the method's description here.
@@ -91,7 +94,7 @@ public CmsSite(int site_id, String name, String description, int category_id, in
  */
 public CmsSite(ResultSet res) throws SQLException
 {
-	this(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"), res.getInt("ONLINEPROJECT_ID"));
+	this(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"), res.getInt("ONLINEPROJECT_ID"), res.getInt("DELETED"));
 }
 /**
  * Insert the method's description here.
@@ -164,6 +167,14 @@ public java.lang.String getName() {
  */
 public int getOnlineProjectId() {
 	return onlineProjectId;
+}
+/**
+ * Insert the method's description here.
+ * Creation date: (10/10/00 11:53:44)
+ * @return boolean
+ */
+public boolean isDeleted() {
+	return isDeleted;
 }
 /**
  * Insert the method's description here.
