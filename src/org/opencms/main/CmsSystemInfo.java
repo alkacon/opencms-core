@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/08/10 15:46:17 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/08/17 16:09:25 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -401,6 +401,17 @@ public class CmsSystemInfo {
      */
     public boolean isVersionHistoryEnabled() {
         return m_versionHistoryEnabled;
+    }
+
+    /**
+     * Returns if versions in the VFS version history should be kept 
+     * after a resource is deleted.<p>
+     * 
+     * @return if versions in the VFS version history should be kept
+     */
+    public boolean keepVersionHistory() {
+        // TODO: make configurable
+        return true;
     }
     
     /**

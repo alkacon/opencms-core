@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestResourceOperations.java,v $
- * Date   : $Date: 2004/08/17 07:09:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/17 16:09:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,8 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.test.OpenCmsTestCase;
 
+import java.util.List;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -45,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestResourceOperations extends OpenCmsTestCase {
   
@@ -76,9 +78,11 @@ public class TestResourceOperations extends OpenCmsTestCase {
         suite.addTest(new TestResourceOperations("testIsFolder"));
         suite.addTest(new TestResourceOperations("testGetFolderPath"));
         suite.addTest(new TestResourceOperations("testResourceNames"));
+        suite.addTest(new TestResourceOperations("testCreateResources"));
         suite.addTest(new TestResourceOperations("testCreateReadFile"));
         suite.addTest(new TestResourceOperations("testPublishFile"));
         suite.addTest(new TestResourceOperations("testCreateSibling"));
+        suite.addTest(new TestResourceOperations("testCreateAccessFolders"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -258,6 +262,48 @@ public class TestResourceOperations extends OpenCmsTestCase {
 
         
     }  
+    
+    public void testCreateAccessFolders() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing folder creation and access");
+        
+        CmsException exc;
+        
+        // create a folder without trailing / in the resource name
+        cms.createResource("/cafolder1", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);        
+
+        // create a folder with trailing / in the resource name
+        cms.createResource("/cafolder2/", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                
+        // access a folder without trailing / in the resource name 
+        // and ensure that its root path is a valid folder path (i.e. with trailing /) 
+        assertTrue(CmsResource.isFolder(cms.readResource("/cafolder2").getRootPath()));
+
+        // access a folder with trailing / in the resource name 
+        // and ensure that its root path is a valid folder path (i.e. with trailing /) 
+        assertTrue(CmsResource.isFolder(cms.readResource("/cafolder1/").getRootPath()));
+
+        // check the folder access using another query 
+        // and ensure that the root paths are valid folder paths
+        List l;
+        l = cms.getSubFolders("/");
+        for (int i=0; i<l.size(); i++) {
+            CmsResource r = (CmsResource)l.get(i);
+            if (!(CmsResource.isFolder(r.getRootPath()))) {
+                fail("Invalid folder name returned via getRootPath (" + r.getRootPath() + ")");
+            }
+        }
+        
+        // try to create another resource with the same name - must fail
+        exc = null;
+        try { 
+            cms.createResource("/cafolder1", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);        
+        } catch (CmsException e) {
+            exc = e;
+        }        
+        assertEquals(exc, new CmsException());
+    }
 
     /**
      * Tests the create and read file methods.<p>

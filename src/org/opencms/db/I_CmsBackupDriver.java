@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2004/06/09 15:53:29 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/08/17 16:07:57 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.35 $ $Date: 2004/06/09 15:53:29 $
+ * @version $Revision: 1.36 $ $Date: 2004/08/17 16:07:57 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -130,21 +130,21 @@ public interface I_CmsBackupDriver {
      * Reads a backup file including the file content.<p>
      *
      * @param tagId the tagId of the file
-     * @param resourceId the id of the file to read
+     * @param resourcePath the path of the file to read
      * @return CmsBackupResource the backup file
      * @throws CmsException is something goes wrong
      */
-    CmsBackupResource readBackupFile(int tagId, CmsUUID resourceId) throws CmsException;
+    CmsBackupResource readBackupFile(int tagId, String resourcePath) throws CmsException;
 
     /**
      * Reads a backup file header excluding the file content.<p>
      *
      * @param tagId the tagId of the file
-     * @param resourceId the id of the file to read
+     * @param resourcePath the path of the file to read
      * @return CmsBackupResource the backup file
      * @throws CmsException is something goes wrong
      */
-    CmsBackupResource readBackupFileHeader(int tagId, CmsUUID resourceId) throws CmsException;
+    CmsBackupResource readBackupFileHeader(int tagId, String resourcePath) throws CmsException;
 
     /**
      * Reads all backup file headers  excluding the file content.<p>.
@@ -157,12 +157,12 @@ public interface I_CmsBackupDriver {
     /**
      * Reads all backup file headers of a file excluding the file content.<p>.
      *
-     * @param resourceId the id of the file to read
+     * @param resourcePath the path of the file to read
      * @return List with all backup file headers
      * @throws CmsException if something goes wrong
      */
-    List readBackupFileHeaders(CmsUUID resourceId) throws CmsException;
-
+    List readBackupFileHeaders(String resourcePath) throws CmsException;
+    
     /**
      * Returns the max. current backup version of a resource.<p>
      * 

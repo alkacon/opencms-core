@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/17 07:07:32 $
- * Version: $Revision: 1.182 $
+ * Date   : $Date: 2004/08/17 16:09:25 $
+ * Version: $Revision: 1.183 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.182 $ $Date: 2004/08/17 07:07:32 $
+ * @version $Revision: 1.183 $ $Date: 2004/08/17 16:09:25 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -678,7 +678,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 try {
                     // write the file to the backup and publishing history
-                    if (backupEnabled) {
+                    if (backupEnabled && !OpenCms.getSystemInfo().keepVersionHistory()) {
                         // delete all backups as well
                         m_driverManager.deleteBackup(offlineFileHeader);                                                                 
                     }

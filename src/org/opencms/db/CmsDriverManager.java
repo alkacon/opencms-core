@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/08/17 07:06:41 $
- * Version: $Revision: 1.407 $
+ * Date   : $Date: 2004/08/17 16:07:57 $
+ * Version: $Revision: 1.408 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.407 $ $Date: 2004/08/17 07:06:41 $
+ * @version $Revision: 1.408 $ $Date: 2004/08/17 16:07:57 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -502,7 +502,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             size
         );
         
-        return createResource(context, resourcename, newResource, content, properties, false);
+        return createResource(context, targetName, newResource, content, properties, false);
     }
     
     /**
@@ -3546,7 +3546,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void deleteBackup(CmsResource res) throws CmsException {
        // we need a valid CmsBackupResource, so get all backup file headers of the
        // requested resource
-       List backupFileHeaders=m_backupDriver.readBackupFileHeaders(res.getResourceId());
+       List backupFileHeaders=m_backupDriver.readBackupFileHeaders(res.getRootPath());
        // check if we have some results
        if (backupFileHeaders.size()>0) {
            // get the first backup resource
@@ -5655,7 +5655,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         checkPermissions(context, cmsFile, I_CmsConstants.C_READ_ACCESS, true, CmsResourceFilter.ALL);
 
         // access to all subfolders was granted - return the file-history (newest version first)
-        List backupFileHeaders = m_backupDriver.readBackupFileHeaders(cmsFile.getResourceId());
+        List backupFileHeaders = m_backupDriver.readBackupFileHeaders(cmsFile.getRootPath());
         if (backupFileHeaders != null && backupFileHeaders.size() > 1) {
             // change the order of the list
             Collections.reverse(backupFileHeaders);
@@ -5769,7 +5769,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         try {
             CmsResource resource = readResource(context, filename, CmsResourceFilter.IGNORE_EXPIRATION);
 
-            backupResource = m_backupDriver.readBackupFile(tagId, resource.getResourceId());
+            backupResource = m_backupDriver.readBackupFile(tagId, resource.getRootPath());
         } catch (CmsException exc) {
             throw exc;
         }
@@ -5794,7 +5794,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsBackupResource resource = null;
 
         try {
-            resource = m_backupDriver.readBackupFileHeader(tagId, cmsFile.getResourceId());
+            resource = m_backupDriver.readBackupFileHeader(tagId, cmsFile.getRootPath());
         } catch (CmsException exc) {
             throw exc;
         }

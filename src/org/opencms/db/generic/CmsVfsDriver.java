@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/17 07:07:32 $
- * Version: $Revision: 1.195 $
+ * Date   : $Date: 2004/08/17 16:09:25 $
+ * Version: $Revision: 1.196 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.195 $ $Date: 2004/08/17 07:07:32 $
+ * @version $Revision: 1.196 $ $Date: 2004/08/17 16:09:25 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -100,15 +100,18 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         int resourceSize = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIZE"));
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
-        
         CmsUUID contentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_CONTENT_ID")));
         byte[] content = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
-        
-        
         int linkCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LINK_COUNT"));
 
+        // calculate the overall state
         int newState = (structureState > resourceState) ? structureState : resourceState;
 
+        // in case of folder type ensure, that the root path has a trailing slash
+        if (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+            resourcePath = addTrailingSeparator(resourcePath);
+        }
+        
         return new CmsFile(structureId, resourceId, parentId, contentId, resourcePath, resourceType, resourceFlags, projectId, newState, dateCreated, userCreated, dateLastModified, userLastModified, dateReleased, dateExpired, linkCount, resourceSize, content);
     }
 
@@ -138,6 +141,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
         int linkCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LINK_COUNT"));
 
+        // in case of folder type ensure, that the root path has a trailing slash
+        if (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+            resourcePath = addTrailingSeparator(resourcePath);
+        }
+        
         CmsUUID contentId;
         if (hasFileContentInResultSet) {
             content = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
@@ -232,6 +240,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         int resProjectId = res.getInt("LOCKED_IN_PROJECT");
         int linkCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LINK_COUNT"));
 
+        // in case of folder type ensure, that the root path has a trailing slash
+        if (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+            resourcePath = addTrailingSeparator(resourcePath);
+        }
+        
         int newState = (structureState > resourceState) ? structureState : resourceState;
 
         return new CmsFolder(structureId, resourceId, parentId, resourcePath, resourceType, resourceFlags, resProjectId, newState, dateCreated, userCreated, dateLastModified, userLastModified, linkCount, dateReleased, dateExpired);
@@ -282,6 +295,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         long dateExpired = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_EXPIRED"));     
         int resourceSize;
         if (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+            // ensure trailing slash in path
+            resourcePath = addTrailingSeparator(resourcePath);
+            
             // folders must have -1 size
             resourceSize = -1;
         } else {
@@ -810,7 +826,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-
+        
+        // must remove trailing slash
+        path = removeTrailingSeparator(path);
+        
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ");
@@ -945,18 +964,20 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readFolder(int, java.lang.String)
      */
-    public CmsFolder readFolder(int projectId, String foldername) throws CmsException {
+    public CmsFolder readFolder(int projectId, String folderPath) throws CmsException {
 
         CmsFolder folder = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
 
+        folderPath = removeTrailingSeparator(folderPath);
+        
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ");
 
-            stmt.setString(1, foldername);
+            stmt.setString(1, folderPath);
 
             res = stmt.executeQuery();
 
@@ -967,7 +988,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 }
 
             } else {
-                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readFolder/2] " + foldername);
+                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readFolder/2] " + folderPath);
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1510,6 +1531,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      */
     public void writeResource(CmsProject project, CmsResource resource, int changed) throws CmsException {
 
+        String resourcePath = removeTrailingSeparator(resource.getRootPath());
+        
         // this task is split into two statements because some DBs (e.g. Oracle) doesnt support muti-table updates
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1535,7 +1558,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
             structureState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
         }
-
+        
         try {
             conn = m_sqlManager.getConnection(project);
 
@@ -1557,7 +1580,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_STRUCTURE");
             stmt.setString(1, resource.getParentStructureId().toString());
             stmt.setString(2, resource.getResourceId().toString());
-            stmt.setString(3, resource.getRootPath());
+            stmt.setString(3, resourcePath);
             stmt.setInt(4, structureState);
             stmt.setLong(5, resource.getDateReleased());
             stmt.setLong(6, resource.getDateExpired());
@@ -1598,6 +1621,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         PreparedStatement stmt = null;
         int resourceSize = offlineResource.getLength();
 
+        String resourcePath = removeTrailingSeparator(offlineResource.getRootPath());
+        
+        
         try {
             conn = m_sqlManager.getConnection(onlineProject);
 
@@ -1629,7 +1655,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_RESOURCES_UPDATE_STRUCTURE");
                 stmt.setString(1, offlineResource.getParentStructureId().toString());
                 stmt.setString(2, offlineResource.getResourceId().toString());
-                stmt.setString(3, offlineResource.getRootPath());
+                stmt.setString(3, resourcePath);
                 stmt.setInt(4, I_CmsConstants.C_STATE_UNCHANGED);
                 stmt.setLong(5, offlineResource.getDateReleased());
                 stmt.setLong(6, offlineResource.getDateExpired());
@@ -1667,7 +1693,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.setString(1, offlineResource.getStructureId().toString());
                 stmt.setString(2, offlineResource.getParentStructureId().toString());
                 stmt.setString(3, offlineResource.getResourceId().toString());
-                stmt.setString(4, offlineResource.getRootPath());
+                stmt.setString(4, resourcePath);
                 stmt.setString(5, offlineResource.getName());
                 stmt.setInt(6, I_CmsConstants.C_STATE_UNCHANGED);
                 stmt.setLong(7, offlineResource.getDateReleased());
@@ -2030,9 +2056,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         Connection conn = null;
         PreparedStatement stmt = null;
 
-        // check the resource name
-        if (resource.getName().length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
-            throw new CmsException("The resource name '" + resource.getName() + "' is too long! (max. allowed length must be <= " + I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME + " chars.!)", CmsException.C_BAD_NAME);
+        // the path to store
+        String resourcePath = removeTrailingSeparator(resource.getRootPath());
+        if (resourcePath.length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
+            throw new CmsException("The resource path '" + resourcePath + "' is too long! (max. allowed length must be <= " + I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME + " chars.!)", CmsException.C_BAD_NAME);
         }
 
         // set the resource state and modification dates
@@ -2062,7 +2089,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             res = readFileHeader(
                 project.getId(), 
-                resource.getRootPath(), 
+                resourcePath, 
                 true);
             
             if (res.getState() == I_CmsConstants.C_STATE_DELETED) {
@@ -2104,7 +2131,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setString(1, newStructureId.toString());
             stmt.setString(2, resource.getParentStructureId().toString());
             stmt.setString(3, resource.getResourceId().toString());
-            stmt.setString(4, resource.getRootPath());
+            stmt.setString(4, resourcePath);
             stmt.setInt(5, newState);
             stmt.setLong(6, resource.getDateReleased());
             stmt.setLong(7, resource.getDateExpired());
@@ -2184,4 +2211,21 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         return readFileHeader(project.getId(), newStructureId, false);
     }    
 
+    private static String removeTrailingSeparator(String path) {
+        int l = path.length();
+        if (path == null || l <= 1 || path.charAt(l-1) != '/') {
+            return path;
+        } else {
+            return path.substring(0, l-1);
+        }
+    }
+    
+    private static String addTrailingSeparator(String path) {
+        int l = path.length();
+        if (path != null && (l == 0 || path.charAt(l-1) != '/')) {
+            return path + "/";
+        } else {
+            return path;
+        }
+    }    
 }
