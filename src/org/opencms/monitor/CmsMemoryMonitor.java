@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/13 17:35:20 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/11/13 17:47:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.17 $ $Date: 2003/11/13 17:35:20 $
+ * @version $Revision: 1.18 $ $Date: 2003/11/13 17:47:41 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -308,7 +308,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         } catch (Throwable t) {
             // catch all other exceptions otherwise the whole monitor will stop working
             if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug(", Caught throwable "+t.getMessage());
+                OpenCms.getLog(this).debug("Caught throwable "+t.getMessage());
             } 
         }
         
@@ -400,7 +400,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         } catch (Throwable t) {
             // catch all other exceptions otherwise the whole monitor will stop working
             if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug(", Caught throwable "+t.getMessage());
+                OpenCms.getLog(this).debug("Caught throwable "+t.getMessage());
             } 
         }
         
@@ -447,7 +447,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         } catch (Throwable t) {
             // catch all other exceptions otherwise the whole monitor will stop working
             if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug(", Caught throwable "+t.getMessage());
+                OpenCms.getLog(this).debug("Caught throwable "+t.getMessage());
             } 
         }
               
