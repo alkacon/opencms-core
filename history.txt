@@ -8,6 +8,14 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.45 Arakis - 14 December 2000
+
+* Bugfixing new explorer.
+* Export of deleted ressources don't causes an exception any more. Deleted resource are now 
+  simply ignored.
+* Corrected the import. Empty poperty-values are now imported correct.
+* Corrected the modulexport. The exported manifest.xml has now the correct content.
+
 OpenCms 4.1.44 Arakis - 11 December 2000
 
 * Bugfixing new explorer.
