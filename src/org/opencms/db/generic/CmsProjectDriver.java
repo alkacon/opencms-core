@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2003/08/15 07:18:50 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.53 $ $Date: 2003/08/14 15:37:25 $
+ * @version $Revision: 1.54 $ $Date: 2003/08/15 07:18:50 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1057,15 +1057,32 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             m_driverManager.backupProject(context, context.currentProject(), backupVersionId, publishDate, context.currentUser());
         }
 
+        // read the project resources of the project that gets published
         projectResources = m_driverManager.getVfsDriver().readProjectResources(context.currentProject());
+        
         // read all changed/new/deleted folders in the offline project
         offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject(), false, false);
-
+        
+        // ensure that the folders appear in the correct (tree) order
+        Map sortedFolderMap = (Map) new HashMap();
         i = offlineFolders.iterator();
         while (i.hasNext()) {
-            currentFolder = (CmsFolder)i.next();
+            currentFolder = (CmsFolder) i.next();
+            currentResourceName = m_driverManager.readPath(context, currentFolder, true);           
+            sortedFolderMap.put(currentResourceName, currentFolder);
+        }        
+        List sortedFolderList = (List) new ArrayList(sortedFolderMap.keySet());
+        Collections.sort(sortedFolderList);
 
-            currentResourceName = m_driverManager.readPath(context, currentFolder, true);
+        //i = offlineFolders.iterator();
+        i = sortedFolderList.iterator();
+        while (i.hasNext()) {
+            currentResourceName = (String) i.next();
+            currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
+            
+            //currentFolder = (CmsFolder)i.next();
+
+            //currentResourceName = m_driverManager.readPath(context, currentFolder, true);
             currentLock = m_driverManager.getLock(context, currentResourceName);
 
             // the resource must have either a new/deleted state in the link or a new/delete state in the resource record
@@ -1222,6 +1239,12 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         
         offlineFolders.clear();
         offlineFolders = null;
+        
+        sortedFolderList.clear();
+        sortedFolderList = null;
+        
+        sortedFolderMap.clear();
+        sortedFolderMap = null;
 
         // now read all changed/new/deleted FILES in offlineProject
         offlineFiles = m_driverManager.getVfsDriver().readFiles(context.currentProject().getId(), false, false);
@@ -1507,11 +1530,28 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             return changedResources;
         }
         
-        Collections.reverse(deletedFolders);
+        // ensure that the folders appear in the correct (tree) order
+        sortedFolderMap = (Map) new HashMap();
         i = deletedFolders.iterator();
         while (i.hasNext()) {
             currentFolder = (CmsFolder) i.next();
-            currentResourceName = m_driverManager.readPath(context, currentFolder, true);
+            currentResourceName = currentFolder.getFullResourceName();
+            sortedFolderMap.put(currentResourceName, currentFolder);
+        }
+        sortedFolderList = (List) new ArrayList(sortedFolderMap.keySet());
+        Collections.sort(sortedFolderList);      
+        
+        //Collections.reverse(deletedFolders);
+        //i = deletedFolders.iterator();
+        
+        Collections.reverse(sortedFolderList);
+        i = sortedFolderList.iterator();
+        while (i.hasNext()) {
+            currentResourceName = (String) i.next();
+            currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
+            
+            //currentFolder = (CmsFolder) i.next();
+            //currentResourceName = m_driverManager.readPath(context, currentFolder, true);
 
             currentResourceName = context.removeSiteRoot(m_driverManager.readPath(context, currentFolder, true));
             currentExportKey = checkExport(currentResourceName, exportpoints);
