@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/01/12 14:43:55 $
- * Version: $Revision: 1.304 $
+ * Date   : $Date: 2004/01/14 12:55:57 $
+ * Version: $Revision: 1.305 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.304 $ $Date: 2004/01/12 14:43:55 $
+ * @version $Revision: 1.305 $ $Date: 2004/01/14 12:55:57 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1357,7 +1357,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         modifiedResources.add(sourceFile);
         modifiedResources.add(newResource);
         modifiedResources.add(destinationFolder);
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
+        
+        //OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_COPIED, Collections.singletonMap("resources", modifiedResources)));
 
     }
 
@@ -1450,7 +1452,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         modifiedResources.add(sourceFolder);
         modifiedResources.add(newResource);
         modifiedResources.add(destinationFolder);
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
+        
+        //OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_COPIED, Collections.singletonMap("resources", modifiedResources)));
 
     }
 
@@ -1730,7 +1734,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         contents = null;
         clearResourceCache();
 
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", newFile)));
+        //OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", newFile)));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_CREATED, Collections.singletonMap("resource", newFile)));
 
         return newFile;
     }
@@ -1783,7 +1788,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         clearResourceCache();
 
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", newFolder)));
+        //OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", newFolder)));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_CREATED, Collections.singletonMap("resource", newFolder)));
+        
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", context.currentProject())));
 
         // return the folder        
@@ -2394,7 +2401,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         clearAccessControlListCache();
         clearResourceCache();
 
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", resources)));
+        //OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", resources)));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap("resources", resources)));
     }
 
     /**
@@ -2462,7 +2470,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         clearAccessControlListCache();
         clearResourceCache();
 
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", cmsFolder)));
+        //OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", cmsFolder)));        
+        List resources = (List) new ArrayList();
+        resources.add(cmsFolder);
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap("resources", resources)));
     }
 
     /**
@@ -3589,6 +3600,43 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
         return allGroups;
     }
+    
+
+    /**
+     * Returns all groups with a name like the specified pattern.<p>
+     *
+     * All users are granted, except the anonymous user.<p>
+     *
+     * @param context the current request context
+     * @param namePattern pattern for the group name
+     * @return a Vector of all groups with a name like the given pattern
+     * @throws CmsException if something goes wrong
+     */
+    public Vector getGroupsLike(CmsRequestContext context, String namePattern) throws CmsException {
+        // check security
+        if (!context.currentUser().isGuestUser()) {
+            return m_userDriver.readGroupsLike(namePattern);
+        } else {
+            throw new CmsSecurityException("[" + getClass().getName() + "] getGroupsLike()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+        }
+    }   
+    
+
+    /**
+     * Checks if a user is a direct member of a group having a name like the specified pattern.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param username the name of the user.
+     * @param groupNamePattern pattern for the group name
+     * @return <code>true</code> if the given user is a direct member of a group having a name like the specified pattern
+     * @throws CmsException if something goes wrong
+     */
+    public boolean hasDirectGroupsOfUserLike(CmsRequestContext context, String username, String groupNamePattern) throws CmsException {
+        CmsUser user = readUser(username);
+        return m_userDriver.hasGroupsOfUserLike(user.getId(), context.getRemoteAddress(), groupNamePattern);
+    }    
 
     /**
      * This is the port the workplace access is limited to. With the opencms.properties
@@ -6582,6 +6630,24 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
         return project;
     }
+    
+
+    /**
+     * Reads a project from the Cms.<p>
+     *
+     * @param name the name of the project
+     * @return the project read from the cms
+     * @throws CmsException if something goes wrong.
+     */
+    public CmsProject readProject(String name) throws CmsException {
+        CmsProject project = null;
+        project = (CmsProject)m_projectCache.get(name);
+        if (project == null) {
+            project = m_projectDriver.readProject(name);
+            m_projectCache.put(name, project);
+        }
+        return project;
+    }    
 
     /**
      * Reads log entries for a project.<p>
@@ -8312,6 +8378,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param resource the name of the resource of which the propertyinformation has to be read
      * @param property the propertydefinition-name of which the propertyinformation has to be set
      * @param value the value for the propertyinfo to be set
+     * @param addDefinition flag to indicate if unknown definition should be added
      * @throws CmsException if operation was not succesful
      */    
     public void writeProperty(CmsRequestContext context, String resource, String property, String value, boolean addDefinition) throws CmsException {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/01/14 12:55:58 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -279,5 +279,21 @@ public interface I_CmsEventListener {
      * @param event CmsEvent that has occurred
      */
     void cmsEvent(CmsEvent event);
+    
+    /**
+     * @see #EVENT_RESOURCE_AND_PROPERTIES_MODIFIED
+     */
+    int EVENT_RESOURCE_CREATED = 23;
+    
+    /**
+     * @see #EVENT_RESOURCES_MODIFIED
+     */
+    int EVENT_RESOURCE_COPIED = 24;
+    
+    /**
+     * @see #EVENT_RESOURCES_MODIFIED
+     */
+    int EVENT_RESOURCE_DELETED = 25;
+    
 }
 

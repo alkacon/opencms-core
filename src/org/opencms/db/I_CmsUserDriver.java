@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/01/07 09:19:22 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/01/14 12:55:58 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.29 $ $Date: 2004/01/07 09:19:22 $
+ * @version $Revision: 1.30 $ $Date: 2004/01/14 12:55:58 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -483,12 +483,36 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException if something goes wrong
      */
     void writeUserType(CmsUUID userId, int userType) throws CmsException;
-    
+
     /**
      * Returns the SqlManager of this driver.<p>
      * 
      * @return the SqlManager of this driver
      */
-    CmsSqlManager getSqlManager();    
-    
+    CmsSqlManager getSqlManager();
+
+    /**
+     * Returns all groups with a name like the specified pattern.<p>
+     *
+     * All users are granted, except the anonymous user.<p>
+     *
+     * @param namePattern pattern for the group name
+     * @return a Vector of all groups with a name like the given pattern
+     * @throws CmsException if something goes wrong
+     */
+    Vector readGroupsLike(String namePattern) throws CmsException;
+
+    /**
+     * Checks if a user is a direct member of a group having a name like the specified pattern.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param userId the id of the user
+     * @param paramStr additional parameter
+     * @param groupNamePattern pattern for group name
+     * @return <code>true</code> if the given user is a direct member of a group having a name like the specified pattern
+     * @throws CmsException if something goes wrong
+     */
+    boolean hasGroupsOfUserLike(CmsUUID userId, String paramStr, String groupNamePattern) throws CmsException;
+
 }

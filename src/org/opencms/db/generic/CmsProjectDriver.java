@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/01/06 17:14:11 $
- * Version: $Revision: 1.141 $
+ * Date   : $Date: 2004/01/14 12:55:57 $
+ * Version: $Revision: 1.142 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.141 $ $Date: 2004/01/06 17:14:11 $
+ * @version $Revision: 1.142 $ $Date: 2004/01/14 12:55:57 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -2078,6 +2078,49 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
         return project;
     }
+    
+    /**
+     * @see I_CmsProjectDriver#readProject(String)
+     */
+    public CmsProject readProject(String name) throws CmsException {
+        PreparedStatement stmt = null;
+        CmsProject project = null;
+        ResultSet res = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYNAME");
+
+            stmt.setString(1, name);
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                project =
+                    new CmsProject(
+                            res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
+                            res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
+                            res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
+                            res.getInt(m_sqlManager.readQuery("C_PROJECTS_TASK_ID")),
+                            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_USER_ID"))),
+                            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
+                            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
+                            res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_FLAGS")),
+                            CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_PROJECTS_PROJECT_CREATEDATE")),
+                            res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE")));
+            } else {
+                // project not found!
+                throw m_sqlManager.getCmsException(this, "project with name " + name + " not found", CmsException.C_NOT_FOUND, null, true);
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, "readProject(String)/1 ", CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        
+        return project;
+    }
+    
 
     /**
      * Reads log entries for a project.<p>

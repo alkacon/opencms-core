@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/12 14:43:54 $
-* Version: $Revision: 1.436 $
+* Date   : $Date: 2004/01/14 12:55:58 $
+* Version: $Revision: 1.437 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.436 $
+ * @version $Revision: 1.437 $
  */
 public class CmsObject {
 
@@ -2031,6 +2031,30 @@ public class CmsObject {
     public Vector getGroupsOfUser(String username) throws CmsException {
         return (m_driverManager.getGroupsOfUser(m_context, username));
     }
+    
+    /**
+     * Returns all groups with a name like the specified pattern.<p>
+     *
+     * @param namePattern pattern for the group name
+     * @return a Vector of all groups with a name like the given pattern
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public Vector getGroupsLike(String namePattern) throws CmsException {
+        return (m_driverManager.getGroupsLike(m_context, namePattern));
+    }
+    
+    /**
+     * Checks if a user is a direct member of a group having a name like the specified pattern.<p>
+     *
+     * @param username the name of the user to get all groups for.
+     * @param groupNamePattern pattern for the group name
+     * @return <code>true</code> if the given user is a direct member of a group having a name like the specified pattern
+     * @throws CmsException if something goes wrong
+     */
+    public boolean hasDirectGroupsOfUserLike(String username, String groupNamePattern) throws CmsException {
+        return (m_driverManager.hasDirectGroupsOfUserLike(m_context, username, groupNamePattern));
+    }       
 
     /**
      * This is the port the workplace access is limited to. With the opencms.properties
@@ -3587,6 +3611,17 @@ public class CmsObject {
     public CmsProject readProject(int id) throws CmsException {
         return (m_driverManager.readProject(id));
     }
+    
+    /**
+     * Reads a project from the Cms.<p>
+     *
+     * @param name the name of the project
+     * @return the project with the given name
+     * @throws CmsException if operation was not successful.
+     */
+    public CmsProject readProject(String name) throws CmsException {
+        return (m_driverManager.readProject(name));
+    }     
 
     /**
       * Reads log entries for a project.
