@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2003/02/10 12:19:09 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/02/10 12:21:41 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.42 $ $Date: 2003/02/10 12:19:09 $
+ * @version $Revision: 1.43 $ $Date: 2003/02/10 12:21:41 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -151,10 +151,10 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
     }   
     
     /**
-     * Throws a servlet exception that is also logged and written to the output consule.<p>
+     * Throws a servlet exception that is also logged and written to the error output console.<p>
      * 
-     * @param cause
-     * @throws ServletException
+     * @param cause the original Exception
+     * @throws ServletException the <code>cause</code> parameter
      */
     private void throwInitException(ServletException cause) throws ServletException {
         String message = cause.getMessage();
