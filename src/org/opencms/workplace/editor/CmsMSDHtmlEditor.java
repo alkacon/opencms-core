@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/01/15 08:35:46 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/01/15 16:03:04 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,13 @@ import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringSubstitution;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Creates the output for editing a CmsDefaultPage with the MS DHTML ActiveX control editor.<p> 
@@ -50,7 +53,7 @@ import java.util.Vector;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.1.12
  */
@@ -86,7 +89,9 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
                 content = content.substring(indexBodyStart + 6);
                 contentLowerCase = contentLowerCase.substring(indexBodyStart + 6);
                 content = content.substring(0, contentLowerCase.indexOf("</body>"));
-            }           
+            }
+            // remove unwanted "&amp;" from links
+            content = filterAnchors(content);
         } else {
             // editor is in html mode, add tags for stylesheet
             String currentTemplate = null;
@@ -106,7 +111,10 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
                 content = content.substring(indexBodyStart + 6);
                 contentLowerCase = contentLowerCase.substring(indexBodyStart + 6);
                 content = content.substring(0, contentLowerCase.indexOf("</body>"));
-            }      
+            }
+            
+            // remove unwanted "&amp;" from links
+            content = filterAnchors(content);
             
             // create a head with stylesheet for template and base URL to display images correctly
             String server = getJsp().getRequest().getScheme() + "://" + getJsp().getRequest().getServerName() + ":" + getJsp().getRequest().getServerPort();
@@ -131,7 +139,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
      * @param attributes optional attributes for the &lt;select&gt; tag
      * @return the html for the editorview selectbox
      */
-    public String buildSelectViews(String attributes) {
+    public final String buildSelectViews(String attributes) {
         Vector names = new Vector();
         Vector values = new Vector();
         // get the available views fron the constant
@@ -175,6 +183,37 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
      */
     public final String getEditorResourceUri() {
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/";   
+    }
+    
+    /**
+     * Filters the content String and removes unwanted "&amp;" Strings from anchor "href" or "src" attributes.<p>
+     * 
+     * These unwanted "&amp;" Strings are produced by the MS DHTML editing control.<p>
+     * 
+     * @param content the content of the editor
+     * @return filtered content
+     */
+    private final String filterAnchors(String content) {
+        Pattern pattern = null;
+        Matcher matcher = null;
+        String anchor = null;
+        String newAnchor = null;
+        
+        // regex pattern to find all src attribs in img tags, plus all href attribs in anchor tags
+        // don't forget to update the group index on the matcher after changing the regex below!
+        int flags = Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL;        
+        pattern = Pattern.compile("<(.*?)[(img)(a)](.*?)[(src)(href)]=[(\")(\')](.*?)[(\")(\')](.*?)>", flags);
+
+        matcher = pattern.matcher(content);
+        while (matcher.find()) {
+            anchor = matcher.group(3);
+            newAnchor = CmsStringSubstitution.substitute(anchor, "&amp;", "&");
+            if (anchor.length() != newAnchor.length()) {
+                // substitute only if anchor length has changed
+                content = CmsStringSubstitution.substitute(content, anchor, newAnchor);
+            }
+        }
+        return content;
     }
 
 }

@@ -6532,6 +6532,33 @@
 		<accesscontrol/>
 	</file>
 	<file>
+		<source>system/workplace/jsp/editors/dialogs/link.html</source>
+		<destination>system/workplace/jsp/editors/dialogs/link.html</destination>
+		<type>jsp</type>
+		<uuidresource>a7d4c7b6-4738-11d8-9a63-a867b6df432b</uuidresource>
+		<uuidcontent>a7d4c7b7-4738-11d8-9a63-a867b6df432b</uuidcontent>
+		<datelastmodified>1074173980000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1074156966000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>export</name>
+				<value><![CDATA[false]]></value>
+			</property>
+			<property>
+				<name>content-encoding</name>
+				<value><![CDATA[ISO-8859-1]]></value>
+			</property>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Page link insertion dialog]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file>
+	<file>
 		<source>system/workplace/jsp/editors/dialogs/property.html</source>
 		<destination>system/workplace/jsp/editors/dialogs/property.html</destination>
 		<type>jsp</type>

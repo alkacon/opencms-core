@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/01/14 10:00:04 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/01/15 16:03:04 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.1
  */
@@ -741,8 +741,7 @@ public class CmsDialog extends CmsWorkplace {
         StringBuffer result = new StringBuffer(256);
         result.append(dialogButtonRow(HTML_START));
         for (int i=0; i<buttons.length; i++)  {
-            String attribute = attributes[i];
-            String curAttributes = writeAttribute(attribute);
+            String curAttributes = writeAttribute(attributes[i]);
             switch (buttons[i]) {
                 case BUTTON_OK:
                     result.append("<input name=\"ok\" type=\"submit\" value=\"");

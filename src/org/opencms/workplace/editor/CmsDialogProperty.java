@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/01/15 08:35:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/15 16:03:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.0
  */
@@ -189,7 +189,7 @@ public class CmsDialogProperty extends CmsProperty {
         // create NavPos select box row
         retValue.append(buildTableRowStart(key("input.insert")));
         synchronized (this) {
-            retValue.append(CmsChnav.buildNavPosSelector(getCms(), getParamResource(), disabled + "\" class=\"maxwidth\"", getSettings().getMessages()));
+            retValue.append(CmsChnav.buildNavPosSelector(getCms(), getParamResource(), disabled + "\" class=\"maxwidth\" style=\"width: 400px;\"", getSettings().getMessages()));
         }
         // get the old NavPos value and store it in hidden field
         String navPos = null;
@@ -209,7 +209,7 @@ public class CmsDialogProperty extends CmsProperty {
         
         // create template select box row
         retValue.append(buildTableRowStart(key("input.template")));
-        retValue.append(buildSelectTemplates("name=\"" + I_CmsConstants.C_PROPERTY_TEMPLATE + "\" class=\"maxwidth\""));
+        retValue.append(buildSelectTemplates("name=\"" + I_CmsConstants.C_PROPERTY_TEMPLATE + "\" class=\"maxwidth\" style=\"width: 400px;\""));
         retValue.append("</td>\n");
         retValue.append("\t<td class=\"textcenter\">");       
         retValue.append("&nbsp;");

@@ -35,13 +35,13 @@
 			break;
 		case 4:
 			// open elements window;
-			dialogWindow = window.open("about:blank","DIALOG","width=380,height=420,left=0,top=0,location=no,menubar=no,toolbar=no,dependent=yes");
+			dialogWindow = window.open("about:blank","DIALOG","width=380,height=420,left=0,top=0,scrollbars=yes,location=no,menubar=no,toolbar=no,dependent=yes");
 			document.ELEMENTS.submit();
 			dialogWindow.focus();
 			break;		
 		case 5:
 			// open properties window;
-			dialogWindow = window.open("about:blank","DIALOG","width=600,height=450,left=0,top=0,location=no,menubar=no,toolbar=no,dependent=yes");
+			dialogWindow = window.open("about:blank","DIALOG","width=600,height=330,left=0,top=0,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
 			document.PROPERTIES.submit();
 			dialogWindow.focus();
 			break;
