@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
- * Date   : $Date: 2000/04/04 10:01:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/04/19 13:10:46 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/04/04 10:01:15 $
+ * @version $Revision: 1.10 $ $Date: 2000/04/19 13:10:46 $
  */
 public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
     
@@ -96,7 +96,7 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
         //v.addElement(reqContext.currentProject().getName());
         //v.addElement(templateFile);
         //return v;
-        return reqContext.currentProject().getName() + templateFile;
+        return "" + reqContext.currentProject().getId() + ":" + templateFile;
     }
     
     /**

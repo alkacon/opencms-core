@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/04/18 14:39:48 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/04/19 13:12:42 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.22 $ $Date: 2000/04/18 14:39:48 $
+ * @version $Revision: 1.23 $ $Date: 2000/04/19 13:12:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -96,7 +96,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
         //v.addElement(parameters);
         //v.addElement(templateSelector);
         //return v;
-        String result = reqContext.currentProject().getName() + templateFile;
+        String result = "" + reqContext.currentProject().getId() + ":" + templateFile;
         Enumeration keys = parameters.keys();
         
         // select the right language to use
@@ -152,17 +152,26 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();    
         HttpSession session = orgReq.getSession(true);
         String lasturl = (String)parameters.get("lasturl");
+        
+        // Lasturl parameter will be taken either from the parameter hashtable
+        // (if exists) or from the session storage.
+        // If neccessary, session storage will be updated.
         StringBuffer encLasturl = new StringBuffer();
         boolean notfirst = false;
         if(lasturl != null) {
+            // Fine. A lasturl parameter was found in session or parameter hashtable.
+            // Check, if the URL parameters of the last url have to be encoded.
             int asteriskIdx = lasturl.indexOf("?");
             if(asteriskIdx > -1 && (asteriskIdx < (lasturl.length()-1))) {
+                // In fact, there are URL parameters
                 encLasturl.append(lasturl.substring(0, asteriskIdx + 1));       
                 String queryString = lasturl.substring(asteriskIdx + 1);
                 StringTokenizer st = new StringTokenizer(queryString, "&");
                 while(st.hasMoreTokens()) {
+                    // Loop through all URL parameters
                     String currToken = st.nextToken();
                     if(currToken != null && !"".equals(currToken)) {
+                        // Look for the "=" character to divide parameter name and value
                         int idx = currToken.indexOf("=");
                         if(notfirst) {
                             encLasturl.append("&");
@@ -170,12 +179,17 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
                             notfirst = true;
                         }
                         if(idx > -1) {
+                            // A parameter name/value pair was found.
+                            // Encode the parameter value and write back!
                             String key = currToken.substring(0,idx);
                             String value = (idx < (currToken.length()-1))?currToken.substring(idx+1):"";
                             encLasturl.append(key);
                             encLasturl.append("=");
                             encLasturl.append(Encoder.escape(value));
                         } else {
+                            // Something strange happened.
+                            // Maybe a parameter without "=" ?
+                            // Write back without encoding!
                             encLasturl.append(currToken);
                         }
                     }                    

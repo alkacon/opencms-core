@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsJavascriptTemplate.java,v $
- * Date   : $Date: 2000/02/29 16:44:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/19 13:10:46 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -119,7 +119,7 @@ public class CmsJavascriptTemplate implements I_CmsJavascriptTemplate {
         //v.addElement(reqContext.currentProject().getName());
         //v.addElement(templateFile);
         //return v;
-        return reqContext.currentProject().getName() + templateFile;
+        return "" + reqContext.currentProject().getId() + ":" + templateFile;
     }
     
     /**

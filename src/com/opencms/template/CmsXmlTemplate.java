@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/04/06 10:44:16 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2000/04/19 13:10:46 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.28 $ $Date: 2000/04/06 10:44:16 $
+ * @version $Revision: 1.29 $ $Date: 2000/04/19 13:10:46 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -112,7 +112,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
         //v.addElement(parameters);
         //v.addElement(templateSelector);
         //return v;
-        String result = reqContext.currentProject().getName() + reqContext.getUri() + templateFile;
+        String result = "" + reqContext.currentProject().getId() + ":" + reqContext.currentUser().getName() + reqContext.getUri() + templateFile;
         Enumeration keys = parameters.keys();
         while(keys.hasMoreElements()) {
             String key = (String)keys.nextElement();
