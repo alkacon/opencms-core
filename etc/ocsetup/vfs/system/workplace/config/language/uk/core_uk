@@ -156,6 +156,7 @@
                 <deleteextension>Sorry, the file extension could not be deleted.</deleteextension>
                 <deletegroup>Sorry, the group could not be deleted.</deletegroup>
                 <downbrowser>Sorry, you can't use the download browser.</downbrowser>
+                <editorsave>Sorry, the file could not be saved.</editorsave>
                 <foldercreate>Sorry, the new folder could not be created.</foldercreate>
                 <gallerynoright>Sorry, the new gallery could not be created.</gallerynoright>
                 <changeuser>Sorry, the user data could not be changed.</changeuser>
@@ -201,6 +202,7 @@
                 <chtype>You don't have the needed permissions.</chtype>
                 <copy>Maybe the target folder does not exist or it already contains a file with the same name.</copy>
                 <copytoproject>Maybe you don't have the needed permissions.</copytoproject>
+                <editorsave>Maybe the file was locked by another user in the meantime.</editorsave>
                 <delete>Maybe you don't have the needed permissions.</delete>
                 <deleteuser>The users Admin and Guest can not be deleted.</deleteuser>
                 <deleteextension>see details</deleteextension>
@@ -272,6 +274,7 @@
                 <disadmin>If you want to disable the user, remove him from the Administrators group first.</disadmin>
                 <downbrowser>Create the folder for the download galleries or contact your system administrator.</downbrowser>
                 <downnogallery>Please first create a gallery with the menu item Administration/Download Galleries.</downnogallery> 
+                <editorsave>Save the filecontent into a local editor, close the file and check the lock state.</editorsave>
                 <lock></lock>
                 <lockchange>Please try again later, or contact your system administrator.</lockchange>
                 <login>Please check the entered data or contact your system administrator.</login>
@@ -316,6 +319,7 @@
                 <database>Database Import/Export</database>
                 <downbrowser>DownloadBrowser</downbrowser>
                 <downgallery>Creating new Download Gallery</downgallery>
+                <editorsave>Save File</editorsave>
                 <foldercreate>Create Folder</foldercreate>
                 <lock>Lock File</lock>
                 <lockchange>Steal Lock</lockchange>

@@ -153,6 +153,7 @@
                 <deleteuser> Leider konnte der Benutzer nicht gelöscht werden.</deleteuser>
                 <deleteextension>Die Dateierweiterung konnte leider nicht gelöscht werden.</deleteextension>
                 <deletegroup>Leider konnte die Gruppe nicht gelöscht werden.</deletegroup>
+                <editorsave>Leider konnte die Datei nicht gespeichert werden.</editorsave>
                 <foldercreate>Leider konnte das Verzeichnis nicht angelegt werden.</foldercreate>
                 <downbrowser>Sie können den Downloadbrowser noch nicht benutzen.</downbrowser>
                 <gallerynoright>Die neue Galerie konnte leider nicht angelegt werden.</gallerynoright>
@@ -208,6 +209,7 @@
                 <disadmin>Ein Benutzer in der Gruppe Administrators kann nicht gesperrt werden.</disadmin>
                 <downbrowser>Der Ordner für die Downloadgalerien existiert noch nicht.</downbrowser>
                 <downnogallery>Es existiert noch keine Downloadgalerie.</downnogallery>
+                <editorsave>Eventuell wurde die Datei zwischenzeitlich von einem anderen Benutzer gesperrt.</editorsave>
                 <extinuse>Diese Endung ist bereits einem Dateitypen zugewiesen.</extinuse>
                 <extNav1>Das ausgewählte Hauptlogo oder Verzeichnislogo ist keine gültige Image-Datei oder der Pfad existiert nicht.</extNav1>
                 <extNav2>Um einen Link in der stat. Navigation hinzuzufügen,  sind ein Linktext und ein gültiger Pfad erforderlich.</extNav2>
@@ -271,6 +273,7 @@
                 <disadmin>Wenn sie den Benutzer sperren möchten, müssen Sie ihn zuerst aus der Gruppe Administrators herausnehmen.</disadmin>
                 <downbrowser>Legen sie den Ordner für die Downloadgalerien an oder kontaktieren Sie Ihren Systemadministrator.</downbrowser>
                 <downnogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/Downloadgalerien an.</downnogallery>
+                <editorsave>Speichern Sie den Dateiinhalt in einem lokalen Editor zwischen, schließen Sie die Datei und überprüfen Sie die Sperrung.</editorsave>
                 <lock></lock>
                 <lockchange>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</lockchange>
                 <login>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</login>
@@ -314,6 +317,7 @@
                 <database>Datenbank Export/Import</database>
                 <downbrowser>Downloadgalerie öffnen</downbrowser> 
                 <downgallery>Neue Bildergalerie anlegen</downgallery>
+                <editorsave>Datei speichern</editorsave>
                 <foldercreate>Neues Verzeichnis anlegen</foldercreate>
                 <lock>Datei sperren</lock>
                 <lockchange>Datei Sperrung übernehmen</lockchange>
