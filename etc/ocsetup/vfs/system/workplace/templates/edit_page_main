@@ -3,7 +3,8 @@
 <template>
 <![CDATA[
 <html>
-<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getCharset" /><![CDATA[">
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=charset=]]><METHOD name="getCharset" /><![CDATA[">
 <title>]]><LABEL value="label.wptitle" /><![CDATA[ ]]><METHOD name="userName" /><![CDATA[</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>

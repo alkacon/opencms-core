@@ -14,11 +14,6 @@
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/version.js">
 </SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
-    if(version != "]]><METHOD name="version"/><![CDATA[") {
-        alert("]]><LABEL value="message.login3" /><![CDATA[");
-    }
-</SCRIPT>
 
 <SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
     if(navigator.appName.substring(0,9) == "Microsoft")
@@ -68,10 +63,17 @@
         <tr>
             <td colspan=2 align=middle class=formular>]]><SUBMITBUTTON class="button" name="LOGIN" value="login" width="100" action="" /><![CDATA[</td>
         </tr>
-        </table>
+        </table>    
 </td></tr>
 </table>
 <!-- End login -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+    if(version != "]]><METHOD name="version"/><![CDATA[") {
+        document.write('<p>&nbsp;<p><table cellpadding=5><tr><td align="right" bgcolor="#ff6666"><font size=2 color="white">');
+        document.write("<b>]]><LABEL value="message.login3" /><![CDATA[</b><p><b>Workplace:</b> " + version + "<br><b>Classes:</b> ]]><METHOD name="version"/><![CDATA[");
+        document.write("</font></td></tr></table>");
+    }
+</SCRIPT>    
 </CENTER>
 </form>
 

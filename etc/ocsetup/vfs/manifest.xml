@@ -2188,6 +2188,14 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/ic_admin_flexcache.gif</source>
+            <destination>pics/system/ic_admin_flexcache.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+        </file>        
+        <file>
             <source>pics/system/ic_admin_module.gif</source>
             <destination>pics/system/ic_admin_module.gif</destination>
             <type>image</type>
@@ -2442,6 +2450,33 @@
         <file>
             <source>pics/system/ic_file_plain.gif</source>
             <destination>pics/system/ic_file_plain.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/ic_file_jsp.gif</source>
+            <destination>pics/system/ic_file_jsp.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>        
+        <file>
+            <source>pics/system/ic_file_velocity.gif</source>
+            <destination>pics/system/ic_file_velocity.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>                
+        <file>
+            <source>pics/system/ic_file_compatiblePlain.gif</source>
+            <destination>pics/system/ic_file_compatiblePlain.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -4830,6 +4865,45 @@
             <access>15</access>
             <properties/>
         </file>
+        <file>
+            <destination>system/workplace/administration/flexcache</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[flex.cache.label.title]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[ic_admin_flexcache]]></value>
+                </property>
+                <property>
+                    <name>NavPos</name>
+                    <type>0</type>
+                    <value><![CDATA[30]]></value>
+                </property>
+            </properties>
+        </file>        
+        <file>
+            <source>system/workplace/administration/flexcache/index.html</source>
+            <destination>system/workplace/administration/flexcache/index.html</destination>
+            <type>jsp</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>9</type>
+                    <value><![CDATA[FlexCache Administration page]]></value>
+                </property>
+            </properties>
+        </file>        
         <file>
             <destination>system/workplace/administration/externallinkgallery</destination>
             <type>folder</type>
@@ -8213,7 +8287,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>4</type>
-                    <value><![CDATA[12.0]]></value>
+                    <value><![CDATA[12.0]]></value>s
                 </property>
                 <property>
                     <name>Title</name>
@@ -10528,6 +10602,26 @@
             <access>383</access>
             <properties/>
         </file>
+        <file>
+            <source>system/workplace/restypes/jsp</source>
+            <destination>system/workplace/restypes/jsp</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>        
+<!--        
+        <file>
+            <source>system/workplace/restypes/velocity</source>
+            <destination>system/workplace/restypes/velocity</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>        
+-->        
         <file>
             <source>system/workplace/restypes/XMLTemplate</source>
             <destination>system/workplace/restypes/XMLTemplate</destination>
