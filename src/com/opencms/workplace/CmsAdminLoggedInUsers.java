@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLoggedInUsers.java,v $
-* Date   : $Date: 2004/12/15 12:29:45 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2004/12/20 11:35:43 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,17 +34,17 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Template class for displaying OpenCms workplace admin users screens.
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.6 $ $Date: 2004/12/15 12:29:45 $
+ * @version $Revision: 1.7 $ $Date: 2004/12/20 11:35:43 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -71,10 +71,10 @@ public class CmsAdminLoggedInUsers extends CmsWorkplaceDefault  {
 
         if(parameters.get("message") != null) {
             // there is a message to all - send it
-            cms.sendBroadcastMessage((String)parameters.get("message"));
+            OpenCms.getSessionInfoManager().sendBroadcastMessage(cms,(String)parameters.get("message"));
         }
 
-        List users = cms.getLoggedInUsers();
+        List users = OpenCms.getSessionInfoManager().getLoggedInUsers(cms);
         Hashtable user;
         StringBuffer ret = new StringBuffer();
         for(int i = 0; i < users.size(); i++) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/20 09:17:23 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2004/12/20 11:35:43 $
+ * Version: $Revision: 1.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsSessionInfoManager;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -69,7 +68,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.98 $
+ * @version $Revision: 1.99 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -87,20 +86,14 @@ public class CmsObject {
     protected CmsSecurityManager m_securityManager;
 
     /**
-     * Method that can be invoked to find out all currently logged in users.
-     */
-    protected CmsSessionInfoManager m_sessionStorage;
-
-    /**
      * Connects an OpenCms user context to a running database.<p>
      * 
      * @param securityManager the security manager.
      * @param context the request context that contains the user authentification.
-     * @param sessionStorage the core session.
      */
-    public CmsObject(CmsSecurityManager securityManager, CmsRequestContext context, CmsSessionInfoManager sessionStorage) {
+    public CmsObject(CmsSecurityManager securityManager, CmsRequestContext context) {
 
-        init(securityManager, context, sessionStorage);
+        init(securityManager, context);
     }
 
     /**
@@ -1188,37 +1181,6 @@ public class CmsObject {
     }
 
     /**
-     * Returns a list of all currently logged in users.<p>
-     * 
-     * The returned list is a list of <code>Map</code>s, 
-     * with some basic information about each user, like:<br>
-     * <ul>
-     * <li>The user name, at key <code>{@link I_CmsConstants#C_SESSION_USERNAME}</code></li>
-     * <li>The current project for that user, at key 
-     *      <code>{@link I_CmsConstants#C_SESSION_PROJECT}</code></li>
-     * </ul><p>
-     * 
-     * @return a list of <code>{@link Map}</code>s representing 
-     *          users that are currently logged in.
-     * 
-     * @throws CmsException if something goes wrong.
-     */
-    public List getLoggedInUsers() throws CmsException {
-
-        if (isAdmin()) {
-            if (m_sessionStorage != null) {
-                return m_sessionStorage.getLoggedInUsers();
-            } else {
-                return null;
-            }
-        } else {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] getLoggedInUsers()",
-                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
-
-    /**
      * Returns the name a resource would have if it were moved to the
      * "lost and found" folder. <p>
      * 
@@ -1376,16 +1338,6 @@ public class CmsObject {
     public List getResourcesInTimeRange(String folder, long starttime, long endtime) throws CmsException {
 
         return m_securityManager.getResourcesInTimeRange(m_context, addSiteRoot(folder), starttime, endtime);
-    }
-
-    /**
-     * Returns the current session info manager object.<p>
-     * 
-     * @return the current session info manager object.
-     */
-    public CmsSessionInfoManager getSessionInfoManager() {
-
-        return m_sessionStorage;
     }
 
     /**
@@ -1787,7 +1739,7 @@ public class CmsObject {
         // switch the cms context to the new user and project
         m_context.switchUser(newUser, newProject);
         // init this CmsObject with the new user
-        init(m_securityManager, m_context, m_sessionStorage);
+        init(m_securityManager, m_context);
         // fire a login event
         this.fireEvent(org.opencms.main.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
         // return the users login name
@@ -2885,26 +2837,6 @@ public class CmsObject {
     }
 
     /**
-     * Send a broadcast message to all currently logged in users.<p>
-     * 
-     * @param message the message to send.
-     * 
-     * @throws CmsException if something goes wrong.
-     */
-    public void sendBroadcastMessage(String message) throws CmsException {
-
-        if (isAdmin()) {
-            if (m_sessionStorage != null) {
-                m_sessionStorage.sendBroadcastMessage(message);
-            }
-        } else {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] sendBroadcastMessage()",
-                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
-
-    /**
      * Sets a new parent-group for an already existing group.<p>
      *
      * @param groupName the name of the group that should be updated.
@@ -3361,14 +3293,11 @@ public class CmsObject {
      * 
      * @param securityManager the security manager.
      * @param context the request context that contains the user authentification.
-     * @param sessionStorage the core session.
      */
     private void init(
         CmsSecurityManager securityManager,
-        CmsRequestContext context,
-        CmsSessionInfoManager sessionStorage) {
+        CmsRequestContext context) {
 
-        m_sessionStorage = sessionStorage;
         m_securityManager = securityManager;
         m_context = context;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsSessionInfoManager.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/20 11:35:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@
 package org.opencms.main;
 
 
+import org.opencms.file.CmsObject;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -60,7 +62,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @see #sendBroadcastMessage(String message)
  */
@@ -243,10 +245,10 @@ public class CmsSessionInfoManager {
      * the current project, the current group a Boolean if current messages
      * are pending.<p>
      *
-     * @return a Vector with all currently logged in users
+     * @return a list with all currently logged in users
      */
-    public Vector getLoggedInUsers() {
-        Vector output = new Vector();
+    public List getLoggedInUsers() {
+        List output = new Vector();
         String key;
         CmsSessionInfo sessionInfo;
 
@@ -262,7 +264,7 @@ public class CmsSessionInfoManager {
                 userentry.put(I_CmsConstants.C_SESSION_USERNAME, sessionInfo.getUserName());
                 userentry.put(I_CmsConstants.C_SESSION_PROJECT, sessionInfo.getProject());
                 userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean(sessionInfo.getSession().getAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE) != null));    
-                output.addElement(userentry);
+                output.add(userentry);
             }
         }
         return output;
@@ -295,4 +297,53 @@ public class CmsSessionInfoManager {
             }
         }
     }
+
+    /**
+     * Send a broadcast message to all currently logged in users.<p>
+     * 
+     * @param cms the context info for security checks. 
+     * @param message the message to send.
+     * 
+     * @throws CmsException if something goes wrong.
+     */
+    public void sendBroadcastMessage(CmsObject cms, String message) throws CmsException {
+
+        if (cms.isAdmin()) {
+            sendBroadcastMessage(message);
+        } else {
+            throw new CmsSecurityException(
+                "[" + this.getClass().getName() + "] sendBroadcastMessage()",
+                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+        }
+    }
+
+    /**
+     * Returns a list of all currently logged in users.<p>
+     * 
+     * The returned list is a list of <code>Map</code>s, 
+     * with some basic information about each user, like:<br>
+     * <ul>
+     * <li>The user name, at key <code>{@link I_CmsConstants#C_SESSION_USERNAME}</code></li>
+     * <li>The current project for that user, at key 
+     *      <code>{@link I_CmsConstants#C_SESSION_PROJECT}</code></li>
+     * </ul><p>
+     * 
+     * @param cms the context info for security checks. 
+     * 
+     * @return a list of <code>{@link Map}</code>s representing 
+     *          users that are currently logged in.
+     * 
+     * @throws CmsException if something goes wrong.
+     */
+    public List getLoggedInUsers(CmsObject cms) throws CmsException {
+
+        if (cms.isAdmin()) {
+            return getLoggedInUsers();
+        } else {
+            throw new CmsSecurityException(
+                "[" + this.getClass().getName() + "] getLoggedInUsers()",
+                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+        }
+    }
+
 }

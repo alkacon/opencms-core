@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/11/19 09:05:46 $
- * Version: $Revision: 1.154 $
+ * Date   : $Date: 2004/12/20 11:35:43 $
+ * Version: $Revision: 1.155 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -109,7 +109,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.154 $
+ * @version $Revision: 1.155 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -824,7 +824,7 @@ public final class OpenCmsCore {
             }
         }
         
-        return initCmsObject(contextInfo, null);        
+        return initCmsObject(contextInfo);        
     }
 
     /**
@@ -1723,16 +1723,12 @@ public final class OpenCmsCore {
      * Initializes a CmsObject with the given context information.<p>
      * 
      * @param contextInfo the information for the CmsObject context to create
-     * @param sessionStorage the session storage for this OpenCms instance
      * 
      * @return the initialized CmsObject
      * 
      * @throws CmsException if something goes wrong
      */    
-    private CmsObject initCmsObject(
-        CmsContextInfo contextInfo, 
-        CmsSessionInfoManager sessionStorage
-    ) throws CmsException {
+    private CmsObject initCmsObject(CmsContextInfo contextInfo) throws CmsException {
         
         CmsUser user = contextInfo.getUser();        
         if (user == null) {
@@ -1758,7 +1754,7 @@ public final class OpenCmsCore {
                 m_resourceManager.getFileTranslator());
 
         // now initialize and return the CmsObject
-        CmsObject cms = new CmsObject(m_securityManager, context, sessionStorage);
+        CmsObject cms = new CmsObject(m_securityManager, context);
         return cms;
     }
 
@@ -1826,10 +1822,10 @@ public final class OpenCmsCore {
             if (siteroot == null) {
                 siteroot = site.getSiteRoot();
             }
-            cms = initCmsObject(req, user, siteroot, project.intValue(), m_sessionInfoManager);
+            cms = initCmsObject(req, user, siteroot, project.intValue());
         } else {
             // no user name found in session or no session, login the user as guest user
-            cms = initCmsObject(req, OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            cms = initCmsObject(req, OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID);
             if (m_useBasicAuthentication) {
                 // check if basic authorization data was provided
                 checkBasicAuthorization(cms, req, res);
@@ -1872,7 +1868,7 @@ public final class OpenCmsCore {
         if (siteroot == null) {
             siteroot = "/";
         }
-        CmsObject cms = initCmsObject(req, user, siteroot, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+        CmsObject cms = initCmsObject(req, user, siteroot, I_CmsConstants.C_PROJECT_ONLINE_ID);
         // login the user if different from Guest
         if ((password != null) && !getDefaultUsers().getUserGuest().equals(user)) {
             cms.loginUser(user, password, I_CmsConstants.C_IP_LOCALHOST);            
@@ -1887,7 +1883,6 @@ public final class OpenCmsCore {
      * @param userName the name of the user to init
      * @param currentSite the users current site 
      * @param projectId the id of the users current project
-     * @param sessionStorage the session storage for this OpenCms instance
      * @return the initialized CmsObject
      * @throws CmsException in case something goes wrong
      */
@@ -1895,8 +1890,7 @@ public final class OpenCmsCore {
         HttpServletRequest req, 
         String userName,
         String currentSite, 
-        int projectId, 
-        CmsSessionInfoManager sessionStorage
+        int projectId
     ) throws CmsException {
         
         CmsUser user = m_securityManager.readUser(userName);
@@ -1957,7 +1951,7 @@ public final class OpenCmsCore {
             remoteAddr);               
 
         // now generate and return the CmsObject
-        return initCmsObject(contextInfo, sessionStorage);        
+        return initCmsObject(contextInfo);        
     }
 
     /**
