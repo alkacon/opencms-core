@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/02/27 14:53:32 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/02/27 16:44:46 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -359,6 +359,9 @@ public class CmsImportVersion2 extends A_CmsImport {
                     // type because you cannot import a resource without having the resource type object
                     resourceTypeId = CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
                     resourceTypeLoaderId = (m_cms.getResourceType(resourceTypeId)).getLoaderId();
+                } else if (C_RESOURCE_TYPE_LINK_NAME.equals(resourceTypeName)) {
+                    // set resource type of legacy "link" which is converted later
+                    resourceTypeId = C_RESOURCE_TYPE_LINK_ID;
                 } else {
                     resourceTypeId = m_cms.getResourceTypeId(resourceTypeName);
                     resourceTypeLoaderId = (m_cms.getResourceType(resourceTypeId)).getLoaderId();
