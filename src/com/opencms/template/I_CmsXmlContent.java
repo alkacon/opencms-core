@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlContent.java,v $
- * Date   : $Date: 2000/06/05 13:37:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/29 12:35:42 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,9 +41,9 @@ import org.w3c.dom.*;
  * Classes for each customized content type have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/06/05 13:37:58 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/29 12:35:42 $
  */
-public interface I_CmsXmlContent extends Cloneable { 
+public interface I_CmsXmlContent extends I_CmsContent { 
 
     /**
      * Initialize the XML content class.
