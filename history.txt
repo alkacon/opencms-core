@@ -10,6 +10,8 @@ Legend:
 
 OpenCms 4.5.7  Gom Jabbar   - ?? September 2001
 * Now the templates will be displayed correct again in the html-editor.
+* When creating a project with folders that does not exist in the virtual file system
+  the errorbox of the template is used
 - Added missing "Sectionlogo" to the extended Navigation.
 
 OpenCms 4.4.2  Gom Jabbar   - 07 September 2001
