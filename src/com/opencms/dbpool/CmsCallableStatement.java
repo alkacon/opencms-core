@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsCallableStatement.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/06/30 22:38:16 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -156,4 +156,213 @@ public class CmsCallableStatement extends CmsPreparedStatement implements Callab
   public void registerOutParameter(int parameterIndex, int sqlType, int scale) throws SQLException {
     ((CallableStatement)m_originalStatement).registerOutParameter(parameterIndex, sqlType, scale);
   }
+  
+  public java.sql.Array getArray(String str) throws java.sql.SQLException {
+    return ((CallableStatement)m_originalStatement).getArray(str);
+  }
+  
+  public java.math.BigDecimal getBigDecimal(String str) throws java.sql.SQLException {
+    return ((CallableStatement)m_originalStatement).getBigDecimal(str);      
+  }
+  
+  public java.sql.Blob getBlob(String str) throws java.sql.SQLException {
+    return ((CallableStatement)m_originalStatement).getBlob(str);      
+  }
+  
+  public boolean getBoolean(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getBoolean(str);
+  }
+  
+  public byte getByte(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getByte(str);
+  }
+  
+  public byte[] getBytes(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getBytes(str);
+  }
+  
+  public java.sql.Clob getClob(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getClob(str);
+  }
+  
+  public java.sql.Date getDate(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getDate(str);
+  }
+  
+  public java.sql.Date getDate(String str, java.util.Calendar calendar) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getDate(str);
+  }
+  
+  public double getDouble(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getDouble(str);
+  }
+  
+  public float getFloat(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getFloat(str);
+  }
+  
+  public int getInt(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getInt(str);
+  }
+  
+  public long getLong(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getLong(str);
+  }
+  
+  public Object getObject(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getObject(str);
+  }
+  
+  public Object getObject(String str, java.util.Map map) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getObject(str, map);
+  }
+  
+  public java.sql.Ref getRef(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getRef(str);
+  }
+  
+  public short getShort(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getShort(str);
+  }
+  
+  public String getString(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getString(str);
+  }
+  
+  public java.sql.Time getTime(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getTime(str);
+  }
+  
+  public java.sql.Time getTime(String str, java.util.Calendar calendar) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getTime(str, calendar);
+  }
+  
+  public java.sql.Timestamp getTimestamp(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getTimestamp(str);
+  }
+  
+  public java.sql.Timestamp getTimestamp(String str, java.util.Calendar calendar) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getTimestamp(str, calendar);
+  }
+  
+  public java.net.URL getURL(int param) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getURL(param);
+  }
+  
+  public java.net.URL getURL(String str) throws java.sql.SQLException {
+      return ((CallableStatement)m_originalStatement).getURL(str);
+  }
+  
+  public void registerOutParameter(String str, int param) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).registerOutParameter(str, param);
+  }
+  
+  public void registerOutParameter(String str, int param, int param2) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).registerOutParameter(str, param, param2);
+  }
+  
+  public void registerOutParameter(String str, int param, String str2) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).registerOutParameter(str, param, str2);
+  }
+  
+  public void setAsciiStream(String str, java.io.InputStream inputStream, int param) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setAsciiStream(str, inputStream, param);
+  }
+  
+  public void setBigDecimal(String str, java.math.BigDecimal bigDecimal) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setBigDecimal(str, bigDecimal);
+  }
+  
+  public void setBinaryStream(String str, java.io.InputStream inputStream, int param) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setBinaryStream(str, inputStream, param);
+  }
+  
+  public void setBoolean(String str, boolean param) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setBoolean(str, param);
+  }
+  
+  public void setByte(String str, byte param) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setByte(str, param);
+  }
+  
+  public void setBytes(String str, byte[] values) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setBytes(str, values);
+  }
+  
+  public void setCharacterStream(String str, java.io.Reader reader, int param) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setCharacterStream(str, reader, param);
+  }
+  
+  public void setDate(String str, java.sql.Date date) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setDate(str, date);
+  }
+  
+  public void setDate(String str, java.sql.Date date, java.util.Calendar calendar) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setDate(str, date, calendar);
+  }
+  
+  public void setDouble(String str, double param) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setDouble(str, param);
+  }
+  
+  public void setFloat(String str, float param) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setFloat(str, param);
+  }
+  
+  public void setInt(String str, int param) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setInt(str, param);
+  }
+  
+  public void setLong(String str, long param) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setLong(str, param);
+  }
+  
+  public void setNull(String str, int param) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setNull(str, param);
+  }
+  
+  public void setNull(String str, int param, String str2) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setNull(str, param, str2);
+  }
+  
+  public void setObject(String str, Object obj) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setObject(str, obj);
+  }
+  
+  public void setObject(String str, Object obj, int param) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setObject(str, obj, param);
+  }
+  
+  public void setObject(String str, Object obj, int param, int param3) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setObject(str, obj, param, param3);
+  }
+  
+  public void setShort(String str, short param) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setShort(str, param);
+  }
+  
+  public void setString(String str, String str1) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setString(str, str1);
+  }
+  
+  public void setTime(String str, java.sql.Time time) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setTime(str, time);
+  }
+  
+  public void setTime(String str, java.sql.Time time, java.util.Calendar calendar) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setTime(str, time, calendar);
+  }
+  
+  public void setTimestamp(String str, java.sql.Timestamp timestamp) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setTimestamp(str, timestamp);
+  }
+  
+  public void setTimestamp(String str, java.sql.Timestamp timestamp, java.util.Calendar calendar) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setTimestamp(str, timestamp, calendar);
+  }
+  
+  public void setURL(String str, java.net.URL uRL) throws java.sql.SQLException {
+      ((CallableStatement)m_originalStatement).setURL(str, uRL);
+  }
+  
 }

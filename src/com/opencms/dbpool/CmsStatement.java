@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsStatement.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/06/30 22:36:43 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -192,8 +192,14 @@ public class CmsStatement implements Statement {
 
         public boolean getMoreResults() throws SQLException {
 
-          return m_originalStatement.getMoreResults();
+            return m_originalStatement.getMoreResults();
         }
+        
+        public boolean getMoreResults(int param) throws java.sql.SQLException {
+            
+            return m_originalStatement.getMoreResults(param);
+        }
+       
 
         public Connection getConnection() throws SQLException {
 
@@ -233,5 +239,37 @@ public class CmsStatement implements Statement {
         output.append(m_originalStatement);
         return output.toString();
     }
-
+    
+    public boolean execute(String str, int param) throws java.sql.SQLException {
+        return m_originalStatement.execute(str, param);
+    }
+    
+    public boolean execute(String str, String[] str1) throws java.sql.SQLException {
+         return m_originalStatement.execute(str, str1);
+    }
+    
+    public boolean execute(String str, int[] values) throws java.sql.SQLException {
+         return m_originalStatement.execute(str, values);
+    }
+    
+    public int executeUpdate(String str, String[] str1) throws java.sql.SQLException {
+         return m_originalStatement.executeUpdate(str, str1);
+    }
+    
+    public int executeUpdate(String str, int[] values) throws java.sql.SQLException {
+         return m_originalStatement.executeUpdate(str, values);
+    }
+    
+    public int executeUpdate(String str, int param) throws java.sql.SQLException {
+         return m_originalStatement.executeUpdate(str, param);
+    }
+    
+    public java.sql.ResultSet getGeneratedKeys() throws java.sql.SQLException {
+         return m_originalStatement.getGeneratedKeys();
+    }
+    
+    public int getResultSetHoldability() throws java.sql.SQLException {
+         return m_originalStatement.getResultSetHoldability();
+    }
+    
 }

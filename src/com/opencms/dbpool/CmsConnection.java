@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsConnection.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/06/30 22:37:41 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -143,7 +143,12 @@ public class CmsConnection implements Connection {
         checkIsClosed();
         m_originalConnection.rollback();
     }
-
+    
+    public void rollback(java.sql.Savepoint savepoint) throws java.sql.SQLException {
+        checkIsClosed();
+        m_originalConnection.rollback(savepoint);
+    }
+        
     public DatabaseMetaData getMetaData() throws SQLException {
         checkIsClosed();
         return m_originalConnection.getMetaData();
@@ -231,6 +236,18 @@ public class CmsConnection implements Connection {
           return (Statement) m_statementPool.get(key);
     }
 
+    public java.sql.Statement createStatement(int param, int param1, int param2) throws java.sql.SQLException {
+          checkIsClosed();
+          String key = C_SIMPLE_STATEMENT_KEY + ":" + param + ":" + param1 + ":" + param2;
+          if(!m_statementPool.containsKey(key)) {
+            // the pool contains not this statement - create it
+            m_statementPool.put(key,
+              new CmsStatement(m_originalConnection.createStatement(param, param1, param2), this));
+          }
+          // return the simple statement
+          return (Statement) m_statementPool.get(key);        
+    }
+        
         /**
          * Creates a new CmsPreparedStatement from the pool.
          */
@@ -258,7 +275,51 @@ public class CmsConnection implements Connection {
           }
           return (PreparedStatement) m_statementPool.get(key);
     }
-
+    
+    public java.sql.PreparedStatement prepareStatement(String str, int param) throws java.sql.SQLException {
+          checkIsClosed();
+          String key = str + ":" + param;
+          if(!m_statementPool.containsKey(key)) {
+            // the pool does not contain this statement - create it
+            m_statementPool.put(key,
+              new CmsPreparedStatement(m_originalConnection.prepareStatement(str, param), this));
+          }
+          return (PreparedStatement) m_statementPool.get(key);
+    }
+    
+    public java.sql.PreparedStatement prepareStatement(String str, int[] values) throws java.sql.SQLException {
+          checkIsClosed();
+          String key = str + ":" + values;
+          if(!m_statementPool.containsKey(key)) {
+            // the pool does not contain this statement - create it
+            m_statementPool.put(key,
+              new CmsPreparedStatement(m_originalConnection.prepareStatement(str, values), this));
+          }
+          return (PreparedStatement) m_statementPool.get(key);
+    }
+    
+    public java.sql.PreparedStatement prepareStatement(String str, String[] str1) throws java.sql.SQLException {
+          checkIsClosed();
+          String key = str + ":" + str1;
+          if(!m_statementPool.containsKey(key)) {
+            // the pool does not contain this statement - create it
+            m_statementPool.put(key,
+              new CmsPreparedStatement(m_originalConnection.prepareStatement(str, str1), this));
+          }
+          return (PreparedStatement) m_statementPool.get(key);
+    }
+    
+    public java.sql.PreparedStatement prepareStatement(String str, int param, int param2, int param3) throws java.sql.SQLException {
+          checkIsClosed();
+          String key = str + ":" + param + ":" + param2 + ":" + param3;
+          if(!m_statementPool.containsKey(key)) {
+            // the pool does not contain this statement - create it
+            m_statementPool.put(key,
+              new CmsPreparedStatement(m_originalConnection.prepareStatement(str, param, param2, param3), this));
+          }
+          return (PreparedStatement) m_statementPool.get(key);        
+    }
+  
         /**
          * Creates a new CmsPreparedStatement from the pool.
          */
@@ -285,6 +346,16 @@ public class CmsConnection implements Connection {
           return (CallableStatement) m_statementPool.get(key);
     }
 
+    public java.sql.CallableStatement prepareCall(String str, int param, int param2, int param3) throws java.sql.SQLException {
+         String key = str + ":" + param + ":" + param2 + ":" + param3;
+          if(!m_statementPool.containsKey(key)) {
+            // the pool does not contains this statement - create it
+            m_statementPool.put(key,
+              new CmsCallableStatement(m_originalConnection.prepareCall(str, param, param2, param3), this));
+          }
+          return (CallableStatement) m_statementPool.get(key);
+    }
+         
     /**
      * Finds out, if this connection was closed.
      */
@@ -344,4 +415,30 @@ public class CmsConnection implements Connection {
         output.append("isClosed: " + m_isClosed);
         return output.toString();
     }
+    
+    public int getHoldability() throws java.sql.SQLException {
+        checkIsClosed();
+        return m_originalConnection.getHoldability();        
+    }
+    
+    public void releaseSavepoint(java.sql.Savepoint savepoint) throws java.sql.SQLException {
+        checkIsClosed();
+        m_originalConnection.releaseSavepoint(savepoint);        
+    }
+    
+    public void setHoldability(int param) throws java.sql.SQLException {
+        checkIsClosed();
+        m_originalConnection.setHoldability(param);
+    }
+    
+    public java.sql.Savepoint setSavepoint() throws java.sql.SQLException {
+        checkIsClosed();
+        return m_originalConnection.setSavepoint();        
+    }
+    
+    public java.sql.Savepoint setSavepoint(String str) throws java.sql.SQLException {
+        checkIsClosed();
+        return m_originalConnection.setSavepoint(str);        
+    }
+    
 }
