@@ -52,6 +52,11 @@ function confirmExit() {
 
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
+<%
+if (options.showElement("button.customized", displayOptions)) {%>
+	<td><%= wp.buttonActionDirectEdit("buttonAction(9);", buttonStyle) %></td><%
+}
+%>
 <%= wp.button("javascript:buttonAction(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
 <%= wp.button("javascript:buttonAction(3);", null, "save", "button.save", buttonStyle) %>
 

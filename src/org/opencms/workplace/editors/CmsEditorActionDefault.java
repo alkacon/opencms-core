@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/10/16 08:24:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/22 15:53:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.0
  */
@@ -76,7 +76,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     /**
      * @see org.opencms.workplace.editors.I_CmsEditorActionHandler#editorAction(org.opencms.workplace.editors.CmsDefaultPageEditor, CmsJspActionElement)
      */
-    public void editorAction(CmsDefaultPageEditor editor, CmsJspActionElement jsp) throws IOException, JspException {
+    public void editorAction(CmsEditor editor, CmsJspActionElement jsp) throws IOException, JspException {
         // save the edited content
         editor.actionSave();
         // delete temporary file and unlock resource in direct edit mode
@@ -89,7 +89,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         params.append(editor.getParamResource());
         params.append("&action=");
         params.append(CmsDialog.DIALOG_CONFIRMED);
-        params.append("&reporttype=simple&directpublish=true&publishsiblings=true");
+        params.append("&directpublish=true&publishsiblings=true");
         params.append("&title=");
         params.append(CmsEncoder.escapeWBlanks(editor.key("messagebox.title.publishresource") + ": " + editor.getParamResource(), CmsEncoder.C_UTF8_ENCODING));
         params.append("&closelink=");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/22 15:53:58 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.0
  */
@@ -111,7 +111,7 @@ public interface I_CmsEditorActionHandler {
      * @throws IOException if a redirection fails
      * @throws JspException if including a JSP fails
      */
-    void editorAction(CmsDefaultPageEditor editor, CmsJspActionElement jsp) throws IOException, JspException;
+    void editorAction(CmsEditor editor, CmsJspActionElement jsp) throws IOException, JspException;
     
     /**
      * Returns the key name of the button displayed in the editor.<p>

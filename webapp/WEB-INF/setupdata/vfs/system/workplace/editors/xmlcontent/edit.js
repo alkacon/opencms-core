@@ -61,6 +61,13 @@ function buttonAction(para) {
 		submit(_form);
 		_form.submit();
 		break;
+	case 9:
+		// save and perform customized action
+		_form.action.value = actionSaveAction;
+		_form.target = "_top";
+		submit(_form);
+		_form.submit();
+		break;
 	default:
 		alert("No action defined for this button!");
 		break;

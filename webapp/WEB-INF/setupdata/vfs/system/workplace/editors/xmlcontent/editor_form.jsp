@@ -74,6 +74,7 @@ default:
 // action parameters of the form
 var actionChangeElement = "<%= wp.EDITOR_CHANGE_ELEMENT %>";
 var actionExit = "<%= wp.EDITOR_EXIT %>";
+var actionSaveAction = "<%= wp.EDITOR_SAVEACTION %>";
 var actionSaveExit = "<%= wp.EDITOR_SAVEEXIT %>";
 var actionSave = "<%= wp.EDITOR_SAVE %>";
 	

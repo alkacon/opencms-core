@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/10/22 13:40:15 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/10/22 15:53:58 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -145,6 +145,17 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         } else if (EDITOR_SAVEEXIT.equals(getParamAction())) {
             setAction(ACTION_SAVEEXIT);         
         } else if (EDITOR_EXIT.equals(getParamAction())) { 
+            setAction(ACTION_EXIT);
+        } else if (EDITOR_SAVEACTION.equals(getParamAction())) {
+            setAction(ACTION_SAVEACTION);
+            try {
+                actionDirectEdit();
+            } catch (Exception e) {
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
+            }
             setAction(ACTION_EXIT);
         } else if (EDITOR_SHOW.equals(getParamAction())) {
             setAction(ACTION_SHOW);
@@ -246,6 +257,26 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     OpenCms.getLog(this).info(e);
                 }       
             }
+        }
+    }
+    
+    /**
+     * Performs a configurable action performed by the editor.<p>
+     * 
+     * The default action is: save resource, clear temporary files and publish the resource directly.<p>
+     * 
+     * @throws IOException if a redirection fails
+     * @throws JspException if including a JSP fails
+     */
+    public void actionDirectEdit() throws IOException, JspException {
+        // get the action class from the OpenCms runtime property
+        I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
+        if (actionClass == null) {
+            // error getting the action class, save content and exit the editor
+            actionSave();
+            actionExit();
+        } else {
+            actionClass.editorAction(this, getJsp());
         }
     }
     
@@ -364,6 +395,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 throw new CmsException("Invalid content encoding encountered while editing file '" + getParamResource() + "'");
             }        
             // the file content might have been modified during the write operation
+            boolean test = m_file.isTouched();
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error creating new XML content item '" + test + "'");
+            }      
             m_file = getCms().writeFile(m_file);
             m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
             m_contentDefinition = m_content.getContentDefinition(new CmsXmlEntityResolver(getCms()));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2004/10/14 15:05:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/22 15:53:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.0
  */
@@ -113,6 +113,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                     OpenCms.getLog(this).info(e);
                 }
             }
+            setAction(ACTION_EXIT);
         } else if (EDITOR_EXIT.equals(getParamAction())) {
             setAction(ACTION_EXIT);
         } else if (EDITOR_CHANGE_ELEMENT.equals(getParamAction())) {

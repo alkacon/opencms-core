@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/10/22 11:05:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/22 15:53:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,17 +61,11 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsDefaultPageEditor extends CmsEditor {
-    
-    /** Constant value for the customizable action button. */
-    public static final int ACTION_SAVEACTION = 200;
-    
-    /** Constant for the customizable action button. */
-    public static final String EDITOR_SAVEACTION = "saveaction";
     
     /** The element locale. */
     private Locale m_elementLocale;
@@ -336,43 +330,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             names.add(value);
         }        
         return buildSelect(attributes, names, names, -1, false);
-    }
-    
-    /**
-     * Builds the html to display the special action button for the direct edit mode of the editor.<p>
-     * 
-     * @param jsFunction the JavaScript function which will be executed on the mouseup event 
-     * @param type 0: image only (default), 1: image and text, 2: text only
-     * @return the html to display the special action button
-     */
-    public String buttonActionDirectEdit(String jsFunction, int type) {
-        // get the action class from the OpenCms runtime property
-        I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
-        String url;
-        String name;
-        boolean active = false; 
-        if (actionClass != null) {
-            // get button parameters and state from action class
-            url = actionClass.getButtonUrl(getJsp(), getParamResource());
-            name = actionClass.getButtonName();
-            active = actionClass.isButtonActive(getJsp(), getParamResource());
-        } else {
-            // action class not defined, display inactive button
-            url = getSkinUri() + "buttons/publish_in";
-            name = "explorer.context.publish";
-        }
-        String image = url.substring(url.lastIndexOf("/") + 1);
-        if (url.endsWith(".gif")) {
-            image = image.substring(0, image.length() - 4);
-        }
-        
-        if (active) {
-            // create the link for the button
-            return button("javascript:" + jsFunction, null, image, name, type, url.substring(0, url.lastIndexOf("/") + 1));
-        } else {
-            // create the inactive button
-            return button(null, null, image, name + "_in", type, url.substring(0, url.lastIndexOf("/") + 1));
-        }
     }
     
     /**

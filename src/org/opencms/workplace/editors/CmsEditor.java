@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2004/10/22 11:05:22 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/22 15:53:58 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.12
  */
@@ -75,6 +75,9 @@ public abstract class CmsEditor extends CmsDialog {
     
     /** Value for the action: save. */
     public static final int ACTION_SAVE = 121;
+    
+    /** Constant value for the customizable action button. */
+    public static final int ACTION_SAVEACTION = 130;
 
     /** Value for the action: save and exit. */
     public static final int ACTION_SAVEEXIT = 123;
@@ -105,6 +108,9 @@ public abstract class CmsEditor extends CmsDialog {
     
     /** Value for the action parameter: save content. */
     public static final String EDITOR_SAVE = "save";
+    
+    /** Value for the customizable action button. */
+    public static final String EDITOR_SAVEACTION = "saveaction";
 
     /** Value for the action parameter: save and exit. */
     public static final String EDITOR_SAVEEXIT = "saveexit";
@@ -167,6 +173,13 @@ public abstract class CmsEditor extends CmsDialog {
     public CmsEditor(CmsJspActionElement jsp) {
         super(jsp);
     }
+    
+    /**
+     * Unlocks the edited resource when in direct edit mode.<p>
+     * 
+     * @param forceUnlock if true, the resource will be unlocked anyway
+     */
+    public abstract void actionClear(boolean forceUnlock);
         
     /**
      * Performs the exit editor action.<p>
@@ -180,11 +193,10 @@ public abstract class CmsEditor extends CmsDialog {
     /**
      * Performs the save content action.<p>
      * 
-     * @throws CmsException if something goes wrong
      * @throws IOException if a redirection fails
      * @throws JspException if including an element fails
      */
-    public abstract void actionSave() throws CmsException, IOException, JspException;
+    public abstract void actionSave() throws IOException, JspException;
     
     /**
      * Builds the html String for the element language selector.<p>
@@ -270,6 +282,43 @@ public abstract class CmsEditor extends CmsDialog {
         }
         return "onclick=\"top.location.href='" + getJsp().link(target) + "';\"";
     } 
+    
+    /**
+     * Builds the html to display the special action button for the direct edit mode of the editor.<p>
+     * 
+     * @param jsFunction the JavaScript function which will be executed on the mouseup event 
+     * @param type 0: image only (default), 1: image and text, 2: text only
+     * @return the html to display the special action button
+     */
+    public String buttonActionDirectEdit(String jsFunction, int type) {
+        // get the action class from the OpenCms runtime property
+        I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
+        String url;
+        String name;
+        boolean active = false; 
+        if (actionClass != null) {
+            // get button parameters and state from action class
+            url = actionClass.getButtonUrl(getJsp(), getParamResource());
+            name = actionClass.getButtonName();
+            active = actionClass.isButtonActive(getJsp(), getParamResource());
+        } else {
+            // action class not defined, display inactive button
+            url = getSkinUri() + "buttons/publish_in";
+            name = "explorer.context.publish";
+        }
+        String image = url.substring(url.lastIndexOf("/") + 1);
+        if (url.endsWith(".gif")) {
+            image = image.substring(0, image.length() - 4);
+        }
+        
+        if (active) {
+            // create the link for the button
+            return button("javascript:" + jsFunction, null, image, name, type, url.substring(0, url.lastIndexOf("/") + 1));
+        } else {
+            // create the inactive button
+            return button(null, null, image, name + "_in", type, url.substring(0, url.lastIndexOf("/") + 1));
+        }
+    }
     
     /**
      * Returns the instanciated editor display option class from the workplace manager.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/22 15:53:58 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
@@ -103,7 +103,16 @@ public class CmsSimpleEditor extends CmsEditor {
         }
         
         setParamContent(encodeContent(getParamContent()));        
-    }   
+    }
+    
+    /**
+     * Unlocks the edited resource when in direct edit mode.<p>
+     * 
+     * @param forceUnlock if true, the resource will be unlocked anyway
+     */
+    public void actionClear(boolean forceUnlock) {
+        // nothing to be done here, we are never in direct edit mode
+    }
     
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
