@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/18 08:50:38 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2000/06/18 09:32:48 $
+ * Version: $Revision: 1.58 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.57 $ $Date: 2000/06/18 08:50:38 $
+ * @version $Revision: 1.58 $ $Date: 2000/06/18 09:32:48 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -81,6 +81,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     private CmsCache m_resourceCache=null;
     private CmsCache m_projectCache=null;
     private CmsCache m_groupCache=null;
+    private CmsCache m_subresCache = null;
     
     // Internal ResourceBroker methods   
     
@@ -107,6 +108,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         m_groupCache = new CmsCache(50);
         m_projectCache = new CmsCache(50);
         m_resourceCache=new CmsCache(1000);
+        m_subresCache = new CmsCache(100);
         
         
     }
@@ -390,6 +392,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
 		 m_dbAccess.publishProject(currentUser,id,onlineProject(currentUser, currentProject));  
          
+         m_subresCache.clear();
          // inform about the file-system-change
 		 fileSystemChanged();
 			 
@@ -925,7 +928,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         res.setState(C_STATE_CHANGED);
 		// set the file-state to changed
 		if(res.isFile()){
-          
             m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
 		    // update the cache           
             m_resourceCache.put(C_FILE+currentProject.getId()+resource,res);
@@ -933,8 +935,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), true);
             // update the cache           
             m_resourceCache.put(C_FOLDER+currentProject.getId()+resource,(CmsFolder)res);
-         
 		}
+        m_subresCache.clear();
 
     }
 
@@ -971,20 +973,15 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         res.setState(C_STATE_CHANGED);
 		// set the file-state to changed
 		if(res.isFile()){     
-
 			m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, false);
-
             // update the cache           
             m_resourceCache.put(C_FILE+currentProject.getId()+resource,res);
-
 		} else {
-
-			m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), false);			
-
+			m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), false);		
             // update the cache           
-            m_resourceCache.put(C_FOLDER+currentProject.getId()+resource,(CmsFolder)res);
-    
+            m_resourceCache.put(C_FOLDER+currentProject.getId()+resource,(CmsFolder)res);    
 		}
+        m_subresCache.clear();
     }
 
 
@@ -1879,7 +1876,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         CmsGroup group=null;
         // try to read group form cache
         group=(CmsGroup)m_groupCache.get(groupname);
-        System.err.println("Got from cache "+group);
         if (group== null) {
             group=m_dbAccess.readGroup(groupname) ;
             m_groupCache.put(groupname,group);
@@ -3135,6 +3131,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                 newFolder.setGroupId(currentGroup.getId());
             }
             m_dbAccess.writeFolder(currentProject, newFolder, false);
+            m_subresCache.clear();
                                         
             // write metainfos for the folder
 			writeProperties(currentUser,currentProject, newFolder.getAbsolutePath(), propertyinfos);
@@ -3336,6 +3333,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
         Vector folders = new Vector();
 		
+       folders=(Vector)m_subresCache.get(C_FOLDER+currentProject.getId()+foldername);
+       if ((folders==null) || (folders.size()==0)){
+           
        // try to get the folders in the current project
 	   try {
 			folders = helperGetSubFolders(currentUser, currentProject, foldername);
@@ -3357,6 +3357,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				// no onlinefolders, ignoring them
 			}			
 		}
+        m_subresCache.put(C_FOLDER+currentProject.getId()+foldername,folders);
+       }
 		// return the folders
 		return(folders);
     }
@@ -3520,6 +3522,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                 // update the cache           
                 m_resourceCache.put(C_FILE+currentProject.getId()+resourcename,cmsResource);
             }
+            m_subresCache.clear();
 
 			
 			// if this resource is a folder -> lock all subresources, too
@@ -3604,6 +3607,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                     // update the cache           
                     m_resourceCache.put(C_FILE+currentProject.getId()+resourcename,cmsResource);                                  
                 }
+                m_subresCache.clear();
             } else {
                  throw new CmsException("[" + this.getClass().getName() + "] " + 
 					resourcename + CmsException.C_NO_ACCESS); 
@@ -3778,7 +3782,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             }
             m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser,currentProject),
                                        file,false);
-                    
+            m_subresCache.clear();    
   
 			// write the metainfos
 			writeProperties(currentUser,currentProject,file.getAbsolutePath(), propertyinfos );
@@ -3825,7 +3829,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							   onlineProject(currentUser, currentProject), file,true );
             // update the cache
             m_resourceCache.put(C_FILE+currentProject.getId()+file.getAbsolutePath(),file);
-			// inform about the file-system-change
+            m_subresCache.clear();	
+            // inform about the file-system-change
 			fileSystemChanged();
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), 
@@ -3867,6 +3872,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             // update the cache
             m_resourceCache.put(C_FILE+currentProject.getId()+file.getAbsolutePath(),file);
 			// inform about the file-system-change
+            m_subresCache.clear();
 			fileSystemChanged();
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), 
@@ -4139,6 +4145,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                 // update the cache
                 m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);                                
             }
+            m_subresCache.clear();
 
 			// inform about the file-system-change
 			fileSystemChanged();
@@ -4197,10 +4204,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             } else {           
                 m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,true);
                 // update the cache
-                m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);   
-                
+                m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);                   
             }
-
+            m_subresCache.clear();
 			// inform about the file-system-change
 			fileSystemChanged();
 		} else {
@@ -4261,6 +4267,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                 // update the cache
                 m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);   
             }
+            m_subresCache.clear();
 			// inform about the file-system-change
 			fileSystemChanged();
 		} else {
@@ -4314,9 +4321,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject),(CmsFile)resource,true);    
             // update the cache
             m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);   
+            m_subresCache.clear();
             
-
-			// inform about the file-system-change
+            // inform about the file-system-change
 			fileSystemChanged();
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
@@ -4350,6 +4357,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
     	Vector files = new Vector();
 		
+        files=(Vector)m_subresCache.get(C_FILE+currentProject.getId()+foldername);
+        if ((files==null) || (files.size()==0)) {
+        
+          System.err.println("read from db: "+files);
 		// try to get the files in the current project
 		try {
 			files = helperGetFilesInFolder(currentUser, currentProject, foldername);
@@ -4371,6 +4382,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				// no onlinefiles, ignoring them
 			}			
 		}
+     
+        m_subresCache.put(C_FILE+currentProject.getId()+foldername,files);
+        }
 		// return the files
 		return files;
     }
