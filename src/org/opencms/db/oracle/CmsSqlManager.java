@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsSqlManager.java,v $
- * Date   : $Date: 2003/11/13 10:29:27 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/11/13 17:32:25 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the Oracle/OCI package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/11/13 10:29:27 $ 
+ * @version $Revision: 1.12 $ $Date: 2003/11/13 17:32:25 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
@@ -104,8 +104,11 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
         // content = blob.getBytes(1, (int) blob.length());
 
         Blob blob = res.getBlob(attributeName);
-        byte[] content = new byte[(int) blob.length()];
-        content = blob.getBytes(1, (int)blob.length());
+        
+//        byte[] content = new byte[(int) blob.length()];
+//        content = blob.getBytes(1, (int)blob.length());
+        
+        byte[] content = blob.getBytes(1, (int)blob.length());
         
         return content;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/13 17:32:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -372,6 +372,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                         System.arraycopy(result, last, piece, 0, size);
                         // Add the byte array to the cache entry
                         m_cachedEntry.add(piece);
+                        piece = null;
                     }
                     last = ++pos;
                     // Add an include call to the cache entry
@@ -385,6 +386,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                 byte[] piece = new byte[size];
                 System.arraycopy(result, pos, piece, 0, size);                
                 m_cachedEntry.add(piece);
+                piece = null;
             }           
             if (! i.hasNext()) {
                 // Delete the include list if all include calls are handled

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartInputStreamHandler.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/11/13 17:32:25 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ class CmsMultipartInputStreamHandler {
     int m_totalExpected;
     int totalRead = 0;
     int m_newLine = 0;
-    byte[] buf = new byte[64 * 1024];
 
     /**
      * Constructor, creates a new CmsMultipartInputStreamHandler
@@ -89,6 +88,7 @@ class CmsMultipartInputStreamHandler {
      * @throws IOException Throws IOException if any error with the input stream occurs.
      */
     public String readLine() throws IOException {
+        byte[] buf = new byte[64 * 1024];
         StringBuffer sbuf = new StringBuffer();
         int result;
 
@@ -102,15 +102,14 @@ class CmsMultipartInputStreamHandler {
             }
         }while(result == buf.length);
         if(sbuf.length() == 0) {
-
             // nothing read, must be at the end of stream
             return null;
         }
-
         // cut off the trailing newline
         if(m_newLine == 0) {
             m_newLine = (result > 1 && (buf[result - 2] == '\r' || buf[result - 2] == '\n')) ? 2 : 1;
         }
+        buf = null;
         sbuf.setLength(sbuf.length() - m_newLine);
         return sbuf.toString();
     }
