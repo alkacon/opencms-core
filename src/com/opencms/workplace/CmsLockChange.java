@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
-* Date   : $Date: 2001/02/22 09:34:36 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2001/02/22 10:21:10 $
+* Version: $Revision: 1.27 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -33,7 +33,6 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
-import com.opencms.examples.news.*;
 import javax.servlet.http.*;
 import java.util.*;
 
@@ -43,7 +42,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.26 $ $Date: 2001/02/22 09:34:36 $
+ * @version $Revision: 1.27 $ $Date: 2001/02/22 10:21:10 $
  */
 
 public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
