@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/16 09:42:19 $
- * Version: $Revision: 1.221 $
+ * Date   : $Date: 2003/09/16 09:45:01 $
+ * Version: $Revision: 1.222 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.221 $ $Date: 2003/09/16 09:42:19 $
+ * @version $Revision: 1.222 $ $Date: 2003/09/16 09:45:01 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2023,7 +2023,9 @@ public class CmsDriverManager extends Object {
 //System.err.println("Delete "+ versionsToDelete);          
 //System.err.println("");
 //}
-
+           }
+       }
+           
         return lastVersion;
     }
     
