@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/04/01 06:22:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -319,8 +319,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 if ((entry != null) && (variation != null) && w_req.isCacheable()) {   
                     // the result can be cached
                     if (w_res.getCmsCacheKey().m_timeout > 0) {
-                        // cache entry has a timeout, set last modified to time of entry creation
-                        entry.setDateLastModified(System.currentTimeMillis());
+                        // cache entry has a timeout, set last modified to time of last creation
+                        entry.setDateLastModifiedToPreviousTimeout(w_res.getCmsCacheKey().m_timeout);
                         controller.updateDateLastModified(entry.getDateLastModified());
                     } else {
                         // no timeout, use last modified date from files in VFS

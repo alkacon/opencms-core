@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/04/01 06:22:54 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.ServletException;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
     
@@ -392,6 +392,24 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      */
     public void setDateLastModified(long dateLastModified) {
         m_dateLastModified = dateLastModified;
+    }
+    
+    /**
+     * Sets the "last modified" date for this Flex cache entry by using the last passed timeout value.<p>
+     * 
+     * If a cache entry uses the timeout feature, it becomes invalid every time the timeout interval
+     * passes. Thus the "last modified" date is the time the last timeout passed.<p>
+     * 
+     * @param timeout the timeout value to use to calculate the date last modified
+     */
+    public void setDateLastModifiedToPreviousTimeout(long timeout) {
+        if (timeout < 0 || ! m_completed) {
+            return;
+        }
+        
+        long now = System.currentTimeMillis();
+        long daytime = now % 86400000;
+        setDateLastModified(now - (daytime % timeout));  
     }
     
     /**
