@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/09/12 13:11:59 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2001/09/12 13:34:51 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.35 $ $Date: 2001/09/12 13:11:59 $
+ * @version $Revision: 1.36 $ $Date: 2001/09/12 13:34:51 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -234,7 +234,12 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             // the name
             content.append("\"" + res.getName() + "\",");
             // the path
-            //content.append("\"" + res.getPath() + "\","); is now taken from top.setDirectory
+            if(projectView){
+                content.append("\"" + res.getPath() + "\",");
+            }else{
+                //is taken from top.setDirectory
+                content.append("\"\",");
+            }
             // the title
             if(showTitle){
                 String title = "";
@@ -247,7 +252,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 }
                 content.append("\"" + getChars(title) + "\",");
             }else{
-                content.append("\"" + "\",");
+                content.append("\"\",");
             }
             // the type
             content.append(res.getType() + ",");
