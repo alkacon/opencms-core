@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
- * Date   : $Date: 2000/03/23 17:03:49 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/14 08:33:05 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * replaxed with <code>%hex</code> where hex is a two digit hex number.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/03/23 17:03:49 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/14 08:33:05 $
  */
 public class Encoder { 
 	
@@ -62,7 +62,7 @@ public class Encoder {
   public static String escape(String source) {
 	  StringBuffer ret=new StringBuffer();
       // URLEncode the text string. This produces a very similar encoding to JavaSscript
-      // encoding, except the blak whic is not encoded into a %20.
+      // encoding, except the blank which is not encoded into a %20.
 	  String enc=URLEncoder.encode(source);
 	  StringTokenizer t=new StringTokenizer(enc,"+");
       while (t.hasMoreTokens()) {
@@ -73,6 +73,35 @@ public class Encoder {
       }
 	  return ret.toString();
   }
+  
+  /**
+   * Encodes a textstring that is compatible with the JavaScript escape function.
+   * Muliple blanks are encoded _multiply _with %20
+   * @param Source The textstring to be encoded.
+   * @return The JavaScript escaped string.
+   */
+  
+  public static String escapeWBlanks(String source) {
+	  
+	  if (source == null) {
+		  return null;
+	  }
+	  StringBuffer ret=new StringBuffer();
+      // URLEncode the text string. This produces a very similar encoding to JavaSscript
+      // encoding, except the blank which is not encoded into a %20.
+	  String enc=URLEncoder.encode(source);
+	  
+	  System.err.println("URLEncoded:"+enc);
+	  for (int z=0; z < enc.length(); z++) {
+		  if (enc.charAt(z) == '+') { 
+			  ret.append("%20"); 
+		  } else {
+			  ret.append(enc.charAt(z));
+		  }
+	  }
+	  return ret.toString();
+  }
+  
 
    /**
    * Decodes a textstring that is compatible with the JavaScript unescape function.

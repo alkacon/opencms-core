@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
- * Date   : $Date: 2000/04/13 19:55:13 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/04/14 08:33:05 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2000/04/13 19:55:13 $
+ * @version $Revision: 1.3 $ $Date: 2000/04/14 08:33:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -216,13 +216,13 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
 			
 			templateFile.setData(C_TAG_RESTYPE, resType.getResourceName());
 			// TODO: this escape function doesn't handle properly multiple blancs
-			templateFile.setData(C_TAG_RESTYPE+"_esc", Encoder.escape(resType.getResourceName()));
+			templateFile.setData(C_TAG_RESTYPE+"_esc", Encoder.escapeWBlanks(resType.getResourceName()));
             output.append(templateFile.getProcessedDataValue(C_TAG_RESTYPEENTRY, callingObject)); 
 			
 			for (int z=0; z < properties.size(); z++) {
 				CmsPropertydefinition propdef = (CmsPropertydefinition) properties.elementAt(z); 
 				templateFile.setData("PROPERTY_NAME", propdef.getName()); 
-				templateFile.setData("PROPERTY_NAME_ESC", Encoder.escape(propdef.getName())); 
+				templateFile.setData("PROPERTY_NAME_ESC", Encoder.escapeWBlanks(propdef.getName())); 
 				output.append(templateFile.getProcessedDataValue(C_TYPELISTENTRY, callingObject)); 
 			} 
             return output.toString();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
- * Date   : $Date: 2000/04/13 19:55:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/04/14 08:33:05 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.4 $ $Date: 2000/04/13 19:55:13 $
+ * @version $Revision: 1.5 $ $Date: 2000/04/14 08:33:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -235,14 +235,14 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
 			
 			templateFile.setData(C_TAG_RESTYPE, resTypeName);
 			// TODO: this escape function doesn't handle multiple blanks properly
-			templateFile.setData(C_TAG_RESTYPE+"_esc", Encoder.escape(resTypeName));
+			templateFile.setData(C_TAG_RESTYPE+"_esc", Encoder.escapeWBlanks(resTypeName));
             output.append(templateFile.getProcessedDataValue(C_TAG_RESTYPEENTRY, callingObject)); 
 			
 			if (suffList != null) {
 				for (int z=0; z < suffList.size(); z++) {
 					String suffix = (String) suffList.elementAt(z); 
-					templateFile.setData("EXTENSION_NAME", suffix); 
-					templateFile.setData("EXTENSION_NAME_ESC", Encoder.escape(suffix)); 
+					templateFile.setData("EXTENSION_NAME", suffix);
+					templateFile.setData("EXTENSION_NAME_ESC", Encoder.escapeWBlanks(suffix));
 					output.append(templateFile.getProcessedDataValue(C_TYPELISTENTRY, callingObject)); 
 				} 
 			}
