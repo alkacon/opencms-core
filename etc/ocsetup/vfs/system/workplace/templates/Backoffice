@@ -181,13 +181,10 @@
         
         <td valign=bottom>        
             <div id="feld" style="position:relative; visibility:hide">
-                <form>
+                <form method="get">
                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterparameterlabel</PROCESS><![CDATA[:&nbsp;&nbsp;&nbsp;</b>
-                	<input type=text name="filterparameter" id="filterparameter" value="]]><PROCESS>filterparameter</PROCESS><![CDATA[">
- 					<a onmousedown="ChPush('bt_redo')" onmouseout="ChOff('bt_redo')" onmouseover="ChOn('bt_redo')" onmouseup="ChOn('bt_redo')"
-						onClick="javascript:window.top.body.admin_content.location.reload();"/>
-						<IMG align=absmiddle alt="]]><label value="button.reload"/><![CDATA[" width=22 border=0 name="bt_redo" src="/pics/system/bt_redo_off.gif" >
-					</a>           
+                	<input type=text name="filterparameter" id="filterparameter" value="]]><PROCESS>filterparameter</PROCESS><![CDATA["/>
+					<input type=image src="/pics/system/ic_admin_enter.gif" value="]><label value="button.reload"/><![CDATA[!" onClick="javascript:window.top.body.admin_content.reload();"/>        
             	</form>
             </div>            
         </td>
