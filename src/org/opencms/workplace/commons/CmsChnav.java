@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2004/10/22 12:40:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/22 14:41:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -169,7 +169,7 @@ public class CmsChnav extends CmsDialog {
     }
     
     /**
-     * Returns the NavText property value of the current resource.<p>
+     * Returns the escaped NavText property value of the current resource.<p>
      * 
      * @return the NavText property value of the current resource
      */
@@ -179,7 +179,7 @@ public class CmsChnav extends CmsDialog {
             if (navText == null) {
                 navText = "";
             }
-            return navText;
+            return CmsEncoder.escapeXml(navText);
         } catch (CmsException e) {
             // can usually be ignored
             if (OpenCms.getLog(this).isInfoEnabled()) {
