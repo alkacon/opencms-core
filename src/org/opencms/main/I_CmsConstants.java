@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/06/14 14:25:56 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/06/18 10:45:11 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public interface I_CmsConstants {
 
@@ -94,7 +94,7 @@ public interface I_CmsConstants {
 
     /** prefix for temporary files. */
     String C_TEMP_PREFIX = "~";
-    
+
     /** The propertydefinitiontype for resources. */
     int C_PROPERYDEFINITION_RESOURCE = 1;
 
@@ -157,6 +157,9 @@ public interface I_CmsConstants {
     
     /** Path to the "opencms.properties" file relative to the "WEB-INF" directory of the application. */
     String C_CONFIGURATION_PROPERTIES_FILE = "config/opencms.properties";
+    
+    /** Property for the login form */
+    String C_PROPERTY_LOGIN_FORM = "login-form";    
     
     /**
      * A user-type system user.
@@ -483,7 +486,7 @@ public interface I_CmsConstants {
     String C_EXPORTPOINT_PATH = "exportpoint.path.";
 
     /**
-     * The folder - separator in this system.
+     * The folder separator.
      */
     String C_FOLDER_SEPARATOR = "/";
 
@@ -1269,7 +1272,7 @@ public interface I_CmsConstants {
 
     /** Identifier for x-forwarded-for (i.e. proxied) request headers. */
     String C_HEADER_X_FORWARDED_FOR = "x-forwarded-for";
-
+    
     /** HTTP Header "Pragma". */
     String C_HEADER_PRAGMA = "Pragma";
 
@@ -1287,7 +1290,7 @@ public interface I_CmsConstants {
     
     /** HTTP Header for internal requests used during static export. */
     String C_HEADER_OPENCMS_EXPORT =  "OpenCms-Export";
-    
+
     /** HTTP Header "Cache-Control". */    
     String C_HEADER_CACHE_CONTROL = "Cache-Control";
 

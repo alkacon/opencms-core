@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/06/14 14:25:56 $
- * Version: $Revision: 1.120 $
+ * Date   : $Date: 2004/06/18 10:45:11 $
+ * Version: $Revision: 1.121 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
@@ -103,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.120 $
+ * @version $Revision: 1.121 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1909,7 +1910,27 @@ public final class OpenCmsCore {
             // form based authentication is used, redirect the user to
             // a page with a form to enter his username and password
             servletPath = req.getContextPath() + req.getServletPath();
-            redirectURL = servletPath + m_authenticationFormURI + "?requestedResource=" + req.getPathInfo();
+            
+            try {
+                // get a Admin cms context object
+                CmsObject adminCms = initCmsObject(req, res, getDefaultUsers().getUserAdmin(), null);
+                CmsProperty propertyLoginForm = adminCms.readPropertyObject(I_CmsConstants.C_PROPERTY_LOGIN_FORM, req.getPathInfo(), true);
+    
+                // "__loginform" is a dummy request parameter that could be used in a JSP template to trigger
+                // if the template should display a login formular or not
+                if (propertyLoginForm != CmsProperty.getNullProperty() && propertyLoginForm.getValue() != null) {
+                    redirectURL = servletPath + propertyLoginForm.getValue() + "?__loginform=true&requestedResource=" + req.getPathInfo();
+                }
+            } catch (CmsException e) {
+                if (org.opencms.main.OpenCms.getLog(this).isErrorEnabled()) {
+                    org.opencms.main.OpenCms.getLog(this).error("Error reading property \"" + I_CmsConstants.C_PROPERTY_LOGIN_FORM + "\"", e);
+                }                
+            } finally {
+                if (redirectURL == null) {
+                    redirectURL = servletPath + m_authenticationFormURI + "?requestedResource=" + req.getPathInfo();
+                }
+            }
+            
             res.sendRedirect(redirectURL);
         }
     }
