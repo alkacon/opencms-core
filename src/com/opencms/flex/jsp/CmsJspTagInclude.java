@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/03/02 13:56:43 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/03/28 10:02:57 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -299,14 +299,14 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         if (paramMap != null) {
             // add all parameters 
             parameterMap.putAll(paramMap);
-        }
+        }                    
         
-        if (element != null) {
+        if (element != null) {            
             // add template element selector for JSP templates
-            addParameter(parameterMap, CmsJspTagTemplate.C_TEMPLATE_ELEMENT, element);
+            addParameter(parameterMap, CmsJspTagTemplate.C_TEMPLATE_ELEMENT, element, true);
             if (!("body".equals(element) || "(default)".equals(element))) {
                 // add template selector for multiple body XML files
-                addParameter(parameterMap, CmsXmlTemplate.C_FRAME_SELECTOR, element);
+                addParameter(parameterMap, CmsXmlTemplate.C_FRAME_SELECTOR, element, true);
             }
         }
                        
@@ -330,7 +330,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                     target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);
                 }              
                 // save target as "element replace" parameter  
-                addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + target);  
+                addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + target, true);  
                 target = C_BODYLOADER_URI;              
             } 
             // for other cases setting of "target" is fine 
@@ -338,7 +338,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             // body attribute is set: this is a sub-element in a XML mastertemplate
             if (target.equals(req.getCmsObject().getRequestContext().getUri())) {
                 // target can be ignored, set body attribute as "element replace" parameter  
-                addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + bodyAttribute);
+                addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + bodyAttribute, true);
                 // redirect target to body loader
                 target = C_BODYLOADER_URI;                
             } else {
@@ -348,17 +348,17 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                         target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);
                     }              
                     // save target as "element replace" parameter  
-                    addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + target);  
+                    addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + target, true);  
                     target = C_BODYLOADER_URI;                     
                 }
             }
             // for other cases setting of "target" is fine             
-        }
-          
-        // Check parameters and update if required
+        }          
+               
+        // save old parameters from request
         Map oldParamterMap = req.getParameterMap();
-        req.addParameterMap(parameterMap);                
-                                            
+        req.addParameterMap(parameterMap);  
+        
         try {         
             // Write out a C_FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimeter later
             context.getOut().print((char)com.opencms.flex.cache.CmsFlexResponse.C_FLEX_CACHE_DELIMITER);
@@ -409,7 +409,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             m_parameterMap = new HashMap();
         }
         
-        addParameter(m_parameterMap, name, value);
+        addParameter(m_parameterMap, name, value, false);
     }
 
     /**
@@ -419,12 +419,12 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * @param name the name to add
      * @param value the value to add
      */
-    private static void addParameter(Map parameters, String name, String value) {
+    private static void addParameter(Map parameters, String name, String value, boolean overwrite) {
         // No null values allowed in parameters
         if ((parameters == null) || (name == null) || (value == null)) return;
         
         // Check if the parameter name (key) exists
-        if (parameters.containsKey(name)) {
+        if (parameters.containsKey(name) && (! overwrite)) {
             // Yes: Check name values if value exists, if so do nothing, else add new value
             String[] values = (String[]) parameters.get(name);
             String[] newValues = new String[values.length+1];

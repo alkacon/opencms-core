@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/03/02 18:43:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/03/28 10:02:57 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
     
@@ -467,8 +467,8 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                     String[] newValues = (String[]) map.get(key);     
                                
                     String[] mergeValues = new String[oldValues.length + newValues.length];
-                    System.arraycopy(oldValues, 0, mergeValues, 0, oldValues.length);
-                    System.arraycopy(newValues, 0, mergeValues, oldValues.length, newValues.length);
+                    System.arraycopy(newValues, 0, mergeValues, 0, newValues.length);
+                    System.arraycopy(oldValues, 0, mergeValues, newValues.length, oldValues.length);
                     
                     parameters.put(key, mergeValues);
                 } else {
