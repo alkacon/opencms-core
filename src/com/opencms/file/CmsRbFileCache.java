@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/03/16 21:01:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/03/21 15:07:11 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/03/16 21:01:15 $
+ * @version $Revision: 1.9 $ $Date: 2000/03/21 15:07:11 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
@@ -68,7 +68,7 @@ import com.opencms.core.*;
         m_filecache=new CmsCache(C_FILECACHE);
     }
 	
-    /**
+     /**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent. <br>
 	 * 
@@ -91,15 +91,22 @@ import com.opencms.core.*;
 	 public A_CmsResource readFileHeader(A_CmsProject project, String filename)
 		 throws CmsException {
          A_CmsResource res=null;
-         String key=C_FILE+project.getId()+filename;
-         // check if resource is available in cache
-         res=(A_CmsResource)m_filecache.get(key);
-         // not found in cache, so get it from the database and add it to cache
-         if (res == null) {
+         String key=null;
+         if (filename.endsWith("/")) {
+            key=C_FOLDER+project.getId()+filename;
+            res=m_accessFile.readFileHeader(project,filename);
+            m_filecache.remove(key);
+        } else {
+            key=C_FILE+project.getId()+filename;
+            // check if resource is available in cache
+            res=(A_CmsResource)m_filecache.get(key);
+             // not found in cache, so get it from the database and add it to cache
+            if (res == null) {
              res=m_accessFile.readFileHeader(project,filename);
              m_filecache.put(key,res);
-          }
-         return res;
+            } 
+         }
+       return res;
      }
        
      
@@ -131,9 +138,14 @@ import com.opencms.core.*;
                                 A_CmsProject onlineProject,
                                 CmsFile file,boolean changed)
 		throws CmsException{
-        String key=C_FILE+project.getId()+file.getAbsolutePath();
-        m_filecache.remove(key);
-        m_accessFile.writeFileHeader(project,onlineProject,file,changed);
+           String key= null;
+           if (file.isFolder()) {
+                key=C_FOLDER+project.getId()+file.getAbsolutePath();
+            } else {
+                key=C_FILE+project.getId()+file.getAbsolutePath();
+            } 
+            m_filecache.remove(key);
+            m_accessFile.writeFileHeader(project,onlineProject,file,changed);
         }
     
     	 /**
@@ -162,14 +174,19 @@ import com.opencms.core.*;
 	public void writeFile(A_CmsProject project,
                           A_CmsProject onlineProject,
                           CmsFile file, boolean changed)
-		throws CmsException{
-        String key=C_FILE+project.getId()+file.getAbsolutePath();
+		throws CmsException{        
+        String key= null;
+        if (file.isFolder()) {
+            key=C_FOLDER+project.getId()+file.getAbsolutePath();
+        } else {
+            key=C_FILE+project.getId()+file.getAbsolutePath();
+        } 
         m_filecache.remove(key);
         m_accessFile.writeFile(project,onlineProject,file,changed);
      }
     
     
-  /**
+     /**
 	 * Deletes a file in the Cms.<br>
 	 *
      * A file can only be deleted in an offline project. 
@@ -191,7 +208,12 @@ import com.opencms.core.*;
 	 */	
 	public void deleteFile(A_CmsProject project, String filename)
 		throws CmsException{
-        String key=C_FILE+project.getId()+filename;
+         String key=null;
+          if (filename.endsWith("/")) {
+            key=C_FOLDER+project.getId()+filename;
+         } else {
+            key=C_FILE+project.getId()+filename;
+         } 
         // delete file in cache
         m_accessFile.deleteFile(project,filename);
         m_filecache.remove(key);
@@ -218,7 +240,12 @@ import com.opencms.core.*;
 	 */	
 	public void removeFile(A_CmsProject project, String filename)
 		throws CmsException{
-        String key=C_FILE+project.getId()+filename;
+         String key=null;
+         if (filename.endsWith("/")) {
+            key=C_FOLDER+project.getId()+filename;
+         } else {
+            key=C_FILE+project.getId()+filename;
+         } 
         // delete file in cache
         m_accessFile.removeFile(project,filename);
         m_filecache.remove(key);
@@ -255,7 +282,7 @@ import com.opencms.core.*;
          if (res == null) {
              res= m_accessFile.readFolder(project,folder);
              m_filecache.put(key,res);
-         }
+          }
          return res;
      }
     
@@ -275,13 +302,14 @@ import com.opencms.core.*;
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param folder The folder to write.
+	 * @param changed Flag indicating if the file state must be set to changed.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void writeFolder(A_CmsProject project, CmsFolder folder)
+	public void writeFolder(A_CmsProject project, CmsFolder folder, boolean changed)
         throws CmsException {
         String key=C_FOLDER+project.getId()+folder.getAbsolutePath();
-        m_accessFile.writeFolder(project, folder);
+        m_accessFile.writeFolder(project, folder,changed);
         m_filecache.remove(key);
     }
  

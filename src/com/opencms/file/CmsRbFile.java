@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFile.java,v $
- * Date   : $Date: 2000/02/25 16:55:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/03/21 15:07:11 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/02/25 16:55:09 $
+ * @version $Revision: 1.18 $ $Date: 2000/03/21 15:07:11 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -473,12 +473,13 @@ import com.opencms.core.*;
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param folder The folder to write.
+	 * @param changed Flag indicating if the file state must be set to changed.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void writeFolder(A_CmsProject project, CmsFolder folder)
+	public void writeFolder(A_CmsProject project, CmsFolder folder, boolean changed)
         throws CmsException {
-        m_accessFile.writeFolder(project, folder);
+        m_accessFile.writeFolder(project, folder,changed);
     }
     
 	
@@ -628,7 +629,7 @@ import com.opencms.core.*;
         resource.setAccessFlags(flags);
         //update file
         if (filename.endsWith("/")) {   
-            writeFolder(project,(CmsFolder)resource);
+            writeFolder(project,(CmsFolder)resource,true);
         } else {
             writeFileHeader(project,onlineProject,(CmsFile)resource,true);
         }
@@ -676,7 +677,7 @@ import com.opencms.core.*;
         resource.setOwnerId(newOwner.getId());
         //update file
         if (filename.endsWith("/")) {   
-            writeFolder(project,(CmsFolder)resource);
+            writeFolder(project,(CmsFolder)resource,true);
         } else {
            writeFileHeader(project,onlineProject,(CmsFile)resource,true);
         }
@@ -723,7 +724,7 @@ import com.opencms.core.*;
         resource.setGroupId(newGroup.getId());
          //update file
         if (filename.endsWith("/")) {   
-            writeFolder(project,(CmsFolder)resource);
+            writeFolder(project,(CmsFolder)resource,true);
         } else {
             writeFileHeader(project,onlineProject,(CmsFile)resource,true);
         }
@@ -783,7 +784,7 @@ import com.opencms.core.*;
         //update resource
         if (resourcename.endsWith("/")) { 
           
-            writeFolder(project,(CmsFolder)resource);
+            writeFolder(project,(CmsFolder)resource,false);
         } else {
            
             writeFileHeader(project,onlineProject,(CmsFile)resource,false);
@@ -838,7 +839,7 @@ import com.opencms.core.*;
                 resource.setLocked(C_UNKNOWN_ID);
                 //update resource
                 if (resourcename.endsWith("/")) {   
-                    writeFolder(project,(CmsFolder)resource);
+                    writeFolder(project,(CmsFolder)resource,false);
                 } else {
                  
                     writeFileHeader(project,onlineProject,(CmsFile)resource,false);

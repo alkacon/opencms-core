@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2000/03/15 10:32:57 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/03/21 15:07:11 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.11 $ $Date: 2000/03/15 10:32:57 $
+ * @version $Revision: 1.12 $ $Date: 2000/03/21 15:07:11 $
  */
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -92,6 +92,14 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // if not, the lock page is shown for the first time
         filename=(String)session.getValue(C_PARA_FILE);
 		CmsFile file=(CmsFile)cms.readFileHeader(filename);
+        
+        // select the template to be displayed
+        if (file.isFile()) {
+            template="file";
+        } else {
+            template="folder";
+        }
+        
 		boolean hlock=true;
         if (lock != null) {
             if (lock.equals("true")) {

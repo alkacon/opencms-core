@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/03/21 15:07:11 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.12 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.13 $ $Date: 2000/03/21 15:07:11 $
  */
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -91,6 +91,14 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // if not, the unlock page is shown for the first time
         filename=(String)session.getValue(C_PARA_FILE);
 		CmsFile file=(CmsFile)cms.readFileHeader(filename);
+        
+        // select the template to be displayed
+        if (file.isFile()) {
+            template="file";
+        } else {
+            template="folder";
+        }
+        
         if (unlock != null) {
             if (unlock.equals("true")) {
 				if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){

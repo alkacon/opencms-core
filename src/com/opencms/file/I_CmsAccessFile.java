@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessFile.java,v $
- * Date   : $Date: 2000/02/25 16:55:09 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/03/21 15:07:11 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/02/25 16:55:09 $
+ * @version $Revision: 1.14 $ $Date: 2000/03/21 15:07:11 $
  */
 interface I_CmsAccessFile {
 
@@ -291,10 +291,11 @@ interface I_CmsAccessFile {
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param foldername The complete name of the folder (including pathinformation).
+     * @param changed Flag indicating if the file state must be set to changed.
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void writeFolder(A_CmsProject project, CmsFolder folder)
+	 public void writeFolder(A_CmsProject project, CmsFolder folder,boolean changed)
 		throws CmsException;
      
 	/**

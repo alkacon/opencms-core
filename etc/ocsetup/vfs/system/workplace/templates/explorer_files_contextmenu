@@ -5,9 +5,6 @@
 <contextmenue name="folder">
 	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
-	<contextdisabled name="explorer.context.rename"/>
-	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.chown"/>
@@ -20,9 +17,6 @@
 <contextmenue name="folderlock">
 	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
-	<contextdisabled name="explorer.context.rename"/>
-	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.chown"/>
@@ -35,14 +29,11 @@
 <contextmenue name="folderlockuser">
 	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
-	<contextentry name="explorer.context.rename" href="#"/>
-	<contextentry name="explorer.context.move" href="#"/>
-	<contextentry name="explorer.context.delete" href="#"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
-	<contextentry name="explorer.context.chown" href="#"/>
-	<contextentry name="explorer.context.chgrp" href="#"/>
-	<contextentry name="explorer.context.access" href="#"/>
+	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
+	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.property" href="#"/>	
 </contextmenue>

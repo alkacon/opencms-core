@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/03/17 13:29:00 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2000/03/21 15:07:11 $
+ * Version: $Revision: 1.42 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2000/03/17 13:29:00 $
+ * @version $Revision: 1.42 $ $Date: 2000/03/21 15:07:11 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -1137,10 +1137,12 @@ import com.opencms.util.*;
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param foldername The complete name of the folder (including pathinformation).
+	 * @param changed Flag indicating if the file state must be set to changed.
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void writeFolder(A_CmsProject project, CmsFolder folder)
+	 public void writeFolder(A_CmsProject project, CmsFolder folder,
+                             boolean changed)
          throws CmsException {
          
            try {   
@@ -1156,8 +1158,17 @@ import com.opencms.util.*;
                 statementResourceUpdate.setInt(4,folder.getGroupId());
                 //ACCESS_FLAGS
                 statementResourceUpdate.setInt(5,folder.getAccessFlags());
-                //STATE
-                statementResourceUpdate.setInt(6,C_STATE_CHANGED);
+                //STATE                      
+                int state=folder.getState();
+                if ((state == C_STATE_NEW) || (state == C_STATE_CHANGED)) {
+                    statementResourceUpdate.setInt(6,state);
+                } else {                                                                       
+                    if (changed==true) {
+                        statementResourceUpdate.setInt(6,C_STATE_CHANGED);
+                    } else {
+                        statementResourceUpdate.setInt(6,folder.getState());
+                    }
+                }        
                 //LOCKED_BY
                 statementResourceUpdate.setInt(7,folder.isLockedBy());
                 //LAUNCHER_TYPE

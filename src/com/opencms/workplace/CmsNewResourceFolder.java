@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
  * Date   : $Date: 2000/03/21 15:07:11 $
- * Version: $Revision: 1.17 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,29 +42,22 @@ import java.util.*;
 import java.io.*;
 
 /**
- * Template class for displaying the new resource screen for a new page
+ * Template class for displaying the new resource screen for a new folder
  * of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/03/21 15:07:11 $
+ * @version $Revision: 1.1 $ $Date: 2000/03/21 15:07:11 $
  */
-public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
+public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
     
-     /** Definition of the class */ 
-     private final static String C_CLASSNAME="com.opencms.template.CmsXmlTemplate";
     
-     
-     private static final String C_DEFAULTBODY = "<?xml version=\"1.0\"?>\n<XMLTEMPLATE>\n<TEMPLATE/>\n</XMLTEMPLATE>";
-   
-     
-     
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
      * Gets the content of the new resource page template and processed the data input.
      * @param cms The CmsObject.
-     * @param templateFile The new page template file
+     * @param templateFile The new folder template file
      * @param elementName not used
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
@@ -76,10 +69,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         throws CmsException {
         // the template to be displayed
         String template=null;
-        // TODO: check, if this is neede: String type=null;
-        byte[] content=new byte[0];
-        CmsFile contentFile=null;
-        
+
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
         //get the current filelist
         String currentFilelist=(String)session.getValue(C_PARA_FILELIST);
@@ -87,60 +77,33 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 currentFilelist=cms.rootFolder().getAbsolutePath();
         }   
         // get request parameters
-        String newFile=(String)parameters.get(C_PARA_NEWFILE);
+        String newFolder=(String)parameters.get(C_PARA_NEWFOLDER);
         String title=(String)parameters.get(C_PARA_TITLE);
-        // TODO: check, if this is neede: String flags=(String)parameters.get(C_PARA_FLAGS);
-        String templatefile=(String)parameters.get(C_PARA_TEMPLATE);
         String navtitle=(String)parameters.get(C_PARA_NAVTITLE);       
         String navpos=(String)parameters.get(C_PARA_NAVPOS);   
         // get the current phase of this wizard
         String step=cms.getRequestContext().getRequest().getParameter("step");
         if (step != null) {
             if (step.equals("1")) {
-               //check if the fielname has a file extension
-                if (newFile.indexOf(".")==-1) {
-                    newFile+=".html";
-                }
                 try {
-                   // create the content for the page file
-                   content=createPagefile(C_CLASSNAME,                                          templatefile,
-                                         C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length())+newFile);              
-                   // check if the nescessary folders for the content files are existing.
-                   // if not, create the missing folders.
-                   checkFolders(cms,currentFilelist);
-                   
-                   // create the page file
-                   CmsFile file=cms.createFile(currentFilelist,newFile,content,"page");
-                   cms.lockResource(file.getAbsolutePath());
-                   cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE,title);
-                   
-                   // now create the page content file
-                    try {
-                        contentFile=cms.readFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile);
-                   } catch (CmsException e) {
-                        if (contentFile == null) {
-                             contentFile=cms.createFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile,C_DEFAULTBODY.getBytes(),"plain");
-                        }
-                   }
-                        
-                   // set the flags for the content file to internal use, the content 
-                   // should not be loaded 
-                   cms.lockResource(contentFile.getAbsolutePath());
-                   
-                   cms.chmod(contentFile.getAbsolutePath(), contentFile.getAccessFlags()+C_ACCESS_INTERNAL_READ);
-                                   
+                            
+                   // create the folder
+                   CmsFolder folder=cms.createFolder(currentFilelist,newFolder);
+                   cms.lockResource(folder.getAbsolutePath());
+                   cms.writeMetainformation(folder.getAbsolutePath(),C_METAINFO_TITLE,title);
+         
                    // now check if navigation informations have to be added to the new page.
                    if (navtitle != null) {
-                       cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_NAVTITLE,navtitle);                       
+                       cms.writeMetainformation(folder.getAbsolutePath(),C_METAINFO_NAVTITLE,navtitle);                       
                         
                         // update the navposition.
                         if (navpos != null) {
-                            updateNavPos(cms,file,navpos);
+                            updateNavPos(cms,folder,navpos);
                         }
                    }
 
                   } catch (CmsException ex) {
-                    throw new CmsException("Error while creating new Page"+ex.getMessage(),ex.getType(),ex);
+                    throw new CmsException("Error while creating new Folder"+ex.getMessage(),ex.getType(),ex);
                 }
             
                 // TODO: ErrorHandling
@@ -153,7 +116,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 }
             }
         } else {
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_FOLDER);
         }
         // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
@@ -161,61 +124,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
     }
     
-    /** 
-     * Create the pagefile for this new page.
-     * @classname The name of the class used by this page.
-     * @template The name of the template (content) used by this page.
-     * @return Bytearray containgin the XML code for the pagefile.
-     */
-    private byte[] createPagefile(String classname, String template, String contenttemplate)
-        throws CmsException{
-        byte[] xmlContent= null;
-        try {
-            I_CmsXmlParser parser = A_CmsXmlContent.getXmlParser();
-		    Document docXml = parser.createEmptyDocument("page");	
-        
-            Element firstElement = docXml.getDocumentElement();
-        
-            // add element CLASS
-            Element elClass= docXml.createElement("CLASS");
-		    firstElement.appendChild(elClass);
-            Node noClass = docXml.createTextNode(classname);
-		    elClass.appendChild(noClass);
-        
-            // add element MASTERTEMPLATE
-            Element elTempl= docXml.createElement("MASTERTEMPLATE");
-		    firstElement.appendChild(elTempl);
-            Node noTempl = docXml.createTextNode(template);
-		    elTempl.appendChild(noTempl);     
-        
-            //add element ELEMENTDEF
-            Element elEldef=docXml.createElement("ELEMENTDEF");
-            elEldef.setAttribute("name","body");
-    	    firstElement.appendChild(elEldef);    
-        
-            //add element ELEMENTDEF.CLASS
-            Element elElClass= docXml.createElement("CLASS");
-		    elEldef.appendChild(elElClass);
-            Node noElClass = docXml.createTextNode(classname);
-		    elElClass.appendChild(noElClass);
-        
-            //add element ELEMENTDEF.TEMPLATE
-            Element elElTempl= docXml.createElement("TEMPLATE");
-		    elEldef.appendChild(elElTempl);
-            Node noElTempl = docXml.createTextNode(contenttemplate);
-		    elElTempl.appendChild(noElTempl);     
-        
-            // generate the output
-            StringWriter writer = new StringWriter();
-            parser.getXmlText(docXml,writer);
-            xmlContent = writer.toString().getBytes();
-        } catch (Exception e) {
-            throw new CmsException(e.getMessage(),CmsException.C_UNKNOWN_EXCEPTION,e);
-        }
-               
-        return xmlContent;
-    }
-    
+       
       /**
       * Gets the templates displayed in the template select box.
       * @param cms The CmsObject.
@@ -243,35 +152,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             }
             return new Integer(0);           
       }
-    
-      /**
-       * This method checks if all nescessary folders are exisitng in the content body
-       * folder and creates the missing ones. <br>
-       * All page contents files are stored in the content body folder in a mirrored directory
-       * structure of the OpenCms filesystem. Therefor it is nescessary to create the 
-       * missing folders when a new page document is createg.
-       * @param cms The CmsObject
-       * @param path The path in the CmsFilesystem where the new page should be created.
-       * @exception CmsException if something goes wrong.
-       */
-      private void checkFolders(A_CmsObject cms, String path) 
-          throws CmsException {
-          String completePath=C_CONTENTBODYPATH;
-          StringTokenizer t=new StringTokenizer(path,"/");
-          // check if all folders are there
-          while (t.hasMoreTokens()) {
-              String foldername=t.nextToken();
-               try {
-                // try to read the folder. if this fails, an exception is thrown  
-                cms.readFolder(completePath+foldername+"/");
-              } catch (CmsException e) {
-                  // the folder could not be read, so create it.
-                  cms.createFolder(completePath,foldername);                              
-              }
-              completePath+=foldername+"/";        
-          }          
-     }
-    
+      
       /**
       * Gets the files displayed in the navigation select box.
       * @param cms The CmsObject.
@@ -307,7 +188,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
      * @param newfile The new file added to the nav.
      * @param navpos The file after which the new entry is sorted.
      */  
-    private void updateNavPos(A_CmsObject cms, CmsFile newfile, String newpos)
+    private void updateNavPos(A_CmsObject cms, CmsFolder newfolder, String newpos)
         throws CmsException {
         
             float newPos=0;
@@ -334,8 +215,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
              } else {
                  newPos= new Float(positions[pos]).floatValue()+1;
              }
-        
-            cms.writeMetainformation(newfile.getAbsolutePath(),C_METAINFO_NAVPOS,new Float(newPos).toString());             
+            cms.writeMetainformation(newfolder.getAbsolutePath(),C_METAINFO_NAVPOS,new Float(newPos).toString());             
       }
     
       /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/16 20:14:08 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2000/03/21 15:07:11 $
+ * Version: $Revision: 1.83 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.82 $ $Date: 2000/03/16 20:14:08 $
+ * @version $Revision: 1.83 $ $Date: 2000/03/21 15:07:11 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -627,19 +627,23 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void writeMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
 									 String resource, String meta, String value)
 		throws CmsException {
-		
-		// read the resource
-		A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+
+		System.err.println("*1*");
+        // read the resource
+        A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+        System.err.println("*2*");
 		
 		// check the security
 		if( ! accessWrite(currentUser, currentProject, res) ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
 				CmsException.C_NO_ACCESS);
 		}
-		
+		System.err.println("*3*");
 		m_metadefRb.writeMetainformation(res, meta, value);
+        System.err.println("*4*");
 		// inform about the file-system-change
 		fileSystemChanged(currentProject.getName(), resource);
+        System.err.println("*5*");
 	}
 
 	/**
@@ -2330,26 +2334,30 @@ System.err.println(">>> readFile(2) error for\n" +
 								  String folder, String newFolderName, 
 								  Hashtable metainfos)
 		throws CmsException {
-		
+	
 		// check for mandatory metainfos
 		 checkMandatoryMetainfos(currentUser, currentProject, C_TYPE_FOLDER_NAME, 
 								 metainfos);
-		
+		System.err.println("2");	
 		// checks, if the filename is valid, if not it throws a exception
 		validFilename(newFolderName);
-		
+
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
 												  folder);
+   
 		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
 				
 			// write-acces  was granted - create the folder.
+       
 			CmsFolder newFolder = m_fileRb.createFolder(currentUser, currentProject, 
 														folder + newFolderName + 
 														C_FOLDER_SEPERATOR,
 														0);
 			// write metainfos for the folder
+         
 			m_metadefRb.writeMetainformations((A_CmsResource) newFolder, metainfos);
 			// inform about the file-system-change
+     
 			fileSystemChanged(currentProject.getName(), newFolder.getAbsolutePath());
 			// return the folder
 			return( newFolder );			
@@ -2589,7 +2597,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	public void lockResource(A_CmsUser currentUser, A_CmsProject currentProject,
                              String resourcename, boolean force)
 		throws CmsException {
-		
+		System.err.println("LOCK RESOURCE "+resourcename);
 		// read the resource, that shold be locked
 		A_CmsResource cmsResource = m_fileRb.readFileHeader(currentProject, 
 															resourcename);
@@ -3588,24 +3596,29 @@ System.err.println(">>> readFile(2) error for\n" +
 								A_CmsResource resource) 
 		throws CmsException	{
 		
+        System.err.println("Check write access to resource "+resource);
+        System.err.println("Check if online project");
 		// check, if this is the onlineproject
 		if(onlineProject(currentUser, currentProject).equals(currentProject)){
 			// the online-project is not writeable!
 			return(false);
 		}
 		
+        System.err.println("Check if access project "+currentProject);
 		// check the access to the project
 		if( ! accessProject(currentUser, currentProject, currentProject.getName()) ) {
 			// no access to the project!
 			return(false);
 		}
 		
+        System.err.println("Check if locked by other "+resource.isLockedBy()+ " : "+ currentUser.getId() );
 		// check, if the resource is locked by the current user
 		if(resource.isLockedBy() != currentUser.getId()) {
 			// resource is not locked by the current user, no writing allowed
 			return(false);					
 		}
 		
+        System.err.println("Check if parent folder readable");
 		// read the parent folder
 		if(resource.getParent() != null) {
 			resource = m_fileRb.readFolder(currentProject, resource.getParent());
@@ -3614,9 +3627,10 @@ System.err.println(">>> readFile(2) error for\n" +
 			return true;
 		}
 		
-		
+	
 		// check the rights and if the resource is not locked
 		do {
+            System.err.println("Check access for "+resource);
 			if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
 				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
 				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) {

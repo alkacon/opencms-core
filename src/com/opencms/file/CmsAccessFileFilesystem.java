@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/02/25 16:55:08 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/03/21 15:07:11 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/02/25 16:55:08 $
+ * @version $Revision: 1.18 $ $Date: 2000/03/21 15:07:11 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -545,10 +545,12 @@ import com.opencms.core.*;
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param foldername The complete name of the folder (including pathinformation).
+     * @param changed Flag indicating if the file state must be set to changed.
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void writeFolder(A_CmsProject project, CmsFolder folder)
+	 public void writeFolder(A_CmsProject project, CmsFolder folder,
+                             boolean changed)
          throws CmsException {
          
                   
