@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/10/11 15:16:21 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2002/10/11 16:14:29 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.32 $ $Date: 2002/10/11 15:16:21 $
+ * @version $Revision: 1.33 $ $Date: 2002/10/11 16:14:29 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -460,7 +460,10 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
                       folder.getAbsolutePath().startsWith("/pics/system/") ||
                       folder.getAbsolutePath().startsWith("/moduledemos/")) && m_excludeSystem)) {                        
                     // export this folder
-                    writeXmlEntrys(folder);
+                    if (folder.getDateLastModified() >= m_contentAge) {
+                        // only export folder data to manifest.xml if it has changed
+                        writeXmlEntrys(folder);
+                    }
                     // export all resources in this folder
                     exportResources(folder.getAbsolutePath());
                 }
