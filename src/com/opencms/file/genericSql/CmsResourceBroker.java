@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/18 15:11:15 $
- * Version: $Revision: 1.248 $
+ * Date   : $Date: 2001/07/19 09:29:40 $
+ * Version: $Revision: 1.249 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.248 $ $Date: 2001/07/18 15:11:15 $
+ * @version $Revision: 1.249 $ $Date: 2001/07/19 09:29:40 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2917,8 +2917,33 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
         //we are not allowed to read the folder (folder deleted)
         return new Vector();
     }
+    Vector onlineFiles = null;
+	if (!currentProject.equals(onlineProject(currentUser, currentProject)))
+	{
+		// this is not the onlineproject, get the files
+		// from the onlineproject, too
+		try
+		{
+			onlineFiles = helperGetFilesInFolder(currentUser, onlineProject(currentUser, currentProject), foldername,includeDeleted);
+			// merge the resources
+		}
+		catch (CmsException exc)
+		{
+			if (exc.getType() != CmsException.C_ACCESS_DENIED)
+				//cant handle it.
+				throw exc;
+			else
+				//access denied.
+				return files;
+		}
+	}
     //m_subresCache.put(C_FILE+currentProject.getId()+foldername,files);
-   return files;
+    if(onlineFiles == null) //if it was null, the folder was marked deleted -> no files in online project.
+ 	return files;
+
+	//m_subresCache.put(C_FILE+currentProject.getId()+foldername,files);
+
+	return files = mergeResources(files, onlineFiles);
 }
 /**
  * Returns a Vector with all resource-names that have set the given property to the given value.
@@ -3325,18 +3350,32 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
        // Todo: add caching for getSubFolders
        //folders=(Vector)m_subresCache.get(C_FOLDER+currentProject.getId()+foldername);
 
-       if ((folders==null) || (folders.size()==0)){
+        if ((folders==null) || (folders.size()==0)){
 
-       folders=new Vector();
-       // try to get the folders in the current project
-       try {
-            folders = helperGetSubFolders(currentUser, currentProject, foldername);
-        } catch (CmsException exc) {
-            // no folders, ignoring them
+            folders=new Vector();
+            // try to get the folders in the current project
+            try {
+                folders = helperGetSubFolders(currentUser, currentProject, foldername);
+            } catch (CmsException exc) {
+                // no folders, ignoring them
+            }
+		    if( !currentProject.equals(onlineProject(currentUser, currentProject))) {
+			    // this is not the onlineproject, get the files
+			    // from the onlineproject, too
+			    try {
+				    Vector onlineFolders =
+					helperGetSubFolders(currentUser,
+										onlineProject(currentUser, currentProject),
+										foldername);
+			   	    // merge the resources
+				    folders = mergeResources(folders, onlineFolders);
+			    } catch(CmsException exc) {
+				    // no onlinefolders, ignoring them
+			    }
+		    }
+		    //m_subresCache.put(C_FOLDER+currentProject.getId()+foldername,folders);
         }
 
-        //m_subresCache.put(C_FOLDER+currentProject.getId()+foldername,folders);
-       }
         // return the folders
         return(folders);
     }
