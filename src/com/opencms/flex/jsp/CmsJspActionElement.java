@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/03/27 16:48:29 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/04/04 08:39:01 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package com.opencms.flex.jsp;
 
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
@@ -76,7 +77,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.0 beta 2
  */
@@ -96,7 +97,10 @@ public class CmsJspActionElement {
     
     /** Flag to indicate that this bean was properly initialized */
     private boolean m_notInitialized;
-    
+
+    /** Will be set by the first call to {@link #isInWorkplaceMode()} */
+    private Boolean m_isWorkplaceUser = null;
+        
     /** Error message in case bean was not properly initialized */
     public final static String C_NOT_INITIALIZED = "+++ CmsJspActionElement not initialized +++";
 
@@ -627,6 +631,39 @@ public class CmsJspActionElement {
             return "??? " + t.getMessage() + " ???";
         }
         return "";
+    }
+    
+    /**
+     * Returns <code>true</code> if the current page is called form the workplace, 
+     * <code>false</code> otherwise.<p>
+     * 
+     * Use this method in case you want to display different information for OpenCms
+     * Workplace users (i.e. Content Managers or Adinistrators) that have logged on 
+     * to the workplace. 
+     *  
+     * @return <code>true</code> if the current page is called form the workplace, 
+     * <code>false</code> otherwise
+     */
+    public boolean isInWorkplaceMode() {    
+        if (m_isWorkplaceUser != null) return m_isWorkplaceUser.booleanValue();    
+        boolean result = false;
+        I_CmsSession session = getRequestContext().getSession(false);
+        if (session != null) {
+            // a workplace user will always have a session
+            String username = getRequestContext().currentUser().getName();
+            try {
+                // use the same logic as if logging in to the workplace
+                if ((getCmsObject().userInGroup(username, CmsObject.C_GROUP_USERS)) || 
+                    (getCmsObject().userInGroup(username, CmsObject.C_GROUP_PROJECTLEADER)) || 
+                    (getCmsObject().userInGroup(username, CmsObject.C_GROUP_ADMIN)) ) {
+                    result = true;
+                }    
+            } catch (CmsException e) {
+                // result will be "false"
+            }         
+        }        
+        m_isWorkplaceUser = new Boolean(result);
+        return result;
     }
     
     /**
