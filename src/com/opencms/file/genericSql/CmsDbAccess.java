@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/20 14:57:33 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2000/06/21 14:46:17 $
+ * Version: $Revision: 1.73 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.72 $ $Date: 2000/06/20 14:57:33 $ * 
+ * @version $Revision: 1.73 $ $Date: 2000/06/21 14:46:17 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2670,11 +2670,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				} catch(CmsException exc){
 					if ( exc.getType() == CmsException.C_NOT_FOUND){
 						// get parentId for onlineFolder either from folderIdIndex or from the database
-						Integer parentId = (Integer)folderIdIndex.get(new Integer(currentFolder.getParentId()));
+						Integer parentId = (Integer)folderIdIndex.get(new Integer(currentFile.getParentId()));
 						if (parentId == null){
 							CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
 							parentId = new Integer(currentOnlineParent.getResourceId());
-							folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
+							folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
 						}
 						// create a new File
 						currentFile.setState(C_STATE_UNCHANGED);
@@ -2736,7 +2736,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				if (parentId == null){
 					CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFile.getParent());
 					parentId = new Integer(currentOnlineParent.getResourceId());
-					folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
+					folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
 				}
 				// create the new file 
 				CmsFile newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(),
@@ -2839,6 +2839,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		try {  
 			// read resource data from database
 			statement = m_pool.getPreparedStatement(C_RESOURCES_DELETEBYID_KEY);
+			statement.setInt(1, id);
 			statement.executeUpdate();
 		} catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			

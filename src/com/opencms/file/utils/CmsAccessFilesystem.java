@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsAccessFilesystem.java,v $
- * Date   : $Date: 2000/06/20 15:13:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/06/21 14:46:18 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -76,7 +76,7 @@ public class CmsAccessFilesystem implements I_CmsConstants {
                  s.write(contents);
                  s.close();
              } catch (Exception e) {
-               throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage());
+              // throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage());
              }	
      }
 	
@@ -97,7 +97,7 @@ public class CmsAccessFilesystem implements I_CmsConstants {
 		  if (!discFolder.exists())	{
 			boolean success=discFolder.mkdir();
 			if (!success) {
-				throw new CmsException("[" + this.getClass().getName() + "] "+foldername,CmsException.C_FILESYSTEM_ERROR);
+			//	throw new CmsException("[" + this.getClass().getName() + "] "+foldername,CmsException.C_FILESYSTEM_ERROR);
 			}
           }
      }
@@ -116,7 +116,7 @@ public class CmsAccessFilesystem implements I_CmsConstants {
          if (discFile.exists()){
 			boolean success=discFile.delete();
 			if (!success) {
-					 throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_FILESYSTEM_ERROR);
+			//		 throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_FILESYSTEM_ERROR);
 			}
          }
      }
