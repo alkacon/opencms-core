@@ -322,7 +322,7 @@ input.dialogbutton {
 /* Special input field for property dialog */
 input.dialogmarkedfield {
 	width: 100%;
-	background-color: #E0E0E0;
+	background-color: #E9E9E9;
 }
 
 /* row marked as selected */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyCustom.java,v $
- * Date   : $Date: 2004/04/02 10:25:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/04/02 12:31:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.3
  */
@@ -305,19 +305,6 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
     }
     
     /**
-     * Defines a new property.<p>
-     * 
-     * @param newProperty the name of the new property
-     * @return true, if the new property was created, otherwise false
-     * @throws CmsException if creation is not successful
-     */
-    private boolean defineProperty(String newProperty) throws CmsException {
-        CmsResource res = getCms().readFileHeader(getParamResource());
-        getCms().createPropertydefinition(newProperty, res.getType());
-        return true;
-    }
-    
-    /**
      * Builds a button row with an "ok", a "cancel" and an "advanced" button.<p>
      * 
      * @param okAttributes additional attributes for the "ok" button
@@ -506,34 +493,25 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         } else {
             // parameter is not empty, check if the value has changed
             if (!propValue.equals(oldValue)) {
-                try {
-                    // lock resource if autolock is enabled
-                    checkLock(getParamResource());
-                    if (currentProperty.getStructureValue() == null && currentProperty.getResourceValue() == null) {
-                        // new property, determine setting from OpenCms workplace configuration
-                        if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
-                            currentProperty.setStructureValue(propValue);
-                        } else {
-                            currentProperty.setResourceValue(propValue);
-                        }
-                        
-                    } else if (currentProperty.getStructureValue() != null) {
-                        // structure value has to be updated
-                        currentProperty.setStructureValue(propValue);    
+                // lock resource if autolock is enabled
+                checkLock(getParamResource());
+                if (currentProperty.getStructureValue() == null && currentProperty.getResourceValue() == null) {
+                    // new property, determine setting from OpenCms workplace configuration
+                    if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+                        currentProperty.setStructureValue(propValue);
                     } else {
-                        // resource value has to be updated
-                        currentProperty.setResourceValue(propValue);    
-                    }
-                    // write the updated property object
-                    getCms().writePropertyObject(getParamResource(), currentProperty);
-                } catch (CmsException e) {
-                    if (e.getType() == CmsException.C_NOT_FOUND) {
-                        defineProperty(propName);
-                        getCms().writePropertyObject(getParamResource(), currentProperty);
-                    } else {
-                        throw e;
-                    }
-                }     
+                        currentProperty.setResourceValue(propValue);
+                    }                   
+                } else if (currentProperty.getStructureValue() != null) {
+                    // structure value has to be updated
+                    currentProperty.setStructureValue(propValue);    
+                } else {
+                    // resource value has to be updated
+                    currentProperty.setResourceValue(propValue);    
+                }
+                currentProperty.setAutoCreatePropertyDefinition(true);
+                // write the updated property object
+                getCms().writePropertyObject(getParamResource(), currentProperty);               
             }
         }
     }

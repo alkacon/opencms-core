@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/04/02 10:37:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/04/02 12:31:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -571,12 +571,6 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         }
         result.append("<tr>\n");
         result.append("\t<td style=\"white-space: nowrap;\">"+propName);
-        if (activeTab == 1 && !"".equals(valueResource)) {
-            // mark properties with present resource value in "shared properties" form
-            result.append("<sup>+</sup>");
-        } else {
-            result.append("&nbsp;");    
-        }
         result.append("</td>\n");
         result.append("\t<td class=\"maxwidth\">");     
         result.append("<input type=\"text\" value=\"" + shownValue + "\" ");
