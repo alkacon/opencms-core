@@ -44,7 +44,7 @@
  
  <ELEMENTDEF name="Navigation">
    <CLASS>com.opencms.defaults.CmsXmlNav</CLASS>
-   <TEMPLATE>/content/internal/ContentNav</TEMPLATE>
+   <TEMPLATE>/system/workplace/help/content/internal/ContentNav</TEMPLATE>
  </ELEMENTDEF>
 
 
