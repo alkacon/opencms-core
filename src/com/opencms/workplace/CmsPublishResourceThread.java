@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResourceThread.java,v $
- * Date   : $Date: 2003/02/15 11:14:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/02/21 15:18:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.report.CmsHtmlReport;
 import com.opencms.report.I_CmsReport;
 
@@ -40,7 +41,7 @@ import com.opencms.report.I_CmsReport;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
-public class CmsPublishResourceThread extends Thread {
+public class CmsPublishResourceThread extends A_CmsReportThread {
 
     private String m_resourceName;
     private CmsObject m_cms;

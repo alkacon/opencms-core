@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExportThread.java,v $
- * Date   : $Date: 2003/01/30 19:36:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/02/21 15:18:23 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.file.I_CmsRegistry;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.report.CmsHtmlReport;
 import com.opencms.report.I_CmsReport;
 
@@ -41,10 +42,10 @@ import com.opencms.report.I_CmsReport;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.0 rc 1
  */
-public class CmsAdminModuleExportThread extends Thread {
+public class CmsAdminModuleExportThread extends A_CmsReportThread {
 
     private String m_moduleName;
     private I_CmsRegistry m_registry;

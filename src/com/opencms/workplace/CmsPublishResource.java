@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/01/30 19:15:07 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/02/21 15:18:23 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -44,7 +45,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.14 $ $Date: 2003/01/30 19:15:07 $
+ * @version $Revision: 1.15 $ $Date: 2003/02/21 15:18:23 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -107,7 +108,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
             xmlTemplateDocument.setData("FILENAME", file.getName());
             
         } else if("showResult".equals(action)){
-            CmsAdminLinkmanagementThread doTheWork = (CmsAdminLinkmanagementThread)session.getValue(C_PUBLISH_LINKCHECK_THREAD);
+            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_PUBLISH_LINKCHECK_THREAD);
             //still working?
             if(doTheWork.isAlive()){
                 xmlTemplateDocument.setData("endMethod", "");
@@ -132,7 +133,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
             
             // linkcheck is ready. Now we can start the publishing
             CmsResource file = readResource(cms, filename);                     
-            Thread doPublish = new CmsPublishResourceThread(cms, file.getAbsolutePath());
+            A_CmsReportThread doPublish = new CmsPublishResourceThread(cms, file.getAbsolutePath());
             doPublish.start();
             session.putValue(C_PUBLISH_THREAD, doPublish);
             // indicate that changes in the user project etc. must be ignored here
@@ -142,7 +143,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
         } else if("showPublishResult".equals(action)){
             
             // thread is started and we shoud show the report information.
-            CmsPublishResourceThread doTheWork = (CmsPublishResourceThread)session.getValue(C_PUBLISH_THREAD);
+            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_PUBLISH_THREAD);
             if(doTheWork.isAlive()){
                 xmlTemplateDocument.setData("endMethod", "");
                 xmlTemplateDocument.setData("text", lang.getLanguageValue("project.publish.message_publish"));
@@ -217,7 +218,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
                     }
                     session.putValue(C_PUBLISH_LASTURL, lasturl);
                     // first part of the publish: check for broken links
-                    CmsAdminLinkmanagementThread doCheck = new CmsAdminLinkmanagementThread(cms, tempProjectId, file.getAbsolutePath());
+                    A_CmsReportThread doCheck = new CmsAdminLinkmanagementThread(cms, tempProjectId, file.getAbsolutePath());
                     doCheck.start();
                     session.putValue(C_PUBLISH_LINKCHECK_THREAD, doCheck);
                     template = "showresult";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPublishProjectThread.java,v $
- * Date   : $Date: 2003/02/15 11:14:53 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/02/21 15:18:23 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.report.CmsHtmlReport;
 import com.opencms.report.I_CmsReport;
 
@@ -42,7 +43,7 @@ import com.opencms.report.I_CmsReport;
  * @author Hanjo Riege
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
-public class CmsAdminPublishProjectThread extends Thread {
+public class CmsAdminPublishProjectThread extends A_CmsReportThread {
 
     private int m_projectId;
     private CmsObject m_cms;

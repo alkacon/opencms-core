@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagement.java,v $
-* Date   : $Date: 2003/01/30 19:12:27 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/02/21 15:18:23 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
+import com.opencms.report.A_CmsReportThread;
 
 import java.util.Hashtable;
 
@@ -65,7 +66,7 @@ public class CmsAdminLinkmanagement extends CmsWorkplaceDefault implements I_Cms
 
         if("start".equals(action)){
             // first call. Start the checking.
-            CmsAdminLinkmanagementThread doCheck = new CmsAdminLinkmanagementThread(cms, cms.getRequestContext().currentProject().getId());
+            A_CmsReportThread doCheck = new CmsAdminLinkmanagementThread(cms, cms.getRequestContext().currentProject().getId());
             doCheck.start();
             session.putValue(C_LINKCHECK_THREAD, doCheck);
             // store the text in the Session
@@ -77,7 +78,7 @@ public class CmsAdminLinkmanagement extends CmsWorkplaceDefault implements I_Cms
             templateDocument.setData("endMethod", "");
             templateDocument.setData("text", text);
         }else if("working".equals(action)){
-            CmsAdminLinkmanagementThread doCheck = (CmsAdminLinkmanagementThread)session.getValue(C_LINKCHECK_THREAD);
+            A_CmsReportThread doCheck = (CmsAdminLinkmanagementThread)session.getValue(C_LINKCHECK_THREAD);
             //still working?
             if(doCheck.isAlive()){
                 templateDocument.setData("endMethod", "");

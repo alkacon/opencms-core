@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/02/21 15:18:23 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.I_CmsRegistry;
+import com.opencms.report.A_CmsReportThread;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -86,7 +87,7 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
             
         } else if("showResult".equals(step)){
             // first look if there is already a thread running.
-            CmsAdminModuleDeleteThread doTheWork = (CmsAdminModuleDeleteThread)session.getValue(C_MODULE_THREAD);
+            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_MODULE_THREAD);
             if(doTheWork.isAlive()){
                 // thread is still running
                 xmlTemplateDocument.setData("endMethod", "");
@@ -102,7 +103,7 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
             
         } else if(C_DELETE.equals(step)) {            
-            Vector otherModules = reg.deleteCheckDependencies(moduleName);
+            Vector otherModules = reg.deleteCheckDependencies(moduleName, false);
             if(!otherModules.isEmpty()) {
                 // don't delete; send message error
                 xmlTemplateDocument.setData("name", moduleName);
@@ -148,7 +149,7 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
             // add root folder as file list for the project
             Vector projectFiles = new Vector();
             projectFiles.add("/");
-            Thread doDelete = new CmsAdminModuleDeleteThread(cms, reg, moduleName, conflictFiles, projectFiles);
+            A_CmsReportThread doDelete = new CmsAdminModuleDeleteThread(cms, reg, moduleName, conflictFiles, projectFiles, false);
             doDelete.start();
             session.putValue(C_MODULE_THREAD, doDelete);
             xmlTemplateDocument.setData("time", "5");

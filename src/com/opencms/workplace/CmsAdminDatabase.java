@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/02/03 19:46:13 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/02/21 15:18:23 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.util.Utils;
 
 import java.io.File;
@@ -50,7 +51,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.31 $ $Date: 2003/02/03 19:46:13 $
+ * @version $Revision: 1.32 $ $Date: 2003/02/21 15:18:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -155,7 +156,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
         // This is used for import (action=showResult) and for export (action=showExportResult).
         if("showResult".equals(action)){
             // ok. Thread for import is started and we shoud show the report information.
-            CmsAdminDatabaseImportThread doTheWork = (CmsAdminDatabaseImportThread)session.getValue(C_DATABASE_THREAD);
+            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_DATABASE_THREAD);
             //still working?
             if(doTheWork.isAlive()){
                 xmlTemplateDocument.setData("endMethod", "");
@@ -170,7 +171,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
         }else if("showExportResult".equals(action)){
             // ok. Thread for import is started and we shoud show the report information.
-            CmsAdminDatabaseExportThread doTheWork = (CmsAdminDatabaseExportThread)session.getValue(C_DATABASE_THREAD);
+            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_DATABASE_THREAD);
             //still working?
             if(doTheWork.isAlive()){
                 xmlTemplateDocument.setData("endMethod", "");
@@ -202,7 +203,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
         // first we look if the thread is allready running
         if((action != null) && ("working".equals(action))) {
             // still working?
-            Thread doTheWork = (Thread)session.getValue(C_DATABASE_THREAD);
+            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_DATABASE_THREAD);
             if(doTheWork != null && doTheWork.isAlive()) {
                 String time = (String)parameters.get("time");
                 int wert = Integer.parseInt(time);
@@ -269,7 +270,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                 if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                     session.removeValue(C_SESSION_THREAD_ERROR);
                 }
-                Thread doExport = new CmsAdminDatabaseExportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
+                A_CmsReportThread doExport = new CmsAdminDatabaseExportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
                         + fileName, exportPaths, excludeSystem, excludeUnchanged, exportUserdata, contentAge, session);
                 doExport.start();
                 session.putValue(C_DATABASE_THREAD, doExport);
@@ -301,7 +302,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                 if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                     session.removeValue(C_SESSION_THREAD_ERROR);
                 }
-                Thread doExport = new CmsAdminDatabaseExportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
+                A_CmsReportThread doExport = new CmsAdminDatabaseExportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
                         + fileName, exportChannels, exportModules, session);
                 doExport.start();
                 session.putValue(C_DATABASE_THREAD, doExport);
@@ -323,7 +324,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                     if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                         session.removeValue(C_SESSION_THREAD_ERROR);
                     }
-                    Thread doImport = new CmsAdminDatabaseImportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
+                    A_CmsReportThread doImport = new CmsAdminDatabaseImportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
                                 + existingFile, session);
                     doImport.start();
                     session.putValue(C_DATABASE_THREAD, doImport);

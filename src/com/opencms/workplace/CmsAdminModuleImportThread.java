@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleImportThread.java,v $
- * Date   : $Date: 2003/01/30 19:36:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/02/21 15:18:23 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.I_CmsRegistry;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.report.CmsHtmlReport;
 import com.opencms.report.I_CmsReport;
 
@@ -45,10 +46,10 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.0 rc 1
  */
-public class CmsAdminModuleImportThread extends Thread {
+public class CmsAdminModuleImportThread extends A_CmsReportThread {
 
     private String m_moduleName;
     private Vector m_conflictFiles;

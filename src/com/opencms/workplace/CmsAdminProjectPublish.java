@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2003/01/30 19:13:13 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/02/21 15:18:23 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -45,7 +46,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.27 $ $Date: 2003/01/30 19:13:13 $
+ * @version $Revision: 1.28 $ $Date: 2003/02/21 15:18:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -82,7 +83,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
         // here we show the report updates when the threads are allready running.
         if("showResult".equals(action)){
             // ok. Thread is started and we shoud show the report information.
-            CmsAdminLinkmanagementThread doTheWork = (CmsAdminLinkmanagementThread)session.getValue(C_PUBLISH_LINKCHECK_THREAD);
+            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_PUBLISH_LINKCHECK_THREAD);
             //still working?
             if(doTheWork.isAlive()){
                 xmlTemplateDocument.setData("endMethod", "");
@@ -108,7 +109,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
             // linkcheck is ready. Now we can start the publishing
             int projectId = ((Integer)session.getValue(C_PROJECT_ID_FOR_PUBLISH)).intValue();
             session.removeValue(C_PROJECT_ID_FOR_PUBLISH);
-            Thread doPublish = new CmsAdminPublishProjectThread(cms, projectId, session);
+            A_CmsReportThread doPublish = new CmsAdminPublishProjectThread(cms, projectId, session);
             doPublish.start();
             session.putValue(C_PUBLISH_THREAD, doPublish);
             xmlTemplateDocument.setData("actionParameter", "showPublishResult");
@@ -117,7 +118,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
 
         if("showPublishResult".equals(action)){
             // ok. Thread is started and we shoud show the report information.
-            CmsAdminPublishProjectThread doTheWork = (CmsAdminPublishProjectThread)session.getValue(C_PUBLISH_THREAD);
+            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_PUBLISH_THREAD);
             //still working?
             if(doTheWork.isAlive()){
                 xmlTemplateDocument.setData("endMethod", "");
@@ -181,7 +182,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
                 cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
             }
             // first part of the publish: check for broken links
-            CmsAdminLinkmanagementThread doCheck = new CmsAdminLinkmanagementThread(cms, projectId);
+            A_CmsReportThread doCheck = new CmsAdminLinkmanagementThread(cms, projectId);
             doCheck.start();
             session.putValue(C_PUBLISH_LINKCHECK_THREAD, doCheck);
             session.putValue(C_PROJECT_ID_FOR_PUBLISH, new Integer(projectId));
@@ -190,7 +191,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
             if((action != null) && ("working".equals(action))) {
 
                 // still working?
-                Thread doPublish = (Thread)session.getValue(C_PUBLISH_THREAD);
+                A_CmsReportThread doPublish = (A_CmsReportThread)session.getValue(C_PUBLISH_THREAD);
                 if(doPublish.isAlive()) {
                     String time = (String)parameters.get("time");
                     int wert = Integer.parseInt(time);

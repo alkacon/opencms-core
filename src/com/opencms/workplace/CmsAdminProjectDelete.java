@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/02/21 15:18:23 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
+import com.opencms.report.A_CmsReportThread;
 
 import java.util.Hashtable;
 
@@ -43,7 +44,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.17 $ $Date: 2003/02/21 15:18:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -97,14 +98,14 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsC
                 if(project.equals(cms.getRequestContext().currentProject())) {
                     cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
                 }
-                Thread doDelete = new CmsAdminProjectDeleteThread(cms, Integer.parseInt(projectId), session);
+                A_CmsReportThread doDelete = new CmsAdminProjectDeleteThread(cms, Integer.parseInt(projectId), session);
                 doDelete.start();
                 session.putValue(C_DELETE_THREAD, doDelete);
                 xmlTemplateDocument.setData("time", "10");
                 templateSelector = "wait";
             } else if("working".equals(action)) {
                 // still working?
-                Thread doDelete = (Thread)session.getValue(C_DELETE_THREAD);
+                A_CmsReportThread doDelete = (A_CmsReportThread)session.getValue(C_DELETE_THREAD);
                 if(doDelete.isAlive()) {
                     String time = (String)parameters.get("time");
                     int wert = Integer.parseInt(time);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminNewProjectThread.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/02/21 15:18:23 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.util.Utils;
 
 import java.util.Vector;
@@ -43,19 +44,13 @@ import java.util.Vector;
  * Creation date: (13.10.00 14:39:20)
  * @author Hanjo Riege
  */
-
-public class CmsAdminNewProjectThread extends Thread implements I_CmsConstants {
+public class CmsAdminNewProjectThread extends A_CmsReportThread {
 
     private Vector m_folders;
 
     private CmsObject m_cms;
 
     private I_CmsSession m_session;
-
-    /**
-     * Insert the method's description here.
-     * Creation date: (13.09.00 09:52:24)
-     */
 
     public CmsAdminNewProjectThread(CmsObject cms, Vector folders, I_CmsSession session) {
         m_cms = cms;
@@ -75,10 +70,19 @@ public class CmsAdminNewProjectThread extends Thread implements I_CmsConstants {
             }
         }
         catch(CmsException e) {
-            m_session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
+            m_session.putValue(I_CmsConstants.C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
             }
         }
     }
+    
+    /**
+     * Returns the part of the report that is ready.
+     * 
+     * @return the part of the report that is ready
+     */
+    public String getReportUpdate(){
+        return "";
+    }     
 }

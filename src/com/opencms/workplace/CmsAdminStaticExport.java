@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/02/21 15:18:23 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsStaticExport;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.util.Encoder;
 
 import java.util.Hashtable;
@@ -46,7 +47,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -84,7 +85,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
         // here we show the report updates when the threads are allready running.
         if("showResult".equals(action)){
             // ok. Thread is started and we shoud show the report information.
-            CmsAdminStaticExportThread doTheWork = (CmsAdminStaticExportThread)session.getValue(C_STATICEXPORT_THREAD);
+            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_STATICEXPORT_THREAD);
             //still working?
             if(doTheWork.isAlive()){
                 xmlTemplateDocument.setData("endMethod", "");
@@ -166,7 +167,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
         // first we look if the thread is allready running
         if((action != null) && ("working".equals(action))) {
             // still working?
-            Thread doTheWork = (Thread)session.getValue(C_STATICEXPORT_THREAD);
+            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_STATICEXPORT_THREAD);
             if(doTheWork.isAlive()) {
                 String time = (String)parameters.get("time");
                 int wert = Integer.parseInt(time);
@@ -194,7 +195,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
             if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                 session.removeValue(C_SESSION_THREAD_ERROR);
             }
-            Thread doExport = new CmsAdminStaticExportThread(cms, session);
+            A_CmsReportThread doExport = new CmsAdminStaticExportThread(cms, session);
             doExport.start();
             session.putValue(C_STATICEXPORT_THREAD , doExport);
             xmlTemplateDocument.setData("time", "10");

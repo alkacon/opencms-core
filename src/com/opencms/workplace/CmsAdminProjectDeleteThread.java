@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDeleteThread.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/02/21 15:18:23 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.util.Utils;
 
 /**
@@ -43,7 +44,7 @@ import com.opencms.util.Utils;
  * @author Edna Falkenhan
  */
 
-public class CmsAdminProjectDeleteThread extends Thread implements I_CmsConstants {
+public class CmsAdminProjectDeleteThread extends A_CmsReportThread {
 
     private int m_projectId;
 
@@ -68,10 +69,19 @@ public class CmsAdminProjectDeleteThread extends Thread implements I_CmsConstant
             m_cms.deleteProject(m_projectId);
         }
         catch(CmsException e) {
-            m_session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
+            m_session.putValue(I_CmsConstants.C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
             }
         }
     }
+    
+    /**
+     * Returns the part of the report that is ready.
+     * 
+     * @return the part of the report that is ready
+     */
+    public String getReportUpdate(){
+        return "";
+    }    
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/02/21 15:18:23 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.I_CmsRegistry;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.io.File;
@@ -66,6 +67,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
      */
     private final String C_MODULE_NAV = "modulenav";
     private final String C_MODULE_FILENAME = "modulefilename";
+    private final String C_MODULE_NAME = "modulename";
     private final String C_MODULE_THREAD = "modulethread";
 
     /**
@@ -96,17 +98,17 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
             templateSelector = importModule(cms, reg, xmlTemplateDocument, session, null);
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
         }
-        
-        String step = (String)parameters.get("step");
+
+        String step = (String)parameters.get("step");               
 
         // first look if there is already a thread running.
         if("showResult".equals(step)){
-            CmsAdminModuleImportThread doTheWork = (CmsAdminModuleImportThread)session.getValue(C_MODULE_THREAD);
+            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_MODULE_THREAD);
             if(doTheWork.isAlive()){
                 // thread is still running
                 xmlTemplateDocument.setData("endMethod", "");
                 xmlTemplateDocument.setData("text", "");
-            }else{
+            } else {
                 // thread is finished, activate the buttons 
                 xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod"));
                 xmlTemplateDocument.setData("autoUpdate","");
@@ -241,19 +243,29 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
     private String importModule(CmsObject cms, I_CmsRegistry reg, CmsXmlTemplateFile xmlDocument, I_CmsSession session, String zipName) throws CmsException {
         String nav = (String)session.getValue(C_MODULE_NAV);
         Vector conflictFiles = null;
+        String moduleName = null;
+        boolean importNewModule = true;
+        String type = I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+        
         if(nav == null) {
-
             // this is the first go. Try to import the module and if it dont't work return the corresponding errorpage
-            String moduleName = reg.importGetModuleName(zipName);
+            moduleName = reg.importGetModuleName(zipName);
             if(reg.moduleExists(moduleName)) {
-                xmlDocument.setData("name", moduleName);
-                xmlDocument.setData("version", "" + reg.getModuleVersion(moduleName));
-                session.removeValue(C_MODULE_NAV);
-                return C_ERRORREPLACE;
+                type = reg.getModuleType(moduleName);
+                if (! I_CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(type)) {
+                    // not a simple module, can not be replaced
+                    xmlDocument.setData("name", moduleName);
+                    xmlDocument.setData("version", "" + reg.getModuleVersion(moduleName));
+                    session.removeValue(C_MODULE_NAV);
+                    return C_ERRORREPLACE;
+                } else {
+                    // simple module, start module replacement
+                    session.putValue(C_MODULE_NAME, moduleName);                    
+                    importNewModule = false;
+                }
             }
-            Vector needs = reg.importCheckDependencies(zipName);
+            Vector needs = reg.importCheckDependencies(zipName, true);
             if(!needs.isEmpty()) {
-
                 // there are dependences not fulfilled
                 xmlDocument.setData("name", moduleName);
                 xmlDocument.setData("version", "" + reg.getModuleVersion(moduleName));
@@ -265,21 +277,25 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
                 session.removeValue(C_MODULE_NAV);
                 return C_ERRORDEP;
             }
-            conflictFiles = reg.importGetConflictingFileNames(zipName);
-            if(!conflictFiles.isEmpty()) {
-
-                //
-                session.putValue(C_SESSION_MODULE_VECTOR, conflictFiles);
-                session.putValue(C_MODULE_NAV, C_FILES);
-                session.putValue(C_MODULE_FILENAME, zipName);
-                return C_FILES;
+            if (! I_CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(type)) {
+                conflictFiles = reg.importGetConflictingFileNames(zipName);
+                if (!conflictFiles.isEmpty()) {
+                    session.putValue(C_SESSION_MODULE_VECTOR, conflictFiles);
+                    session.putValue(C_MODULE_NAV, C_FILES);
+                    session.putValue(C_MODULE_FILENAME, zipName);
+                    return C_FILES;
+                }
+            } else {
+                // simple module, no "confict file" check performed
+                conflictFiles = new Vector();
             }
+            
         }
         else {
             if(C_FILES.equals(nav)) {
-
-                //
                 zipName = (String)session.getValue(C_MODULE_FILENAME);
+                moduleName = (String)session.getValue(C_MODULE_NAME);
+                if (moduleName != null) importNewModule = false; 
                 conflictFiles = (Vector)session.getValue(C_SESSION_MODULE_VECTOR);
                 session.removeValue(C_MODULE_NAV);
             }
@@ -288,9 +304,15 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
         // add root folder as file list for the project
         Vector projectFiles = new Vector();
         projectFiles.add("/");
-        Thread doTheImport = new CmsAdminModuleImportThread(cms, reg, zipName, conflictFiles, projectFiles);
-        doTheImport.start();
-        session.putValue(C_MODULE_THREAD, doTheImport);
+        if (importNewModule) {
+            A_CmsReportThread doTheImport = new CmsAdminModuleImportThread(cms, reg, zipName, conflictFiles, projectFiles);
+            doTheImport.start();
+            session.putValue(C_MODULE_THREAD, doTheImport);
+        } else {
+            A_CmsReportThread doTheReplace = new CmsAdminModuleReplaceThread(cms, reg, moduleName, zipName, conflictFiles, projectFiles);
+            doTheReplace.start();
+            session.putValue(C_MODULE_THREAD, doTheReplace);
+        }
         xmlDocument.setData("time", "5");      
         return "showresult";                
     }

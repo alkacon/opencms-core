@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
- * Date   : $Date: 2003/01/30 19:36:48 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/02/21 15:18:23 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.I_CmsRegistry;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.report.CmsHtmlReport;
 import com.opencms.report.I_CmsReport;
 
@@ -46,10 +47,10 @@ import java.util.Vector;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.0 rc 1
  */
-public class CmsAdminModuleDeleteThread extends Thread {
+public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
 
     private String m_moduleName;
     private Vector m_conflictFiles;
@@ -57,6 +58,7 @@ public class CmsAdminModuleDeleteThread extends Thread {
     private I_CmsRegistry m_registry;
     private CmsObject m_cms;
     private I_CmsReport m_report;
+    private boolean m_replaceMode;
 
     /** DEBUG flag */
     private static final boolean DEBUG = false;
@@ -71,7 +73,7 @@ public class CmsAdminModuleDeleteThread extends Thread {
      * @param exclusion vector of files to exclude
      * @param projectFiles vector of project files
      */
-    public CmsAdminModuleDeleteThread(CmsObject cms, I_CmsRegistry reg, String moduleName, Vector conflictFiles, Vector projectFiles) {
+    public CmsAdminModuleDeleteThread(CmsObject cms, I_CmsRegistry reg, String moduleName, Vector conflictFiles, Vector projectFiles, boolean replaceMode) {
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
         m_moduleName = moduleName;
@@ -80,6 +82,7 @@ public class CmsAdminModuleDeleteThread extends Thread {
         m_projectFiles = projectFiles;
         String locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
         m_report = new CmsHtmlReport(locale);
+        m_replaceMode = replaceMode;
         if (DEBUG) System.err.println("CmsAdminModuleDeleteThread() constructed");
     }
 
@@ -105,8 +108,8 @@ public class CmsAdminModuleDeleteThread extends Thread {
             for(int i = 0;i < m_projectFiles.size();i++) {
                 m_cms.copyResourceToProject((String)m_projectFiles.elementAt(i));
             }
-            // import the module
-            m_registry.deleteModule(m_moduleName, m_conflictFiles, m_report);
+            // delete the module
+            m_registry.deleteModule(m_moduleName, m_conflictFiles, m_replaceMode, m_report);
 
             m_report.println(m_report.key("report.publish_project_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             // now unlock and publish the project

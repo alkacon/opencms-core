@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2003/02/16 19:31:09 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/02/21 15:18:23 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         Vector stringDeps = new Vector();
         for(int i = 0;i < deps;i++) {
             String max = (String)maxVersion.elementAt(i);
-            if("-1".equals(max)) {
+            if(max.startsWith("-")) {
                 max = "*";
             }
             stringDeps.addElement((String)depNames.elementAt(i) + "  Version:" + (String)minVersion.elementAt(i) + " - " + max);
@@ -397,20 +397,20 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
                 complString = complString.substring(0, complString.lastIndexOf("-") - 1);
                 String min = complString.substring(complString.lastIndexOf(":") + 1);
                 depNames.addElement((complString.substring(0, complString.lastIndexOf("Version:") - 1)).trim());
-                int minInt = 1;
-                int maxInt = -1;
+                float minInt = 0;
+                float maxInt = -1;
                 try {
-                    minInt = Integer.parseInt(min);
+                    minInt = Float.parseFloat(min);
                 }catch(Exception e) {
                 }
                 try {
                     if(!"*".equals(max)) {
-                        maxInt = Integer.parseInt(max);
+                        maxInt = Float.parseFloat(max);
                     }
                 }catch(Exception e) {
                 }
-                minVersion.addElement(new Integer(minInt));
-                maxVersion.addElement(new Integer(maxInt));
+                minVersion.addElement(new Float(minInt));
+                maxVersion.addElement(new Float(maxInt));
             }
             reg.setModuleDependencies(name, depNames, minVersion, maxVersion);
 

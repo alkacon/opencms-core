@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolder.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/02/21 15:18:23 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Utils;
 
@@ -50,7 +51,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.13 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.14 $ $Date: 2003/02/21 15:18:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -135,7 +136,7 @@ public class CmsSyncFolder extends CmsWorkplaceDefault implements I_CmsConstants
         // first we look if the thread is already running
         if((action != null) && ("working".equals(action))) {
             // still working?
-            Thread doProjectNew = (Thread)session.getValue(C_SYNCFOLDER_THREAD);
+            A_CmsReportThread doProjectNew = (A_CmsReportThread)session.getValue(C_SYNCFOLDER_THREAD);
             if(doProjectNew.isAlive()) {
                 String time = (String)parameters.get("time");
                 int wert = Integer.parseInt(time);
@@ -215,7 +216,7 @@ public class CmsSyncFolder extends CmsWorkplaceDefault implements I_CmsConstants
                     if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                         session.removeValue(C_SESSION_THREAD_ERROR);
                     }
-                    Thread doSyncFolder = new CmsSyncFolderThread(cms, synchronizeResources, m_newProject, session);
+                    A_CmsReportThread doSyncFolder = new CmsSyncFolderThread(cms, synchronizeResources, m_newProject, session);
                     doSyncFolder.start();
                     session.putValue(C_SYNCFOLDER_THREAD, doSyncFolder);
                     xmlTemplateDocument.setData("time", "5");

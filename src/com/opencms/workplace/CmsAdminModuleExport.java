@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/02/21 15:18:23 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import com.opencms.core.OpenCms;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
 import com.opencms.file.I_CmsRegistry;
+import com.opencms.report.A_CmsReportThread;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -95,7 +96,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
             if (DEBUG > 1) System.out.println("showResult for export");
                      
             // first look if there is already a thread running.
-            CmsAdminModuleExportThread doTheWork = (CmsAdminModuleExportThread)session.getValue(C_MODULE_THREAD);
+            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_MODULE_THREAD);
             if(doTheWork.isAlive()){
                 if (DEBUG > 1) System.out.println("showResult: thread is still running");
                 // thread is still running
@@ -214,7 +215,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
             */
 
             String filename = CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + moduleName + "_" + reg.getModuleVersion(moduleName);
-            Thread doExport = new CmsAdminModuleExportThread(cms, reg, moduleName, resourcen, filename);
+            A_CmsReportThread doExport = new CmsAdminModuleExportThread(cms, reg, moduleName, resourcen, filename);
             doExport.start();
             session.putValue(C_MODULE_THREAD, doExport);
             xmlTemplateDocument.setData("time", "5");
