@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2005/03/29 17:52:04 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/03/30 08:47:25 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.workplace.I_CmsWpConstants;
  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsDefaultUserSettings extends CmsUserSettings {
 
@@ -69,9 +69,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** Value for publishing siblings in publish dialog settings. */
     private static String C_PUBLISHMODE_SIBLINGS = "allsiblings";
-
-    /** Value for "true". */
-    private static String C_TRUEVALUE = "true";
 
     /**  Array of the possible "button styles". */
     public static final String[] m_buttonStyles = {
@@ -802,11 +799,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setShowLockDialog(String mode) {
 
-        boolean showLock = false;
-        if (mode.equalsIgnoreCase(C_TRUEVALUE)) {
-            showLock = true;
-        }
-        setDialogShowLock(showLock);
+        setDialogShowLock(Boolean.valueOf(mode).booleanValue());
     }
     
     /**
@@ -816,11 +809,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setShowExportSettingsDialog(String mode) {
 
-        boolean showExportSettings = false;
-        if (mode.equalsIgnoreCase(C_TRUEVALUE)) {
-            showExportSettings = true;
-        }
-        setDialogShowExportSettings(showExportSettings);
+        setDialogShowExportSettings(Boolean.valueOf(mode).booleanValue());
     }    
 
     /**
@@ -830,11 +819,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setTaskMessageAccepted(String mode) {
 
-        boolean messageAccepted = false;
-        if (mode.equalsIgnoreCase(C_TRUEVALUE)) {
-            messageAccepted = true;
-        }
-        setTaskMessageAccepted(messageAccepted);
+        setTaskMessageAccepted(Boolean.valueOf(mode).booleanValue());
     }
 
     /**
@@ -844,11 +829,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setTaskMessageCompleted(String mode) {
 
-        boolean messageCompleted = false;
-        if (mode.equalsIgnoreCase(C_TRUEVALUE)) {
-            messageCompleted = true;
-        }
-        setTaskMessageCompleted(messageCompleted);
+        setTaskMessageCompleted(Boolean.valueOf(mode).booleanValue());
     }
 
     /**
@@ -858,11 +839,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setTaskMessageForwarded(String mode) {
 
-        boolean messageForwarded = false;
-        if (mode.equalsIgnoreCase(C_TRUEVALUE)) {
-            messageForwarded = true;
-        }
-        setTaskMessageForwarded(messageForwarded);
+        setTaskMessageForwarded(Boolean.valueOf(mode).booleanValue());
     }
 
     /**
@@ -872,11 +849,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setTaskMessageMembers(String mode) {
 
-        boolean informMembers = false;
-        if (mode.equalsIgnoreCase(C_TRUEVALUE)) {
-            informMembers = true;
-        }
-        setTaskMessageMembers(informMembers);
+        setTaskMessageMembers(Boolean.valueOf(mode).booleanValue());
     }
 
     /**
@@ -886,11 +859,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setTaskShowAllProjects(String mode) {
 
-        boolean showProjetcs = false;
-        if (mode.equalsIgnoreCase(C_TRUEVALUE)) {
-            showProjetcs = true;
-        }
-        setTaskShowAllProjects(showProjetcs);
+        setTaskShowAllProjects(Boolean.valueOf(mode).booleanValue());
 
     }
 
