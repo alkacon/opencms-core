@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/07/03 08:15:30 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2000/07/18 14:05:55 $
+ * Version: $Revision: 1.97 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.96 $ $Date: 2000/07/03 08:15:30 $ 
+ * @version $Revision: 1.97 $ $Date: 2000/07/18 14:05:55 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1482,6 +1482,37 @@ public class CmsObject implements I_CmsConstants {
 	public void setPassword(String username, String oldPassword, String newPassword)
 		throws CmsException {
 		c_rb.setPassword(m_context.currentUser(), m_context.currentProject(), 
+						 username, oldPassword, newPassword );
+	}
+	
+	/** 
+	 * Sets a new password only if the user knows his recovery-password.
+	 * 
+	 * @param username The name of the user.
+	 * @param recoveryPassword The recovery password.
+	 * @param newPassword The new password.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void recoverPassword(String username, String recoveryPassword, String newPassword)
+        throws CmsException {
+		c_rb.recoverPassword(m_context.currentUser(), m_context.currentProject(), 
+						 username, recoveryPassword, newPassword );
+	}
+		
+		
+	/** 
+	 * Sets the recovery password for a user.
+	 * 
+	 * @param username The name of the user.
+	 * @param password The password.
+	 * @param newPassword The new recovery password.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void setRecoveryPassword(String username, String oldPassword, String newPassword)
+		throws CmsException {
+		c_rb.setRecoveryPassword(m_context.currentUser(), m_context.currentProject(), 
 						 username, oldPassword, newPassword );
 	}
 	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/03 08:15:30 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2000/07/18 14:05:55 $
+ * Version: $Revision: 1.92 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.91 $ $Date: 2000/07/03 08:15:30 $
+ * @version $Revision: 1.92 $ $Date: 2000/07/18 14:05:55 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -1458,6 +1458,26 @@ public interface I_CmsResourceBroker {
         throws CmsException ;	
 	
 	/** 
+	 * Sets a new password only if the user knows his recovery-password.
+	 * 
+	 * All users can do this if he knows the recovery-password.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users can do this if he knows the recovery-password.<P/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user.
+	 * @param recoveryPassword The recovery password.
+	 * @param newPassword The new password.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void recoverPassword(CmsUser currentUser, CmsProject currentProject, 
+							String username, String recoveryPassword, String newPassword)
+        throws CmsException;
+	
+	/** 
 	 * Sets the password for a user.
 	 * 
 	 * Only a adminstrator or the curretuser can do this.<P/>
@@ -1478,6 +1498,26 @@ public interface I_CmsResourceBroker {
 							String username, String oldPassword, String newPassword)
 		throws CmsException;
 
+	/** 
+	 * Sets the recovery password for a user.
+	 * 
+	 * Only a adminstrator or the curretuser can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * Current users can change their own password.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user.
+	 * @param oldPassword The old password.
+	 * @param newPassword The recovery password.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void setRecoveryPassword(CmsUser currentUser, CmsProject currentProject, 
+									String username, String password, String newPassword)
+		throws CmsException;
     
     
 	//  Methods working with resources

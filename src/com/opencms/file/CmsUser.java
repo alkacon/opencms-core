@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2000/06/23 08:01:33 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/07/18 14:05:55 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,11 +36,10 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/06/23 08:01:33 $
+ * @version $Revision: 1.24 $ $Date: 2000/07/18 14:05:55 $
  */
 
-public class CmsUser implements I_CmsConstants,
-                                                  Cloneable {
+public class CmsUser implements I_CmsConstants, Cloneable {
 
     /**
      * The login-name of the user.
@@ -58,6 +57,11 @@ public class CmsUser implements I_CmsConstants,
     private String m_password = "";
      
     
+    /**
+     * The password of the user.
+     */
+    private String m_recoveryPassword = "";
+     
     /**
      * The description of the user.
      */
@@ -133,25 +137,26 @@ public class CmsUser implements I_CmsConstants,
      * @param name The name of the new user.
      * @param description The description of the new user.
      */
-	public CmsUser (int id, String name, String password, String description, String firstname,
+	public CmsUser (int id, String name, String password, String recoveryPassword, String description, String firstname,
 					String lastname, String email, long lastlogin, long lastused, int flags,
 					Hashtable additionalInfo, CmsGroup defaultGroup, String address,
 					String section, int typ) {
             
         m_id=id;
-        m_name=checkNull(name);
-        m_password = checkNull(password);
-        m_description=checkNull(description);
-        m_firstname = checkNull(firstname);
-        m_lastname = checkNull(lastname);
-        m_email = checkNull(email);
+        m_name=name;
+        m_password = password;
+        m_recoveryPassword = recoveryPassword;
+        m_description= description;
+        m_firstname = firstname;
+        m_lastname = lastname;
+        m_email = email;
         m_lastlogin = lastlogin;
         m_lastused = lastused;
         m_flags  = flags;
         this.setDefaultGroup(defaultGroup);
         m_additionalInfo=additionalInfo;
-        m_address = checkNull(address);
-        m_section = checkNull(section);
+        m_address = address;
+        m_section = section;
         m_type = typ;
     }
       
@@ -534,25 +539,11 @@ public class CmsUser implements I_CmsConstants,
     * @return Cloned CmsUser.
     */
     public Object clone() {
-        CmsUser user= new CmsUser(m_id,new String(m_name),new String(m_password),
+        CmsUser user= new CmsUser(m_id,new String(m_name),new String(m_password),new String(m_recoveryPassword),
 								  new String (m_description),new String(m_firstname),
 								  new String(m_lastname),new String(m_email),m_lastlogin,
 								  m_lastused, m_flags, getAdditionalInfo(),
 								  m_defaultGroup, new String(m_address), new String(m_section),m_type);
         return user;   
     }
-
-     /**
-      * Checks if a string value is null and returns a empty string if nescessary.
-      * @param value The string to be checked.
-      * @return Original string value or empty string
-      */   
-    private String checkNull(String value) {
-        String ret="";
-        if (value!=null) {
-            ret=value;
-        }
-        return ret;
-    }
-    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/07/14 09:41:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/07/18 14:05:57 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3 $ $Date: 2000/07/14 09:41:47 $
+ * @version $Revision: 1.4 $ $Date: 2000/07/18 14:05:57 $
  */
 public interface I_CmsQuerys {
     
@@ -461,6 +461,7 @@ public interface I_CmsQuerys {
 	public static final String C_USERS_USER_ID = "USER_ID";
 	public static final String C_USERS_USER_NAME = "USER_NAME";
 	public static final String C_USERS_USER_PASSWORD = "USER_PASSWORD";
+	public static final String C_USERS_USER_RECOVERY_PASSWORD = "USER_RECOVERY_PASSWORD";
 	public static final String C_USERS_USER_DESCRIPTION = "USER_DESCRIPTION";
 	public static final String C_USERS_USER_FIRSTNAME = "USER_FIRSTNAME";
 	public static final String C_USERS_USER_LASTNAME = "USER_LASTNAME";
@@ -479,7 +480,7 @@ public interface I_CmsQuerys {
 	public static final String C_USERS_MAXID = "SELECT MAX(USER_ID) FROM " + C_DATABASE_PREFIX + "USERS";
 
     public static final Integer C_USERS_ADD_KEY = new Integer(251);
-	public static final String C_USERS_ADD = "INSERT INTO " + C_DATABASE_PREFIX + "USERS VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	public static final String C_USERS_ADD = "INSERT INTO " + C_DATABASE_PREFIX + "USERS VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public static final Integer C_USERS_READ_KEY = new Integer(252);
 	public static final String C_USERS_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS WHERE USER_NAME = ? and USER_TYPE = ? and USER_DEFAULT_GROUP_ID = GROUP_ID";
@@ -514,7 +515,13 @@ public interface I_CmsQuerys {
 	public static final Integer C_USERS_SETPW_KEY = new Integer(258);
 	public static final String C_USERS_SETPW = "UPDATE " + C_DATABASE_PREFIX + "USERS SET USER_PASSWORD = ? WHERE USER_NAME = ? ";
 
-	public static final Integer C_USERS_DELETEBYID_KEY = new Integer(259);
+	public static final Integer C_USERS_SETRECPW_KEY = new Integer(259);
+	public static final String C_USERS_SETRECPW = "UPDATE " + C_DATABASE_PREFIX + "USERS SET USER_RECOVERY_PASSWORD = ? WHERE USER_NAME = ? ";
+	
+	public static final Integer C_USERS_RECOVERPW_KEY = new Integer(260);
+	public static final String  C_USERS_RECOVERPW = "UPDATE " + C_DATABASE_PREFIX + "USERS SET USER_PASSWORD = ? WHERE USER_NAME = ? and USER_RECOVERY_PASSWORD = ?";
+	
+	public static final Integer C_USERS_DELETEBYID_KEY = new Integer(261);
 	public static final String C_USERS_DELETEBYID = "DELETE FROM " + C_DATABASE_PREFIX + "USERS WHERE USER_ID = ?";
 	
 	

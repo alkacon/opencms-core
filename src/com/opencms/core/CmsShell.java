@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/07/11 08:49:56 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/07/18 14:05:55 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/07/11 08:49:56 $
+ * @version $Revision: 1.10 $ $Date: 2000/07/18 14:05:55 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -633,6 +633,36 @@ public class CmsShell implements I_CmsConstants {
 		}
 	}
 
+	/** 
+	 * Recovers the password for a user.
+	 * 
+	 * @param username The name of the user.
+	 * @param recoverPassword The recover password to check the access.
+	 * @param newPassword The new password.
+	 */
+	public void recoverPassword(String username, String recPassword, String newPassword) {
+		try {
+			m_cms.recoverPassword( username, recPassword, newPassword );
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	
+	/** 
+	 * Sets the recovery password for a user.
+	 * 
+	 * @param username The name of the user.
+	 * @param password The password.
+	 * @param newPassword The new recovery password.
+	 */
+	public void setRecoveryPassword(String username, String oldPassword, String newPassword) {
+		try {
+			m_cms.setRecoveryPassword( username, oldPassword, newPassword );
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	
 	/** 
 	 * Sets the password for a user.
 	 * 

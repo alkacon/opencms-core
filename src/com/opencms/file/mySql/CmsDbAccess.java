@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/17 16:10:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/07/18 14:05:56 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.7 $ $Date: 2000/07/17 16:10:35 $ * 
+ * @version $Revision: 1.8 $ $Date: 2000/07/18 14:05:56 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -725,6 +725,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				CmsUser user = new CmsUser(res.getInt(C_USERS_USER_ID),
 										   res.getString(C_USERS_USER_NAME),
 										   res.getString(C_USERS_USER_PASSWORD),
+										   res.getString(C_USERS_USER_RECOVERY_PASSWORD),
 										   res.getString(C_USERS_USER_DESCRIPTION),
 										   res.getString(C_USERS_USER_FIRSTNAME),
 										   res.getString(C_USERS_USER_LASTNAME),
@@ -904,18 +905,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			statement.setString(2,name);
 			// crypt the password with MD5
 			statement.setString(3, digest(password));
-			statement.setString(4,description);
-			statement.setString(5,firstname);
-			statement.setString(6,lastname);
-			statement.setString(7,email);
-			statement.setTimestamp(8, new Timestamp(lastlogin));
-			statement.setTimestamp(9, new Timestamp(lastused));
-			statement.setInt(10,flags);
-			statement.setBytes(11,value);
-			statement.setInt(12,defaultGroup.getId());
-			statement.setString(13,address);
-			statement.setString(14,section);
-			statement.setInt(15,type);
+			statement.setString(4, digest(""));
+			statement.setString(5,description);
+			statement.setString(6,firstname);
+			statement.setString(7,lastname);
+			statement.setString(8,email);
+			statement.setTimestamp(9, new Timestamp(lastlogin));
+			statement.setTimestamp(10, new Timestamp(lastused));
+			statement.setInt(11,flags);
+			statement.setBytes(12,value);
+			statement.setInt(13,defaultGroup.getId());
+			statement.setString(14,address);
+			statement.setString(15,section);
+			statement.setInt(16,type);
 			statement.executeUpdate();
          }
         catch (SQLException e){
@@ -964,6 +966,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				user = new CmsUser(res.getInt(C_USERS_USER_ID),
 								   res.getString(C_USERS_USER_NAME),
 								   res.getString(C_USERS_USER_PASSWORD),
+								   res.getString(C_USERS_USER_RECOVERY_PASSWORD),
 								   res.getString(C_USERS_USER_DESCRIPTION),
 								   res.getString(C_USERS_USER_FIRSTNAME),
 								   res.getString(C_USERS_USER_LASTNAME),
@@ -1034,6 +1037,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				user = new CmsUser(res.getInt(C_USERS_USER_ID),
 								   res.getString(C_USERS_USER_NAME),
 								   res.getString(C_USERS_USER_PASSWORD),
+								   res.getString(C_USERS_USER_RECOVERY_PASSWORD),
 								   res.getString(C_USERS_USER_DESCRIPTION),
 								   res.getString(C_USERS_USER_FIRSTNAME),
 								   res.getString(C_USERS_USER_LASTNAME),
@@ -1101,6 +1105,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				user = new CmsUser(res.getInt(C_USERS_USER_ID),
 								   res.getString(C_USERS_USER_NAME),
 								   res.getString(C_USERS_USER_PASSWORD),
+								   res.getString(C_USERS_USER_RECOVERY_PASSWORD),
 								   res.getString(C_USERS_USER_DESCRIPTION),
 								   res.getString(C_USERS_USER_FIRSTNAME),
 								   res.getString(C_USERS_USER_LASTNAME),
@@ -1262,6 +1267,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				CmsUser user = new CmsUser(res.getInt(C_USERS_USER_ID),
 										   res.getString(C_USERS_USER_NAME),
 										   res.getString(C_USERS_USER_PASSWORD),
+										   res.getString(C_USERS_USER_RECOVERY_PASSWORD),
 										   res.getString(C_USERS_USER_DESCRIPTION),
 										   res.getString(C_USERS_USER_FIRSTNAME),
 										   res.getString(C_USERS_USER_LASTNAME),
@@ -1319,6 +1325,62 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		} finally {
 			if( statement != null) {
 				m_pool.putPreparedStatement(C_USERS_SETPW_KEY, statement);
+			}
+		}
+	}
+	
+	/**
+	 * Sets the password, only if the user knows the recovery-password.
+	 * 
+	 * @param user the user to set the password for.
+	 * @param recoveryPassword the recoveryPassword the user has to know to set the password.
+	 * @param password the password to set
+	 * @exception thorws CmsException if something goes wrong.
+	 */ 
+	public void recoverPassword(String user, String recoveryPassword, String password ) 
+		throws CmsException {
+		PreparedStatement statement = null;
+		
+		try	{			
+            statement = m_pool.getPreparedStatement(C_USERS_RECOVERPW_KEY);
+			
+			statement.setString(1,digest(password));
+			statement.setString(2,user);
+			statement.setString(3,digest(recoveryPassword));
+			statement.executeUpdate();
+		}
+        catch (SQLException e){
+            throw new CmsException("Wrong recovery-password");			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_USERS_RECOVERPW_KEY, statement);
+			}
+		}
+	}
+	
+	/**
+	 * Sets a new password for a user.
+	 * 
+	 * @param user the user to set the password for.
+	 * @param password the recoveryPassword to set
+	 * @exception thorws CmsException if something goes wrong.
+	 */ 
+	public void setRecoveryPassword(String user, String password) 
+		throws CmsException {
+		PreparedStatement statement = null;
+		
+		try	{			
+            statement = m_pool.getPreparedStatement(C_USERS_SETRECPW_KEY);
+			
+			statement.setString(1,digest(password));
+			statement.setString(2,user);
+			statement.executeUpdate();
+		}
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_USERS_SETRECPW_KEY, statement);
 			}
 		}
 	}
@@ -4734,6 +4796,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		m_pool.initPreparedStatement(C_USERS_DELETE_KEY,C_USERS_DELETE);
 		m_pool.initPreparedStatement(C_USERS_GETUSERS_KEY,C_USERS_GETUSERS);
 		m_pool.initPreparedStatement(C_USERS_SETPW_KEY,C_USERS_SETPW);
+		m_pool.initPreparedStatement(C_USERS_SETRECPW_KEY,C_USERS_SETRECPW);
+		m_pool.initPreparedStatement(C_USERS_RECOVERPW_KEY,C_USERS_RECOVERPW);
 		m_pool.initPreparedStatement(C_USERS_DELETEBYID_KEY,C_USERS_DELETEBYID);
 		
 		// init statements for projects        

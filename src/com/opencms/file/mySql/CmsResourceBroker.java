@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/17 16:10:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/07/18 14:05:56 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/07/17 16:10:36 $
+ * @version $Revision: 1.6 $ $Date: 2000/07/18 14:05:56 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2787,7 +2787,75 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
     }
 
-    
+	/** 
+	 * Sets a new password only if the user knows his recovery-password.
+	 * 
+	 * All users can do this if he knows the recovery-password.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users can do this if he knows the recovery-password.<P/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user.
+	 * @param recoveryPassword The recovery password.
+	 * @param newPassword The new password.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void recoverPassword(CmsUser currentUser, CmsProject currentProject, 
+							String username, String recoveryPassword, String newPassword)
+        throws CmsException {
+		// check the length of the new password.
+		if(newPassword.length() < C_PASSWORD_MINIMUMSIZE) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_SHORT_PASSWORD);
+		}
+		
+		// check the length of the recovery password.
+		if(recoveryPassword.length() < C_PASSWORD_MINIMUMSIZE) {
+			throw new CmsException("[" + this.getClass().getName() + "] no recovery password.");
+		}
+		
+		m_dbAccess.recoverPassword(username, recoveryPassword, newPassword);
+    }
+	
+	/** 
+	 * Sets the recovery password for a user.
+	 * 
+	 * Only a adminstrator or the curretuser can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * Current users can change their own password.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user.
+	 * @param password The password of the user.
+	 * @param newPassword The new recoveryPassword to be set.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void setRecoveryPassword(CmsUser currentUser, CmsProject currentProject, 
+							String username, String password, String newPassword)
+        throws CmsException {
+		// check the length of the new password.
+		if(newPassword.length() < C_PASSWORD_MINIMUMSIZE) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_SHORT_PASSWORD);
+		}
+		
+		// read the user
+		CmsUser user = readUser(currentUser, currentProject, username, password);
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) && 
+			( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
+			m_dbAccess.setRecoveryPassword(username, newPassword);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_NO_ACCESS);
+		}
+    }
     
 	//  Methods working with resources
     
