@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/03/01 11:43:36 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/03/06 18:51:23 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.importexport;
 
+import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
@@ -109,7 +110,8 @@ public class CmsImportVersion4 extends A_CmsImport {
      * @throws CmsException if something goes wrong
      */
     public synchronized void importResources(CmsObject cms, String importPath, I_CmsReport report, MessageDigest digest, File importResource, ZipFile importZip, Document docXml, Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
-        // initialize the import        
+        // initialize the import       
+        initialize();
         m_cms = cms;
         m_importPath = importPath;
         m_report = report;
@@ -140,6 +142,8 @@ public class CmsImportVersion4 extends A_CmsImport {
             convertPointerToLinks();
         } catch (CmsException e) {
             throw e;
+        } finally {
+            cleanUp();
         }
     }
 
@@ -159,12 +163,12 @@ public class CmsImportVersion4 extends A_CmsImport {
             for (int i = 0; i < groupNodes.size(); i++) {
                 currentElement = (Element)groupNodes.get(i);
                 name = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_NAME);
-                name = OpenCms.getDefaultUsers().translateGroup(name);  
+                name = OpenCms.getImportExportManager().translateGroup(name);  
                 description = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
                 flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
                 parentgroup = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_PARENTGROUP);
                 if ((parentgroup!=null) && (parentgroup.length()>0)) {
-                    parentgroup = OpenCms.getDefaultUsers().translateGroup(parentgroup);
+                    parentgroup = OpenCms.getImportExportManager().translateGroup(parentgroup);
                 }
                 // import this group
              
@@ -213,7 +217,7 @@ public class CmsImportVersion4 extends A_CmsImport {
           for (int i = 0; i < userNodes.size(); i++) {
               currentElement = (Element)userNodes.get(i);
               name = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_NAME);
-              name = OpenCms.getDefaultUsers().translateUser(name);              
+              name = OpenCms.getImportExportManager().translateUser(name);              
               // decode passwords using base 64 decoder
               dec = new sun.misc.BASE64Decoder();
               pwd = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_PASSWORD);
@@ -250,7 +254,7 @@ public class CmsImportVersion4 extends A_CmsImport {
               for (int j = 0; j < groupNodes.size(); j++) {
                   currentGroup = (Element)groupNodes.get(j);
                   String userInGroup=CmsImport.getChildElementTextValue(currentGroup, I_CmsConstants.C_EXPORT_TAG_NAME);
-                  userInGroup = OpenCms.getDefaultUsers().translateGroup(userInGroup);  
+                  userInGroup = OpenCms.getImportExportManager().translateGroup(userInGroup);  
                   userGroups.addElement(userInGroup);
               }
               // import this user
@@ -342,7 +346,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                }
                // <userlastmodified>
                userlastmodified = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED);
-               userlastmodified = OpenCms.getDefaultUsers().translateUser(userlastmodified);
+               userlastmodified = OpenCms.getImportExportManager().translateUser(userlastmodified);
                // <datecreated>
                if ((timestamp = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DATECREATED)) != null) {
                    datecreated = Long.parseLong(timestamp);
@@ -351,7 +355,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                }
                // <usercreated>
                usercreated = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_USERCREATED);
-               usercreated = OpenCms.getDefaultUsers().translateUser(usercreated);
+               usercreated = OpenCms.getImportExportManager().translateUser(usercreated);
                // <flags>              
                flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
 
@@ -387,11 +391,11 @@ public class CmsImportVersion4 extends A_CmsImport {
 
                            String principal=id.substring(id.indexOf(".")+1, id.length());
 
-                           if (id.startsWith(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_GROUP)) {
-                               principal = OpenCms.getDefaultUsers().translateGroup(principal);  
+                           if (id.startsWith(CmsImportExportConfiguration.C_PRINCIPAL_GROUP)) {
+                               principal = OpenCms.getImportExportManager().translateGroup(principal);  
                                principalId=m_cms.readGroup(principal).getId().toString();
                            } else {
-                               principal = OpenCms.getDefaultUsers().translateUser(principal);  
+                               principal = OpenCms.getImportExportManager().translateUser(principal);  
                                principalId=m_cms.readUser(principal).getId().toString();
                            }                                                    
                            String acflags = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_FLAGS);                                                      

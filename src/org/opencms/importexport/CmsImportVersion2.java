@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/02/27 16:44:46 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2004/03/06 18:51:23 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,14 +96,31 @@ public class CmsImportVersion2 extends A_CmsImport {
     public int getVersion() {
         return CmsImportVersion2.C_IMPORT_VERSION;
     }
-
+    
     /**
-     * Creates a new CmsImportVerion2 object.<p>
+     * Initializes all member variables before the import is started.<p>
+     * 
+     * This is required since there is only one instance for
+     * each import version that is kept in memory and reused.<p>
      */
-    public CmsImportVersion2() {
+    protected void initialize() {
         m_convertToXmlPage = true;
-        m_webAppNames = (List) new ArrayList();
-        m_webappUrl = null;
+        m_webAppNames = new ArrayList(); 
+        super.initialize();
+    }
+    
+    /**
+     * Cleans up member variables after the import is finished.<p>
+     * 
+     * This is required since there is only one instance for
+     * each import version that is kept in memory and reused.<p>
+     */
+    protected void cleanUp() {
+        m_pageStorage = null;
+        m_folderStorage = null;
+        m_webAppNames = null;
+        m_webappUrl = null;   
+        super.cleanUp();
     }
 
 
@@ -128,6 +145,7 @@ public class CmsImportVersion2 extends A_CmsImport {
      */
     public synchronized void importResources(CmsObject cms, String importPath, I_CmsReport report, MessageDigest digest, File importResource, ZipFile importZip, Document docXml, Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
         // initialize the import
+        initialize();
         m_cms = cms;
         m_importPath = importPath;
         m_report = report;
@@ -153,6 +171,8 @@ public class CmsImportVersion2 extends A_CmsImport {
             convertPointerToLinks();
         } catch (CmsException e) {
             throw e;
+        } finally {
+            cleanUp();
         }
     }
 
@@ -309,7 +329,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         }
 
         // get the old webapp url from the OpenCms properties
-        m_webappUrl = OpenCms.getImportExportManager().getWebAppUrl();
+        m_webappUrl = OpenCms.getImportExportManager().getOldWebAppUrl();
         if (m_webappUrl == null) {
             // use a default value
             m_webappUrl = "http://localhost:8080/opencms/opencms";

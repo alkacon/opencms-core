@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2004/02/27 15:56:15 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2004/03/06 18:52:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.4 $ $Date: 2004/02/27 15:56:15 $
+ * @version $Revision: 1.5 $ $Date: 2004/03/06 18:52:07 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -96,11 +96,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         m_importPath = importPath;
         m_report = report;
         m_importingChannelData = true;
-        // try to get all import implementations
-         // This has only made once.
-         if (m_ImportImplementations == null) {
-             m_ImportImplementations=OpenCms.getRegistry().getImportClasses();
-         }     
+        m_importImplementations = OpenCms.getImportExportManager().getImportVersionClasses();   
      }
 
     /**
@@ -108,7 +104,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * conflicting files.<p>
      * @throws CmsException in case something goes wrong
      */
-    public void importResources() throws CmsException {
+    public synchronized void importResources() throws CmsException {
         // initialize the import
         openImportFile();
         m_report.println("Import Version "+m_importVersion, I_CmsReport.C_FORMAT_NOTE);
@@ -119,10 +115,10 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             // now find the correct import implementation    
             m_cms.getRequestContext().saveSiteRoot();
             m_cms.setContextToCos();     
-            Iterator i=m_ImportImplementations.iterator();
+            Iterator i = m_importImplementations.iterator();
                 while (i.hasNext()) {
-                    I_CmsImport imp=((I_CmsImport)i.next());
-                    if (imp.getVersion()==m_importVersion) {
+                    I_CmsImport imp = (I_CmsImport)i.next();
+                    if (imp.getVersion() == m_importVersion) {
                         // this is the correct import version, so call it for the import process
                         imp.importResources(m_cms, m_importPath, m_report, 
                                         m_digest, m_importResource, m_importZip, m_docXml, null, null, null, null, null);

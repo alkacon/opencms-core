@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2004/02/27 14:26:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/06 18:51:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workplace.I_CmsWpConstants;
 
-
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateLinkConverter;
 import com.opencms.template.CmsXmlXercesParser;
@@ -48,10 +47,8 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.List;
 
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
@@ -81,16 +78,7 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
 
     /** The path to the bodies in OpenCms 4.x */
     private static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";
-
-    /**
-     * Creates a new CmsImportVerion1 object.<p>
-     */
-    public CmsImportVersion1() {
-        m_convertToXmlPage = true;
-        m_webAppNames = (List) new ArrayList();
-        m_webappUrl = null;        
-    }
-
+    
     /**
      * @see org.opencms.importexport.I_CmsImport#getVersion()
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/02/27 14:53:32 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/03/06 18:50:57 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,24 +80,6 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /** The algorithm for the message digest */
     public static final String C_IMPORT_DIGEST = "MD5";
-
-    /** Debug flag to show debug output */
-    protected static final int DEBUG = 0;
-
-    /** Access control entries for a single resource */
-    private Vector m_acEntriesToCreate = new Vector();
-
-    /** The cms contect to do the operations on the VFS/COS with */
-    protected CmsObject m_cms;
-
-    /** Digest for taking a fingerprint of the files */
-    protected MessageDigest m_digest = null;
-
-    /** The xml manifest-file */
-    protected Document m_docXml;
-
-    /** Groups to create during import are stored here */
-    protected Stack m_groupsToCreate = new Stack();
     
     /** The id of the legacy resource type "page" */
     public static final int C_RESOURCE_TYPE_PAGE_ID = 1;
@@ -116,12 +98,30 @@ public abstract class A_CmsImport implements I_CmsImport {
     
     /** The name of the legacy resource type "newpage" */
     public static final String C_RESOURCE_TYPE_NEWPAGE_NAME = "newpage";
+    
+    /** Debug flag to show debug output */
+    protected static final int DEBUG = 0;
+
+    /** Access control entries for a single resource */
+    private Vector m_acEntriesToCreate;
+
+    /** The cms contect to do the operations on the VFS/COS with */
+    protected CmsObject m_cms;
+
+    /** Digest for taking a fingerprint of the files */
+    protected MessageDigest m_digest;
+
+    /** The xml manifest-file */
+    protected Document m_docXml;
+
+    /** Groups to create during import are stored here */
+    protected Stack m_groupsToCreate;
 
     /**
      * In this vector we store the imported pages (as Strings from getAbsolutePath()),
      * after the import we check them all to update the link tables for the linkmanagement.
      */
-    protected Vector m_importedPages = new Vector();
+    protected List m_importedPages;
 
     /** Indicates if module data is being imported */
     protected boolean m_importingChannelData;
@@ -130,13 +130,13 @@ public abstract class A_CmsImport implements I_CmsImport {
     protected String m_importPath;
 
     /** The import-resource (folder) to load resources from */
-    protected File m_importResource = null;
+    protected File m_importResource;
 
     /** flag for conversion to xml pages */
     protected boolean m_convertToXmlPage;
 
     /**  The import-resource (zip) to load resources from */
-    protected ZipFile m_importZip = null;
+    protected ZipFile m_importZip;
 
     /** Storage for all pointer properties which must be converted into links */
     protected HashMap m_linkPropertyStorage;
@@ -145,31 +145,38 @@ public abstract class A_CmsImport implements I_CmsImport {
     protected HashMap m_linkStorage;
 
     /** The object to report the log messages */
-    protected I_CmsReport m_report = null;
+    protected I_CmsReport m_report;
+
+    /**
+     * Initializes all member variables before the import is started.<p>
+     * 
+     * This is required since there is only one instance for
+     * each import version that is kept in memory and reused.<p>
+     */
+    protected void initialize() {
+        m_importedPages = new Vector();
+        m_groupsToCreate = new Stack();
+        m_acEntriesToCreate = new Vector();
+    }
     
     /**
-      * Constructs a new uninitialized import, required for the special subclass data import.<p>
-      */
-    public A_CmsImport() {
-        // empty constructor
-    }
-
-    /**
-     * Constructs a new import object which imports the resources from an OpenCms 
-     * export zip file or a folder in the "real" file system.<p>
-     *
-     * @param cms the current cms object
-     * @param importPath the path in the cms VFS to import into
-     * @param report a report object to output the progress information to
+     * Cleans up member variables after the import is finished.<p>
+     * 
+     * This is required since there is only one instance for
+     * each import version that is kept in memory and reused.<p>
      */
-    public A_CmsImport(CmsObject cms, String importPath, I_CmsReport report) {
-        // set member variables
-        m_cms = cms;
-        m_importPath = importPath;
-        m_report = report;
-        m_importingChannelData = false;
+    protected void cleanUp() {
+        m_importResource = null;
+        m_importZip = null;
+        m_report = null;
+        m_linkStorage = null;
+        m_linkPropertyStorage = null;
+        m_importedPages = null;
+        m_groupsToCreate = null;
+        m_acEntriesToCreate = null; 
+        m_cms = null;
     }
-
+    
     /**
      * Creates a new access control entry and stores it for later write out.
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/02/27 14:36:30 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/03/06 18:51:23 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,8 @@ public class CmsImportVersion3 extends A_CmsImport {
      * @throws CmsException if something goes wrong
      */
     public synchronized void importResources(CmsObject cms, String importPath, I_CmsReport report, MessageDigest digest, File importResource, ZipFile importZip, Document docXml, Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
-        // initialize the import        
+        // initialize the import
+        initialize();
         m_cms = cms;
         m_importPath = importPath;
         m_report = report;
@@ -130,6 +131,8 @@ public class CmsImportVersion3 extends A_CmsImport {
             importAllResources(excludeList, writtenFilenames, fileCodes, propertyName, propertyValue);
         } catch (CmsException e) {
             throw e;
+        } finally {
+            cleanUp();
         }
     }
 
