@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/03/06 17:09:25 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/03/06 17:17:15 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.48 $ $Date: 2003/03/06 17:09:25 $
+ * @version $Revision: 1.49 $ $Date: 2003/03/06 17:17:15 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
@@ -766,9 +766,10 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                 }
             }
         }
-    // linkmanagement: create the links of the restored page
-    CmsPageLinks linkObject = cms.getPageLinks(file.getAbsolutePath());
-    cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
+        
+        // linkmanagement: create the links of the restored page
+        CmsPageLinks linkObject = cms.getPageLinks(file.getAbsolutePath());
+        cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
     }
 
     /**
@@ -790,6 +791,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         if (bodyPath != null){
             cms.doUndoChanges(bodyPath);
         }
+        
         // linkmanagement: create the links of the restored page
         CmsPageLinks linkObject = cms.getPageLinks(file.getAbsolutePath());
         cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());

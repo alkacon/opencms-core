@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/05 18:44:56 $
-* Version: $Revision: 1.363 $
+* Date   : $Date: 2003/03/06 17:17:15 $
+* Version: $Revision: 1.364 $
 
 *
 * This library is part of OpenCms -
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.363 $ $Date: 2003/03/05 18:44:56 $
+ * @version $Revision: 1.364 $ $Date: 2003/03/06 17:17:15 $
 
  *
  */
@@ -8547,7 +8547,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      */
     public ArrayList joinLinksToTargets(CmsObject cms, CmsUser theUser, CmsProject theProject, I_CmsReport theReport) throws CmsException {
         if (CmsAdminVfsLinkManagement.DEBUG) {
-            System.err.println( "[" + this.getClass().getName() + ".()] enter" );
+            System.err.println( "[" + this.getClass().getName() + ".joinLinksToTargets()] enter" );
         }        
         
         ArrayList brokenLinks = new ArrayList(0);
@@ -8699,7 +8699,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         }
         
         if (CmsAdminVfsLinkManagement.DEBUG) {
-            System.err.println( "[" + this.getClass().getName() + ".()] exit" );
+            System.err.println( "[" + this.getClass().getName() + ".joinLinksToTargets()] exit" );
         }          
         
         return brokenLinks;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/03/05 15:39:15 $
-* Version: $Revision: 1.264 $
+* Date   : $Date: 2003/03/06 17:17:15 $
+* Version: $Revision: 1.265 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.264 $
+ * @version $Revision: 1.265 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -869,6 +869,9 @@ public CmsFile createFile(String folder, String filename, byte[] contents, Strin
         catch (CmsException e1) {
             throw new CmsException( CmsException.C_FILESYSTEM_ERROR, e1 );
         }
+        
+        // clean-up the link management
+        this.joinLinksToTargets( new CmsShellReport() );        
     }
 
 /**
@@ -2160,7 +2163,13 @@ public void importResources(String importFile, String importPath) throws CmsExce
 public void importResources(String importFile, String importPath, I_CmsReport report) throws CmsException {
     // import the resources
     clearcache();
+    
+    // import the resources
     m_rb.importResources(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this, report);
+    
+    // update the link management in the Online project
+    m_rb.joinLinksToTargets( this, m_context.currentUser(), m_context.currentProject(), report );
+        
     clearcache();
 }
 /**
@@ -4412,7 +4421,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * @return the current link count of the specified resource
      * @throws CmsException
      */
-    protected int doDecrementLinkCountForResource( String theResourceName ) throws CmsException {    
+    public int doDecrementLinkCountForResource( String theResourceName ) throws CmsException {    
         //System.err.println( this.getClass().getName() + " decrementing link count of: " + theResourceName );   
         return m_rb.decrementLinkCountForResource( m_context.currentProject(), this.getSiteRoot(theResourceName) );  
     }  
@@ -4425,7 +4434,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * @return the current link count of the specified resource
      * @throws CmsException
      */    
-    protected int doIncrementLinkCountForResource( String theResourceName ) throws CmsException {  
+    public int doIncrementLinkCountForResource( String theResourceName ) throws CmsException {  
         //System.err.println( this.getClass().getName() + " incrementing link count of: " + theResourceName );              
         return m_rb.incrementLinkCountForResource( m_context.currentProject(), this.getSiteRoot(theResourceName) ); 
     }  

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/03/04 17:26:34 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/03/06 17:17:15 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2003/03/04 17:26:34 $
+ * @version $Revision: 1.34 $ $Date: 2003/03/06 17:17:15 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -202,6 +202,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
 
                         // change old file
                         CmsFile editFile = cms.readFile(filename);
+                        String oldLink = new String( editFile.getContents() );
                         editFile.setContents(link.getBytes());
 
                         if(step.equals("1")){
@@ -212,6 +213,10 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                         if(checkurl){
                             cms.writeFile(editFile);
                             cms.writeProperty(filename, C_PROPERTY_TITLE, title);
+                            
+                            cms.doDecrementLinkCountForResource( oldLink );
+                            cms.doIncrementLinkCountForResource( link );
+                            cms.linkResourceToTarget( filename, link );
                         }
                         linkResource = (CmsResource)editFile;
                     } else {
