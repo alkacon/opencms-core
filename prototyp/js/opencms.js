@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms.js,v $
- * Date   : $Date: 2000/03/23 15:20:20 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/03/29 14:16:52 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,6 +36,7 @@ var explorercontenturl="explorer_files_projekt.html";
 var selectedTask=0;
 var lastVisited="tasks_content_nafm.html";
 var formID;
+var treewin=null;
 
 // List of valid characters for INPUT fields containing names:
 var charList="0123456789-._~abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -141,6 +142,7 @@ function updateFrame(which, frameurl)
 //------------------------------------------------------------------------------------
 // open new window
 // m.schleich 20.12.1999
+// m.schreiber 20.03.2000
 //------------------------------------------------------------------------------------
 
 var workplace;
@@ -170,6 +172,7 @@ function openwin(url, name, w, h) //opens a new window with parameter URL, Windo
 //------------------------------------------------------------------------------------
 // open new window
 // m.schleich 26.01.2000
+// m.schreiber 20.03.2000
 //------------------------------------------------------------------------------------
 
 var smallwindow;
@@ -185,7 +188,7 @@ function opensmallwin(url, name, w, h) //opens a new window with parameter URL, 
 	      }
    		}
 	//smallwindow.focus();
-
+	return smallwindow;
 }
 
 

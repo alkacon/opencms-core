@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms_dialogscroll.js,v $
- * Date   : $Date: 2000/03/22 16:59:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/29 14:16:52 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -96,7 +96,6 @@ function makeObj(obj,nest){
 	this.el=bw.dom?document.getElementById(obj):bw.ie4?document.all[obj]:bw.ns4?eval(nest+'document.'+obj):0;
   	this.css=bw.dom?document.getElementById(obj).style:bw.ie4?document.all[obj].style:bw.ns4?eval(nest+'document.'+obj):0;
 	this.scrollHeight=bw.ns4?this.css.document.height:this.el.offsetHeight; 
-	//this.scrollHeight=720
 	this.clipHeight=bw.ns4?this.css.clip.height:this.el.offsetHeight;
 	this.up=goUp;this.down=goDown;
 	this.moveIt=moveIt; this.x; this.y;
@@ -145,6 +144,27 @@ function resized(){
 		pageWidth2=bw.ns4?innerWidth:document.body.offsetWidth;
 		pageHeight2=bw.ns4?innerHeight:document.body.offsetHeight;
 		if(pageWidth!=pageWidth2 || pageHeight!=pageHeight2) location.reload();
+}
+
+//---------------------------------------------
+// move(pos)
+// Makes the scrolling layer jump to its start or end
+// (depends on parameter value)
+// 
+// author: Matthias Schreiber
+// date:   20.03.2000
+// update: 22.03.2000
+//
+// @param pos: Position to jump to (permitted values: 'start' or 'end') 
+// 
+//---------------------------------------------
+
+function move(pos) {
+	if (pos=='start')
+		oScroll.moveIt(0,0);
+	else if (pos=='end') {
+		oScroll.moveIt(0,-oScroll.scrollHeight+oCont.clipHeight);
+	}
 }
 
 //---------------------------------------------
