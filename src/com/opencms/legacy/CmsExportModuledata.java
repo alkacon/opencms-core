@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2004/07/08 15:21:13 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2004/07/18 16:27:13 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,8 +52,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -71,7 +71,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.7 $ $Date: 2004/07/08 15:21:13 $
+ * @version $Revision: 1.8 $ $Date: 2004/07/18 16:27:13 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -214,7 +214,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             // first export the cos folders (ie. channels)               
             getReport().println(getReport().key("report.export_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);
 
-            getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
+            getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
             // export all the resources
             exportAllResources(exportNode, resourcesToExport);
             getReport().println(getReport().key("report.export_channels_end"), I_CmsReport.C_FORMAT_HEADLINE);
@@ -228,16 +228,15 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
                     moduleNames.addElement(modulesToExport[i]);
                 }
             }
-
-            Hashtable moduleExportables = new Hashtable();
-            OpenCms.getRegistry().getModuleExportables(moduleExportables);
+            
+            List moduleExportables = CmsLegacyModuleAction.getLegacyModulePublishClasses();
             // if there was no module selected then select all exportable modules,
             // else get only the modules from Hashtable that were selected
             if (moduleNames.size() == 0) {
                 if (resourcesToExport.length > 0) {
-                    Enumeration modElements = moduleExportables.elements();
-                    while (modElements.hasMoreElements()) {
-                        modules.add(modElements.nextElement());
+                    Iterator modElements = moduleExportables.iterator();
+                    while (modElements.hasNext()) {
+                        modules.add(modElements.next());
                     }
                 }
             } else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2004/07/09 16:40:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/07/18 16:34:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,7 +52,7 @@ import java.util.Locale;
  * in the OpenCms configuration.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.3
  */
@@ -143,7 +143,7 @@ public class CmsExplorerContextMenu {
                     }
                     result.append("\"'" + target + "'\", ");
                     // remove all blanks from the rule String
-                    String rules = CmsStringSubstitution.substitute(item.getRules(), " ", "");
+                    String rules = CmsStringUtil.substitute(item.getRules(), " ", "");
                     // parse the rules to create the autolock column
                     rules = parseRules(rules, item.getKey());
                     result.append("\"" + rules + "\");\n");

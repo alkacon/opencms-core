@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyCustom.java,v $
- * Date   : $Date: 2004/06/29 14:38:57 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/07/18 16:34:53 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.3.3
  */
@@ -290,7 +290,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 String propValue = property.getValue();
                 if (propValue != null) {
                     propValue = propValue.trim(); 
-                    propValue = CmsStringSubstitution.escapeJavaScript(propValue);
+                    propValue = CmsStringUtil.escapeJavaScript(propValue);
                     // create the JS output for a single property
                     result.append("\tdocument.getElementById(\"");    
                     result.append(PREFIX_VALUE + curProperty + "\").value = \"");               
@@ -305,7 +305,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             String propValue = property.getValue();
             if (propValue != null) {
                 propValue = propValue.trim(); 
-                propValue = CmsStringSubstitution.escapeJavaScript(propValue);
+                propValue = CmsStringUtil.escapeJavaScript(propValue);
                 // create the JS output for a single property
                 result.append("\tdocument.getElementById(\"");    
                 result.append(PREFIX_VALUE + I_CmsConstants.C_PROPERTY_NAVTEXT + "\").value = \"");               

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/06/25 16:33:07 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/07/18 16:32:08 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.db.CmsDbPool;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsVfsResourceNotFoundException;
@@ -96,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.35 $ $Date: 2004/06/25 16:33:07 $
+ * @version $Revision: 1.36 $ $Date: 2004/07/18 16:32:08 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -228,7 +228,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     public static String replaceTableKey(int projectId, String query) {
         // make the statement project dependent
         String replacePattern = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID || projectId < 0) ? "_ONLINE_" : "_OFFLINE_";
-        query = CmsStringSubstitution.substitute(query, C_TABLE_KEY_SEARCH_PATTERN, replacePattern);
+        query = CmsStringUtil.substitute(query, C_TABLE_KEY_SEARCH_PATTERN, replacePattern);
 
         return query;
     }
@@ -661,7 +661,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
                     String replacePattern = this.readQuery(replaceKey);
 
                     if (replacePattern != null) {
-                        currentValue = CmsStringSubstitution.substitute(currentValue, searchPattern, replacePattern);
+                        currentValue = CmsStringUtil.substitute(currentValue, searchPattern, replacePattern);
                     }
 
                     lastIndex = endIndex + 2;
@@ -699,8 +699,8 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         String query = readQuery(queryKey);
 
         // replace control chars.
-        query = CmsStringSubstitution.substitute(query, "\t", " ");
-        query = CmsStringSubstitution.substitute(query, "\n", " ");
+        query = CmsStringUtil.substitute(query, "\t", " ");
+        query = CmsStringUtil.substitute(query, "\n", " ");
 
         if (projectId == 0) {
             // a project ID = 0 is an internal indicator that a project-independent 

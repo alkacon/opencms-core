@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/07/18 16:33:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 package org.opencms.staticexport;
 
 import org.opencms.site.CmsSiteManager;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  */
 public class CmsLink {
     
@@ -143,9 +143,9 @@ public class CmsLink {
     private static Map getParameters(String query) {
         
         HashMap parameters = new HashMap();
-        String params[] = CmsStringSubstitution.split(query, "&");
+        String params[] = CmsStringUtil.split(query, "&");
         for (int i = 0; i < params.length; i++) {
-            String pair[] = CmsStringSubstitution.split(params[i], "=");
+            String pair[] = CmsStringUtil.split(params[i], "=");
             String[] p = (String[])parameters.get(pair[0]);
             if (p == null) {
                 if (pair.length > 1) {

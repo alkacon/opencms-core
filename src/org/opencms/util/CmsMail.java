@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsMail.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/07/18 16:34:33 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.util;
 
-import org.opencms.configuration.CmsMailSettings;
+import org.opencms.configuration.CmsMailHost;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
@@ -92,7 +92,7 @@ import javax.mail.internet.MimeMessage;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsMail extends Thread {
 
@@ -640,7 +640,7 @@ public class CmsMail extends Thread {
         Iterator i = OpenCms.getSystemInfo().getMailSettings().getMailHosts().iterator();
         boolean success = false;
         while (i.hasNext()) {
-            CmsMailSettings.CmsMailHost host = (CmsMailSettings.CmsMailHost)i.next();
+            CmsMailHost host = (CmsMailHost)i.next();
             try {
                 msg = buildMessage(host);                
                 Transport.send(msg);
@@ -689,7 +689,7 @@ public class CmsMail extends Thread {
      * @return object that can be used as argument for the <code>Transport</code> class
      * @throws Exception no exceptions occuring while building the mail will be caught
      */
-    private Message buildMessage(CmsMailSettings.CmsMailHost host) throws Exception {
+    private Message buildMessage(CmsMailHost host) throws Exception {
 
         // Default encoding for new mail message
         // TODO: This should NOT be hardcoded here!

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsRequestHandler.java,v $
- * Date   : $Date: 2004/06/13 23:38:58 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/18 16:33:00 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,21 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Describes an OpenCms request handler.<p>
+ * 
+ * Request handlers are used for special requests to OpenCms 
+ * that should NOT be mapped to a VFS resource.
+ * A request handler URI always start with <code>/handle</code> and then 
+ * one or more possible handler names as defined with the {@link #getHandlerNames()} 
+ * method.<p>
+ * 
+ * For example, if a registerd request handler has the name <code>"MyName"</code>,
+ * any request (in a simple setup) to <code>/opencms/opencms/handlerMyName...</code> will directly be transfered 
+ * to the {@link #handle(HttpServletRequest, HttpServletResponse, String)} method of this 
+ * handler.<p>
+ * 
+ * In essence, the request handlers are like simplified mini-servlets that run inside OpenCms. 
+ * Of course they are not intended as replacements for real servlets.
+ * In case you require sophisticated lifecycle support use a genuine servlet instead.<p>
  */
 public interface I_CmsRequestHandler {
     

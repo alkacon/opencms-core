@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElement.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/18 16:35:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
 
 package org.opencms.workplace.editor;
 
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 /**
  * Contains the setup information about a single dialog element.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.0
  */
@@ -102,7 +102,7 @@ public class CmsDialogElement implements Comparable {
      * @return the niceName
      */
     public String getNiceName() {
-        if (CmsStringSubstitution.isEmpty(m_niceName)) {
+        if (CmsStringUtil.isEmpty(m_niceName)) {
             // if the nice name is empty use the system name for display
 
             if (isExisting() && !isTemplateElement()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/07/18 16:33:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.report;
 
 import org.opencms.i18n.CmsMessages;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public abstract class A_CmsReport implements I_CmsReport {
 
@@ -122,7 +122,7 @@ public abstract class A_CmsReport implements I_CmsReport {
      * @see org.opencms.report.I_CmsReport#formatRuntime()
      */
     public String formatRuntime() {
-        return CmsStringSubstitution.formatRuntime(getRuntime());
+        return CmsStringUtil.formatRuntime(getRuntime());
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/07/18 16:32:33 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.dom4j.io.SAXReader;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2004/06/14 14:25:57 $
+ * @version $Revision: 1.13 $ $Date: 2004/07/18 16:32:33 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */
@@ -304,9 +304,15 @@ public class CmsImportExportManager extends Object {
         String classname = null;
         Document manifest = null;
         I_CmsImportExportHandler handler = null;
-
+        
+        File file = new File(importFile);
+        if (!file.exists()) {
+            // file does not exist
+            throw new CmsException("Import file '" + importFile + "' does not exist");
+        }
+        
         try {
-            manifest = getManifest(new File(importFile));
+            manifest = getManifest(file);
             for (int i = 0; i < m_importExportHandlers.size(); i++) {
                 handler = (I_CmsImportExportHandler)m_importExportHandlers.get(i);               
                 if (handler.matches(manifest)) {
@@ -375,12 +381,12 @@ public class CmsImportExportManager extends Object {
     }
 
     /**
-     * Checks if the current user has permissions to import COS/VFS/module data into the Cms,
+     * Checks if the current user has permissions to import data into the Cms,
      * and if so, creates a new import handler instance that imports the data.<p>
      * 
      * @param cms the current OpenCms context object
      * @param importFile the name (absolute path) of the resource (zipfile or folder) to be imported
-     * @param importPath the name (absolute path) of the destination folder in the Cms in case of a COS/VFS import, or null
+     * @param importPath the name (absolute path) of the destination folder in the Cms if required, or null
      * @param report a Cms report to print log messages
      * @throws CmsSecurityException if the current user is not a member of the administrators group
      * @throws CmsException if operation was not successful

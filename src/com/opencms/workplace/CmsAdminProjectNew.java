@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2004/07/09 16:01:31 $
-* Version: $Revision: 1.98 $
+* Date   : $Date: 2004/07/18 16:27:12 $
+* Version: $Revision: 1.99 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package com.opencms.workplace;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
-import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -56,7 +55,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.98 $ $Date: 2004/07/09 16:01:31 $
+ * @version $Revision: 1.99 $ $Date: 2004/07/18 16:27:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -159,12 +158,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsRequestContext reqCont = cms.getRequestContext();
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-        // flag for extended features in the editor, e.g. list of external links
-        int warning = 0;
-        CmsRegistry registry = OpenCms.getRegistry();
-        // TODO: check REGISTRY "extendedNavigation"  
-        boolean extendedNavigation = "on".equals(registry.getSystemValue("extendedNavigation"));
-        // boolean extendedNavigation = false;
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {
@@ -319,9 +312,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                 String htmlPath = getConfigFile(cms).getHtmlGalleryPath();
                 allResources = allResources + ";" + picspath + ";"
                         + downloadpath + ";" + linkpath + ";" + htmlPath;
-                if(extendedNavigation){
-                    allResources = allResources + ";" + C_VFS_PATH_DEFAULTMODULE + "elements/";
-                }
                 // 'allResurces' has the "form res1;res2;...resk;"
                 // this is because the simpler 'getParameterValues' method doesn't work with Silverstream
                 Vector folders = parseResources(allResources);
@@ -359,7 +349,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                     }
                     //now copy the channels to the project
                     cms.getRequestContext().saveSiteRoot();
-                    cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
+                    cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
                     for(int j = 0; j < channels.size(); j++){
                         cms.copyResourceToProject((String)channels.elementAt(j));
                     }

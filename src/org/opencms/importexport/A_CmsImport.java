@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/06/28 07:47:33 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/07/18 16:32:33 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,7 +99,7 @@ public abstract class A_CmsImport implements I_CmsImport {
     /** Access control entries for a single resource. */
     private Vector m_acEntriesToCreate;
 
-    /** The cms context to do the operations on the VFS/COS with. */
+    /** The cms context to do the import operations with. */
     protected CmsObject m_cms;
 
     /** Digest for taking a fingerprint of the files. */

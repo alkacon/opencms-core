@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/07/07 15:18:10 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/07/18 16:33:45 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.22 $ $Date: 2004/07/07 15:18:10 $
+ * @version $Revision: 1.23 $ $Date: 2004/07/18 16:33:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -419,7 +419,7 @@ public class CmsSearchIndex {
                 if (fields != null) {
     
                     BooleanQuery fieldsQuery = new BooleanQuery();
-                    String fList[] = org.opencms.util.CmsStringSubstitution.split(fields, " ");
+                    String fList[] = org.opencms.util.CmsStringUtil.split(fields, " ");
                     for (int i = 0; i < fList.length; i++) {
                         fieldsQuery.add(QueryParser.parse(searchQuery, fList[i], OpenCms.getSearchManager().getAnalyzer(
                             m_locale)), false, false);

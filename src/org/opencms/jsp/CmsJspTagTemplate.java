@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/06/28 07:47:33 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/07/18 16:32:33 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.util.List;
@@ -52,7 +52,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -230,7 +230,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
             if (page != null) {
                 String absolutePath = controller.getCmsObject().getSitePath(page.getFile());
                 // check the elements in the elementlist, if the check fails don't render the body
-                String elements[] = CmsStringSubstitution.split(elementlist, ",");
+                String elements[] = CmsStringUtil.split(elementlist, ",");
                 boolean found = false;
                 for (int i = 0; i < elements.length; i++) {                    
                     String el = elements[i].trim();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2004/07/09 16:01:31 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2004/07/18 16:27:12 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,13 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleVersion;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
@@ -40,9 +42,12 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -106,8 +111,6 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
             OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        //CmsRequestContext reqCont = cms.getRequestContext();
-        CmsRegistry reg = OpenCms.getRegistry();
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String step = (String)parameters.get(C_STEP);
         SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd.MM.yyyy");
@@ -129,12 +132,10 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
             templateDocument.setData(C_DATE, dateFormat.format(new Date()));
         }else {
             if("OK".equals(step) || "Ok".equals(step)) {
-                String packagename = (String)parameters.get(C_PACKETNAME);
-                String modulename = (String)parameters.get(C_MODULENAME);
+                String modulename = (String)parameters.get(C_PACKETNAME);
+                String nicename = (String)parameters.get(C_MODULENAME);
                 String version = (String)parameters.get(C_VERSION);
                 String description = (String)parameters.get(C_DESCRIPTION);
-                String view = (String)parameters.get(C_VIEW);
-                String adminpoint = (String)parameters.get(C_ADMINPOINT);
                 String maintenance = (String)parameters.get(C_MAINTENANCE);
                 String publishclass = (String)parameters.get(C_PUBLISHCLASS);
                 String author = (String)parameters.get(C_AUTHOR);
@@ -143,24 +144,21 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                 String moduleType = (String)parameters.get(C_MODULE_TYPE);
                 String exportClasses = (String)parameters.get(C_EXPORTCLASSES);
                 String exportLib = (String)parameters.get(C_EXPORTLIB);
-                    
-                boolean isSimpleModule = ((moduleType != null) && moduleType.equals("checked"));
+
                 boolean mustExportClasses = ((exportClasses != null) && exportClasses.equals("checked"));
                 boolean mustExportLib = ((exportLib != null) && exportLib.equals("checked"));
                 
-                boolean moduleExists = reg.moduleExists(packagename);
-                float v = -1;
-                try {
-                    v = Float.parseFloat(version);
-                }catch(Exception e) {
-                }
-                if((!checkName(packagename)) || (version == null) || ("".equals(version)) || moduleExists || (v < 0)) {
+                boolean moduleExists = OpenCms.getModuleManager().hasModule(modulename); 
+
+                CmsModuleVersion moduleVersion = new CmsModuleVersion(version);
+                
+                if((!checkName(modulename)) || (version == null) || ("".equals(version)) || moduleExists) {
                     Hashtable sessionData = new Hashtable();
-                    sessionData.put(C_MODULENAME, getStringValue(modulename));
+                    sessionData.put(C_MODULENAME, getStringValue(nicename));
                     sessionData.put(C_VERSION, getStringValue(version));
                     sessionData.put(C_DESCRIPTION, getStringValue(description));
-                    sessionData.put(C_VIEW, getStringValue(view));
-                    sessionData.put(C_ADMINPOINT, getStringValue(adminpoint));
+                    sessionData.put(C_VIEW, "");
+                    sessionData.put(C_ADMINPOINT, "");
                     sessionData.put(C_MAINTENANCE, getStringValue(maintenance));
                     sessionData.put(C_PUBLISHCLASS, getStringValue(publishclass));                    
                     sessionData.put(C_AUTHOR, getStringValue(author));
@@ -177,7 +175,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                     tryToCreateFolder(cms, C_VFS_PATH_SYSTEM, "modules");
                     // create the module (first test if we are in a project including /system/
                     try {
-                        cms.createResource(C_VFS_PATH_MODULES + packagename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                        cms.createResource(C_VFS_PATH_MODULES + modulename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     }catch(CmsException e) {
                         if(e.getType() != CmsException.C_FILE_EXISTS) {
                             // couldn't create Module
@@ -185,7 +183,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                             return startProcessing(cms, templateDocument, elementName, parameters, "errorProject");
                         }else {
                             try {
-                                cms.readFolder(C_VFS_PATH_MODULES + packagename + "/");
+                                cms.readFolder(C_VFS_PATH_MODULES + modulename + "/");
                             }catch(CmsException ex) {
                                 // folder exist but is deleted
                                 templateDocument.setData("details", "Sorry, you have to publish this Project and create a new one.\n" + CmsException.getStackTraceAsString(e));
@@ -199,33 +197,26 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                     }catch(Exception exc) {
                         createDateLong = (new Date()).getTime();
                     }
-                    
-                    String type = isSimpleModule?CmsRegistry.C_MODULE_TYPE_SIMPLE:CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
 
-                    HashMap exportPoints = new HashMap();
-                    if (mustExportClasses) {
-                        exportPoints.put(I_CmsWpConstants.C_VFS_PATH_MODULES + packagename +"/classes/", "WEB-INF/classes/");                        
-                    }
-                    if (mustExportLib) {
-                        exportPoints.put(I_CmsWpConstants.C_VFS_PATH_MODULES + packagename +"/lib/", "WEB-INF/lib/");                                                
-                    }
-                                        
-                    reg.createModule(packagename, getStringValue(modulename), getStringValue(description), getStringValue(author), type, exportPoints, createDateLong, v);
-                    reg.setModuleAuthorEmail(packagename, getStringValue(email));
-                    reg.setModuleMaintenanceEventClass(packagename, getStringValue(maintenance));
-                    reg.setModulePublishClass(packagename, getStringValue(publishclass));                                      
-             
-                    String modulePath = C_VFS_PATH_MODULES + packagename + "/";
+                    String modulePath = C_VFS_PATH_MODULES + modulename + "/";
+                    List moduleResources = new ArrayList();
+                    moduleResources.add(modulePath);                    
                     
-                    // as default don't export any module data                
-                    cms.writeProperty(modulePath, C_PROPERTY_EXPORT, "false");
-                    
+                    List moduleExportPoints = new ArrayList();
                     if (mustExportClasses) {
+                        
+                        CmsExportPoint exportPoint =
+                            new CmsExportPoint(
+                                I_CmsWpConstants.C_VFS_PATH_MODULES + modulename + "/classes/",
+                                "WEB-INF/classes/");
+
+                        moduleExportPoints.add(exportPoint);
+                        
                         // create the class folder, will get exportet to the "real" file system
                         tryToCreateFolder(cms, modulePath, "classes");
                         // create all package folders beneth class folder
                         Vector cFolders = new Vector();
-                        String workString = packagename;
+                        String workString = modulename;
                         while(workString.lastIndexOf('.') > -1) {
                             cFolders.addElement(workString.substring(workString.lastIndexOf('.') + 1));
                             workString = workString.substring(0, workString.lastIndexOf('.'));
@@ -239,43 +230,47 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                     }
                     
                     if (mustExportLib) {
+
+                        CmsExportPoint exportPoint =
+                            new CmsExportPoint(
+                                I_CmsWpConstants.C_VFS_PATH_MODULES + modulename + "/lib/",
+                                "WEB-INF/lib/");
+
+                        moduleExportPoints.add(exportPoint);
+
                         // create the lib folder, will get exportet to the "real" file system
                         tryToCreateFolder(cms, modulePath, "lib");
-                    }
+                    }                    
+                    
+                    List moduleDepedencies = new ArrayList();
+                    Map moduleParameters = new HashMap();
+
+                    // as default don't export any module data                
+                    cms.writeProperty(modulePath, C_PROPERTY_EXPORT, "false");                    
                     
                     // create the templates folder
                     tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_VFS_DIR_TEMPLATES);
                     // create the "default_bodies" folder 
                     tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_VFS_DIR_DEFAULTBODIES);
+                        
+                    CmsModule updatedModule = 
+                        new CmsModule(
+                            modulename,
+                            nicename, 
+                            publishclass,
+                            description,
+                            moduleVersion,
+                            author,
+                            email,
+                            createDateLong,
+                            null,
+                            0L,
+                            moduleDepedencies,
+                            moduleExportPoints,
+                            moduleResources,
+                            moduleParameters);
 
-                    if (! isSimpleModule) {
-                        // traditional module type, create more directories
-                        tryToCreateFolder(cms, modulePath, "contenttemplates");
-                        tryToCreateFolder(cms, modulePath, "frametemplates");
-                        // create "elements" folder
-                        tryToCreateFolder(cms, modulePath, "elements");
-                        tryToCreateFolder(cms, modulePath, "doc");
-                        reg.setModuleDocumentPath(packagename, modulePath + "doc/index.html");
-                    }
-                    // initialize if we need a 'locales' subdirectory in our new module
-                    boolean needsLocaleDir = !isSimpleModule;
-                                        
-                    if("checked".equals(view)) {
-                        reg.setModuleView(packagename, packagename.replace('.', '_') + ".view", modulePath + "view/index.html");
-                        tryToCreateFolder(cms, modulePath, "view");
-                        needsLocaleDir = true;
-                    }
-                    if("checked".equals(adminpoint)) {
-                        tryToCreateFolder(cms, modulePath, "administration");
-                        // create "pics" folder (required for workplace extension images)
-                        tryToCreateFolder(cms, modulePath, "pics");
-                        needsLocaleDir = true;
-                    }
-                    if (needsLocaleDir) {
-                        // create "locales" folder (required for workplace extension resource files)
-                        tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_VFS_DIR_LOCALES);
-                        tryToCreateFolder(cms, modulePath + I_CmsWpConstants.C_VFS_DIR_LOCALES, I_CmsWpConstants.C_DEFAULT_LANGUAGE);
-                    }
+                    OpenCms.getModuleManager().addModule(cms, updatedModule);
                     
                     try {
                         CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(getConfigFile(cms).getWorkplaceAdministrationPath() + "module/index.html");
@@ -292,8 +287,8 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                     templateDocument.setData(C_VERSION, (String)sessionData.get(C_VERSION));
                     templateDocument.setData(C_MODULENAME, (String)sessionData.get(C_MODULENAME));
                     templateDocument.setData(C_DESCRIPTION, (String)sessionData.get(C_DESCRIPTION));
-                    templateDocument.setData(C_VIEW, (String)sessionData.get(C_VIEW));
-                    templateDocument.setData(C_ADMINPOINT, (String)sessionData.get(C_ADMINPOINT));
+                    templateDocument.setData(C_VIEW, "");
+                    templateDocument.setData(C_ADMINPOINT, "");
                     templateDocument.setData(C_MAINTENANCE, (String)sessionData.get(C_MAINTENANCE));
                     templateDocument.setData(C_PUBLISHCLASS, (String)sessionData.get(C_PUBLISHCLASS));                    
                     templateDocument.setData(C_AUTHOR, (String)sessionData.get(C_AUTHOR));

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2004/07/09 16:01:31 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2004/07/18 16:27:13 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,13 +31,11 @@ package com.opencms.workplace;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
-import com.opencms.template.I_CmsXmlTemplate;
 
 import java.util.Hashtable;
 
@@ -49,7 +47,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.59 $ $Date: 2004/07/09 16:01:31 $
+ * @version $Revision: 1.60 $ $Date: 2004/07/18 16:27:13 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -70,29 +68,7 @@ public class CmsUnlock extends CmsWorkplaceDefault {
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-                
-        // Is there an unlock extension installed? 
-        int warning = 0;
-        // TODO: check REGISTRY "unlockextension"
-        Hashtable h = OpenCms.getRegistry().getSystemValues("unlockextension");
-        // Hashtable h = null;
-        if (h != null) {
-            // Unlock extension found, try generate in instance and use this instead of the default
-            if ("true".equals(h.get("enabled"))) {
-                String extensionClass = (String)h.get("class");
-                if (extensionClass != null) {
-                    try {
-                        parameters.put("__source", "CmsUnlock");                        
-                        I_CmsXmlTemplate extension = (I_CmsXmlTemplate)Class.forName(extensionClass).newInstance();
-                        return extension.getContent(cms, templateFile, elementName, parameters, templateSelector);
-                    } catch (Exception ex) {
-                        ex.printStackTrace(System.err);
-                        return "[Unlock extension caused exception]".getBytes();
-                    }
-                }                
-            }
-        }        
-                
+                                  
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // the template to be displayed

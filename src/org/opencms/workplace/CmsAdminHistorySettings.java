@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/07/18 16:34:53 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -48,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -183,7 +184,7 @@ public class CmsAdminHistorySettings extends CmsDialog {
         String paramVersions = request.getParameter("versions");
         
         // check the submitted values
-        boolean enabled = "true".equals(paramEnabled);
+        boolean enabled = Boolean.valueOf(paramEnabled).booleanValue();
         int versions = 0;
         try {
             versions = Integer.parseInt(paramVersions);
@@ -196,13 +197,9 @@ public class CmsAdminHistorySettings extends CmsDialog {
             throw new CmsException("The entered version value must not be smaller than 1", CmsException.C_BAD_NAME);
         }
         
-//        // write the changes to the registry
-//        CmsRegistry reg = getCms().getRegistry();
-//        reg.setBackupEnabled(enabled);
-//        reg.setMaximumBackupVersions(versions);
-        int warning = 0;
-        // TODO: throw special event here to indicate that history settings have changed
-             
+        OpenCms.getSystemInfo().setVersionHistorySettings(enabled, versions);
+        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+
         return true;
     }
 

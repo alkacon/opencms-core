@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/06/21 09:56:59 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/07/18 16:32:48 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.io.IOException;
@@ -61,7 +61,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -113,7 +113,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
                 String header = (String)i.next();
                 
                 // set header only if format is "key: value"
-                String parts[] = CmsStringSubstitution.split(header, ":"); 
+                String parts[] = CmsStringUtil.split(header, ":"); 
                 if (parts.length == 2) {
                     res.setHeader(parts[0], parts[1]);
                 }

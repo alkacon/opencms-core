@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2004/07/09 16:01:31 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2004/07/18 16:27:12 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,19 +29,20 @@
 package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleManager;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsModuleDeleteThread;
-import org.opencms.threads.CmsModuleReplaceThread;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -82,14 +83,14 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
         
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsRequestContext reqCont = cms.getRequestContext();
-        CmsRegistry reg = OpenCms.getRegistry();
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String step = (String)parameters.get(C_STEP);
         String moduleName = (String)parameters.get(C_MODULE);
         
         if(step == null) {
+            String moduleVersion = OpenCms.getModuleManager().getModule(moduleName).getVersion().toString();
             xmlTemplateDocument.setData("name", moduleName);
-            xmlTemplateDocument.setData("version", "" + reg.getModuleVersion(moduleName));
+            xmlTemplateDocument.setData("version", moduleVersion);
             
         } else if("showResult".equals(step)){
             // first look if there is already a thread running.
@@ -108,15 +109,16 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
             
-        } else if(C_DELETE.equals(step)) {            
-            Vector otherModules = reg.deleteCheckDependencies(moduleName, false);
-            if(!otherModules.isEmpty()) {
+        } else if(C_DELETE.equals(step)) {  
+            CmsModule module = OpenCms.getModuleManager().getModule(moduleName);            
+            List dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.C_DEPENDENCY_MODE_DELETE);
+            if(!dependencies.isEmpty()) {
                 // don't delete; send message error
-                xmlTemplateDocument.setData("name", moduleName);
-                xmlTemplateDocument.setData("version", "" + reg.getModuleVersion(moduleName));
+                xmlTemplateDocument.setData("name", module.getName());
+                xmlTemplateDocument.setData("version", module.getVersion().toString());
                 String depModules = "";
-                for(int i = 0;i < otherModules.size();i++) {
-                    depModules += (String)otherModules.elementAt(i) + "\n";
+                for(int i = 0;i < dependencies.size();i++) {
+                    depModules += (String)dependencies.get(i) + "\n";
                 }
                 xmlTemplateDocument.setData("precondition", depModules);
                 templateSelector = C_ERROR;
@@ -129,7 +131,6 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
                 Vector filesInUse = new Vector();
                 Vector resourcesForProject = new Vector();
                 reqCont.setCurrentProject(cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
-                reg.deleteGetConflictingFileNames(moduleName, filesWithProperty, missingFiles, wrongChecksum, filesInUse, resourcesForProject);
                 session.putValue(C_SESSION_MODULENAME, moduleName);
                 session.putValue(C_SESSION_MODULE_PROJECTFILES, resourcesForProject);
                 if(filesWithProperty.isEmpty() && missingFiles.isEmpty() && wrongChecksum.isEmpty() && filesInUse.isEmpty()) {
@@ -147,16 +148,8 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
         }
         // no else here because the value of "step" might have been changed above 
         if ("fromerrorpage".equals(step)) {
-            moduleName = (String)session.getValue(C_SESSION_MODULENAME);
-            Vector conflictFiles = (Vector)session.getValue(C_SESSION_MODULE_EXCLUSION);
-            if(conflictFiles == null) {
-                conflictFiles = new Vector();
-            }   
-                     
-            // add the module resources to the project files
-            Vector projectFiles = CmsModuleReplaceThread.getModuleResources(cms, reg, moduleName);
-            
-            A_CmsReportThread doDelete = new CmsModuleDeleteThread(cms, reg, moduleName, conflictFiles, projectFiles, false);
+            moduleName = (String)session.getValue(C_SESSION_MODULENAME);            
+            A_CmsReportThread doDelete = new CmsModuleDeleteThread(cms, moduleName, false);
             doDelete.start();
             session.putValue(C_MODULE_THREAD, doDelete);
             xmlTemplateDocument.setData("time", "5");

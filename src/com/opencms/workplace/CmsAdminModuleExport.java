@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2004/07/09 16:01:31 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2004/07/18 16:27:12 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,10 @@
 package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
-import org.opencms.importexport.CmsModuleImportExportHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsExportThread;
 
@@ -41,10 +40,9 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.StringTokenizer;
+import java.util.List;
 
 /**
  * Template class for displaying OpenCms workplace administration module create.
@@ -86,7 +84,6 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
         }
         
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        CmsRegistry reg = OpenCms.getRegistry();
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
 		String step = (String) parameters.get(C_ACTION);
@@ -120,63 +117,9 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
         } else if ("ok".equals(step)) {
             // export is confirmed			
 			String[] resourcen = null;
-			int resourceCount = 0;
-			int i = 0;
-
-			if (reg.getModuleType(moduleName).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
-				// SIMPLE MODULE
-				if (DEBUG > 0) {
-					System.out.println(moduleName + " is a simple module");
-				}
-
-				// check if additional resources outside the system/modules/{exportName} folder were 
-				// specified as module resources by reading the property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
-				// to the module (in the module administration)
-				String additionalResources = OpenCms.getRegistry().getModuleParameterString(moduleName, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
-				StringTokenizer additionalResourceTokens = null;
-
-				if (additionalResources != null && !additionalResources.equals("")) {
-					// add each additonal folder plus its content folder under "content/bodys"
-					additionalResourceTokens = new StringTokenizer(additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
-
-					resourceCount = (additionalResourceTokens.countTokens()) + CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT;
-					resourcen = new String[resourceCount];
-
-					// add each resource plus its equivalent at content/bodys to 
-					// the string array of all resources for the export
-					while (additionalResourceTokens.hasMoreTokens()) {
-						String currentResource = additionalResourceTokens.nextToken().trim();
-
-                        if (! "-".equals(currentResource)) {
-                            if (DEBUG > 0) {
-                                System.err.println("Adding resource: " + currentResource);
-                            }                            
-						    resourcen[i++] = currentResource;
-                        }
-					}
-				} else {
-					// no additional resources were specified...
-				    resourceCount = CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT;
-					resourcen = new String[resourceCount];
-					i = 0;
-				}
-			} else {
-				// TRADITIONAL MODULE
-				if (DEBUG > 0) {
-					System.out.println(moduleName + " is a traditional module");
-				}
-
-				resourceCount = CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT;
-				resourcen = new String[resourceCount];
-				i = 0;
-			}
-
-			// finally, add the "standard" module resources to the string of all resources for the export
-			// if you add or remove paths here, ensure to adjust CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT to the proper length!
-			resourcen[i++] = C_VFS_PATH_MODULES + moduleName + "/";
 
 			// check if all resources exists and can be read
-            ArrayList resList = new ArrayList(Arrays.asList(resourcen));    
+            List resList = OpenCms.getModuleManager().getModule(moduleName).getResources();   
             ArrayList resListCopy = new ArrayList();  
 			for (Iterator it = resList.iterator(); it.hasNext(); ) {
                 String res = (String)it.next();
@@ -207,7 +150,10 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
                 } 
             }                            
             
-            String filename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + CmsRegistry.C_MODULE_PATH + moduleName + "_" + reg.getModuleVersion(moduleName));
+            String filename = 
+                OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+                    OpenCms.getSystemInfo().getPackagesRfsPath() + I_CmsConstants.C_MODULE_PATH + moduleName + "_" 
+                    + OpenCms.getModuleManager().getModule(moduleName).getVersion().toString());
             
             CmsModuleImportExportHandler moduleExportHandler = new CmsModuleImportExportHandler();
             moduleExportHandler.setFileName(filename);

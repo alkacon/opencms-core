@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/07/09 16:40:26 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2004/07/18 16:34:53 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -78,7 +78,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.86 $
+ * @version $Revision: 1.87 $
  * 
  * @since 5.1
  */
@@ -191,13 +191,13 @@ public abstract class CmsWorkplace {
      * @return the parsed SimpleDateFormat pattern String
      */
     public static String getCalendarJavaDateFormat(String dateFormat) {
-        dateFormat = CmsStringSubstitution.substitute(dateFormat, "%", ""); // remove all "%"
-        dateFormat = CmsStringSubstitution.substitute(dateFormat, "m", "{$month}");
-        dateFormat = CmsStringSubstitution.substitute(dateFormat, "H", "{$hour}");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "%", ""); // remove all "%"
+        dateFormat = CmsStringUtil.substitute(dateFormat, "m", "{$month}");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "H", "{$hour}");
         dateFormat = dateFormat.toLowerCase();
-        dateFormat = CmsStringSubstitution.substitute(dateFormat, "{$month}", "M");
-        dateFormat = CmsStringSubstitution.substitute(dateFormat, "{$hour}", "H");
-        dateFormat = CmsStringSubstitution.substitute(dateFormat, "m", "mm"); // minutes with two digits
+        dateFormat = CmsStringUtil.substitute(dateFormat, "{$month}", "M");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "{$hour}", "H");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "m", "mm"); // minutes with two digits
         dateFormat = dateFormat.replace('e', 'd'); // day of month
         dateFormat = dateFormat.replace('i', 'h'); // 12 hour format
         dateFormat = dateFormat.replace('p', 'a'); // pm/am String

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/07/08 15:21:14 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2004/07/18 16:27:13 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,17 +28,15 @@
 
 package com.opencms.defaults.master;
 
-import java.util.HashMap;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
@@ -46,6 +44,11 @@ import com.opencms.defaults.A_CmsContentDefinition;
 import com.opencms.defaults.I_CmsExtendedContentDefinition;
 import com.opencms.defaults.master.genericsql.CmsDbAccess;
 import com.opencms.legacy.CmsXmlTemplateLoader;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * This class is the master of several Modules. It carries a lot of generic
@@ -55,8 +58,8 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.59 $
- * $Date: 2004/07/08 15:21:14 $
+ * $Revision: 1.60 $
+ * $Date: 2004/07/18 16:27:13 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -655,8 +658,10 @@ public abstract class CmsMasterContent
         } finally {
             CmsUUID publishId = new CmsUUID();
             cms.postPublishBoResource(new CmsPublishedResource(this.getClass().getName(), m_dataSet.m_masterId, getSubId(), m_dataSet.m_state), publishId, versionId);
-
-            //OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE, Collections.EMPTY_MAP));
+            Map eventData = new HashMap();
+            eventData.put("publishHistoryId", publishId.toString());            
+            // a "directly" published COS resource can be handled totally equal to a published project            
+            OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData));
         }
     }
 
@@ -915,7 +920,7 @@ public abstract class CmsMasterContent
         Vector subChannels = new Vector();
         String siteRoot = cms.getRequestContext().getSiteRoot();
         try {
-            cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
+            cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
             subChannels.addAll(cms.getResourcesInFolder(channel, CmsResourceFilter.ONLY_VISIBLE));
 
             for (int i=0; i < subChannels.size(); i++) {
@@ -961,7 +966,7 @@ public abstract class CmsMasterContent
         cms.getRequestContext().saveSiteRoot();
         try {           
             String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();           
-            cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);        
+            cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);        
             //Vector subChannels = cms.getResourcesInFolder(I_CmsConstants.VFS_FOLDER_COS + rootChannel);
             Vector subChannels = new Vector(cms.getResourcesInFolder(rootChannel, CmsResourceFilter.ONLY_VISIBLE));
             int offset = rootChannel.length()-1;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdminEdit.java,v $
-* Date   : $Date: 2004/07/08 15:21:06 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2004/07/18 16:27:13 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -169,7 +169,7 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault {
                 // read new prop
                 String name = getStringValue((String)parameters.get("NAME"));
                 String description = getStringValue((String)parameters.get("BESCHREIBUNG"));
-                String type = (String)parameters.get("TYP");
+                String type = "string";
                 String value = (String)parameters.get("WERT");
 
                 //  check if all fields are filled out and if the value is correct
@@ -216,7 +216,7 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault {
             if((ok != null) && (!"".equals(ok))) {
 
                 // set property
-                String type = getStringValue((String)parameters.get("TYP"));
+                String type = "string";
                 String value = getStringValue((String)parameters.get("WERT"));
                 String newValue = checkType(type, value);
                 if(newValue != null) {
@@ -256,7 +256,7 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault {
                         xmlTemplateDocument.setData("nameentry", prop);
                         xmlTemplateDocument.setData("value", (String)paraVal.elementAt(i));
                         xmlTemplateDocument.setData("description", (String)paraDescr.elementAt(i));
-                        xmlTemplateDocument.setData((String)paraTyp.elementAt(i), "selected");
+                        xmlTemplateDocument.setData("string", "selected");
                         xmlTemplateDocument.setData("delybutton", xmlTemplateDocument.getProcessedDataValue("deletebutton"));
                     }else {
 

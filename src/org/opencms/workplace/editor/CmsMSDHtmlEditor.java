@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/07/18 16:35:07 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.workplace.editor;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 5.1.12
  */
@@ -127,7 +127,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
     protected String prepareContent(boolean save) {
         String content = getParamContent();
         // extract content of <body>...</body> tag
-        content = CmsStringSubstitution.extractHtmlBody(content);
+        content = CmsStringUtil.extractHtmlBody(content);
         // remove unwanted "&amp;" from links
         content = filterAnchors(content);
         // ensure all chars in the content are valid for the selected encoding
@@ -179,10 +179,10 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         Matcher matcher = C_REGEX_LINKS.matcher(content);
         while (matcher.find()) {
             anchor = matcher.group(6);
-            newAnchor = CmsStringSubstitution.substitute(anchor, "&amp;", "&");
+            newAnchor = CmsStringUtil.substitute(anchor, "&amp;", "&");
             if (anchor.length() != newAnchor.length()) {
                 // substitute only if anchor length has changed
-                content = CmsStringSubstitution.substitute(content, anchor, newAnchor);
+                content = CmsStringUtil.substitute(content, anchor, newAnchor);
             }
         }
         return content;

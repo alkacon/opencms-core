@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2004/07/09 16:01:31 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2004/07/18 16:27:13 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,12 @@
 package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleImportExportHandler;
+import org.opencms.module.CmsModuleManager;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsDatabaseImportThread;
 import org.opencms.threads.CmsModuleReplaceThread;
@@ -45,7 +48,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Map;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -72,7 +75,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
      */
     private final String C_MODULE_NAV = "modulenav";
     private final String C_MODULE_FILENAME = "modulefilename";
-    private final String C_MODULE_NAME = "modulename";
+    private final String C_MODULE = "moduleinstance";
     private final String C_MODULE_THREAD = "modulethread";
 
     /**
@@ -95,12 +98,10 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
-        // get the registry
-        CmsRegistry reg = OpenCms.getRegistry();
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String errorNavigation = (String)parameters.get(C_FROMERRORPAGE);
         if(errorNavigation != null) {
-            templateSelector = importModule(cms, reg, xmlTemplateDocument, session, null);
+            templateSelector = importModule(cms, xmlTemplateDocument, session, null);
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
         }
 
@@ -123,7 +124,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");         
         } else if ("server".equals(step)) {
-            File modulefolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + CmsRegistry.C_MODULE_PATH));
+            File modulefolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + I_CmsConstants.C_MODULE_PATH));
             if (!modulefolder.exists()) {
                 boolean success = modulefolder.mkdir();
                 if (OpenCms.getLog(this).isWarnEnabled()
@@ -168,7 +169,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             filecontent = (byte[]) session.getValue(C_PARA_FILECONTENT);
 
             // first create the folder if it doesnt exists
-            File discFolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + CmsRegistry.C_MODULE_PATH));
+            File discFolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + I_CmsConstants.C_MODULE_PATH));
             if (!discFolder.exists()) {
                 boolean success = discFolder.mkdir();
                 if (OpenCms.getLog(this).isWarnEnabled()
@@ -179,7 +180,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
 
             // now write the file into the modules dierectory in the exportpaht
             File discFile =
-                new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath()+ File.separator + CmsRegistry.C_MODULE_PATH + filename));
+                new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath()+ File.separator + I_CmsConstants.C_MODULE_PATH + filename));
             try {
 
                 // write the new file to disk
@@ -190,7 +191,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage());
             }
             session.removeValue(C_MODULE_NAV);
-            templateSelector = importModule(cms, reg, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + CmsRegistry.C_MODULE_PATH + filename));
+            templateSelector = importModule(cms, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + I_CmsConstants.C_MODULE_PATH + filename));
                         
         } else if ("serverupload".equals(step)) {
             String filename = (String) parameters.get("moduleselect");
@@ -198,7 +199,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             if ((filename == null) || ("".equals(filename))) {
                 templateSelector = C_DONE;
             } else {
-                templateSelector = importModule(cms, reg, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + CmsRegistry.C_MODULE_PATH + filename));
+                templateSelector = importModule(cms, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + I_CmsConstants.C_MODULE_PATH + filename));
             }
         }
 
@@ -209,82 +210,58 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
     /**
      * Imports the file zipName.
      * Creation date: (05.09.00 10:17:56)
-     * @param reg org.opencms.file.I_CmsRegistry
      * @param zipName the complete path and name of the zip-file to import.
      * @return the new templateSelector.
      */
-    private String importModule(CmsObject cms, CmsRegistry reg, CmsXmlTemplateFile xmlDocument, I_CmsSession session, String zipName) throws CmsException {
+    private String importModule(CmsObject cms, CmsXmlTemplateFile xmlDocument, I_CmsSession session, String zipName) throws CmsException {
         String nav = (String)session.getValue(C_MODULE_NAV);
         Vector conflictFiles = new Vector();
-        String moduleName = null;
+        CmsModule module = null;
         boolean importNewModule = true;
-        String moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
-        
+
         if(nav == null) {
             // this is the first go. Try to import the module and if it dont't work return the corresponding errorpage
-            Map moduleInfo = reg.importGetModuleInfo(zipName);
+            module = CmsModuleImportExportHandler.readModuleFromImport(zipName);
             
-            moduleName = (String)moduleInfo.get("name");
-            moduleType = (String)moduleInfo.get("type");
-            
-            if(reg.moduleExists(moduleName)) {
-                if (! CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(moduleType)) {
-                    // not a simple module, can not be replaced
-                    xmlDocument.setData("name", moduleName);
-                    xmlDocument.setData("version", "" + reg.getModuleVersion(moduleName));
-                    session.removeValue(C_MODULE_NAV);
-                    return C_ERRORREPLACE;
-                } else {
-                    // simple module, start module replacement
-                    session.putValue(C_MODULE_NAME, moduleName);                    
-                    importNewModule = false;
-                }
+            if(OpenCms.getModuleManager().hasModule(module.getName())) {
+                // simple module, start module replacement
+                session.putValue(C_MODULE, module);                    
+                importNewModule = false;
             }
-            Vector needs = reg.importCheckDependencies(zipName, true);
-            if(!needs.isEmpty()) {
+            List dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.C_DEPENDENCY_MODE_IMPORT);
+            if(!dependencies.isEmpty()) {
                 // there are dependences not fulfilled
-                xmlDocument.setData("name", moduleName);
-                xmlDocument.setData("version", "" + reg.getModuleVersion(moduleName));
+                xmlDocument.setData("name", module.getName());
+                xmlDocument.setData("version", module.getVersion().toString());
                 String preconditions = "";
-                for(int i = 0;i < needs.size();i++) {
-                    preconditions += "<br><br>" + needs.elementAt(i);
+                for(int i = 0;i < dependencies.size(); i++) {
+                    preconditions += "<br><br>" + dependencies.get(i);
                 }
                 xmlDocument.setData("precondition", preconditions);
                 session.removeValue(C_MODULE_NAV);
                 return C_ERRORDEP;
             }
-            
-            if (! CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(moduleType)) {
-                conflictFiles = reg.importGetConflictingFileNames(zipName);
-                if (!conflictFiles.isEmpty()) {
-                    session.putValue(C_SESSION_MODULE_VECTOR, conflictFiles);
-                    session.putValue(C_MODULE_NAV, C_FILES);
-                    session.putValue(C_MODULE_FILENAME, zipName);
-                    return C_FILES;
-                }
-            } else {
-                // simple module, no "confict file" check performed
-                conflictFiles = new Vector();
-            }
+        
+            // simple module, no "confict file" check performed
+            conflictFiles = new Vector();
         }
         else {
             if(C_FILES.equals(nav)) {
                 zipName = (String)session.getValue(C_MODULE_FILENAME);
-                moduleName = (String)session.getValue(C_MODULE_NAME);
-                if (moduleName != null) importNewModule = false; 
+                module = (CmsModule)session.getValue(C_MODULE);
+                if (module != null) importNewModule = false; 
                 conflictFiles = (Vector)session.getValue(C_SESSION_MODULE_VECTOR);
+                session.removeValue(C_MODULE);
                 session.removeValue(C_MODULE_NAV);
             }
         }
         	
-        // add root folder as file list for the project
         if (importNewModule) {
             A_CmsReportThread doTheImport = new CmsDatabaseImportThread(cms, zipName);
             doTheImport.start();
             session.putValue(C_MODULE_THREAD, doTheImport);
         } else {
-            //OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + zipName);
-            A_CmsReportThread doTheReplace = new CmsModuleReplaceThread(cms, reg, moduleName, zipName, conflictFiles);
+            A_CmsReportThread doTheReplace = new CmsModuleReplaceThread(cms, module.getName(), zipName);
             doTheReplace.start();
             session.putValue(C_MODULE_THREAD, doTheReplace);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/06/29 14:38:56 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2004/07/18 16:35:07 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlException;
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * 
  * @since 5.1.12
  */
@@ -308,14 +308,14 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         List options = new ArrayList(elementList.size());
         List values = new ArrayList(elementList.size());
         String elementName = getParamElementname();
-        if (CmsStringSubstitution.isEmpty(elementName)) {
+        if (CmsStringUtil.isEmpty(elementName)) {
             elementName = getParamOldelementname();
         }     
         while (i.hasNext()) {
             // get the current list element
             CmsDialogElement element = (CmsDialogElement)i.next();
 
-            if (!CmsStringSubstitution.isEmpty(elementName) && elementName.equals(element.getName())) {
+            if (!CmsStringUtil.isEmpty(elementName) && elementName.equals(element.getName())) {
                 // current element is the displayed one, mark it as selected
                 currentIndex = counter;
             }
@@ -510,9 +510,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @see org.opencms.workplace.editor.CmsEditor#initContent()
      */
     protected void initContent() {
-        if (! CmsStringSubstitution.isEmpty(getParamContent())) {
-            if (!CmsStringSubstitution.isEmpty(getParamElementname()) && getParamElementname().equals(getParamOldelementname())) {
-                if (!CmsStringSubstitution.isEmpty(getParamElementlanguage()) && getParamElementlanguage().equals(getParamOldelementlanguage())) {            
+        if (! CmsStringUtil.isEmpty(getParamContent())) {
+            if (!CmsStringUtil.isEmpty(getParamElementname()) && getParamElementname().equals(getParamOldelementname())) {
+                if (!CmsStringUtil.isEmpty(getParamElementlanguage()) && getParamElementlanguage().equals(getParamOldelementlanguage())) {            
                     return;
                 }
             }

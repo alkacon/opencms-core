@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/07/18 16:33:45 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.report;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsHtmlReport extends A_CmsReport {
     
@@ -141,7 +141,7 @@ public class CmsHtmlReport extends A_CmsReport {
      * @return the char converted String without linebreaks
      */
     private String convertChars(String value) {
-        value = CmsStringSubstitution.substitute(value, "\"", "\\\"");
+        value = CmsStringUtil.substitute(value, "\"", "\\\"");
 
         StringBuffer buf = new StringBuffer();
         StringTokenizer tok = new StringTokenizer(value, "\r\n");
@@ -174,7 +174,7 @@ public class CmsHtmlReport extends A_CmsReport {
                 buf.append("aT('");
                 buf.append(key("report.exception"));
                 String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
-                exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
+                exception = CmsStringUtil.substitute(exception, "\\", "\\\\");
                 StringTokenizer tok = new StringTokenizer(exception, "\r\n");
                 while (tok.hasMoreTokens()) {
                     buf.append(tok.nextToken());
@@ -194,7 +194,7 @@ public class CmsHtmlReport extends A_CmsReport {
             buf.append("<span class='throw'>");
             buf.append(key("report.exception"));
             String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
-            exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
+            exception = CmsStringUtil.substitute(exception, "\\", "\\\\");
             StringTokenizer tok = new StringTokenizer(exception, "\r\n");
             while (tok.hasMoreTokens()) {
                 buf.append(tok.nextToken());

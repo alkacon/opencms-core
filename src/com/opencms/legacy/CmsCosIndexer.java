@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2004/07/08 15:21:13 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/07/18 16:27:13 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.I_CmsIndexer;
 import org.opencms.search.documents.I_CmsDocumentFactory;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.defaults.master.*;
@@ -62,7 +62,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.13 $ $Date: 2004/07/08 15:21:13 $
+ * @version $Revision: 1.14 $ $Date: 2004/07/18 16:27:13 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -189,8 +189,8 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
                     m_report.print(m_report.key("search.indexing_file_begin"), I_CmsReport.C_FORMAT_NOTE);
                     if (ds.m_title != null) {
                         String title = ds.m_title;
-                        title = CmsStringSubstitution.substitute(title, "'", "\\'");
-                        title = CmsStringSubstitution.substitute(title, "\"", "\\\"");
+                        title = CmsStringUtil.substitute(title, "'", "\\'");
+                        title = CmsStringUtil.substitute(title, "\"", "\\\"");
                         m_report.print(title, I_CmsReport.C_FORMAT_DEFAULT);
                     }
                     m_report.print(m_report.key("search.dots"), I_CmsReport.C_FORMAT_DEFAULT);
@@ -231,7 +231,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     protected CmsUUID getChannelId(CmsObject cms, String channelName) throws CmsIndexException {
 
         String siteRoot = cms.getRequestContext().getSiteRoot();
-        cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);        
+        cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);        
         CmsUUID id = null;
         try {         
             CmsResource channel = cms.readFolder(channelName, CmsResourceFilter.IGNORE_EXPIRATION);

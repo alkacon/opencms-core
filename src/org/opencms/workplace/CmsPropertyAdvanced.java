@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/07/18 16:34:53 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1
  */
@@ -463,7 +463,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 // create the JS output for a single property if not empty
                 result.append("\tdocument.getElementById(\"");    
                 result.append(PREFIX_VALUE + curProp[0] + "\").value = \"");               
-                result.append(CmsStringSubstitution.escapeJavaScript(shownValue));
+                result.append(CmsStringUtil.escapeJavaScript(shownValue));
                 result.append("\";\n");
             }
 

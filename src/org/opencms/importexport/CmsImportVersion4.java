@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/06/29 14:38:57 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/07/18 16:32:33 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.security.MessageDigest;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -291,25 +292,25 @@ public class CmsImportVersion4 extends A_CmsImport {
 
         if (m_importingChannelData) {
             m_cms.getRequestContext().saveSiteRoot();
-            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
+            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
         }
 
-        // clear some required structures at the init phase of the import      
-        if (ignoredResources == null) {
-            ignoredResources = new Vector();
+        // build list of immutable resources
+        List immutableResources = new ArrayList(); 
+        if (OpenCms.getImportExportManager().getImmutableResources() != null) {
+            immutableResources.addAll(OpenCms.getImportExportManager().getImmutableResources());
         }
-
+        if (ignoredResources != null) {
+            immutableResources.addAll(ignoredResources);
+        }
+        
         // get list of ignored properties
         List ignoredProperties = OpenCms.getImportExportManager().getIgnoredProperties();
         if (ignoredProperties == null) {
             ignoredProperties = Collections.EMPTY_LIST;
         }
 
-        // get list of immutable resources
-        List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
-        if (immutableResources == null) {
-            immutableResources = Collections.EMPTY_LIST;
-        }
+
 
         // get the desired page type for imported pages
         m_convertToXmlPage = OpenCms.getImportExportManager().convertToXmlPage();
@@ -424,7 +425,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 translatedName = m_cms.getRequestContext().removeSiteRoot(translatedName);
 
                 // if the resource is not immutable and not on the exclude list, import it
-                if (resourceNotImmutable && (!ignoredResources.contains(translatedName))) {
+                if (resourceNotImmutable) {
                     // print out the information to the report
                     m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(translatedName);
@@ -702,7 +703,7 @@ public class CmsImportVersion4 extends A_CmsImport {
 
 
     /**
-     * Copnvert a given timestamp in string format to a long value.<p>
+     * Convert a given timestamp from a String format to a long value.<p>
      * 
      * The timestamp is either the string representation of a long value (old export format)
      * or a user-readable string format.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/07/09 16:02:03 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2004/07/18 16:32:08 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  */
 public class CmsObject {
 
@@ -2846,18 +2846,14 @@ public class CmsObject {
      * @param tagId the backup tag revision
      */
     public void postPublishBoResource(CmsPublishedResource publishedBoResource, CmsUUID publishId, int tagId) {
+        int todo = 0;
+        // TODO: move COS stuff to legacy package                
         try {
             m_driverManager.postPublishBoResource(m_context, publishedBoResource, publishId, tagId);
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error writing publish history entry for COS resource " + publishedBoResource.toString(), e);
             }
-        } finally {
-            Map eventData = new HashMap();
-            eventData.put("publishHistoryId", publishId.toString());
-            
-            // a "directly" published COS resource can be handled totally equal to a published project            
-            OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData));
         }
     }
 
@@ -2895,7 +2891,7 @@ public class CmsObject {
 
         synchronized (m_driverManager) {            
             try {                                
-                m_driverManager.publishProject(this, m_context, publishList, report);
+                m_driverManager.publishProject(this, publishList, report);
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
                     OpenCms.getLog(this).error(e);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/06/29 14:38:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/18 16:32:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsResourceTypeFolder extends A_CmsResourceType {
 
@@ -413,7 +413,7 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
      */
     private String validateFoldername(String resourcename) throws CmsException {
 
-        if (CmsStringSubstitution.isEmpty(resourcename)) {
+        if (CmsStringUtil.isEmpty(resourcename)) {
             throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, CmsException.C_BAD_NAME);
         }
         if (! CmsResource.isFolder(resourcename)) {

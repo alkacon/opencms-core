@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/06/28 07:47:33 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2004/07/18 16:32:33 $
+* Version: $Revision: 1.22 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.dom4j.io.SAXReader;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.21 $ $Date: 2004/06/28 07:47:33 $
+ * @version $Revision: 1.22 $ $Date: 2004/07/18 16:32:33 $
  */
 public class CmsImport implements Serializable {
     
@@ -82,7 +82,7 @@ public class CmsImport implements Serializable {
     /** Stores all import interface implementations .*/
     protected List m_importImplementations;
 
-    /** The cms context to do the operations on the VFS/COS with. */
+    /** The cms context to do the operations with. */
     protected CmsObject m_cms;
 
     /** The xml manifest-file. */
@@ -395,7 +395,7 @@ public class CmsImport implements Serializable {
         try {
             if (m_importingChannelData) {
                 m_cms.getRequestContext().saveSiteRoot();
-                m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
+                m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
             }
 
             // get all file-nodes

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2004/07/05 16:32:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/07/18 16:32:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -302,11 +302,11 @@ public class CmsResourceManager {
 
         String typeName = null;
         String suffix = null;
-        if (! CmsStringSubstitution.isEmpty(resourcename)) {
+        if (! CmsStringUtil.isEmpty(resourcename)) {
             int pos = resourcename.lastIndexOf('.');
             if (pos >= 0) {
                 suffix = resourcename.substring(pos);
-                if (! CmsStringSubstitution.isEmpty(suffix)) {
+                if (! CmsStringUtil.isEmpty(suffix)) {
                     suffix = suffix.toLowerCase();  
                     typeName = (String) m_mappings.get(suffix);         
 

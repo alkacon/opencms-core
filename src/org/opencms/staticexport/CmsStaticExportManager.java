@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/07/09 13:44:34 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2004/07/18 16:33:45 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.opencms.main.OpenCmsCore;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSiteManager;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.File;
@@ -79,7 +79,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -322,7 +322,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // cut the site root from the vfsName and switch to the correct site
         String siteRoot = CmsSiteManager.getSiteRoot(vfsName);
 
-        CmsI18nInfo i18nInfo = OpenCms.getLocaleManager().getLocaleHandler().getI18nInfo(
+        CmsI18nInfo i18nInfo = OpenCms.getLocaleManager().getI18nInfo(
             req, 
             cms.getRequestContext().currentUser(), 
             cms.getRequestContext().currentProject(), 
@@ -869,12 +869,18 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 // if "exportname" is not set we must add the site root 
                 vfsName = cms.getRequestContext().addSiteRoot(vfsName);
             }
-            // check if the vfsname ends with ".jsp", then the rfs name must end with .html, except the 
-            // resource is a plain resouce
+            // check if the vfsname ends with ".jsp", 
+            // in this case the rfs name suffix must be build with special care,
+            // usually it must be set to ".html" 
             if (vfsName.toLowerCase().endsWith(".jsp")) {
                 CmsResource res = cms.readResource(originalVfsName);
                 if (res.getTypeId() != CmsResourceTypePlain.C_RESOURCE_TYPE_ID) {
-                    vfsName += ".html";
+                    // if the resource is a plain resouce then no change in suffix is required
+                    String suffix = cms.readPropertyObject(originalVfsName, I_CmsConstants.C_PROPERTY_EXPORTSUFFIX, true).getValue(".html");
+                    if (! vfsName.toLowerCase().endsWith(suffix.toLowerCase())) {
+                        // add special suffix, e.g. ".html"
+                        vfsName += suffix;
+                    }
                 }
             }
         } catch (CmsException e) {
@@ -1132,7 +1138,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public void setExportHeader(String exportHeader) {
                 
-        if (CmsStringSubstitution.split(exportHeader, ":").length == 2) {
+        if (CmsStringUtil.split(exportHeader, ":").length == 2) {
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export headers       : " + exportHeader);
             }
@@ -1378,7 +1384,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // only process this resource, if it is within the tree of allowed folders for static export
             if (m_exportFolderMatcher.match(vfsName)) {
 
-                // only export VFS files. COS data and foldersis handled elsewhere 
+                // only export VFS files, other data is handled elsewhere 
                 if (pupRes.isVfsResource() && (pupRes.isFile())) {
                     // get the export data object, if null is returned, this resource cannot be exported
                     CmsStaticExportData exportData = getExportData(vfsName, cms);
@@ -1800,8 +1806,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         String servletName = OpenCms.getSystemInfo().getServletPath();
         String contextName = OpenCms.getSystemInfo().getContextPath();
         
-        value = CmsStringSubstitution.substitute(value, "${CONTEXT_NAME}", contextName);
-        value = CmsStringSubstitution.substitute(value, "${SERVLET_NAME}", servletName);  
+        value = CmsStringUtil.substitute(value, "${CONTEXT_NAME}", contextName);
+        value = CmsStringUtil.substitute(value, "${SERVLET_NAME}", servletName);  
         
         return value;
     }

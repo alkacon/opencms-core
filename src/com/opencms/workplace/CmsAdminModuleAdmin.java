@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2004/07/09 16:01:31 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2004/07/18 16:27:12 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,12 @@
 package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModuleDependency;
+import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleVersion;
 import org.opencms.util.CmsDateUtil;
 
 import com.opencms.core.I_CmsSession;
@@ -43,8 +42,13 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -62,8 +66,6 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
     private final String C_VERSION = "version";
     private final String C_MODULENAME = "modulename";
     private final String C_DESCRIPTION = "description";
-    private final String C_VIEW = "view";
-    private final String C_ADMINPOINT = "adminpoint";
     private final String C_MAINTENANCE = "maintenance";
     private final String C_PUBLISHCLASS = "publishclass";
     private final String C_AUTHOR = "author";
@@ -74,49 +76,30 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
     private final String C_ONEDEP = "dependentry";
     private final String C_OPTIONENTRY = "optionentry";
     private final String C_NAME_PARAMETER = "module";
-    private final String C_MODULE_TYPE = "moduletype";
 
     /**
      * fills the data from the module in the hashtable.
      * Creation date: (30.10.00 14:22:22)
-     * @return java.util.Hashtable
      * @param param java.lang.String
+     * @return java.util.Hashtable
      */
-    private void fillHashtable(CmsObject cms, CmsRegistry reg, Hashtable table, String module) {
+    private void fillHashtable(CmsObject cms, Hashtable table, String module) {
         table.put(C_MODULE_PACKETNAME, module);
-        table.put(C_VERSION, getStringValue("" + reg.getModuleVersion(module)));
-        table.put(C_MODULENAME, getStringValue(reg.getModuleNiceName(module)));
-        table.put(C_DESCRIPTION, getStringValue(reg.getModuleDescription(module)));
-        String check = getStringValue(reg.getModuleViewName(module));
-        if(!check.equals("")) {
-            check = "checked";
-        }
-        table.put(C_VIEW, check);
-        try {
-            cms.readFolder(C_VFS_PATH_MODULES + module + "/administration/", CmsResourceFilter.IGNORE_EXPIRATION);
-            check = "checked";
-        }catch(Exception exc) {
-            check = "";
-        }
-        table.put(C_ADMINPOINT, check);
-        table.put(C_MAINTENANCE, getStringValue(reg.getModuleMaintenanceEventName(module)));
-        table.put(C_PUBLISHCLASS, getStringValue(reg.getModulePublishClass(module)));
-        table.put(C_AUTHOR, getStringValue(reg.getModuleAuthor(module)));
-        table.put(C_EMAIL, getStringValue(reg.getModuleAuthorEmail(module)));
-        table.put(C_DATE, getStringValue(CmsDateUtil.getDateShort(reg.getModuleCreateDate(module))));
+        table.put(C_VERSION, getStringValue(OpenCms.getModuleManager().getModule(module).getVersion().toString()));
+        table.put(C_MODULENAME, getStringValue(OpenCms.getModuleManager().getModule(module).getNiceName()));
+        table.put(C_DESCRIPTION, getStringValue(OpenCms.getModuleManager().getModule(module).getDescription()));
+        table.put(C_MAINTENANCE, getStringValue(OpenCms.getModuleManager().getModule(module).getActionClass()));
+        table.put(C_PUBLISHCLASS, getStringValue(OpenCms.getModuleManager().getModule(module).getActionClass()));
+        table.put(C_AUTHOR, getStringValue(OpenCms.getModuleManager().getModule(module).getAuthorName()));
+        table.put(C_EMAIL, getStringValue(OpenCms.getModuleManager().getModule(module).getAuthorEmail()));
+        table.put(C_DATE, getStringValue(CmsDateUtil.getDateShort(OpenCms.getModuleManager().getModule(module).getDateCreated())));
 
         // get the dependencies
-        Vector depNames = new Vector();
-        Vector minVersion = new Vector();
-        Vector maxVersion = new Vector();
-        int deps = reg.getModuleDependencies(module, depNames, minVersion, maxVersion);
         Vector stringDeps = new Vector();
-        for(int i = 0;i < deps;i++) {
-            String max = (String)maxVersion.elementAt(i);
-            if(max.startsWith("-")) {
-                max = "*";
-            }
-            stringDeps.addElement((String)depNames.elementAt(i) + "  Version:" + (String)minVersion.elementAt(i) + " - " + max);
+        List moduleDependencies = OpenCms.getModuleManager().getModule(module).getDependencies();
+        for (int i=0; i<moduleDependencies.size(); i++) {
+            CmsModuleDependency dep = (CmsModuleDependency)moduleDependencies.get(i);
+            stringDeps.addElement(dep.getName() + "  Version:" + dep.getVersion() + " - *");
         }
         table.put(C_DEPENDENCY, stringDeps);
 
@@ -125,25 +108,20 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
         Vector paraDescr = new Vector();
         Vector paraTyp = new Vector();
         Vector paraVal = new Vector();
-        String[] allParas = reg.getModuleParameterNames(module);
-        for(int i = 0;i < allParas.length;i++) {
-            paraNames.addElement(allParas[i]);
-            paraDescr.addElement(getStringValue(reg.getModuleParameterDescription(module, allParas[i])));
-            paraVal.addElement(reg.getModuleParameterString(module, allParas[i]));
-            paraTyp.addElement(reg.getModuleParameterType(module, allParas[i]));
+        Map params = OpenCms.getModuleManager().getModule(module).getParameters();
+        Iterator it = params.keySet().iterator();
+        while(it.hasNext()) {
+            String key = (String)it.next();
+            String value = (String)params.get(key);
+            paraNames.addElement(key);
+            paraDescr.addElement("");
+            paraVal.addElement(getStringValue(value));
+            paraTyp.addElement("");
         }
         table.put(C_SESSION_MODULE_ADMIN_PROP_NAMES, paraNames);
         table.put(C_SESSION_MODULE_ADMIN_PROP_DESCR, paraDescr);
         table.put(C_SESSION_MODULE_ADMIN_PROP_TYP, paraTyp);
-        table.put(C_SESSION_MODULE_ADMIN_PROP_VAL, paraVal);
-        
-        String moduleType = reg.getModuleType(module);
-        if (moduleType!=null && moduleType.equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
-            table.put( C_MODULE_TYPE, "checked" );
-        }
-        else {
-            table.put( C_MODULE_TYPE, "" );
-        }
+        table.put(C_SESSION_MODULE_ADMIN_PROP_VAL, paraVal);        
     }
 
     /**
@@ -164,7 +142,6 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
             OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        CmsRegistry reg = OpenCms.getRegistry();
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String stepTo = "";
         String from = (String)parameters.get(C_FROM);
@@ -174,7 +151,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
 
             // first call; clear session
             session.removeValue(C_SESSION_MODULE_ADMIN_DATA);
-            fillHashtable(cms, reg, sessionData, packetName);
+            fillHashtable(cms, sessionData, packetName);
             session.putValue(C_SESSION_MODULE_ADMIN_DATA, sessionData);
             stepTo = "firstpage";
         }else {
@@ -185,14 +162,11 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
                 sessionData.put(C_VERSION, getStringValue((String)parameters.get(C_VERSION)));
                 sessionData.put(C_MODULENAME, getStringValue((String)parameters.get(C_MODULENAME)));
                 sessionData.put(C_DESCRIPTION, getStringValue((String)parameters.get(C_DESCRIPTION)));
-                sessionData.put(C_VIEW, getStringValue((String)parameters.get(C_VIEW)));
-                sessionData.put(C_ADMINPOINT, getStringValue((String)parameters.get(C_ADMINPOINT)));
                 sessionData.put(C_MAINTENANCE, getStringValue((String)parameters.get(C_MAINTENANCE)));
                 sessionData.put(C_PUBLISHCLASS, getStringValue((String)parameters.get(C_PUBLISHCLASS)));
                 sessionData.put(C_AUTHOR, getStringValue((String)parameters.get(C_AUTHOR)));
                 sessionData.put(C_EMAIL, getStringValue((String)parameters.get(C_EMAIL)));
                 sessionData.put(C_DATE, getStringValue((String)parameters.get(C_DATE)));
-                sessionData.put(C_MODULE_TYPE, getStringValue((String)parameters.get(C_MODULE_TYPE)));
     
                 session.putValue(C_SESSION_MODULE_ADMIN_DATA, sessionData);
                 stepTo = "deps";
@@ -224,7 +198,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
             if("propsready".equals(from)) {
 
                 // ready; save changes in registry
-                updateTheModule(cms, reg, sessionData, packetName);
+                updateTheModule(cms, sessionData, packetName);
                 session.removeValue(C_SESSION_MODULE_ADMIN_DATA);
                 templateSelector = "done";
             }
@@ -236,15 +210,13 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
             templateDocument.setData(C_VERSION, (String)sessionData.get(C_VERSION));
             templateDocument.setData(C_MODULENAME, (String)sessionData.get(C_MODULENAME));
             templateDocument.setData(C_DESCRIPTION, (String)sessionData.get(C_DESCRIPTION));
-            templateDocument.setData(C_VIEW, (String)sessionData.get(C_VIEW));
-            templateDocument.setData(C_ADMINPOINT, (String)sessionData.get(C_ADMINPOINT));
             templateDocument.setData(C_MAINTENANCE, (String)sessionData.get(C_MAINTENANCE));
             templateDocument.setData(C_PUBLISHCLASS, (String)sessionData.get(C_PUBLISHCLASS));
             templateDocument.setData(C_AUTHOR, (String)sessionData.get(C_AUTHOR));
             templateDocument.setData(C_EMAIL, (String)sessionData.get(C_EMAIL));
             templateDocument.setData(C_DATE, (String)sessionData.get(C_DATE));
             
-            templateDocument.setData(C_MODULE_TYPE, (String)sessionData.get(C_MODULE_TYPE));
+            templateDocument.setData("moduletype", "checked");
             templateSelector = "";
         }
         if("deps".equals(stepTo)) {
@@ -331,110 +303,79 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
     /**
      * fills the data from the hashtable in the module.
      * Creation date: (30.10.00 14:22:22)
-     * @return java.util.Hashtable
      * @param param java.lang.String
+     * @return java.util.Hashtable
      */
-    private void updateTheModule(CmsObject cms, CmsRegistry reg, Hashtable table, String module) {
+    private void updateTheModule(CmsObject cms, Hashtable table, String module) {
         SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd.MM.yyyy");
         String name = (String)table.get(C_MODULE_PACKETNAME);
-        String modulePath = C_VFS_PATH_MODULES + name + "/";
-        
-        // set the module version
-        String version = (String)table.get(C_VERSION);
+
         try {
-            reg.setModuleVersion(name, version);
-        } catch (CmsException e) {}
         
-        try {
-            reg.setModuleNiceName(name, (String)table.get(C_MODULENAME));
-            reg.setModuleDescription(name, (String)table.get(C_DESCRIPTION));
-
-            // the view
-            if("".equals(table.get(C_VIEW))) {
-                if(!"".equals(getStringValue(reg.getModuleViewName(name)))) {
-                    try {
-                        cms.deleteResource(modulePath + "view/", I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-                    }catch(Exception e) {
-                    }
-                    reg.deleteModuleView(name);
-                }
-            }else {
-                if("".equals(getStringValue(reg.getModuleViewName(name)))) {
-                    reg.setModuleView(name, name.replace('.', '_'), modulePath + "view/index.html");
-                    tryToCreateFolder(cms, modulePath, "view");
-                }
-            }
-
-            // the adminpoint
-            if("".equals(table.get(C_ADMINPOINT))) {
-                try { // does not work when folder is not empty
-                    cms.deleteResource(modulePath + "administration/", I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-                }catch(Exception e) {
-                }
-            }else {
-                tryToCreateFolder(cms, modulePath, "administration");
-            }
-
+            // set the module version
+            CmsModuleVersion version = new CmsModuleVersion((String)table.get(C_VERSION));
+        
             // the easy values
-            reg.setModuleMaintenanceEventClass(name, (String)table.get(C_MAINTENANCE));
-            reg.setModulePublishClass(name, (String)table.get(C_PUBLISHCLASS));
-            reg.setModuleAuthor(name, (String)table.get(C_AUTHOR));
-            reg.setModuleAuthorEmail(name, (String)table.get(C_EMAIL));
+            String niceName = (String)table.get(C_MODULENAME);
+            String description = (String)table.get(C_DESCRIPTION);
+            String moduleClass = (String)table.get(C_PUBLISHCLASS);
+            String moduleAuthor = (String)table.get(C_AUTHOR);
+            String moduleEmail = (String)table.get(C_EMAIL);
 
             // set the date, if the value is not correct set the current date
             String date = (String)table.get(C_DATE);
-            long dateLong = 0;
+            long moduleDateCreated = 0;
             try {
-                dateLong = dateFormat.parse(date).getTime();
+                moduleDateCreated = dateFormat.parse(date).getTime();
             }catch(Exception exc) {
-                dateLong = (new Date()).getTime();
+                moduleDateCreated = (new Date()).getTime();
             }
-            reg.setModuleCreateDate(name, dateLong);
 
             // now the dependnecies
-            Vector depNames = new Vector();
-            Vector minVersion = new Vector();
-            Vector maxVersion = new Vector();
             Vector stringDeps = (Vector)table.get(C_DEPENDENCY);
+            List dependencies = new ArrayList();
+            
             for(int i = 0;i < stringDeps.size();i++) {
                 String complString = (String)stringDeps.elementAt(i);
-                String max = complString.substring(complString.lastIndexOf("-") + 2);
                 complString = complString.substring(0, complString.lastIndexOf("-") - 1);
                 String min = complString.substring(complString.lastIndexOf(":") + 1);
-                depNames.addElement((complString.substring(0, complString.lastIndexOf("Version:") - 1)).trim());
-                float minInt = 0;
-                float maxInt = -1;
-                try {
-                    minInt = Float.parseFloat(min);
-                }catch(Exception e) {
-                }
-                try {
-                    if(!"*".equals(max)) {
-                        maxInt = Float.parseFloat(max);
-                    }
-                }catch(Exception e) {
-                }
-                minVersion.addElement(new Float(minInt));
-                maxVersion.addElement(new Float(maxInt));
+                String depName = (complString.substring(0, complString.lastIndexOf("Version:") - 1)).trim();
+                
+                dependencies.add(new CmsModuleDependency(depName, new CmsModuleVersion(String.valueOf(min))));
             }
-            reg.setModuleDependencies(name, depNames, minVersion, maxVersion);
 
             // last not least: the properties
             Vector paraNames = (Vector)table.get(C_SESSION_MODULE_ADMIN_PROP_NAMES);
-            Vector paraDesc = (Vector)table.get(C_SESSION_MODULE_ADMIN_PROP_DESCR);
-            Vector paraTyp = (Vector)table.get(C_SESSION_MODULE_ADMIN_PROP_TYP);
             Vector paraVal = (Vector)table.get(C_SESSION_MODULE_ADMIN_PROP_VAL);
-            reg.setModuleParameterdef(name, paraNames, paraDesc, paraTyp, paraVal);
             
-            // set the module type
-            String moduleType = (String)table.get(C_MODULE_TYPE);
-            if (moduleType!=null && moduleType.equals("checked")) {
-                reg.setModuleType( name, CmsRegistry.C_MODULE_TYPE_SIMPLE );
+            Map parameters = new HashMap();
+            for (int i=0; i<paraNames.size(); i++) {
+                String key = (String)paraNames.get(i);
+                parameters.put(key, paraVal.get(i));
             }
-            else {
-                reg.setModuleType( name, CmsRegistry.C_MODULE_TYPE_TRADITIONAL );
-            }               
-        }catch(CmsException e) {
+            
+            CmsModule currentModule = OpenCms.getModuleManager().getModule(name);
+
+            CmsModule updatedModule = 
+                new CmsModule(
+                    name,
+                    niceName,
+                    moduleClass,
+                    description,
+                    version,
+                    moduleAuthor,
+                    moduleEmail,
+                    moduleDateCreated,
+                    currentModule.getUserInstalled(),
+                    currentModule.getDateInstalled(),
+                    dependencies,
+                    currentModule.getExportPoints(),
+                    currentModule.getResources(),
+                    parameters);
+            
+            OpenCms.getModuleManager().updateModule(cms, updatedModule);
+
+        } catch (CmsException e) {
              if(OpenCms.getLog(this).isErrorEnabled()) {
                  OpenCms.getLog(this).error("Error in module administration", e);
              }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/07/05 10:07:22 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/07/18 16:33:45 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package org.opencms.setup;
 
 import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.main.CmsShell;
@@ -42,7 +41,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
 import org.opencms.report.CmsShellReport;
 import org.opencms.util.CmsPropertyUtils;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.File;
@@ -78,7 +77,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -584,8 +583,8 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         if (value == null) {
             return "";
         } else {
-            value = CmsStringSubstitution.substitute(value, "$replace$", id);
-            return CmsStringSubstitution.substitute(value, "$path$", pathPrefix);
+            value = CmsStringUtil.substitute(value, "$replace$", id);
+            return CmsStringUtil.substitute(value, "$path$", pathPrefix);
         }
     }
     
@@ -611,7 +610,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         if (value == null) {
             return "";
         } else {
-            return CmsStringSubstitution.substitute(value, "$replace$", replaceString);
+            return CmsStringUtil.substitute(value, "$replace$", replaceString);
         }
     }
     
@@ -1210,7 +1209,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         // get the site list
         String siteList = getExtProperty("site.root.list");
         // replace old site URL in site list with new site URL
-        siteList = CmsStringSubstitution.substitute(siteList, oldSite, newSite);
+        siteList = CmsStringUtil.substitute(siteList, oldSite, newSite);
         setExtProperty("site.root.list", siteList);
         setExtProperty("site.workplace", newSite);
     }
@@ -1262,7 +1261,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      */
     protected void importModuleFromDefault(String importFile) throws Exception {
         String exportPath = OpenCms.getSystemInfo().getPackagesRfsPath();
-        String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportPath + CmsRegistry.C_MODULE_PATH + importFile);        
+        String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportPath + I_CmsConstants.C_MODULE_PATH + importFile);        
         OpenCms.getImportExportManager().importData(m_cms, fileName, null, new CmsShellReport());        
     }
 
@@ -1405,8 +1404,8 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                                 for (int i = 0; i < values.length; i++) {
 
                                     // escape commas and equals in value
-                                    values[i] = CmsStringSubstitution.substitute(values[i], ",", "\\,");
-                                    values[i] = CmsStringSubstitution.substitute(values[i], "=", "\\=");
+                                    values[i] = CmsStringUtil.substitute(values[i], ",", "\\,");
+                                    values[i] = CmsStringUtil.substitute(values[i], "=", "\\=");
 
                                     buf.append("\t" + values[i] + ((i < values.length - 1) ? ",\\\n" : ""));
                                 }
@@ -1420,8 +1419,8 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                                 value = ((String)obj).trim();
 
                                 // escape commas and equals in value
-                                value = CmsStringSubstitution.substitute(value, ",", "\\,");
-                                value = CmsStringSubstitution.substitute(value, "=", "\\=");
+                                value = CmsStringUtil.substitute(value, ",", "\\,");
+                                value = CmsStringUtil.substitute(value, "=", "\\=");
 
                                 // write it
                                 fw.write(value);

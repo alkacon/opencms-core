@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/06/25 16:35:00 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/07/18 16:33:45 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -51,7 +51,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  */
 public class CmsLinkManager {
     
@@ -127,7 +127,7 @@ public class CmsLinkManager {
                 // trick to resolve all ../ inside a path
                 path = "." + path;
             }
-            path = CmsStringSubstitution.substitute(drive + CmsLinkManager.getAbsoluteUri(path, "/"), "//", "/");            
+            path = CmsStringUtil.substitute(drive + CmsLinkManager.getAbsoluteUri(path, "/"), "//", "/");            
             path = path.replace('/', File.separatorChar);
         }
         return path;
@@ -343,7 +343,7 @@ public class CmsLinkManager {
      */
     public String substituteLink(CmsObject cms, String link) {     
         
-        if (CmsStringSubstitution.isEmpty(link)) {
+        if (CmsStringUtil.isEmpty(link)) {
             // not a valid link parameter, return an empty String
             return "";
         }      

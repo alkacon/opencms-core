@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/06/28 07:47:33 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/07/18 16:32:33 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.41 $ $Date: 2004/06/28 07:47:33 $
+ * @version $Revision: 1.42 $ $Date: 2004/07/18 16:32:33 $
  */
 public class CmsExport implements Serializable {
 
@@ -911,6 +911,8 @@ public class CmsExport implements Serializable {
      * @return true if this is a module data export, false if this is a VFS or module export
      */
     protected boolean isExportingCosData() {
+        int todo = 0;
+        // TODO: remove COS reference
         return m_exportingCosData;
     }
 

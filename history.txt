@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/07/08 15:26:02 $
- * Version: $Revision: 1.556 $
+ * Date   : $Date: 2004/07/18 16:38:04 $
+ * Version: $Revision: 1.557 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,18 @@ OpenCms 5.3.6 Ix - mm dd, 2004
 - Configuration of static export moved from opencms.properties to opencms-importexport.xml
 - Improved the JavaDocs
 - Officially deprecated everything in com.opencms.* 
+! New module mechanism in package org.opencms.module
+! Modules are now Objects of type CmsModule
+! Modules are now managed by a CmsModuleManager
+! Module information is saved in XML configuration "opencms-modules.xml"
+! Improved XML for module configuration (old XML is automatically converted)
+! Improved module lifecycle handling with interface I_CmsModuleAction
+! Improved module versioning and dependency mechanisms
+! Added several Junit test cases for modules
+- All module handling code removed from class CmsRegistry
+- CmsRegistry moved to package com.opencms.legacy and deprecated (likley to be fully deleted soon)
+- Access to registry now through CmsRegistry singleton, not longer through OpenCms object
+! Implemented writing of new XML configuration after a configuration change
 
 OpenCms 5.3.5 Ix - June 16, 2004
 - Important: This version contains changes to the OpenCms VFS database schema

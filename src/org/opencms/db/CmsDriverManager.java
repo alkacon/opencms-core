@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/07/09 16:02:03 $
- * Version: $Revision: 1.399 $
+ * Date   : $Date: 2004/07/18 16:31:47 $
+ * Version: $Revision: 1.400 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
+import org.opencms.module.I_CmsModuleAction;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -55,7 +56,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPasswordValidation;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.validation.CmsHtmlLinkValidator;
 import org.opencms.workflow.CmsTask;
@@ -75,7 +76,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.399 $ $Date: 2004/07/09 16:02:03 $
+ * @version $Revision: 1.400 $ $Date: 2004/07/18 16:31:47 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -414,10 +415,13 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
 
+        int todo = 0;
+        // TODO: move COS stuff to legacy package        
         // set the pool for the COS
         String cosPoolUrl = configuration.getString("db.cos.pool");
         OpenCms.setRuntimeProperty("cosPoolUrl", cosPoolUrl);
         CmsDbUtil.setDefaultPool(cosPoolUrl);
+        
 
         // register the driver manager for clearcache events
         org.opencms.main.OpenCms.addCmsEventListener(driverManager, new int[] {
@@ -5536,24 +5540,26 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */    
     public void postPublishBoResource(CmsRequestContext context, CmsPublishedResource publishedBoResource, CmsUUID publishId, int tagId) throws CmsException {
+        int todo = 0;
+        // TODO: move COS stuff to legacy package                
         m_projectDriver.writePublishHistory(context.currentProject(), publishId, tagId, publishedBoResource.getContentDefinitionName(), publishedBoResource.getMasterId(), publishedBoResource.getType(), publishedBoResource.getState());
     }   
 
     /**
      * Publishes a project.<p>
      *
-     * Only the admin or the owner of the project can do this.
-     *
+     * Only the admin or the owner of the project can do this.<p>
+     * 
      * @param cms the current CmsObject
-     * @param context the current request context
-     * @param report a report object to provide the loggin messages
      * @param publishList a Cms publish list
+     * @param report a report object to provide the loggin messages
+     *
      * @throws Exception if something goes wrong
      * @see #getPublishList(CmsRequestContext, CmsResource, boolean, I_CmsReport)
      */
-    public synchronized void publishProject(CmsObject cms, CmsRequestContext context, CmsPublishList publishList, I_CmsReport report) throws Exception {
-        Vector changedResources = new Vector();
-        Vector changedModuleMasters = new Vector();
+    public synchronized void publishProject(CmsObject cms, CmsPublishList publishList, I_CmsReport report) throws Exception {
+        
+        CmsRequestContext context = cms.getRequestContext();
         int publishProjectId = context.currentProject().getId();
         boolean backupEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
         int tagId = 0;
@@ -5603,64 +5609,26 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     }
                 }
 
-                m_projectDriver.publishProject(context, report, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), publishList, OpenCms.getSystemInfo().isVersionHistoryEnabled(), tagId, maxVersions);
+                m_projectDriver.publishProject(
+                    context, 
+                    report, 
+                    readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), 
+                    publishList, 
+                    OpenCms.getSystemInfo().isVersionHistoryEnabled(), 
+                    tagId, 
+                    maxVersions);
 
-                // don't publish COS module data if a file/folder gets published directly
-                // or if the current project is a temporary project (e.g. for a module import)
-                if (!publishList.isDirectPublish() && context.currentProject().getType() != I_CmsConstants.C_PROJECT_TYPE_TEMPORARY) {
-                    // now publish the module masters
-                    Vector publishModules = new Vector();
-                    OpenCms.getRegistry().getModulePublishables(publishModules, null);
-
-                    long publishDate = System.currentTimeMillis();
-
-                    if (backupEnabled) {
-                        try {
-                            publishDate = m_backupDriver.readBackupProject(tagId).getPublishingDate();
-                        } catch (CmsException e) {
-                            // nothing to do
-                        }
-
-                        if (publishDate == 0) {
-                            publishDate = System.currentTimeMillis();
-                        }
-                    }
-
-                    for (int i = 0; i < publishModules.size(); i++) {
-                        // call the publishProject method of the class with parameters:
-                        // cms, m_enableHistory, project_id, version_id, publishDate, subId,
-                        // the vector changedResources and the vector changedModuleMasters
-                        try {
-                            // The changed masters are added to the vector changedModuleMasters, so after the last module
-                            // was published the vector contains the changed masters of all published modules
-                            Class.forName((String) publishModules.elementAt(i)).getMethod("publishProject", new Class[] {CmsObject.class, Boolean.class, Integer.class, Integer.class, Long.class, Vector.class, Vector.class}).invoke(null, new Object[] {cms, new Boolean(OpenCms.getSystemInfo().isVersionHistoryEnabled()), new Integer(publishProjectId), new Integer(tagId), new Long(publishDate), changedResources, changedModuleMasters});
-                        } catch (ClassNotFoundException ec) {
-                            report.println(report.key("report.publish_class_for_module_does_not_exist_1") + (String) publishModules.elementAt(i) + report.key("report.publish_class_for_module_does_not_exist_2"), I_CmsReport.C_FORMAT_WARNING);
-                            if (OpenCms.getLog(this).isErrorEnabled()) {
-                                OpenCms.getLog(this).error("Error calling publish class of module " + (String) publishModules.elementAt(i), ec);
-                            }
-                        } catch (Throwable t) {
-                            report.println(t);
-                            if (OpenCms.getLog(this).isErrorEnabled()) {
-                                OpenCms.getLog(this).error("Error while publishing data of module " + (String) publishModules.elementAt(i), t);
-                            }
-                        }
-                    }
-
-                    Iterator i = changedModuleMasters.iterator();
-                    while (i.hasNext()) {
-                        CmsPublishedResource currentCosResource = (CmsPublishedResource) i.next();
-                        m_projectDriver.writePublishHistory(context.currentProject(), publishList.getPublishHistoryId(), tagId, currentCosResource.getContentDefinitionName(), currentCosResource.getMasterId(), currentCosResource.getType(), currentCosResource.getState());
-                    }                 
-                    
+                // iterate the initialized module action instances
+                Iterator i = OpenCms.getModuleManager().getModuleInstances();
+                while (i.hasNext()) {
+                    I_CmsModuleAction moduleActionInstance = (I_CmsModuleAction)i.next();
+                    moduleActionInstance.publishProject(cms, publishList, tagId, report);
                 }
-            } catch (CmsException e) {
-                throw e;
+
             } finally {
                 this.clearResourceCache();
                 // the project was stored in the backuptables for history
-                //new projectmechanism: the project can be still used after publishing
-                // it will be deleted if the project_flag = C_PROJECT_STATE_TEMP
+                // it will be deleted if the project_flag is C_PROJECT_TYPE_TEMPORARY
                 if (context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY) {
                     m_projectDriver.deleteProject(context.currentProject());
                     try {
@@ -5671,7 +5639,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                         }
                     }
                     if (publishProjectId == context.currentProject().getId()) {
-                        cms.getRequestContext().setCurrentProject(cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
+                        // if project was temporary set context to online project
+                        cms.getRequestContext().setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
                     }
 
                 }              
@@ -6721,7 +6690,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public List readSiblings(CmsRequestContext context, String resourcename, CmsResourceFilter filter) throws CmsException {
         
-        if (CmsStringSubstitution.isEmpty(resourcename)) {
+        if (CmsStringUtil.isEmpty(resourcename)) {
             return Collections.EMPTY_LIST;
         }
 
@@ -7343,7 +7312,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param report an I_CmsReport instance to print output message, or null to write messages to the log file
      */
     public void updateExportPoints(CmsRequestContext context, I_CmsReport report) {
-        Set exportPoints = null;
+        Set exportPoints = new HashSet();
         String currentExportPoint = null;
         List resources = new ArrayList();
         Iterator i = null;
@@ -7357,7 +7326,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             context.setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
 
             // read the export points and return immediately if there are no export points at all         
-            exportPoints =  OpenCms.getExportPoints();    
+            exportPoints.addAll(OpenCms.getExportPoints());
+            exportPoints.addAll(OpenCms.getModuleManager().getExportPoints());
             if (exportPoints.size() == 0) {
                 if (OpenCms.getLog(this).isWarnEnabled()) {
                     OpenCms.getLog(this).warn("No export points configured at all.");
@@ -7365,14 +7335,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 return;
             }
 
-            // the report may be null if the export points indicated by an event on a remote server
+            // create the driver to write the export points
+            exportPointDriver = new CmsExportPointDriver(exportPoints);
+            
+            // the report may be null if the export point update was started by an event on a remote server
             if (report == null) {
                 report = new CmsLogReport();
             }
-
-            // create the driver to write the export points
-            exportPointDriver = new CmsExportPointDriver(exportPoints);
-
+            
             // the export point hash table contains RFS export paths keyed by their internal VFS paths
             i = exportPointDriver.getExportPointPaths().iterator();
             while (i.hasNext()) {
@@ -7509,7 +7479,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
     }
 
-
     /**
      * Writes all export points into the file system for a publish task 
      * specified by its publish history ID.<p>
@@ -7519,28 +7488,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param publishHistoryId unique int ID to identify each publish task in the publish history
      */    
     public void writeExportPoints(CmsRequestContext context, I_CmsReport report, CmsUUID publishHistoryId) {
-        Set exportPoints = null;
+        Set exportPoints = new HashSet();
         CmsExportPointDriver exportPointDriver = null;
         List publishedResources = null;
         CmsPublishedResource currentPublishedResource = null;
         String currentExportKey = null;
         boolean printReportHeaders = false;
 
-        try {
-            // read the export points and return immediately if there are no export points at all         
-            exportPoints = OpenCms.getExportPoints();       
-            if (exportPoints.size() == 0) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("No export points configured at all.");
-                }
-                return;
-            }
-            
-            // the report may be null if the export points indicated by an event on a remote server
-            if (report == null) {
-                report = new CmsLogReport();
-            }
-            
+        try {            
             // read the "published resources" for the specified publish history ID
             publishedResources = getProjectDriver().readPublishedResources(context.currentProject().getId(), publishHistoryId);
             if (publishedResources.size() == 0) {
@@ -7548,10 +7503,25 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     OpenCms.getLog(this).warn("No published resources in the publish history for the specified ID " + publishHistoryId + " found.");
                 }
                 return;
-            }            
+            }  
+            
+            // read the export points and return immediately if there are no export points at all         
+            exportPoints.addAll(OpenCms.getExportPoints());
+            exportPoints.addAll(OpenCms.getModuleManager().getExportPoints());   
+            if (exportPoints.size() == 0) {
+                if (OpenCms.getLog(this).isWarnEnabled()) {
+                    OpenCms.getLog(this).warn("No export points configured at all.");
+                }
+                return;
+            }
             
             // create the driver to write the export points
             exportPointDriver = new CmsExportPointDriver(exportPoints);
+            
+            // the report may be null if the export point write was started by an event on a remote server
+            if (report == null) {
+                report = new CmsLogReport();
+            }                                  
 
             // iterate over all published resources to export them eventually
             Iterator i = publishedResources.iterator();

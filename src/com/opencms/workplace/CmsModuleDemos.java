@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModuleDemos.java,v $
-* Date   : $Date: 2004/07/09 16:01:31 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2004/07/18 16:27:12 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
 package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -37,8 +36,8 @@ import org.opencms.workplace.I_CmsWpConstants;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 /**
  * Template class for displaying OpenCms workplace administration module
@@ -68,14 +67,13 @@ public class CmsModuleDemos extends CmsWorkplaceDefault {
             OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        CmsRegistry reg = OpenCms.getRegistry();
         String currentname;
-        Enumeration modules = reg.getModuleNames();
+        Iterator modules = OpenCms.getModuleManager().getModuleNames().iterator();
         String completeList = "";
         String servPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
-        while(modules.hasMoreElements()) {
-            String name = (String)modules.nextElement();
-            String nicename = reg.getModuleNiceName(name);
+        while(modules.hasNext()) {
+            String name = (String)modules.next();
+            String nicename = OpenCms.getModuleManager().getModule(name).getNiceName();
             if(nicename == null || nicename.equals("")) {
                 currentname = name;
             }

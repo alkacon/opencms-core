@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleProperties.java,v $
-* Date   : $Date: 2004/07/09 16:01:31 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2004/07/18 16:27:12 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,18 +29,21 @@
 package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModuleDependency;
+import org.opencms.module.CmsModule;
 import org.opencms.util.CmsDateUtil;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
+import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Template class for displaying the properties of a module.
@@ -150,48 +153,29 @@ public class CmsAdminModuleProperties extends CmsWorkplaceDefault {
         }
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-        CmsRegistry reg = OpenCms.getRegistry();
         String view = (String)parameters.get(C_VIEW);
         String module = (String)parameters.get(C_MODULENAME);
         if((view != null) && (C_DESCRIPTION.equals(view))) {
             
             // set the values in the template "description"
             xmlTemplateDocument.setData("name", module);
-            xmlTemplateDocument.setData("version", "" + reg.getModuleVersion(module));
-            xmlTemplateDocument.setData("descriptiontext", reg.getModuleDescription(module));
-            xmlTemplateDocument.setData("author", reg.getModuleAuthor(module));
-            xmlTemplateDocument.setData("email", reg.getModuleAuthorEmail(module));
-            xmlTemplateDocument.setData("createdate", CmsDateUtil.getDateTimeShort(reg.getModuleCreateDate(module)));
-            xmlTemplateDocument.setData("uploadfrom", reg.getModuleUploadedBy(module));
-            xmlTemplateDocument.setData("uploaddate", CmsDateUtil.getDateTimeShort(reg.getModuleUploadDate(module)));
-            xmlTemplateDocument.setData("view", reg.getModuleViewName(module));
-            String docu = reg.getModuleDocumentPath(module);
-            if((docu != null) && (docu.length() > 1)) {
-                xmlTemplateDocument.setData("documentation", docu.substring(1));
-            }
-            else {
-                xmlTemplateDocument.setData("documentation", "");
-            }
-            Vector depNames = new Vector();
-            Vector minVersion = new Vector();
-            Vector maxVersion = new Vector();
-            int deps = reg.getModuleDependencies(module, depNames, minVersion, maxVersion);
+            xmlTemplateDocument.setData("version", "" + OpenCms.getModuleManager().getModule(module).getVersion());
+            xmlTemplateDocument.setData("descriptiontext", OpenCms.getModuleManager().getModule(module).getDescription());
+            xmlTemplateDocument.setData("author", OpenCms.getModuleManager().getModule(module).getAuthorName());
+            xmlTemplateDocument.setData("email", OpenCms.getModuleManager().getModule(module).getAuthorEmail());
+            xmlTemplateDocument.setData("createdate", CmsDateUtil.getDateTimeShort(OpenCms.getModuleManager().getModule(module).getDateCreated()));
+            xmlTemplateDocument.setData("uploadfrom", OpenCms.getModuleManager().getModule(module).getUserInstalled());
+            xmlTemplateDocument.setData("uploaddate", CmsDateUtil.getDateTimeShort(OpenCms.getModuleManager().getModule(module).getDateInstalled()));
+            xmlTemplateDocument.setData("view", "");
+            xmlTemplateDocument.setData("documentation", "");
             String dependences = "";
-            for(int i = 0;i < deps;i++) {
-                String max = (String)maxVersion.elementAt(i);
-                if("-1".equals(max)) {
-                    dependences += (String)depNames.elementAt(i) + "  " + (String)minVersion.elementAt(i) + " - " + "*" + "\n";
-                }
-                else {
-                    dependences += (String)depNames.elementAt(i) + "  " + (String)minVersion.elementAt(i) + " - " + max + "\n";
-                }
+            List moduleDependencies = OpenCms.getModuleManager().getModule(module).getDependencies();
+            for (int i=0; i<moduleDependencies.size(); i++) {
+                CmsModuleDependency dep = (CmsModuleDependency)moduleDependencies.get(i);
+                dependences += dep.getName() + "  " + dep.getVersion() + " - " + "*" + "\n";                
             }
             xmlTemplateDocument.setData("dependences", dependences);
-            String[] repositorys = reg.getModuleRepositories(module);
             String outputRep = "";
-            for(int i = 0;i < repositorys.length;i++) {
-                outputRep += repositorys[i] + "\n";
-            }
             xmlTemplateDocument.setData("repository", outputRep);
             
             // set the correct templateselector
@@ -202,12 +186,14 @@ public class CmsAdminModuleProperties extends CmsWorkplaceDefault {
                 
                 // set the values in the template "parameter"
                 xmlTemplateDocument.setData("name", module);
-                xmlTemplateDocument.setData("version", "" + reg.getModuleVersion(module));
-                String[] parameterNames = reg.getModuleParameterNames(module);
+                xmlTemplateDocument.setData("version", "" + OpenCms.getModuleManager().getModule(module).getVersion());
+                Map moduleParameters = OpenCms.getModuleManager().getModule(module).getParameters();
                 String allParameter = "";
-                for(int i = 0;i < parameterNames.length;i++) {
-                    xmlTemplateDocument.setData("paraname", parameterNames[i]);
-                    xmlTemplateDocument.setData("paravalue", reg.getModuleParameter(module, parameterNames[i]));
+                Iterator it = moduleParameters.keySet().iterator();
+                while (it.hasNext()) {
+                    String key = (String)it.next();
+                    xmlTemplateDocument.setData("paraname", key);
+                    xmlTemplateDocument.setData("paravalue", (String)moduleParameters.get(key));
                     allParameter += xmlTemplateDocument.getProcessedDataValue("parameterentry");
                 }
                 xmlTemplateDocument.setData("allparameter", allParameter);
@@ -227,12 +213,13 @@ public class CmsAdminModuleProperties extends CmsWorkplaceDefault {
                         session.removeValue(C_SESSION_MODULENAME);
                         session.removeValue(C_SESSION_PARAMETER);
                     }
+                    Map moduleParameters = OpenCms.getModuleManager().getModule(module).getParameters();
                     xmlTemplateDocument.setData("name", module);
-                    xmlTemplateDocument.setData("version", "" + reg.getModuleVersion(module));
+                    xmlTemplateDocument.setData("version", "" + OpenCms.getModuleManager().getModule(module).getVersion());
                     xmlTemplateDocument.setData("paraname", parameter);
-                    xmlTemplateDocument.setData("paratext", reg.getModuleParameterDescription(module, parameter));
-                    xmlTemplateDocument.setData("paratype", reg.getModuleParameterType(module, parameter));
-                    xmlTemplateDocument.setData("paravalue", reg.getModuleParameter(module, parameter));
+                    xmlTemplateDocument.setData("paratext", "");
+                    xmlTemplateDocument.setData("paratype", "String");
+                    xmlTemplateDocument.setData("paravalue", (String)moduleParameters.get(parameter));
                     
                     // set the correct templateselector
                     templateSelector = C_CHANGE_PARAMETER;
@@ -245,9 +232,30 @@ public class CmsAdminModuleProperties extends CmsWorkplaceDefault {
                         String value = (String)parameters.get("parawert");
                         xmlTemplateDocument.setData("name", module);
                         templateSelector = "done";
-                        String newValue = checkType(reg.getModuleParameterType(module, parameter), value);
-                        if(newValue != null) {
-                            reg.setModuleParameter(module, parameter, newValue);
+                        if(value != null) {
+                            CmsModule oldModule = OpenCms.getModuleManager().getModule(module);
+                            Map moduleParameters = new HashMap(oldModule.getParameters()); 
+                            moduleParameters.put(parameter, value);
+                            
+                            CmsModule updatedModule = 
+                                new CmsModule(
+                                    oldModule.getName(),
+                                    oldModule.getNiceName(),
+                                    oldModule.getActionClass(),
+                                    oldModule.getDescription(),
+                                    oldModule.getVersion(),
+                                    oldModule.getAuthorName(),
+                                    oldModule.getAuthorEmail(),
+                                    oldModule.getDateCreated(),
+                                    oldModule.getUserInstalled(),
+                                    oldModule.getDateInstalled(),
+                                    oldModule.getDependencies(),
+                                    oldModule.getExportPoints(),
+                                    oldModule.getResources(),
+                                    moduleParameters);
+                            
+                            OpenCms.getModuleManager().updateModule(cms, updatedModule);
+                            
                         }
                         else {
                             

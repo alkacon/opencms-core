@@ -3,11 +3,12 @@
 
 <opencms>
     <configuration>
-        <config class="org.opencms.configuration.CmsTestConfiguration"/>
-        <config class="org.opencms.configuration.CmsSystemConfiguration"/>	
+		<config class="org.opencms.configuration.CmsTestConfiguration"/>
+		<config class="org.opencms.configuration.CmsSystemConfiguration"/>	
 		<config class="org.opencms.configuration.CmsVfsConfiguration"/>  
 		<config class="org.opencms.configuration.CmsWorkplaceConfiguration"/>
 		<config class="org.opencms.configuration.CmsImportExportConfiguration"/>		              
 		<config class="org.opencms.configuration.CmsSearchConfiguration"/>	
+		<config class="org.opencms.configuration.CmsModuleConfiguration"/>	
     </configuration>       
 </opencms>    

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/07/09 16:00:56 $
-* Version: $Revision: 1.88 $
+* Date   : $Date: 2004/07/18 16:27:12 $
+* Version: $Revision: 1.89 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -46,7 +45,6 @@ import com.opencms.defaults.master.CmsPlausibilizationException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
-import com.opencms.template.I_CmsXmlTemplate;
 import com.opencms.workplace.CmsWorkplaceDefault;
 import com.opencms.workplace.CmsXmlLanguageFile;
 import com.opencms.workplace.CmsXmlWpTemplateFile;
@@ -76,7 +74,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.88 $
+ * @version $Revision: 1.89 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -2090,40 +2088,6 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
     */
 
     private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-
-        // Is there an unlock extension installed? 
-        // TODO: check REGISTRY "unlockextension"  
-        int warning = 0;
-        Hashtable h = OpenCms.getRegistry().getSystemValues("unlockextension");
-        if (h != null) {
-            // Unlock extension found, try generate in instance and use this instead of the default
-            if ("true".equals(h.get("enabled"))) {
-                String extensionClass = (String)h.get("class");
-                if (extensionClass != null) {
-                    try {
-                        parameters.put("__source", "A_CmsBackoffice");
-                        parameters.put("__cdclass", getContentDefinitionClass());
-                        parameters.put("__isExtendedList", "" + isExtendedList());
-                        parameters.put("__template", template);
-                        // Call extension class
-                        I_CmsXmlTemplate extension = (I_CmsXmlTemplate)Class.forName(extensionClass).newInstance();
-                        byte[] bytes = extension.getContent(cms, template.getAbsoluteFilename(), elementName, parameters, templateSelector);
-                        // If byte == null, use default behaviour (i.e. rest of this method)                
-    
-                        if (bytes != null) {
-                            // startProcessing must be called in this method since access is protected
-                            template = (CmsXmlWpTemplateFile)parameters.get("__template");
-                            elementName = (String)parameters.get("__elementName");
-                            templateSelector = (String)parameters.get("__templateSelector");
-                            return startProcessing(cms, template, elementName, parameters, templateSelector);
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace(System.err);
-                        return "[Unlock extension caused exception]".getBytes();
-                    }
-                }
-            }
-        }
 
         byte[] processResult = null;
 

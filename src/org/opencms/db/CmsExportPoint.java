@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPoint.java,v $
- * Date   : $Date: 2004/06/14 12:19:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/18 16:31:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.db;
 
 import org.opencms.main.OpenCms;
@@ -37,17 +38,20 @@ import org.opencms.main.OpenCms;
  *  
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public class CmsExportPoint {
-    
+
+    /** The configured destination path. */
+    private String m_configuredDestination;
+
     /** The destination path in the "real" file system, relative to the web application folder. */
-    private String m_destination;
+    private String m_destinationPath;
 
     /** The URI of the OpenCms VFS resource (folder) of the export point. */
     private String m_uri;
-    
+
     /**
      * Creates a new export point.<p>
      * 
@@ -55,44 +59,73 @@ public class CmsExportPoint {
      * @param destination the destination folder in the "real" file system, 
      *     relative to the web application root
      */
-    public CmsExportPoint(String uri, String destination) {        
+    public CmsExportPoint(String uri, String destination) {
+
         m_uri = uri;
-        m_destination = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(destination);
+        m_configuredDestination = destination;
+        m_destinationPath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(destination);
     }
-    
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object o) {
-        if (! (o instanceof CmsExportPoint)) {
+
+        if (!(o instanceof CmsExportPoint)) {
             return false;
         }
         CmsExportPoint other = (CmsExportPoint)o;
         return getUri().equals(other.getUri());
     }
-    
+
+    /**
+     * Returns the configured destination path.<p>
+     * 
+     * The configured destination path is always relative to the 
+     * web application path.<p>
+     * 
+     * @return the configured destination path
+     * 
+     * @see #getDestinationPath()
+     */
+    public String getConfiguredDestination() {
+
+        return m_configuredDestination;
+    }
+
     /**
      * Returns the destination path in the "real" file system.<p>
      * 
      * @return the destination
      */
-    public String getDestination() {
-        return m_destination;
+    public String getDestinationPath() {
+
+        return m_destinationPath;
     }
-    
+
     /**
      * Returns the uri of the OpenCms VFS folder to write as export point.<p>
      * 
      * @return the uri
      */
     public String getUri() {
+
         return m_uri;
     }
-    
+
     /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
+
         return getUri().hashCode();
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        return "[" + getClass().getName() + ", uri: " + m_uri + ", destination: " + m_destinationPath + "]";
     }
 }

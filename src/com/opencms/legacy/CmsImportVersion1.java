@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2004/07/08 15:21:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/07/18 16:27:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.importexport.CmsImportVersion2;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.template.*;
@@ -226,7 +226,7 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
                 for (int i = 0; i < editNodes.getLength(); i++) {
                     editString = editNodes.item(i).getFirstChild().getNodeValue();
                     for (int k = 0; k < m_webAppNames.size(); k++) {
-                        editString = CmsStringSubstitution.substitute(editString, (String) m_webAppNames.get(k), I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/");
+                        editString = CmsStringUtil.substitute(editString, (String) m_webAppNames.get(k), I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/");
                     }
                     editNodes.item(i).getFirstChild().setNodeValue(editString);
                 }
@@ -271,7 +271,7 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
     private String scanFrameTemplate(String content) {
         // no Meta-Tag present, insert it!
         if (content.toLowerCase().indexOf("http-equiv=\"content-type\"") == -1) {
-            content = CmsStringSubstitution.substitute(content, "</head>", "<meta http-equiv=\"content-type\" content=\"text/html; charset=]]><method name=\"getEncoding\"/><![CDATA[\">\n</head>");
+            content = CmsStringUtil.substitute(content, "</head>", "<meta http-equiv=\"content-type\" content=\"text/html; charset=]]><method name=\"getEncoding\"/><![CDATA[\">\n</head>");
         } else {
             // Meta-Tag present
             if (content.toLowerCase().indexOf("charset=]]><method name=\"getencoding\"/>") == -1) {

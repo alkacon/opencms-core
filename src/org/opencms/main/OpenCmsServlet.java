@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2004/07/07 18:01:08 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/07/18 16:33:00 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -223,7 +223,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     }
     
     /**
-     * Manages request to internal OpenCms request handlers.<p>
+     * Manages requests to internal OpenCms request handlers.<p>
      * 
      * @param req the current request
      * @param res the current response 
@@ -240,7 +240,5 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             openErrorHandler(req, res, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
-    
-
 }
 

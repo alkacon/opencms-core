@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModulelist.java,v $
-* Date   : $Date: 2004/07/09 16:01:31 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2004/07/18 16:27:13 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,13 @@
 
 package com.opencms.workplace;
 
-import org.opencms.i18n.CmsMessages;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
 import org.opencms.util.CmsDateUtil;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
-import org.opencms.file.CmsRequestContext;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -51,7 +50,7 @@ import org.w3c.dom.Element;
  * 
  * Creation date: (31.08.00 15:16:10)
  * @author Hanjo Riege
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -81,9 +80,6 @@ public class CmsModulelist extends A_CmsWpElement {
         
         // Read projectlist parameters
         String listMethod = n.getAttribute(C_MODULELIST_METHOD);
-        
-        //Get the registry
-        CmsRegistry reg = OpenCms.getRegistry();
         
         // Get list definition and language values
         CmsXmlWpTemplateFile listdef = getModulelistDefinitions(cms);
@@ -145,15 +141,15 @@ public class CmsModulelist extends A_CmsWpElement {
         for(int i = 0;i < list.size();i++) {
             String currentModule = (String)list.elementAt(i);
             listdef.setData(C_MODULELIST_NAME, currentModule);
-            listdef.setData(C_MODULELIST_NICE_NAME, reg.getModuleNiceName(currentModule));
-            listdef.setData(C_MODULELIST_VERSION, reg.getModuleVersion(currentModule) + "");
-            listdef.setData(C_MODULELIST_AUTHOR, reg.getModuleAuthor(currentModule));
-            listdef.setData(C_MODULELIST_DATECREATED, CmsDateUtil.getDateShort(reg.getModuleCreateDate(currentModule)));
-            if(reg.getModuleUploadDate(currentModule) == -1) {
+            listdef.setData(C_MODULELIST_NICE_NAME, OpenCms.getModuleManager().getModule(currentModule).getNiceName()); 
+            listdef.setData(C_MODULELIST_VERSION, OpenCms.getModuleManager().getModule(currentModule).getVersion().toString());
+            listdef.setData(C_MODULELIST_AUTHOR, OpenCms.getModuleManager().getModule(currentModule).getAuthorName());
+            listdef.setData(C_MODULELIST_DATECREATED, CmsDateUtil.getDateShort(OpenCms.getModuleManager().getModule(currentModule).getDateCreated()));
+            if(OpenCms.getModuleManager().getModule(currentModule).getDateInstalled() == CmsModule.C_DEFAULT_DATE) {
                 listdef.setData(C_MODULELIST_DATEUPLOADED, "   -   ");
             }
             else {
-                listdef.setData(C_MODULELIST_DATEUPLOADED, CmsDateUtil.getDateShort(reg.getModuleUploadDate(currentModule)));
+                listdef.setData(C_MODULELIST_DATEUPLOADED, CmsDateUtil.getDateShort(OpenCms.getModuleManager().getModule(currentModule).getDateInstalled()));
             }
             listdef.setData(C_MODULELIST_IDX, new Integer(i).toString());
             result.append(listdef.getProcessedDataValue(C_TAG_MODULELIST_DEFAULT, callingObject, parameters));

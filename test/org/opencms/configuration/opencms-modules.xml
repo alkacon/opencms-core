@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-modules.dtd">
+
+<opencms>
+    <modules>
+    	<module>
+    		<name>org.opencms.configuration.TestModule1</name>
+    		<nicename>OpenCms configuration test module</nicename>
+    		<class/>
+			<description><![CDATA[A module to test the OpenCms module configuration]]></description>
+			<version>1.0</version>
+			<authorname>Alexander Kandzior</authorname>
+			<authoremail>alex@opencms.org</authoremail>
+			<datecreated>Mon, 12 Jul 2004 12:00:00 CEST</datecreated>
+			<userinstalled>Admin</userinstalled>
+			<dateinstalled>Thu, 13 Jul 2004 13:00:00 CEST</dateinstalled>
+			<dependencies>
+				<dependency name="org.opencms.configuration.TestModule2" version="2.0" />
+			</dependencies>
+			<exportpoints>
+				<exportpoint uri="/system/modules/org.opencms.configuration.TestModule1/classes" destination="classes/"/>
+				<exportpoint uri="/system/modules/org.opencms.configuration.TestModule1/lib" destination="lib/"/>
+			</exportpoints>	
+			<resources>
+				<resource uri="/system/modules/org.opencms.configuration.TestModule1/"/>
+			</resources>		
+			<parameters>
+				<param name="param1">value1</param>
+				<param name="param2">value2</param>
+			</parameters>				
+    	</module>
+    </modules>  
+</opencms>    

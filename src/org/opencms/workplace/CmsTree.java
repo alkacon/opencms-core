@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/07/09 16:40:26 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/07/18 16:34:53 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 5.1
  */
@@ -348,7 +348,7 @@ public class CmsTree extends CmsWorkplace {
                     // change the site root for channel tree window
                     restoreSiteRoot = true;
                     getCms().getRequestContext().saveSiteRoot();
-                    getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
+                    getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
                 } else if (getSettings().getTreeSite(getTreeType()) != null) {
                     // change the site root for popup window with site selector
                     restoreSiteRoot = true;

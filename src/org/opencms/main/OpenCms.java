@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/07/07 18:01:09 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/07/18 16:33:00 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,11 @@ package org.opencms.main;
 
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLockManager;
+import org.opencms.module.CmsModuleManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  */
 public final class OpenCms {
 
@@ -219,6 +219,16 @@ public final class OpenCms {
 
         return OpenCmsCore.getInstance().getMemoryMonitor();
     }
+   
+    /**
+     * Returns the module manager.<p>
+     * 
+     * @return the module manager
+     */    
+    public static CmsModuleManager getModuleManager() {
+        
+        return OpenCmsCore.getInstance().getModuleManager();
+    }
 
     /**
      * Returns the Class that is used for the password validation.<p>
@@ -228,19 +238,6 @@ public final class OpenCms {
     public static String getPasswordValidatingClass() {
 
         return OpenCmsCore.getInstance().getPasswordValidatingClass();
-    }
-
-    /**
-     * Returns the registry to read values from it.<p>
-     * 
-     * You don't have the permissions to write values. 
-     * This is useful for modules to read module-parameters.<p>
-     *
-     * @return the registry
-     */
-    public static CmsRegistry getRegistry() {
-
-        return OpenCmsCore.getInstance().getRegistry();
     }
 
     /**
@@ -368,31 +365,6 @@ public final class OpenCms {
 
         return OpenCmsCore.getInstance().getWorkplaceManager();
     }
-
-    /**
-     * Returns an initialized CmsObject with the user initialized as provided,
-     * with the "Online" project selected and "/" set as the current site root.<p>
-     * 
-     * Note: Only the default users 'Guest' and 'Export' can initialized with 
-     * this method, all other user names will throw an Exception.<p>
-     * 
-     * @param user the user name to initialize, can only be 
-     *        {@link org.opencms.db.CmsDefaultUsers#getUserGuest()} or
-     *        {@link org.opencms.db.CmsDefaultUsers#getUserExport()}
-     * 
-     * @return an initialized CmsObject with the given users permissions
-     * 
-     * @throws CmsException if an invalid user name was provided, or if something else goes wrong
-     * 
-     * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
-     * @see org.opencms.db.CmsDefaultUsers#getUserExport()
-     * @see OpenCms#initCmsObject(String)
-     * @see #initCmsObject(CmsObject, CmsContextInfo)
-     */
-    public static CmsObject initCmsObject(String user) throws CmsException {
-
-        return OpenCmsCore.getInstance().initCmsObject(user);
-    }
     
     /**
      * Returns an initialized CmsObject with the user and context initialized as provided.<p>
@@ -420,6 +392,31 @@ public final class OpenCms {
     }
 
     /**
+     * Returns an initialized CmsObject with the user initialized as provided,
+     * with the "Online" project selected and "/" set as the current site root.<p>
+     * 
+     * Note: Only the default users 'Guest' and 'Export' can initialized with 
+     * this method, all other user names will throw an Exception.<p>
+     * 
+     * @param user the user name to initialize, can only be 
+     *        {@link org.opencms.db.CmsDefaultUsers#getUserGuest()} or
+     *        {@link org.opencms.db.CmsDefaultUsers#getUserExport()}
+     * 
+     * @return an initialized CmsObject with the given users permissions
+     * 
+     * @throws CmsException if an invalid user name was provided, or if something else goes wrong
+     * 
+     * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
+     * @see org.opencms.db.CmsDefaultUsers#getUserExport()
+     * @see OpenCms#initCmsObject(String)
+     * @see #initCmsObject(CmsObject, CmsContextInfo)
+     */
+    public static CmsObject initCmsObject(String user) throws CmsException {
+
+        return OpenCmsCore.getInstance().initCmsObject(user);
+    }
+
+    /**
      * Removes a cms event listener.<p>
      *
      * @param listener the listener to remove
@@ -441,4 +438,14 @@ public final class OpenCms {
 
         OpenCmsCore.getInstance().setRuntimeProperty(key, value);
     }
+    
+    /**
+     * Writes the XML configuration for the provided configuration class.<p>
+     * 
+     * @param clazz the configuration class to write the XML for
+     */
+    public static void writeConfiguration(Class clazz) {
+        
+        OpenCmsCore.getInstance().writeConfiguration(clazz);
+    }    
 }

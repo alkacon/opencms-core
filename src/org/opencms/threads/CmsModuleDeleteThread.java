@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleDeleteThread.java,v $
- * Date   : $Date: 2004/02/22 13:52:28 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/07/18 16:33:45 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,59 +31,43 @@
 
 package org.opencms.threads;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsRegistry;
-
-import java.util.Vector;
+import java.util.List;
 
 /**
  * Deletes a module.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.1.10
  */
 public class CmsModuleDeleteThread extends A_CmsReportThread {
 
     private static final boolean DEBUG = false;
-    private Vector m_conflictFiles;
     private String m_moduleName;
-    private Vector m_projectFiles;
-    private CmsRegistry m_registry;
     private boolean m_replaceMode;
 
     /**
      * Creates the module delete thread.<p>
-     *
+     * 
      * @param cms the current cms context
-     * @param reg the registry to write the new module information to
      * @param moduleName the name of the module
-     * @param conflictFiles vector of conflict files
-     * @param projectFiles vector of project files
      * @param replaceMode the replace mode
      */
-    public CmsModuleDeleteThread(
-        CmsObject cms, 
-        CmsRegistry reg, 
-        String moduleName, 
-        Vector conflictFiles, 
-        Vector projectFiles, 
-        boolean replaceMode
-    ) {
+    public CmsModuleDeleteThread(CmsObject cms, String moduleName, boolean replaceMode) {
+
         super(cms, "OpenCms: Module deletion of " + moduleName);
         m_moduleName = moduleName;
-        m_registry = reg;
-        m_conflictFiles = conflictFiles;
-        m_projectFiles = projectFiles;
         m_replaceMode = replaceMode;
-        initOldHtmlReport(cms.getRequestContext().getLocale());        
+        initOldHtmlReport(cms.getRequestContext().getLocale());
         if (DEBUG) {
             System.err.println("CmsAdminModuleDeleteThread() constructed");
         }
@@ -93,6 +77,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
+
         return getReport().getReportUpdate();
     }
 
@@ -100,6 +85,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
      * @see java.lang.Runnable#run()
      */
     public void run() {
+
         try {
             if (DEBUG) {
                 System.err.println("CmsAdminModuleDeleteThread() started");
@@ -108,18 +94,32 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
             CmsProject project = null;
 
             // create a Project to delete the module.
-            project = getCms().createProject("DeleteModule", "A System generated project to delete the module " + moduleName, OpenCms.getDefaultUsers().getGroupAdministrators(), OpenCms.getDefaultUsers().getGroupAdministrators(), I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
+            project = getCms().createProject(
+                "DeleteModule",
+                "A System generated project to delete the module " + moduleName,
+                OpenCms.getDefaultUsers().getGroupAdministrators(),
+                OpenCms.getDefaultUsers().getGroupAdministrators(),
+                I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
             getCms().getRequestContext().setCurrentProject(project);
 
             getReport().print(getReport().key("report.delete_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             getReport().println(" <i>" + moduleName + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
 
             // copy the resources to the project
-            for (int i = 0; i < m_projectFiles.size(); i++) {
-                getCms().copyResourceToProject((String)m_projectFiles.elementAt(i));
+            List projectFiles = OpenCms.getModuleManager().getModule(moduleName).getResources();
+            for (int i = 0; i < projectFiles.size(); i++) {
+                try {
+                    getCms().copyResourceToProject((String)projectFiles.get(i));
+                } catch (CmsException e) {
+                    // may happen if the resource has already been deleted
+                    OpenCms.getLog(this).error(
+                        "Exception moving module resource '" + (String)projectFiles.get(i) + "' to delete project",
+                        e);
+                    getReport().println(e);
+                }
             }
-            // delete the module
-            m_registry.deleteModule(m_moduleName, m_conflictFiles, m_replaceMode, getReport());
+            // now delete the module
+            OpenCms.getModuleManager().deleteModule(getCms(), moduleName, m_replaceMode, getReport());
 
             getReport().println(getReport().key("report.publish_project_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             // now unlock and publish the project

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/06/18 10:50:42 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/07/18 16:35:07 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsNewResourceXmlPage;
 import org.opencms.workplace.CmsPropertyCustom;
 
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.3.0
  */
@@ -199,7 +199,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      */
     private void addCurrentTemplate(String currentTemplate, List options, List values) {
         // template was not found in regular template folders, add current template value
-        if (CmsStringSubstitution.isEmpty(currentTemplate)) {
+        if (CmsStringUtil.isEmpty(currentTemplate)) {
             // current template not available, add "please select" value
             options.add(0, "--- " + key("please.select") + " ---");
             values.add(0, "");            

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2004/07/08 15:21:13 $
-* Version: $Revision: 1.91 $
+* Date   : $Date: 2004/07/18 16:27:13 $
+* Version: $Revision: 1.92 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@ package com.opencms.template;
 
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import com.opencms.core.I_CmsRequest;
 import org.opencms.file.CmsFile;
@@ -57,7 +57,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.91 $ $Date: 2004/07/08 15:21:13 $
+ * @version $Revision: 1.92 $ $Date: 2004/07/18 16:27:13 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -1010,7 +1010,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         }
         
 		// substitute contextpath with variable 		
-        content = CmsStringSubstitution.substituteContextPath(content, OpenCms.getSystemInfo().getOpenCmsContext() + "/");                
+        content = CmsStringUtil.substituteContextPath(content, OpenCms.getSystemInfo().getOpenCmsContext() + "/");                
                 
         StringBuffer tempXmlString = new StringBuffer();
         tempXmlString.append("<?xml version=\"1.0\"?>\n");

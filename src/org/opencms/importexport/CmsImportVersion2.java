@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/06/29 14:38:57 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2004/07/18 16:32:33 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.page.CmsXmlPage;
@@ -319,7 +319,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         if (m_importingChannelData) {
             m_cms.getRequestContext().saveSiteRoot();
-            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
+            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
         }
 
         if (excludeList == null) {
@@ -982,7 +982,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         for (int i = 0; i < rules.length; i++) {
             String actRule = rules[i];
             // cut String "/default/vfs/" from rule
-            actRule = CmsStringSubstitution.substitute(actRule, "/default/vfs", "");
+            actRule = CmsStringUtil.substitute(actRule, "/default/vfs", "");
             // divide rule into search and replace parts and delete regular expressions
             StringTokenizer ruleT = new StringTokenizer(actRule, "#");
             ruleT.nextToken();
@@ -995,7 +995,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 // ensure subdirectories of the same name are not replaced
                 search = "([}>\"'\\[]\\s*)" + search;
                 replace = "$1" + replace;
-                content = CmsStringSubstitution.substitutePerl(content, search, replace, "g");
+                content = CmsStringUtil.substitutePerl(content, search, replace, "g");
             }
         }
         return content;

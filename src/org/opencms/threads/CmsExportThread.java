@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsExportThread.java,v $
- * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/18 16:33:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,11 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 
 /**
- * Exports selected resources of the OpenCms VFS or COS into an OpenCms export file.<p>
+ * Exports selected resources of the OpenCms into an OpenCms export file.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsExportThread extends A_CmsReportThread {
@@ -50,7 +50,7 @@ public class CmsExportThread extends A_CmsReportThread {
     private I_CmsImportExportHandler m_handler;
 
     /**
-     * Creates a new export thread for VFS/COS data.<p>
+     * Creates a new data export thread.<p>
      * 
      * @param cms the current OpenCms context object
      * @param handler export handler containing the export data

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/07/08 15:21:14 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/07/18 16:27:13 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 package com.opencms.defaults.master.genericsql;
 
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import org.opencms.file.CmsObject;
 
@@ -57,7 +57,7 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $ $Date: 2004/07/08 15:21:14 $
+ * @version $Revision: 1.21 $ $Date: 2004/07/18 16:27:13 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -207,9 +207,9 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
         }
 
         // replace in the SQL statement the table names
-        statement = CmsStringSubstitution.substitute(statement, "$CMS_MODULE_MASTER", moduleMaster);
-        statement = CmsStringSubstitution.substitute(statement, "$CMS_MODULE_CHANNEL_REL", channelRel);
-        statement = CmsStringSubstitution.substitute(statement, "$CMS_MODULE_MEDIA", media);
+        statement = CmsStringUtil.substitute(statement, "$CMS_MODULE_MASTER", moduleMaster);
+        statement = CmsStringUtil.substitute(statement, "$CMS_MODULE_CHANNEL_REL", channelRel);
+        statement = CmsStringUtil.substitute(statement, "$CMS_MODULE_MEDIA", media);
 
         // replace in the SQL statement further optional SQL tokens
         if (optionalSqlTokens != null) {
@@ -217,7 +217,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
             while (optionalSqlKeys.hasNext()) {
                 String currentKey = (String) optionalSqlKeys.next();
                 String currentValue = (String) optionalSqlTokens.get(currentKey);
-                statement = CmsStringSubstitution.substitute(statement, currentKey, currentValue);
+                statement = CmsStringUtil.substitute(statement, currentKey, currentValue);
             }
         }
         

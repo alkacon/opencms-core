@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/07/05 10:07:22 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/07/18 16:33:00 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -332,7 +332,7 @@ public class CmsSystemInfo {
     /**
      * Returns the maximum number of versions that are kept per file in the VFS version history.<p>
      * 
-     * If the versin history is disabled, this setting has no effect.<p>
+     * If the version history is disabled, this setting has no effect.<p>
      * 
      * @return the maximum number of versions that are kept per file
      * @see #isVersionHistoryEnabled()
@@ -529,7 +529,7 @@ public class CmsSystemInfo {
      * @param historyEnabled if true the history is enabled
      * @param historyMaxCount the maximum number of versions that are kept per VFS resource
      */
-    protected void setVersionHistorySettings(boolean historyEnabled, int historyMaxCount) {
+    public void setVersionHistorySettings(boolean historyEnabled, int historyMaxCount) {
         m_versionHistoryEnabled = historyEnabled;
         m_versionHistoryMaxCount = historyMaxCount;
     }

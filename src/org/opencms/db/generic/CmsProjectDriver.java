@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/07/06 09:33:03 $
- * Version: $Revision: 1.175 $
+ * Date   : $Date: 2004/07/18 16:32:08 $
+ * Version: $Revision: 1.176 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.175 $ $Date: 2004/07/06 09:33:03 $
+ * @version $Revision: 1.176 $ $Date: 2004/07/18 16:32:08 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1944,6 +1944,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         Connection conn = null;
         PreparedStatement stmt = null;
 
+        int todo = 0;
+        // TODO: move COS stuff to legacy package
         
         try {
             conn = m_sqlManager.getConnection(currentProject);

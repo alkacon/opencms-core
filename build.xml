@@ -280,15 +280,7 @@ ${opencms.inputlib.pdfbox}
       			<filter token="DRIVERS_CONFIGURATION" value="${drivers.configuration}"/>
     		</filterset>	   		
 	   	</copy>       	  
-	   	
-	   	<copy 
-	   		file="${opencms.input.default.registry}" 
-	   		tofile="${opencms.output.classes}/registry.xml" overwrite="true">	   		
-    		<filterset>
-      			<filter token="REGISTRY_CONFIGURATION" value="${registry.configuration}"/>
-    		</filterset>	   		
-	   	</copy>	   	
-	   	
+
 	   	<copy 
 	   		file="${opencms.input.default.config}" 
 	   		tofile="${opencms.output.classes}/opencms.xml" overwrite="true">	   		

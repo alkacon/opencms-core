@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/I_CmsLocaleHandler.java,v $
- * Date   : $Date: 2004/03/29 10:39:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/07/18 16:32:33 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  */
 public interface I_CmsLocaleHandler {
 
@@ -56,7 +56,8 @@ public interface I_CmsLocaleHandler {
      * @param user the current user
      * @param project the current project
      * @param resource the URI of the requested resource (with full site root added)
-     * @return the locale name to use for the given request context
+     * 
+     * @return the i18n information to use for the given request context
      */
     CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resource);
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeSettings.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/18 16:33:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.synchronize;
 
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.3
  */
 public class CmsSynchronizeSettings {
@@ -108,7 +108,7 @@ public class CmsSynchronizeSettings {
      */
     public void setDestinationPathInRfs(String destinationPathInRfs) {
         m_destinationPathInRfs = destinationPathInRfs;
-        if (CmsStringSubstitution.isEmpty(m_destinationPathInRfs)) {
+        if (CmsStringUtil.isEmpty(m_destinationPathInRfs)) {
             m_destinationPathInRfs = null;
         }
     }
@@ -120,7 +120,7 @@ public class CmsSynchronizeSettings {
      */
     public void setSourcePathInVfs(String sourcePathInVfs) {
         m_sourcePathInVfs = sourcePathInVfs;
-        if (CmsStringSubstitution.isEmpty(m_sourcePathInVfs)) {
+        if (CmsStringUtil.isEmpty(m_sourcePathInVfs)) {
             m_sourcePathInVfs = null;
         }        
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2004/07/09 16:40:26 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/07/18 16:34:53 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -49,7 +48,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.1
  */
@@ -136,10 +135,11 @@ public class CmsWorkplaceMessages {
      */
     private synchronized Set collectModuleMessages(Locale locale) {
         HashSet bundles = new HashSet();
-        Enumeration en = OpenCms.getRegistry().getModuleNames();
-        if (en != null) {
-            while (en.hasMoreElements()) {
-                String bundleName = ((String)en.nextElement()) + ".workplace";
+        Set names = OpenCms.getModuleManager().getModuleNames();
+        if (names != null) {
+            Iterator i = names.iterator();
+            while (i.hasNext()) {
+                String bundleName = ((String)i.next()) + ".workplace";
                 // this should result in a name like "my.module.name.workplace"
                 try {
                     ResourceBundle bundle = ResourceBundle.getBundle(bundleName, locale);

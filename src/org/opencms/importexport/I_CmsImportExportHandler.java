@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImportExportHandler.java,v $
- * Date   : $Date: 2004/02/25 15:35:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/07/18 16:32:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,14 +46,14 @@ import org.dom4j.Document;
  * call {@link org.opencms.importexport.CmsImportExportManager#exportData(CmsObject, I_CmsImportExportHandler, I_CmsReport)}.<p>
  * 
  * To import data, call {@link org.opencms.importexport.CmsImportExportManager#importData(CmsObject, String, String, I_CmsReport)}.
- * You dont have to worry about importing a ZIP archive containing VFS, COS or module data in the 
- * signature of this method- the import/export manager finds the right import/export handler implementation 
+ * You don't have to worry about the contents of an imported a ZIP archive - 
+ * the import/export manager finds the right import/export handler implementation 
  * to import the data. You can assign null to the importPath argument in case of a Cms module import.<p>
  * 
  * Use {@link org.opencms.main.OpenCms#getImportExportManager()} to get the Cms import/export manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2004/02/25 15:35:21 $
+ * @version $Revision: 1.5 $ $Date: 2004/07/18 16:32:33 $
  * @since 5.3
  */
 public interface I_CmsImportExportHandler {
@@ -91,7 +91,7 @@ public interface I_CmsImportExportHandler {
      * 
      * @param cms the current OpenCms context object
      * @param importFile the name (absolute path) of the resource (zipfile or folder) to be imported
-     * @param importPath the name (absolute path) of the destination folder in the Cms in case of a COS/VFS import
+     * @param importPath the name (absolute path) of the destination folder in the Cms (if required)
      * @param report a Cms report to print log messages
      * @throws CmsException if operation was not successful 
      */

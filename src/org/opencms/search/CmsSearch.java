@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2004/07/07 11:20:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/07/18 16:33:45 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,11 +54,11 @@ import java.util.TreeMap;
  * <li>created - the creation date of a resource</li>
  * <li>lastmodified - the date of the last modification of a resource</li>
  * <li>path - the path to display the resource</li>
- * <li>channel - the channel of a cos resource</li>
- * <li>contentdefinition - the name of the content definition class of a cos resource</li>
+ * <li>channel - the channel of a resource</li>
+ * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.10 $ $Date: 2004/07/07 11:20:33 $
+ * @version $Revision: 1.11 $ $Date: 2004/07/18 16:33:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2004/07/08 15:21:05 $
-* Version: $Revision: 1.142 $
+* Date   : $Date: 2004/07/18 16:27:12 $
+* Version: $Revision: 1.143 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
@@ -67,7 +67,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.142 $ $Date: 2004/07/08 15:21:05 $
+ * @version $Revision: 1.143 $ $Date: 2004/07/18 16:27:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -732,7 +732,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
 		content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);
 		
 		// set the context & servlet path in editor content
-		content = CmsStringSubstitution.substitute(content, C_MACRO_OPENCMS_CONTEXT + "/", OpenCms.getSystemInfo().getOpenCmsContext() + "/");
+		content = CmsStringUtil.substitute(content, C_MACRO_OPENCMS_CONTEXT + "/", OpenCms.getSystemInfo().getOpenCmsContext() + "/");
         
         // escape content
         content = CmsEncoder.escapeWBlanks(content, CmsEncoder.C_UTF8_ENCODING);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleReplaceThread.java,v $
- * Date   : $Date: 2004/06/28 07:47:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/07/18 16:33:45 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,9 @@
 package org.opencms.threads;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
-import org.opencms.workplace.I_CmsWpConstants;
 
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
@@ -47,48 +42,34 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $
+ * 
+ * @version $Revision: 1.9 $
+ * 
  * @since 5.1.10
  */
 public class CmsModuleReplaceThread extends A_CmsReportThread {
 
     private static final boolean DEBUG = false;
-    private Vector m_conflictFiles;
     private A_CmsReportThread m_deleteThread;
     private A_CmsReportThread m_importThread;
     private String m_moduleName;
     private int m_phase;
-    private Vector m_projectFiles;
-    private CmsRegistry m_registry;
     private String m_reportContent;
     private String m_zipName;
 
     /**
      * Creates the module replace thread.<p>
-     * 
      * @param cms the current cms context  
-     * @param reg the registry to write the new module information to
-     * @param zipName the name of the module ZIP file
      * @param moduleName the name of the module 
-     * @param conflictFiles vector of conflict files 
+     * @param zipName the name of the module ZIP file
      */
-    public CmsModuleReplaceThread(
-        CmsObject cms, 
-        CmsRegistry reg, 
-        String moduleName, 
-        String zipName, 
-        Vector conflictFiles    
-    ) {
+    public CmsModuleReplaceThread(CmsObject cms, String moduleName, String zipName) {
+
         super(cms, "OpenCms: Module replacement of " + moduleName);
         m_moduleName = moduleName;
         m_zipName = zipName;
-        m_registry = reg;
-        m_conflictFiles = conflictFiles;
 
-        // add the module resources to the project files
-        m_projectFiles = CmsModuleReplaceThread.getModuleResources(cms, reg, moduleName);
-
-        m_deleteThread = new CmsModuleDeleteThread(getCms(), m_registry, m_moduleName, m_conflictFiles, m_projectFiles, true);
+        m_deleteThread = new CmsModuleDeleteThread(getCms(), m_moduleName, true);
         m_importThread = new CmsDatabaseImportThread(getCms(), m_zipName);
         if (DEBUG) {
             System.err.println("CmsAdminModuleReplaceThread() constructed");
@@ -99,53 +80,13 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
     /**
      * Collects all resource names belonging to a module in a Vector.<p>
      * 
-     * @param cms the CmsObject
-     * @param reg the registry
      * @param moduleName the name of the module
+     * 
      * @return Vector with path Strings of resources
      */
-    public static Vector getModuleResources(CmsObject cms, CmsRegistry reg, String moduleName) {
-        Vector resNames = new Vector();
+    public static Vector getModuleResources(String moduleName) {
 
-        // add the module folder to the project resources
-        resNames.add(I_CmsWpConstants.C_VFS_PATH_MODULES + moduleName + "/");
-
-        if (reg.getModuleType(moduleName).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
-            // SIMPLE MODULE
-
-            // check if additional resources outside the system/modules/{exportName} folder were 
-            // specified as module resources by reading the property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
-            // to the module (in the module administration)
-            String additionalResources = OpenCms.getRegistry().getModuleParameterString(moduleName, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
-            StringTokenizer additionalResourceTokens = null;
-
-            if (additionalResources != null && !additionalResources.equals("")) {
-                // add each additonal folder plus its content folder under "content/bodys"
-                additionalResourceTokens = new StringTokenizer(additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
-
-                // add each resource plus its equivalent at content/bodys to 
-                // the string array of all resources for the export
-                while (additionalResourceTokens.hasMoreTokens()) {
-                    String currentResource = additionalResourceTokens.nextToken().trim();
-
-                    if (!"-".equals(currentResource)) {
-                        try {
-                            // check if the resource exists and then add it to the Vector
-                            cms.readResource(currentResource);
-                            resNames.add(currentResource);
-                        } catch (CmsException e) {
-                            // nothing we can do about this 
-                        }
-                    }
-                }
-            } else {
-                // no additional resources were specified...
-                return resNames;
-            }
-        } else {
-            // TRADITIONAL MODULE
-            return resNames;
-        }
+        Vector resNames = new Vector(OpenCms.getModuleManager().getModule(moduleName).getResources());
         return resNames;
     }
 
@@ -153,10 +94,11 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
+
         switch (m_phase) {
-            case 1 :
+            case 1:
                 return m_deleteThread.getReportUpdate();
-            case 2 :
+            case 2:
                 String content;
                 if (m_reportContent != null) {
                     content = m_reportContent;
@@ -165,8 +107,8 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
                     content = "";
                 }
                 return content + m_importThread.getReportUpdate();
-            default :
-                // NOOP
+            default:
+                // noop
         }
         return "";
     }
@@ -175,6 +117,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
      * @see java.lang.Runnable#run()
      */
     public void run() {
+
         if (DEBUG) {
             System.err.println("CmsAdminModuleReplaceThread() starting delete action ");
         }

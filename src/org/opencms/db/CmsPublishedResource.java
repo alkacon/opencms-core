@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2004/06/21 09:54:49 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/07/18 16:31:47 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.util.CmsUUID;
 import java.io.Serializable;
 
 /**
- * Represents the state of a published VFS/COS resource *before* it got published.<p>
+ * Represents the state of a published resource *before* it got published.<p>
  * 
  * This allows various subsequent tasks in the Cms app. (e.g. exporting files and folders)
  * to identify published resources after a resource or project was published.<p>
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * that is written during each publishing process.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2004/06/21 09:54:49 $
+ * @version $Revision: 1.14 $ $Date: 2004/07/18 16:31:47 $
  * @since 5.1.11
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(int, CmsUUID)
  */
@@ -137,6 +137,8 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @param resourceState the state of the resource *before* it was published
      */
     public CmsPublishedResource(String contentDefinitionName, CmsUUID masterId, int subId, int resourceState) {
+        int todo = 0;
+        // TODO: remove this / make this a static factory method in legacy package
         m_structureId = CmsUUID.getNullUUID();
         m_resourceId = CmsUUID.getNullUUID();
         m_contentId = CmsUUID.getNullUUID();
@@ -331,7 +333,10 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     }
     
     /**
-     * Checks if this published resource represents a VFS or a COS resource.<p>
+     * Checks if this published resource represents a VFS resource.<p>
+     * 
+     * If the published resource has no structure id, it is considered to be 
+     * no VFS resource.<p>
      * 
      * @return true if this published resource is a VFS resource
      */

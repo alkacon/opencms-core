@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2004/07/09 16:01:03 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2004/07/18 16:27:13 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -74,7 +73,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.9 $ $Date: 2004/07/09 16:01:03 $
+ * @version $Revision: 1.10 $ $Date: 2004/07/18 16:27:13 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -114,7 +113,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             //importAllResources(null, null, null, null, null);
             // now find the correct import implementation    
             m_cms.getRequestContext().saveSiteRoot();
-            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);     
+            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);     
             Iterator i = m_importImplementations.iterator();
                 while (i.hasNext()) {
                     I_CmsImport imp = (I_CmsImport)i.next();
@@ -147,14 +146,14 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @throws CmsException in case something goes wrong
      */
     public void importModuleMasters() throws CmsException {
-        // get all available modules in this system
-        Hashtable moduleExportables = new Hashtable();
-        OpenCms.getRegistry().getModuleExportables(moduleExportables);
+
+        // get list of legacy modules that have a publish class
+        Iterator it = CmsLegacyModuleAction.getLegacyModulePublishClasses().iterator();
+       
         // now get the subIds of each module
         Hashtable availableModules = new Hashtable();
-        Enumeration modElements = moduleExportables.elements();
-        while (modElements.hasMoreElements()) {
-            String classname = (String)modElements.nextElement();
+        while (it.hasNext()) {
+            String classname = (String)it.next();
             // get the subId of the module
             try {
                 int subId = getContentDefinition(classname, new Class[] {CmsObject.class }, new Object[] {m_cms }).getSubId();

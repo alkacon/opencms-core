@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/07/09 13:44:34 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/07/18 16:33:00 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public interface I_CmsConstants {
 
@@ -130,6 +130,9 @@ public interface I_CmsConstants {
 
     /** Property for the resource export name, during export this name is used instead of the resource name. */
     String C_PROPERTY_EXPORTNAME = "exportname";
+    
+    /** Property for JSP additional suffix during static export, default is "html". */
+    String C_PROPERTY_EXPORTSUFFIX = "exportsuffix";    
 
     /** Property for the default file in folders. */
     String C_PROPERTY_DEFAULT_FILE = "default-file";
@@ -1117,9 +1120,9 @@ public interface I_CmsConstants {
     String VFS_FOLDER_DEFAULT_SITE = VFS_FOLDER_SITES + "/default";
     
     /**
-     * The vfs path of the cos channel folders.
+     * The vfs path of the channel folders.
      */    
-    String VFS_FOLDER_COS = "/channels";
+    String VFS_FOLDER_CHANNELS = "/channels";
     
     /**
      * The vfs path of the system folder.
@@ -1277,5 +1280,8 @@ public interface I_CmsConstants {
     String C_PARAMETER_ELEMENT = "__element";
     
     /** Request parameter to force encoding selection. */
-    String C_PARAMETER_ENCODING = "__encoding";    
+    String C_PARAMETER_ENCODING = "__encoding";
+
+    /** The name of the module folder in the package path. */
+    String C_MODULE_PATH = "modules/";    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsWordDocument.java,v $
- * Date   : $Date: 2004/07/05 11:58:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/07/18 16:33:46 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package org.opencms.search.documents;
 import org.opencms.main.CmsException;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.A_CmsIndexResource;
-import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringUtil;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -50,7 +50,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cms resource 
  * containing MS Word data.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2004/07/05 11:58:21 $
+ * @version $Revision: 1.8 $ $Date: 2004/07/18 16:33:46 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsWordDocument extends CmsVfsDocument {
@@ -84,11 +84,11 @@ public class CmsWordDocument extends CmsVfsDocument {
             CmsWordExtractor extractor = new CmsWordExtractor();
             rawContent = extractor.extractText(new ByteArrayInputStream(file.getContents()));
             
-            rawContent = CmsStringSubstitution.substitutePerl(rawContent, internalWordToken("PAGEREF"), "$1", "g");
-            rawContent = CmsStringSubstitution.substitutePerl(rawContent, internalWordToken("REF"), "$1", "g");
-            rawContent = CmsStringSubstitution.substitutePerl(rawContent, internalWordToken("HYPERLINK"), "$1", "g");
-            rawContent = CmsStringSubstitution.substitutePerl(rawContent, internalWordToken("\\w*"), "$1", "g");
-            rawContent = CmsStringSubstitution.substitutePerl(rawContent, "[^[:print:]]", " ", "g");
+            rawContent = CmsStringUtil.substitutePerl(rawContent, internalWordToken("PAGEREF"), "$1", "g");
+            rawContent = CmsStringUtil.substitutePerl(rawContent, internalWordToken("REF"), "$1", "g");
+            rawContent = CmsStringUtil.substitutePerl(rawContent, internalWordToken("HYPERLINK"), "$1", "g");
+            rawContent = CmsStringUtil.substitutePerl(rawContent, internalWordToken("\\w*"), "$1", "g");
+            rawContent = CmsStringUtil.substitutePerl(rawContent, "[^[:print:]]", " ", "g");
                
         } catch (Exception exc) {
             throw new CmsIndexException("Reading resource " + resource.getRootPath() + "failed.", exc);

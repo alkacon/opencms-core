@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2004/07/09 16:01:31 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2004/07/18 16:27:12 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,11 +33,12 @@ import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
-import org.opencms.threads.CmsExportThread;
 import org.opencms.threads.CmsDatabaseImportThread;
+import org.opencms.threads.CmsExportThread;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsCosImportExportHandler;
+import com.opencms.legacy.CmsLegacyModuleAction;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.io.File;
@@ -45,6 +46,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -53,7 +55,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.59 $ 
+ * @version $Revision: 1.60 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -421,13 +423,11 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         Hashtable parameters
     ) throws CmsException {        
         // get all exportable modules
-        Hashtable modules = new Hashtable();
-        OpenCms.getRegistry().getModuleExportables(modules);
-        Enumeration keys = modules.keys();
+        Iterator it = CmsLegacyModuleAction.getLegacyModulePublishClasses().iterator();
         // fill the names and values
-        while (keys.hasMoreElements()) {
-            String name = (String)keys.nextElement();
-            String value = (String)modules.get(name);
+        while (it.hasNext()) {
+            String name = (String)it.next();
+            String value = name;
             names.addElement(name);
             values.addElement(value);
         }
@@ -452,13 +452,10 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         StringBuffer selectBox = new StringBuffer();
         if (template.hasData("selectoption")) {
             // get all exportable modules
-            Hashtable modules = new Hashtable();
-            OpenCms.getRegistry().getModuleExportables(modules);
-            Enumeration keys = modules.keys();
-            // fill the names and values
-            while (keys.hasMoreElements()) {
-                String name = (String)keys.nextElement();
-                String value = (String)modules.get(name);
+            Iterator it = CmsLegacyModuleAction.getLegacyModulePublishClasses().iterator();
+            while (it.hasNext()) {
+                String name = (String)it.next();
+                String value = name;
                 template.setData("name", name);
                 template.setData("value", value);
                 try {
