@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/04/10 21:36:26 $
-* Version: $Revision: 1.313 $
+* Date   : $Date: 2002/04/11 11:28:22 $
+* Version: $Revision: 1.314 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.313 $ $Date: 2002/04/10 21:36:26 $
+ * @version $Revision: 1.314 $ $Date: 2002/04/11 11:28:22 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -6261,11 +6261,11 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 
         CmsUser user = null;
         // ednfal: don't read user from cache because password may be changed
-        user = (CmsUser)m_userCache.get(username+C_USER_TYPE_WEBUSER);
+        //user = (CmsUser)m_userCache.get(username+C_USER_TYPE_WEBUSER);
         // store user in cache
         if (user == null) {
             user = m_dbAccess.readUser(username, password, C_USER_TYPE_WEBUSER);
-            m_userCache.put(username+C_USER_TYPE_WEBUSER,user);
+            //m_userCache.put(username+C_USER_TYPE_WEBUSER,user);
         }
         return user;
     }
