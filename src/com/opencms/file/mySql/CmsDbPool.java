@@ -3,8 +3,8 @@ package com.opencms.file.mySql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/09/11 16:11:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/09/13 13:46:12 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -207,7 +207,7 @@ public class CmsDbPool implements I_CmsDbPool {
 	public void initIdStatement(Integer key, String sql) throws CmsException {
 
 		m_prepStatementsCache.put(key, sql);
-		
+		System.err.println("afu: initIdStatement: " + key + ", " + sql);
 		try {
 			PreparedStatement pstmt = m_idConnection.prepareStatement(sql);
 			m_prepStatements.put(key, pstmt);
