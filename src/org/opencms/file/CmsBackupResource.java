@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResource.java,v $
- * Date   : $Date: 2004/08/11 16:56:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsBackupResource extends CmsFile implements Cloneable, Serializable, Comparable {
 
@@ -88,7 +88,6 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
     * @param flags the flags of this resource
     * @param projectId the project id this resource was last modified in
     * @param state the state of this resource
-    * @param loaderId the id for the that is used to load this recource
     * @param dateCreated the creation date of this resource
     * @param userCreated the id of the user who created this resource
     * @param userCreatedName the name of the user who created this resource 
@@ -113,7 +112,6 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
         int flags, 
         int projectId, 
         int state,
-        int loaderId, 
         long dateCreated,
         CmsUUID userCreated, 
         String userCreatedName, 
@@ -136,7 +134,6 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
             flags,
             projectId,
             state,
-            loaderId,
             dateCreated,
             userCreated,
             dateLastModified, 
@@ -185,7 +182,6 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
            getFlags(),
            getProjectLastModified(), 
            getState(),
-           getLoaderId(),
            getDateCreated(),
            getUserCreated(), 
            getCreatedByName(), 

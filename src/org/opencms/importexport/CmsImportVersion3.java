@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/08/11 16:56:22 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -394,26 +394,26 @@ public class CmsImportVersion3 extends A_CmsImport {
     }
 
     /**
-     * Imports a resource (file or folder) into the cms.<p>
+      * Imports a resource (file or folder) into the cms.<p>
+      * 
+      * @param source the path to the source-file
+      * @param destination the path to the destination-file in the cms
+      * @param type the resource-type of the file
+      * @param uuidstructure  the structure uuid of the resource
+      * @param uuidresource  the resource uuid of the resource
+      * @param datelastmodified the last modification date of the resource
+      * @param userlastmodified the user who made the last modifications to the resource
+      * @param datecreated the creation date of the resource
+      * @param usercreated the user who created 
+      * @param flags the flags of the resource     
+      * @param properties a hashtable with properties for this resource
+      * @param writtenFilenames filenames of the files and folder which have actually been successfully written
+      *       not used when null
+      * @param fileCodes code of the written files (for the registry)
+      *       not used when null
      * 
-     * @param source the path to the source-file
-     * @param destination the path to the destination-file in the cms
-     * @param type the resource-type of the file
-     * @param uuidstructure  the structure uuid of the resource
-     * @param uuidresource  the resource uuid of the resource
-     * @param datelastmodified the last modification date of the resource
-     * @param userlastmodified the user who made the last modifications to the resource
-     * @param datecreated the creation date of the resource
-     * @param usercreated the user who created 
-     * @param flags the flags of the resource     
-     * @param properties a hashtable with properties for this resource
-     * @param writtenFilenames filenames of the files and folder which have actually been successfully written
-     *       not used when null
-     * @param fileCodes code of the written files (for the registry)
-     *       not used when null
-     * 
-     * @return imported resource
-     */
+      * @return imported resource
+      */
     private CmsResource importResource(String source, String destination, String type, String uuidstructure, String uuidresource, long datelastmodified, String userlastmodified, long datecreated, String usercreated, String flags, List properties, Vector writtenFilenames, Vector fileCodes) {
 
         boolean success = true;
@@ -510,7 +510,6 @@ public class CmsImportVersion3 extends A_CmsImport {
                 new Integer(flags).intValue(), 
                 m_cms.getRequestContext().currentProject().getId(), 
                 I_CmsConstants.C_STATE_NEW, 
-                OpenCms.getResourceManager().getResourceType(resType).getLoaderId(), 
                 datelastmodified, 
                 newUserlastmodified, 
                 datecreated, 

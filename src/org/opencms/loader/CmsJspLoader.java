@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/08/10 15:46:18 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -405,7 +405,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         CmsResource resource, 
         ServletRequest req, 
         ServletResponse res
-    ) throws ServletException, IOException {
+    ) throws ServletException, IOException, CmsLoaderException {
 
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         // get JSP target name on "real" file system
@@ -920,7 +920,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @throws IOException might be thrown in the process of including the JSP 
      */
     private synchronized String updateJsp(CmsResource resource, CmsFlexController controller, Set updates)
-    throws IOException, ServletException {
+    throws IOException, ServletException, CmsLoaderException {
 
         CmsObject cms = controller.getCmsObject();
         // can not use save/restore methods since this is called more then once by recursion
@@ -932,7 +932,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             String jspVfsName = cms.getSitePath(resource);
             String extension;
             boolean isHardInclude;
-            if ((resource.getLoaderId() == CmsJspLoader.C_RESOURCE_LOADER_ID) 
+            int loaderId = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getLoaderId();
+            if ((loaderId == CmsJspLoader.C_RESOURCE_LOADER_ID) 
                 && (! jspVfsName.endsWith(C_JSP_EXTENSION))) {
                 // this is a true JSP resource that does not end with ".jsp"
                 extension = C_JSP_EXTENSION;     
@@ -941,7 +942,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 // not a JSP resource or already ends with ".jsp"
                 extension = "";
                 // if this is a JSP we don't treat it as hard include
-                isHardInclude = (resource.getLoaderId() != CmsJspLoader.C_RESOURCE_LOADER_ID);
+                isHardInclude = (loaderId != CmsJspLoader.C_RESOURCE_LOADER_ID);
             }            
             
             String jspTargetName = getJspUri(m_jspWebAppRepository, jspVfsName + extension, controller.getCurrentRequest().isOnline());

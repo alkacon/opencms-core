@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/Attic/TestModuleLegacy.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/08/12 11:02:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestModuleLegacy extends OpenCmsTestCase {
     
@@ -132,7 +132,9 @@ public class TestModuleLegacy extends OpenCmsTestCase {
         echo("Testing legacy module initialization");
         
         restart();
-        CmsObject cms = getCmsObject();
+        
+        // start cms
+        getCmsObject();
         
         CmsDbAccess masterDbAccess = new CmsDbAccess(m_pool);
         if (!masterDbAccess.checkTables()) {

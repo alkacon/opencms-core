@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2004/08/11 10:42:33 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -116,13 +116,11 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             structureId,
             resourceId,
             parentId,
-            // CmsUUID.getNullUUID(),
             name,
             type,
             flags,
             projectId,
             state,
-            -1,
             dateCreated,
             userCreated,
             dateLastModified,

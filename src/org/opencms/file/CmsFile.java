@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2004/08/11 10:42:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -74,7 +74,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             resource.getFlags(),
             resource.getProjectLastModified(),
             resource.getState(),
-            resource.getLoaderId(),
             resource.getDateCreated(),
             resource.getUserCreated(),
             resource.getDateLastModified(),
@@ -110,7 +109,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * @param flags the flags of this resource
      * @param projectId the project id this resource was last modified in
      * @param state the state of this resource
-     * @param loaderId the id for the that is used to load this recource
      * @param dateCreated the creation date of this resource
      * @param userCreated the id of the user who created this resource
      * @param dateLastModified the date of the last modification of this resource
@@ -131,7 +129,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         int flags,
         int projectId,
         int state,
-        int loaderId,
         long dateCreated,
         CmsUUID userCreated,
         long dateLastModified,
@@ -152,7 +149,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             flags,
             projectId,
             state,
-            loaderId,
             dateCreated,
             userCreated,
             dateLastModified,
@@ -187,7 +183,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             getFlags(),
             getProjectLastModified(),
             getState(),
-            getLoaderId(),
             getDateCreated(),
             getUserCreated(),
             getDateLastModified(),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/08/11 16:53:51 $
- * Version: $Revision: 1.405 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.406 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.405 $ $Date: 2004/08/11 16:53:51 $
+ * @version $Revision: 1.406 $ $Date: 2004/08/12 11:01:30 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -297,7 +297,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /** The workflow driver. */
     private I_CmsWorkflowDriver m_workflowDriver;
-    
+
     /** The list of initialized JDBC pools. */
     private List m_connectionPools;
 
@@ -435,7 +435,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // set the pool for the COS
         String cosPoolUrl = configuration.getString("db.cos.pool");
         OpenCms.setRuntimeProperty("cosPoolUrl", cosPoolUrl);
-        CmsDbUtil.setDefaultPool(cosPoolUrl);        
+        CmsDbUtil.setDefaultPool(cosPoolUrl);
         
         // return the configured driver manager
         return driverManager;
@@ -486,13 +486,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsResource newResource = new CmsResource (
             CmsUUID.getNullUUID(), // uuids will be "corrected" later
             CmsUUID.getNullUUID(),                
-            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),           
             targetName,
             type,
             0,
             context.currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
-            OpenCms.getResourceManager().getResourceType(type).getLoaderId(),
             0,
             context.currentUser().getId(), 
             0,
@@ -537,7 +536,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsRequestContext context, 
         String resourcename,
         CmsResource resource,
-        byte[] content, 
+        byte[] content,
         List properties,
         boolean importCase
     ) throws CmsException {
@@ -608,10 +607,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 // folders never have any content
                 contentLength = -1;
                 // must cut of trailing '/' for folder creation (or name check fails)
-                if (targetName.charAt(targetName.length() - 1) == '/') {
+                if (targetName.charAt(targetName.length()-1) == '/') {
                     targetName = targetName.substring(0, targetName.length() - 1);
                 }
-            } else {
+            } else {            
                 // otherwise ensure content and content length are set correctly
                 if (content != null) {
                     // if a content is provided, in each case the length is the length of this content
@@ -623,8 +622,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     // we have no content - length is used as set in the resource
                     contentLength = resource.getLength();
                 }
-            }                           
-            
+            }
+
             // check if the target name is valid (forbitten chars etc.), 
             // if not throw an exception
             // must do this here since targetName is modified in folder case (see above)
@@ -659,7 +658,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 resource.getFlags(),
                 context.currentProject().getId(),
                 resource.getState(),
-                resource.getLoaderId(),
                 resource.getDateCreated(),
                 resource.getUserCreated(),
                 resource.getDateLastModified(),
@@ -787,7 +785,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             flags, 
             context.currentProject().getId(), 
             I_CmsConstants.C_STATE_KEEP, // ensures current resource record remains untouched 
-            source.getLoaderId(), 
             source.getDateCreated(),
             source.getUserCreated(),
             source.getDateLastModified(),
@@ -929,7 +926,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             flags, 
             context.currentProject().getId(), 
             I_CmsConstants.C_STATE_NEW,
-            source.getLoaderId(), 
             currentTime, 
             context.currentUser().getId(), 
             source.getDateCreated(), 
@@ -1388,7 +1384,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsResource clone = (CmsResource)resource.clone();
         I_CmsResourceType newType = OpenCms.getResourceManager().getResourceType(type);
         clone.setType(newType.getTypeId());
-        clone.setLoaderId(newType.getLoaderId());
         writeResource(context, clone);
     }
     
@@ -1729,8 +1724,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 onlineFile.getTypeId(), 
                 onlineFile.getFlags(),
                 context.currentProject().getId(), 
-                I_CmsConstants.C_STATE_UNCHANGED, 
-                onlineFile.getLoaderId(), 
+                I_CmsConstants.C_STATE_UNCHANGED,
                 onlineFile.getDateCreated(), 
                 onlineFile.getUserCreated(),
                 onlineFile.getDateLastModified(), 
@@ -1895,8 +1889,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 backupFile.getTypeId(), 
                 flags, 
                 context.currentProject().getId(), 
-                state, 
-                backupFile.getLoaderId(), 
+                state,
                 resource.getDateCreated(), 
                 backupFile.getUserCreated(), 
                 resource.getDateLastModified(), 
@@ -2009,7 +2002,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             context.currentProject(), 
             resource, 
             C_UPDATE_RESOURCE_STATE);
-        
+       
         m_vfsDriver.writeContent(
             context.currentProject(), 
             resource.getResourceId(), 
@@ -3190,20 +3183,19 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
      */
     public void cmsEvent(CmsEvent event) {
-        
         if (org.opencms.main.OpenCms.getLog(this).isDebugEnabled()) {
             org.opencms.main.OpenCms.getLog(this).debug("Handling event: " + event.getType());
         }
         
         I_CmsReport report;
-        switch (event.getType()) {
+        switch (event.getType()) {      
             
             case I_CmsEventListener.EVENT_UPDATE_EXPORTS :
                 report = (I_CmsReport) event.getData().get(I_CmsEventListener.KEY_REPORT);
                 updateExportPoints(report);
                 break;
                 
-            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:    
+            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:          
                 CmsUUID publishHistoryId = new CmsUUID((String) event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
                 report = (I_CmsReport) event.getData().get(I_CmsEventListener.KEY_REPORT);
                 int projectId = ((Integer)event.getData().get(I_CmsEventListener.KEY_PROJECTID)).intValue();
@@ -3213,7 +3205,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 clearcache();
                 break;
-                
             default:
                 // noop
         }        
@@ -5615,18 +5606,18 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     I_CmsModuleAction moduleActionInstance = (I_CmsModuleAction)i.next();
                     moduleActionInstance.publishProject(cms, publishList, tagId, report);
                 }
-                
+
                 // the project was stored in the backuptables for history
                 // it will be deleted if the project_flag is C_PROJECT_TYPE_TEMPORARY
                 if (temporaryProject) {
                     try {
-                        m_projectDriver.deleteProject(context.currentProject());
+                    m_projectDriver.deleteProject(context.currentProject());
                     } catch (CmsException e) {
                         OpenCms.getLog(this).error("Could not delete temporary project " + publishProjectId);
+                        }
+                        // if project was temporary set context to online project
+                        cms.getRequestContext().setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
                     }
-                    // if project was temporary set context to online project
-                    cms.getRequestContext().setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
-                }                
 
             } finally {
                 clearcache();
@@ -5638,7 +5629,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(publishProjectId));
                 CmsEvent exportPointEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
                 OpenCms.fireCmsEvent(exportPointEvent);                
-            }
+                }              
         } else if (publishProjectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             throw new CmsSecurityException("[" + getClass().getName() + "] could not publish project " + publishProjectId, CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         } else if (!isAdmin(context) && !isManagerOfProject(context)) {
@@ -7376,7 +7367,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
         }
     }
-    
+
     /**
      * Writes all export points into the file system for a publish task 
      * specified by its publish history ID.<p>
@@ -7726,27 +7717,27 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             clearcache();
             
             try {
-                m_projectDriver.destroy();
+            m_projectDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing project driver", t);
             }
             try {
-                m_userDriver.destroy();
+            m_userDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing user driver", t);
             }
             try {
-                m_vfsDriver.destroy();
+            m_vfsDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing VFS driver", t);
             }
             try {
-                m_workflowDriver.destroy();
+            m_workflowDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing workflow driver", t);
             }
             try {
-                m_backupDriver.destroy();
+            m_backupDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing backup driver", t);
             }
@@ -8168,4 +8159,5 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             info.updateFromResource(resource);
         }
     }
-}
+                    }
+

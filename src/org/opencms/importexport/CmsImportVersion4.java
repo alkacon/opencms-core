@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/08/11 16:56:21 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -284,7 +284,6 @@ public class CmsImportVersion4 extends A_CmsImport {
         String source = null, destination = null, type = null, uuidresource = null, userlastmodified = null, usercreated = null, flags = null, timestamp = null;
         long datelastmodified = 0, datecreated = 0, datereleased = 0, dateexpired = 0;
         int resType = I_CmsConstants.C_UNKNOWN_ID;
-        int loaderId = I_CmsConstants.C_UNKNOWN_ID;
 
         List fileNodes = null, acentryNodes = null;
         Element currentElement = null, currentEntry = null;
@@ -344,7 +343,6 @@ public class CmsImportVersion4 extends A_CmsImport {
                 } else {
                     I_CmsResourceType rt = OpenCms.getResourceManager().getResourceType(type);
                     resType = rt.getTypeId();
-                    loaderId = rt.getLoaderId();
                 }
 
                 if (resType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
@@ -439,7 +437,6 @@ public class CmsImportVersion4 extends A_CmsImport {
                         source,
                         destination,
                         resType,
-                        loaderId,
                         uuidresource,
                         datelastmodified,
                         userlastmodified,
@@ -447,7 +444,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                         usercreated,
                         datereleased,
                         dateexpired,
-                        flags,
+                        flags, 
                         properties);
 
                     // if the resource was imported add the access control entrys if available
@@ -549,7 +546,6 @@ public class CmsImportVersion4 extends A_CmsImport {
         String source, 
         String destination,         
         int resType, 
-        int loaderId, 
         String uuidresource, 
         long datelastmodified, 
         String userlastmodified, 
@@ -628,7 +624,6 @@ public class CmsImportVersion4 extends A_CmsImport {
                     content = xmlPage.marshal();
                 }
                 resType = CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID;
-                loaderId = OpenCms.getResourceManager().getResourceType(resType).getLoaderId();
             }
             
             // create a new CmsResource                         
@@ -641,8 +636,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 resType, 
                 new Integer(flags).intValue(), 
                 m_cms.getRequestContext().currentProject().getId(), 
-                I_CmsConstants.C_STATE_NEW, 
-                loaderId, 
+                I_CmsConstants.C_STATE_NEW,
                 datecreated, 
                 newUsercreated, 
                 datelastmodified, 

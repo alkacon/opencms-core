@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2004/08/11 10:50:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/08/12 11:02:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.opencms.util.CmsUUID;
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class OpenCmsTestResourceStorageEntry {
 
@@ -150,7 +150,6 @@ public class OpenCmsTestResourceStorageEntry {
         m_isTouched = res.isTouched();
         m_length = res.getLength();
         m_siblingCount = res.getSiblingCount();
-        m_loaderId = res.getLoaderId();
         m_name = res.getName();
         m_parentId = res.getParentStructureId();
         m_projectLastModified = res.getProjectLastModified();

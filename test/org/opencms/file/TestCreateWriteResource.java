@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2004/08/11 10:50:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/08/12 11:02:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit tests for the create and import methods.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
   
@@ -329,7 +329,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
-            OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.C_RESOURCE_TYPE_ID).getLoaderId(),
             timestamp,
             cms.getRequestContext().currentUser().getId(), 
             timestamp,
@@ -387,7 +386,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
-            OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.C_RESOURCE_TYPE_ID).getLoaderId(),
             timestamp,
             cms.getRequestContext().currentUser().getId(), 
             timestamp,
@@ -446,7 +444,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
-            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.C_RESOURCE_TYPE_ID).getLoaderId(),
             timestamp,
             cms.getRequestContext().currentUser().getId(), 
             timestamp,
@@ -509,7 +506,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
-            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.C_RESOURCE_TYPE_ID).getLoaderId(),
             timestamp,
             cms.getRequestContext().currentUser().getId(), 
             timestamp,
@@ -593,7 +589,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
-            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.C_RESOURCE_TYPE_ID).getLoaderId(),
             timestamp,
             cms.getRequestContext().currentUser().getId(), 
             timestamp,
@@ -647,7 +642,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
-            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.C_RESOURCE_TYPE_ID).getLoaderId(),
             timestamp,
             cms.getRequestContext().currentUser().getId(), 
             timestamp,

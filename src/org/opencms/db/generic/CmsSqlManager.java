@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/07/18 16:32:08 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.36 $ $Date: 2004/07/18 16:32:08 $
+ * @version $Revision: 1.37 $ $Date: 2004/08/12 11:01:30 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -138,7 +138,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     /** 
      * Table key being replaced in SQL queries to generate SQL queries to access online/offline tables.<p> 
      */
-    protected static final String C_TABLE_KEY_SEARCH_PATTERN = "_T_";
+    protected static final String C_TABLE_KEY_SEARCH_PATTERN = "_${PROJECT}_";
 
     /** 
      * Caches all queries with replaced expressions to minimize costs of regex/matching operations.<p> 
@@ -655,7 +655,9 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
             lastIndex = 0;
 
             while ((startIndex = currentValue.indexOf("${", lastIndex)) != -1) {
-                if ((endIndex = currentValue.indexOf('}', startIndex)) != -1) {
+                if ((endIndex = currentValue.indexOf('}', startIndex)) != -1
+                    && !currentValue.startsWith(C_TABLE_KEY_SEARCH_PATTERN, startIndex-1)) {
+                   
                     String replaceKey = currentValue.substring(startIndex + 2, endIndex);
                     String searchPattern = currentValue.substring(startIndex, endIndex + 1);
                     String replacePattern = this.readQuery(replaceKey);
@@ -663,9 +665,9 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
                     if (replacePattern != null) {
                         currentValue = CmsStringUtil.substitute(currentValue, searchPattern, replacePattern);
                     }
-
-                    lastIndex = endIndex + 2;
                 }
+                
+                lastIndex = endIndex + 2;
             }
 
             properties.put(currentKey, currentValue);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/08/11 16:56:21 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/08/12 11:02:41 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 5.3.5
  */
@@ -497,7 +497,9 @@ public class OpenCmsTestCase extends TestCase {
         }
         
         // check for errors 
-        checkErrors(setupDb);
+        if (!C_DB_ORACLE.equals(m_dbProduct)) {
+            checkErrors(setupDb);
+        }
         
         // connect to the DB
         return setupDb;
@@ -1020,16 +1022,6 @@ public class OpenCmsTestCase extends TestCase {
                         + storedResource.getSiblingCount()
                         + " != "
                         + res.getSiblingCount()
-                        + "]\n";
-                }
-            }
-            // compare the loader id if necessary
-            if (filter.testLoaderId()) {
-                if (storedResource.getLoaderId() != res.getLoaderId()) {
-                    noMatches += "[LoaderId "
-                        + storedResource.getLoaderId()
-                        + " != "
-                        + res.getLoaderId()
                         + "]\n";
                 }
             }
@@ -1910,7 +1902,7 @@ public class OpenCmsTestCase extends TestCase {
             System.out.println(message);
         } catch (Throwable t) {
             throw new RuntimeException(t);
-        }
+    }   
     }   
     
     /**

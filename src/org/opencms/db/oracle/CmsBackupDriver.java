@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/08/11 16:56:21 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.33 $ $Date: 2004/08/11 16:56:21 $
+ * @version $Revision: 1.34 $ $Date: 2004/08/12 11:01:30 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -174,7 +174,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         
         try {
             conn = m_sqlManager.getConnectionForBackup();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILES_ADDBACKUP");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_ADDBACKUP");
 
             // first insert new file without file_content, then update the file_content
             // these two steps are necessary because of using BLOBs in the Oracle DB
@@ -197,14 +197,14 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             
             if (m_enableServerCopy) {
                 // read the content blob
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILES_READCONTENT");
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_READCONTENT");
                 stmt.setString(1, resource.getResourceId().toString());
                 res = stmt.executeQuery();
                 
                 if (res.next()) {
                     // backup the content
                     Blob content = res.getBlob(1);
-                    stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILES_BACKUPCONTENT");
+                    stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_BACKUPCONTENT");
                     stmt2.setBlob(1, content);
                     stmt2.setString(2, contentId.toString());
                     stmt2.setString(3, backupId.toString());
@@ -218,7 +218,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 res = null;
             } else {
                 // select the backup record for update            
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILES_UPDATEBACKUP");
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_UPDATEBACKUP");
                 stmt.setString(1, contentId.toString());
                 stmt.setString(2, backupId.toString());
                 

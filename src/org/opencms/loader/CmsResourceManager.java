@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2004/07/18 16:32:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -238,6 +238,18 @@ public class CmsResourceManager {
     public I_CmsResourceLoader getLoader(int id) {
 
         return m_loaders[id];
+    }
+    
+    /**
+     * Returns the loader class instance for a given resource.<p>
+     * 
+     * @param resource the resource
+     * @return the appropriate loader class instance
+     * @throws CmsLoaderException if something goes wrong
+     */
+    public I_CmsResourceLoader getLoader(CmsResource resource) throws CmsLoaderException {
+     
+        return getLoader(this.getResourceType(resource.getTypeId()).getLoaderId());
     }
 
     /**
@@ -413,7 +425,7 @@ public class CmsResourceManager {
         }
 
         CmsResource template = cms.readFile(templateProp, CmsResourceFilter.IGNORE_EXPIRATION);
-        return new CmsTemplateLoaderFacade(getLoader(template.getLoaderId()), resource, template);
+        return new CmsTemplateLoaderFacade(getLoader(template), resource, template);
     }
     
     /**
@@ -450,7 +462,7 @@ public class CmsResourceManager {
     ) throws ServletException, IOException, CmsException {
 
         res.setContentType(getMimeType(resource.getName(), cms.getRequestContext().getEncoding()));
-        I_CmsResourceLoader loader = getLoader(resource.getLoaderId());
+        I_CmsResourceLoader loader = getLoader(resource);
         loader.load(cms, resource, req, res);
     }
 

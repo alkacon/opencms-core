@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/08/11 16:56:22 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -313,7 +312,6 @@ public class CmsImportVersion2 extends A_CmsImport {
         String source = null, destination = null, resourceTypeName = null, timestamp = null, uuid = null, uuidresource = null;
         long lastmodified = 0;
         int resourceTypeId = I_CmsConstants.C_UNKNOWN_ID;
-        int resourceTypeLoaderId = I_CmsConstants.C_UNKNOWN_ID;
         List properties = null;
         boolean old_overwriteCollidingResources = false;
 
@@ -376,19 +374,16 @@ public class CmsImportVersion2 extends A_CmsImport {
                 resourceTypeName = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
                 if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(resourceTypeName)) {
                     resourceTypeId = C_RESOURCE_TYPE_NEWPAGE_ID;
-                    resourceTypeLoaderId = (OpenCms.getResourceManager().getResourceType(resourceTypeId)).getLoaderId();
                 } else if (C_RESOURCE_TYPE_PAGE_NAME.equals(resourceTypeName)) {
                     // resource with a "legacy" resource type are imported using the "plain" resource
                     // type because you cannot import a resource without having the resource type object
                     resourceTypeId = CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
-                    resourceTypeLoaderId = (OpenCms.getResourceManager().getResourceType(resourceTypeId)).getLoaderId();
                 } else if (C_RESOURCE_TYPE_LINK_NAME.equals(resourceTypeName)) {
                     // set resource type of legacy "link" which is converted later
                     resourceTypeId = C_RESOURCE_TYPE_LINK_ID;
                 } else {
                     I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resourceTypeName);
                     resourceTypeId = type.getTypeId();
-                    resourceTypeLoaderId = type.getLoaderId();
                 }
                 
                 uuid = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDSTRUCTURE);
@@ -428,7 +423,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     properties = readPropertiesFromManifest(currentElement, propertyName, propertyValue, deleteProperties);
 
                     // import the specified file 
-                    CmsResource res = importResource(source, destination, uuid, uuidresource, resourceTypeId, resourceTypeName, resourceTypeLoaderId, lastmodified, properties, writtenFilenames, fileCodes);
+                    CmsResource res = importResource(source, destination, uuid, uuidresource, resourceTypeId, resourceTypeName, lastmodified, properties, writtenFilenames, fileCodes);
 
                     if (res != null) {
 
@@ -489,7 +484,6 @@ public class CmsImportVersion2 extends A_CmsImport {
      * @param uuidresource  the resource uuid of the resource
      * @param resourceTypeId the ID of the file's resource type
      * @param resourceTypeName the name of the file's resource type
-     * @param resourceTypeLoaderId the ID of the file's resource type loader
      * @param lastmodified the timestamp of the file
      * @param properties a hashtable with properties for this resource
      * @param writtenFilenames filenames of the files and folder which have actually been successfully written
@@ -499,7 +493,7 @@ public class CmsImportVersion2 extends A_CmsImport {
      * 
      * @return imported resource
      */
-    private CmsResource importResource(String source, String destination, String uuid, String uuidresource, int resourceTypeId, String resourceTypeName, int resourceTypeLoaderId, long lastmodified, List properties, Vector writtenFilenames, Vector fileCodes) {
+    private CmsResource importResource(String source, String destination, String uuid, String uuidresource, int resourceTypeId, String resourceTypeName, long lastmodified, List properties, Vector writtenFilenames, Vector fileCodes) {
 
         boolean success = true;
         byte[] content = null;
@@ -572,8 +566,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 resourceTypeId,
                 0, 
                 m_cms.getRequestContext().currentProject().getId(),
-                I_CmsConstants.C_STATE_NEW, 
-                resourceTypeLoaderId, 
+                I_CmsConstants.C_STATE_NEW,
                 lastmodified,
                 curUser,
                 lastmodified, curUser, 
@@ -829,7 +822,6 @@ public class CmsImportVersion2 extends A_CmsImport {
                     
                     // set the type to xml page
                     pagefile.setType(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
-                    pagefile.setLoaderId(CmsXmlPageLoader.C_RESOURCE_LOADER_ID);
                 }
             }
 

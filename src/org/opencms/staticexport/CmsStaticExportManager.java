@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/08/10 15:46:18 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -356,13 +356,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         // check loader id for resource
-        int loaderId = file.getLoaderId();
-        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(loaderId);
+        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(file);
         if ((loader == null) || (!loader.isStaticExportEnabled())) {
             throw new CmsException("Unable to export VFS file "
                 + vfsName
-                + ", loader with id "
-                + loaderId
+                + ", loader for type "
+                + file.getTypeId()
                 + " does not support static export");
         }
 
@@ -1373,7 +1372,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     if (exportData != null) {
                         // check loader for current resource if it must be processed before exported
                         I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(
-                            exportData.getResource().getLoaderId());
+                            exportData.getResource());
                         if (!loader.isStaticExportProcessable()) {
                             // this resource must not be process, so export it if its not marked as deleted
                             if (pupRes.getState() != I_CmsConstants.C_STATE_DELETED) {

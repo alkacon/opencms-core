@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/11 16:53:59 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,13 +44,13 @@ import org.apache.commons.collections.ExtendedProperties;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.29 $ $Date: 2004/08/11 16:53:59 $
+ * @version $Revision: 1.30 $ $Date: 2004/08/12 11:01:30 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
  */
 public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {    
-    
+
     /**
      * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager)
      */

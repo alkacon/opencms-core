@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2004/06/21 11:43:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.0 beta 2
  */
@@ -738,7 +738,7 @@ public class CmsJspActionElement extends CmsJspBean {
         
         try {
             file = getCmsObject().readFile(target);
-            loader = OpenCms.getResourceManager().getLoader(file.getLoaderId());
+            loader = OpenCms.getResourceManager().getLoader(file);
         } catch (ClassCastException e) {
             // no loader implementation found
             return CmsMessages.formatUnknownKey(e.getMessage());

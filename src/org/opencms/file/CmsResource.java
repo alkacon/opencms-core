@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/08/11 10:42:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -74,9 +74,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** Boolean flag whether the timestamp of this resource was modified by a touch command. */
     private boolean m_isTouched;
-
-    /** The id of the loader which is used to process this resource. */
-    private int m_loaderId;
 
     /** The name of this resource. */
     private String m_name;
@@ -117,13 +114,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param parentId the id of this resources parent folder
-     * @param contentId the id of this resources content record
      * @param name the filename of this resouce
      * @param type the type of this resource
      * @param flags the flags of this resource
      * @param projectId the project id this resource was last modified in
      * @param state the state of this resource
-     * @param loaderId the id for the that is used to load this recource
      * @param dateCreated the creation date of this resource
      * @param userCreated the id of the user who created this resource
      * @param dateLastModified the date of the last modification of this resource
@@ -137,13 +132,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         CmsUUID structureId,
         CmsUUID resourceId,
         CmsUUID parentId,
-        // CmsUUID contentId,
         String name,
         int type,
         int flags,
         int projectId,
         int state,
-        int loaderId,
         long dateCreated,
         CmsUUID userCreated,
         long dateLastModified,
@@ -161,7 +154,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_typeId = type;
         m_flags = flags;
         m_projectLastModified = projectId;
-        m_loaderId = loaderId;
         m_state = state;
         m_dateCreated = dateCreated;
         m_userCreated = userCreated;
@@ -324,13 +316,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_structureId,
             m_resourceId,
             m_parentId,
-            // m_contentId,
             m_name,
             m_typeId,
             m_flags,
             m_projectLastModified,
             m_state,
-            m_loaderId,
             m_dateCreated,
             m_userCreated,
             m_dateLastModified,
@@ -435,16 +425,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public int getLength() {
 
         return m_length;
-    }
-
-    /**
-     * Gets the loader id of this resource.<p>
-     *
-     * @return the loader type id of this resource
-     */
-    public int getLoaderId() {
-
-        return m_loaderId;
     }
 
     /**
@@ -714,16 +694,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Sets the loader id of this resource.<p>
-     *
-     * @param loaderId the loader id of this resource
-     */
-    public void setLoaderId(int loaderId) {
-
-        m_loaderId = loaderId;
-    }
-
-    /**
      * Sets the parent of this resource.<p>
      *
      * @param parent the id of the parent resource
@@ -788,8 +758,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         result.append(m_projectLastModified);
         result.append(", state: ");
         result.append(m_state);
-        result.append(", loader id: ");
-        result.append(m_loaderId);
         result.append(", date created: ");
         result.append(new java.util.Date(m_dateCreated));
         result.append(", user created: ");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2004/07/23 13:30:11 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
     
@@ -273,11 +273,10 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                     if (resource == null) {
                         resource = cms.readResource(m_vfsTarget);
                     }
-                    int type = resource.getLoaderId();
                     if (DEBUG > 0) {
-                        System.err.println("FlexDispatcher: Loading resource type " + type);
+                        System.err.println("FlexDispatcher: Loading resource type " + resource.getTypeId());
                     }
-                    loader = OpenCms.getResourceManager().getLoader(type);
+                    loader = OpenCms.getResourceManager().getLoader(resource);
                 } catch (ClassCastException e) {
                     controller.setThrowable(e, m_vfsTarget);
                     throw new ServletException("FlexDispatcher: CmsResourceLoader interface not implemented for cms resource " + m_vfsTarget + "\n" + e, e);

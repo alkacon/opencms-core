@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/11 16:54:56 $
- * Version: $Revision: 1.180 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.181 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.180 $ $Date: 2004/08/11 16:54:56 $
+ * @version $Revision: 1.181 $ $Date: 2004/08/12 11:01:30 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -93,8 +93,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /** The SQL manager. */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
-   /**
-    * @see org.opencms.db.I_CmsProjectDriver#createProject(org.opencms.file.CmsUser, org.opencms.file.CmsGroup, org.opencms.file.CmsGroup, org.opencms.workflow.CmsTask, java.lang.String, java.lang.String, int, int, java.lang.Object)
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#createProject(org.opencms.file.CmsUser, org.opencms.file.CmsGroup, org.opencms.file.CmsGroup, org.opencms.workflow.CmsTask, java.lang.String, java.lang.String, int, int, java.lang.Object)
     */
     public CmsProject createProject(CmsUser owner, CmsGroup group, CmsGroup managergroup, CmsTask task, String name, String description, int flags, int type, Object reservedParam) throws CmsException {
         CmsProject project = null;
@@ -498,7 +498,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assigned pool        : " + poolUrl);
-        }      
+        }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
@@ -1924,14 +1924,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(1, tagId);
             stmt.setString(2, CmsUUID.getNullUUID().toString());
             stmt.setString(3, CmsUUID.getNullUUID().toString());
-            stmt.setString(4, CmsUUID.getNullUUID().toString());
-            stmt.setString(5, "");
-            stmt.setInt(6, state);
-            stmt.setInt(7, subId);
-            stmt.setString(8, publishId.toString());
-            stmt.setInt(9, 0);
-            stmt.setString(10, masterId.toString());
-            stmt.setString(11, contentDefinitionName);
+            stmt.setString(4, "");
+            stmt.setInt(5, state);
+            stmt.setInt(6, subId);
+            stmt.setString(7, publishId.toString());
+            stmt.setInt(8, 0);
+            stmt.setString(9, masterId.toString());
+            stmt.setString(10, contentDefinitionName);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);

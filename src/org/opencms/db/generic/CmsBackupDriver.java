@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/08/11 16:56:22 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.98 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.97 $ $Date: 2004/08/11 16:56:22 $
+ * @version $Revision: 1.98 $ $Date: 2004/08/12 11:01:30 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -102,7 +102,6 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
         int projectID = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PROJECT_ID")); 
         int state = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE"));
-        int loaderId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LOADER_ID"));
         long dateCreated = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED"));
         long dateLastModified = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED"));
         long dateReleased = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_RELEASED"));
@@ -116,7 +115,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         CmsUUID contentId;
         if (hasContent) {
             content = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
-            contentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_FILE_ID")));
+            contentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_CONTENT_ID")));
         } else {
             content = new byte[0];
             contentId = CmsUUID.getNullUUID();
@@ -133,8 +132,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             resourceType,
             resourceFlags, 
             projectID, 
-            state, 
-            loaderId, 
+            state,
             dateCreated, 
             userCreated, 
             userCreatedName, 
@@ -248,7 +246,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             // we have all the nescessary information, so we can delete the old backups
             stmt1 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_STRUCTURE_BYBACKUPID");
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCES_BYBACKUPID");
-            stmt3 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_FILES_BYBACKUPID");
+            stmt3 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_CONTENTS_BYBACKUPID");
             stmt4 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_PROPERTIES_BYBACKUPID");
             Iterator i=backupIds.iterator();
             while (i.hasNext()) {
@@ -431,7 +429,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         
         try {
             conn = m_sqlManager.getConnectionForBackup();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_WRITE_BACKUP");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_CONTENTS_WRITE_BACKUP");
 
             stmt.setString(1, contentId.toString());
             stmt.setString(2, resource.getResourceId().toString());
@@ -1105,21 +1103,19 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                     stmt.setString(1, resource.getResourceId().toString());
                     stmt.setInt(2, resource.getTypeId());
                     stmt.setInt(3, resource.getFlags());
-                    stmt.setInt(4, resource.getLoaderId());
-                    stmt.setLong(5, publishDate);
-                    stmt.setString(6, resource.getUserCreated().toString());
-                    stmt.setLong(7, resource.getDateLastModified());
-                    stmt.setString(8, resource.getUserLastModified().toString());
-                    stmt.setInt(9, resource.getState());
-                    stmt.setInt(10, resource.getLength());
-                    stmt.setString(11, CmsUUID.getNullUUID().toString());
-                    stmt.setInt(12, publishProject.getId());
-                    stmt.setInt(13, 1);
-                    stmt.setInt(14, tagId);
-                    stmt.setInt(15, versionId);
-                    stmt.setString(16, backupPkId.toString());
-                    stmt.setString(17, createdName);
-                    stmt.setString(18, lastModifiedName);
+                    stmt.setLong(4, publishDate);
+                    stmt.setString(5, resource.getUserCreated().toString());
+                    stmt.setLong(6, resource.getDateLastModified());
+                    stmt.setString(7, resource.getUserLastModified().toString());
+                    stmt.setInt(8, resource.getState());
+                    stmt.setInt(9, resource.getLength());
+                    stmt.setInt(10, publishProject.getId());
+                    stmt.setInt(11, 1);
+                    stmt.setInt(12, tagId);
+                    stmt.setInt(13, versionId);
+                    stmt.setString(14, backupPkId.toString());
+                    stmt.setString(15, createdName);
+                    stmt.setString(16, lastModifiedName);
                     stmt.executeUpdate();
 
                     m_sqlManager.closeAll(null, stmt, null);

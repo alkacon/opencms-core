@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/11 10:42:04 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/08/12 11:01:30 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.20 $ $Date: 2004/08/11 10:42:04 $
+ * @version $Revision: 1.21 $ $Date: 2004/08/12 11:01:30 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
@@ -64,10 +64,10 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         try {
             if (writeBackup) {
                 conn = m_sqlManager.getConnectionForBackup();
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILES_ADDBACKUP");
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_ADDBACKUP");
             } else {
                 conn = m_sqlManager.getConnection(project);
-                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_FILES_ADD");
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_ADD");
             }
             // first insert new file without file_content, then update the file_content
             // these two steps are necessary because of using BLOBs in the Oracle DB
@@ -109,14 +109,14 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         try {
             if (writeBackup) {
                 conn = m_sqlManager.getConnectionForBackup();
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILES_UPDATEBACKUP");
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_UPDATEBACKUP");
             } else {
                 conn = m_sqlManager.getConnection(project);
-                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_FILES_UPDATECONTENT");
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_UPDATECONTENT");
             }
             conn.setAutoCommit(false);
             
-            // update the file content in the FILES database.
+            // update the file content in the contents table
             stmt.setString(1, resourceId.toString());
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {
