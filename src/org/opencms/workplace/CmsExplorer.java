@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/16 10:12:35 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/07/16 12:08:55 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */
@@ -402,7 +402,11 @@ public class CmsExplorer extends CmsWorkplace {
             // position 12 : user who created the resource 
             if (showUserWhoCreated) {
                 content.append("\"");
-                content.append("(nyi)");
+                try {
+                    content.append(getCms().readUser(res.getUserCreated()).getName());
+                } catch (CmsException e) {
+                    content.append(e.getMessage());
+                }
                 content.append("\",");
             } else {
                 content.append("\"\",");
