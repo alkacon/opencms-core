@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContent.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/03/13 15:40:30 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.6 $ $Date: 2000/03/13 15:40:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -79,7 +79,6 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 		
-        // TODO: check, if this is neede: A_CmsRequestContext reqCont = cms.getRequestContext();
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
 		// Now load the template file and start the processing
@@ -98,9 +97,16 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 		String orderBy = "";
 		String groupBy = "";
 		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
-		String project = (String)session.getValue(C_SESSION_TASK_PROJECTNAME);
+		Object allProjects = session.getValue(C_SESSION_TASK_ALLPROJECTS);
+		String project = cms.getRequestContext().currentProject().getName();
 		String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
 		Vector retValue;
+
+		// was the allprojects checkbox checked?
+		if((allProjects != null) && (((Boolean)allProjects).booleanValue())) {
+			project = null;
+		}
+		
 		if(filter == null) {
 			filter = "a1";
 		}

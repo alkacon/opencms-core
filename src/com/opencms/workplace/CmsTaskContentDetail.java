@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/03/13 15:40:30 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.8 $ $Date: 2000/03/13 15:40:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -79,13 +79,13 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 		
-        // TODO: check, if this is neede: A_CmsRequestContext reqCont = cms.getRequestContext();
+		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+		A_CmsRequestContext context = cms.getRequestContext();
 		CmsXmlWpTemplateFile xmlTemplateDocument = 
 			(CmsXmlWpTemplateFile) getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		A_CmsTask task;
 		int taskid = -1;
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
-		
 		
 		try {
 			Integer sessionTaskid = (Integer)session.getValue("taskid");
@@ -96,41 +96,140 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 			try {
 				taskid = Integer.parseInt((String)parameters.get("taskid"));
 			} catch(Exception exc) {
-				exc.printStackTrace();
+				// no new taskid use the one from session
 			}
 			session.putValue("taskid", new Integer(taskid));
 			parameters.put("taskid", taskid + "");
+			task = cms.readTask(taskid);
 			
 			if("acceptok".equals((String)parameters.get("action"))){
 				// accept the task
 				cms.acceptTask(taskid);
-				// TODO: this must be read from a xml-language-file
 				String comment = "";
 				cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_ACCEPTED);
 			} else if("accept".equals((String)parameters.get("action"))){
 				// show dialog
 				templateSelector = "accept";
+			} else if("take".equals((String)parameters.get("action"))){
+				// show dialog
+				templateSelector = "take";
+			} else if("takeok".equals((String)parameters.get("action"))){
+				// take the task
+				A_CmsUser newEditor = context.currentUser();
+				A_CmsGroup oldRole = cms.readGroup(task);
+				// has the user the correct role?
+				if(cms.userInGroup(newEditor.getName(), oldRole.getName())) {
+					cms.forwardTask(taskid, oldRole.getName(), newEditor.getName());
+					String comment = lang.getLanguageValue("task.dialog.take.logmessage");
+					comment += " " + Utils.getFullName(newEditor);
+					cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_TAKE);
+				}				
+			} else if("due".equals((String)parameters.get("action"))){
+				// show dialog
+				templateSelector = "due";
+			} else if("dueok".equals((String)parameters.get("action"))){
+				// change the due-date of the task
+				String timeoutString = (String)parameters.get("DATE");
+				String splittetDate[] = Utils.split(timeoutString, ".");
+				GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
+															  Integer.parseInt(splittetDate[1]) - 1,
+															  Integer.parseInt(splittetDate[0]), 0, 0, 0);
+				long timeout = cal.getTime().getTime();
+				cms.setTimeout(taskid, timeout);
+				// add comment
+				String comment = "";
+				comment += lang.getLanguageValue("task.dialog.due.logmessage1") + " ";
+				comment += Utils.getNiceShortDate(task.getTimeOut().getTime()) + " ";
+				comment += lang.getLanguageValue("task.dialog.due.logmessage2") + " ";
+				comment += Utils.getNiceShortDate(timeout);
+				cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_DUECHANGED);
+			} else if("priorityok".equals((String)parameters.get("action"))){
+				// change the priority of the task
+				String priorityString = (String)parameters.get("PRIORITY");
+				int priority = Integer.parseInt(priorityString);
+				cms.setPriority(taskid, priority);
+
+				// add comment
+				String comment = "";
+				comment += lang.getLanguageValue("task.dialog.priority.logmessage1") + " ";
+				comment += lang.getLanguageValue("task.dialog.priority.logmessageprio" + task.getPriority() ) + " ";
+				comment += lang.getLanguageValue("task.dialog.priority.logmessage2") + " ";
+				comment += lang.getLanguageValue("task.dialog.priority.logmessageprio" + priority ) + " ";
+				cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_PRIORITYCHANGED);
 			} else if("okok".equals((String)parameters.get("action"))){
 				// ok the task
 				cms.endTask(taskid);
-				// TODO: this must be read from a xml-language-file
 				String comment = "";
 				cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_OK);
 			} else if("ok".equals((String)parameters.get("action"))) {
 				// show dialog
 				templateSelector = "ok";
+			} else if("comment".equals((String)parameters.get("action"))) {
+				// add comment
+				String comment = (String)parameters.get("DESCRIPTION");
+				if( (comment != null) && (comment.length() != 0)) {
+					cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_COMMENT);
+				}
+			} else if("messageok".equals((String)parameters.get("action"))) {
+				// add message
+				String comment = lang.getLanguageValue("task.dialog.message.head") + " ";
+				if( (comment != null) && (comment.length() != 0)) {
+					comment += Utils.getFullName(cms.readAgent(task)) + "\n";
+					comment += (String)parameters.get("DESCRIPTION");
+					cms.writeTaskLog(taskid, comment, this.C_TASKLOGTYPE_CALL);
+				}
+			} else if("queryok".equals((String)parameters.get("action"))) {
+				// add message
+				String comment = lang.getLanguageValue("task.dialog.query.head") + " ";
+				if( (comment != null) && (comment.length() != 0)) {
+					comment += Utils.getFullName(cms.readOwner(task)) + "\n";
+					comment += (String)parameters.get("DESCRIPTION");
+					cms.writeTaskLog(taskid, comment, this.C_TASKLOGTYPE_CALL);
+				}
 			}
 			
-			task = cms.readTask(taskid);
+			// update the task-data
+			// it maybe had been changed
+			task = cms.readTask(taskid);			
 		} catch (Exception exc) {
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 		
+		A_CmsUser owner = null;
+		String ownerName = "";
+		try {
+			owner = cms.readOwner(task);
+			ownerName = owner.getName();
+		} catch(Exception exc) {
+			// ignore the exception
+		}
+
+		A_CmsUser editor = null;
+		String editorName = "";
+		try {
+			editor = cms.readAgent(task);
+			editorName = editor.getName();
+		} catch(Exception exc) {
+			// ignore the exception
+		}
 		
+		A_CmsGroup role = null;
+		String roleName = "";
+		try {
+			role = cms.readGroup(task);
+			roleName = role.getName();
+		} catch(Exception exc) {
+			// ignore the exception
+		}
+
 		String priority;
 		String projectname = "?";
 		String style;
+		String button1;
 		String button2;
+		String button3;
+		String button4;
+		String button5;
 		String button6;
 		long startTime;
 		long timeout;
@@ -154,29 +253,144 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 		priority = xmlTemplateDocument.getProcessedXmlDataValue("priority" + task.getPriority(), this);
 		startTime = task.getStartTime().getTime();
 		timeout = task.getTimeOut().getTime();
+		String due = "";
+		try {
+			due = Utils.getNiceShortDate(timeout);
+		} catch(Exception exc) {
+			// ignore the exception
+		}
+
+		String from = "";
+		try {
+			from = Utils.getNiceShortDate(startTime);
+		} catch(Exception exc) {
+			// ignore the exception
+		}
 
 		xmlTemplateDocument.setXmlData("taskid", task.getId() + "");
-			
+		
+		boolean isOwner = context.currentUser().equals(owner);
+		boolean isEditor = context.currentUser().equals(editor);
+		boolean isInRole = false;
+		try {
+			isInRole = cms.userInGroup(context.currentUser().getName(), roleName);
+		} catch(Exception exc) {
+			// ignore the exception
+		}
+		
 		// choose the right style and buttons
 		if(task.getState() == C_TASK_STATE_ENDED) {
-			button2 = xmlTemplateDocument.getProcessedXmlDataValue("button_forward", this);
-			button6 = xmlTemplateDocument.getProcessedXmlDataValue("button_reakt", this);
+			if(isOwner) {
+				// this is the owner of the task
+				button1 = getButton(xmlTemplateDocument, "button_message", false);
+				button2 = getButton(xmlTemplateDocument, "button_accept", false);
+				button3 = getButton(xmlTemplateDocument, "button_due", false);
+				button4 = getButton(xmlTemplateDocument, "button_priority", false);
+				button5 = getButton(xmlTemplateDocument, "button_comment", false);
+				button6 = getButton(xmlTemplateDocument, "button_reakt", true);
+			} else if(isEditor) {
+				// this user is the editor for this task
+				button1 = getButton(xmlTemplateDocument, "button_query", false);
+				button2 = getButton(xmlTemplateDocument, "button_forward", false);
+				button3 = getButton(xmlTemplateDocument, "button_due", false);
+				button4 = getButton(xmlTemplateDocument, "button_priority", false);
+				button5 = getButton(xmlTemplateDocument, "button_comment", false);
+				button6 = getButton(xmlTemplateDocument, "button_reakt", false);
+			} else if(isInRole) {
+				// this user is in the role for this task
+				button1 = getButton(xmlTemplateDocument, "button_query", false);
+				button2 = getButton(xmlTemplateDocument, "button_take", false);
+				button3 = getButton(xmlTemplateDocument, "button_due", false);
+				button4 = getButton(xmlTemplateDocument, "button_priority", false);
+				button5 = getButton(xmlTemplateDocument, "button_comment", false);
+				button6 = getButton(xmlTemplateDocument, "button_reakt", false);
+			} else {
+				// all other users
+				button1 = getButton(xmlTemplateDocument, "button_query", false);
+				button2 = getButton(xmlTemplateDocument, "button_take", false);
+				button3 = getButton(xmlTemplateDocument, "button_due", false);
+				button4 = getButton(xmlTemplateDocument, "button_priority", false);
+				button5 = getButton(xmlTemplateDocument, "button_comment", false);
+				button6 = getButton(xmlTemplateDocument, "button_reakt", false);
+			}
 			if(timeout < now ) {
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_ok", this);
 			} else {
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_ok", this);
 			}
 		} else if(task.getPercentage() == 0) {
-			button2 = xmlTemplateDocument.getProcessedXmlDataValue("button_accept", this);
-			button6 = xmlTemplateDocument.getProcessedXmlDataValue("button_ok", this);
+			if(isOwner) {
+				// this is the owner of the task
+				button1 = getButton(xmlTemplateDocument, "button_message", true);
+				button2 = getButton(xmlTemplateDocument, "button_forward", true);
+				button3 = getButton(xmlTemplateDocument, "button_due", true);
+				button4 = getButton(xmlTemplateDocument, "button_priority", true);
+				button5 = getButton(xmlTemplateDocument, "button_comment", true);
+				button6 = getButton(xmlTemplateDocument, "button_ok", false);
+			} else if(isEditor) {
+				// this user is the editor for this task
+				button1 = getButton(xmlTemplateDocument, "button_query", true);
+				button2 = getButton(xmlTemplateDocument, "button_accept", true);
+				button3 = getButton(xmlTemplateDocument, "button_due", false);
+				button4 = getButton(xmlTemplateDocument, "button_priority", false);
+				button5 = getButton(xmlTemplateDocument, "button_comment", true);
+				button6 = getButton(xmlTemplateDocument, "button_ok", false);
+			} else if(isInRole) {
+				// this user is in the role for this task
+				button1 = getButton(xmlTemplateDocument, "button_query", false);
+				button2 = getButton(xmlTemplateDocument, "button_take", true);
+				button3 = getButton(xmlTemplateDocument, "button_due", false);
+				button4 = getButton(xmlTemplateDocument, "button_priority", false);
+				button5 = getButton(xmlTemplateDocument, "button_comment", false);
+				button6 = getButton(xmlTemplateDocument, "button_ok", false);
+			} else {
+				// all other users
+				button1 = getButton(xmlTemplateDocument, "button_query", false);
+				button2 = getButton(xmlTemplateDocument, "button_take", false);
+				button3 = getButton(xmlTemplateDocument, "button_due", false);
+				button4 = getButton(xmlTemplateDocument, "button_priority", false);
+				button5 = getButton(xmlTemplateDocument, "button_comment", false);
+				button6 = getButton(xmlTemplateDocument, "button_ok", false);
+			}
 			if(timeout < now ) {
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_alert", this);
 			} else {
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_new", this);
 			}
 		} else {
-			button2 = xmlTemplateDocument.getProcessedXmlDataValue("button_take", this);
-			button6 = xmlTemplateDocument.getProcessedXmlDataValue("button_ok", this);
+			if(isOwner) {
+				// this is the owner of the task
+				button1 = getButton(xmlTemplateDocument, "button_message", true);
+				button2 = getButton(xmlTemplateDocument, "button_forward", true);
+				button3 = getButton(xmlTemplateDocument, "button_due", true);
+				button4 = getButton(xmlTemplateDocument, "button_priority", true);
+				button5 = getButton(xmlTemplateDocument, "button_comment", true);
+				button6 = getButton(xmlTemplateDocument, "button_ok", false);
+			} else if(isEditor) {
+				// this user is the editor for this task
+				button1 = getButton(xmlTemplateDocument, "button_query", true);
+				button2 = getButton(xmlTemplateDocument, "button_forward", true);
+				button3 = getButton(xmlTemplateDocument, "button_due", false);
+				button4 = getButton(xmlTemplateDocument, "button_priority", false);
+				button5 = getButton(xmlTemplateDocument, "button_comment", true);
+				button6 = getButton(xmlTemplateDocument, "button_ok", true);
+			} else if(isInRole) {
+				// this user is in the role for this task
+				button1 = getButton(xmlTemplateDocument, "button_query", false);
+				button2 = getButton(xmlTemplateDocument, "button_take", true);
+				button3 = getButton(xmlTemplateDocument, "button_due", false);
+				button4 = getButton(xmlTemplateDocument, "button_priority", false);
+				button5 = getButton(xmlTemplateDocument, "button_comment", false);
+				button6 = getButton(xmlTemplateDocument, "button_ok", false);
+			} else {
+				// all other users
+				button1 = getButton(xmlTemplateDocument, "button_query", false);
+				button2 = getButton(xmlTemplateDocument, "button_take", false);
+				button3 = getButton(xmlTemplateDocument, "button_due", false);
+				button4 = getButton(xmlTemplateDocument, "button_priority", false);
+				button5 = getButton(xmlTemplateDocument, "button_comment", false);
+				button6 = getButton(xmlTemplateDocument, "button_ok", false);
+			}
 			if(timeout < now ) {
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_alert", this);
 			} else {
@@ -184,52 +398,48 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 			}
 		}
 			  
-		String agent = "";
-		String group = "";
-		String owner = "";
-		String due = "";
-		String from = "";
-		try {
-			agent = cms.readAgent(task).getName();
-		} catch(Exception exc) {
-			// ignore the exception
-		}
-		try {
-			group = cms.readGroup(task).getName();
-		} catch(Exception exc) {
-			// ignore the exception
-		}
-		try {
-			owner = cms.readOwner(task).getName();
-		} catch(Exception exc) {
-			// ignore the exception
-		}
-		try {
-			due = Utils.getNiceShortDate(timeout);
-		} catch(Exception exc) {
-			// ignore the exception
-		}
-		try {
-			from = Utils.getNiceShortDate(startTime);
-		} catch(Exception exc) {
-			// ignore the exception
-		}
 		// get the processed list.
 		xmlTemplateDocument.setXmlData("style", style);
 		xmlTemplateDocument.setXmlData("priority", priority);
 		xmlTemplateDocument.setXmlData("task", task.getName());
-		xmlTemplateDocument.setXmlData("foruser", agent);
-		xmlTemplateDocument.setXmlData("forrole", group);
-		xmlTemplateDocument.setXmlData("actuator", owner);
+		xmlTemplateDocument.setXmlData("foruser", Utils.getFullName(editor));
+		xmlTemplateDocument.setXmlData("forrole", roleName);
+		xmlTemplateDocument.setXmlData("actuator", Utils.getFullName(owner));
 		xmlTemplateDocument.setXmlData("due", due);
 		xmlTemplateDocument.setXmlData("from", from);
 		xmlTemplateDocument.setXmlData("project", projectname);
 		
 		// now setting the buttons
+		xmlTemplateDocument.setXmlData("button1", button1);
 		xmlTemplateDocument.setXmlData("button2", button2);
+		xmlTemplateDocument.setXmlData("button3", button3);
+		xmlTemplateDocument.setXmlData("button4", button4);
+		xmlTemplateDocument.setXmlData("button5", button5);
 		xmlTemplateDocument.setXmlData("button6", button6);
 		
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }
+
+	/**
+	 * This private helper method generates a string-representation of a button.
+	 * @param xmlTemplateDocument The xml-document in which the buttons are defined.
+	 * @param name The name of the button to generate.
+	 * @param enabled True, if the button is enabled, else false.
+	 * @return the string-representation of the button.
+	 * @exception Throws CmsException, if something goes wrong.
+	 */
+	private String getButton(CmsXmlWpTemplateFile xmlTemplateDocument, String name, 
+							 boolean enabled) 
+		throws CmsException {
+		if(enabled) {
+			// the button is enabled
+			xmlTemplateDocument.setXmlData("disabled", "");
+		} else {
+			// the button is disabled
+			xmlTemplateDocument.setXmlData("disabled", "disabled");
+		}
+		// return the generated button
+		return xmlTemplateDocument.getProcessedXmlDataValue(name, this);		
+	}
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskList.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/03/13 15:40:30 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;tasklist&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.10 $ $Date: 2000/03/13 15:40:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -69,8 +69,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * Returns the processed code with the actual elements.
      * <P>
      * Projectlists can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
-     * <CODE>&lt;TASKLIST /&gt;</CODE>
+     * <CODE>&lt;TASKLIST method="methodname"/&gt;</CODE>
      * 
      * @param cms A_CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;ICON&gt;</code> tag.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
- * Date   : $Date: 2000/02/19 10:32:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/13 15:41:06 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -28,13 +28,15 @@
 
 package com.opencms.util;
 
+import com.opencms.file.*;
+
 import java.util.*;
 
 /**
  * This is a general helper class.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/02/19 10:32:16 $
+ * @version $Revision: 1.5 $ $Date: 2000/03/13 15:41:06 $
  */
 public class Utils {
 	/**
@@ -122,4 +124,19 @@ public class Utils {
          niceTime.append(year+" ");
          return niceTime.toString();
      }
+	 
+	 /**
+	  * Returns a string representation of the full name of a user.
+	  * @param user The user to get the full name from
+	  * @return a string representation of the user fullname.
+	  */
+	 public static String getFullName(A_CmsUser user) {
+		 String retValue = "";
+		 if(user != null) {
+			 retValue += user.getFirstname() + " ";
+			 retValue += user.getLastname() + " (";
+			 retValue += user.getName() + ")";
+		 }
+		 return retValue;
+	 }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskHead.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/03/13 15:40:30 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.7 $ $Date: 2000/03/13 15:40:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -86,13 +86,16 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
         }
 		
 		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
-        A_CmsRequestContext reqCont = cms.getRequestContext();
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
-		if("OK".equals(parameters.get("ALL"))) {
-			session.removeValue(C_SESSION_TASK_PROJECTNAME);
-		} else {
-			session.putValue(C_SESSION_TASK_PROJECTNAME, reqCont.currentProject().getName());
+		// is this the result of a submit?
+		if(parameters.get("filter") != null) {
+			// YES: get the checkbox-value
+			if("OK".equals(parameters.get("ALL"))) {
+				session.putValue(C_SESSION_TASK_ALLPROJECTS, new Boolean(true));
+			} else {
+				session.putValue(C_SESSION_TASK_ALLPROJECTS, new Boolean(false));
+			}
 		}
 		
 		// is the listbox chosen?
@@ -117,11 +120,13 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
     public Object checked(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
 		throws CmsException {
 		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
-		if(session.getValue(C_SESSION_TASK_PROJECTNAME) == null) {
-			// "all projects" is chosen
-			return("checked");
+		Object allProjects = session.getValue(C_SESSION_TASK_ALLPROJECTS);
+		
+		// was the allprojects checkbox checked?
+		if((allProjects != null) && (((Boolean)allProjects).booleanValue())) {
+			return "checked";
 		} else {
-			return("");
+			return "";
 		}
     }
 

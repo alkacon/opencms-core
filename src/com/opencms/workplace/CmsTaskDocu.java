@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskDocu.java,v $
- * Date   : $Date: 2000/02/22 11:22:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/03/13 15:40:30 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TASKDOCU&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/22 11:22:42 $
+ * @version $Revision: 1.4 $ $Date: 2000/03/13 15:40:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -112,7 +112,7 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                 A_CmsUser user=cms.readOwner(tasklog);
                 template.setXmlData("USER", user.getFirstname()+" "+user.getLastname()+ "("+user.getName()+")");
                 // set the message
-                template.setXmlData("MESSAGE",tasklog.getComment());                
+                template.setXmlData("MESSAGE", addBrTags(tasklog.getComment()));
                 // set the image
                 template.setXmlData("ICON",template.getProcessedXmlDataValue("ICON"+type, callingObject, parameters));
                 // set the headline
@@ -126,9 +126,22 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 	        }
      
         }
-  
-        
-        
 		return result.toString();
     }
+	
+	/**
+	 * This private helper method adds a <code>&lt;BR&gt;</code> tag to each line.
+	 * 
+	 * @param value The string to add the br-tags.
+	 * @return The resulting string with br-tags.
+	 */
+	private String addBrTags(String value) {
+		String lines[] = Utils.split(value, "\n");
+		String retValue = "";
+
+		for(int i=0; i < lines.length; i++) {
+			retValue += lines[i] + "<BR>";
+		}
+		return retValue;
+	}
 }

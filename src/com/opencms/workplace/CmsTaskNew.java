@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/03/13 15:40:30 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.11 $ $Date: 2000/03/13 15:40:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -165,9 +165,9 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 				cms.setTaskPar(task.getId(),C_TASKPARA_ALL, paraAll);
 				cms.setTaskPar(task.getId(),C_TASKPARA_COMPLETION, paraCompletion);
 				cms.setTaskPar(task.getId(),C_TASKPARA_DELIVERY, paraDelivery);
-				// TODO: this must be read from a xml-language-file
-				String comment = "Rolle: " + roleName + "<BR>\n";
-				comment += "Bevorzugter Benutzer: " + agentName + "<BR>\n";
+				CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+				String comment = lang.getLanguageValue("task.label.forrole") + ": " + roleName + "\n";
+				comment += lang.getLanguageValue("task.label.editor") + ": " +  Utils.getFullName(cms.readUser(agentName)) + "\n";
 				comment += taskcomment;
 				cms.writeTaskLog(task.getId(), comment, C_TASKLOGTYPE_CREATED);
 
