@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/28 10:30:14 $
- * Version: $Revision: 1.142 $
+ * Date   : $Date: 2000/09/28 11:42:08 $
+ * Version: $Revision: 1.143 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.142 $ $Date: 2000/09/28 10:30:14 $
+ * @version $Revision: 1.143 $ $Date: 2000/09/28 11:42:08 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -478,11 +478,12 @@ protected boolean accessOther(CmsUser currentUser, CmsProject currentProject, Cm
 			return false;
 		}
 
+		// TODO: find a way to get this work again
   	// check, if the resource is locked by the current user
-		if(resource.isLockedBy() != currentUser.getId()) {
+		// if(resource.isLockedBy() != currentUser.getId()) {
 			// resource is not locked by the current user, no writing allowed
-			return(false);					
-		}
+			// return(false);					
+		// }
 
 		// check the rights for the current resource
 		if( ! ( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
@@ -2500,21 +2501,6 @@ public Vector getAllManageableProjects(CmsUser currentUser, CmsProject currentPr
 		// return the resource-types.
 		return(m_resourceTypes);
 	}
-/**
- * Returns all sites.
- *
- * <B>Security:</B>
- * All users are granted.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @return all sites
- * @exception CmsException Throws CmsException if something goes wrong.
- */
-public Vector getAllSites(CmsUser currentUser, CmsProject currentProject) throws CmsException
-{
-	return m_dbAccess.getAllSites();
-}
 /*
  * Returns all site urls.
  *
@@ -2529,6 +2515,21 @@ public Vector getAllSites(CmsUser currentUser, CmsProject currentProject) throws
 public Vector getAllSiteUrls(CmsUser currentUser, CmsProject currentProject) throws com.opencms.core.CmsException
 {
 	return m_dbAccess.getAllSiteUrls();
+}
+/**
+ * Returns all sites.
+ *
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @return all sites
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public Vector getAllSites(CmsUser currentUser, CmsProject currentProject) throws CmsException
+{
+	return m_dbAccess.getAllSites();
 }
 		public Hashtable getCacheInfo() {
 		Hashtable info = new Hashtable();
@@ -2662,6 +2663,22 @@ public CmsCategory getCategory(CmsUser currentUser, CmsProject currentProject, i
 		throws CmsException {
 		return m_dbAccess.getGroupsOfUser(username);
 	}
+	/**
+	 * This method can be called, to determine if the file-system was changed 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the number of file-system-changes.
+	 */
+	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject) {
+		return m_fileSystemChanges;
+	}
 	 /**
 	 * Returns a Vector with all files of a folder.<br>
 	 * 
@@ -2737,22 +2754,6 @@ public CmsCategory getCategory(CmsUser currentUser, CmsProject currentProject, i
 public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition, String propertyValue) throws CmsException {
 	return m_dbAccess.getFilesWithProperty(currentProject.getId(), propertyDefinition, propertyValue);
 }
-	/**
-	 * This method can be called, to determine if the file-system was changed 
-	 * in the past. A module can compare its previosly stored number with this
-	 * returned number. If they differ, a change was made.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * 
-	 * @return the number of file-system-changes.
-	 */
-	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject) {
-		return m_fileSystemChanges;
-	}
 	/**
 	 * Returns all groups<P/>
 	 * 
@@ -3502,46 +3503,6 @@ public Vector getSiteMatrixInfo(CmsUser currentUser, CmsProject currentProject) 
 		return userInGroup(currentUser, currentProject,currentUser.getName(), C_GROUP_PROJECTLEADER);
 	}
 	/**
-	 * Returns the user, who had locked the resource.<BR/>
-	 * 
-	 * A user can lock a resource, so he is the only one who can write this 
-	 * resource. This methods checks, if a resource was locked.
-	 * 
-	 * @param user The user who wants to lock the file.
-	 * @param project The project in which the resource will be used.
-	 * @param resource The resource.
-	 * 
-	 * @return the user, who had locked the resource.
-	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. 
-	 */
-	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
-							  CmsResource resource)
-		throws CmsException {
-		return readUser(currentUser,currentProject,resource.isLockedBy() ) ;
-	}
-	/**
-	 * Returns the user, who had locked the resource.<BR/>
-	 * 
-	 * A user can lock a resource, so he is the only one who can write this 
-	 * resource. This methods checks, if a resource was locked.
-	 * 
-	 * @param user The user who wants to lock the file.
-	 * @param project The project in which the resource will be used.
-	 * @param resource The complete path to the resource.
-	 * 
-	 * @return the user, who had locked the resource.
-	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. 
-	 */
-	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
-							  String resource)
-		throws CmsException {
-		return readUser(currentUser,currentProject,readFileHeader(currentUser, currentProject, resource).isLockedBy() ) ;
-	}
-	/**
 	 * Locks a resource.<br>
 	 * 
 	 * Only a resource in an offline project can be locked. The state of the resource
@@ -3640,6 +3601,46 @@ public Vector getSiteMatrixInfo(CmsUser currentUser, CmsProject currentProject) 
 			throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, 
 				CmsException.C_NO_ACCESS);
 		}
+	}
+	/**
+	 * Returns the user, who had locked the resource.<BR/>
+	 * 
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. This methods checks, if a resource was locked.
+	 * 
+	 * @param user The user who wants to lock the file.
+	 * @param project The project in which the resource will be used.
+	 * @param resource The resource.
+	 * 
+	 * @return the user, who had locked the resource.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. 
+	 */
+	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
+							  CmsResource resource)
+		throws CmsException {
+		return readUser(currentUser,currentProject,resource.isLockedBy() ) ;
+	}
+	/**
+	 * Returns the user, who had locked the resource.<BR/>
+	 * 
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. This methods checks, if a resource was locked.
+	 * 
+	 * @param user The user who wants to lock the file.
+	 * @param project The project in which the resource will be used.
+	 * @param resource The complete path to the resource.
+	 * 
+	 * @return the user, who had locked the resource.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. 
+	 */
+	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
+							  String resource)
+		throws CmsException {
+		return readUser(currentUser,currentProject,readFileHeader(currentUser, currentProject, resource).isLockedBy() ) ;
 	}
 	//  Methods working with user and groups
 	
