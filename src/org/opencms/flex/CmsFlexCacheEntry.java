@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2003/11/14 10:09:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/11/14 11:26:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.flex;
 
 import org.opencms.cache.I_CmsLruCacheObject;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 
 import com.opencms.core.CmsException;
 
@@ -64,7 +65,7 @@ import javax.servlet.ServletException;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
     
@@ -90,7 +91,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
     /** Indicates if this cache entry is completed */
     private boolean m_completed = false;      
     
-    /** The CacheEntry's size in kBytes */
+    /** The CacheEntry's size in bytes */
     private int m_byteSize;
     
     /** Pointer to the next cache entry in the LRU cache */
@@ -121,12 +122,32 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
         m_elements = new java.util.ArrayList(C_INITIAL_CAPACITY_LISTS);
         m_redirectTarget = null;
         m_headers = null;
-        m_byteSize = 0;
+        // base memory footprint of this object with all referenced objects
+        m_byteSize = 1024;
         
         setNextLruObject(null);
         setPreviousLruObject(null);
         
         m_id = CmsFlexCacheEntry.ID_COUNTER++;
+    }
+    
+    /**
+     * Calculates the "true" memory footprint size of an object.<p>
+     * 
+     * @param o object to calculate the memory footprint for
+     * @return the "true" memory footprint of the object
+     */
+    private int calculateSize(Object o) {
+        if (o == null) {
+            return 0;
+        }
+        if (o instanceof byte[]) {
+            return (int)(Math.ceil(((byte[])o).length / 16.0) * 16.0);
+        }
+        if (o instanceof String) {
+        }
+        
+        return 0;
     }
     
     /** 
@@ -142,7 +163,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
         if (m_redirectTarget == null) {
             // Add only if not already redirected
             m_elements.add(bytes);
-            m_byteSize += bytes.length;
+            m_byteSize += CmsMemoryMonitor.getMemorySize(bytes);
         }
         bytes = null;
     }
@@ -164,7 +185,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
                 parameters = java.util.Collections.EMPTY_MAP;
             }
             m_elements.add(parameters);
-            m_byteSize += resource.getBytes().length;
+            m_byteSize += CmsMemoryMonitor.getMemorySize(resource);
         }
     }
     
@@ -182,7 +203,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
         
         Iterator allHeaders = m_headers.keySet().iterator();
         while (allHeaders.hasNext()) {
-            m_byteSize += ((String)allHeaders.next()).getBytes().length;
+            m_byteSize += CmsMemoryMonitor.getMemorySize(allHeaders.next());
         }
     }
     
@@ -202,7 +223,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
             return;
         }
         m_redirectTarget = target;
-        m_byteSize = target.getBytes().length;
+        m_byteSize = 512 + CmsMemoryMonitor.getMemorySize(target);
         // If we have a redirect we don't need any other output or headers
         m_elements = null;
         m_headers = null;

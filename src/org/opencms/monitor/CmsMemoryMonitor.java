@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/13 17:47:41 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/11/14 11:26:14 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.18 $ $Date: 2003/11/13 17:47:41 $
+ * @version $Revision: 1.19 $ $Date: 2003/11/14 11:26:14 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -462,7 +462,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      * @param obj the object
      * @return the size of the object 
      */
-    private long getMemorySize(Object obj) {
+    public static int getMemorySize(Object obj) {
 
         if (obj instanceof I_CmsLruCacheObject) {
             return ((I_CmsLruCacheObject)obj).getLruCacheCosts();
