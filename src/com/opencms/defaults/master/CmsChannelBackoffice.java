@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
- * Author : $Author: a.schouten $
- * Date   : $Date: 2001/11/21 10:25:39 $
- * Version: $Revision: 1.6 $
+ * Author : $Author: e.falkenhan $
+ * Date   : $Date: 2001/11/27 10:44:28 $
+ * Version: $Revision: 1.7 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -137,6 +137,9 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         if(!action.equals("") && channelname.trim().equals("")){
             error = lang.getLanguageValue(moduleName+".error.message2");
         }
+        //title of channel
+        String title = (String) parameters.get("title");
+
         String owner=(String) parameters.get("owner");
         owner=(owner!=null?owner.trim():"");
         String group=(String) parameters.get("groupId");
@@ -171,6 +174,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             parentName=cd.getParentName();
             idvalue=cd.getChannelId();
             channelname=cd.getChannelName();
+            title=cd.getTitle();
             owner=new Integer(cd.getOwner()).toString();
             group=new Integer(cd.getGroupId()).toString();
             accessFlags=cd.getAccessFlags();
@@ -187,6 +191,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             cd.setChannelId(idvalue);
             cd.setParentName(parentName);
             cd.setChannelName(channelname);
+            cd.setTitle(title);
             cd.setGroup(new Integer(group).intValue());
             cd.setOwner(new Integer(owner).intValue());
             cd.setAccessFlags(accessFlags);
@@ -236,6 +241,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         //set data in template
         template.setData("channelId", ""+cd.getChannelId());
         template.setData("channelName", cd.getChannelName());
+        template.setData("title", cd.getTitle());
         template.setData("parentName", cd.getParentName());
         template.setData("error", error);
 
@@ -251,6 +257,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             }catch (CmsException exc){
                 template.setData("channelId", idvalue);
                 template.setData("channelName", channelname);
+                template.setData("title", title);
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+exc.getShortException();
                 template.setData("error", error);
@@ -259,6 +266,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             }catch (Exception e){
                 template.setData("channelId", idvalue);
                 template.setData("channelName", channelname);
+                template.setData("title", title);
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+e.getMessage();
                 template.setData("error", error);
@@ -279,6 +287,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             }catch (CmsException exc){
                 template.setData("channelId", idvalue);
                 template.setData("channelName", channelname);
+                template.setData("title", title);
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+exc.getShortException();
                 template.setData("error", error);
@@ -288,6 +297,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 e.printStackTrace(System.err);
                 template.setData("channelId",  idvalue);
                 template.setData("channelName", channelname);
+                template.setData("title", title);
                 template.setData("parentName", parentName);
                 error = lang.getLanguageValue(moduleName+".error.message3")+" "+e.getMessage();
                 template.setData("error", error);
@@ -343,5 +353,4 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
     public boolean isExtendedList(){
         return true;
     }
-
 }

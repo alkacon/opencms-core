@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
- * Author : $Author: a.schouten $
- * Date   : $Date: 2001/11/19 09:28:11 $
- * Version: $Revision: 1.2 $
+ * Author : $Author: e.falkenhan $
+ * Date   : $Date: 2001/11/27 10:44:28 $
+ * Version: $Revision: 1.3 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -41,8 +41,8 @@ import java.lang.*;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.2 $
- * $Date: 2001/11/19 09:28:11 $
+ * $Revision: 1.3 $
+ * $Date: 2001/11/27 10:44:28 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -167,6 +167,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public CmsChannelContent(CmsObject cms, CmsResource resource) {
         String channelId = C_UNKNOWN_ID+"";
+        String title = "";
         m_cms = cms;
         m_channel = resource;
         m_channelname = resource.getName();
@@ -297,7 +298,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
                 cms.lockResource(newChannel.getAbsolutePath(), true);
             } else {
                 newChannel = cms.readFolder(m_channel.getAbsolutePath());
-                if (!newChannel.getAbsolutePath().equals(m_parentchannel+m_channelname)){
+                if (!newChannel.getAbsolutePath().equals(m_parentchannel+m_channelname+"/")){
                     // the parent and/or the channelname has changed,
                     // so move or rename the channel
                     if(!newChannel.getParent().equals(m_parentchannel)){
@@ -307,9 +308,17 @@ public class CmsChannelContent extends A_CmsContentDefinition
                         // only rename the channel, the parent has not changed
                         cms.renameResource(newChannel.getAbsolutePath(), m_channelname);
                     }
-                    // read the changed channel
-                    newChannel =  cms.readFolder(m_parentchannel+m_channelname+"/");
                 }
+                // update the title of the channel
+                String propTitle = cms.readProperty(newChannel.getAbsolutePath(), I_CmsConstants.C_PROPERTY_TITLE);
+                if (propTitle == null){
+                    propTitle = "";
+                }
+                if (!propTitle.equals(this.getTitle())){
+                    cms.writeProperty(newChannel.getAbsolutePath(), I_CmsConstants.C_PROPERTY_TITLE, this.getTitle());
+                }
+                // read the changed channel
+                newChannel =  cms.readFolder(m_parentchannel+m_channelname+"/");
             }
             // check if the lockstate has changed
             if(newChannel.isLockedBy() != this.getLockstate() ||
@@ -406,6 +415,24 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public void setChannelId(String id) {
         m_properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, id);
+    }
+
+    /**
+     * Gets the title of the channel
+     */
+    public String getTitle(){
+        String title = (String)m_properties.get(I_CmsConstants.C_PROPERTY_TITLE);
+        if (title == null){
+            title = "";
+        }
+        return title;
+    }
+
+    /**
+     * sets the title of a content definition instance
+     */
+    public void setTitle(String title) {
+        m_properties.put(I_CmsConstants.C_PROPERTY_TITLE, title);
     }
 
     /**
@@ -525,17 +552,6 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public int getAccessFlags() {
         return m_accessflags;
-    }
-
-    /**
-     * Gets the title of the channel
-     */
-    public String getTitle(){
-        String title = (String)m_properties.get(I_CmsConstants.C_PROPERTY_TITLE);
-        if (title == null){
-            title = "";
-        }
-        return title;
     }
 
     /**
@@ -758,6 +774,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
         Vector names = new Vector();
         names.addElement("channelId");
         names.addElement("channelPath");
+        names.addElement("title");
         names.addElement("ownerName");
         names.addElement("group");
         names.addElement("accessFlagsAsString");
@@ -774,6 +791,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
         try {
             methods.addElement(CmsChannelContent.class.getMethod("getChannelId", new Class[0]));
             methods.addElement(CmsChannelContent.class.getMethod("getChannelPath", new Class[0]));
+            methods.addElement(CmsChannelContent.class.getMethod("getTitle", new Class[0]));
             methods.addElement(CmsChannelContent.class.getMethod("getOwnerName", new Class[0]));
             methods.addElement(CmsChannelContent.class.getMethod("getGroup", new Class[0]));
             methods.addElement(CmsChannelContent.class.getMethod("getAccessFlagsAsString", new Class[0]));
