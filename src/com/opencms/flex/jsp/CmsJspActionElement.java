@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2002/12/18 15:03:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/01/24 20:39:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.flex.jsp;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
 import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.cache.CmsFlexResponse;
 
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0 beta 2
  */
@@ -86,6 +87,18 @@ public class CmsJspActionElement {
     public CmsJspActionElement() {
         m_notInitialized = true;
     }
+    
+    /**
+     * Constructor, with parameters.
+     * 
+     * @param content the JSP page context object
+     * @param req the JSP request 
+     * @param res the JSP response 
+     */
+    public CmsJspActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+        m_notInitialized = true;
+        init(context, req, res);
+    }    
     
     /**
      * Initialize the bean with the current page context, request and response.<p>
@@ -290,6 +303,9 @@ public class CmsJspActionElement {
      * If the named property could not be read from the selected file, 
      * the value of <code>defaultValue</code> is returned.<p>
      * 
+     * If the selected property is not found, the empty string "" is returned,
+     * NOT <code>null</code>.
+     * 
      * @param name the name of the property to look for
      * @param file the file (or folder) to look at for the property
      * @param defaultValue a default value in case the property was not found
@@ -346,5 +362,15 @@ public class CmsJspActionElement {
     public boolean template(String part) {
         if (m_notInitialized) return true;        
         return CmsJspTagTemplate.templateTagAction(part, m_request);
+    }
+    
+    /** 
+     * Returns the current request context from the internal CmsObject.
+     * 
+     * @return the current request context from the internal CmsObject
+     */
+    public CmsRequestContext getRequestContext() {
+        if (m_notInitialized) return null;
+        return m_request.getCmsObject().getRequestContext();  
     }
 }
