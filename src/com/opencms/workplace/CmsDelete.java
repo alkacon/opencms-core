@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/04/14 11:39:36 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/04/17 16:11:35 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.16 $ $Date: 2000/04/14 11:39:36 $
+  * @version $Revision: 1.17 $ $Date: 2000/04/17 16:11:35 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -86,7 +86,16 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
         
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
-                        
+                      
+        // clear session values on first load
+        String initial=(String)parameters.get(C_PARA_INITIAL);
+        if (initial!= null) {
+            // remove all session values
+            session.removeValue(C_PARA_DELETE);
+            session.removeValue(C_PARA_FILE);   
+        }
+        
+        
         String delete=(String)parameters.get(C_PARA_DELETE);          
         if (delete != null) {
             session.putValue(C_PARA_DELETE,delete);        
@@ -122,7 +131,8 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
             if (file.isFile()) {            
                 // its a file, so delete it
                 deleteFile(cms,file,false);
-            
+                
+                session.removeValue(C_PARA_DELETE);  
                 session.removeValue(C_PARA_FILE);
                 try {
                     if(lasturl == null || "".equals(lasturl)) {
@@ -163,6 +173,8 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 // finally delete the selected folder
                 cms.lockResource(filename);
                 cms.deleteFolder(filename);
+                
+                session.removeValue(C_PARA_DELETE);  
                 session.removeValue(C_PARA_FILE);
                 template="update";
             

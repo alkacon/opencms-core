@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChgrp.java,v $
- * Date   : $Date: 2000/04/13 21:05:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/17 16:11:35 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/04/13 21:05:46 $
+ * @version $Revision: 1.8 $ $Date: 2000/04/17 16:11:35 $
  */
 public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -85,6 +85,13 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
         String lasturl = getLastUrl(cms, parameters);
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+   
+        // clear session values on first load
+        String initial=(String)parameters.get(C_PARA_INITIAL);
+        if (initial!= null) {
+            // remove all session values
+            session.removeValue(C_PARA_FILE);
+        }
         
         String newgroup=(String)parameters.get(C_PARA_NEWGROUP);
         String filename=(String)parameters.get(C_PARA_FILE);
@@ -131,6 +138,7 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 // the current user is not allowed to change the file owner
 				xmlTemplateDocument.setData("details", "the current user is not allowed to change the file owner");
                 template="error";
+                session.removeValue(C_PARA_FILE);
             }
         }
 

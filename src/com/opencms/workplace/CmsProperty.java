@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2000/04/07 15:22:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/17 16:11:35 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/04/07 15:22:18 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/17 16:11:35 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -81,6 +81,14 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         // the template to be displayed
         String template=null;
   
+        // clear session values on first load
+        String initial=(String)parameters.get(C_PARA_INITIAL);
+        if (initial!= null) {
+            // remove all session values
+            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_PROPERTYDEF);
+        }
+        
         // get all parameters and put them into the session
         String filename=(String)parameters.get(C_PARA_FILE);
         if (filename != null) {
@@ -140,7 +148,8 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                     // update the property
                     cms.writeProperty(filename,propertydef,newValue);
                     template="ownlocked";    
-                    session.removeValue(C_PARA_PROPERTYDEF);   
+                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_PROPERTYDEF);  
                 }
             } else {
                 template="ownlocked";    
@@ -155,7 +164,8 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 if (propertydef != null) {
                     cms.deleteProperty(filename,propertydef);
                     template="ownlocked";    
-                    session.removeValue(C_PARA_PROPERTYDEF);   
+                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_PROPERTYDEF);
                 }
             }
         }
@@ -172,14 +182,16 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                         // add the property                    
                         cms.writeProperty(filename,propertydef,newValue);
                         template="ownlocked";    
-                        session.removeValue(C_PARA_PROPERTYDEF);   
+                        session.removeValue(C_PARA_FILE);
+                        session.removeValue(C_PARA_PROPERTYDEF); 
                     } else {
                         // todo: add an error message that this key is already exisitng
                     }
  
                 } else {
                  template="ownlocked";    
-                 session.removeValue(C_PARA_PROPERTYDEF);   
+                 session.removeValue(C_PARA_FILE);
+                 session.removeValue(C_PARA_PROPERTYDEF);  
                 }                           
             }
         }
@@ -200,14 +212,16 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                                                                           C_PROPERTYDEF_TYPE_NORMAL);
                         cms.writePropertydefinition(def);
                         template="ownlocked";    
-                        session.removeValue(C_PARA_PROPERTYDEF);   
+                        session.removeValue(C_PARA_FILE);
+                        session.removeValue(C_PARA_PROPERTYDEF);
                     } else {
                         // todo: add an error message that this key is already exisitng
                     }
                      
                  } else {
                  template="ownlocked";    
-                 session.removeValue(C_PARA_PROPERTYDEF);   
+                 session.removeValue(C_PARA_FILE);
+                 session.removeValue(C_PARA_PROPERTYDEF); 
                  }
             }
             

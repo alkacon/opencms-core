@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFile.java,v $
- * Date   : $Date: 2000/04/13 21:45:08 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/04/17 16:11:35 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/04/13 21:45:08 $
+ * @version $Revision: 1.19 $ $Date: 2000/04/17 16:11:35 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -342,16 +342,19 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 	 * Creates a new folder from an existing folder object.
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param folder The folder to be written to the Cms.
+     *
 	 * @param foldername The complete path of the new name of this folder.
 	 * 
 	 * @return The created folder.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	 public CmsFolder createFolder(A_CmsProject project,
+                                   A_CmsProject onlineProject,
                                    CmsFolder folder,
                                    String foldername)
-         throws CmsException {
+         throws CmsException{
          // to be implemented
          return null;
      }
@@ -443,7 +446,7 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
          
          // copy the file form the source filesystem to the destination one
          CmsFolder folder=sourceFs.readFolder(project,source);
-         destinationFs.createFolder(project,folder,destination);        
+         destinationFs.createFolder(project,onlineProject,folder,destination);        
      }
           
      /**
@@ -469,7 +472,7 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
          // access module
          
          CmsFolder folder=oldFs.readFolder(project,oldname);
-         newFs.createFolder(project,folder,newname);
+         newFs.createFolder(project,onlineProject,folder,newname);
          oldFs.deleteFolder(project,oldname,true);         
          
      }

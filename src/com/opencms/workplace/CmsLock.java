@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2000/04/07 15:22:18 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/04/17 16:11:35 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2000/04/07 15:22:18 $
+ * @version $Revision: 1.18 $ $Date: 2000/04/17 16:11:35 $
  */
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -89,6 +89,13 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
+        
+        // clear session values on first load
+        String initial=(String)parameters.get(C_PARA_INITIAL);
+        if (initial!= null) {
+            // remove all session values
+            session.removeValue(C_PARA_FILE);
+         }
         
         String lock=(String)parameters.get(C_PARA_LOCK);
         String filename=(String)parameters.get(C_PARA_FILE);
@@ -158,6 +165,7 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 				}else{
 					xmlTemplateDocument.setData("details", "unknown error");
 					template="error";
+                    session.removeValue(C_PARA_FILE);
 				}
             }
     

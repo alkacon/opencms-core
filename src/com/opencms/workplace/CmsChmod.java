@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2000/04/13 21:05:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/17 16:11:35 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/04/13 21:05:46 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/17 16:11:35 $
  */
 public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -84,6 +84,13 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
 
+        // clear session values on first load
+        String initial=(String)parameters.get(C_PARA_INITIAL);
+        if (initial!= null) {
+            // remove all session values
+            session.removeValue(C_PARA_FILE);
+        }
+        
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
         String newaccess=(String)parameters.get(C_PARA_NEWACCESS);
  
@@ -201,6 +208,7 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 // the current user is not allowed to change the file owner
 				xmlTemplateDocument.setData("details", "the current user is not allowed to change the file owner");
                 template="error";
+                session.removeValue(C_PARA_FILE);
             }
         } 
 

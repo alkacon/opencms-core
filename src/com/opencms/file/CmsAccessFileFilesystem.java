@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/04/13 22:05:41 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/04/17 16:11:35 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2000/04/13 22:05:41 $
+ * @version $Revision: 1.27 $ $Date: 2000/04/17 16:11:35 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -162,21 +162,23 @@ import com.opencms.core.*;
                                CmsFile file, String filename)
          throws CmsException {
          
-           int state= C_STATE_NEW;
+          int state=0;         
+          if (project.equals(onlineProject)) {
+             state= file.getState();
+          } else {
+             state=C_STATE_NEW;
+          }
            
-             
            // Test if the file is already there and marked as deleted.
            // If so, delete it
            try {
-            CmsFile testfile=readFileHeader(project,filename);   
-
-            if (testfile.getState()==C_STATE_DELETED) {
-                // if the file is maked as deleted remove it!
-                removeFile(project,filename);
-                state=C_STATE_CHANGED;
-            }
+            readFileHeader(project,filename);     
            } catch (CmsException e) {
-             // do nothing here
+               // if the file is maked as deleted remove it!
+               if (e.getType()==CmsException.C_RESOURCE_DELETED) {
+                    removeFile(project,filename);
+                    state=C_STATE_CHANGED;
+               }              
            }
          
          // create new file                 
@@ -681,20 +683,42 @@ import com.opencms.core.*;
         return readFolder(project,foldername);
      }
 
-     /**
+      /**
 	 * Creates a new folder from an existing folder object.
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param folder The folder to be written to the Cms.
+     *
 	 * @param foldername The complete path of the new name of this folder.
 	 * 
 	 * @return The created folder.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	 public CmsFolder createFolder(A_CmsProject project,
+                                   A_CmsProject onlineProject,
                                    CmsFolder folder,
                                    String foldername)
          throws CmsException {
+         
+          int state=0;         
+          if (project.equals(onlineProject)) {
+             state= folder.getState();
+          } else {
+             state=C_STATE_NEW;
+          }
+           
+           // Test if the file is already there and marked as deleted.
+           // If so, delete it
+           try {
+            readFolder(project,foldername);     
+           } catch (CmsException e) {
+               // if the file is maked as deleted remove it!
+               if (e.getType()==CmsException.C_RESOURCE_DELETED) {
+                    removeFolder(project,foldername);
+                    state=C_STATE_CHANGED;
+               }              
+           }
         
          // create folder
 		  File discFolder=new File(absoluteName(foldername,project));
@@ -709,7 +733,7 @@ import com.opencms.core.*;
             CmsFolder newfolder=new CmsFolder(foldername,C_TYPE_FOLDER,folder.getFlags(),
                                            folder.getOwnerId(),folder.getGroupId(),
                                            project.getId(),folder.getAccessFlags(),
-                                           C_STATE_NEW, C_UNKNOWN_ID,
+                                           state, C_UNKNOWN_ID,
                                            System.currentTimeMillis(),System.currentTimeMillis());
           
             byte[] value=getFileHeaderContent(newfolder);
@@ -733,7 +757,7 @@ import com.opencms.core.*;
                 CmsFolder newfolder=new CmsFolder(foldername,C_TYPE_FOLDER,folder.getFlags(),
                                                   folder.getOwnerId(),folder.getGroupId(),
                                                   project.getId(),folder.getAccessFlags(),
-                                                  C_STATE_NEW, C_UNKNOWN_ID,
+                                                  state, C_UNKNOWN_ID,
                                                   System.currentTimeMillis(),System.currentTimeMillis());
           
                 byte[] value=getFileHeaderContent(newfolder);
@@ -1064,7 +1088,7 @@ import com.opencms.core.*;
              // this is a folder
              CmsFolder folder=readFolder(onlineProject,resourcename);         
              checkProjectFolder(project,onlineProject);
-             folder=createFolder(project,folder,resourcename);                 
+             folder=createFolder(project,onlineProject,folder,resourcename);                 
              folder.setState(C_STATE_UNCHANGED);    
              writeFolder(project,folder,false);
          } else {
@@ -1134,7 +1158,7 @@ import com.opencms.core.*;
                     writeFolder(onlineProject,onlineFolder,false);                      
                 } else {
                    // this is a new folder
-                    onlineFolder=createFolder(onlineProject,onlineFolder,onlineFolder.getAbsolutePath());
+                    onlineFolder=createFolder(onlineProject,onlineProject,onlineFolder,onlineFolder.getAbsolutePath());
                     onlineFolder.setState(C_STATE_UNCHANGED);
                     writeFolder(onlineProject,onlineFolder,false);     
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2000/04/17 10:37:10 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/17 16:11:35 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/04/17 10:37:10 $
+ * @version $Revision: 1.8 $ $Date: 2000/04/17 16:11:35 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -92,6 +92,15 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
 
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
 
+          
+        // clear session values on first load
+        String initial=(String)parameters.get(C_PARA_INITIAL);
+        if (initial!= null) {
+            // remove all session values
+            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_FILECONTENT);
+            session.removeValue(C_PARA_NEWTYPE);
+        }
 
         // get the parameters from the request and session
         String step=(String)parameters.get("STEP");                  

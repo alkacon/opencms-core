@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/04/13 22:05:41 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2000/04/17 16:11:35 $
+ * Version: $Revision: 1.54 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.53 $ $Date: 2000/04/13 22:05:41 $
+ * @version $Revision: 1.54 $ $Date: 2000/04/17 16:11:35 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -456,8 +456,12 @@ import com.opencms.util.*;
                                CmsFile file,String filename)
          throws CmsException {
          
-         
-           int state= C_STATE_NEW;
+          int state=0;         
+          if (project.equals(onlineProject)) {
+             state= file.getState();
+          } else {
+             state=C_STATE_NEW;
+          }
            
            // Test if the file is already there and marked as deleted.
            // If so, delete it
@@ -470,7 +474,6 @@ import com.opencms.util.*;
                     state=C_STATE_CHANGED;
                }              
            }
-           
            try {   
                 PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
                 // write new resource to the database
@@ -1084,20 +1087,43 @@ import com.opencms.util.*;
          return readFolder(project,foldername);
      }
      
-     /**
+      /**
 	 * Creates a new folder from an existing folder object.
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param folder The folder to be written to the Cms.
+     *
 	 * @param foldername The complete path of the new name of this folder.
 	 * 
 	 * @return The created folder.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	 public CmsFolder createFolder(A_CmsProject project,
+                                   A_CmsProject onlineProject,
                                    CmsFolder folder,
                                    String foldername)
-         throws CmsException {
+         throws CmsException{
+          
+          int state=0;         
+          if (project.equals(onlineProject)) {
+             state= folder.getState();
+          } else {
+             state=C_STATE_NEW;
+          }
+           
+           // Test if the file is already there and marked as deleted.
+           // If so, delete it
+           try {
+            readFolder(project,foldername);     
+           } catch (CmsException e) {
+               // if the file is maked as deleted remove it!
+               if (e.getType()==CmsException.C_RESOURCE_DELETED) {
+                    removeFolder(project,foldername);
+                    state=C_STATE_CHANGED;
+               }              
+           }
+         
             try {   
                 // write new resource to the database
                 PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
@@ -1541,6 +1567,7 @@ import com.opencms.util.*;
                     // HACK: remove a lock if nescessary. This is a temporary fix,
                     // this has to be done in the resource broker
                     file.setLocked(C_UNKNOWN_ID);
+                    file.setState(C_STATE_UNCHANGED);
                     createFile(onlineProject,onlineProject,file,file.getAbsolutePath());
                     resources.addElement(file.getAbsolutePath()); 
                  } else if (file.getState() == C_STATE_DELETED) {
@@ -1585,7 +1612,7 @@ import com.opencms.util.*;
                         // HACK: remove a lock if nescessary. This is a temporary fix,
                         // this has to be done in the resource broker
                         folder.setLocked(C_UNKNOWN_ID);
-                        createFolder(onlineProject,folder,folder.getAbsolutePath());
+                        createFolder(onlineProject,onlineProject,folder,folder.getAbsolutePath());
                         resources.addElement(folder.getAbsolutePath()); 
                     } else if (folder.getState() == C_STATE_DELETED) {
                         removeFolderForPublish(onlineProject,folder.getAbsolutePath());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
- * Date   : $Date: 2000/04/17 12:59:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/17 16:11:35 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/04/17 12:59:18 $
+ * @version $Revision: 1.12 $ $Date: 2000/04/17 16:11:35 $
  */
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -94,6 +94,13 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
         String type=null;
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
   
+        // clear session values on first load
+        String initial=(String)parameters.get(C_PARA_INITIAL);
+        if (initial!= null) {
+            // remove all session values
+            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_TITLE);     
+        }
         
         // get the current phase of this wizard
         String step=cms.getRequestContext().getRequest().getParameter("step");
@@ -119,11 +126,11 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
                 // create the new file
                 cms.createFile(foldername,filename,new byte[0],type);
                 // lock the new file
-                System.err.println("Lock file");
+     
                 cms.lockResource(foldername+filename);
-                System.err.println("Write property");        
+        
                 cms.writeProperty(foldername+filename,C_PROPERTY_TITLE,title);
-                System.err.println("Done");
+       
                 // remove values from session
                 session.removeValue(C_PARA_FILE);
                 session.removeValue(C_PARA_TITLE);     
@@ -175,7 +182,7 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
         return filename;       
     }   
    
-	/**
+	  /**
       * Gets the resources displayed in the Radiobutton group on the new resource dialog.
       * @param cms The CmsObject.
       * @param lang The langauge definitions.
@@ -187,6 +194,7 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
       * workplace.ini.
       * @exception Throws CmsException if something goes wrong.
       */
+
 	public int getResources(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) 
 		throws CmsException {
 			

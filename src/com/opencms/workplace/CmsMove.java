@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2000/04/14 11:39:36 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/17 16:11:35 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.11 $ $Date: 2000/04/14 11:39:36 $
+ * @version $Revision: 1.12 $ $Date: 2000/04/17 16:11:35 $
  */
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -84,7 +84,16 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
       
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
-                        
+       
+        // clear session values on first load
+        String initial=(String)parameters.get(C_PARA_INITIAL);
+        if (initial!= null) {
+            // remove all session values
+            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_NEWFOLDER);
+            session.removeValue(C_PARA_FLAGS);
+        }
+        
         // get the file to be copied
         String filename=(String)parameters.get(C_PARA_FILE);
         if (filename != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/04/13 19:48:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/17 16:11:35 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/04/13 19:48:08 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/17 16:11:35 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                          I_CmsConstants {
@@ -176,6 +176,17 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         String oldPanel;
         
         int explorerSettingsValue;            
+        
+        // clear session values on first load
+        String initial=(String)parameters.get(C_PARA_INITIAL);
+        if (initial!= null) {
+            // remove all session values
+            session.removeValue("EXPLORERSETTINGS");
+            session.removeValue("TASKSETTINGS");
+            session.removeValue("USERSETTINGS");
+            session.removeValue("STARTSETTINGS");
+            session.removeValue(C_PARA_OLDPANEL);   
+        }
         
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
         

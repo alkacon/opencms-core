@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessFile.java,v $
- * Date   : $Date: 2000/04/13 21:45:08 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/04/17 16:11:35 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/04/13 21:45:08 $
+ * @version $Revision: 1.19 $ $Date: 2000/04/17 16:11:35 $
  */
 interface I_CmsAccessFile {
 
@@ -262,13 +262,16 @@ interface I_CmsAccessFile {
 	 * Creates a new folder from an existing folder object.
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param folder The folder to be written to the Cms.
+     *
 	 * @param foldername The complete path of the new name of this folder.
 	 * 
 	 * @return The created folder.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	 public CmsFolder createFolder(A_CmsProject project,
+                                   A_CmsProject onlineProject,
                                    CmsFolder folder,
                                    String foldername)
         throws CmsException;
