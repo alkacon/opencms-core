@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/01/20 09:54:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/01/23 10:34:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import com.opencms.file.CmsObject;
 
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
+import org.htmlparser.RemarkNode;
 import org.htmlparser.StringNode;
 import org.htmlparser.lexer.Lexer;
 import org.htmlparser.scanners.ImageScanner;
@@ -52,7 +53,7 @@ import org.htmlparser.visitors.NodeVisitor;
 /**
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.3
  */
 public class CmsLinkProcessor extends NodeVisitor {
@@ -274,6 +275,18 @@ public class CmsLinkProcessor extends NodeVisitor {
         }
     }
 
+    /**
+     * Visitor method to process a remark.<p>
+     * 
+     * @param node the node to process
+     * 
+     * @see org.htmlparser.visitors.NodeVisitor#visitRemarkNode(org.htmlparser.RemarkNode)
+     */
+    public void visitRemarkNode(RemarkNode node) {
+        
+        m_result.append(node.toHtml());
+    }
+    
     /**
      * Returns the replacement string for a given link.<p>
      * 
