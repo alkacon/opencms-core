@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/12/06 10:13:30 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -378,7 +378,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
     
     /**
-     * Adds an optional element to the xml content.<p>
+     * Adds an optional element to the xml content or removes an optional element from the xml content.<p>
+     * 
+     * Depends on the given action parameter value.<p>
      * 
      * @throws JspException if including the error page fails
      */
@@ -410,6 +412,12 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 // add the new value after the clicked element
                 m_content.addValue(getCms(), getParamElementName(), getElementLocale(), index + 1);
             }
+            
+            if (getErrorHandler().hasWarnings()) {
+                // there were warnings for the edited content, reset error handler
+                resetErrorHandler();
+            }
+            
             try {
                 // write the modified content to temporary file
                 writeContent();
@@ -1090,6 +1098,14 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             m_widgets.addAll(types);
         }
         return m_widgets;
+    }
+    
+    /**
+     * Resets the error handler member variable to reinitialize the error messages.<p>
+     */
+    private void resetErrorHandler() {
+        
+        m_errorHandler = null;
     }
     
     /**
