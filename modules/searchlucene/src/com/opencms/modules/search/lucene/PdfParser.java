@@ -3,10 +3,24 @@ package com.opencms.modules.search.lucene;
 /*
     $RCSfile: PdfParser.java,v $
     $Author: g.huhn $
-    $Date: 2002/02/28 09:31:59 $
-    $Revision: 1.4 $
-    Bases on the PDFHandler from David Duddleston but serves some problems with
-    serveral PDF-formats and the german Sonderzeichen.
+    $Date: 2002/02/28 13:00:11 $
+    $Revision: 1.5 $
+    Copyright (C) 2000  The OpenCms Group
+    This File is part of OpenCms -
+    the Open Source Content Mananagement System
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    For further information about OpenCms, please see the
+    OpenCms Website: http://www.opencms.com
+    You should have received a copy of the GNU General Public License
+    long with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   */
 import java.util.zip.InflaterInputStream;
 import java.io.*;
@@ -16,7 +30,8 @@ import java.text.*;
 import java.util.List;
 
 /**
- *  Description of the Class
+ *  Bases on the PDFHandler from David Duddleston but serves some problems with
+ *  serveral PDF-formats and the german Sonderzeichen.
  *
  *@author     grehuh
  *@created    28. Februar 2002
@@ -708,7 +723,7 @@ public class PdfParser implements I_ContentParser {
 
 
     /**
-     * Format the parsed date.
+     *  Format the parsed date.
      *
      *@return                  the publishing date in format dd.MM.yyyy
      *@exception  IOException  Description of the Exception
@@ -727,7 +742,7 @@ public class PdfParser implements I_ContentParser {
 
 
     /**
-     * Read a character from the input-stream
+     *  Read a character from the input-stream
      *
      *@return                  the read character as int
      *@exception  IOException  Description of the Exception

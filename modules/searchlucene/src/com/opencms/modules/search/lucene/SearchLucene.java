@@ -1,27 +1,26 @@
 package com.opencms.modules.search.lucene;
 
 /*
- *  $RCSfile: SearchLucene.java,v $
- *  $Author: g.huhn $
- *  $Date: 2002/02/28 09:31:59 $
- *  $Revision: 1.4 $
- *
- *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
- *
- *  THIS SOFTWARE IS NEITHER FREEWARE NOR PUBLIC DOMAIN!
- *
- *  To use this software you must purchease a licencse from Framfab.
- *  In order to use this source code, you need written permission from
- *  Framfab. Redistribution of this source code, in modified or
- *  unmodified form, is not allowed.
- *
- *  FRAMFAB MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY
- *  OF THIS SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- *  TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- *  PURPOSE, OR NON-INFRINGEMENT. FRAMFAB SHALL NOT BE LIABLE FOR ANY
- *  DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR
- *  DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES.
- */
+    $RCSfile: SearchLucene.java,v $
+    $Date: 2002/02/28 13:00:11 $
+    $Revision: 1.5 $
+    Copyright (C) 2000  The OpenCms Group
+    This File is part of OpenCms -
+    the Open Source Content Mananagement System
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    For further information about OpenCms, please see the
+    OpenCms Website: http://www.opencms.com
+    You should have received a copy of the GNU General Public License
+    long with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  */
 import org.apache.lucene.search.*;
 import org.apache.lucene.index.*;
 import org.apache.lucene.queryParser.QueryParser;
@@ -30,9 +29,8 @@ import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import java.util.*;
 
-
 /**
- *  Description of the Class
+ *  Class to perform a search in an existing Lucene-index.
  *
  *@author     grehuh
  *@created    13. Februar 2002
@@ -61,7 +59,7 @@ public class SearchLucene {
      *@exception  Exception  Description of the Exception
      */
     public Vector performSearch(String indexPath, String queryString) throws Exception {
-        if (debug) {
+        if(debug) {
             System.out.println("indexPath=" + indexPath + " queryString=" + queryString);
         }
         m_queryString = queryString;
@@ -73,7 +71,7 @@ public class SearchLucene {
         BooleanQuery query = (BooleanQuery) QueryParser.parse(m_queryString, "body", new GermanAnalyzer());
         Hits hits = searcher.search(query);
         int countHits = hits.length();
-        for (int i = 0; i < countHits; i++) {
+        for(int i = 0; i < countHits; i++) {
             oneHit = new Hashtable();
             oneHit.put("description", hits.doc(i).get("description"));
             oneHit.put("title", hits.doc(i).get("title"));
@@ -92,7 +90,7 @@ public class SearchLucene {
      */
     public void buildQueryString() {
         m_queryString = m_queryString.trim();
-        if (m_queryString.startsWith("/") ||
+        if(m_queryString.startsWith("/") ||
                 m_queryString.startsWith("`") ||
                 m_queryString.startsWith("´") ||
                 m_queryString.startsWith("*") ||
@@ -113,7 +111,7 @@ public class SearchLucene {
         replaceAll("ö", "oe");
         replaceAll("&nbsp;", "");
 
-        if (debug) {
+        if(debug) {
             System.out.println("m_queryString=" + m_queryString);
         }
     }
@@ -128,7 +126,7 @@ public class SearchLucene {
     private void replaceAll(String replace, String replaceWith) {
         StringBuffer sb = new StringBuffer(m_queryString);
         int stelle = 0;
-        while (m_queryString.indexOf(replace) != -1) {
+        while(m_queryString.indexOf(replace) != -1) {
             stelle = m_queryString.indexOf(replace);
             sb.replace(stelle, stelle + replace.length(), replaceWith);
             m_queryString = sb.toString();
