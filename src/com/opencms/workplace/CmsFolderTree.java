@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/07/18 16:13:50 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.26 $ $Date: 2000/07/18 16:13:50 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -151,7 +151,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
          
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);        
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+        CmsSession session= cms.getRequestContext().getSession(true);
        
         // get the formname
         String formname=(String)parameters.get(C_PARA_FORMNAME);
@@ -194,7 +194,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
             throws CmsException {
             // TODO: check, if this is needed: Hashtable parameters = (Hashtable)userObj;
             StringBuffer output=new StringBuffer();  
-            HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+            CmsSession session= cms.getRequestContext().getSession(true);
             
             CmsXmlWpConfigFile configFile = this.getConfigFile(cms);
             

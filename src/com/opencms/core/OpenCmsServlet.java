@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/06/27 16:47:14 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2000/07/18 16:13:47 $
+ * Version: $Revision: 1.48 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.47 $ $Date: 2000/06/27 16:47:14 $  
+* @version $Revision: 1.48 $ $Date: 2000/07/18 16:13:47 $  
 * 
 * */
 
@@ -90,7 +90,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
      /**
       * The session storage for all active users.
       */
-     private CmsSession m_sessionStorage;
+     private CmsCoreSession m_sessionStorage;
  
      /**
       * The reference to the OpenCms system.
@@ -156,7 +156,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing session storage");
 		}
-        m_sessionStorage=new CmsSession();
+        m_sessionStorage=new CmsCoreSession();
         
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing... DONE");
@@ -327,7 +327,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
               } else {
                   
                  // there was either no session returned or this session was not 
-                 // found in the CmsSession storage
+                 // found in the CmsCoreSession storage
        
                  String auth = req.getHeader("Authorization");
  		         // User is authenticated, check password	
@@ -377,7 +377,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
     
     
      /**
-     * Updated the the user data stored in the CmsSession after the requested document
+     * Updated the the user data stored in the CmsCoreSession after the requested document
      * is processed.<br>
      * 
      * This is nescessary if the user data (current group or project) was changed in 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/07/18 16:13:51 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.26 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.27 $ $Date: 2000/07/18 16:13:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -149,8 +149,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @return <code>lasturl</code> parameter.
      */
     protected String getLastUrl(CmsObject cms, Hashtable parameters) {
-        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();    
-        HttpSession session = orgReq.getSession(true);
+        CmsSession session = cms.getRequestContext().getSession(true);
         String lasturl = (String)parameters.get("lasturl");
         
         // Lasturl parameter will be taken either from the parameter hashtable

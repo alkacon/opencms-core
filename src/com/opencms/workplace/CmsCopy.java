@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/07/18 16:13:50 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.31 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.32 $ $Date: 2000/07/18 16:13:50 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -76,7 +76,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+        CmsSession session= cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
  
         // the template to be displayed
@@ -280,7 +280,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
      */
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+        CmsSession session= cms.getRequestContext().getSession(true);
         String name=(String)session.getValue(C_PARA_NAME);
         return name;
     }
@@ -310,8 +310,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
         
         Integer selected=new Integer(0);
         // Let's see if we have a session
-        CmsRequestContext reqCont = cms.getRequestContext();
-        HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
+        CmsSession session = cms.getRequestContext().getSession(true);
        
         // get current and root folder
         CmsFolder rootFolder=cms.rootFolder();

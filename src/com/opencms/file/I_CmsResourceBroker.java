@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/18 14:05:55 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2000/07/18 16:13:48 $
+ * Version: $Revision: 1.93 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.92 $ $Date: 2000/07/18 14:05:55 $
+ * @version $Revision: 1.93 $ $Date: 2000/07/18 16:13:48 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -82,7 +82,7 @@ public interface I_CmsResourceBroker {
      * @param storage The storage of all active users.
      * @return The storage of all active users.
      */
-    public CmsSession getSessionStorage(CmsUser currentUser, CmsSession storage);
+    public CmsCoreSession getSessionStorage(CmsUser currentUser, CmsCoreSession storage);
     
     
 	// Method to access the configuration

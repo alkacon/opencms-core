@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogMsg.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/07/18 16:13:51 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.5 $ $Date: 2000/07/18 16:13:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDialogMsg extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -80,7 +80,8 @@ public class CmsTaskContentDialogMsg extends CmsWorkplaceDefault implements I_Cm
         }
 		
 		CmsXmlWpTemplateFile xmlTemplateDocument = 
-			(CmsXmlWpTemplateFile) getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+			(CmsXmlWpTemplateFile) getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);        
+		CmsSession session= cms.getRequestContext().getSession(true);
 
 		// the recipient of the message
 		String userName = "";

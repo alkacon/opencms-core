@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/07/18 16:13:51 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.19 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.20 $ $Date: 2000/07/18 16:13:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
@@ -80,7 +80,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }    
-		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);     
+		CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
 		// test whether the pics folder exists at all
@@ -168,7 +168,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
     public Object pictureList(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
 
-		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);     
+		CmsSession session = cms.getRequestContext().getSession(true);
         Hashtable parameters = (Hashtable)userObj;
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)doc;
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
@@ -370,7 +370,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
 		throws CmsException {
 		int ret=-1;
 		
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		CmsSession session= cms.getRequestContext().getSession(true);
 		
 		// which folder is the gallery?
 		String chosenFolder = (String)parameters.get(C_PARA_FOLDER);

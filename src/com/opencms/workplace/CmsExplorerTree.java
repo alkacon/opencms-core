@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/07/18 16:13:50 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.7 $ $Date: 2000/07/18 16:13:50 $
  */
 public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -156,7 +156,7 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
             throws CmsException {
             // TODO: check, if this is needed: Hashtable parameters = (Hashtable)userObj;
             StringBuffer output=new StringBuffer();  
-            HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+            CmsSession session= cms.getRequestContext().getSession(true);
             
             String foldername=null;
             String filelist=null;

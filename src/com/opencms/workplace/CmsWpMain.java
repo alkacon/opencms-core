@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/07/18 16:13:52 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.20 $ $Date: 2000/07/18 16:13:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -84,7 +84,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 
-		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+		CmsSession session = cms.getRequestContext().getSession(true);
         CmsRequestContext reqCont = cms.getRequestContext();
         String newGroup = (String)parameters.get("group");
         String newProject = (String)parameters.get("project");
@@ -108,7 +108,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		
         // Check if the user requested a new view
         if(newView != null && !("".equals(newView))) {
-            session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(true);
+            session = cms.getRequestContext().getSession(true);
             session.putValue(C_PARA_VIEW, newView);
         }
 		
@@ -248,7 +248,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
         
         // Let's see if we have a session
         CmsRequestContext reqCont = cms.getRequestContext();
-        HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
+        CmsSession session = cms.getRequestContext().getSession(true);
 
         // try to get an existing view
         String currentView = null;

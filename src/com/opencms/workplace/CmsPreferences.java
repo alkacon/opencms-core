@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/07/18 16:13:51 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.3 $ $Date: 2000/07/18 16:13:51 $
  */
 public class CmsPreferences extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -76,7 +76,7 @@ public class CmsPreferences extends CmsWorkplaceDefault implements I_CmsWpConsta
     public Object setPanel(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
         throws CmsException {
         
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+        CmsSession session= cms.getRequestContext().getSession(true);
         String panel=(String)session.getValue(C_PARA_OLDPANEL);
       
         return panel;

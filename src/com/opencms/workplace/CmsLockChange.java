@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
- * Date   : $Date: 2000/07/11 08:49:57 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/07/18 16:13:50 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.20 $ $Date: 2000/07/11 08:49:57 $
+ * @version $Revision: 1.21 $ $Date: 2000/07/18 16:13:50 $
  */
 public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                         I_CmsConstants, I_CmsNewsConstants {
@@ -77,7 +77,7 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+        CmsSession session= cms.getRequestContext().getSession(true);
         
         // the template to be displayed
         String template=null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/07/18 14:05:55 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2000/07/18 16:13:47 $
+ * Version: $Revision: 1.98 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.97 $ $Date: 2000/07/18 14:05:55 $ 
+ * @version $Revision: 1.98 $ $Date: 2000/07/18 16:13:47 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -65,7 +65,7 @@ public class CmsObject implements I_CmsConstants {
     /**
      * The session storage of the cms
      */
-    private CmsSession m_sessionStorage = null;
+    private CmsCoreSession m_sessionStorage = null;
 
    
     /**
@@ -78,7 +78,7 @@ public class CmsObject implements I_CmsConstants {
      * Contructor 
      * @param storage The reference to the session storage.
      */
-    public CmsObject (CmsSession storage) {
+    public CmsObject (CmsCoreSession storage) {
         m_sessionStorage=storage;
     }
     
@@ -87,7 +87,7 @@ public class CmsObject implements I_CmsConstants {
      * Returns the session storage.
      * @return The storage of all active users.
      */
-    public CmsSession getSessionStorage() {
+    public CmsCoreSession getSessionStorage() {
         return c_rb.getSessionStorage(m_context.currentUser(),m_sessionStorage);
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2000/06/05 13:37:55 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/07/18 16:13:48 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/06/05 13:37:55 $
+ * @version $Revision: 1.23 $ $Date: 2000/07/18 16:13:48 $
  * 
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -247,5 +247,16 @@ public class CmsRequestContext implements I_CmsConstants {
 	 */
 	public I_CmsResponse getResponse() {
 		return( m_resp );
+	}
+	
+	/**
+	 * Returns the Session for this request.
+	 * 
+	 * @param value decides, if a session should be created if there is none.
+	 * 
+	 * This method should be used instead of the originalRequest.getSession() method.
+	 */
+	public CmsSession getSession(boolean value) {
+		return new CmsSession(((HttpServletRequest)m_req.getOriginalRequest()).getSession(value));
 	}
 }

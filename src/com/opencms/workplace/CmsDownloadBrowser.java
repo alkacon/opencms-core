@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
- * Date   : $Date: 2000/07/10 14:31:30 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/07/18 16:13:50 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.6 $ $Date: 2000/07/10 14:31:30 $
+ * @version $Revision: 1.7 $ $Date: 2000/07/18 16:13:50 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFileListUsers {
@@ -78,7 +78,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }    
-		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);     
+		CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 			
 		// test whether the download folder exists at all
@@ -165,7 +165,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
     */
     public Vector getFiles(CmsObject cms) 
         throws CmsException {
-		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);     
+		CmsSession session = cms.getRequestContext().getSession(true);
         
         Vector files = new Vector();
 		  
@@ -239,7 +239,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
      */
     public Boolean showNextButton(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
      
-		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);     
+		CmsSession session = cms.getRequestContext().getSession(true);
     
         // Get the current page number
         String pageText = (String)parameters.get(C_PARA_PAGE);
@@ -345,7 +345,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
 		throws CmsException {
 		int ret=-1;
 		
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		CmsSession session= cms.getRequestContext().getSession(true);
 		
 		// which folder is the gallery?
 		String chosenFolder = (String)parameters.get(C_PARA_FOLDER);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/07/18 16:13:50 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Waruschan Babachan
- * @version $Revision: 1.29 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.30 $ $Date: 2000/07/18 16:13:50 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -80,7 +80,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         String username=null;
-        HttpSession session=null;
+        CmsSession session=null;
         CmsUser user;
 		
 		CmsXmlWpConfigFile configFile=new CmsXmlWpConfigFile(cms);
@@ -95,12 +95,12 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			startProjectId = "";
 		}				
 		if (!startProjectId.equals("")) {
-			session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+			session = cms.getRequestContext().getSession(true);
 			session.putValue(C_PARA_STARTPROJECTID,startProjectId);
 		}		
 		// check if this is a link of a task
 		if (!startTaskId.equals("")) {
-			session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+			session = cms.getRequestContext().getSession(true);
 			session.putValue(C_PARA_STARTTASKID,startTaskId);
 			Vector viewNames = new Vector();
 			Vector viewLinks = new Vector();
@@ -187,7 +187,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
             if (username!= null) {
                 // get a session for this user so that he is authentificated at the
                 // end of this request
-                session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+                session = cms.getRequestContext().getSession(true);
                 if(A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, "[CmsLogin] Login user " + username);
                 }
@@ -238,7 +238,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
         } else {
             // This is a new login!
             // If there is an old session, remove all user variables from this session
-            session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(false);
+            session = cms.getRequestContext().getSession(true);
             if(session != null) {
 				String projectid=(String)session.getValue(C_PARA_STARTPROJECTID);
 				String taskid=(String)session.getValue(C_PARA_STARTTASKID);
@@ -251,7 +251,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 					view="";
 				}
 				//session.invalidate();
-				session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+				session = cms.getRequestContext().getSession(true);
 				if (!projectid.equals("")) {
 					session.putValue(C_PARA_STARTPROJECTID,projectid);
 				}

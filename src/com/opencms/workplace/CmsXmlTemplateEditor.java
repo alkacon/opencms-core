@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/06/09 18:20:05 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/07/18 16:13:52 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2000/06/09 18:20:05 $
+ * @version $Revision: 1.31 $ $Date: 2000/07/18 16:13:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -80,7 +80,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         
         CmsRequestContext reqCont = cms.getRequestContext();
         HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
-        HttpSession session = orgReq.getSession(true);
+        CmsSession session = cms.getRequestContext().getSession(true);
         // TODO: check, if this is neede: CmsFile editFile = null;
 
         // Get the user's browser
@@ -458,7 +458,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
     public Integer getBodys(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
         
-        HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(false);        
+        CmsSession session = cms.getRequestContext().getSession(true);
 
         String currentBodySection = (String)parameters.get("body");
         String bodyClassName = (String)parameters.get("bodyclass");
@@ -605,7 +605,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      */
     public String setTitle(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);        
+        CmsSession session= cms.getRequestContext().getSession(true);
         String name=(String)session.getValue("te_title");      
         return name;
     }    
@@ -621,7 +621,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      */
     public String setBodyTitle(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);        
+        CmsSession session= cms.getRequestContext().getSession(true);
         String title=(String)session.getValue("te_oldbodytitle");      
         return title;
     }    
@@ -644,7 +644,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             throws CmsException {        
         CmsRequestContext reqCont = cms.getRequestContext();
         String servletPath = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getServletPath();
-        HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
+        CmsSession session = cms.getRequestContext().getSession(true);
         String tempPath = (String)session.getValue("te_temppagefile");
         String result = servletPath + tempPath;
         return result;

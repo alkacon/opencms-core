@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2000/06/27 15:56:27 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/07/18 16:13:50 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.26 $ $Date: 2000/06/27 15:56:27 $
+ * @version $Revision: 1.27 $ $Date: 2000/07/18 16:13:50 $
  */
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -77,7 +77,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+        CmsSession session= cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
 
         // the template to be displayed
@@ -305,7 +305,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
         Integer selected=new Integer(0);
         // Let's see if we have a session
         // TODO: check, if this is neede: CmsRequestContext reqCont = cms.getRequestContext();
-        // TODO: check, if this is neede: HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
+        // TODO: check, if this is neede: CmsSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
        
         // get current and root folder
         CmsFolder rootFolder=cms.rootFolder();

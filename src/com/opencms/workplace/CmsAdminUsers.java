@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
- * Date   : $Date: 2000/06/05 13:37:58 $
- * Version: $Revision: 1.7 $Selector
+ * Date   : $Date: 2000/07/18 16:13:49 $
+ * Version: $Revision: 1.8 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.7 $ $Date: 2000/06/05 13:37:58 $
+ * @version $Revision: 1.8 $ $Date: 2000/07/18 16:13:49 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -79,7 +79,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		CmsSession session= cms.getRequestContext().getSession(true);
         CmsRequestContext reqCont = cms.getRequestContext();   	
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
     
@@ -592,7 +592,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 		throws CmsException {
 	 
 		int retValue = -1;
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		CmsSession session= cms.getRequestContext().getSession(true);
        	Vector notSelectedGroups =(Vector) session.getValue("notSelectedGroups");
 		
 		if (notSelectedGroups != null){
@@ -629,7 +629,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 		throws CmsException {
 		 
 		int retValue = -1;
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		CmsSession session= cms.getRequestContext().getSession(true);
        	
 		String defaultGroup =(String) session.getValue("DEFAULTGROUP");
 		if (defaultGroup == null) {
@@ -669,7 +669,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 	
 	public Integer getIndirectGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException { 
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		CmsSession session= cms.getRequestContext().getSession(true);
        	
 		Vector selectedGroups =(Vector) session.getValue("selectedGroups");
 		Vector indirectGroups = new Vector();
@@ -721,7 +721,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 	
 	public Integer getGroupsOfUser(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {  
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		CmsSession session= cms.getRequestContext().getSession(true);
        	
 		String defaultGroup =(String) session.getValue("DEFAULTGROUP");
 		if (defaultGroup == null) {

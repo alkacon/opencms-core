@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServletNotify.java,v $
- * Date   : $Date: 2000/06/17 11:41:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/07/18 16:13:47 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,15 +36,15 @@ import javax.servlet.http.*;
  * 
  * The OpenCmsServletNotify Object is notified when it is bound or unbound to
  * a HTTPSession. It is required to inform the OpemCms that a session is destroyed
- * and must be removed from the CmsSession storage.
+ * and must be removed from the CmsCoreSession storage.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/06/17 11:41:36 $  
+ * @version $Revision: 1.6 $ $Date: 2000/07/18 16:13:47 $  
  */
  public class OpenCmsServletNotify implements HttpSessionBindingListener {
     
     String m_id=null;
-    CmsSession m_sessionStorage=null;
+    CmsCoreSession m_sessionStorage=null;
  
     
     /**
@@ -53,7 +53,7 @@ import javax.servlet.http.*;
      * @param id The session Id to which this object is bound to.
      * @param sessionStorage The reference to the session strorage.
      */
-     public OpenCmsServletNotify(String id,CmsSession sessionStorage) {
+     public OpenCmsServletNotify(String id,CmsCoreSession sessionStorage) {
         m_id=id;
         m_sessionStorage=sessionStorage;
     }

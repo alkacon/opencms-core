@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/07/18 16:13:50 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.18 $ $Date: 2000/07/18 16:13:50 $
  */
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                      I_CmsConstants {
@@ -145,7 +145,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
 		// TODO: check, if this is neede: Hashtable preferences=new Hashtable();
        
         // get session and servlet root
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+        CmsSession session= cms.getRequestContext().getSession(true);
         String servlets=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
            
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);        
@@ -267,7 +267,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
      */
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+        CmsSession session= cms.getRequestContext().getSession(true);
 
         // get the current filelist to display it in the address input field.
         String currentFilelist=(String)session.getValue(C_PARA_FILELIST);

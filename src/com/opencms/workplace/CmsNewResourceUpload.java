@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/07/18 16:13:51 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.17 $ $Date: 2000/07/18 16:13:51 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -90,7 +90,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
         // the template to be displayed
         String template=null;
 
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+        CmsSession session= cms.getRequestContext().getSession(true);
 
           
         // clear session values on first load
@@ -256,7 +256,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
     */
     public int getResources(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) 
 		throws CmsException { 
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		CmsSession session= cms.getRequestContext().getSession(true);
 		String filename = (String) session.getValue(C_PARA_FILE); 
 		String suffix = filename.substring(filename.lastIndexOf('.')+1);
 		suffix = suffix.toLowerCase(); // file extension of filename

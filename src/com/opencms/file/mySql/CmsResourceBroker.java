@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/18 14:05:56 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/07/18 16:13:49 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/07/18 14:05:56 $
+ * @version $Revision: 1.7 $ $Date: 2000/07/18 16:13:49 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -162,7 +162,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
      * @param storage The storage of all active users.
      * @return The storage of all active users or null.
      */
-    public CmsSession getSessionStorage(CmsUser currentUser, CmsSession storage) {
+    public CmsCoreSession getSessionStorage(CmsUser currentUser, CmsCoreSession storage) {
         if (currentUser.getName().equals(C_USER_GUEST)) {
             return null;    
         } else {

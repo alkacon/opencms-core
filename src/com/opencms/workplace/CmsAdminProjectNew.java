@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/06/05 13:37:58 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/07/18 16:13:49 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.29 $ $Date: 2000/06/05 13:37:58 $
+ * @version $Revision: 1.30 $ $Date: 2000/07/18 16:13:49 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -100,7 +100,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		CmsSession session= cms.getRequestContext().getSession(true);
 		CmsRequestContext reqCont = cms.getRequestContext();   
 		CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);   
 		 
@@ -281,7 +281,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		Vector groups = cms.getGroups();
 		int retValue = -1;
 		String defaultGroup = C_GROUP_USERS;
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		CmsSession session= cms.getRequestContext().getSession(true);
 		String enteredGroup =  (String) session.getValue(C_NEWGROUP);
 		
 		if (enteredGroup != null && !enteredGroup.equals("")) {
@@ -325,7 +325,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		Vector groups = cms.getGroups();
 		int retValue = -1;
 		String defaultGroup = C_GROUP_PROJECTLEADER;
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		CmsSession session= cms.getRequestContext().getSession(true);
 		String enteredGroup =  (String) session.getValue(C_NEWMANAGERGROUP);
 		if (enteredGroup != null && !enteredGroup.equals("")) {
 			// if an error has occurred before, take the previous entry of the user
@@ -351,7 +351,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 	public Integer getSelectedResources(CmsObject cms, CmsXmlLanguageFile lang, 
 									Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		CmsSession session= cms.getRequestContext().getSession(true);
 		String[] newProjectResources = (String[]) session.getValue(C_NEWRESOURCES);
 		if (newProjectResources != null)  {
 			for (int i=0; i<newProjectResources.length; i++) {

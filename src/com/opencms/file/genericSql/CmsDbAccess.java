@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/18 15:02:26 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2000/07/18 16:13:48 $
+ * Version: $Revision: 1.99 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.98 $ $Date: 2000/07/18 15:02:26 $ * 
+ * @version $Revision: 1.99 $ $Date: 2000/07/18 16:13:48 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -5888,7 +5888,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	
 	private int insertTaskPar(int taskId, String parname, String parvalue) 
 		throws CmsException {
-		int result = 0;
 		PreparedStatement statement = null;
 		int newId = C_UNKNOWN_ID;
 		

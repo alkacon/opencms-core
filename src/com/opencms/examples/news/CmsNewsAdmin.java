@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/07/11 08:49:56 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/07/18 16:13:47 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import org.apache.xml.serialize.*;
  *             with the newer classes.   
  *      
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2000/07/11 08:49:56 $
+ * @version $Revision: 1.17 $ $Date: 2000/07/18 16:13:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants, I_CmsFileListUsers {
@@ -101,8 +101,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         
-        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();    
-        HttpSession session = orgReq.getSession(true);
+        CmsSession session = cms.getRequestContext().getSession(true);
         
 		// read all parameters
         String file = (String)parameters.get(C_NEWS_PARAM_FILE);

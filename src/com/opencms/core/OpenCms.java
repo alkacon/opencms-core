@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/07/07 17:35:52 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/07/18 16:13:47 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.29 $ $Date: 2000/07/07 17:35:52 $  
+* @version $Revision: 1.30 $ $Date: 2000/07/18 16:13:47 $  
 * 
 * */
 
@@ -76,7 +76,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      /**
       * The session storage for all active users.
       */
-     private CmsSession m_sessionStorage;
+     private CmsCoreSession m_sessionStorage;
  
      /**
       * Reference to the OpenCms launcer manager

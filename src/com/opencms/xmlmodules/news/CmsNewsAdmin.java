@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/xmlmodules/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/07/11 15:01:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/07/18 16:13:52 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import org.apache.xml.serialize.*;
  * editing articles.
  * 
  * @author Matthias Schreiber
- * @version $Revision: 1.2 $ $Date: 2000/07/11 15:01:18 $
+ * @version $Revision: 1.3 $ $Date: 2000/07/18 16:13:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsNewsAdmin extends A_CmsModuleAdmin implements I_CmsNewsConstants {
@@ -64,8 +64,7 @@ public class CmsNewsAdmin extends A_CmsModuleAdmin implements I_CmsNewsConstants
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         
-        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();    
-        HttpSession session = orgReq.getSession(true);
+        CmsSession session = cms.getRequestContext().getSession(true);
         
 		// read all parameters
         String file = (String)parameters.get(C_PARAM_FILE);
@@ -359,11 +358,11 @@ public class CmsNewsAdmin extends A_CmsModuleAdmin implements I_CmsNewsConstants
      * The <code>text</code> will be separated into paragraphs, if more than one
      * following line feeds are found.
      * @param obj CmsNewsObject for a certain content file.
-     * @param session Current instance of HttpSession
+     * @param session Current instance of CmsSession
      * @param hashtable Hashtable with the user parameters
      * @exception CmsExecption
      */
-    protected void setFileContent(CmsNewsObject obj, HttpSession session, Hashtable parameters)
+    protected void setFileContent(CmsNewsObject obj, CmsSession session, Hashtable parameters)
 			throws CmsException {
 		Vector paragraphs = new Vector();
 		obj.setAuthor((String)session.getValue(C_XML_AUTHOR));

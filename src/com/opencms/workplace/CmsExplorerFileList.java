@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerFileList.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/07/18 16:13:50 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.12 $ $Date: 2000/07/18 16:13:50 $
  */
 public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                 I_CmsConstants, I_CmsFileListUsers {    
@@ -85,7 +85,7 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
         CmsFile file;
         CmsFolder folder;
             
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+        CmsSession session= cms.getRequestContext().getSession(true);
               
          //check if a folder parameter was included in the request         
          foldername=cms.getRequestContext().getRequest().getParameter(C_PARA_FOLDER);

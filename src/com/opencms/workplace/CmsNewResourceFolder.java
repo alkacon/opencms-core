@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/07/18 16:13:50 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.9 $ $Date: 2000/07/18 16:13:50 $
  */
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -85,7 +85,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
         // the template to be displayed
         String template=null;
 
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+        CmsSession session= cms.getRequestContext().getSession(true);
         //get the current filelist
         String currentFilelist=(String)session.getValue(C_PARA_FILELIST);
         if (currentFilelist==null) {
@@ -288,7 +288,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
        */
       private Hashtable getNavData(CmsObject cms) 
            throws CmsException {
-            HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+            CmsSession session= cms.getRequestContext().getSession(true);
 
             CmsXmlLanguageFile lang= new CmsXmlLanguageFile(cms);
             

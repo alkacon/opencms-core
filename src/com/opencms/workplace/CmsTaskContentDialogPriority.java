@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/07/18 16:13:51 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.11 $ $Date: 2000/07/18 16:13:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -133,7 +133,7 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 		String paraDelivery = "";
 		String userIdxString = "";
 		String groupIdxString = "";
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		CmsSession session= cms.getRequestContext().getSession(true);
 		
 		CmsXmlWpTemplateFile xmlTemplateDocument = 
 			(CmsXmlWpTemplateFile) getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);        
@@ -227,7 +227,7 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 		throws CmsException {
 		
 		// get session for current taskid
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+		CmsSession session= cms.getRequestContext().getSession(true);
 		// read current task for priority-level
 		CmsTask task = cms.readTask( ((Integer)session.getValue("taskid")).intValue());
 		
