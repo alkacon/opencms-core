@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/08/02 12:12:57 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2002/08/21 11:32:45 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -607,7 +607,37 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
   }
   return o;
   }
+  
+  /**
+   * @param cms A CmsObject to read the user with
+   * @param id The id of the user to read
+   * @return The name of the user, or the id (as a String) in case the user has been deleted
+   */
+  public String readSaveUserName(CmsObject cms, int id) {
+      String userName = null;
+      try{
+          userName = cms.readUser(id).getName();
+      } catch(Exception e) {
+          userName = "" + id;
+      }
+      return userName;
+  }
 
+    /**
+   * @param cms A CmsObject to read the group with
+   * @param id The id of the group to read
+   * @return The name of the group, or the id (as a String) in case the group has been deleted
+   */
+  public String readSaveGroupName(CmsObject cms, int id) {
+      String groupName = null;
+      try{
+          groupName = cms.readGroup(id).getName();
+      } catch(Exception e) {
+          groupName = "" + id;
+      }
+      return groupName;
+  }
+  
   /**
   * Gets the content of a given template file.
   * <P>
@@ -816,8 +846,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
                 //access content definition constructor by reflection
                 Object o = getContentDefinition(cms, cdClass, new Integer(id));
                 // get owner and group of content definition
-                String curOwner = cms.readUser(((I_CmsExtendedContentDefinition) o).getOwner()).getName();
-                String curGroup = cms.readGroup(((I_CmsExtendedContentDefinition) o).getGroupId()).getName();
+                String curOwner = readSaveUserName(cms, ((I_CmsExtendedContentDefinition) o).getOwner());
+                String curGroup = readSaveGroupName(cms, ((I_CmsExtendedContentDefinition) o).getGroupId());                
 
                 //set template section
                 templateSelector = "copy";
@@ -1155,12 +1185,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
                 try{
                     I_CmsExtendedContentDefinition curCd = ((I_CmsExtendedContentDefinition)cdHistory.elementAt(i));
                     long updated = curCd.getDateCreated();
-                    String userName = "";
-                    try{
-                        userName = cms.readUser(curCd.getLastModifiedBy()).getName();
-                    } catch(CmsException exc){
-                        userName = "";
-                    }
+                    String userName = readSaveUserName(cms, curCd.getLastModifiedBy());
                     long lastModified = curCd.getDateLastModified();
                     String output = Utils.getNiceDate(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                                     + Utils.getNiceDate(updated) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -2029,12 +2054,15 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
                     parameters.put("__template", template);                    
                     // Call extension class
                     I_CmsXmlTemplate extension = (I_CmsXmlTemplate)Class.forName(extensionClass).newInstance();                    
-                    extension.getContent(cms, template.getAbsoluteFilename(), elementName, parameters, templateSelector);
-                    // startProcessing must be called in this method since access is protected
-                    template = (CmsXmlWpTemplateFile)parameters.get("__template");                    
-                    elementName = (String)parameters.get("__elementName");
-                    templateSelector = (String)parameters.get("__templateSelector");                    
-                    return startProcessing(cms, template, elementName, parameters, templateSelector);
+                    byte[] bytes = extension.getContent(cms, template.getAbsoluteFilename(), elementName, parameters, templateSelector);
+                    // If byte == null, use default behaviour (i.e. rest of this method)                
+                    if (bytes != null) {                  
+                        // startProcessing must be called in this method since access is protected
+                        template = (CmsXmlWpTemplateFile)parameters.get("__template");                    
+                        elementName = (String)parameters.get("__elementName");
+                        templateSelector = (String)parameters.get("__templateSelector");                    
+                        return startProcessing(cms, template, elementName, parameters, templateSelector);
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace(System.err);
                     return "[Unlock extension caused exception]".getBytes();
@@ -2506,7 +2534,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
               template.setData("lockedby", lockString);
               template.setData("backofficecontextmenue", "backofficenoaccess");
             } else {
-              isLockedBy = cms.readUser(ls).getName();
+              isLockedBy = readSaveUserName(cms, ls);
               template.setData("isLockedBy", isLockedBy);
               lockString = template.getProcessedDataValue("lock", this, parameters);
           template.setData("lockedby", lockString);
@@ -2620,7 +2648,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
                         lockString = template.getProcessedDataValue("noaccess", this, parameters);
                         template.setData("lockedby", lockString);
                     } else {
-                        isLockedBy = cms.readUser(ls).getName();
+                        isLockedBy = readSaveUserName(cms, ls);
                         template.setData("isLockedBy", isLockedBy);
                         lockString = template.getProcessedDataValue("lock", this, parameters);
                         template.setData("lockedby", lockString);
@@ -3635,7 +3663,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         // select box of group
         String groupOptions="";
         // name of current group
-        String curGroupName = cms.readGroup(group).getName();
+        String curGroupName = readSaveGroupName(cms, group);
         for (int i=0; i<cmsGroups.size(); i++) {
             String groupName=((CmsGroup)cmsGroups.elementAt(i)).getName();
             int groupId=((CmsGroup)cmsGroups.elementAt(i)).getId();
@@ -3659,7 +3687,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         // select box of owner
         String userOptions="";
         Vector cmsUsers=cms.getUsers();
-        String curUserName = cms.readUser(owner).getName();
+        String curUserName = readSaveUserName(cms, owner);
         for (int i=0;i<cmsUsers.size();i++) {
             String userName=((CmsUser)cmsUsers.elementAt(i)).getName();
             int userId=((CmsUser)cmsUsers.elementAt(i)).getId();

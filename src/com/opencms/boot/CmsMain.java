@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsMain.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/08/21 11:32:45 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.6 $ $Date: 2001/07/31 15:50:12 $
+ * @version $Revision: 1.7 $ $Date: 2002/08/21 11:32:45 $
  */
 public class CmsMain {
 
@@ -142,10 +142,13 @@ public class CmsMain {
         }
         base = CmsBase.setBasePath(base);
         try {
+            /* FLEX: The classes are loaded from the system class loader now
             CmsClassLoader loader = new CmsClassLoader();
             // Search for jar files in the oclib folder.
             collectRepositories(base, loader);
             Class c = loader.loadClass(classname);
+             */ 
+            Class c = Class.forName(classname);
             // Now we have to look for the constructor
             Object o = c.newInstance();
 
@@ -175,7 +178,7 @@ public class CmsMain {
     }
 
 
-    protected static String searchBaseFolder(String startFolder) {
+    public static String searchBaseFolder(String startFolder) {
 
         File currentDir = null;
         String base = null;
@@ -224,7 +227,7 @@ public class CmsMain {
     private static boolean isBaseFolder(File currentDir) {
         if(currentDir.exists() && currentDir.isDirectory()) {
             File f1 = new File(currentDir.getAbsolutePath() + File.separator + CmsBase.getPropertiesPath(false));
-            File f2 = new File(currentDir, "oclib");
+            File f2 = new File(currentDir, "ocsetup");
             return (f1.exists() && f1.isFile() && f2.exists() && f2.isDirectory());
         }
         return false;
@@ -237,27 +240,39 @@ public class CmsMain {
         System.out.println("Usage: java com.opencms.core.CmsMain [-base=<basepath>] [-script=<scriptfile>] [-mode=[<ecmascript><es>/<classic>]]");
     }
 
+    /* FLEX: Reopsitorys are collected in com.opencms.flex.CmsFlexClassLoader
     public static void collectRepositories(String base, CmsClassLoader cl) {
         System.out.println("Collecting Repositories");
+        File classesFolder;
         // Add simple, unpacked classes
-        File classesFolder = new File(base + "occlasses");
+        classesFolder = new File(base + "occlasses");
         if(classesFolder.exists() && classesFolder.isDirectory()) {
             cl.addRepository(classesFolder.getAbsolutePath(), CmsClassLoader.C_REPOSITORY_CLASSIC_FS);
         }
 
+        // Add standard class directory in case of development envronment
+        classesFolder = new File(base + "classes");
+        if(classesFolder.exists() && classesFolder.isDirectory()) {
+            cl.addRepository(classesFolder.getAbsolutePath(), CmsClassLoader.C_REPOSITORY_CLASSIC_FS);
+        }
+        
         // Add jar and zip files in "lib" folder
         File libFolder = new File(base + "oclib");
         System.out.println("oclib folder: " + base + "oclib");
         if(libFolder.exists() && libFolder.isDirectory()) {
             System.out.println("jarlist");
-            String[] jarlist = libFolder.list(new FilenameFilter() {
-                public boolean accept(File dir, String fileName) {
+            String[] jarlist = libFolder.list(
+                new FilenameFilter() {
+                    public boolean accept(File dir, String fileName) {
                         return(fileName.endsWith(".jar") || fileName.endsWith(".zip"));
-                }});
+                    }
+                }
+            );
             for(int i=0; (jarlist != null) && (i < jarlist.length); ++i) {
                 cl.addRepository(new File(libFolder, jarlist[i]).getAbsolutePath(), CmsClassLoader.C_REPOSITORY_CLASSIC_FS);
             }
         }
     }
+     */
 
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/08/01 14:19:38 $
-* Version: $Revision: 1.239 $
+* Date   : $Date: 2002/08/21 11:32:46 $
+* Version: $Revision: 1.240 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.239 $ $Date: 2002/08/01 14:19:38 $
+ * @version $Revision: 1.240 $ $Date: 2002/08/21 11:32:46 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2260,6 +2260,7 @@ public String loginUser(String username, String password) throws CmsException {
     this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
 
     // return the user-name
+    this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
     return (newUser.getName());
 }
 /**
@@ -4066,7 +4067,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
     public void changeUserType(String username, int userType) throws CmsException{
         m_rb.changeUserType(m_context.currentUser(), m_context.currentProject(), username, userType);
     }
-
+    
     /**
      * Fires a CmsEvent
      *
@@ -4074,7 +4075,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * @param data A data object that contains data used by the event listeners
      */
     private void fireEvent(int type, Object data) {
-        A_OpenCms.fireCmsEvent(this, type, data);
+        A_OpenCms.fireCmsEvent(this, type, Collections.singletonMap("data", data));
     }
 
     /**

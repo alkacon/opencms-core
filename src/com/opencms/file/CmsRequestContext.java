@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2002/02/05 09:07:02 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2002/08/21 11:32:46 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.47 $ $Date: 2002/02/05 09:07:02 $
+ * @version $Revision: 1.48 $ $Date: 2002/08/21 11:32:46 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -92,6 +92,11 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     private Vector m_links;
 
+    /**
+     * Flag to indicate that this request is event controlled.
+     */
+    private boolean m_eventControlled = false;
+            
     /**
      * In export mode this vector is used to store all dependencies this request
      * may have. It is saved to the database and if one of the dependencies changes
@@ -464,5 +469,21 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public void setContextTo(String name){
         m_siteRoot = C_DEFAULT_SITE+name;
+    }
+        
+    /**
+     * Mark this request context as event controlled.
+     * @param true if the request is event controlled, false otherwise.
+     */
+    public void setEventControlled(boolean value) {
+        m_eventControlled = value;
+    }
+    
+    /**
+     * Check if this request context is event controlled.
+     * @return true if the request context is event controlled, false otherwise.
+     */
+    public boolean isEventControlled() {
+        return m_eventControlled;
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/05/24 12:51:08 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2002/08/21 11:32:45 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.27 $ $Date: 2002/05/24 12:51:08 $
+ * @version $Revision: 1.28 $ $Date: 2002/08/21 11:32:45 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -111,6 +111,9 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * The object to report the log-messages.
      */
     private I_CmsReport m_report = null;
+    
+    /** Minimum file change date for exporting */
+    private long m_minFileChangeDate = Long.MIN_VALUE;
 
     /**
      * This constructs a new CmsImport-object which imports the resources.
@@ -431,8 +434,20 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         for(int i = 0; i < subFiles.size(); i++) {
             CmsResource file = (CmsResource) subFiles.elementAt(i);
             int state = file.getState();
+            long age = file.getDateLastModified();
+
+            // HACK: Hardcode the export date to get results, must move that to Workplace Export Dialog
+            java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+            try {
+                m_minFileChangeDate = dateFormat.parse("01.07.2002 00:00:00").getTime();
+                // m_minFileChangeDate = dateFormat.parse("25.07.2002 00:00:00").getTime();
+            } catch (Exception e) {                
+                System.err.println("exportResources(): Date format error!");
+                m_minFileChangeDate = Long.MIN_VALUE;
+            }
+            
             if(m_isOnlineProject || (!m_excludeUnchanged) || state == C_STATE_NEW || state == C_STATE_CHANGED) {
-                if((state != C_STATE_DELETED) && (!file.getName().startsWith("~"))) {
+                if((state != C_STATE_DELETED) && (!file.getName().startsWith("~")) && (age >= m_minFileChangeDate)) {
                     exportFile(m_cms.readFile(file.getAbsolutePath()));
                 }
             }

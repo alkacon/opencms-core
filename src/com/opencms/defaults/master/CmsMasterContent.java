@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2002/07/05 02:09:34 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2002/08/21 11:32:45 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.22 $
- * $Date: 2002/07/05 02:09:34 $
+ * $Revision: 1.23 $
+ * $Date: 2002/08/21 11:32:45 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -623,6 +623,7 @@ public abstract class CmsMasterContent
         enableHistory, versionId, publishDate, changedResources, changedModuleData);
         // update the cache
         cms.getOnlineElementCache().cleanupCache(changedResources, changedModuleData);
+        A_OpenCms.fireCmsEvent(cms, com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE, new HashMap(0));
     }
 
     /**

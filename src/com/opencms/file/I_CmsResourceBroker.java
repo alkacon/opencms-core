@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/08/01 14:19:39 $
-* Version: $Revision: 1.183 $
+* Date   : $Date: 2002/08/21 11:32:46 $
+* Version: $Revision: 1.184 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.183 $ $Date: 2002/08/01 14:19:39 $
+ * @version $Revision: 1.184 $ $Date: 2002/08/21 11:32:46 $
  *
  */
 
@@ -3758,7 +3758,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @return the linkchecktable.
      */
     public Hashtable readLinkCheckTable(CmsUser currentUser, CmsProject currentProject)
-        throws CmsException;
+        throws CmsException;    
         
     /**
      * Deletes the versions from the backup tables that are older then the given weeks
@@ -3770,7 +3770,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @return int The oldest remaining version
      */
     public int deleteBackups(CmsObject cms, CmsUser currentUser, CmsProject currentProject, int weeks) 
-        throws CmsException;
+        throws CmsException;        
         
     /**
      * Checks, if the user may read this resource and if it is visible to him.

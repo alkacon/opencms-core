@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2002/08/02 12:12:57 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2002/08/21 11:32:45 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2002/08/02 12:12:57 $
+ * @version $Revision: 1.28 $ $Date: 2002/08/21 11:32:45 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -107,6 +107,9 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * Storage for the clusterurl
      */
     private String m_clusterurl = null;
+    
+    private boolean m_UseBasicAuthentication;
+    private String m_AuthenticationFormURI;
 
     /**
      * Checks if the requested resource must be redirected to the server docroot and
@@ -202,7 +205,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * @exception ServletException Thrown if request fails.
      * @exception IOException Thrown if user autherization fails.
      */
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {         
         // start time of this request
         if(req.getRequestURI().indexOf("system/workplace/action/login.html") > 0) {
             HttpSession session = req.getSession(false);
@@ -214,7 +217,9 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req);
         CmsResponseHttpServlet cmsRes = new CmsResponseHttpServlet(req, res, m_clusterurl);
         try {
+            m_opencms.initStartupClasses();
             cms = initUser(cmsReq, cmsRes);
+            
             if( !checkRelocation(cms) ) {
                 // no redirect was done - deliver the ressource normally
                 CmsFile file = m_opencms.initResource(cms);
@@ -244,20 +249,17 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * @exception ServletException Thrown if request fails.
      * @exception IOException Thrown if user autherization fails.
      */
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
-
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {            
         //Check for content type "form/multipart" and decode it
         String type = req.getHeader("content-type");
         CmsObject cms = null;
-        if((type != null) && type.startsWith("multipart/form-data")) {
 
-
-        //  req = new CmsMultipartRequest(req);
-        }
         CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req);
         CmsResponseHttpServlet cmsRes = new CmsResponseHttpServlet(req, res, m_clusterurl);
         try {
+            m_opencms.initStartupClasses();
             cms = initUser(cmsReq, cmsRes);
+            
             if( !checkRelocation(cms) ) {
                 // no redirect was done - deliver the ressource normally
                 CmsFile file = m_opencms.initResource(cms);
@@ -373,7 +375,19 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      */
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-
+        
+        String base = config.getInitParameter("opencms.home");
+            System.err.println("BASE: " + config.getServletContext().getRealPath("/"));
+            System.err.println("BASE2: " + System.getProperty("user.dir"));
+        if(base == null || "".equals(base)) {
+            System.err.println("No OpenCms home folder given. Trying to guess...");
+            base = CmsMain.searchBaseFolder(config.getServletContext().getRealPath("/"));
+            if(base == null || "".equals(base)) {
+                throw new ServletException("OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.");
+            }
+        }
+        base = CmsBase.setBasePath(base);        
+        
         // Collect the configurations
         try {
             ExtendedProperties p = new ExtendedProperties(CmsBase.getPropertiesPath(true));
@@ -384,7 +398,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                 p.put("log.file", CmsBase.getAbsolutePath(logFile));
             }
 
-            // m_configurations = new Configurations(new ExtendedProperties(CmsBase.getPropertiesPath(true)));
             m_configurations = new Configurations(p);
         }
         catch(Exception e) {
@@ -415,16 +428,15 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] Clusterurl: " + m_clusterurl);
         }
+        
         try {
-
             // invoke the OpenCms
             m_opencms = new OpenCms(m_configurations);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             throw new ServletException(Utils.getStackTrace(exc));
         }
 
-        //initalize the session storage
+        // initalize the session storage
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing session storage");
         }
@@ -433,6 +445,14 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing... DONE");
         }
 
+        source.org.apache.java.util.Configurations openCmsConfig = m_opencms.getConfiguration();
+        this.m_UseBasicAuthentication = openCmsConfig.getBoolean( "auth.basic", true );        
+        this.m_AuthenticationFormURI = openCmsConfig.getString( "auth.form_uri" , "/system/workplace/action/authenticate.html" );		        
+
+        
+        /**
+         * MERGE: This was removed in FLEX branch, let's see if it is stell needed...
+         * 
         // create the cms-object for the class-loader to read classes from the vfs
         CmsObject cms = new CmsObject();
         try {
@@ -477,18 +497,15 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                 }
             }
         }
-        // give the guest-loggedin cms-object and the repositories to the classloader
-        // CmsClassLoader loader = new CmsClassLoader();
-        //CmsClassLoader loader = (CmsClassLoader) (getClass().getClassLoader());
-        //loader.init(cms, repositories);
         loader.init(cms);
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing CmsClassLoader... DONE");
         }
         try{
             Utils.getModulStartUpMethods(cms);
-        }catch(CmsException e){
-        }
+        } catch(CmsException e){}
+         *
+         */
     }
 
     /**
@@ -649,6 +666,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         catch(CmsException e) {
             errorHandling(cms, cmsReq, cmsRes, e);
         }
+        
         return cms;
     }
 
@@ -660,8 +678,21 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * @param res   The servlets response.
      */
     private void requestAuthorization(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        res.setHeader("WWW-Authenticate", "BASIC realm=\"OpenCms\"");
-        res.setStatus(401);
+        String servletPath = null;
+        String redirectURL = null;
+        
+        if (this.m_UseBasicAuthentication) {
+            // HTTP basic authentication is used
+            res.setHeader("WWW-Authenticate", "BASIC realm=\"OpenCms\"");
+            res.setStatus(401);
+        }
+        else {
+            // form based authentication is used, redirect the user to
+            // a page with a form to enter his username and password
+            servletPath = req.getContextPath() + req.getServletPath();
+            redirectURL = servletPath + this.m_AuthenticationFormURI + "?requestedResource=" + req.getPathInfo();
+            res.sendRedirect( redirectURL );
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2002/07/01 11:07:02 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2002/08/21 11:32:45 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,8 @@ import com.opencms.flex.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2002/07/01 11:07:02 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.23 $ $Date: 2002/08/21 11:32:45 $
  *
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
@@ -58,7 +59,16 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
 
     /** List to save the event listeners in */
     private static java.util.ArrayList m_listeners = new ArrayList();
+            
+    /** A Map for the storage of various runtime properties */
+    private Map m_runtimeProperties = null;
 
+    /** The runtime configuration */
+    private Configurations m_conf = null;
+    
+    /** The OpenCms class loader (which is able to load classes from the OpenCms VFS */
+    private static com.opencms.flex.CmsFlexClassLoader m_loader = null;
+    
     /**
      * Destructor, called when the the servlet is shut down.
      */
@@ -108,9 +118,9 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @return <code>true</code> if the logging is active, <code>false</code> otherwise.
      */
     public static boolean isLogging() {
-        return CmsBase.isLogging();
+        return CmsBase.isLogging();    
     }
-
+    
     /**
      * Logs a message into the OpenCms logfile.
      * If the logfile was not initialized (e.g. due tue a missing
@@ -175,6 +185,59 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @param entry the CmsCronEntry to start.
      */
     abstract void startScheduleJob(CmsCronEntry entry);
+    
+    /**       
+     * This method adds an Object to the OpenCms runtime properties.
+     * The runtime properties can be used to store Objects that are shared
+     * in the whole system.<p>
+     *
+     * @since FLEX alpha 1
+     * @param key The key to add the Object with.
+     * @param value The value of the Object to add.
+     */
+    public void setRuntimeProperty(Object key, Object value) {
+        if (m_runtimeProperties == null) {
+            m_runtimeProperties = Collections.synchronizedMap(new HashMap());
+        }
+        m_runtimeProperties.put(key, value);
+    }
+    
+    /** This method looks up a value in the runtime property Map.
+     *
+     * @since FLEX alpha 1
+     * @param key The key to look up in the runtime properties.
+     * @return The value for the key, or null if the key was not found.
+     */
+    public Object getRuntimeProperty(Object key) {
+        if (m_runtimeProperties == null) return null;
+        return m_runtimeProperties.get(key);
+    }
+    
+    /** This method returns the complete runtime property Map.
+     *
+     * @since FLEX alpha 1
+     * @return The Map of runtime properties.
+     */    
+    public Map getRuntimePropertyMap() {
+        return m_runtimeProperties;
+    }
+
+    /** This method sets the runtime configuration.
+     *
+     * @since FLEX alpha 1
+     */       
+    public void setConfiguration(Configurations conf) {
+        m_conf = conf;
+    }    
+    
+    /** This method returns the runtime configuration.
+     *
+     * @since FLEX alpha 1
+     * @return The runtime configuration.
+     */       
+    public Configurations getConfiguration() {
+        return m_conf;
+    }
 
     /**
      * Notify all container event listeners that a particular event has
@@ -182,21 +245,34 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * this notification synchronously using the calling thread.
      *
      * @since FLEX alpha 1
+     * @param cms An initialized CmsObject
      * @param type Event type
      * @param data Event data
      */
-    public static void fireCmsEvent(CmsObject cms, int type, Object data) {
+    public static void fireCmsEvent(CmsObject cms, int type, java.util.Map data) {
+       OpenCms.fireCmsEvent( new CmsEvent(cms, type, data) );
+    }    
+    
+    /**
+     * Notify all container event listeners that a particular event has
+     * occurred for this Container.  The default implementation performs
+     * this notification synchronously using the calling thread.
+     *
+     * @since FLEX beta 1
+     * @param cms An initialized CmsObject
+     * @param event A CmsEvent
+     */
+    public static void fireCmsEvent(CmsEvent event) {
         if (m_listeners.size() < 1)
             return;
-        CmsEvent event = new CmsEvent(cms, type, data);
         I_CmsEventListener list[] = new I_CmsEventListener[0];
         synchronized (m_listeners) {
             list = (I_CmsEventListener[]) m_listeners.toArray(list);
         }
         for (int i = 0; i < list.length; i++)
             ((I_CmsEventListener) list[i]).cmsEvent(event);
-    }
-
+    }    
+    
     /**
      * Add a cms event listener.
      *
@@ -206,9 +282,9 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     public static void addCmsEventListener(I_CmsEventListener listener) {
         synchronized (m_listeners) {
             m_listeners.add(listener);
-        }
-    }
-
+        }        
+    }    
+    
     /**
      * Remove a cms event listener.
      *
@@ -219,5 +295,63 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
         synchronized (m_listeners) {
             m_listeners.remove(listener);
         }
+    }  
+    
+    /**
+     * Returns the OpenCms class loader for the running OpenCms instance.
+     * The OpenCms class loader tries loading the class with the parent ClassLoader first,
+     * which probably will look in the standard directories of the 
+     * web application and the system directories.
+     * If the requested class is not found there, 
+     * it looks in the OpenCms VFS for the class.
+     *
+     * @return The OpenCms class loader
+     */    
+    public static ClassLoader getClassLoader() {
+        return m_loader;
     }
+
+    /**
+     * Load a class with the OpenCms class loader.
+     * The OpenCms class loader tries loading the class with the parent ClassLoader first,
+     * which probably will look in the standard directories of the 
+     * web application and the system directories.
+     * If the requested class is not found there, 
+     * it looks in the OpenCms VFS for the class.
+     *
+     * @param name The class name to load
+     * @throws ClassNotFoundException In case the class could not be found
+     * @return The class found
+     */    
+    public static Class forName(String name) throws ClassNotFoundException {
+        return loadClass(name);
+    }
+    
+    /**
+     * Load a class with the OpenCms class loader.
+     * The OpenCms class loader tries loading the class with the parent ClassLoader first,
+     * which probably will look in the standard directories of the 
+     * web application and the system directories.
+     * If the requested class is not found there, 
+     * it looks in the OpenCms VFS for the class.
+     *
+     * @param name The class name to load
+     * @throws ClassNotFoundException In case the class could not be found
+     * @return The class found
+     */
+    public static Class loadClass(String name) throws ClassNotFoundException {
+        return m_loader.loadClass(name);
+    }
+    
+    /**
+     * Initialize the OpenCms ClassLoader.
+     * This must be done after or during the initial OpenCms initialization.
+     *
+     * @param openCms An initialized OpenCms object
+     */
+    protected void initClassLoader(A_OpenCms openCms) {
+        m_loader = new com.opencms.flex.CmsFlexClassLoader(this.getClass().getClassLoader(), openCms);
+    }
+
+    abstract public void initStartupClasses() throws CmsException;    
 }

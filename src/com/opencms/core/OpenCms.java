@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/07/04 09:58:36 $
-* Version: $Revision: 1.87 $
+* Date   : $Date: 2002/08/21 11:32:45 $
+* Version: $Revision: 1.88 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.87 $ $Date: 2002/07/04 09:58:36 $
+ * @version $Revision: 1.88 $ $Date: 2002/08/21 11:32:45 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -147,8 +147,12 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      *
      * @param conf The configurations from the property-file.
      */
-    OpenCms(Configurations conf) throws Exception {
+    // OpenCms(Configurations conf) throws Exception {
+    public OpenCms(Configurations conf) throws Exception {
         CmsObject cms = null;
+        // Save the configuration
+        setConfiguration(conf);
+        
         // invoke the ResourceBroker via the initalizer
         try {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -179,7 +183,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             // and init the cms-object with the rb.
             c_rb = CmsRbManager.init(conf);
             printCopyrightInformation(cms);
-
+            
             // initalize the Hashtable with all available mimetypes
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] read mime types");
@@ -229,6 +233,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
             }
         }
+
+        // Initialize OpenCms ClassLoader
+        initClassLoader(this);
 
         // get the password validating class
         c_passwordValidatingClass = conf.getString("passwordvalidatingclass", "com.opencms.util.PasswordValidtation");
@@ -362,11 +369,56 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             }
         }catch(Exception e){
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.toString());
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Exception initializing link rules: " + e.toString());
             }
-        }
+        }        
     }
+    
+    private boolean isInitialized = false;
+    
+    /**
+     * Initialize this OpenCms Object
+     */
+    public void initStartupClasses() throws CmsException {     
+        if (isInitialized) return;
+        
+        // Set the initialized flag to true
+        isInitialized = true;    
 
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] OpenCms init() starting.");
+        }                
+        
+        // finally, initialize 1 instance per class listed in the startup node
+        try{
+            Hashtable startupNode = this.getRegistry().getSystemValues( "startup" );
+            if (startupNode!=null) {
+                for (int i=1;i<=startupNode.size();i++) {
+                    String currentClass = (String)startupNode.get( "class" + i );
+                    try {
+                        Class.forName(currentClass).newInstance();
+                        
+                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] created instance of class " + currentClass );
+                        }
+                    } catch (Exception e1){
+                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Exception creating instance of startup class " +  currentClass + ": " + e1.toString());
+                        }
+                    }                    
+                }
+            }     
+        } catch (Exception e2){
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Exception creating startup classes: " + e2.toString());
+            }
+        }         
+        
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] OpenCms init() finished.");
+        }                  
+    }
+    
     /**
      * Destructor, called when the the servlet is shut down.
      * @exception CmsException Throws CmsException if something goes wrong.
@@ -495,6 +547,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, String user,
             String group, int project, CmsCoreSession sessionStorage) throws CmsException {
+        
         if((!m_enableElementCache) || (project == C_PROJECT_ONLINE_ID)){
             cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache, sessionStorage);
         }else{
