@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2003/12/10 17:37:26 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/12/12 08:43:19 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1.12
  */
@@ -246,7 +246,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 m_page.addElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLanguage);
             }
             try {
-                getCms().writeFile(m_page.marshal(m_file));
+                getCms().writeFile(m_page.write(m_file));
             } catch (CmsException e) {
                 // show error page
                 try {
@@ -281,7 +281,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
            // no body present, so create an empty default body
             m_page.addElement(I_CmsConstants.C_XML_BODY_ELEMENT, getParamBodylanguage());
             try {
-            getCms().writeFile(m_page.marshal(m_file));
+            getCms().writeFile(m_page.write(m_file));
             } catch (CmsException e) {
                 // writing file failed, show error page
                 try {
@@ -309,7 +309,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     protected void initContent() {
         // get the content from the temporary file     
         try {
-            CmsXmlPage page = new CmsXmlPage().unmarshal(getCms(), getCms().readFile(this.getParamTempfile()));
+            CmsXmlPage page = new CmsXmlPage().read(getCms(), getCms().readFile(this.getParamTempfile()));
             String elementData = page.getElementData(getParamBodyname(), getParamBodylanguage());
             if (elementData != null) {
                 setParamContent(elementData);
@@ -510,7 +510,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             if (newBody != null && !"".equals(newBody.trim()) && !"null".equals(newBody)) {
                 if (!m_page.hasElement(newBody, getParamBodylanguage())) {
                     m_page.addElement(newBody, getParamBodylanguage());
-                    getCms().writeFile(m_page.marshal(m_file));
+                    getCms().writeFile(m_page.write(m_file));
                     setParamBodyname(newBody);
                     initContent();
                 }
@@ -584,7 +584,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         m_page.setElementData(body, language, content);
         
         // write the file
-        getCms().writeFile(m_page.marshal(m_file));
+        getCms().writeFile(m_page.write(m_file));
     }
     
     /**

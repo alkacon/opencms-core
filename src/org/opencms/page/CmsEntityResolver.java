@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsEntityResolver.java,v $
- * Date   : $Date: 2003/11/28 17:00:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/12/12 08:43:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,13 +40,13 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/28 17:00:18 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/12 08:43:19 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsEntityResolver implements EntityResolver {
 
-    /** The cms root prefix */
-    private static String C_FILE_PREFIX = "file://";
+//    /** The cms root prefix */
+//    private static String C_FILE_PREFIX = "file://";
     
     /** The cms object */
     private CmsObject m_cms = null;
@@ -65,17 +65,25 @@ public class CmsEntityResolver implements EntityResolver {
      * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
      */
     public InputSource resolveEntity(String publicId, String systemId) {
-        if (publicId == null && systemId.startsWith(C_FILE_PREFIX + "/")) {
+//        if (publicId == null && systemId.startsWith(C_FILE_PREFIX + "/")) {
+//            
+//            try {
+//                String dtdPath = systemId.substring(C_FILE_PREFIX.length());
+//                InputStream in = new ByteArrayInputStream(m_cms.readFile(dtdPath).getContents());
+//                return new InputSource (in);
+//            } catch (CmsException exc) {
+//                // noop
+//            }
+//        }
+        if (publicId == null) {
             
             try {
-                String dtdPath = systemId.substring(C_FILE_PREFIX.length());
-                InputStream in = new ByteArrayInputStream(m_cms.readFile(dtdPath).getContents());
-                return new InputSource (in);
+                InputStream in = new ByteArrayInputStream(m_cms.readFile(systemId).getContents());
+                return new InputSource(in);
             } catch (CmsException exc) {
                 // noop
             }
-        }
-
+        }        
         return null;
     }
 }

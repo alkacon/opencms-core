@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2003/12/10 17:35:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/12/12 08:43:19 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -181,7 +181,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             byte[] result = null;
             String absolutePath = cms.readAbsolutePath(file);
             CmsFile xmlFile = cms.readFile(absolutePath);
-            CmsXmlPage page = new CmsXmlPage().unmarshal(cms, xmlFile);
+            CmsXmlPage page = new CmsXmlPage().read(cms, xmlFile);
             
             // care about encoding issues
             String dnc = OpenCms.getDefaultEncoding().trim();

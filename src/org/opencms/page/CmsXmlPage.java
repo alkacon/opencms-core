@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2003/12/11 13:37:14 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/12/12 08:43:19 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,15 +35,16 @@ import org.opencms.util.CmsLinkProcessor;
 import org.opencms.util.CmsLinkTable;
 import org.opencms.util.CmsStringSubstitution;
 
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.workplace.I_CmsWpConstants;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,32 +54,34 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.xml.sax.InputSource;
 
 /**
- * Common basic implementation of a page object used to access and manage xml data.<p>
+ * Implementation of a page object used to access and manage xml data.<p>
  * 
- * The basic implementation consists of several named elements optionally available for 
+ * This implementation consists of several named elements optionally available for 
  * various languages. The data of each element is accessible via its name and language. 
  * 
  * The content of each element is stored as CDATA, links within the 
  * content are processed and are seperately accessible as entries of a CmsLinkTable.
  * 
- * @version $Revision: 1.8 $ $Date: 2003/12/11 13:37:14 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.9 $
  */
 public class CmsXmlPage {
     
-    /** Link to the external document type of this xml page */
-    private static final String C_DOCUMENT_TYPE = "/system/dtds/page.dtd";
-    
     /** Name of the root document node */
     private static final String C_DOCUMENT_NODE = "page";
+    
+    /** Link to the external document type of this xml page */
+    private static final String C_DOCUMENT_TYPE = "/system/dtds/page.dtd";
     
     /** Reference for named elements */
     private Map m_bookmarks = null;
@@ -88,11 +91,21 @@ public class CmsXmlPage {
     
     /**
      * Creates a new empty CmsXmlPage.<p>
+     * 
      * The page is initialized according to the minimal neccessary xml structure.
      */
     public CmsXmlPage() {
-
         initDocument();
+        initBookmarks();
+    }
+    
+    /**
+     * Creates a new CmsXmlPage based on the provided document.<p>
+     * 
+     * @param document the document to create the CmsXmlPage from
+     */
+    public CmsXmlPage(Document document) {
+        m_document = document;
         initBookmarks();
     }
     
@@ -123,8 +136,7 @@ public class CmsXmlPage {
      * @param key key of the element
      * @return the bookemarked element
      */
-    protected Element getBookmark (String key) {
-        
+    protected Element getBookmark (String key) {        
         return (Element) m_bookmarks.get(key);
     }
     
@@ -133,8 +145,7 @@ public class CmsXmlPage {
      * 
      * @return the keys of bookmarked elements
      */
-    protected Set getBookmarks() {
-        
+    protected Set getBookmarks() {        
         return m_bookmarks.keySet(); 
     }
     
@@ -293,64 +304,60 @@ public class CmsXmlPage {
         m_document.addDocType(C_DOCUMENT_NODE, "", C_DOCUMENT_TYPE);
         m_document.getRootElement().addElement("elements");
     }
-
-    /**
-     * Marshals (writes) the xml contents into the CmsFile.<p>
-     * The contents are written with the opencms default encoding.
-     * 
-     * @param file the file to write the xml
-     * @return the file with the xml content
-     * @throws CmsPageException if something goes wrong
-     */
-    public CmsFile marshal(CmsFile file) 
-        throws CmsPageException {
-        
-        return marshal(file, OpenCms.getDefaultEncoding());
-    }
     
     /**
-     * Method to marshal (write) the xml contents into the CmsFile.<p>
+     * Reads the xml contents of a file into the page.<p>
      * 
-     * @param file the file to write the xml
-     * @param encoding the encoding to use
-     * @return the file with the xml content
+     * @param cms the current cms object
+     * @param file the file with xml data
+     * @return the concrete PageObject instanciated with the xml data
      * @throws CmsPageException if something goes wrong
      */
-    public CmsFile marshal(CmsFile file, String encoding) 
+    public CmsXmlPage read(CmsObject cms, CmsFile file) 
         throws CmsPageException {
+
+        byte[] content = file.getContents();
         
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        file.setContents(((ByteArrayOutputStream)marshal(out, encoding)).toByteArray());
-        
-        return file;
-    }
+        if (content.length > 0) {
+            // content is initialized
+            String encoding;
+            try { 
+                encoding = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false, OpenCms.getDefaultEncoding());
+            } catch (CmsException e) {
+                encoding = OpenCms.getDefaultEncoding();
+            }
+            String xmlData;
+            try {
+                xmlData = new String(content, encoding);
+            } catch (UnsupportedEncodingException e) {
+                xmlData = new String(content);
+            }            
+            return read(cms, xmlData);            
+        } else {
+            // file is empty
+            return new CmsXmlPage();
+        }
+    }    
 
     /**
-     * Method to marshal (write) the xml contents into an output stream.<p>
+     * Reads the xml contents from a string into the page.<p>
      * 
-     * @param out the output stream to write to
-     * @param encoding the encoding to use
-     * @return the output stream with the xml content
+     * @param cms the current cms object
+     * @param xmlData the xml data
+     * @return the page initialized with the given xml data
      * @throws CmsPageException if something goes wrong
      */
-
-    public OutputStream marshal(OutputStream out, String encoding)
-        throws CmsPageException {
-        
+    public CmsXmlPage read(CmsObject cms, String xmlData) 
+        throws CmsPageException {        
         try {
-            
-            OutputFormat format = OutputFormat.createPrettyPrint();
-            format.setEncoding(encoding);
-            
-            XMLWriter writer = new XMLWriter(out, format);
-            writer.write(m_document);
-            writer.close();
-            
-        } catch (Exception exc) {
-            throw new CmsPageException("Marshalling xml page failed", exc);
+            SAXReader reader = new SAXReader();
+            reader.setEntityResolver(new CmsEntityResolver(cms));
+            Document document = reader.read(new StringReader(xmlData));            
+            // Document document = DocumentHelper.parseText(xmlData);
+            return new CmsXmlPage(document);
+        } catch (DocumentException e) {
+            throw new CmsPageException("Reading xml page from a String failed", e);
         }
-        
-        return out;
     }
     
     /**
@@ -436,81 +443,63 @@ public class CmsXmlPage {
                 .addAttribute("internal", Boolean.toString(link.isInternal()));
         }
     }
-    
+
     /**
-     * Unmarshals (read) the xml contents of a file into the page.<p>
+     * Writes the xml contents into the CmsFile,
+     * using the opencms default encoding.<p>
      * 
-     * @param cms the cms object
-     * @param file the file with xml data
-     * @return the concrete PageObject instanciated with the xml data
+     * @param file the file to write the xml
+     * @return the file with the xml content
      * @throws CmsPageException if something goes wrong
      */
-    public CmsXmlPage unmarshal(CmsObject cms, CmsFile file) 
+    public CmsFile write(CmsFile file) 
         throws CmsPageException {
-
-        byte[] content = file.getContents();
-        if (content.length > 0) {
-            
-            InputStream in = new ByteArrayInputStream(content);
-            try {    
-                return unmarshal(cms, new InputSource(in));
-            } finally {
-                try {
-                    in.close();
-                } catch (Exception exc) {
-                    // noop
-                }
-            }
-        }
         
-        return this;
+        return write(file, OpenCms.getDefaultEncoding());
     }
     
     /**
-     * Unmarshals (read) the xml contents from an input stream into the page.<p>
+     * Writes the xml contents into the CmsFile.<p>
      * 
-     * @param cms the cms object
-     * @param in the input stream with xml data
-     * @return the page initialized with the given xml data
+     * @param file the file to write the xml
+     * @param encoding the encoding to use
+     * @return the file with the xml content
      * @throws CmsPageException if something goes wrong
      */
-    protected CmsXmlPage unmarshal(CmsObject cms, InputSource in) 
+    public CmsFile write(CmsFile file, String encoding) 
         throws CmsPageException {
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        file.setContents(((ByteArrayOutputStream)write(out, encoding)).toByteArray());
+        
+        return file;
+    }
 
+    /**
+     * Writes the xml contents into an output stream.<p>
+     * 
+     * @param out the output stream to write to
+     * @param encoding the encoding to use
+     * @return the output stream with the xml content
+     * @throws CmsPageException if something goes wrong
+     */
+
+    public OutputStream write(OutputStream out, String encoding)
+        throws CmsPageException {
+        
         try {
-            SAXReader reader = new SAXReader();
-            reader.setEntityResolver(new CmsEntityResolver(cms));
-            m_document = reader.read(in);
             
-            initBookmarks();
-                 
+            OutputFormat format = OutputFormat.createPrettyPrint();
+            format.setEncoding(encoding);
+            
+            XMLWriter writer = new XMLWriter(out, format);
+            writer.write(m_document);
+            writer.close();
+            
         } catch (Exception exc) {
-            throw new CmsPageException("Unmarshalling xml page failed", exc);
+            throw new CmsPageException("Writing xml page failed", exc);
         }
         
-        return this;
-    }
-
-    /**
-     * Unmarshals (read) the xml contents from a string into the page.<p>
-     * 
-     * @param cms the cms object
-     * @param xmlData the xml data
-     * @return the page initialized with the given xml data
-     * @throws CmsPageException if something goes wrong
-     */
-    public CmsXmlPage unmarshal(CmsObject cms, String xmlData) 
-        throws CmsPageException {
-        
-        StringReader reader = new StringReader(xmlData);
-        try {    
-            return unmarshal(cms, new InputSource(reader));
-        } finally {
-            try {
-                reader.close();
-            } catch (Exception exc) {
-                // noop
-            }
-        }
+        return out;
     }
 }
