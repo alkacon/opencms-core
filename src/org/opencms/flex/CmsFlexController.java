@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2003/09/15 10:51:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/17 07:49:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,33 +48,33 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsFlexController {
     
     /** Constant for the controller request attribute name */
     public static final String ATTRIBUTE_NAME = "__com.opencms.flex.cache.CmsFlexController";
-
-    /** The wrapped CmsObject provides JSP with access to the core system */
-    private CmsObject m_cmsObject;
     
     /** The CmsFlexCache where the result will be cached in, required for the dispatcher */    
     private CmsFlexCache m_cache;   
 
+    /** The wrapped CmsObject provides JSP with access to the core system */
+    private CmsObject m_cmsObject;
+
     /** The CmsFile that was initialized by the original request, required for URI actions */    
     private CmsFile m_file;   
-        
-    /** Wrapped top request */
-    private HttpServletRequest m_req;
-    
-    /** Wrapped to response */     
-    private HttpServletResponse m_res;    
         
     /** List of wrapped CmsFlexRequests */
     private List m_flexRequestList;
     
     /** List of wrapped CmsFlexResponses */
     private List m_flexResponseList;
+        
+    /** Wrapped top request */
+    private HttpServletRequest m_req;
+    
+    /** Wrapped to response */     
+    private HttpServletResponse m_res;    
         
     /**
      * Default constructor.<p>
@@ -102,15 +102,6 @@ public class CmsFlexController {
     }
     
     /**
-     * Returns the wrapped CmsObject.<p>
-     * 
-     * @return the wrapped CmsObject
-     */
-    public CmsObject getCmsObject() {
-        return m_cmsObject;
-    }
-    
-    /**
      * Returns the wrapped CmsObject form the provided request, or null if the 
      * request is not running inside OpenCms.<p>
      * 
@@ -134,6 +125,40 @@ public class CmsFlexController {
      */
     public static boolean isCmsRequest(ServletRequest req) {
         return ((req != null) && (req.getAttribute(ATTRIBUTE_NAME) != null));
+    }
+    
+    /**
+     * Removes the controller attribute from a request.<p>
+     * 
+     * @param req the request to remove the controller from
+     */
+    public static void removeController(ServletRequest req) {
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(ATTRIBUTE_NAME);
+        if (controller != null) {
+            controller.clear();
+        }
+    }
+    
+    /**
+     * Clears all data of this controller.<p>
+     */
+    public void clear() {
+        if (m_flexRequestList != null) {
+            m_flexRequestList.clear();
+        }
+        m_flexRequestList = null;
+        if (m_flexResponseList != null) {
+            m_flexResponseList.clear();
+        }
+        m_flexResponseList = null;
+        if (m_req != null) {
+            m_req.removeAttribute(ATTRIBUTE_NAME);
+        }
+        m_req = null;
+        m_res = null;
+        m_cmsObject = null;
+        m_file = null;
+        m_cache = null;        
     }
     
     /**
@@ -167,6 +192,15 @@ public class CmsFlexController {
     }     
     
     /**
+     * Returns the wrapped CmsObject.<p>
+     * 
+     * @return the wrapped CmsObject
+     */
+    public CmsObject getCmsObject() {
+        return m_cmsObject;
+    }
+    
+    /**
      * Returns the current flex request.<p>
      * 
      * @return the current flex request
@@ -176,69 +210,12 @@ public class CmsFlexController {
     }  
     
     /**
-     * Adds another flex request to the stack.<p>
-     * 
-     * @param req the request to add
-     */
-    public void pushRequest(CmsFlexRequest req) {
-        m_flexRequestList.add(req);
-    }
-    
-    /**
-     * Returns the topmost request from the stack.<p>
-     * 
-     * @return the topmost request from the stack
-     */
-    public CmsFlexRequest popRequest() {
-        CmsFlexRequest result = null;
-        if (m_flexRequestList.size() > 0) {
-            result = getCurrentRequest();
-            m_flexRequestList.remove(m_flexRequestList.size()-1);            
-        }
-        return result;
-    }
-    
-    /**
      * Returns the current flex response.<p>
      * 
      * @return the current flex response
      */
     public CmsFlexResponse getCurrentResponse() {
         return (CmsFlexResponse)m_flexResponseList.get(m_flexResponseList.size()-1);
-    }
-    
-    /**
-     * Adds another flex response to the stack.<p>
-     * 
-     * @param res the response to add
-     */    
-    public void pushResponse(CmsFlexResponse res) {
-        m_flexResponseList.add(res);
-    }
-    
-    /**
-     * Returns the topmost response from the stack.<p>
-     * 
-     * @return the topmost response from the stack
-     */
-    public CmsFlexResponse popResponse() {
-        CmsFlexResponse result = null;
-        if (m_flexResponseList.size() > 0) {
-            result = getCurrentResponse();
-            m_flexResponseList.remove(m_flexResponseList.size()-1);            
-        }
-        return result;
-    }    
-    
-    /**
-     * Puts the response in a suspended state.<p>  
-     */
-    public void suspendFlexResponse() {
-        Iterator i = m_flexResponseList.iterator();
-        while (i.hasNext()) {
-            CmsFlexResponse res = (CmsFlexResponse)i.next();
-            res.setSuspended(true);
-        }
     }
     
     /**
@@ -266,5 +243,62 @@ public class CmsFlexController {
      */
     public HttpServletResponse getTopResponse() {
         return m_res;
+    }
+    
+    /**
+     * Returns the topmost request from the stack.<p>
+     * 
+     * @return the topmost request from the stack
+     */
+    public CmsFlexRequest popRequest() {
+        CmsFlexRequest result = null;
+        if (m_flexRequestList.size() > 0) {
+            result = getCurrentRequest();
+            m_flexRequestList.remove(m_flexRequestList.size()-1);            
+        }
+        return result;
+    }
+    
+    /**
+     * Returns the topmost response from the stack.<p>
+     * 
+     * @return the topmost response from the stack
+     */
+    public CmsFlexResponse popResponse() {
+        CmsFlexResponse result = null;
+        if (m_flexResponseList.size() > 0) {
+            result = getCurrentResponse();
+            m_flexResponseList.remove(m_flexResponseList.size()-1);            
+        }
+        return result;
+    }    
+    
+    /**
+     * Adds another flex request to the stack.<p>
+     * 
+     * @param req the request to add
+     */
+    public void pushRequest(CmsFlexRequest req) {
+        m_flexRequestList.add(req);
+    }
+    
+    /**
+     * Adds another flex response to the stack.<p>
+     * 
+     * @param res the response to add
+     */    
+    public void pushResponse(CmsFlexResponse res) {
+        m_flexResponseList.add(res);
+    }
+    
+    /**
+     * Puts the response in a suspended state.<p>  
+     */
+    public void suspendFlexResponse() {
+        Iterator i = m_flexResponseList.iterator();
+        while (i.hasNext()) {
+            CmsFlexResponse res = (CmsFlexResponse)i.next();
+            res.setSuspended(true);
+        }
     }
 }
