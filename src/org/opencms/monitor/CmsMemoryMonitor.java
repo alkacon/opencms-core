@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/12 14:42:45 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/11/13 11:20:14 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,6 +57,7 @@ import com.opencms.util.Utils;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -69,7 +70,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.13 $ $Date: 2003/11/12 14:42:45 $
+ * @version $Revision: 1.14 $ $Date: 2003/11/13 11:20:14 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -277,32 +278,33 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      * @return total size of key strings
      */
     private long getKeySize(Map map, int depth) {
-
-        long keySize = 0;  
-        
-        Object[] values = map.values().toArray();                
-        for (int i=0, s=values.length; i<s; i++) {
-            
-            Object obj = values[i];
-            
-            if (obj instanceof Map && depth < C_MAX_DEPTH) {
-                keySize += getKeySize((Map)obj, depth+1);
-                continue;
+        long keySize = 0;          
+        try {
+            Object[] values = map.values().toArray();                
+            for (int i=0, s=values.length; i<s; i++) {
+                
+                Object obj = values[i];
+                
+                if (obj instanceof Map && depth < C_MAX_DEPTH) {
+                    keySize += getKeySize((Map)obj, depth+1);
+                    continue;
+                }
             }
-        }
-        values = null;
-        
-        Object[] keys = map.keySet().toArray();           
-        for (int i=0, s=keys.length; i<s; i++) {
+            values = null;
             
-            Object obj = keys[i];
-            
-            if (obj instanceof String) {
-                String st = (String)obj;
-                keySize += (st.length() * 2);
+            Object[] keys = map.keySet().toArray();           
+            for (int i=0, s=keys.length; i<s; i++) {
+                
+                Object obj = keys[i];
+                
+                if (obj instanceof String) {
+                    String st = (String)obj;
+                    keySize += (st.length() * 2);
+                }
             }
+        } catch (ConcurrentModificationException e) {
+            // this might happen since even the .toArray() method internally creates an iterator
         }
-        
         return keySize;
     }
     
@@ -358,35 +360,37 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      * @param depth the max recursion depth for calculation the size
      * @return the size of the map object
      */
-    private long getValueSize(Map mapValue, int depth) {
-      
+    private long getValueSize(Map mapValue, int depth) {     
         long totalSize = 0;
-        Object[] values = mapValue.values().toArray();
-        for (int i=0, s=values.length; i<s; i++) {
-            
-            Object obj = values[i];
-
-            if (obj instanceof CmsAccessControlList) {
-                obj = ((CmsAccessControlList)obj).getPermissionMap();
+        try {
+            Object[] values = mapValue.values().toArray();
+            for (int i=0, s=values.length; i<s; i++) {
+                
+                Object obj = values[i];
+                
+                if (obj instanceof CmsAccessControlList) {
+                    obj = ((CmsAccessControlList)obj).getPermissionMap();
+                }
+                
+                if (obj instanceof CmsFlexCacheVariation) {
+                    obj = ((CmsFlexCacheVariation)obj).m_map;
+                }
+                
+                if (obj instanceof Map && depth < C_MAX_DEPTH) {
+                    totalSize += getValueSize((Map)obj, depth+1);
+                    continue;
+                }
+                
+                if (obj instanceof List && depth < C_MAX_DEPTH) {
+                    totalSize += getValueSize((List)obj, depth+1);
+                    continue;
+                }
+                
+                totalSize += getMemorySize(obj);
             }
-            
-            if (obj instanceof CmsFlexCacheVariation) {
-                obj = ((CmsFlexCacheVariation)obj).m_map;
-            }
-            
-            if (obj instanceof Map && depth < C_MAX_DEPTH) {
-                totalSize += getValueSize((Map)obj, depth+1);
-                continue;
-            }
-            
-            if (obj instanceof List && depth < C_MAX_DEPTH) {
-                totalSize += getValueSize((List)obj, depth+1);
-                continue;
-            }
-
-            totalSize += getMemorySize(obj);
+        } catch (ConcurrentModificationException e) {
+            // this might happen since even the .toArray() method internally creates an iterator
         }
-        
         return totalSize;
     }
     
@@ -397,35 +401,37 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      * @param depth the max recursion depth for calculation the size
      * @return the size of the list object
      */
-    private long getValueSize(List listValue, int depth) {
-        
+    private long getValueSize(List listValue, int depth) {        
         long totalSize = 0;
-        Object[] values = listValue.toArray();        
-        for (int i=0, s=values.length; i<s; i++) {
-            
-            Object obj = values[i];
-
-            if (obj instanceof CmsAccessControlList) {
-                obj = ((CmsAccessControlList)obj).getPermissionMap();
+        try {
+            Object[] values = listValue.toArray();        
+            for (int i=0, s=values.length; i<s; i++) {
+                
+                Object obj = values[i];
+                
+                if (obj instanceof CmsAccessControlList) {
+                    obj = ((CmsAccessControlList)obj).getPermissionMap();
+                }
+                
+                if (obj instanceof CmsFlexCacheVariation) {
+                    obj = ((CmsFlexCacheVariation)obj).m_map;
+                }
+                
+                if (obj instanceof Map && depth < C_MAX_DEPTH) {
+                    totalSize += getValueSize((Map)obj, depth+1);
+                    continue;
+                }
+                
+                if (obj instanceof List && depth < C_MAX_DEPTH) {
+                    totalSize += getValueSize((List)obj, depth+1);
+                    continue;
+                }
+                
+                totalSize += getMemorySize(obj);
             }
-            
-            if (obj instanceof CmsFlexCacheVariation) {
-                obj = ((CmsFlexCacheVariation)obj).m_map;
-            }
-            
-            if (obj instanceof Map && depth < C_MAX_DEPTH) {
-                totalSize += getValueSize((Map)obj, depth+1);
-                continue;
-            }
-    
-            if (obj instanceof List && depth < C_MAX_DEPTH) {
-                totalSize += getValueSize((List)obj, depth+1);
-                continue;
-            }
-    
-            totalSize += getMemorySize(obj);
-        }
-        
+        } catch (ConcurrentModificationException e) {
+            // this might happen since even the .toArray() method internally creates an iterator
+        }        
         return totalSize;
     }
     
