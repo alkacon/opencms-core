@@ -280,7 +280,7 @@
 						<table border="0">
 							<tr>
 								<td width="200" align="right">
-									<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.back()">
+									<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-2)">
 								</td>
 								<td width="200" align="left">
 									<input type="submit" name="submit" class="button" style="width:150px;" width="150" value="Continue &#062;&#062;">

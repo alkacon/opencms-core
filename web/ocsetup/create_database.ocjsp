@@ -11,7 +11,7 @@
 <%
 	
 	/* next page to be accessed */
-	String nextPage = "";
+	String nextPage = "check_versions.ocjsp";
 	
 	
 	
@@ -22,15 +22,7 @@
 		
 	boolean createDb = false;
 	
-	if(setupOk)	{
-		if(Bean.getSetupType())	{
-			nextPage = "advanced_1.ocjsp";
-		}
-		else	{
-			nextPage = "save_properties.ocjsp";
-		}
-	
-	
+	if(setupOk)	{	
 		String temp = session.getAttribute("createDb").toString();
 		if( temp != null)	{
 			createDb = temp.equals("true");

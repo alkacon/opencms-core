@@ -424,6 +424,7 @@ public class CmsSetupUtils {
         else  {
             file = statement;
         }
+        System.out.println(file);
 
         /* read and return everything */
         try {
@@ -441,6 +442,10 @@ public class CmsSetupUtils {
             return stat;
         }
         catch (Exception e) {
+            if(m_errorLogging)  {
+              m_errors.addElement(e.toString() + "\n");
+            }
+            e.printStackTrace();
             return null;
         }
     }
@@ -454,8 +459,8 @@ public class CmsSetupUtils {
         if(statement != null)  {
             try  {
                 System.err.println("-----------------------------------------");
+                //System.err.println("QUERY: "+statement);
                 System.err.println("-----------------------------------------");
-                System.err.println("JETZT HIER DENN DA: "+statement);
                 stat = con.createStatement();
                 stat.executeUpdate(statement);
             }
@@ -541,6 +546,48 @@ public class CmsSetupUtils {
         return m_errors;
     }
 
+    /**
+     *  Checks if the used JDK is a higher version than the required JDK
+     *  @param usedJDK The JDK version in use
+     *  @param requiredJDK The required JDK version
+     *  @return true if used JDK version is equal or higher than required JDK version,
+     *  false otherwise
+     */
+    public static boolean compareJDKVersions(String usedJDK, String requiredJDK)  {
+        int compare = usedJDK.compareTo(requiredJDK);
+        return (!(compare < 0));
+    }
+
+    /** Checks if the used servlet engine is part of the servlet engines OpenCms supports
+     *  @param thisEngine The servlet engine in use
+     *  @param supportedEngines All known servlet engines OpenCms supports
+     *  @return true if this engine is supported, false if it was not found in the list
+     */
+    public static boolean supportedServletEngine(String thisEngine, String[] supportedEngines)  {
+        boolean supported = false;
+        engineCheck: for(int i = 0; i < supportedEngines.length; i++)  {
+            if (thisEngine.equals(supportedEngines[i].toString())) {
+                supported = true;
+                break engineCheck;
+            }
+        }
+        return supported;
+    }
+
+    /** Checks if the used servlet engine is part of the servlet engines OpenCms
+     *  does NOT support
+     *  @param thisEngine The servlet engine in use
+     *  @param supportedEngines All known servlet engines OpenCms does NOT support
+     *  @return supportedEngines index or -1 if not found
+     */
+    public static int unsupportedServletEngine(String thisEngine, String[] unsupportedEngines)  {
+        engineCheck: for(int i = 0; i < unsupportedEngines.length; i++)  {
+            if (thisEngine.equals(unsupportedEngines[i].toString())) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
 
 }
