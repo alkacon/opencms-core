@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/08/03 09:42:42 $
- * Version: $Revision: 1.156 $
+ * Date   : $Date: 2003/08/03 15:11:59 $
+ * Version: $Revision: 1.157 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSiteManager;
 
 import com.opencms.boot.CmsBase;
@@ -89,7 +90,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.156 $
+ * @version $Revision: 1.157 $
  */
 public final class OpenCms extends A_OpenCms {
 
@@ -669,11 +670,11 @@ public final class OpenCms extends A_OpenCms {
                             file = cms.readFile(tmpResourceName);
                             // No exception? So we have found the default file                         
                             cms.getRequestContext().getRequest().setRequestedResource(tmpResourceName);
+                        } catch (CmsSecurityException se) {
+                            // Maybe no access to default file?
+                            throw se;
                         } catch (CmsException exc) {
-                            if (exc.getType() == CmsException.C_NO_ACCESS) {
-                                // Maybe no access to default file?
-                                throw exc;
-                            }
+                            // Ignore all other exceptions
                         }
                     }
                     if (file == null) {
@@ -686,12 +687,11 @@ public final class OpenCms extends A_OpenCms {
                                 cms.getRequestContext().getRequest().setRequestedResource(tmpResourceName);
                                 // Stop looking for default files   
                                 break;
+                            } catch (CmsSecurityException se) {
+                                // Maybe no access to default file?
+                                throw se;
                             } catch (CmsException exc) {
-                                if (exc.getType() == CmsException.C_NO_ACCESS) {
-                                    // Maybe no access to default file?
-                                    throw exc;
-                                }
-                                // Otherwise just continue looking for files
+                                // Ignore all other exceptions
                             }
                         }
                     }
@@ -720,7 +720,7 @@ public final class OpenCms extends A_OpenCms {
         if (file != null) {
             // test if this file is only available for internal access operations
             if ((file.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
-                throw new CmsException(CmsException.C_EXTXT[CmsException.C_INTERNAL_FILE] + cms.getRequestContext().getUri(), CmsException.C_INTERNAL_FILE);
+                throw new CmsException(CmsException.C_ERROR_DESCRIPTION[CmsException.C_INTERNAL_FILE] + cms.getRequestContext().getUri(), CmsException.C_INTERNAL_FILE);
             }
         }
 

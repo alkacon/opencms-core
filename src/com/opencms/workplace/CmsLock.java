@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/08/03 15:11:59 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -45,7 +46,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.51 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.52 $ $Date: 2003/08/03 15:11:59 $
  */
 
 public class CmsLock extends CmsWorkplaceDefault {
@@ -113,9 +114,9 @@ public class CmsLock extends CmsWorkplaceDefault {
             if(lock.equals("true")) {
                 session.removeValue(C_PARA_RESOURCE);
                 try{
-                    cms.lockResource(filename);
-                }catch(CmsException e){
-                    if(e.getType() == CmsException.C_ACCESS_DENIED) {
+                    cms.lockResource(filename);  
+                } catch(CmsException e){
+                    if(e instanceof CmsSecurityException) {
                         template = "erroraccessdenied";
                         xmlTemplateDocument.setData("details", file.getResourceName());
                     }else {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopyToProject.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/08/03 15:11:59 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.security.CmsSecurityException;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
@@ -42,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.10 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.11 $ $Date: 2003/08/03 15:11:59 $
  */
 
 public class CmsCopyToProject extends CmsWorkplaceDefault {
@@ -97,18 +99,18 @@ public class CmsCopyToProject extends CmsWorkplaceDefault {
         }
         //check if the name parameter was included in the request
         // if not, the copyToProject page is shown for the first time
-        if(copy != null){
-            if(action != null) {
+        if (copy != null) {
+            if (action != null) {
                 // copy the resource to the current project
-                try{
-                    if(isManager(cms)){
+                try {
+                    if (isManager(cms)) {
                         cms.copyResourceToProject(cms.readAbsolutePath(file));
                         session.removeValue(C_PARA_RESOURCE);
                         template = "done";
                     } else {
-                        throw new CmsException("["+this.getClassName()+"] no management access to project.", CmsException.C_ACCESS_DENIED);
+                        throw new CmsSecurityException("[" + this.getClass().getName() + "] getContent()", CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
                     }
-                } catch(CmsException e){
+                } catch (CmsException e) {
                     session.removeValue(C_PARA_RESOURCE);
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
@@ -118,7 +120,7 @@ public class CmsCopyToProject extends CmsWorkplaceDefault {
             }
         }
         // set the required datablocks
-        if(action == null) {
+        if (action == null) {
             xmlTemplateDocument.setData("FILENAME", cms.readAbsolutePath(file));
         }
         // process the selected template

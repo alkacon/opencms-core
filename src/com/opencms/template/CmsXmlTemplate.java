@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.119 $
+* Date   : $Date: 2003/08/03 15:12:00 $
+* Version: $Revision: 1.120 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.119 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.120 $ $Date: 2003/08/03 15:12:00 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -1362,7 +1362,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
 
         // Indicates, if this is a request of a guest user. Needed for error outputs.
-        boolean isAnonymousUser = cms.anonymousUser().equals(cms.getRequestContext().currentUser());
+        boolean isAnonymousUser = cms.getRequestContext().currentUser().isGuestUser();
 
         // First create a copy of the parameter hashtable
         Hashtable parameterHashtable = (Hashtable)((Hashtable)userObject).clone();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/08/01 15:42:18 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/08/03 15:12:00 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.defaults.master.genericsql;
 
 import org.opencms.db.CmsIdGenerator;
+import org.opencms.security.CmsSecurityException;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
@@ -130,7 +131,7 @@ public class CmsDbAccess {
         throws CmsException {
         if(isOnlineProject(cms)) {
             // this is the onlineproject - don't write into this project directly
-            throw new CmsException("Can't write to the online project", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Can't write to the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
         //int newMasterId = CmsIdGenerator.nextId(m_poolName, "CMS_MODULE_MASTER");
         CmsUUID newMasterId = new CmsUUID();
@@ -185,22 +186,23 @@ public class CmsDbAccess {
      * @param mediaToAdd a Vector of media to add.
      * @param channelToAdd a Vector of channels to add.
      * @return CmsUUID The uuid of the new content definition
+     * @throws CmsException in case something goes wrong
      */
     public CmsUUID copy(CmsObject cms, CmsMasterContent content,
                        CmsMasterDataSet dataset, Vector mediaToAdd, Vector channelToAdd)
         throws CmsException {
-        if(isOnlineProject(cms)) {
+        if (isOnlineProject(cms)) {
             // this is the onlineproject - don't write into this project directly
-            throw new CmsException("Can't write to the online project", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Can't write in online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
-        if(dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
+        if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't write it!
-            throw new CmsException("Can't update a cd with a backup cd ", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Can't update a cd with a backup cd ", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        if(!content.isWriteable()) {
+        if (!content.isWriteable()) {
             // no write access
-            throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         CmsUUID newMasterId = new CmsUUID();
         int projectId = cms.getRequestContext().currentProject().getId();
@@ -243,13 +245,13 @@ public class CmsDbAccess {
      */
     public void writeLockstate(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset)
         throws CmsException {
-        if(isOnlineProject(cms)) {
+        if (isOnlineProject(cms)) {
             // this is the onlineproject - don't write into this project directly
-            throw new CmsException("Can't lock in the online project", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Can't lock in the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
-        if(!content.isWriteable()) {
+        if (!content.isWriteable()) {
             // no write access
-            throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         if (!dataset.m_lockedBy.isNullUUID()) {
             // lock the resource into the current project
@@ -282,34 +284,34 @@ public class CmsDbAccess {
      */
     public void write(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset)
         throws CmsException {
-        if(isOnlineProject(cms)) {
+        if (isOnlineProject(cms)) {
             // this is the onlineproject - don't write into this project directly
-            throw new CmsException("Can't write to the online project", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Can't write to the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
-        if(dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
+        if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't write it!
-            throw new CmsException("Can't update a cd with a backup cd ", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Can't update a cd with a backup cd", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         // read the lockstate
         readLockstate(dataset, content.getSubId());
-        if(!dataset.m_lockedBy.equals(cms.getRequestContext().currentUser().getId())) {
+        if (!dataset.m_lockedBy.equals(cms.getRequestContext().currentUser().getId())) {
             // is not locked by this user
-            throw new CmsException("Not locked by this user", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not locked by this user", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        if(dataset.m_lockedInProject != dataset.m_projectId) {
+        if (dataset.m_lockedInProject != dataset.m_projectId) {
             // not locked in this project
-            throw new CmsException("Not locked in this project", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not locked in this project", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        if(!content.isWriteable()) {
+        if (!content.isWriteable()) {
             // no write access
-            throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
 
         long currentTime = new java.util.Date().getTime();
         CmsUUID currentUserId = cms.getRequestContext().currentUser().getId();
         // updateing some values for updated dataset
-        if(dataset.m_state != I_CmsConstants.C_STATE_NEW) {
+        if (dataset.m_state != I_CmsConstants.C_STATE_NEW) {
             // if the state is not new then set the state to changed
             dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
         }
@@ -345,9 +347,9 @@ public class CmsDbAccess {
      */
     public void read(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset, CmsUUID contentId)
         throws CmsException {
-        if(!content.isReadable()) {
+        if (!content.isReadable()) {
             // no read access
-            throw new CmsException("Not readable", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not readable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         String statement_key = "read_offline";
         if(isOnlineProject(cms)) {
@@ -369,7 +371,7 @@ public class CmsDbAccess {
                 throw new CmsException( "[" + this.getClass().getName() + ".read] no content found for CID:" + contentId + ", SID: " + content.getSubId() + ", statement: " + statement_key, CmsException.C_NOT_FOUND);
             }
             if(!checkAccess(content, false)) {
-                throw new CmsException("Not readable", CmsException.C_NO_ACCESS);
+                throw new CmsSecurityException("Not readable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
             }
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
@@ -418,13 +420,13 @@ public class CmsDbAccess {
      */
     public Vector readMedia(CmsObject cms, CmsMasterContent content)
         throws CmsException {
-        if(!content.isReadable()) {
+        if (!content.isReadable()) {
             // no read access
-            throw new CmsException("Not readable", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not readable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         Vector retValue = new Vector();
         String statement_key = "read_media_offline";
-        if(isOnlineProject(cms)) {
+        if (isOnlineProject(cms)) {
             statement_key = "read_media_online";
         }
 
@@ -436,7 +438,7 @@ public class CmsDbAccess {
             stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
             stmt.setString(1, content.getId().toString());
             res = stmt.executeQuery();
-            while(res.next()) {
+            while (res.next()) {
                 int i = 1;
                 retValue.add(new CmsMasterMedia (
                     res.getInt(i++),
@@ -472,7 +474,7 @@ public class CmsDbAccess {
         throws CmsException {
         if(!content.isReadable()) {
             // no read access
-            throw new CmsException("Not readable", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not readable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         Vector retValue = new Vector();
         String statement_key = "read_channel_offline";
@@ -564,31 +566,31 @@ public class CmsDbAccess {
      */
     public void delete(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset)
         throws CmsException {
-        if(isOnlineProject(cms)) {
+        if (isOnlineProject(cms)) {
             // this is the onlineproject - don't write into this project directly
-            throw new CmsException("Can't delete from the online project", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Can't delete from the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
-        if(dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
+        if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't delete it!
-            throw new CmsException("Can't delete a backup cd ", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Can't delete a backup cd", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         // read the lockstate
         readLockstate(dataset, content.getSubId());
-        if((!dataset.m_lockedBy.equals(cms.getRequestContext().currentUser().getId()))) {
+        if ((!dataset.m_lockedBy.equals(cms.getRequestContext().currentUser().getId()))) {
             // is not locked by this user
-            throw new CmsException("Not locked by this user", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not locked by this user", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        if(dataset.m_lockedInProject != dataset.m_projectId) {
+        if (dataset.m_lockedInProject != dataset.m_projectId) {
             // not locked in this project
-            throw new CmsException("Not locked in this project", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not locked in this project", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        if(!content.isWriteable()) {
+        if (!content.isWriteable()) {
             // no write access
-            throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
 
-        if(dataset.m_state == I_CmsConstants.C_STATE_NEW) {
+        if (dataset.m_state == I_CmsConstants.C_STATE_NEW) {
             // this is a new line in this project and can be deleted
             String statement_key = "delete_offline";
             PreparedStatement stmt = null;
@@ -640,18 +642,18 @@ public class CmsDbAccess {
      */
     public void undelete(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset)
         throws CmsException {
-        if(isOnlineProject(cms)) {
+        if (isOnlineProject(cms)) {
             // this is the onlineproject - don't write into this project directly
-            throw new CmsException("Can't undelete from the online project", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Can't undelete from the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
-        if(dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
+        if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't delete it!
-            throw new CmsException("Can't undelete a backup cd ", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Can't undelete a backup cd ", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);            
         }
-        if(!content.isWriteable()) {
+        if (!content.isWriteable()) {
             // no write access
-            throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);            
         }
         // set state to deleted and update the line
         dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
@@ -681,30 +683,30 @@ public class CmsDbAccess {
      * @param dataset the set of data for this contentdefinition.
      */
     public void changePermissions(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset) throws CmsException {
-        if(isOnlineProject(cms)) {
+        if (isOnlineProject(cms)) {
             // this is the onlineproject - don't write into this project directly
-            throw new CmsException("Can't change permissions in online project", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Can't change permissions in online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
-        if(dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
+        if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't delete it!
-            throw new CmsException("Can't change permissions of a backup cd ", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Can't change permissions of a backup cd ", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         // read the lockstate
         readLockstate(dataset, content.getSubId());
         if (!dataset.m_lockedBy.equals(cms.getRequestContext().currentUser().getId())) {
             // is not locked by this user
-            throw new CmsException("Not locked by this user", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not locked by this user", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        if(dataset.m_lockedInProject != dataset.m_projectId) {
+        if (dataset.m_lockedInProject != dataset.m_projectId) {
             // not locked in this project
-            throw new CmsException("Not locked in this project", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not locked in this project", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        if(!content.isWriteable()) {
+        if (!content.isWriteable()) {
             // no write access
-            throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        if (dataset.m_state != I_CmsConstants.C_STATE_NEW){
+        if (dataset.m_state != I_CmsConstants.C_STATE_NEW) {
             dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
         }
         dataset.m_dateLastModified = System.currentTimeMillis();

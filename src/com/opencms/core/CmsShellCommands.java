@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/08/03 09:42:42 $
-* Version: $Revision: 1.106 $
+* Date   : $Date: 2003/08/03 15:11:59 $
+* Version: $Revision: 1.107 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.106 $ $Date: 2003/08/03 09:42:42 $
+ * @version $Revision: 1.107 $ $Date: 2003/08/03 15:11:59 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -280,17 +280,6 @@ class CmsShellCommands {
         try {
             int intFlags = Integer.parseInt(flags);
             System.out.println(m_cms.addWebUser(name, password, group, additionalGroup, description, new Hashtable(), intFlags));
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Displays the anonymous user object.
-     */
-    public void anonymousUser() {
-        try {
-            System.out.println(m_cms.anonymousUser());
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/08/03 09:42:42 $
-* Version: $Revision: 1.114 $
+* Date   : $Date: 2003/08/03 15:11:59 $
+* Version: $Revision: 1.115 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
 package com.opencms.workplace;
 
 import org.opencms.lock.CmsLock;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.boot.I_CmsLogChannels;
@@ -66,7 +67,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.114 $ $Date: 2003/08/03 09:42:42 $
+ * @version $Revision: 1.115 $ $Date: 2003/08/03 15:11:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -448,13 +449,11 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
 
             // We don't want the user to go on and create any temporary
             // files, if he has insufficient rights. Check this now.
-            // if(!cms.accessWrite(file)) {
-            if(!cms.hasPermissions(file, I_CmsConstants.C_WRITE_ACCESS)) {
-                throw new CmsException(getClassName() + "Insufficient rights for editing the file " + file, CmsException.C_NO_ACCESS);
+            if (!cms.hasPermissions(file, I_CmsConstants.C_WRITE_ACCESS)) {
+                throw new CmsSecurityException("Insufficient rights for editing the file " + file, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
             }
-            //if(!cms.accessWrite(bodyElementFilename)) {
-			if(!cms.hasPermissions(bodyElementFilename, I_CmsConstants.C_WRITE_ACCESS)) {
-                throw new CmsException(getClassName() + "Insufficient rights for editing the file " + bodyElementFilename, CmsException.C_NO_ACCESS);
+            if (!cms.hasPermissions(bodyElementFilename, I_CmsConstants.C_WRITE_ACCESS)) {
+                throw new CmsSecurityException("Insufficient rights for editing the file " + bodyElementFilename, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
             }
 
             // Okay. All values are initialized. Now we can create

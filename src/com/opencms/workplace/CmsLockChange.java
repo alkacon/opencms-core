@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/08/03 15:11:59 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -43,7 +44,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.44 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.45 $ $Date: 2003/08/03 15:11:59 $
  */
 
 public class CmsLockChange extends CmsWorkplaceDefault {
@@ -112,12 +113,12 @@ public class CmsLockChange extends CmsWorkplaceDefault {
                 try{
                     //cms.unlockResource(filename, false);
                     cms.lockResource(filename, true);
-                }catch(CmsException e){
+                } catch (CmsException e){
                     CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-                    if(e.getType() == CmsException.C_ACCESS_DENIED) {
+                    if (e instanceof CmsSecurityException) {
                         template = "erroraccessdenied";
                         xmlTemplateDocument.setData("details", file.getResourceName());
-                    }else {
+                    } else {
                         xmlTemplateDocument.setData("details", e.toString());
                         template = "error";
                     }

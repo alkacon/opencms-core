@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/08/03 09:42:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/08/03 15:12:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
@@ -741,7 +741,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         // if the user is "Guest", we send an servlet error,
         // otherwise we try to throw an exception.
         CmsRequestContext reqContext = cms.getRequestContext();
-        if ((DEBUG == 0) && cms.anonymousUser().equals(reqContext.currentUser())) {
+        if ((DEBUG == 0) && reqContext.currentUser().isGuestUser()) {
             throw new CmsException(errorText, CmsException.C_SERVICE_UNAVAILABLE, e);
         } else {
             if (e instanceof CmsException) {

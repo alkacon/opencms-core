@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2003/08/01 13:57:22 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/08/03 15:12:00 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletRequest;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2003/08/01 13:57:22 $
+ * @version $Revision: 1.14 $ $Date: 2003/08/03 15:12:00 $
  */
 public abstract class A_CmsTemplate implements I_CmsTemplate {
 
@@ -103,7 +103,7 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
         boolean result;
         try {
             result = isProxyPublicCacheable(cms, templateFile, elementName, parameters, templateSelector)
-            && cms.getRequestContext().currentUser().equals(cms.anonymousUser());
+            && cms.getRequestContext().currentUser().isGuestUser();
         } catch (Exception e) {
             result = false;
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/08/03 15:11:59 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.27 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.28 $ $Date: 2003/08/03 15:11:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -298,7 +298,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                 }
                                 if(!pwd.equals(pwd2)) {
                                     throw new CmsException("unequal passwords",
-                                            CmsException.C_SHORT_PASSWORD);
+                                            CmsException.C_INVALID_PASSWORD);
                                 }
                                 // check the password
                                 Utils.validateNewPassword(cms, pwd, null);
@@ -341,7 +341,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                 session.putValue("TOWN", town);
                                 session.putValue("USEREMAIL", email);
                                 session.putValue("DEFAULTGROUP", defaultGroup);
-                                if(e.getType() == CmsException.C_SHORT_PASSWORD) {
+                                if(e.getType() == CmsException.C_INVALID_PASSWORD) {
                                     if(e.getMessage().equals("unequal passwords")) {
                                         templateSelector = "passworderror1";
                                     }else {
@@ -455,7 +455,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                     }
                                     if(!pwd.equals(pwd2)) {
                                         throw new CmsException("unequal passwords",
-                                                CmsException.C_SHORT_PASSWORD);
+                                                CmsException.C_INVALID_PASSWORD);
                                     }
                                     if(!pwd.equals("")) {
                                         cms.setPassword(user, pwd);
@@ -501,7 +501,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                     session.putValue("TOWN", town);
                                     session.putValue("USEREMAIL", email);
                                     session.putValue("DEFAULTGROUP", defaultGroup);
-                                    if(e.getType() == CmsException.C_SHORT_PASSWORD) {
+                                    if(e.getType() == CmsException.C_INVALID_PASSWORD) {
                                         if(e.getMessage().equals("unequal passwords")) {
                                             templateSelector = "passworderror3";
                                         }else {

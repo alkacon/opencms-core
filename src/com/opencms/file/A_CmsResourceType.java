@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/01 15:42:18 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/08/03 15:12:00 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package com.opencms.file;
 
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 
 import java.util.Map;
@@ -42,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -144,10 +143,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#undoChanges(com.opencms.file.CmsObject, java.lang.String)
      */
     public void undoChanges(CmsObject cms, String resourcename) throws CmsException {
-        // TODO: Move permission check to CmsObject or CmsDriverManager        
-        if (!cms.hasPermissions(resourcename, I_CmsConstants.C_WRITE_ACCESS)) {
-            throw new CmsException(resourcename, CmsException.C_NO_ACCESS);
-        }
         cms.doUndoChanges(resourcename);
     }
 
@@ -155,10 +150,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#restoreResource(com.opencms.file.CmsObject, int, java.lang.String)
      */
     public void restoreResource(CmsObject cms, int version, String resourcename) throws CmsException {
-        // TODO: Move permission check in CmsObject or CmsDriverManager
-        if (!cms.hasPermissions(resourcename, I_CmsConstants.C_WRITE_ACCESS)) {
-            throw new CmsException(resourcename, CmsException.C_NO_ACCESS);
-        }
         cms.doRestoreResource(version, resourcename);
     }
 

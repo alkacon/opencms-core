@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/03 09:42:42 $
- * Version: $Revision: 1.127 $
+ * Date   : $Date: 2003/08/03 15:12:00 $
+ * Version: $Revision: 1.128 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.lock.CmsLockException;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 
 import com.opencms.boot.CmsBase;
@@ -74,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.127 $ $Date: 2003/08/03 09:42:42 $
+ * @version $Revision: 1.128 $ $Date: 2003/08/03 15:12:00 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -442,7 +443,7 @@ public class CmsDriverManager extends Object {
                     m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS, suffixes);
                 }
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + extension, CmsException.C_NO_ACCESS);
+                throw new CmsSecurityException("[" + this.getClass().getName() + "] addFileExtension() " + extension, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
             }
         }
     }
@@ -488,7 +489,7 @@ public class CmsDriverManager extends Object {
             addUserToGroup(context, newUser.getName(), group.getName());
             return newUser;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] addImportUser() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);            
         }
     }
 
@@ -528,10 +529,10 @@ public class CmsDriverManager extends Object {
                 addUserToGroup(context, newUser.getName(), defaultGroup.getName());
                 return newUser;
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_SHORT_PASSWORD);
+                throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_INVALID_PASSWORD);
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] addUser() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);            
         }
     }
 
@@ -579,7 +580,7 @@ public class CmsDriverManager extends Object {
                     throw new CmsException("[" + getClass().getName() + "]" + username, CmsException.C_NO_USER);
                 }
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_NO_ACCESS);
+                throw new CmsSecurityException("[" + this.getClass().getName() + "] addUserToGroup() " + username + " " + groupname, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                            
             }
         }
     }
@@ -636,7 +637,7 @@ public class CmsDriverManager extends Object {
 
             return newUser;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_SHORT_PASSWORD);
+            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_INVALID_PASSWORD);
         }
 
     }
@@ -706,22 +707,8 @@ public class CmsDriverManager extends Object {
             }
             return newUser;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_SHORT_PASSWORD);
+            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_INVALID_PASSWORD);
         }
-    }
-
-    /**
-     * Returns the anonymous user object.<P/>
-     *
-     * <B>Security:</B>
-     * All users are granted.
-     *
-     * @param context the current request context
-     * @return the anonymous user object.
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public CmsUser anonymousUser(CmsRequestContext context) throws CmsException {
-        return readUser(I_CmsConstants.C_USER_GUEST);
     }
 
     /**
@@ -763,7 +750,7 @@ public class CmsDriverManager extends Object {
      * Only the administrator can change the type
      *
      * @param context the current request context
-     * @param userId The id of the user to change
+     * @param user the user to change
      * @param userType The new usertype of the user
      */
     public void changeUserType(CmsRequestContext context, CmsUser user, int userType) throws CmsException {
@@ -772,7 +759,7 @@ public class CmsDriverManager extends Object {
             clearUserCache(user);
             m_userDriver.changeUserType(user.getId(), userType);
         } else {
-            throw new CmsException("Only administrators can change usertype ", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] changeUserType() " + user.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                            
         }
     }
 
@@ -819,15 +806,14 @@ public class CmsDriverManager extends Object {
      * an no access exception is thrown.
      *
      * @param context the current request context
-     * @param resource				the resource on which permissions are required
-     * @param requiredPermissions	the set of permissions required to access the resource
-     * @param strongCheck			if set to true, all required permission have to be granted, otherwise only one
-     * @throws CmsException			C_NO_ACCESS if the required permissions are not satisfied and blockAccess is true
+     * @param resource the resource on which permissions are required
+     * @param requiredPermissions the set of permissions required to access the resource
+     * @throws CmsException in case of any i/o error
+     * @throws CmsSecurityException if the required permissions are not satisfied
      */
-    public void checkPermissions(CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
-
+    public void checkPermissions(CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException, CmsSecurityException {
         if (!hasPermissions(context, resource, requiredPermissions, false)) {
-            throw new CmsException("[" + this.getClass().getName() + "] denied access to resource " + resource.getResourceName() + ", required permissions are " + requiredPermissions.getPermissionString() + " (required one)", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] denied access to resource " + resource.getResourceName() + ", required permissions are " + requiredPermissions.getPermissionString() + " (required one)", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -1088,10 +1074,10 @@ public class CmsDriverManager extends Object {
 
         // checks, if the type is valid, i.e. the user can copy files of this type
         // we can't utilize the access guard to do this, since it needs a resource to check   
-        if (!isAdmin(context) && 
-            (sourceFile.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID ||
-             sourceFile.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) { 
-            throw new CmsException("[" + this.getClass().getName() + "] " + source, CmsException.C_NO_ACCESS);
+        if (!isAdmin(context) 
+            && (sourceFile.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID
+                || sourceFile.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) { 
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] copyFile() " + source, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         
         // check if the user has read access to the source file and write access to the destination folder
@@ -1258,7 +1244,7 @@ public class CmsDriverManager extends Object {
             }
         } else {
             // no changes on the onlineproject!
-            throw new CmsException("[" + this.getClass().getName() + "] " + context.currentProject().getName(), CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] " + context.currentProject().getName(), CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
     /**
@@ -1276,15 +1262,14 @@ public class CmsDriverManager extends Object {
     public int countLockedResources(CmsRequestContext context, int id) throws CmsException {
         // read the project.
         CmsProject project = readProject(context, id);
-
         // check the security
         if (isAdmin(context) || isManagerOfProject(context) || (project.getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
-
             // count locks
-            //return m_vfsDriver.countLockedResources(project);
             return m_lockDispatcher.countExclusiveLocksInProject(project);
+        } else if (!isAdmin(context) && !isManagerOfProject(context)) {
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] countLockedResources()", CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + id, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] countLockedResources()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -1314,7 +1299,7 @@ public class CmsDriverManager extends Object {
 
             return m_projectDriver.createProject(context.currentUser(), group, managergroup, noTask, name, description, I_CmsConstants.C_PROJECT_STATE_UNLOCKED, projecttype);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] createDirectPublishProject()", CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -1357,7 +1342,7 @@ public class CmsDriverManager extends Object {
         // checks, if the type is valid, i.e. the user can create files of this type
         // we can't utilize the access guard to do this, since it needs a resource to check   
         if (!isAdmin(context) && (CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_NAME.equals(type) || CmsResourceTypeJsp.C_RESOURCE_TYPE_NAME.equals(type))) { 
-            throw new CmsException("[" + this.getClass().getName() + "] " + resourceName, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] createFile() " + resourceName, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
 
         CmsFolder cmsFolder = readFolder(context, folderName);
@@ -1473,7 +1458,7 @@ public class CmsDriverManager extends Object {
                 throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] createGroup() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                        
         }
     }
 
@@ -1571,7 +1556,7 @@ public class CmsDriverManager extends Object {
             CmsTask task = createProject(context, name, 1, group.getName(), System.currentTimeMillis(), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
             return m_projectDriver.createProject(context.currentUser(), group, managergroup, task, name, description, I_CmsConstants.C_PROJECT_STATE_UNLOCKED, projecttype);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] createProject()", CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -1597,7 +1582,7 @@ public class CmsDriverManager extends Object {
             m_propertyDefVectorCache.clear();
             return (m_vfsDriver.createPropertydefinition(name, context.currentProject().getId(), resourcetype));
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] createPropertydefinition() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                            
         }
     }
 
@@ -1693,7 +1678,7 @@ public class CmsDriverManager extends Object {
             cms.getRegistry().setSystemValue("tempfileproject", "" + tempProject.getId());
             return tempProject;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] createTempfileProject() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                        
         }
     }
 
@@ -1835,7 +1820,7 @@ public class CmsDriverManager extends Object {
                 //System.err.println("backup max date: "+Utils.getNiceDate(maxDate));
                 lastVersion = m_backupDriver.deleteBackups(maxDate);
             } else {
-                throw new CmsException("No access to delete the backup versions", CmsException.C_NO_ACCESS);
+                throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteBackups()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                            
             }
         }
         return lastVersion;
@@ -2064,7 +2049,7 @@ public class CmsDriverManager extends Object {
                 throw new CmsException(delgroup, CmsException.C_GROUP_NOT_EMPTY);
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + delgroup, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteGroup() " + delgroup, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                                        
         }
     }
 
@@ -2171,8 +2156,10 @@ public class CmsDriverManager extends Object {
             // delete the project
             m_projectDriver.deleteProject(deleteProject);
             m_projectCache.remove(new Integer(projectId));
+        } else if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) { 
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteProject() " + deleteProject.getName(), CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + projectId, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteProject() " + deleteProject.getName(), CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -2245,7 +2232,7 @@ public class CmsDriverManager extends Object {
             m_propertyDefCache.remove(name + (getResourceType(resourcetype)).getResourceType());
             m_vfsDriver.deletePropertydefinition(readPropertydefinition(context, name, resourcetype));
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] deletePropertydefinition() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);            
         }
     }
 
@@ -2274,9 +2261,9 @@ public class CmsDriverManager extends Object {
      * Only users, which are in the group "administrators" are granted.
      *
      * @param context the current request context
-     * @param name The name of the user to be deleted.
+     * @param username The name of the user to be deleted.
      *
-     * @throws CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException if operation was not succesfull
      */
     public void deleteUser(CmsRequestContext context, String username) throws CmsException {
         // Test is this user is existing
@@ -2288,8 +2275,10 @@ public class CmsDriverManager extends Object {
             m_userDriver.deleteUser(username);
             // delete user from cache
             clearUserCache(user);
+        } else if (username.equals(I_CmsConstants.C_USER_ADMIN) || username.equals(I_CmsConstants.C_USER_GUEST)) {
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteUser() " + username, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteUser() " + username, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -2366,7 +2355,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context)) {
             new CmsExportModuledata(cms, exportFile, exportChannels, exportModules, report);
         } else {
-            throw new CmsException("[" + getClass().getName() + "] exportModuledata", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportModuledata()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);            
         }
     }
 
@@ -2387,7 +2376,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context)) {
             new CmsExport(cms, exportFile, exportPaths, false, false);
         } else {
-            throw new CmsException("[" + getClass().getName() + "] exportResources", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                                
         }
     }
 
@@ -2410,7 +2399,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context)) {
             new CmsExport(cms, exportFile, exportPaths, excludeSystem, excludeUnchanged);
         } else {
-            throw new CmsException("[" + getClass().getName() + "] exportResources", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                    
         }
     }
 
@@ -2435,7 +2424,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context)) {
             new CmsExport(cms, exportFile, exportPaths, excludeSystem, excludeUnchanged, null, exportUserdata, contentAge, report);
         } else {
-            throw new CmsException("[" + getClass().getName() + "] exportResources", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                        
         }
     }
 
@@ -2456,7 +2445,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context) || isProjectManager(context) || isUser(context)) {
             new CmsStaticExport(cms, linksToExport);
         } else {
-            throw new CmsException("[" + getClass().getName() + "] exportResources", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + getClass().getName() + "] exportStaticResources()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -2475,7 +2464,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context) || isProjectManager(context) || isUser(context)) {
             new CmsStaticExport(cms, startpoints, true, projectResources, allExportedLinks, changedResources, report);
         } else {
-            throw new CmsException("[" + getClass().getName() + "] exportResources", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + getClass().getName() + "] exportStaticResources()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -3017,10 +3006,10 @@ public class CmsDriverManager extends Object {
      */
     public Vector getChild(CmsRequestContext context, String groupname) throws CmsException {
         // check security
-        if (!anonymousUser(context).equals(context.currentUser())) {
+        if (!context.currentUser().isGuestUser()) {
             return m_userDriver.getChild(groupname);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + groupname, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + getClass().getName() + "] getChild()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -3038,7 +3027,7 @@ public class CmsDriverManager extends Object {
      */
     public Vector getChilds(CmsRequestContext context, String groupname) throws CmsException {
         // check security
-        if (!anonymousUser(context).equals(context.currentUser())) {
+        if (!context.currentUser().isGuestUser()) {
             Vector childs = new Vector();
             Vector allChilds = new Vector();
             Vector subchilds = new Vector();
@@ -3063,7 +3052,7 @@ public class CmsDriverManager extends Object {
             }
             return allChilds;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + groupname, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + getClass().getName() + "] getChilds()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -3281,10 +3270,10 @@ public class CmsDriverManager extends Object {
      */
     public Vector getGroups(CmsRequestContext context) throws CmsException {
         // check security
-        if (!anonymousUser(context).equals(context.currentUser())) {
+        if (!context.currentUser().isGuestUser()) {
             return m_userDriver.getGroups();
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + context.currentUser().getName(), CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + getClass().getName() + "] getGroups()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -3825,10 +3814,10 @@ public class CmsDriverManager extends Object {
      */
     public Vector getUsers(CmsRequestContext context) throws CmsException {
         // check security
-        if (!anonymousUser(context).equals(context.currentUser())) {
+        if (!context.currentUser().isGuestUser()) {
             return m_userDriver.getUsers(I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + context.currentUser().getName(), CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + getClass().getName() + "] getUsers()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -3845,10 +3834,10 @@ public class CmsDriverManager extends Object {
      */
     public Vector getUsers(CmsRequestContext context, int type) throws CmsException {
         // check security
-        if (!anonymousUser(context).equals(context.currentUser())) {
+        if (!context.currentUser().isGuestUser()) {
             return m_userDriver.getUsers(type);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + context.currentUser().getName(), CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + getClass().getName() + "] getUsers()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -3866,10 +3855,10 @@ public class CmsDriverManager extends Object {
      */
     public Vector getUsers(CmsRequestContext context, int type, String namestart) throws CmsException {
         // check security
-        if (!anonymousUser(context).equals(context.currentUser())) {
+        if (!context.currentUser().isGuestUser()) {
             return m_userDriver.getUsers(type, namestart);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + context.currentUser().getName(), CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + getClass().getName() + "] getUsers()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -3889,10 +3878,10 @@ public class CmsDriverManager extends Object {
      */
     public Vector getUsersByLastname(CmsRequestContext context, String Lastname, int UserType, int UserStatus, int wasLoggedIn, int nMax) throws CmsException {
         // check security
-        if (!anonymousUser(context).equals(context.currentUser())) {
+        if (!context.currentUser().isGuestUser()) {
             return m_userDriver.getUsersByLastname(Lastname, UserType, UserStatus, wasLoggedIn, nMax);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + context.currentUser().getName(), CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + getClass().getName() + "] getUsersByLastname()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -3909,10 +3898,10 @@ public class CmsDriverManager extends Object {
      */
     public Vector getUsersOfGroup(CmsRequestContext context, String groupname) throws CmsException {
         // check the security
-        if (!anonymousUser(context).equals(context.currentUser())) {
+        if (!context.currentUser().isGuestUser()) {
             return m_userDriver.getUsersOfGroup(groupname, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + groupname, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + getClass().getName() + "] getUsersOfGroup()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -3970,11 +3959,11 @@ public class CmsDriverManager extends Object {
      * Performs a non-blocking permission check on a resource.<p>
      *
      * @param context the current request context
-     * @param resource				the resource on which permissions are required
-     * @param requiredPermissions	the set of permissions required to access the resource
-     * @param strongCheck			if set to true, all required permission have to be granted, otherwise only one
-     * @return						true if the user has sufficient permissions on the resource
-     * @throws CmsException			if something goes wrong
+     * @param resource the resource on which permissions are required
+     * @param requiredPermissions the set of permissions required to access the resource
+     * @param strongCheck if set to true, all required permission have to be granted, otherwise only one
+     * @return true if the user has sufficient permissions on the resource
+     * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions, boolean strongCheck) throws CmsException {
         CmsLock lock = getLock(context, resource);
@@ -3993,8 +3982,8 @@ public class CmsDriverManager extends Object {
         }
 
         if (!lock.isNullLock()) {
-            //	if the resource is locked by another user, write is rejected
-            //  read must still be possible, since the explorer file list needs some properties
+            // if the resource is locked by another user, write is rejected
+            // read must still be possible, since the explorer file list needs some properties
             if (!context.currentUser().getId().equals(lock.getUserId()))
                 denied |= I_CmsConstants.C_PERMISSION_WRITE;
         }
@@ -4033,7 +4022,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context)) {
             new CmsImportFolder(importFile, importPath, cms);
         } else {
-            throw new CmsException("[" + getClass().getName() + "] importResources", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] importFolder()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -4153,7 +4142,7 @@ public class CmsDriverManager extends Object {
                 imp.importResources();
             }
         } else {
-            throw new CmsException("[" + getClass().getName() + "] importResources", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] importResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -4291,8 +4280,7 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Determines, if the users current group is the projectleader-group.<BR/>
-     * All projectleaders can create new projects, or close their own projects.
+     * Determines if the user is a member of the "Projectmanagers" group.<p>
      *
      * <B>Security:</B>
      * All users are granted.
@@ -4311,8 +4299,7 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Determines, if the users current group is the projectleader-group.<BR/>
-     * All projectleaders can create new projects, or close their own projects.
+     * Determines if the user is a member of the "Users" group.<p>
      *
      * <B>Security:</B>
      * All users are granted.
@@ -4427,8 +4414,8 @@ public class CmsDriverManager extends Object {
         try {
             // check if the user has write access to the resource
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
-        } catch (CmsException e) {
-            if (stealLock && e.getType() == CmsException.C_NO_ACCESS && oldLock.getType() != CmsLock.C_TYPE_INHERITED && oldLock.getType() != CmsLock.C_TYPE_SHARED_INHERITED && !exclusiveLock.isNullLock()) {
+        } catch (CmsSecurityException e) {
+            if (stealLock && (oldLock.getType() != CmsLock.C_TYPE_INHERITED) && (oldLock.getType() != CmsLock.C_TYPE_SHARED_INHERITED) && !exclusiveLock.isNullLock()) {
                 // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
                 // a new user with insufficient permissions on the resource
                 m_lockDispatcher.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
@@ -4483,7 +4470,7 @@ public class CmsDriverManager extends Object {
             return (newUser);
         } else {
             // No Access!
-            throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] loginUser() " + username, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -4518,7 +4505,7 @@ public class CmsDriverManager extends Object {
             return (newUser);
         } else {
             // No Access!
-            throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] loginWebUser() " + username, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -4830,8 +4817,12 @@ public class CmsDriverManager extends Object {
                     }
                 }
             }
+        } else if (publishProjectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            throw new CmsSecurityException("[" + getClass().getName() + "] could not publish project " + publishProjectId, CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
+        } else if (!isAdmin(context) && !isManagerOfProject(context)) {
+            throw new CmsSecurityException("[" + getClass().getName() + "] could not publish project " + publishProjectId, CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         } else {
-            throw new CmsException("[" + getClass().getName() + "] could not publish project " + publishProjectId, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + getClass().getName() + "] could not publish project " + publishProjectId, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
 
         allChanged.setChangedResources(changedResources);
@@ -6773,8 +6764,10 @@ public class CmsDriverManager extends Object {
                     throw new CmsException("[" + getClass().getName() + "]" + groupname, CmsException.C_NO_GROUP);
                 }
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_NO_ACCESS);
+                throw new CmsSecurityException("[" + this.getClass().getName() + "] removeUserFromGroup()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
             }
+        } else {
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] removeUserFromGroup()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -6873,27 +6866,16 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(CmsRequestContext context, int versionId, String filename) throws CmsException {
-        CmsBackupResource backupFile = null;
-        CmsFile offlineFile = null;
+        if(context.currentProject().isOnlineProject()) {
+            // this is the onlineproject
+            throw new CmsSecurityException("Can't write to the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
+        }       
+        CmsFile offlineFile = readFile(context, filename);        
+        // check if the user has write access 
+        checkPermissions(context, offlineFile, I_CmsConstants.C_WRITE_ACCESS);
+       
         int state = I_CmsConstants.C_STATE_CHANGED;
-        // read the backup file
-        backupFile = readBackupFile(context, versionId, filename);
-        // try to read the owner and the group
-        /*
-        CmsUUID ownerId = context.currentUser().getId();
-        CmsUUID groupId = context.currentUser().getDefaultGroupId();
-        try {
-            ownerId = readUser(backupFile.getOwnerName()).getId();
-        } catch (CmsException exc) {
-            // user can not be read, set the userid of current user
-        }
-        try {
-            groupId = readGroup(context, backupFile.getGroupName()).getId();
-        } catch (CmsException exc) {
-            // group can not be read, set the groupid of current user
-        }
-        */
-        offlineFile = readFile(context, filename);
+        CmsBackupResource backupFile = readBackupFile(context, versionId, filename);
         if (offlineFile.getState() == I_CmsConstants.C_STATE_NEW) {
             state = I_CmsConstants.C_STATE_NEW;
         }
@@ -6985,7 +6967,7 @@ public class CmsDriverManager extends Object {
             // write the changes to the cms
             writeGroup(context, group);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + groupName, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] setParentGroup() " + groupName, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -7011,7 +6993,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context)) {
             m_userDriver.setPassword(username, newPassword);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] setPassword() " + username, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -7315,6 +7297,10 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void undoChanges(CmsRequestContext context, String resourceName) throws CmsException {
+        if(context.currentProject().isOnlineProject()) {
+            // this is the onlineproject
+            throw new CmsSecurityException("Can't undo changes to the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
+        }                
         CmsProject onlineProject = readProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID);
         CmsResource resource = readFileHeader(context, resourceName, true);
         
@@ -7436,8 +7422,10 @@ public class CmsDriverManager extends Object {
             m_lockDispatcher.removeResourcesInProject(projectId);
             clearResourceCache();
             m_projectCache.clear();
+        } else if (!isAdmin(context) && !isManagerOfProject(context)) {
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] unlockProject() " + projectId, CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + projectId, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] unlockProject() " + projectId, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
     
@@ -7657,7 +7645,7 @@ public class CmsDriverManager extends Object {
                 m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_CRONTABLE, crontable);
             }
         } else {
-            throw new CmsException("No access to write crontable", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeCronTable()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);       
         }
     }
 
@@ -7707,7 +7695,7 @@ public class CmsDriverManager extends Object {
             }
 
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + path, CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeExportPath()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);            
         }
     }
 
@@ -7778,7 +7766,7 @@ public class CmsDriverManager extends Object {
                     m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS, extensions);
                 }
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + extensions.size(), CmsException.C_NO_ACCESS);
+                throw new CmsSecurityException("[" + this.getClass().getName() + "] writeFileExtensions() ", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                        
             }
         }
     }
@@ -7840,9 +7828,8 @@ public class CmsDriverManager extends Object {
             m_userDriver.writeGroup(group);
             m_groupCache.put(new CacheId(group), group);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + group.getName(), CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeGroup() " + group.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                        
         }
-
     }
 
     /**
@@ -7864,7 +7851,7 @@ public class CmsDriverManager extends Object {
                 m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_LINKCHECKTABLE, linkchecktable);
             }
         } else {
-            throw new CmsException("No access to write linkchecktable", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeLinkCheckTable()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -7962,7 +7949,7 @@ public class CmsDriverManager extends Object {
             m_propertyDefVectorCache.clear();
             return (m_vfsDriver.writePropertydefinition(propertydef));
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + propertydef.getName(), CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] writePropertydefinition() " + propertydef.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                                    
         }
     }
 
@@ -8075,7 +8062,7 @@ public class CmsDriverManager extends Object {
             clearUserCache(user);
             m_userCache.put(new CacheId(user), user);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(), CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeUser() " + user.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                                                
         }
     }
 
@@ -8101,7 +8088,7 @@ public class CmsDriverManager extends Object {
             clearUserCache(user);
             m_userCache.put(new CacheId(user), user);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(), CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeWebUser() " + user.getName(), CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/08/03 15:12:00 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -46,7 +47,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.49 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.50 $ $Date: 2003/08/03 15:12:00 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault {
@@ -127,22 +128,20 @@ public class CmsUnlock extends CmsWorkplaceDefault {
         if(startSettings!=null){
             showLockDialog = (String)startSettings.get(C_START_LOCKDIALOG);
         }
-        if(unlock == null && !"on".equals(showLockDialog)) {
+        if (unlock == null && !"on".equals(showLockDialog)) {
             unlock = "true";
         }
-        if(unlock != null) {
-            if(unlock.equals("true")) {
+        if (unlock != null) {
+            if (unlock.equals("true")) {
                 try {
                     cms.unlockResource(filename, false);
                     session.removeValue(C_PARA_RESOURCE);
-                }
-                catch(CmsException e) {
+                }  catch (CmsException e) {
                     CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-                    if(e.getType() == CmsException.C_NO_ACCESS) {
+                    if (e instanceof CmsSecurityException) {
                         template = "erroraccessdenied";
                         xmlTemplateDocument.setData("details", file.getResourceName());
-                    }
-                    else {
+                    } else {
                         template = "error";
                         xmlTemplateDocument.setData("details", e.toString());
                     }
@@ -153,15 +152,13 @@ public class CmsUnlock extends CmsWorkplaceDefault {
 
             // return to filelist
             try {
-                if(lasturl == null || "".equals(lasturl)) {
+                if (lasturl == null || "".equals(lasturl)) {
                     cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
                             + CmsWorkplaceAction.getExplorerFileUri(cms));
-                }
-                else {
+                } else {
                     cms.getRequestContext().getResponse().sendRedirect(lasturl);
                 }
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
                         + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/03 09:42:42 $
-* Version: $Revision: 1.361 $
+* Date   : $Date: 2003/08/03 15:12:00 $
+* Version: $Revision: 1.362 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.synchronize.CmsSynchronize;
 
@@ -71,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.361 $
+ * @version $Revision: 1.362 $
  */
 public class CmsObject {
 
@@ -322,16 +323,6 @@ public class CmsObject {
     public CmsUser addWebUser(String name, String password, String group, String additionalGroup, String description, Hashtable additionalInfos, int flags) throws CmsException {
         CmsUser newWebUser = m_driverManager.addWebUser(this, m_context, name, password, group, additionalGroup, description, additionalInfos, flags);
         return newWebUser;
-    }
-
-    /**
-     * Returns the anonymous user object.
-     *
-     * @return a <code>CmsUser</code> object representing the anonymous user.
-     * @throws CmsException if operation was not successful.
-     */
-    public CmsUser anonymousUser() throws CmsException {
-        return (m_driverManager.anonymousUser(m_context));
     }
 
     /**
@@ -2019,7 +2010,7 @@ public class CmsObject {
                 return null;
             }
         } else {
-            throw new CmsException("getLoggedInUsers() not allowed", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] getLoggedInUsers()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -2844,17 +2835,11 @@ public class CmsObject {
         
         CmsResource res = readFileHeader(resourcename, true);
         if (res.isFolder()) res = readFolder(resourcename, true);
-            
-        // if (resourcename.endsWith("/")) {
-        //    res = readFolder(resourcename, true);
-        //} else {
-        //    res = readFileHeader(resourcename);
-        //}
         
         CmsLock lock = getLock(resourcename);
         
         if (!lock.isNullLock()) {
-            throw new CmsException("[CmsObject] cannot publish locked resource", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[CmsObject] cannot publish locked resource", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         if (res.getState() == I_CmsConstants.C_STATE_NEW) {
             try {
@@ -2881,10 +2866,10 @@ public class CmsObject {
                 }
                 getRequestContext().setCurrentProject(oldProjectId);
             } else {
-                throw new CmsException("[CmsObject] cannot publish resource in current project", CmsException.C_NO_ACCESS);
+                throw new CmsSecurityException("[CmsObject] cannot publish resource in current project", CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
             }
         } else {
-            throw new CmsException("[CmsObject] cannot publish resource in online project", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[CmsObject] cannot publish resource in online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
         this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_RESOURCE, res);
         return retValue;
@@ -3956,7 +3941,7 @@ public class CmsObject {
                 m_sessionStorage.sendBroadcastMessage(message);
             }
         } else {
-            throw new CmsException("sendBroadcastMessage() not allowed", CmsException.C_NO_ACCESS);
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] sendBroadcastMessage()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 

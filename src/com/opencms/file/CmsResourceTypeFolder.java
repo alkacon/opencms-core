@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/08/01 15:42:18 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2003/08/03 15:12:00 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.82 $
+ * @version $Revision: 1.83 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -179,7 +179,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      */
     public void chtype(CmsObject cms, String filename, int newType) throws CmsException {
         // it is not possible to change the type of a folder
-        throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
+        throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_FILESYSTEM_ERROR);
     }
 
     /**
@@ -472,22 +472,13 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#restoreResource(com.opencms.file.CmsObject, int, java.lang.String)
      */
     public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException {
-        throw new CmsException("[" + this.getClass().getName() + "] Cannot restore folders.", CmsException.C_ACCESS_DENIED);
+        throw new CmsException("[" + this.getClass().getName() + "] Cannot restore folders.", CmsException.C_FILESYSTEM_ERROR);
     }
 
     /**
      * @see com.opencms.file.I_CmsResourceType#undoChanges(com.opencms.file.CmsObject, java.lang.String)
      */
     public void undoChanges(CmsObject cms, String resource) throws CmsException {
-        // we have to undo changes of the folder and all resources in the folder
-        //        Vector allSubFolders = new Vector();
-        //        Vector allSubFiles   = new Vector();
-        //        getAllResources(cms, resource, allSubFiles, allSubFolders);
-
-        //if(!cms.accessWrite(resource)){
-        if (!cms.hasPermissions(resource, I_CmsConstants.C_WRITE_ACCESS)) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + resource, CmsException.C_NO_ACCESS);
-        }
         // first undo changes of the folder
         cms.doUndoChanges(resource);
 

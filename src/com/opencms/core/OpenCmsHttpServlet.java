@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
- * Date   : $Date: 2003/08/03 09:42:42 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2003/08/03 15:11:59 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package com.opencms.core;
 
+import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 
 import com.opencms.boot.CmsBase;
@@ -82,7 +83,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  */
 public class OpenCmsHttpServlet extends HttpServlet {
     
@@ -142,7 +143,7 @@ public class OpenCmsHttpServlet extends HttpServlet {
                 if (st.hasMoreTokens()) {
                     password = st.nextToken();
                 }
-                // autheification in the DB
+                // authentication in the DB
                 try {
                     try {
                         // try to login as a user first ...
@@ -153,15 +154,9 @@ public class OpenCmsHttpServlet extends HttpServlet {
                     }
                     // authentification was successful create a session
                     req.getSession(true);
-                } catch (CmsException e) {
-                    if (e.getType() == CmsException.C_NO_ACCESS) {
-
-                        // authentification failed, so display a login screen
-                        requestAuthorization(req, res);
-
-                    } else {
-                        throw e;
-                    }
+                } catch (CmsSecurityException e) {
+                    // authentification failed, so display a login screen
+                    requestAuthorization(req, res);
                 }
             }
         }        
@@ -285,26 +280,26 @@ public class OpenCmsHttpServlet extends HttpServlet {
             }
         }        
 
-        if (t instanceof CmsException) {
+        if (t instanceof CmsSecurityException) {
+            CmsSecurityException e = (CmsSecurityException)t;
+
+            // access error - display login dialog
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] Access denied: " + e.getMessage());
+            }
+            if (canWrite) {
+                try {
+                    requestAuthorization(req, res);
+                } catch (IOException ioe) {
+                    // there is nothing we can do about this
+                }
+                return;
+            }
+        } else if (t instanceof CmsException) {
             CmsException e = (CmsException)t;
 
             int exceptionType = e.getType();
             switch (exceptionType) {
-                // access denied error - display login dialog
-                case CmsException.C_ACCESS_DENIED :
-                case CmsException.C_NO_ACCESS :
-                    if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] Access denied: " + e.getMessage());
-                    }
-                    if (canWrite) {
-                        try {
-                            requestAuthorization(req, res);
-                        } catch (IOException ioe) {
-                            // there is nothing we can do about this
-                        }
-                        return;
-                    }
-                    break;
 
                 case CmsException.C_NOT_FOUND :
                     // file not found - display 404 error.

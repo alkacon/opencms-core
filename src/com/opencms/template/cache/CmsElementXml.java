@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/08/03 15:12:00 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.template.cache;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.security.CmsSecurityException;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -172,7 +173,7 @@ public class CmsElementXml extends A_CmsElement {
                 } catch(Exception e) {
                     if(e instanceof CmsException) {
                         CmsException ce = (CmsException)e;
-                        if(ce.getType() == CmsException.C_ACCESS_DENIED) {
+                        if(ce instanceof CmsSecurityException) {
                             // This was an access denied exception.
                             // This is not very critical at the moment.
                             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {

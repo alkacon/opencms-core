@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/08/03 15:11:59 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.security.CmsSecurityException;
+
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
@@ -52,7 +54,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.40 $ $Date: 2003/07/31 17:02:45 $
+ * @version $Name:  $ $Revision: 1.41 $ $Date: 2003/08/03 15:11:59 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault {
@@ -296,14 +298,13 @@ public class CmsAdministration extends CmsWorkplaceDefault {
                     folderVisible[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_VISIBLE));
                     folderActiv[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_ACTIV));
                     accessVisible[i] = new Boolean(checkVisible(cms, aktIcon)).toString();
-                } catch(CmsException e){
-                    if(e.getType() != CmsException.C_NO_ACCESS &&
-                       e.getType() != CmsException.C_ACCESS_DENIED){
-                        throw e;
-                    }
-                } catch(Exception exc) {
+                } catch(CmsSecurityException e) {
+                    // ignore all "access denied" type exceptions
+                } catch(CmsException e) {
+                    throw e;
+                } catch(Throwable t) {
                     throw new CmsException("[" + this.getClass().getName() + "] "
-                            + exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+                            + t.getMessage(), CmsException.C_SQL_ERROR, t);
                 }
             } // end of for
             sort(iconNames, index, folderPos, numFolders);
