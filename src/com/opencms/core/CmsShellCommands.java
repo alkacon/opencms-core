@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/10/05 07:33:07 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2001/10/16 08:57:16 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.40 $ $Date: 2001/10/05 07:33:07 $
+ * @version $Revision: 1.41 $ $Date: 2001/10/16 08:57:16 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -3379,5 +3379,20 @@ public class CmsShellCommands implements I_CmsConstants {
         catch(Exception exc) {
             CmsShell.printException(exc);
         }
+    }
+
+    /**
+     * Sets the name of the current site root
+     * of the content objects system
+     */
+    public void setContextToVfs(){
+        m_cms.setContextToVfs();
+    }
+    /**
+     * Sets the name of the current site root
+     * of the content objects system
+     */
+    public void setContextToCos(){
+        m_cms.setContextToCos();
     }
 }
