@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/07/06 08:39:39 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/07/07 11:20:33 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.lucene.index.IndexWriter;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.20 $ $Date: 2004/07/06 08:39:39 $
+ * @version $Revision: 1.21 $ $Date: 2004/07/07 11:20:33 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -72,7 +72,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
     private HashMap m_analyzers;
 
     /** The Admin cms object to index Cms resources. */
-    private CmsObject m_cms;
+    private transient CmsObject m_cms;
 
     /** A map of document factories keyed by their matching Cms resource types and/or mimetypes. */
     private Map m_documentTypes;

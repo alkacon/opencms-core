@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2004/07/06 08:39:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/07/07 11:20:33 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@
 
 package org.opencms.search;
 
+import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsObject;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,60 +58,60 @@ import java.util.TreeMap;
  * <li>contentdefinition - the name of the content definition class of a cos resource</li>
  * </ul>
  * 
- * @version $Revision: 1.9 $ $Date: 2004/07/06 08:39:39 $
+ * @version $Revision: 1.10 $ $Date: 2004/07/07 11:20:33 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
-public class CmsSearch {
+public class CmsSearch implements Serializable, Cloneable {
 
     /** The cms object. */
-    CmsObject m_cms;
+    protected transient CmsObject m_cms;
 
     /** The list of fields to search. */
-    String m_fields;
+    protected String m_fields;
 
     /** The index to search. */
-    CmsSearchIndex m_index;
+    protected CmsSearchIndex m_index;
 
     /** The name of the search index. */
-    String m_indexName;
+    protected String m_indexName;
 
     /** The current query. */
-    String m_query;
+    protected String m_query;
 
     /** The minimum length of the search query. */
-    int m_queryLength = -1;
+    protected int m_queryLength = -1;
 
     /** The current search result. */
-    List m_result;
+    protected List m_result;
 
     /** The latest exception. */
-    Exception m_exc;
+    protected Exception m_lastException;
 
     /** The current result page. */
-    int m_page;
+    protected int m_page;
 
     /** The number of matches per page. */
-    int m_matchesPerPage = -1;
+    protected int m_matchesPerPage = -1;
 
     /** The number of pages for the result list. */
-    int m_pageCount;
+    protected int m_pageCount;
 
     /** The number of displayed pages returned by getPageLinks(). */
-    int m_displayPages = -1;
+    protected int m_displayPages = -1;
 
     /** The URL which leads to the previous result page. */
-    String m_prevUrl;
+    protected String m_prevUrl;
 
     /** The URL which leads to the next result page. */
-    String m_nextUrl;
+    protected String m_nextUrl;
 
     /** The search parameter String. */
-    String m_searchParameters;
+    protected String m_searchParameters;
 
     /** The search root. */
-    String m_searchRoot;
+    protected String m_searchRoot;
 
     /**
      * Default constructor, used to instanciate the search facility as a bean.<p>
@@ -171,7 +171,7 @@ public class CmsSearch {
      */
     public Exception getLastException() {
 
-        return m_exc;
+        return m_lastException;
     }
 
     /**
@@ -325,7 +325,7 @@ public class CmsSearch {
 
             if ((this.getQueryLength() > 0) && (m_query.trim().length() < this.getQueryLength())) {
 
-                m_exc = new CmsSearchException("Search query too short, enter at least "
+                m_lastException = new CmsSearchException("Search query too short, enter at least "
                     + this.getQueryLength()
                     + " characters!");
 
@@ -341,7 +341,7 @@ public class CmsSearch {
                 }
 
                 m_result = null;
-                m_exc = exc;
+                m_lastException = exc;
             }
         }
 
@@ -413,7 +413,7 @@ public class CmsSearch {
 
         m_cms = cms;
         m_result = null;
-        m_exc = null;
+        m_lastException = null;
         m_pageCount = 0;
         m_nextUrl = null;
         m_prevUrl = null;
@@ -470,7 +470,7 @@ public class CmsSearch {
         }
         m_fields = fBuf.toString();
         m_result = null;
-        m_exc = null;
+        m_lastException = null;
     }
 
     /**
@@ -485,7 +485,7 @@ public class CmsSearch {
         m_indexName = indexName;
         m_result = null;
         m_index = null;
-        m_exc = null;
+        m_lastException = null;
 
         if (m_cms != null && indexName != null && !"".equals(indexName)) {
             try {
@@ -499,7 +499,7 @@ public class CmsSearch {
                         "[" + this.getClass().getName() + "] " + "Accessing index " + indexName + " failed",
                         exc);
                 }
-                m_exc = exc;
+                m_lastException = exc;
             }
         }
     }
@@ -536,7 +536,7 @@ public class CmsSearch {
 
         m_query = CmsEncoder.unescape(query, null);
         m_result = null;
-        m_exc = null;
+        m_lastException = null;
     }
 
     /**
