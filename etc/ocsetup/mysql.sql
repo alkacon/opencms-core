@@ -200,14 +200,15 @@ create table CMS_SESSIONS               (SESSION_ID varchar(255) not null,
 DROP TABLE IF EXISTS CMS_SITES;
 CREATE TABLE CMS_SITES (
    SITE_ID int(11) DEFAULT '0' NOT NULL,
-   NAME text,
+   NAME varchar(255) NOT NULL,
    DESCRIPTION text,
    CATEGORY_ID int(11),
    LANGUAGE_ID int(11),
    COUNTRY_ID int(11),
    ONLINEPROJECT_ID int(11),
    DELETED int(1) DEFAULT 0, 
-   PRIMARY KEY (SITE_ID)
+   PRIMARY KEY (SITE_ID), 
+   UNIQUE NAME (NAME)
 );
 
 
