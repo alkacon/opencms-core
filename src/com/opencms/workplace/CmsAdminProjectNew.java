@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2001/01/02 13:09:39 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2001/01/02 14:59:10 $
+ * Version: $Revision: 1.39 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.38 $ $Date: 2001/01/02 13:09:39 $
+ * @version $Revision: 1.39 $ $Date: 2001/01/02 14:59:10 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -182,6 +182,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 			session.removeValue(C_NEWFOLDER);  
 			session.removeValue(C_NEWRESOURCES);
 			session.removeValue("lasturl");
+			reqCont.setCurrentProject(cms.onlineProject().getId());
 		}
 		
 		String newName, newGroup, newDescription, newManagerGroup, newFolder;
@@ -229,7 +230,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		if (allResources == null) {
 			allResources = "";  
 		}  
-		reqCont.setCurrentProject(cms.onlineProject().getId());
 		
 		// first we look if the thread is allready running
 		if ((action != null) && ("working".equals(action))){
