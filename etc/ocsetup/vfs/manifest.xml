@@ -5169,78 +5169,6 @@
             </properties>
         </file>
         <file>
-            <destination>system/workplace/help/de/ExplorerAnsicht/allgemeineAktionen</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[Allgemeine Aktionen]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Allgemeine Aktionen]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>0</type>
-                    <value><![CDATA[35.1]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <destination>system/workplace/help/de/ExplorerAnsicht/bearbeitungsAktionen</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[Bearbeitungsaktionen]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Bearbeitungsaktionen]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>0</type>
-                    <value><![CDATA[33.1]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <destination>system/workplace/help/de/ExplorerAnsicht/eigenschaftsAktionen</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[Eigenschaftsaktionen]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Eigenschaftsaktionen]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>0</type>
-                    <value><![CDATA[39.1]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
             <destination>system/workplace/help/de/ExplorerAnsicht/Kontextmenue</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -5797,30 +5725,6 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Zugriff ändern]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <destination>system/workplace/help/de/ExplorerAnsicht/zugriffsAktionen</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[Zugriffsaktionen]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Zugriffsaktionen]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>0</type>
-                    <value><![CDATA[37.1]]></value>
                 </property>
             </properties>
         </file>

@@ -8,12 +8,12 @@
   <!-- TEMPLATE :  help_Frameset //-->
 
 
-  <HEAD><TITLE>OpenCMS Online-Hilfe</TITLE>  
+  <HEAD><TITLE>OpenCms Online-Hilfe</TITLE>  
    <link rel=stylesheet type="text/css" href="/servlets/opencms/system/workplace/css/help.css">
 <SCRIPT language="JavaScript">
-//	alert(window.opener.top.show_help());
+//  alert(window.opener.top.show_help());
 function updateContent() {
-		window.contentFrame.location.href=window.opener.top.show_help();
+        window.contentFrame.location.href=window.opener.top.show_help();
 }
 </SCRIPT>
   </HEAD>

@@ -17,18 +17,18 @@
    ]]>
 </navend>
 
-<NAVENTRY>
+<naventry>
 <![CDATA[
-  <A class="Level]]><PROCESS>level</PROCESS><![CDATA[" name="]]><PROCESS>navtext</PROCESS><![CDATA[" HREF="]]>
+  <A class="Level]]><PROCESS>navlevel</PROCESS><![CDATA[" name="]]><PROCESS>navtext</PROCESS><![CDATA[" HREF="]]>
   <PROCESS>navlink</PROCESS>
   <![CDATA[">]]>
   <PROCESS>navtext</PROCESS>
   <![CDATA[</A><BR> ]]>
-</NAVENTRY>
+</naventry>
 
-<NAVCURRENT>
- <PROCESS>navtext</PROCESS>
-</NAVCURRENT>
+<navcurrent>
+  <PROCESS>navtext</PROCESS><![CDATA[<BR>]]>
+</navcurrent>
 
 <TEMPLATE>  
    <![CDATA[
