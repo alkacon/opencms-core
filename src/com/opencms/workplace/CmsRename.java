@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/04/13 22:32:22 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/04/14 11:39:36 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.13 $ $Date: 2000/04/13 22:32:22 $
+ * @version $Revision: 1.14 $ $Date: 2000/04/14 11:39:36 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -83,17 +83,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
         String template=null;
         
         // get the lasturl parameter
-        String lasturl = getLastUrl(cms, parameters);
-                        
-        System.err.println("");
-        System.err.println("#############");
-        String[] names=session.getValueNames();
-        for (int i=0;i<names.length;i++) {
-            System.err.print(names[i]+" :");
-            System.err.println(session.getValue(names[i]));
-        }
-        System.err.println("#############");
-        
+        String lasturl = getLastUrl(cms, parameters);    
         
         // TODO: check, if this is neede: String lock=(String)parameters.get(C_PARA_LOCK);
         String filename=(String)parameters.get(C_PARA_FILE);
@@ -180,8 +170,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                             String newname=parent+newFile+"/"+newfile.getAbsolutePath().substring(file.getAbsolutePath().length());                                                                       
                             cms.lockResource(newfile.getAbsolutePath());
                            // cms.moveFile(newfile.getAbsolutePath(),newname);
-                            moveFile(cms,newfile,newname,"true",true);
-                            System.err.println("Unlock new file "+newname);
+                            moveFile(cms,newfile,newname,"true",true);          
                             cms.unlockResource(newname);
                         }
                         

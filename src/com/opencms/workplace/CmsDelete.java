@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/04/13 21:45:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/04/14 11:39:36 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.15 $ $Date: 2000/04/13 21:45:09 $
+  * @version $Revision: 1.16 $ $Date: 2000/04/14 11:39:36 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -139,31 +139,33 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 // get all subfolders and files
                 Vector allFolders=new Vector();
                 Vector allFiles=new Vector();
+         
                 getAllResources(cms,filename,allFiles,allFolders);
-                
+               
                 // unlock the folder, otherwise the subflders and files could not be
                 // deleted.
                 cms.unlockResource(filename);
-                
+             
                 // now delete all files in the subfolders
                 for (int i=0;i<allFiles.size();i++) {
                     CmsFile newfile=(CmsFile)allFiles.elementAt(i);  
                     cms.lockResource(newfile.getAbsolutePath());
                     deleteFile(cms,newfile,true);
                 }    
-                
+        
                 // now delete all subfolders
                 for (int i=0;i<allFolders.size();i++) {
                     CmsFolder folder=(CmsFolder)allFolders.elementAt(allFolders.size()-i-1);  
                     cms.lockResource(folder.getAbsolutePath());
                     cms.deleteFolder(folder.getAbsolutePath());
                 }
-                
+         
                 // finally delete the selected folder
                 cms.lockResource(filename);
                 cms.deleteFolder(filename);
                 session.removeValue(C_PARA_FILE);
                 template="update";
+            
             }
             }
             
@@ -175,17 +177,18 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
         // set the required datablocks
-        String title=cms.readProperty(file.getAbsolutePath(),C_PROPERTY_TITLE);
-        if (title==null) {
-            title="";
+        if (action == null) {
+            String title=cms.readProperty(file.getAbsolutePath(),C_PROPERTY_TITLE);
+            if (title==null) {
+               title="";
+            }
+            A_CmsUser owner=cms.readOwner(file);
+            xmlTemplateDocument.setXmlData("TITLE",title);
+            xmlTemplateDocument.setXmlData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
+            xmlTemplateDocument.setXmlData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
+            xmlTemplateDocument.setXmlData("GROUP",cms.readGroup(file).getName());
+		    xmlTemplateDocument.setXmlData("FILENAME",file.getName());
         }
-        A_CmsUser owner=cms.readOwner(file);
-        xmlTemplateDocument.setXmlData("TITLE",title);
-        xmlTemplateDocument.setXmlData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
-        xmlTemplateDocument.setXmlData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
-        xmlTemplateDocument.setXmlData("GROUP",cms.readGroup(file).getName());
-		xmlTemplateDocument.setXmlData("FILENAME",file.getName());
-           
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template); 
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2000/04/13 22:32:22 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/14 11:39:36 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.10 $ $Date: 2000/04/13 22:32:22 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/14 11:39:36 $
  */
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -93,10 +93,21 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
         filename=(String)session.getValue(C_PARA_FILE);
         
         // read all request parameters
-        String newFolder=(String)parameters.get("newfolder");
-        String flags=(String)parameters.get("flags");
+        String newFolder=(String)parameters.get(C_PARA_NEWFOLDER);
+        if (newFolder != null) {
+            session.putValue(C_PARA_NEWFOLDER,newFolder);        
+        }
+        newFolder=(String)session.getValue(C_PARA_NEWFOLDER);
+
+        String flags=(String)parameters.get(C_PARA_FLAGS);
+        if (flags != null) {
+            session.putValue(C_PARA_FLAGS,flags);        
+        }
+        flags=(String)session.getValue(C_PARA_FLAGS);
         
-        CmsFile file=(CmsFile)cms.readFileHeader(filename);
+        String action = (String)parameters.get("action");
+        
+        A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
         
         // modify the folderaname if nescessary (the root folder is always given
         // as a nice name)
@@ -107,41 +118,132 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
             }
         }
 
+        // select the template to be displayed
+        if (file.isFile()) {
+            template="file";            
+        } else {
+            template="folder";
+        }
+        
 		 //check if the newFolder parameter was included in the request
          //if not, the move page is shown for the first time
          if (newFolder != null) {
-			 // check if the file type name is page
-			 // if so move the file body and content and change the content of content
-			 // else move only file
-             moveFile(cms,file,newFolder,flags);
-			
-             // TODO: Error handling
-             try {
-                if(lasturl == null || "".equals(lasturl)) {
-                    cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+            if (action== null) {
+                template="wait";                
+            } else {
+                 if (file.isFile()) {
+                    // this is a file, so move it               
+                    try {
+                        moveFile(cms,(CmsFile)file,newFolder,flags,false);
+                    } catch (CmsException ex) {
+                        // something went wrong, so remove all session parameters
+                        session.removeValue(C_PARA_FILE);
+	    		        session.removeValue(C_PARA_NEWFOLDER);
+                        session.removeValue(C_PARA_FLAGS);
+                        throw ex;
+                    }
+                   
+                    // everything is done, so remove all session parameters
+                    session.removeValue(C_PARA_FILE);
+	    		    session.removeValue(C_PARA_NEWFOLDER);
+                    session.removeValue(C_PARA_FLAGS);
+                    
+                    // TODO: Error handling
+                    
+                    // return to the calling page
+                    try {
+                        if(lasturl == null || "".equals(lasturl)) {
+                            cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                        } else {
+                            ((HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse())).sendRedirect(lasturl);                       
+                        }                            
+                    } catch (Exception e) {
+                        throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
+                    } 
                 } else {
-                    ((HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse())).sendRedirect(lasturl);                       
-                }                            
-            } catch (Exception e) {
-                  throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
-            } 
+                     // this is a folder
+                    // get all subfolders and files
+                    Vector allFolders=new Vector();
+                    Vector allFiles=new Vector();
+                    getAllResources(cms,filename,allFiles,allFolders);
+          
+                    try {     
+                    
+                        // first creatre the new folder
+                        cms.unlockResource(file.getAbsolutePath());
+                        cms.copyFolder(filename,newFolder+file.getName()+"/");
+                                    
+                        // then copy all folders
+                        for (int i=0;i<allFolders.size();i++) {                            
+                            CmsFolder folder=(CmsFolder)allFolders.elementAt(i);  
+                            String newname=newFolder+file.getName()+"/"+folder.getAbsolutePath().substring(file.getAbsolutePath().length());                                                                             
+                            System.err.println("Copy File "+folder.getAbsolutePath()+ "- > "+newname);
+                            cms.copyFolder(folder.getAbsolutePath(), newname);
+                        }
+                     
+                        // now move the files
+                        for (int i=0;i<allFiles.size();i++) {
+                            CmsFile newfile=(CmsFile)allFiles.elementAt(i);
+                            String newname=newFolder+file.getName()+"/"+newfile.getAbsolutePath().substring(file.getAbsolutePath().length());                                                                       
+                            cms.lockResource(newfile.getAbsolutePath());
+                           // cms.moveFile(newfile.getAbsolutePath(),newname);
+                            System.err.println("Copy File "+newfile.getAbsolutePath()+ "- > "+newFolder+file.getName()+"/");
+                           
+                            moveFile(cms,newfile,newFolder+file.getName()+"/","true",true);
+                            cms.unlockResource(newname);
+                        }
+                        
+                       // finally remove the original folders
+                        for (int i=0;i<allFolders.size();i++) {
+                            CmsFolder folder=(CmsFolder)allFolders.elementAt(allFolders.size()-i-1);  
+                            cms.lockResource(folder.getAbsolutePath());
+                            System.err.println("Delete Folder "+folder.getAbsolutePath());
+                           
+                            cms.deleteFolder(folder.getAbsolutePath());
+                        }
+                        
+                        // as the last step, delete the original folder
+                         cms.lockResource(filename);
+                         cms.deleteFolder(filename);        
+                         cms.lockResource(newFolder+file.getName()+"/");
+                       
+                    } catch (CmsException ex) {
+                        // something went wrong, so remove all session parameters
+                        session.removeValue(C_PARA_FILE);
+	    		        session.removeValue(C_PARA_NEWFOLDER);
+                        session.removeValue(C_PARA_FLAGS);
+                        throw ex;
+                    }
+                      
+                    // everything is done, so remove all session parameters
+                    session.removeValue(C_PARA_FILE);
+	    		    session.removeValue(C_PARA_NEWFOLDER);
+                    session.removeValue(C_PARA_FLAGS);
+                    template="update";
+                }
+            }
+			
+            
         }
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
         // set the required datablocks
-        String title=cms.readProperty(file.getAbsolutePath(),C_PROPERTY_TITLE);
-        if (title==null) {
-            title="";
+        if (action == null) {
+            String title=cms.readProperty(file.getAbsolutePath(),C_PROPERTY_TITLE);
+            if (title==null) {
+                title="";
+            }            
+            
+            A_CmsUser owner=cms.readOwner(file);
+            xmlTemplateDocument.setXmlData("TITLE",title);
+            xmlTemplateDocument.setXmlData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
+            xmlTemplateDocument.setXmlData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
+            xmlTemplateDocument.setXmlData("GROUP",cms.readGroup(file).getName());
+		    xmlTemplateDocument.setXmlData("FILENAME",file.getName());
         }
-        A_CmsUser owner=cms.readOwner(file);
-        xmlTemplateDocument.setXmlData("TITLE",title);
-        xmlTemplateDocument.setXmlData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
-        xmlTemplateDocument.setXmlData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
-        xmlTemplateDocument.setXmlData("GROUP",cms.readGroup(file).getName());
-		xmlTemplateDocument.setXmlData("FILENAME",file.getName());
-   
+        
         // process the selected template 
-        return startProcessing(cms,xmlTemplateDocument,"",parameters,template);   
+        return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
     }
  
   
@@ -276,7 +378,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * @param lang The content definition language file.
      * @return Formated state string.
      */
-     private String getState(A_CmsObject cms, CmsResource file,CmsXmlLanguageFile lang)
+     private String getState(A_CmsObject cms, A_CmsResource file,CmsXmlLanguageFile lang)
          throws CmsException {
          StringBuffer output=new StringBuffer();
          
@@ -289,21 +391,62 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
          return output.toString();
      }
      
+      
+     /**
+     * Gets all resources - files and subfolders - of a given folder.
+     * @param cms The CmsObject.
+     * @param rootFolder The name of the given folder.
+     * @param allFiles Vector containing all files found so far. All files of this folder
+     * will be added here as well.
+     * @param allolders Vector containing all folders found so far. All subfolders of this folder
+     * will be added here as well.
+     * @exception Throws CmsException if something goes wrong.
+     */
+    private void getAllResources(A_CmsObject cms, String rootFolder,
+                                 Vector allFiles, Vector allFolders) 
+     throws CmsException {
+        Vector folders=new Vector();
+        Vector files=new Vector();
+        
+        // get files and folders of this rootFolder
+        folders=cms.getSubFolders(rootFolder);
+        files=cms.getFilesInFolder(rootFolder);
+        
+        
+        //copy the values into the allFiles and allFolders Vectors
+        for (int i=0;i<folders.size();i++) {
+            allFolders.addElement((CmsFolder)folders.elementAt(i));
+            getAllResources(cms,((CmsFolder)folders.elementAt(i)).getAbsolutePath(),
+                            allFiles,allFolders);
+        }
+        for (int i=0;i<files.size();i++) {
+            allFiles.addElement((CmsFile)files.elementAt(i));
+        } 
+    }
+     
      /**
       * Move a file to another folder.
       * If the file is a page, the content will be moved too.
       * @param cms The CmsObject.
       * @param file The file to be moved.
       * @param newFolder The folder the file has to be moved to.
+      * @param lock Flag showing if the resource has to locked.
       * @param flags Flags that indicate if the access flags have to be set to the default values.
       */
-     private void moveFile(A_CmsObject cms, CmsFile file, String newFolder, String flags) 
+     private void moveFile(A_CmsObject cms, CmsFile file, String newFolder, String flags,
+                           boolean lock) 
         throws CmsException {
+        // check if the file type name is page
+		// if so move the file body and content and change the content of content
+		// else move only file
         if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
 		    String bodyPath = getBodyPath(cms, file);
     	    int help = C_CONTENTBODYPATH.lastIndexOf("/");
 			String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
 			if (hbodyPath.equals(bodyPath)){
+                if (lock) {
+                    cms.lockResource((C_CONTENTBODYPATH.substring(0,help))+file.getAbsolutePath());
+                }
 				checkFolders(cms, newFolder);
 				cms.moveFile((C_CONTENTBODYPATH.substring(0,help))+file.getAbsolutePath(),(C_CONTENTBODYPATH.substring(0,help))+newFolder+file.getName());
 				if (flags.equals("false")) {
@@ -322,6 +465,9 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     newfile.setAccessFlags(accessFlags.intValue());  
 				 
 				 	cms.writeFile(newfile);
+                }
+                if (lock) {
+                    cms.unlockResource((C_CONTENTBODYPATH.substring(0,help))+newFolder+file.getName());
                 }
             changeContent(cms, file, (C_CONTENTBODYPATH.substring(0,help))+newFolder+file.getName());
 			}

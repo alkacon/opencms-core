@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
- * Date   : $Date: 2000/04/03 10:48:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/04/14 11:39:36 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/04/03 10:48:32 $
+ * @version $Revision: 1.10 $ $Date: 2000/04/14 11:39:36 $
  */
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -112,15 +112,18 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
                 foldername=(String)session.getValue(C_PARA_FILELIST);
                 title=(String)session.getValue(C_PARA_TITLE);
                 if (foldername==null) {
-                   foldername=cms.getRequestContext().currentFolder().getAbsolutePath();
+                   foldername=cms.rootFolder().getAbsolutePath();
                 }   
                 filename=(String)session.getValue(C_PARA_FILE);
                 type=(String)cms.getRequestContext().getRequest().getParameter("type");
                 // create the new file
                 cms.createFile(foldername,filename,new byte[0],type);
                 // lock the new file
+                System.err.println("Lock file");
                 cms.lockResource(foldername+filename);
+                System.err.println("Write property");        
                 cms.writeProperty(foldername+filename,C_PROPERTY_TITLE,title);
+                System.err.println("Done");
                 // remove values from session
                 session.removeValue(C_PARA_FILE);
                 session.removeValue(C_PARA_TITLE);     

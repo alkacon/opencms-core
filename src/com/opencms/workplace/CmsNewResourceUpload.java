@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2000/04/03 10:48:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/14 11:39:36 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/04/03 10:48:32 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/14 11:39:36 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -93,9 +93,12 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
 
 
-           // get the parameters from the request and session
+        // get the parameters from the request and session
         String step=(String)parameters.get("STEP");                  
         String currentFolder=(String)session.getValue(C_PARA_FILELIST);
+        if (currentFolder==null) {
+                   currentFolder=cms.rootFolder().getAbsolutePath();
+                }   
         String title=(String)parameters.get(C_PARA_TITLE);       
         String newname=(String)parameters.get(C_PARA_NAME);
         
@@ -152,14 +155,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                 } else {
                     // create the new file.    
                     // todo: error handling if file already exits      
-                    /*for (int i=10;i<100;i+=5) {
-                        filecontent=new byte[i*1000];
-                        for (int j=0;j<filecontent.length;j++) {
-                            filecontent[j]=65;
-                        }
-                        cms.createFile(currentFolder,"test"+i,filecontent,type.getResourceName());
-                        
-                    }*/                                        
+                                                 
                     cms.createFile(currentFolder,filename,filecontent,type.getResourceName());
                     // remove the values form the session
                     session.removeValue(C_PARA_FILE);
