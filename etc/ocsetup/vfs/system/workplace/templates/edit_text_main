@@ -22,12 +22,7 @@
 						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu11.className='over';" onMouseOut="bu11.className='norm';" onMouseDown="bu11.className='push';" onMouseUp="bu11.className='over';doEdit(11);"><img name="bu11" src="]]><METHOD name="resourcesUri">bu_paste.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.paste"/><![CDATA["></td>
 						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
 						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu15.className='over';" onMouseOut="bu15.className='norm';" onMouseDown="bu15.className='push';" onMouseUp="bu15.className='over';doEdit(15);"><img name="bu15" src="]]><METHOD name="resourcesUri">bu_print.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.print"/><![CDATA["></td>
-						<script>
-						if (USE_HELPBUTTON) {
-							document.write('<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>');
-							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu16.className=\'over\';" onMouseOut="bu16.className=\'norm\';" onMouseDown="bu16.className=\'push\';treewin=opensmallwin(\'../help/de/index.html\', \'Hilfe\', 300, 600);treewin.focus();"><img name="bu16" src="]]><METHOD name="resourcesUri">bu_help.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.help"/><![CDATA["></td>');
-						}
-						</script>
+						]]><PROCESS>HELP</PROCESS><![CDATA[
 						<td width="100%" align="right" class="tbl"><a href="#" onMouseOver="bu1.className='over';" onMouseOut="bu1.className='norm';" onMouseDown="bu1.className='push';" onMouseUp="bu1.className='over';return confirmExit();"><img name="bu1" src="]]><METHOD name="resourcesUri">bu_exit.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.close"/><![CDATA["><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>
 					</tr>
 				</table></td>
@@ -109,12 +104,7 @@
 					<tr height="20"> 
 						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu2.className='over';" onMouseOut="bu2.className='norm';" onMouseDown="bu2.className='push';doNsEdit(2);"><img name="bu2" src="]]><METHOD name="resourcesUri">bu_save_exit.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.saveclose"/><![CDATA["></a></td>
 						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu3.className='over';" onMouseOut="bu3.className='norm';" onMouseDown="bu3.className='push';doNsEdit(3);"><img name="bu3" src="]]><METHOD name="resourcesUri">bu_save.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.save"/><![CDATA["></td>
-						<script>
-						if (USE_HELPBUTTON) {
-							document.write('<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>');
-							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu16.className=\'over\';" onMouseOut="bu16.className=\'norm\';" onMouseDown="bu16.className=\'push\';treewin=opensmallwin(\'../help/de/index.html\', \'Hilfe\', 300, 600);treewin.focus();"><img name="bu16" src="]]><METHOD name="resourcesUri">bu_help.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.help"/><![CDATA["></td>');
-						}
-						</script>
+						]]><PROCESS>HELP</PROCESS><![CDATA[
 						<td width="100%" align="right" class="tbl"><a href="#" onMouseOver="bu1.className='over';" onMouseOut="bu1.className='norm';" onMouseDown="bu1.className='push';doNsEdit(1);"><img name="bu1" src="]]><METHOD name="resourcesUri">bu_exit.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.close"/><![CDATA["><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>
 					</tr>
 				</table></td>
@@ -134,4 +124,18 @@
 	</tr>
 ]]>
 </TEMPLATE>
+
+<HELP_ENABLED>
+<![CDATA[
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu16.className='over';" onMouseOut="bu16.className='norm';" onMouseDown="bu16.className='push';treewin=opensmallwin('../help/de/index.html', 'Hilfe', 300, 600);treewin.focus();"><img name="bu16" src="]]><METHOD name="resourcesUri">bu_help.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.help"/><![CDATA["></td>
+]]>
+</HELP_ENABLED>
+
+<HELP_DISABLED>
+<![CDATA[
+						<!-- online help is either disabled or not available for the current user language! -->
+]]>
+</HELP_DISABLED>
+
 </WORKPLACE>

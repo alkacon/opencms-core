@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/02/03 15:32:14 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.40 $ $Date: 2003/02/02 15:59:52 $
+ * @version $Revision: 1.41 $ $Date: 2003/02/03 15:32:14 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -247,6 +247,26 @@ public class CmsEditor extends CmsWorkplaceDefault {
             }
             xmlTemplateDocument.setData("errorlasturl", lasturlname+".html");
         }
+        
+        // test if the "help"- button has to be displayed for the user's current language
+        String userLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+        xmlTemplateDocument.setData("LOCALE", "" + userLanguage);
+
+        try {
+            cms.readFolder(C_VFS_PATH_HELP + userLanguage);
+            // the localized help- folder exists
+            xmlTemplateDocument.setData("HELP", xmlTemplateDocument.getProcessedDataValue("HELP_ENABLED", this));
+        }
+        catch (CmsException e) {
+            // the localized help- folder does not exist
+            try {
+                xmlTemplateDocument.setData("HELP", xmlTemplateDocument.getProcessedDataValue("HELP_DISABLED", this));
+            }
+            catch (Exception ex) {
+                // ignore this error so the workplace can still be used
+            }
+        }
+                
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, sectionName);
     }
 

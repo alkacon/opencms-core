@@ -9,7 +9,6 @@
     var USE_FONTCOLOR = true;
     var USE_BGCOLOR = true;
     var USE_PRINTBUTTON = false;
-    var USE_HELPBUTTON = true;
     var USE_BODYSELECTOR = false;
     var USE_NEWBODYOPTION = false;    
     var USE_TEMPLATESELECTOR = true;
