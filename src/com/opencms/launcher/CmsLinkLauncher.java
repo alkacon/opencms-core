@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLinkLauncher.java,v $
-* Date   : $Date: 2002/05/07 11:57:33 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/05/07 14:28:11 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.io.*;
  * be used to create output.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2002/05/07 11:57:33 $
+ * @version $Revision: 1.14 $ $Date: 2002/05/07 14:28:11 $
  */
 public class CmsLinkLauncher extends A_CmsLauncher {
 
@@ -59,7 +59,7 @@ public class CmsLinkLauncher extends A_CmsLauncher {
      * The html-code for returning the export file for external links
      */
     private static String C_EXPORTED_LINKHTML_01 = "<html><head><meta http-equiv="+'"'+"refresh"+'"'+" content="+'"'+"0; url=";
-    private static String C_EXPORTED_LINKHTML_02 = '"'+"></body></html>";
+    private static String C_EXPORTED_LINKHTML_02 = '"'+"></head><body></body></html>";
 
     /**
      * Gets the ID that indicates the type of the launcher.
