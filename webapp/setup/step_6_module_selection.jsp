@@ -1,5 +1,27 @@
 <%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
---%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
+--%><%!
+    private List sortModules(Map modules) {
+
+       List aux = new ArrayList(modules.values());
+       Collections.sort(aux, new Comparator() {
+           public int compare(Object o1, Object o2) {
+
+               Map m1 = (Map)o1;
+               Map m2 = (Map)o2;
+               String n1 = (String)m1.get("niceName");
+               String n2 = (String)m2.get("niceName");
+               return n1.compareTo(n2);
+           }
+       });
+
+       List ret = new ArrayList(aux.size());
+       for (Iterator it = aux.iterator(); it.hasNext();) {
+            Map module = (Map)it.next();
+            ret.add(module.get("name"));
+	   }
+       return ret;
+   }
+%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 	
 	// next page
@@ -16,8 +38,7 @@
 	Map modules = Bean.getAvailableModules();
 	Map moduleDependencies = Bean.getModuleDependencies();
 	List dependencies = null;
-	List moduleNames = (List) new ArrayList(modules.keySet());
-	Collections.sort(moduleNames);	
+	List moduleNames = sortModules(modules);
 	String moduleName = null;
 	String moduleNiceName = null;
 	String moduleVersion = null;
