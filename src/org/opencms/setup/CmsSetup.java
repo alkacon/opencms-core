@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/19 14:12:24 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/19 14:54:15 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,8 +30,14 @@
  */
 package org.opencms.setup;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRegistry;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.I_CmsShellCommands;
+import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
+import org.opencms.report.CmsShellReport;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
 
@@ -54,7 +60,7 @@ import org.dom4j.io.SAXReader;
 
 /**
  * A java bean as a controller for the OpenCms setup wizard.<p>
- *
+ * 
  * It is not allowed to customize this bean with methods for a specific database server setup!<p>
  * 
  * Database server specific settings should be set/read using get/setDbProperty, as for example like:
@@ -65,9 +71,9 @@ import org.dom4j.io.SAXReader;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  */
-public class CmsSetup extends Object implements Serializable, Cloneable {
+public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsShellCommands {
 
     /** Required files per database server setup.<p> */
     public static final String[] requiredDbSetupFiles = {
@@ -118,6 +124,12 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
     /** A map with lists of dependent module package names keyed by module package names.<p> */
     private Map m_moduleDependencies;
     
+    /** A list with the package names of the modules to be installed.<p> */
+    private List m_installModules;
+    
+    /** A CmsObject to execute shell commands.<p> */
+    private CmsObject m_cms;
+    
     /** 
      * Default constructor.<p>
      */
@@ -127,7 +139,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
         m_databaseProperties = null;
         errors = new Vector();
     }
-    
+
     /** 
      * This method reads the properties from the htmlmsg.property file
      * and sets the HTML part properties with the matching values.<p>
@@ -179,7 +191,6 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @return boolean true if all properties are set correctly
      */
     public boolean checkProperties() {
-
         // check if properties available
         if (getProperties() == null) {
             return false;
@@ -337,7 +348,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
     /** 
      * Returns a list with they keys (e.g. "mysql", "generic" or "oracle") of all available
      * database server setups found in "/setup/database/".<p>
-     *
+     * 
      * @return a list with they keys (e.g. "mysql", "generic" or "oracle") of all available database server setups
      */
     public List getDatabases() {
@@ -356,30 +367,30 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
             databaseSetupFolder = new File(m_basePath + File.separator + "setup" + File.separator + "database");
 
             if (databaseSetupFolder.exists()) {
-            childResources = databaseSetupFolder.listFiles();
+                childResources = databaseSetupFolder.listFiles();
 
-            if (childResources != null) {
-                for (int i = 0; i < childResources.length; i++) {
-                    childResource = childResources[i];
-                    hasMissingSetupFiles = false;
+                if (childResources != null) {
+                    for (int i = 0; i < childResources.length; i++) {
+                        childResource = childResources[i];
+                        hasMissingSetupFiles = false;
 
-                    if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
-                        for (int j = 0; j < requiredDbSetupFiles.length; j++) {
-                            setupFile = new File(childResource.getPath() + File.separator + requiredDbSetupFiles[j]);
+                        if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
+                            for (int j = 0; j < requiredDbSetupFiles.length; j++) {
+                                setupFile = new File(childResource.getPath() + File.separator + requiredDbSetupFiles[j]);
 
-                            if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
-                                hasMissingSetupFiles = true;
-                                System.err.println("[" + getClass().getName() + "] missing or unreadable database setup file: " + setupFile.getPath());
-                                break;
-    }
-                        }
+                                if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
+                                    hasMissingSetupFiles = true;
+                                    System.err.println("[" + getClass().getName() + "] missing or unreadable database setup file: " + setupFile.getPath());
+                                    break;
+                                }
+                            }
 
-                        if (!hasMissingSetupFiles) {
-                            m_databaseKeys.add(childResource.getName().trim());
+                            if (!hasMissingSetupFiles) {
+                                m_databaseKeys.add(childResource.getName().trim());
+                            }
                         }
                     }
                 }
-            }
             }
         } catch (Exception e) {
             System.err.println(e.toString());
@@ -410,11 +421,11 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
         if (m_databaseNames != null) {
             return m_databaseNames;
         }
-        
+
         m_databaseNames = (List) new ArrayList();
         m_databaseProperties = (Map) new HashMap();
         databaseKeys = getDatabases();
-        
+
         for (int i = 0; i < databaseKeys.size(); i++) {
             databaseKey = (String) databaseKeys.get(i);
             configPath = m_basePath + "setup" + File.separator + "database" + File.separator + databaseKey + File.separator + "database.properties";
@@ -423,8 +434,8 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
                 input = new FileInputStream(new File(configPath));
                 databaseProperties = new Properties();
                 databaseProperties.load(input);
-                
-                databaseName = databaseProperties.getProperty(databaseKey + ".name");                
+
+                databaseName = databaseProperties.getProperty(databaseKey + ".name");
                 m_databaseNames.add(databaseName);
                 m_databaseProperties.put(databaseKey, databaseProperties);
             } catch (Exception e) {
@@ -435,12 +446,12 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
                 try {
                     if (input != null) {
                         input.close();
-    }
+                    }
                 } catch (Exception e) {
                     // noop
                 }
             }
-        }                      
+        }
 
         return m_databaseNames;
     }
@@ -538,7 +549,6 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @param dbWorkUser the database user used by the opencms core 
      */
     public void setDbWorkUser(String dbWorkUser) {
-
         setExtProperty("db.pool." + getPool() + ".user", dbWorkUser);
     }
 
@@ -557,7 +567,6 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @param dbWorkPwd the password for the OpenCms database user  
      */
     public void setDbWorkPwd(String dbWorkPwd) {
-
         setExtProperty("db.pool." + getPool() + ".password", dbWorkPwd);
     }
 
@@ -838,7 +847,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
         m_dbCreatePwd = dbCreatePwd;
     }
 
-    /** 
+    /**
      * Checks if the setup wizard is enabled.<p>
      * 
      * @return true if the setup wizard is enables, false otherwise
@@ -1014,7 +1023,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
     public String getAppName() {
         return getExtProperty("app.name");
     }
-
+    
     /**
      * Returns the replacer.<p>
      * 
@@ -1041,7 +1050,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      */
     public String getDatabaseName(String databaseKey) {
         return (String) ((Map) getDatabaseProperties().get(databaseKey)).get(databaseKey + ".name");
-    }    
+    }
     
     /**
      * Returns a map with lists of dependent module package names keyed by module package names.<p>
@@ -1051,7 +1060,8 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
     public Map getModuleDependencies() {
         getAvailableModules();
         return m_moduleDependencies;
-}
+    }
+
     /**
      * Returns a map with all available modules.<p>
      * 
@@ -1139,6 +1149,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
                             module.put("niceName", moduleNiceName);
                             module.put("version", moduleVersion);
                             module.put("description", moduleDescription);
+                            module.put("filename", childResource.getName());
                             
                             // put the module information into a map keyed by the module packages names
                             m_availableModules.put(moduleName, module);
@@ -1180,7 +1191,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
                 input = zipFile.getInputStream(zipFileEntry);
                 reader = new BufferedReader(new InputStreamReader(input));
             } else if (resource.isDirectory()) {
-                // ...or from subresource inside a folder
+                // ...or from a subresource inside a folder
                 manifestFile = new File(resource, "manifest.xml");
                 reader = new BufferedReader(new FileReader(manifestFile));                
             }
@@ -1204,5 +1215,97 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
 
         return manifest;
     }
+    
+    /**
+     * Sets the list with the package names of the modules to be installed.<p>
+     * 
+     * @param value a string with the package names of the modules to be installed delimited by the pipe symbol "|"
+     */
+    public void setInstallModules(String value) {        
+        StringTokenizer tokenizer = new StringTokenizer(value, "|");
+        
+        if (tokenizer.countTokens() > 0) {
+            m_installModules = (List) new ArrayList();            
+
+            while (tokenizer.hasMoreTokens()) {
+                m_installModules.add(tokenizer.nextToken());
+            }
+        } else {
+            m_installModules = Collections.EMPTY_LIST;
+        }
+    }   
+    
+    /**
+     * @see org.opencms.main.I_CmsShellCommands#initShellCmsObject(org.opencms.file.CmsObject)
+     */
+    public void initShellCmsObject(CmsObject cms) {
+        m_cms = cms;
+    }
+    
+    /**
+     * Installed all modules that have been set using {@link #setInstallModules(String)}.<p>
+     * 
+     * This method is invoked as a shell command.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void importModulesFromSetupBean() throws Exception {
+        Map module = null;
+        String filename = null;
+        
+        // read here how the list of modules to be installed is passed from the setup bean to the
+        // setup thread, and finally to the shell process that executes the setup script:
+        // 1) the list with the package names of the modules to be installed is saved by setInstallModules
+        // 2) the setup thread gets initialized in a JSP of the setup wizard
+        // 3) the instance of the setup bean is passed to the setup thread by setAdditionalShellCommand
+        // 4) the setup bean is passed to the shell by startSetup
+        // 5) because the setup bean implements I_CmsShellCommands, the shell constructor can pass the shell's CmsObject back to the setup bean
+        // 6) thus, the setup bean can do things with the Cms
+        
+        if (m_cms != null && m_installModules != null) {
+            for (int i=0;i<m_installModules.size();i++) {
+                module = (Map) m_availableModules.get(m_installModules.get(i));
+                filename = (String) module.get("filename");
+                importModuleFromDefault(filename);
+            }
+        }
+    }    
+    
+    /**
+     * Imports a module (zipfile) from the default module directory, 
+     * creating a temporary project for this.<p>
+     *
+     * @param importFile the name of the import module located in the default module directory
+     * @throws Exception if something goes wrong
+     * @see CmsRegistry#importModule(String, Vector, org.opencms.report.I_CmsReport)
+     */
+    protected void importModuleFromDefault(String importFile) throws Exception {
+        // build the complete filename
+        String exportPath = null;
+        exportPath = m_cms.readPackagePath();
+        String fileName = OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(exportPath + CmsRegistry.C_MODULE_PATH + importFile);
+        // import the module
+        System.out.println("Importing module: " + fileName);
+        // create a temporary project for the import
+        CmsProject project = m_cms.createProject(
+                "ModuleImport", 
+                "A temporary project to import the module " + importFile, 
+                OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
+        );
+        int id = project.getId();
+        m_cms.getRequestContext().setCurrentProject(id);
+        m_cms.getRequestContext().saveSiteRoot();
+        m_cms.getRequestContext().setSiteRoot("/");
+        m_cms.copyResourceToProject("/");
+        m_cms.getRequestContext().restoreSiteRoot();
+        // import the module
+        CmsRegistry reg = m_cms.getRegistry();
+        reg.importModule(fileName, new Vector(), new CmsShellReport());
+        // finally publish the project
+        m_cms.unlockProject(id);
+        m_cms.publishProject();
+    }    
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupThread.java,v $
- * Date   : $Date: 2004/02/14 00:22:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/19 14:54:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.setup;
 
 import org.opencms.main.CmsShell;
+import org.opencms.main.I_CmsShellCommands;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +42,7 @@ import java.io.PrintStream;
  * Used for the workplace setup in the OpenCms setup wizard.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsSetupThread extends Thread {
 
@@ -59,6 +60,8 @@ public class CmsSetupThread extends Thread {
 
     /** Gets the System.out stream so it can be restored */
     private PrintStream m_tempOut;
+    
+    private I_CmsShellCommands m_shellCommands;    
 
     /** 
      * Constructor.<p>
@@ -105,7 +108,7 @@ public class CmsSetupThread extends Thread {
             m_loggingThread.start();
     
             // start importing the workplace
-            CmsShell.startSetup(m_basePath + "WEB-INF/", m_basePath + CmsSetupDb.C_SETUP_DATA_FOLDER + "cmssetup.txt");
+            CmsShell.startSetup(m_basePath + "WEB-INF/", m_basePath + CmsSetupDb.C_SETUP_DATA_FOLDER + "cmssetup.txt", m_shellCommands);
     
             // stop the logging thread
             try {
@@ -145,4 +148,14 @@ public class CmsSetupThread extends Thread {
     public void stopLoggingThread() {
         m_loggingThread.stopThread();
     }
+    
+    /**
+     * Sets an object as an addtional shell command object to be passed to the setup shell.<p>
+     * 
+     * @param shellCommands an object as an addtional shell command object to be passed to the setup shell
+     */
+    public void setAdditionalShellCommand(I_CmsShellCommands shellCommands) {
+        m_shellCommands = shellCommands;
+    }
+    
 }

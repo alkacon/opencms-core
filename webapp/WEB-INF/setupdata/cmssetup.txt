@@ -120,8 +120,9 @@ writePackagePath "packages/"
 createDefaultProject "Offline" "The Offline Project"
 setSiteRoot "/sites/default/"
 
-# Import the default modules
-importModuleFromDefault "org.opencms.welcome.zip"
+# Import the modules (stored in the setup bean)
+# that have been selected in the setup wizard
+importModulesFromSetupBean
 
 # The setup is finished
 exit

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/19 13:24:38 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/02/19 14:54:15 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -403,7 +403,7 @@ public class CmsShell {
      * 
      * @param fileInputStream a (file) input stream from which commands are read
      * @param prompt the prompt format to set
-     * @param object optional object for additional shell commands
+     * @param object optional object for additional shell commands, or null
      * @param webInfPath the path to the 'WEB-INF' folder of the OpenCms installation
      */
     public CmsShell(String webInfPath, String prompt, FileInputStream fileInputStream, I_CmsShellCommands object) {
@@ -519,10 +519,11 @@ public class CmsShell {
      *
      * @param fileName name of a script file containing the setup commands (e.g. cmssetup.txt)
      * @param webInfPath base folder for the OpenCms web application
+     * @param object optional object for additional shell commands, or null
      */
-    public static void startSetup(String webInfPath, String fileName) {
+    public static void startSetup(String webInfPath, String fileName, I_CmsShellCommands object) {
         try {
-            new CmsShell(webInfPath, "${user}@${project}>", new FileInputStream(new File(fileName)), null);
+            new CmsShell(webInfPath, "${user}@${project}>", new FileInputStream(new File(fileName)), object);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

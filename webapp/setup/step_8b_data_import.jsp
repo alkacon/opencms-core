@@ -3,7 +3,10 @@
 
 <% /* Initialize Thread */ %>
 <jsp:useBean id="Thread" class="org.opencms.setup.CmsSetupThread" scope="session"/>
-<% Thread.setBasePath(config.getServletContext().getRealPath("/")); %>
+<%
+	Thread.setBasePath(config.getServletContext().getRealPath("/"));
+	Thread.setAdditionalShellCommand(Bean); 
+%>
 
 <% /* Import packages */ %>
 <%@ page import="java.util.*,org.opencms.setup.*" %>
@@ -13,8 +16,8 @@
 	/* true if properties are initialized */
 	boolean setupOk = (Bean.getProperties()!=null);
 
-	if (setupOk) {
-		if (!Thread.isAlive()) {
+	if(setupOk)	{
+		if(!Thread.isAlive())	{
 			Thread.start();
 		}
 		messages = org.opencms.setup.CmsSetupLoggingThread.getMessages();
@@ -30,10 +33,10 @@
 	catch (NullPointerException e)	{
 		tempOffset = "0";
 	}
-	if (tempOffset != null)	{
+	if(tempOffset != null)	{
 		offset = Integer.parseInt(tempOffset.toString());
 	}
-	else {
+	else	{
 		offset = 0;
 	}
 
@@ -45,16 +48,16 @@
 <html>
 <head>
 	<title>OpenCms Setup Wizard</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	<script type="text/javascript">
 		var output = new Array();
 		<%
-			if (setupOk) {
-				for (int i = 0; i < (size-offset) ;i++)	{
+			if(setupOk)	{
+				for(int i = 0; i < (size-offset) ;i++)	{
 					out.println("output[" + i + "] = \"" + CmsSetupUtils.escape(messages.elementAt(i+offset).toString(),"UTF-8") + "\";");
 				}
 			}
-			else {
+			else	{
 				out.println("output[0] = 'ERROR';");
 			}
 		%>
@@ -65,16 +68,5 @@
 	</script>
 
 </head>
-<body onload="<% 
-
-	if (setupOk) { 
-		out.print("send();");
-		if (!Thread.finished()) {
-			out.print("setTimeout('location.reload()',5000);");
-		} else {
-			out.print("setTimeout('top.display.finish()',5000);");
-		}
-	} 
-	
-	%>"></body>
+<body onload="<% if(setupOk)	{ out.print("send();");if(!Thread.finished())	{out.print("setTimeout('location.reload()',5000);");} else	{out.print("setTimeout('top.display.finish()',5000);");}} %>"></body>
 </html>

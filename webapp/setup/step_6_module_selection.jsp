@@ -6,6 +6,10 @@
 	boolean isSetupOk = (Bean.getProperties() != null);
 	boolean isFormSubmitted = (request.getParameter("submit") != null);
 	
+	if (isSetupOk && isFormSubmitted) {
+		response.sendRedirect(nextPage);
+	}	
+	
 	Map modules = Bean.getAvailableModules();
 	Map moduleDependencies = Bean.getModuleDependencies();
 	List dependencies = null;
@@ -16,11 +20,6 @@
 	String moduleVersion = null;
 	String moduleDescription = null;
 	Map module = null;
-	
-	if (!isSetupOk) {
-		Bean.initHtmlParts();
-	}
-	
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Setup Wizard
@@ -65,7 +64,7 @@ var moduleDependencies = new Array(<%= moduleNames.size() %>);
 %>
 
 // Returns the index for a specified module package name.
-function getPackageNameIndex(modulePackageName) {
+function getPackageNameIndex(modulePackageName) {	
 	for (var i=0;i<modulePackageNames.length;i++) {
 		if (modulePackageNames[i] == modulePackageName) {
 			return i;
@@ -77,6 +76,10 @@ function getPackageNameIndex(modulePackageName) {
 
 // Checks the dependencies for a specified module package name.
 function checkDependencies(modulePackageName) {	
+	if (modulePackageNames.length == 1) {
+		return;
+	}
+
 	checkForwardDependencies(modulePackageName);
 	checkBackwardDependencies(modulePackageName, 0);
 }
@@ -89,9 +92,13 @@ function checkForwardDependencies(modulePackageName) {
 	var doUncheck = false;
 	var moduleIndex = -1;
 	
+	if (modulePackageNames.length == 1) {
+		return;
+	}	
+	
 	moduleIndex = getPackageNameIndex(modulePackageName);		
 	if (moduleIndex > -1 && moduleDependencies[moduleIndex].length > 0) {
-		doUncheck = (form.installModules[moduleIndex].checked == false);
+		doUncheck = (form.availableModules[moduleIndex].checked == false);
 		dependencies = moduleDependencies[moduleIndex];		
 		
 		// check/uncheck all modules that are dependent on the specified module
@@ -99,9 +106,9 @@ function checkForwardDependencies(modulePackageName) {
 			dependentModuleIndex = getPackageNameIndex(dependencies[j]);
 			if (dependentModuleIndex > -1) {
 				if (doUncheck) {
-					form.installModules[dependentModuleIndex].checked = false;
+					form.availableModules[dependentModuleIndex].checked = false;
 				} else {
-					form.installModules[dependentModuleIndex].checked = true;
+					form.availableModules[dependentModuleIndex].checked = true;
 				}
 			}
 		}	
@@ -120,6 +127,10 @@ function checkBackwardDependencies(modulePackageName, recursionCounter) {
 		return;
 	}
 	
+	if (modulePackageNames.length == 1) {
+		return;
+	}
+	
 	// visit all module dependency lists and check if the specified module is found in one of those lists
 	for (var i=0;i<moduleDependencies.length;i++) {
 		dependencies = moduleDependencies[i];
@@ -129,8 +140,8 @@ function checkBackwardDependencies(modulePackageName, recursionCounter) {
 				// yup, the specified module has been found in a dependency list
 				// modulePackageNames[i] is the module that is required to fulfill the dependency
 				// set the checkbox of the required module on checked				
-				if (!form.installModules[i].checked) {
-					form.installModules[i].checked = true;
+				if (!form.availableModules[i].checked) {
+					form.availableModules[i].checked = true;
 					hasMissingDependency = true;
 					
 					// check whether the required module itself depends on other modules
@@ -145,23 +156,81 @@ function checkBackwardDependencies(modulePackageName, recursionCounter) {
 	}
 }
 
-<%
-	if (isSetupOk && isFormSubmitted) {
-		out.println("document.location.href='"+nextPage+"';");
+function compareModules(modulepackageName_A, modulepackageName_B) {
+	var indexA = getPackageNameIndex(modulepackageName_A);
+	var indexB = getPackageNameIndex(modulepackageName_B);
+	var dependencies = null;
+	
+	if (modulepackageName_A == modulepackageName_B) {
+		return 0;
 	}
-%>
+	
+	dependencies = moduleDependencies[indexA];
+	for (var i=0;i<dependencies.length;i++) {
+		if (dependencies[i] == modulepackageName_B) {
+			// module A will appear before module B
+			return -1;
+		}
+	}
+	
+	dependencies = moduleDependencies[indexB];
+	for (var i=0;i<dependencies.length;i++) {
+		if (dependencies[i] == modulepackageName_A) {
+			// module B will appear before moduel A
+			return 1;
+		}
+	}
+	
+	return 0;
+}
+
+function sortAvailableModules() {
+	var form = document.modules;	
+	var installModules = new Array();
+
+	if (modulePackageNames.length > 1) {		
+		for (var i=0;i<modulePackageNames.length;i++) {
+			if (form.availableModules[i].checked == true) {	
+				installModules.push(modulePackageNames[i]);
+			}
+		}
+	
+		installModules.sort(compareModules);
+
+		var moduleList = "";
+		for (var j=0;j<installModules.length;j++) {
+			moduleList += installModules[j];
+		
+			if (j<installModules.length-1) {
+				moduleList += "|";
+			}
+		}
+	
+		//alert(moduleList);
+		form.installModules.value = moduleList;
+	} else {
+		form.installModules.value = form.availableModules.value;
+	}
+}
+
 //-->
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Module selection
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 
-<% if (isSetupOk) { %>
-<form method="post" class="nomargin" name="modules">
+<% if(isSetupOk)	{ %>
+<form method="get" class="nomargin" name="modules" onSubmit="sortAvailableModules();">
+<input type="hidden" name="installModules" value="">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
 	<td align="center" valign="top">
-		<table border="0">
+		<table border="0" width="450">
+			<tr>
+			<td align="left">
+			Yet another header has to be placed here telling people how to select modules to be installed...
+			</td>
+			</tr>		
 			<tr>
 				<td align="center">
 					<table border="0" cellpadding="2">
@@ -175,7 +244,7 @@ OpenCms Setup Wizard - Module selection
 %>
 						<tr>
 							<td>
-								<input type="checkbox" name="installModules" value="<%= moduleName %>" checked onClick="checkDependencies('<%= moduleName %>')">
+								<input type="checkbox" name="availableModules" value="<%= moduleName %>" checked onClick="checkDependencies('<%= moduleName %>')">
 							</td>
 							<td width="450" align="left" style="font-weight:bold;">
 								<%= moduleNiceName %> (<%= moduleVersion %>)
@@ -200,7 +269,7 @@ OpenCms Setup Wizard - Module selection
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
-<% } else	{ %>
+<% } else { %>
 
 <%@ include file="error.jsp" %>
 
