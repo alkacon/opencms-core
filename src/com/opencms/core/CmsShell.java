@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/07/07 17:35:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/07/08 06:34:23 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/07/07 17:35:52 $
+ * @version $Revision: 1.8 $ $Date: 2000/07/08 06:34:23 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -110,14 +110,12 @@ public class CmsShell implements I_CmsConstants {
 			System.out.println("Type help to get a list of commands.");
 			for(;;) { // ever
 				System.out.print(">");
-				String line = lnr.readLine();
-				line.trim();
-				StringReader reader = new StringReader(line + "\n");
+				StringReader reader = new StringReader(lnr.readLine());
 				StreamTokenizer st = new StreamTokenizer(reader);
 				st.eolIsSignificant(true);
 				//put all tokens into a vector.
 				Vector args = new Vector();
-				while(st.nextToken() != st.TT_EOL) {
+				while(st.nextToken() != st.TT_EOF) {
 					if(st.ttype == st.TT_NUMBER) {
 						args.addElement(new Double(st.nval).intValue() + "");
 					} else {
