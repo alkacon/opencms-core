@@ -6,7 +6,7 @@
     <!-- The version-number ${version.number} is automatically set to the
     current date and time. For official builds this should be set to a proper
     value at the command line.
-    Set it like this: ant all -Dversion.number=5.0.0   
+    Set it like this: ant all -Dversion.number=5.0.1   
     You can also uncomment the line below. -->
     <property name="version.number"             value="5.0.1"/>
     
@@ -31,8 +31,7 @@
     <property name="build.inputlib.activation"  value="${build.inputlib}/activation.jar"/>
     <property name="build.inputlib.mail"        value="${build.inputlib}/mail.jar"/>
     <property name="build.inputlib.xerces"      value="${build.inputlib}/xerces-1_4_4.jar"/>
-    <property name="build.inputlib.mysql"       value="${build.inputlib}/mysql-connector-java-2_0_14-bin.jar"/>
-    <property name="build.inputlib.fesi"        value="${build.inputlib}/fesi.jar"/>            
+    <property name="build.inputlib.mysql"       value="${build.inputlib}/mysql-connector-java-3.0.7-stable-bin.jar"/>          
     <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>  
     <property name="build.inputlib.oro"         value="${build.inputlib}/jakarta-oro-2_0_6.jar"/>
     <property name="build.inputlib.tidy"        value="${build.inputlib}/Tidy.jar"/>
@@ -62,7 +61,6 @@
                 <available file="${build.inputlib.mail}"/>
                 <available file="${build.inputlib.xerces}"/>
                 <available file="${build.inputlib.mysql}"/>
-                <available file="${build.inputlib.fesi}"/>
                 <available file="${build.inputlib.oro}"/>
                 <available file="${build.inputlib.tidy}"/>
                 <available file="${build.inputlib.uuid}"/>                
@@ -114,7 +112,6 @@ ${build.inputlib.activation}
 ${build.inputlib.mail}
 ${build.inputlib.xerces}
 ${build.inputlib.mysql}
-${build.inputlib.fesi}
 ${build.inputlib.oro}
 ${build.inputlib.tidy}
 ${build.inputlib.uuid}
