@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/06/23 08:01:35 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/06/25 11:40:24 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -183,6 +183,7 @@ public class CmsPreparedStatementPool {
 				
 				try {
 					pstmt = conn.prepareStatement(sql);
+                    pstmt.clearParameters();
 				}
 				catch (SQLException e) {
 					throw new CmsException(CmsException.C_SQL_ERROR, e);
@@ -190,7 +191,7 @@ public class CmsPreparedStatementPool {
 			}
 			temp.notify();
 		}
-		
+		   
        // System.err.println("**** --> key: "+key+" *** "+pstmt);
 		return pstmt;
 	}

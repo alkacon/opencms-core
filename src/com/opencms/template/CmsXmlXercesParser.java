@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
- * Date   : $Date: 2000/06/09 18:20:27 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/25 11:40:24 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/06/09 18:20:27 $
+ * @version $Revision: 1.9 $ $Date: 2000/06/25 11:40:24 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
     
@@ -60,6 +60,7 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
      */
     public Document parse(Reader in) throws Exception { 
         //return DOMFactory.createParser(in, null).parseDocument();
+      
         DOMParser parser = new DOMParser();
         try {
             parser.setFeature("http://apache.org/xml/features/dom/include-ignorable-whitespace", false);
@@ -70,8 +71,12 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
                 c_xercesWarning = true;
             }
         }
+ 
         InputSource input = new InputSource(in);
+ 
+
         parser.parse(input);
+    
         return parser.getDocument();
     }    
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/06/23 13:24:19 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/06/25 11:40:23 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -31,6 +31,7 @@ package com.opencms.file;
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
+import java.lang.reflect.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
 import org.w3c.dom.*;
@@ -40,7 +41,7 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/06/23 13:24:19 $
+ * @version $Revision: 1.11 $ $Date: 2000/06/25 11:40:23 $
  */
 public class CmsImport implements I_CmsConstants {
 	
@@ -124,11 +125,11 @@ public class CmsImport implements I_CmsConstants {
 		throws CmsException {
 		
 		try {
-			BufferedReader xmlReader = getFileReader(C_EXPORT_XMLFILENAME);
-			m_docXml = A_CmsXmlContent.getXmlParser().parse(xmlReader);
-			xmlReader.close();
+         	BufferedReader xmlReader = getFileReader(C_EXPORT_XMLFILENAME);
+  			m_docXml = A_CmsXmlContent.getXmlParser().parse(xmlReader);
+ 			xmlReader.close();
 		 } catch(Exception exc) {
-            		System.err.println(exc.toString());
+       
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 	}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/25 07:30:56 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2000/06/25 11:40:24 $
+ * Version: $Revision: 1.71 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.70 $ $Date: 2000/06/25 07:30:56 $
+ * @version $Revision: 1.71 $ $Date: 2000/06/25 11:40:24 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1007,7 +1007,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
 		m_dbAccess.writeProperty(property, value, res.getResourceId(),res.getType());
 		m_propertyCache.clear();
-        res.setState(C_STATE_CHANGED);
+        if (res.getState()==C_STATE_UNCHANGED) {
+            res.setState(C_STATE_CHANGED);
+        }
 		// set the file-state to changed
 		if(res.isFile()){
             m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
@@ -1053,8 +1055,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         
 		m_dbAccess.writeProperties(propertyinfos,res.getResourceId(),res.getType());
 		m_propertyCache.clear();
-        res.setState(C_STATE_CHANGED);
-		// set the file-state to changed
+        if (res.getState()==C_STATE_UNCHANGED) {
+            res.setState(C_STATE_CHANGED);
+        }
 		if(res.isFile()){     
 			m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, false);
             // update the cache           
@@ -3261,6 +3264,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             if(currentGroup != null) {
                 newFolder.setGroupId(currentGroup.getId());
             }
+            newFolder.setState(C_STATE_NEW);
+        
             m_dbAccess.writeFolder(currentProject, newFolder, false);
             m_subresCache.clear();
                                         
@@ -4011,7 +4016,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
         // has the user write-access?
 		if( accessWrite(currentUser, currentProject, (CmsResource)file) ) {
-			file.setState(C_STATE_CHANGED);
+            if (file.getState()==C_STATE_UNCHANGED) {
+                file.setState(C_STATE_CHANGED);
+            }
 			// write-acces  was granted - write the file.
 			m_dbAccess.writeFileHeader(currentProject, 
 									  onlineProject(currentUser, currentProject), file,true );
