@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/22 00:29:23 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2003/07/22 05:50:35 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.77 $ $Date: 2003/07/22 00:29:23 $
+ * @version $Revision: 1.78 $ $Date: 2003/07/22 05:50:35 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -594,8 +594,7 @@ public class CmsDriverManager extends Object {
      * A web user has no access to the workplace but is able to access personalized
      * functions controlled by the OpenCms.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current cms context
      * @param name The new name for the user.
      * @param password The new password for the user.
      * @param group The default groupname for the user.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.146 $
+ * Date   : $Date: 2003/07/22 05:50:35 $
+ * Version: $Revision: 1.147 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.146 $
+ * @version $Revision: 1.147 $
  */
 public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -400,7 +400,7 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         }        
         
         // initialize the site manager
-        setSiteManager(CmsSiteManager.initialize(this, conf));        
+        setSiteManager(CmsSiteManager.initialize(conf));        
         
         // read old (proprietary XML-style) locale backward compatibily support flag
         Boolean supportOldLocales = conf.getBoolean("compatibility.support.oldlocales", new Boolean(false));

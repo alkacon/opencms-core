@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/07/21 14:18:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/22 05:50:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.OpenCms;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 
@@ -56,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -162,11 +161,10 @@ public final class CmsSiteManager implements Cloneable {
     /**
      * Initializes the site manager with the OpenCms system configuration.<p>
      * 
-     * @param openCms the OpenCms system
      * @param conf the OpenCms configuration
      * @return the initialized site manager
      */
-    public static CmsSiteManager initialize(OpenCms openCms, Configurations conf) {
+    public static CmsSiteManager initialize(Configurations conf) {
         String[] siteRoots;
         String siteDefault;
         

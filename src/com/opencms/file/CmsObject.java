@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.343 $
+* Date   : $Date: 2003/07/22 05:50:35 $
+* Version: $Revision: 1.344 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.343 $
+ * @version $Revision: 1.344 $
  */
 public class CmsObject extends Object {
 
@@ -322,7 +322,7 @@ public class CmsObject extends Object {
      * @throws CmsException if operation was not successful.
      */
     public CmsUser addWebUser(String name, String password, String group, String additionalGroup, String description, Hashtable additionalInfos, int flags) throws CmsException {
-        CmsUser newWebUser = m_driverManager.addWebUser(this, m_context, password, group, additionalGroup, description, additionalInfos, flags);
+        CmsUser newWebUser = m_driverManager.addWebUser(this, m_context, name, password, group, additionalGroup, description, additionalInfos, flags);
         return newWebUser;
     }
 
@@ -2387,6 +2387,7 @@ public class CmsObject extends Object {
      * @throws CmsException			if something goes wrong
      */
     public boolean hasPermissions(CmsProject project, CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
+        // TODO: Check if this method still works after inserting the context instead of the project
         return m_driverManager.hasPermissions(m_context, resource, requiredPermissions, false);
     }
 

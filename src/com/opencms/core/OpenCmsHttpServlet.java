@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2003/07/22 05:50:35 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I_CmsLogChannels {
     
@@ -111,13 +111,12 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
      * the headers, if so tries to log in the user identified.<p>
      *  
      * @param cms the current cms context
-     * @param session the current session object
      * @param req the current http request
      * @param res the current http response
      * @throws IOException in case of errors reading from the streams
      * @throws CmsException if user information was not correct
      */
-    private void checkBasicAuthorization (CmsObject cms, HttpSession session, HttpServletRequest req, HttpServletResponse res) throws IOException, CmsException {
+    private void checkBasicAuthorization (CmsObject cms, HttpServletRequest req, HttpServletResponse res) throws IOException, CmsException {
         // no user identified from the session and basic authentication is enabled
         String auth = req.getHeader("Authorization");
 
@@ -152,7 +151,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
                         cms.loginWebUser(username, password);
                     }
                     // authentification was successful create a session
-                    session = req.getSession(true);
+                    req.getSession(true);
                 } catch (CmsException e) {
                     if (e.getType() == CmsException.C_NO_ACCESS) {
 
@@ -544,7 +543,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
             m_opencms.initUser(cms, cmsReq, cmsRes, C_USER_GUEST, C_GROUP_GUEST, site.getSiteRoot(), C_PROJECT_ONLINE_ID, m_sessionStorage);            
             if (m_useBasicAuthentication) {
                 // check if basic authorization data was provided
-                checkBasicAuthorization(cms, session, req, res);
+                checkBasicAuthorization(cms, req, res);
             }
         }
         

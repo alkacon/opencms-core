@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/07/22 05:50:35 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1
  */
@@ -160,10 +160,9 @@ public class CmsExplorer extends CmsWorkplace {
     /**
      * Sets the default preferences for the current user if those values are not available.<p>
      * 
-     * @param cms the current cms context
      * @return the int value of the default preferences
      */
-    private int getDefaultPreferences(CmsObject cms) {
+    private int getDefaultPreferences() {
         int filelist;
         String explorerSettings = (String)getSettings().getUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_EXPLORERSETTINGS);
         if (explorerSettings != null) {
@@ -290,7 +289,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.rD();\n\n");
 
         // now check which filelist colums we want to show
-        int preferences = getDefaultPreferences(getCms());
+        int preferences = getDefaultPreferences();
         
         boolean showTitle = (preferences & I_CmsWpConstants.C_FILELIST_TITLE) > 0;
         boolean showPermissions = (preferences & I_CmsWpConstants.C_FILELIST_PERMISSIONS) > 0;
@@ -301,7 +300,7 @@ public class CmsExplorer extends CmsWorkplace {
         boolean showUserWhoCreated = (preferences & I_CmsWpConstants.C_FILELIST_USER_CREATED) > 0;
 
         // now get the entries for the filelist
-        Vector resources = getRessources(getCms(), getSettings().getExplorerMode(), getSettings().getExplorerFolder());
+        Vector resources = getRessources(getSettings().getExplorerMode(), getSettings().getExplorerFolder());
 
         // if a folder contains to much entrys we split them to pages of C_ENTRYS_PER_PAGE length
         int startat = 0;
@@ -604,12 +603,11 @@ public class CmsExplorer extends CmsWorkplace {
      * Get the resources in the folder stored in parameter param
      * or in the project shown in the projectview
      *
-     * @param cms the current getCms() context
      * @param mode the mode to use
      * @param folder the fodler to read the files from
      * @return a vector with ressources to display
      */
-    private Vector getRessources(CmsObject cms, String mode, String resource) {
+    private Vector getRessources(String mode, String resource) {
         
         if ("vfslink".equals(mode)) {
             try {
