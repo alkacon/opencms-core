@@ -1,0 +1,80 @@
+<%@ page buffer="none" import="org.opencms.main.*, org.opencms.search.*, com.opencms.file.*, com.opencms.flex.jsp.*, java.util.*" %><%   
+    
+    // Create a JSP action element
+    com.opencms.flex.jsp.CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+    
+    // Get the search manager
+    CmsSearchManager searchManager = OpenCms.getSearchManager(); 
+%>
+
+<html>
+
+<script language=JavaScript>
+<!--
+top.head.helpUrl='administration/index.html';
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+
+<title>Rebuild search index</title>
+<link rel=stylesheet type="text/css" href='<%=cms.link("/system/workplace/resources/format.css")%>'>
+
+</head>
+<body
+    bgcolor="#ffffff"
+    background='<%=cms.link("/system/workplace/resources/bg_weiss.gif")%>'
+    bgproperties=fixed
+    onLoad="window.top.body.admin_head.location.href='<%=cms.link("/system/workplace/action/administration_head.html")%>';">
+<% 
+    if (request.getParameter("sync") != null) {
+        
+    }
+%>
+<h1>Search index overview</h1>
+<table border="1">
+<tr><th>Name</th><th>RebuildMode</th><th>Project</th><th>Site</th><th>Language</th><th>Documenttypes</th></tr>
+<%
+    // Iterate through configured indexes
+    for (Iterator i = searchManager.getIndexNames().iterator(); i.hasNext(); ) {
+        CmsSearchIndex index = searchManager.getIndex((String)i.next());
+%>
+<tr>
+<td><%=index.getName()%></td>
+<td><%=index.getRebuildMode()%></td>
+<td><%=index.getProject()%></td>
+<td><%=index.getSite()%></td>
+<td><%=index.getLanguage()%></td>
+<td>
+<% 
+    // Iterate through documenttypes for index
+    for (Iterator d = index.getDocumenttypes().iterator(); d.hasNext(); ) {
+%>
+    <%= (String)d.next() %><%= (d.hasNext()) ? ", " : "" %>
+<%
+    }
+%>
+</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td colspan="5">
+<%
+    // Iterate through sources for index
+    for (Iterator s = index.getSources().iterator(); s.hasNext(); ) {
+%>
+    <%= (String)s.next() %><%= (s.hasNext()) ? ", " : "" %>
+<%
+    }
+%>
+</td>
+</tr>
+<%
+    }
+%>
+
+</table>
+<form method="post" action='<%=cms.link("/system/workplace/administration/searchindex/updateindex/rebuild.html")%>'>
+    <input type="submit" value="Rebuild">
+</form>

@@ -1,7 +1,48 @@
 @rem Start script for the OpenCms Shell
 @rem Please make sure that "servlet.jar" is found, the path used below was tested with Tomcat 4.1
 
-@rem use this command line to debug OpenCms using the shell
-@rem java -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 -Djava.compiler=NONE -Dfile.encoding=ISO-8859-1 -Dopencms.disableScheduler=true  -classpath ../../../common/lib/servlet.jar;lib/commons-dbcp.jar;lib/commons-pool.jar;lib/commons-collections.jar;lib/ojdbc14.jar;lib/commons-logging.jar;lib/log4j-1.2.8.jar;lib/jcr.jar;lib/opencms.jar;lib/activation.jar;lib/jakarta-oro-2_0_6.jar;lib/ojdbc14.jar;lib/classes12.zip;lib/mysql-connector-java-3.0.7-stable-bin.jar;lib/Tidy.jar;lib/mail.jar;lib/jug.jar;lib/xerces-1_4_4.jar;lib/opencms-drivers.jar org.opencms.setup.CmsMain %1 %2 %3 %4 %5 %6 %7 %8 %9
+@echo off 
 
-java -Dfile.encoding=ISO-8859-1 -Dopencms.disableScheduler=true  -classpath ../../../common/lib/servlet.jar;lib/commons-dbcp.jar;lib/commons-pool.jar;lib/commons-collections.jar;lib/ojdbc14.jar;lib/commons-logging.jar;lib/log4j-1.2.8.jar;lib/jcr.jar;lib/opencms.jar;lib/activation.jar;lib/jakarta-oro-2_0_6.jar;lib/ojdbc14.jar;lib/classes12.zip;lib/mysql-connector-java-3.0.7-stable-bin.jar;lib/Tidy.jar;lib/mail.jar;lib/jug.jar;lib/xerces-1_4_4.jar;lib/opencms-drivers.jar org.opencms.setup.CmsMain %1 %2 %3 %4 %5 %6 %7 %8 %9
+@rem set jvm options
+
+set OPTIONS=
+set OPTIONS= %OPTIONS% -Dfile.encoding=ISO-8859-1
+set OPTIONS= %OPTIONS% -Dopencms.disableScheduler=true
+
+@rem add this options to debug OpenCms using the shell
+set OPTIONS= %OPTIONS% -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 -Djava.compiler=NONE
+
+@rem set libs in classpath
+
+set CLASSPATH= .
+set CLASSPATH= %CLASSPATH%;../../../common/lib/servlet.jar
+set CLASSPATH= %CLASSPATH%;lib/commons-dbcp.jar
+set CLASSPATH= %CLASSPATH%;lib/commons-pool.jar
+set CLASSPATH= %CLASSPATH%;lib/commons-collections.jar
+set CLASSPATH= %CLASSPATH%;lib/ojdbc14.jar
+set CLASSPATH= %CLASSPATH%;lib/commons-logging.jar
+set CLASSPATH= %CLASSPATH%;lib/log4j-1.2.8.jar
+set CLASSPATH= %CLASSPATH%;lib/jcr.jar;lib/opencms.jar
+set CLASSPATH= %CLASSPATH%;lib/activation.jar
+set CLASSPATH= %CLASSPATH%;lib/jakarta-oro-2_0_6.jar
+set CLASSPATH= %CLASSPATH%;lib/ojdbc14.jar
+set CLASSPATH= %CLASSPATH%;lib/classes12.zip
+set CLASSPATH= %CLASSPATH%;lib/mysql-connector-java-3.0.7-stable-bin.jar
+set CLASSPATH= %CLASSPATH%;lib/Tidy.jar
+set CLASSPATH= %CLASSPATH%;lib/mail.jar
+set CLASSPATH= %CLASSPATH%;lib/jug.jar
+set CLASSPATH= %CLASSPATH%;lib/xerces-1_4_4.jar
+set CLASSPATH= %CLASSPATH%;lib/dom4j.jar
+set CLASSPATH= %CLASSPATH%;lib/opencms-drivers.jar
+set CLASSPATH= %CLASSPATH%;lib/lucene-1.3-rc2.jar
+set CLASSPATH= %CLASSPATH%;lib/poi-2.0-pre3-20030728.jar
+set CLASSPATH= %CLASSPATH%;lib/snowball-0.1.jar
+set CLASSPATH= %CLASSPATH%;lib/PDFBox-0.6.2.jar
+set CLASSPATH= %CLASSPATH%;classes
+
+@rem set opencms arguments
+
+set ARGS=
+set ARGS= %ARGS% -base="%CD%"
+
+java %OPTIONS% -classpath %CLASSPATH% org.opencms.setup.CmsMain %1 %2 %3 %4 %5 %6 %7 %8 %9 %ARGS%

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/02/09 14:16:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/11 15:01:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsLocaleManager {
     
@@ -246,8 +246,8 @@ public class CmsLocaleManager {
      * Each name in the given list is checked against the internal hash map of allowed locales, 
      * and is appended to the resulting list only if the m_locale exists.<p>
      * 
-     * @param localeNames array of m_locale names to check
-     * @return list of available m_locale names derived from the given m_locale names
+     * @param locales List of locales to check
+     * @return list of available locales derived from the given m_locale names
      */
     private List checkLocaleNames(List locales) {
         if (locales == null) {
@@ -470,11 +470,11 @@ public class CmsLocaleManager {
      */
     private int match(Locale locale1, Locale locale2) {
         int result = 0;        
-        if (locale1.getLanguage().equals(locale2.getLanguage())) {
+        if (!locale1.getLanguage().equals("") && locale1.getLanguage().equals(locale2.getLanguage())) {
             result = 1;
-            if (locale1.getCountry().equals(locale2.getCountry())) {
+            if (!locale1.getCountry().equals("") && locale1.getCountry().equals(locale2.getCountry())) {
                 result = 2;
-                if (locale1.getVariant().equals(locale2.getVariant())) {
+                if (!locale1.getVariant().equals("") && locale1.getVariant().equals(locale2.getVariant())) {
                     result = 3;
                 }
             }

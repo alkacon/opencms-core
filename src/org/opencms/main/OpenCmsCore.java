@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2004/02/11 15:01:01 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.setup.CmsBase;
 import org.opencms.setup.CmsMain;
@@ -99,7 +100,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.71 $
+ * @version $Revision: 1.72 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -218,6 +219,9 @@ public final class OpenCmsCore {
     
     /** The site manager contains information about all configured sites */
     private CmsSiteManager m_siteManager;
+    
+    /** The search manager provides indexing and searching */
+    private CmsSearchManager m_searchManager;
     
     /** Flag to indicate if the startup classes have already been initialized */
     private boolean m_startupClassesInitialized;
@@ -938,6 +942,16 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Returns the initialized search manager,
+     * which provides indexing and searching operations.<p>
+     * 
+     * @return the initialized search manager
+     */
+    protected CmsSearchManager getSearchManager() {
+        return m_searchManager;
+    }
+    
+    /**
      * Returns the properties for the static export.<p>
      * 
      * @return the properties for the static export
@@ -1568,6 +1582,8 @@ public final class OpenCmsCore {
         m_localeManager = CmsLocaleManager.initialize(configuration, adminCms);  
         // initialize the site manager
         m_siteManager = CmsSiteManager.initialize(configuration, adminCms);
+        // initialize the search manager
+        m_searchManager = CmsSearchManager.initialize(configuration, adminCms);
                 
         // initializes the cron manager
         // TODO enable the cron manager

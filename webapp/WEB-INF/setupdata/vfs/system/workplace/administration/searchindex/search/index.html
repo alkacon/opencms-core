@@ -1,0 +1,99 @@
+<%@ page buffer="none" import="org.opencms.main.*, org.opencms.search.*, com.opencms.file.*, com.opencms.flex.jsp.*, java.util.*" %><%   
+    
+    // Create a JSP action element
+    com.opencms.flex.jsp.CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+    
+    // Get the search manager
+    CmsSearchManager searchManager = OpenCms.getSearchManager(); 
+%>
+<jsp:useBean id="search" scope="request" class="org.opencms.search.CmsSearch">
+    <jsp:setProperty name = "search" property="*"/>
+    <% search.init(cms.getCmsObject()); %>
+</jsp:useBean>
+<html>
+
+<script language=JavaScript>
+<!--
+top.head.helpUrl='administration/index.html';
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+
+<title>Rebuild search index</title>
+<link rel=stylesheet type="text/css" href='<%=cms.link("/system/workplace/resources/format.css")%>'>
+
+<body>
+<%
+    List result = search.getSearchResult();
+    if (result == null) {
+%>
+<%
+    if (search.getLastException() != null) { 
+%>
+<h3>Error</h3>
+<%= search.getLastException().toString() %> 
+<%
+    }
+%>
+<form method="post">
+<h1>Search</h1>
+<table>
+<tr><th valign="top">Query:</th>
+<td><input type="text" name="query" size="50"></td></tr>
+
+<tr><th valign="top">Index:</th>
+<td>
+<select name="index">
+<%
+    for (Iterator i = searchManager.getIndexNames().iterator(); i.hasNext();) {
+%>
+<option><%=(String)i.next()%></option>
+<%
+    }
+%>
+</select>
+</td></tr>
+
+<tr><th valign="top">Fields:</th><td>
+<input type="checkbox" name="field" value="title" checked>Title<br>
+<input type="checkbox" name="field" value="keywords" checked>Keywords<br>
+<input type="checkbox" name="field" value="description" checked>Description<br>
+<input type="checkbox" name="field" value="content" checked>Content<br>
+</td></tr>
+</table>
+<p>
+<input type="submit" value="Submit">
+</form>
+<%
+    } else {
+%>
+
+<%
+        
+        ListIterator iterator = result.listIterator();
+%>
+<%= result.size() %> Results found for query &lt;<%= search.getQuery() %>&gt; in fields <%= search.getFields() %>.
+<%
+        int i = 0;
+        while (iterator.hasNext()) {
+            i++;
+            CmsSearchResult entry = (CmsSearchResult)iterator.next();
+%>
+
+<h3><%= i %>.&nbsp;<%= entry.getTitle() %>&nbsp;(<%= entry.getScore() %>%)</h3>
+<%= entry.getResource().getRootPath() %>
+<h6>Keywords</h6>
+<%= entry.getKeywords() %>
+<h6>Excerpt</h6>
+<%= entry.getExcerpt() %>
+<h6>Description</h6>
+<%= entry.getDescription() %>
+<h6>Last modified</h6>
+<%= new Date(entry.getResource().getDateLastModified()) %>
+<%
+    }   }
+%> 
+</body>
+</html>

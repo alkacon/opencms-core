@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/02/11 15:01:00 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.loader.CmsLoaderManager;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.search.CmsSearchManager;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
@@ -55,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public final class OpenCms {
     
@@ -315,6 +316,16 @@ public final class OpenCms {
         return OpenCmsCore.getInstance().getSiteManager();
     }
 
+    /**
+     * Returns the initialized search manager,
+     * which provides indexing and searching operations.<p>
+     * 
+     * @return the initialized search manager
+     */
+    public static CmsSearchManager getSearchManager() {
+        return OpenCmsCore.getInstance().getSearchManager();
+    }
+    
     /**
      * Returns the properties for the static export.<p>
      * 

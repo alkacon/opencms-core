@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/02/03 10:59:17 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/02/11 15:01:01 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.28 $ $Date: 2004/02/03 10:59:17 $ 
+ * @version $Revision: 1.29 $ $Date: 2004/02/11 15:01:01 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -3084,6 +3084,30 @@ class CmsShellCommands {
         }
     }
 
+    /**
+     * Updates all configured search indexes.<p>
+     */
+    public void updateIndex() {
+        try {
+            OpenCms.getSearchManager().updateIndex(new CmsShellReport());
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+    
+    /**
+     * Updates the named search index.<p>
+     * 
+     * @param index name of the index
+     */
+    public void updateIndex(String index) {
+        try {
+            OpenCms.getSearchManager().updateIndex(index, new CmsShellReport());
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+    
     /**
      * Loads a File up to the cms from the lokal disc.
      *

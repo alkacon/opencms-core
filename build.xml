@@ -35,6 +35,10 @@
     <property name="opencms.inputlib.collections"     	location="${opencms.input.libs}/commons-collections.jar" />
     <property name="opencms.inputlib.dom4j"     		location="${opencms.input.libs}/dom4j.jar" />
     <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser.jar" />
+    <property name="opencms.inputlib.lucene"			location="${opencms.input.libs}/lucene-1.3-rc2.jar" />
+    <property name="opencms.inputlib.poi"				location="${opencms.input.libs}/poi-2.0-pre3-20030728.jar" />
+    <property name="opencms.inputlib.snowball"			location="${opencms.input.libs}/snowball-0.1.jar" />
+    <property name="opencms.inputlib.pdfbox"			location="${opencms.input.libs}/PDFBox-0.6.2.jar" />
     <property name="opencms.inputlib.oracle"      		location="${opencms.input.externlibs}/ojdbc14.jar" /> 
  
 	<property name="drivers.vfs"						value="db" />
@@ -67,7 +71,11 @@
                 <available file="${opencms.inputlib.collections}"/> 
                 <available file="${opencms.inputlib.dom4j}"/> 
                 <available file="${opencms.inputlib.htmlparser}"/>
-                <available file="${opencms.inputlib.dbcp}"/> 
+                <available file="${opencms.inputlib.dbcp}"/>
+                <available file="${opencms.inputlib.lucene}"/>
+                <available file="${opencms.inputlib.poi}"/>
+                <available file="${opencms.inputlib.snowball}"/>
+                <available file="${opencms.inputlib.pdfbox}"/> 
             </and>
         </condition>
 
@@ -128,6 +136,10 @@ ${opencms.inputlib.collections}
 ${opencms.inputlib.dom4j}
 ${opencms.inputlib.htmlparser}
 ${opencms.inputlib.dbcp}
+${opencms.inputlib.lucene}
+${opencms.inputlib.poi}
+${opencms.inputlib.snowball}
+${opencms.inputlib.pdfbox}
 
         </fail>
     </target>
@@ -172,7 +184,11 @@ ${opencms.inputlib.dbcp}
                        ${opencms.inputlib.collections}:
                        ${opencms.inputlib.dom4j}:
                        ${opencms.inputlib.htmlparser}:
-                       ${opencms.inputlib.uuid}"
+                       ${opencms.inputlib.uuid}:
+                       ${opencms.inputlib.lucene}:
+                       ${opencms.inputlib.poi}:
+                       ${opencms.inputlib.snowball}:
+                       ${opencms.inputlib.pdfbox}"
             debug="on"
             optimize="on"
             deprecation="on" />

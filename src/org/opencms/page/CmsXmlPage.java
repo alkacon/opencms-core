@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/02/11 15:01:00 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsXmlPage {
     
@@ -339,6 +339,32 @@ public class CmsXmlPage {
         return content;
     }
 
+    /**
+     * Returns the raw (unprocessed) content of an element.<p>
+     * 
+     * @param name  name of the element
+     * @param locale locale of the element
+     * @return the raw (unprocessed) content
+     */
+    public String getRawContent(String name, Locale locale) {
+        
+        Element element = getBookmark(name, locale);        
+        String content = "";
+        
+        if (element != null) {
+
+            Element data = element.element(C_NODE_CONTENT);
+            Attribute enabled = element.attribute(C_ATTRIBUTE_ENABLED);
+            
+            if (enabled == null || "true".equals(enabled.getValue())) {
+                
+                content = data.getText();
+            }
+        }
+        
+        return content;
+    }
+    
     /**
      * Returns the file with the xml page content or <code>null</code> if not set.<p>
      * 
