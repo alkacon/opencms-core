@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/18 14:11:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/18 17:22:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
 import com.opencms.flex.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,7 +61,7 @@ import java.util.Map;
  * re-initialize itself while the app. with a clear cache event.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/07/18 14:11:18 $
+ * @version $Revision: 1.4 $ $Date: 2003/07/18 17:22:50 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -74,9 +75,6 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
 
     /** A map holding all locked resources */
     private Map m_lockedResources;
-
-    /** Internal debugging flag */
-    private static final boolean C_DEBUG = false;
 
     /**
      * Default constructor.<p>
@@ -106,7 +104,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
     }
 
     /**
-     * Adds a resource.<p>
+     * Adds a resource to the lock dispatcher.<p>
      * 
      * @param resourcename the full resource name including the site root
      * @param userId the ID of the user who locked the resource
@@ -118,15 +116,11 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
         CmsLock newLock = new CmsLock(resourcename, userId, projectId, hierachy);
         m_lockedResources.put(resourcename, newLock);
 
-        if (C_DEBUG) {
-            System.err.println(this.toString());
-        }
-
         return newLock;
     }
 
     /**
-     * Handles clear cache events to re-initialize the lock dispatcher.<p>
+     * Handles Cms events.<p>
      * 
      * @param event the event which is handled
      */
@@ -172,10 +166,6 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
                     return addResource(resourcename, parentLock.getUserId(), parentLock.getProjectId(), CmsLock.C_HIERARCHY_INDIRECT_LOCKED);
                 }
             }
-        }
-
-        if (C_DEBUG) {
-            System.err.println(this.toString());
         }
 
         // we are in an offline project, and neither the resource itself 
@@ -239,11 +229,12 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
     }
 
     /**
-     * Removes a resource.<p>
+     * Removes a resource from the lock dispatcher.<p>
      * 
      * @param resourcename the full resource name including the site root
      */
     public void removeResource(String resourcename) {
+        CmsLock lock = null;
         String lockedPath = null;
         Iterator i = null;
 
@@ -254,17 +245,48 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
             i = m_lockedResources.keySet().iterator();
             while (i.hasNext()) {
                 lockedPath = (String) i.next();
+                lock = (CmsLock) m_lockedResources.get(lockedPath);
 
-                if (lockedPath.startsWith(resourcename)) {
-                    // iterators are fail-fast!
+                if (lockedPath.startsWith(resourcename) && lock.getHierarchy() == CmsLock.C_HIERARCHY_INDIRECT_LOCKED) {
+                    // send the lock to slumberland...
                     i.remove();
                 }
             }
         }
+    }
 
-        if (C_DEBUG) {
-            System.err.println(this.toString());
+    /**
+     * Returns a list of direct locked sub resources of a folder.<p>
+     * 
+     * Use this method to identify direct locked sub resources of a folder (which gets unlocked)
+     * to unlock these resources in a second step.
+     * 
+     * @param resourcename the full resource name including the site root
+     * @return a list with resource names of direct locked sub resources
+     */
+    public List getDirectLockedSubResources(String resourcename) {
+        List directLockedSubResources = (List) new ArrayList();
+        String lockedPath = null;
+        CmsLock lock = null;
+        Iterator i = null;
+
+        if (!resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            return directLockedSubResources;
         }
+
+        i = m_lockedResources.keySet().iterator();
+        while (i.hasNext()) {
+            lockedPath = (String) i.next();
+            lock = (CmsLock) m_lockedResources.get(lockedPath);
+
+            if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
+                if (lock.getHierarchy() == CmsLock.C_HIERARCHY_DIRECT_LOCKED) {
+                    directLockedSubResources.add(lock.getResourceName());
+                }
+            }
+        }
+
+        return directLockedSubResources;
     }
 
     /**
@@ -292,8 +314,11 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      * @see java.lang.Object#toString()
      */
     public String toString() {
+        // bring the list of locked resources into a human readable order first
+        List lockedResources = (List) new ArrayList(m_lockedResources.keySet());
+        Collections.sort(lockedResources);
+        Iterator i = lockedResources.iterator();
         StringBuffer buf = new StringBuffer();
-        Iterator i = m_lockedResources.keySet().iterator();
         String lockedPath = null;
         CmsLock currentLock = null;
 
@@ -302,7 +327,12 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
         while (i.hasNext()) {
             lockedPath = (String) i.next();
             currentLock = (CmsLock) m_lockedResources.get(lockedPath);
-            buf.append(currentLock.getResourceName()).append(":").append(currentLock.getHierarchy()).append("\n");
+            buf.append(currentLock.getResourceName());
+            buf.append(":");
+            buf.append(currentLock.getHierarchy());
+            buf.append(":");
+            buf.append(currentLock.getUserId());
+            buf.append("\n");
         }
 
         buf.append("]");

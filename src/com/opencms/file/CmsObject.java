@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/18 14:11:18 $
-* Version: $Revision: 1.334 $
+* Date   : $Date: 2003/07/18 17:22:50 $
+* Version: $Revision: 1.335 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.334 $
+ * @version $Revision: 1.335 $
  */
 public class CmsObject extends Object {
 
@@ -1441,10 +1441,6 @@ public class CmsObject extends Object {
         m_driverManager.undoChanges(m_context, addSiteRoot(resource));
     }
 
-//    protected void doUnlockResource(String resourcename) throws CmsException {
-//        m_driverManager.unlockResource(m_context, resourcename);
-//    }
-
     /**
      * Unlocks a resource.
      * <br>
@@ -1456,7 +1452,7 @@ public class CmsObject extends Object {
      * to unlock this resource.
      */
     protected void doUnlockResource(String resource) throws CmsException {
-        m_driverManager.unlockResource(m_context, addSiteRoot(resource));
+        m_driverManager.unlockResource(m_context, addSiteRoot(resource), false);
     }
 
     /**

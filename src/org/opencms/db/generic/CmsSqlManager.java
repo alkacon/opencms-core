@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/07/11 07:48:05 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/18 17:22:50 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/07/11 07:48:05 $
+ * @version $Revision: 1.7 $ $Date: 2003/07/18 17:22:50 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -441,7 +441,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @param propertyFilename the package/filename of the properties hash
      * @return Properties the new properties instance.
      */
-    protected Properties loadProperties(String propertyFilename) {
+    protected synchronized Properties loadProperties(String propertyFilename) {
         Properties properties = new Properties();
 
         try {
@@ -561,7 +561,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * 
      * @param properties a hash containt key/value coded SQL statements
      */
-    protected void precalculateQueries(Properties properties) {
+    protected synchronized void precalculateQueries(Properties properties) {
         String currentKey = null;
         String currentValue = null;
         int startIndex = 0;
