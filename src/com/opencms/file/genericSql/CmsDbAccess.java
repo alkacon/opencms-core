@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/07 07:38:07 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/06/07 08:12:06 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.15 $ $Date: 2000/06/07 07:38:07 $ * 
+ * @version $Revision: 1.16 $ $Date: 2000/06/07 08:12:06 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -641,6 +641,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	private void fillDefaults() 
 		throws CmsException {
 		// TODO: init all default-resources
+
+		// TODO: add correct groups here!
+		CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), new CmsGroup(-1, -1, "", "", 0), "", "", C_USER_TYPE_SYSTEMUSER); 
+		CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), new CmsGroup(-1, -1, "", "", 0), "", "", C_USER_TYPE_SYSTEMUSER); 
 	}
 	
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/06 17:20:19 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/06/07 08:12:06 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/06/06 17:20:19 $
+ * @version $Revision: 1.11 $ $Date: 2000/06/07 08:12:06 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1272,9 +1272,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( isAdmin(currentUser, currentProject) ) {
 			// check the password minimumsize
 			if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
-				// TODO: check for the correct type
 				// TODO: read the group first
-				return( m_dbAccess.addUser(name, password, description, "", "", "", 0, 0, C_FLAG_ENABLED, additionalInfos, new CmsGroup(-1, -1, "", "", 0), "", "", 0));
+				return( m_dbAccess.addUser(name, password, description, "", "", "", 0, 0, C_FLAG_ENABLED, additionalInfos, new CmsGroup(-1, -1, "", "", 0), "", "", C_USER_TYPE_SYSTEMUSER));
 			} else {
 				throw new CmsException("[" + this.getClass().getName() + "] " + name, 
 					CmsException.C_SHORT_PASSWORD);

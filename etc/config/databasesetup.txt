@@ -1,23 +1,25 @@
 create table CMS_SYSTEMPROPERTIES       (SYSTEMPROPERTY_ID int not null,
 										 SYSTEMPROPERTY_NAME VARCHAR(40) not null, 
                                          SYSTEMPROPERTY_VALUE blob,
-                                         primary key(SYSTEMPROPERTY_ID));
+                                         primary key(SYSTEMPROPERTY_ID),
+										 unique(SYSTEMPROPERTY_NAME));
 
-create table CMS_USERS                  (USER_ID int not null auto_increment,
+create table CMS_USERS                  (USER_ID int not null,
                                          USER_NAME VARCHAR(32) not null,
                                          USER_PASSWORD VARCHAR(32) not null,
                                          USER_DESCRIPTION VARCHAR(255) not null,
+										 USER_FIRSTNAME VARCHAR(50) not null,
+										 USER_LASTNAME VARCHAR(50) not null,
+										 USER_EMAIL VARCHAR(50) not null,
+										 USER_LASTLOGIN DATETIME not null,
+										 USER_LASTUSED DATETIME not null,
+										 USER_FLAGS int not null,
+										 USER_INFO blob,
+										 USER_DEFAULT_GROUP_ID int not null,
+										 USER_ADDRESS VARCHAR(50) not null,
+										 USER_SECTION VARCHAR(50) not null,
+										 USER_TYPE int not null,
                                          primary key(USER_ID), unique(USER_NAME));
-
-create table CMS_USERS_ADDITIONALINFO   (USER_ID int not null,
-                                         USER_FIRSTNAME VARCHAR(50),
-                                         USER_LASTNAME VARCHAR(50),
-                                         USER_EMAIL VARCHAR(50),
-                                         USER_LASTLOGIN datetime,
-                                         USER_LASTUSED datetime,
-                                         USER_FLAGS int not null,
-                                         USER_INFO blob,
-                                         primary key(USER_ID));
 
 create table CMS_GROUPS                 (GROUP_ID int not null auto_increment,
                                          PARENT_GROUP_ID int not null,

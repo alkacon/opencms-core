@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/06/06 14:32:38 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2000/06/07 08:12:06 $
+ * Version: $Revision: 1.83 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.82 $ $Date: 2000/06/06 14:32:38 $
+ * @version $Revision: 1.83 $ $Date: 2000/06/07 08:12:06 $
  */
 public interface I_CmsConstants
 {
@@ -201,7 +201,17 @@ public interface I_CmsConstants
 	 * This is the group for administrators.
 	 */
 	 static final String C_USER_ADMIN = "Admin";
+	 
+	 /**
+	  * A user-type
+	  */
+	 static final int C_USER_TYPE_SYSTEMUSER = 0;
 
+	 /**
+	  * A user-type
+	  */
+	 static final int C_USER_TYPE_WEBMUSER = 1;
+	 
 	 /**
 	 * Key for additional info address.
 	 */
