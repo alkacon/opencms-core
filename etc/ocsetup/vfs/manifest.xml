@@ -65,9 +65,9 @@
             <lastmodified>1046214000000</lastmodified>
             <properties>
                 <property>
-                    <name>exportname</name>
+                    <name>export</name>
                     <type>0</type>
-                    <value><![CDATA[/externallinks/]]></value>
+                    <value><![CDATA[false]]></value>
                 </property>
             </properties>
         </file>
@@ -188,7 +188,13 @@
             <group>Administrators</group>
             <access>607</access>
             <lastmodified>1046214000000</lastmodified>
-            <properties/>
+            <properties>
+                <property>
+                    <name>export</name>
+                    <type>0</type>
+                    <value><![CDATA[false]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <source>system/shared/bodyloader.html</source>
@@ -200,11 +206,16 @@
             <lastmodified>1046214000000</lastmodified>
             <properties>
                 <property>
+                    <name>export</name>
+                    <type>0</type>
+                    <value><![CDATA[false]]></value>
+                </property>            
+                <property>
                     <name>cache</name>
                     <type>4</type>
                     <value><![CDATA[uri;params=(cmsframe,_CMS_ELEMENTREPLACE);]]></value>
                 </property>
-            </properties>
+            </properties>           
         </file>
         <file>
             <destination>system/workplace</destination>

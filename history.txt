@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/04/10 15:56:12 $
- * Version: $Revision: 1.470 $
+ * Date   : $Date: 2003/04/16 10:54:08 $
+ * Version: $Revision: 1.471 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,8 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
+! Added "import.immutable.resources" setting to opencms.properties, all resources
+  listed there will be igored during an import if they already exist
 ! The size of the file upload can now be limited with the opencms.property setting "workplace.file.maxuploadsize"
 ! Added method getContent() to com.opencms.jsp.CmsJspActionElement
 ! Added method isInWorkplaceMode() to com.opencms.jsp.CmsJspActionElement

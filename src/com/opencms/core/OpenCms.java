@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/04/10 15:54:53 $
-* Version: $Revision: 1.122 $
+* Date   : $Date: 2003/04/16 10:53:52 $
+* Version: $Revision: 1.123 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.122 $ $Date: 2003/04/10 15:54:53 $
+ * @version $Revision: 1.123 $ $Date: 2003/04/16 10:53:52 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -336,6 +336,22 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         }        
         if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Old context support  : " + ((webAppNames.size() > 0)?"enabled":"disabled"));     
         setRuntimeProperty("compatibility.support.webAppNames", webAppNames);
+       
+        // Immutable import resources
+        String[] immuResources = conf.getStringArray("import.immutable.resources");
+        if (immuResources == null) immuResources = new String[0];  
+        List immutableResourcesOri = java.util.Arrays.asList(immuResources);
+        ArrayList immutableResources = new ArrayList();
+        for (int i=0; i<immutableResourcesOri.size(); i++) {
+            // remove possible white space
+            String path = ((String)immutableResourcesOri.get(i)).trim();
+            if (path != null && ! "".equals(path)) {
+                immutableResources.add(path);
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Immutable resource   : " + (i+1) + " - " + path );
+            }               
+        }        
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Immutable resources  : " + ((immutableResources.size() > 0)?"enabled":"disabled"));     
+        setRuntimeProperty("import.immutable.resources", immutableResources);       
        
         // try to initialize directory translations
         try {

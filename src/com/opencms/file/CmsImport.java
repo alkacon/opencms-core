@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/03/25 16:35:07 $
-* Version: $Revision: 1.90 $
+* Date   : $Date: 2003/04/16 10:53:53 $
+* Version: $Revision: 1.91 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.90 $ $Date: 2003/03/25 16:35:07 $
+ * @version $Revision: 1.91 $ $Date: 2003/04/16 10:53:53 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -655,7 +655,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     ) throws CmsException {
         NodeList fileNodes, propertyNodes;
         Element currentElement, currentProperty;
-        String source, destination, type, user, group, access, launcherStartClass, dummy;
+        String source, destination, type, user, group, access, launcherStartClass, timestamp;
         long lastmodified = 0;
         Map properties;
         
@@ -682,6 +682,11 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         // get list of unwanted properties
         List deleteProperties = (List) A_OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
         if (deleteProperties == null) deleteProperties = new ArrayList();
+        
+        // get list of immutable resources
+        List immutableResources = (List) A_OpenCms.getRuntimeProperty("import.immutable.resources");
+        if (immutableResources == null) immutableResources = new ArrayList();
+        if (DEBUG > 0) System.err.println("Import: Immutable resources size is " + immutableResources.size()); 
             
         try {
             // get all file-nodes
@@ -705,8 +710,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
                 launcherStartClass = getTextNodeValue(currentElement, C_EXPORT_TAG_LAUNCHER_START_CLASS);
                 
-                if ((dummy=getTextNodeValue(currentElement,C_EXPORT_TAG_LASTMODIFIED))!=null) {
-                    lastmodified = Long.parseLong(dummy);
+                if ((timestamp=getTextNodeValue(currentElement,C_EXPORT_TAG_LASTMODIFIED))!=null) {
+                    lastmodified = Long.parseLong(timestamp);
                 }
                 else {
                     lastmodified = System.currentTimeMillis();
@@ -722,9 +727,26 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     translatedName += C_FOLDER_SEPARATOR;                    
                 }                    
                 translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
-                translatedName = translatedName.substring(root.length());
+                if (DEBUG > 3) System.err.println("Import: Translated resource name is " + translatedName); 
                 
-                if (! excludeList.contains(translatedName)) {                    
+                boolean resourceNotImmutable = true;                
+                if (immutableResources.contains(translatedName)) {
+                    if (DEBUG > 1) System.err.println("Import: Translated resource name is immutable"); 
+                    
+                    // this resource must not be modified by an import if it already exists
+                    try {
+                        m_cms.readFileHeader("//" + translatedName);
+                        resourceNotImmutable = false;
+                        if (DEBUG > 0) System.err.println("Import: Immutable flag set for resource"); 
+                    } catch (CmsException e) {
+                        // resourceNotImmutable will be true
+                        if (DEBUG > 0) System.err.println("Import: Immutable test caused exception " + e); 
+                    } 
+                }                                
+                
+                translatedName = translatedName.substring(root.length());
+                if (resourceNotImmutable && (! excludeList.contains(translatedName))) {                   
+                    
                     // print out the information to the report
                     m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(translatedName + " ");                    
