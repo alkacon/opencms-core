@@ -210,6 +210,10 @@ public class CmsShowContent extends CmsXmlTemplate {
                 // get all public getMethods that return a String and have no parameters
                 getMethods = getGetMethods(cdClass);
             }
+            try {
+                Method getUniqueIdMethod = cdClass.getMethod("getUniqueId", new Class[] {CmsObject.class});
+                template.setData("id", (String)getUniqueIdMethod.invoke(cdClass, new Object[] {cms}));
+            } catch (Exception e) {}
             setDatablocks(template, cdObject, getMethods);
         } catch (InvocationTargetException e) {
             // the constructor has throwed an exception, InvocationTargetExceptions of the egt-methods
@@ -292,8 +296,12 @@ public class CmsShowContent extends CmsXmlTemplate {
                     }
                 }
                 if(showIt){
-                   setDatablocks(template, curCont, getMethods);
-                   list.append(template.getProcessedDataValue(C_LISTENTRY_DATABLOCK, this));
+                    try {
+                        Method getUniqueIdMethod = cdClass.getMethod("getUniqueId", new Class[] {CmsObject.class});
+                        template.setData("id", (String)getUniqueIdMethod.invoke(cdClass, new Object[] {cms}));
+                    } catch (Exception e) {}
+                    setDatablocks(template, curCont, getMethods);
+                    list.append(template.getProcessedDataValue(C_LISTENTRY_DATABLOCK, this));
                 }
             }
             //register the classes for the dependencies
