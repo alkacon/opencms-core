@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/20 14:41:22 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2000/06/22 13:58:36 $
+ * Version: $Revision: 1.62 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.61 $ $Date: 2000/06/20 14:41:22 $
+ * @version $Revision: 1.62 $ $Date: 2000/06/22 13:58:36 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -85,6 +85,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     private CmsCache m_projectCache=null;
     private CmsCache m_propertyCache=null;
     private CmsCache m_propertyDefCache=null;
+    private CmsCache m_propertyDefVectorCache=null;
     
     // Internal ResourceBroker methods   
     
@@ -115,7 +116,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         m_subresCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".subres", 100));
         m_propertyCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".property", 1000));
         m_propertyDefCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertydef", 100));                  
-        
+        m_propertyDefVectorCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertyvectordef", 100));
     }
 	
     /**
@@ -141,6 +142,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         m_subresCache.clear();
         m_propertyCache.clear();
         m_propertyDefCache.clear();
+        m_propertyDefVectorCache.clear();
     }
    
     
@@ -581,6 +583,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
         // check the security
 		if( isAdmin(currentUser, currentProject) ) {
+			m_propertyDefVectorCache.clear();
 			return( m_dbAccess.createPropertydefinition(name, 
 													    getResourceType(currentUser, 
 														         		currentProject, 
@@ -612,6 +615,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         // check the security
 		if( isAdmin(currentUser, currentProject) ) {
 			// first read and then delete the metadefinition.
+			m_propertyDefVectorCache.clear();
+			m_propertyDefCache.remove(name + (getResourceType(currentUser,currentProject,resourcetype)).getResourceType());
 			m_dbAccess.deletePropertydefinition(
 			    readPropertydefinition(currentUser,currentProject,name,resourcetype));
 		} else {
@@ -651,6 +656,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 											   C_PROPERTYDEF_TYPE_MANDATORY).size() == 0  ) {
 			// no - delete them all
 			m_dbAccess.deleteAllProperties(res.getResourceId());
+			m_propertyCache.clear();
       
 
 		} else {
@@ -694,6 +700,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 (metadef.getPropertydefType() != C_PROPERTYDEF_TYPE_MANDATORY )  ) {
 			// no - delete the information
 			m_dbAccess.deleteProperty(property,res.getResourceId(),res.getType());
+			m_propertyCache.clear();
 	
 		} else {
 			// yes - throw exception
@@ -720,10 +727,16 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
 										      String resourcetype)
         throws CmsException {
+        Vector returnValue = null;
+        CmsResourceType resType = getResourceType(currentUser, currentProject, resourcetype);
+        
+        returnValue = (Vector)m_propertyDefVectorCache.get(resType.getResourceType());
+        if (returnValue == null){
+			returnValue = m_dbAccess.readAllPropertydefinitions(resType);
+			m_propertyDefVectorCache.put(resType.getResourceType(), returnValue);
+        }
  
-        return m_dbAccess.readAllPropertydefinitions(getResourceType(currentUser, 
-												                     currentProject, 
-                                                                     resourcetype));
+        return returnValue;
     }
 	
 	/**
@@ -745,7 +758,14 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
 										 int id, int type)
         throws CmsException {
-        return m_dbAccess.readAllPropertydefinitions(id,type);
+        Vector returnValue = null;
+		returnValue = (Vector) m_propertyDefVectorCache.get(Integer.toString(id) + "_" + Integer.toString(type));
+		if (returnValue == null){
+			returnValue = m_dbAccess.readAllPropertydefinitions(id,type);
+			m_propertyDefVectorCache.put(Integer.toString(id) + "_" + Integer.toString(type), returnValue);
+		}     
+        
+        return returnValue;
     }
     
      /**
@@ -769,7 +789,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
        
         CmsResourceType restype=getResourceType(currentUser,currentProject,resourcetype);
-        return m_dbAccess.readAllPropertydefinitions(restype.getResourceType(),type);
+        return readAllPropertydefinitions(currentUser, currentProject, restype.getResourceType(),type);
     }
     
     /**
@@ -793,10 +813,14 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 												  CmsProject currentProject, 
 												  String name, String resourcetype)
         throws CmsException {
-        return m_dbAccess.readPropertydefinition(name, this.getResourceType(currentUser, 
-    																		currentProject, 
-																		    resourcetype));
-            
+        CmsResourceType resType = getResourceType(currentUser,currentProject,resourcetype);
+        CmsPropertydefinition returnValue = null;
+        returnValue = (CmsPropertydefinition)m_propertyDefCache.get(name + resType.getResourceType());
+        if (returnValue == null){
+			returnValue = m_dbAccess.readPropertydefinition(name, resType);
+			m_propertyDefCache.put(name + resType.getResourceType(), returnValue);
+		}	       
+        return returnValue;            
     }
 
       
@@ -834,14 +858,18 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 											  resource);
 			}
 		}
-		
 		// check the security
 		if( ! accessRead(currentUser, currentProject, res) ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
 				CmsException.C_NO_ACCESS);
 		}
-		
-		return( m_dbAccess.readAllProperties(res.getResourceId(),res.getType()) );
+		Hashtable returnValue = null;
+		returnValue = (Hashtable)m_propertyCache.get(Integer.toString(res.getResourceId()) +"_"+ Integer.toString(res.getType()));
+		if (returnValue == null){
+			returnValue = m_dbAccess.readAllProperties(res.getResourceId(),res.getType());
+			m_propertyCache.put(Integer.toString(res.getResourceId()) +"_"+ Integer.toString(res.getType()),returnValue);
+		}
+		return returnValue;
     }
 	
     
@@ -885,8 +913,17 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
 				CmsException.C_NO_ACCESS);
 		}
-		
-		return m_dbAccess.readProperty(property,res.getResourceId(),res.getType());
+		String returnValue = null;
+		returnValue = (String)m_propertyCache.get(property +
+					Integer.toString(res.getResourceId()) +","+ Integer.toString(res.getType()));
+		if (returnValue == null){
+			returnValue = m_dbAccess.readProperty(property,res.getResourceId(),res.getType());
+			if (returnValue != null){
+				m_propertyCache.put(property +Integer.toString(res.getResourceId()) +
+							","+ Integer.toString(res.getType()), returnValue);
+			}
+		}	
+		return returnValue;
     }
     
     
@@ -910,6 +947,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
      // check the security
 		if( isAdmin(currentUser, currentProject) ) {
+			m_propertyDefVectorCache.clear();
 			return( m_dbAccess.writePropertydefinition(propertydef) );
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + propertydef.getName(), 
@@ -947,6 +985,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	
 		m_dbAccess.writeProperty(property, value, res.getResourceId(),res.getType());
+		m_propertyCache.clear();
         res.setState(C_STATE_CHANGED);
 		// set the file-state to changed
 		if(res.isFile()){
@@ -992,6 +1031,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 
         
 		m_dbAccess.writeProperties(propertyinfos,res.getResourceId(),res.getType());
+		m_propertyCache.clear();
         res.setState(C_STATE_CHANGED);
 		// set the file-state to changed
 		if(res.isFile()){     
@@ -3244,6 +3284,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			}
             // update cache
             m_resourceCache.remove(C_FOLDER+currentProject.getId()+foldername);
+            m_subresCache.clear();
+            
 			// inform about the file-system-change
 			fileSystemChanged();
 		
@@ -4050,7 +4092,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
  
 			}
             // update the cache
-            m_resourceCache.put(C_FILE+currentProject.getId()+filename,file);   
+            m_resourceCache.remove(C_FILE+currentProject.getId()+filename);   
             m_subresCache.clear();
 
 			// inform about the file-system-change
