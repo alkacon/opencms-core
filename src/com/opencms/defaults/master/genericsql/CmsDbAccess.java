@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/01/31 10:19:33 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2002/02/14 14:34:27 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -206,7 +206,7 @@ public class CmsDbAccess {
     }
 
     /**
-     * Updates the lockstet in the database.
+     * Updates the lockstate in the database.
      * @param cms the CmsObject to get access to cms-ressources.
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
@@ -482,6 +482,44 @@ public class CmsDbAccess {
             sqlClose(con, stmnt, res);
         }
         return retValue;
+    }
+
+    /**
+     * Reads all content definitions of a given channel
+     * @param cms the CmsObject to get access to cms-ressources.
+     * @param channelId the id of the channel.
+     * @return Vector The datasets of the contentdefinitions in the channel
+     */
+    public Vector readAllByChannel(CmsObject cms, int channelId, int subId)
+        throws CmsException {
+        Vector theDataSets = new Vector();
+        String statement_key = "readallbychannel_offline";
+        String poolToUse = m_poolName;
+        if(isOnlineProject(cms)) {
+            statement_key = "readallbychannel_online";
+            poolToUse = m_onlinePoolName;
+        }
+
+        PreparedStatement stmnt = null;
+        ResultSet res = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(poolToUse);
+            stmnt = sqlPrepare(con, statement_key);
+            stmnt.setInt(1, subId);
+            stmnt.setInt(2, channelId);
+            res = stmnt.executeQuery();
+            while(res.next()) {
+                CmsMasterDataSet dataset = new CmsMasterDataSet();
+                sqlFillValues(res, cms, dataset);
+                theDataSets.add(dataset);
+            }
+        } catch(SQLException exc) {
+            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+        } finally {
+            sqlClose(con, stmnt, res);
+        }
+        return theDataSets;
     }
 
     /**
