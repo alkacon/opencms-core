@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/02/12 12:06:07 $
- * Version: $Revision: 1.451 $
+ * Date   : $Date: 2003/02/12 17:20:55 $
+ * Version: $Revision: 1.452 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -21,8 +21,9 @@ Legend:
 
 OpenCms 5.0 (next version)
 ! Improved "new module" options, it's now possible to select if exportable 
- "classes/" and/or "lib/" folders should be created for the module
+  "classes/" and/or "lib/" folders should be created for the module
 ! Updated and improved english workplace online help is now available as a separate module "org.opencms.help.en"
+* Fixed issue #56: Links in "Text" pages edited with the WYSIWYG "Edit as HTML"
 * Fixed issue with hardcoded servlet context path in <edittemplate>, it's now possible to 
   rename the servlet context and the images still work in the editor
 * Fixed issue #55 from Bugzilla (compatibility.support.oldlocales not working if no new modules installed)
