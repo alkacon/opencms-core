@@ -1,5 +1,4 @@
-CREATE OR REPLACE
-PACKAGE BODY OpenCmsGroup IS
+CREATE OR REPLACE PACKAGE BODY OpenCmsGroup IS
 ------------------------------------------------------------------------------------
 -- declare variables/procedures/functions which are used in this package
 ------------------------------------------------------------------------------------
@@ -25,15 +24,22 @@ PACKAGE BODY OpenCmsGroup IS
 	    vSubId := getParent(vUserGroups.group_id);
         WHILE vSubId IS NOT NULL LOOP
 	        IF vSubId != pGroupId THEN
-              vSubId := getParent(vSubId);
+			  IF addInList(vSubId) THEN
+                vSubId := getParent(vSubId);
+			  ELSE
+			    vSubId := null;
+			  END IF;
             ELSE
+			  bAnyList := '';
               RETURN 1;
             END IF;
           END LOOP;
       ELSE
+	    bAnyList := '';
         RETURN 1;
       END IF;
     END LOOP;
+	bAnyList := '';
     RETURN 0;
   END userInGroup;
 ---------------------------------------------------------------------------------
@@ -69,7 +75,7 @@ PACKAGE BODY OpenCmsGroup IS
              vSubId := opencmsgroup.getParent(vSubId);
            ELSE
            	 vSubId := null;
-           END IF;           
+           END IF;
          END LOOP;
        END IF;
      END LOOP;
@@ -182,3 +188,4 @@ PACKAGE BODY OpenCmsGroup IS
 ---------------------------------------------------------------------------------------
 END;
 /
+
