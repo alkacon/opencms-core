@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/06/13 13:17:22 $
-* Version: $Revision: 1.96 $
+* Date   : $Date: 2003/06/16 13:37:22 $
+* Version: $Revision: 1.97 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.96 $ $Date: 2003/06/13 13:17:22 $
+ * @version $Revision: 1.97 $ $Date: 2003/06/16 13:37:22 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -565,9 +565,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         CmsResource res = null;
                 
         try {
-            if (m_importingChannelData) {
-                m_cms.setContextToCos();
-                
+            if (m_importingChannelData) {                
                 // try to read an existing channel to get the channel id
                 String channelId = null;
                 try {
@@ -632,9 +630,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 // Sleep some time after an error so that the report output has a chance to keep up
                 Thread.sleep(1000);   
             } catch (Exception e) {};
-        } finally {
-            if (m_importingChannelData) m_cms.setContextToVfs();            
         }
+        
         byte[] digestContent = {0};
         if (content != null) {
             digestContent = m_digest.digest(content);
@@ -676,6 +673,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         String source, destination, type, user, group, access, launcherStartClass, timestamp;
         long lastmodified = 0;
         Map properties = null;
+        
+        if (m_importingChannelData) m_cms.setContextToCos();
         
         Vector types = new Vector(); // stores the file types for which the property already exists
         if (excludeList == null) {
@@ -836,6 +835,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         } catch (Exception exc) {
             m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        } finally {
+            if (m_importingChannelData) m_cms.setContextToVfs();
         }
     }
 
