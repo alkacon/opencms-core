@@ -118,10 +118,11 @@ function opensmallwin(url, name, w, h) {
 
 // add an optional element to the currently edited content
 function addElement(elemName, insertAfter) {
-	// calculate y coordinate of current add button
-	var posElem = document.getElementById("add_" + elemName + insertAfter);
-	top.edit.buttonbar.lastPosY = findPosY(posElem);
-	// fill field values
+	if (browser.isIE) {
+		top.edit.buttonbar.lastPosY = document.body.scrollTop;	
+	} else {
+		top.edit.buttonbar.lastPosY = window.pageYOffset;
+	}	
 	var _form = document.EDITOR;
 	_form.elementname.value = elemName;
 	_form.elementindex.value = insertAfter;
@@ -130,10 +131,11 @@ function addElement(elemName, insertAfter) {
 
 // remove an optional element from currently edited content
 function removeElement(elemName, index) {
-	// calculate y coordinate of current remove button
-	var posElem = document.getElementById("del_" + elemName + index);
-	top.edit.buttonbar.lastPosY = findPosY(posElem);
-	// fill field values
+	if (browser.isIE) {
+		top.edit.buttonbar.lastPosY = document.body.scrollTop;	
+	} else {
+		top.edit.buttonbar.lastPosY = window.pageYOffset;
+	}	
 	var _form = document.EDITOR;
 	_form.elementname.value = elemName;
 	_form.elementindex.value = index;
