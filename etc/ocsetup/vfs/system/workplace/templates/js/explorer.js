@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/03/27 10:02:54 $
-  * Version: $Revision: 1.23 $
+  * Date   : $Date: 2001/05/21 09:32:20 $
+  * Version: $Revision: 1.24 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -628,7 +628,7 @@ function showWinTree(doc){
 var treewindowexists=false;
  
 function openTreeCopyWin(){
-    treewin=opensmallwin('/servlets/opencms/system/workplace/action/treewindowcopy.html', 'opencms', 170, 300);
+    treewin=opensmallwin('treewindowcopy.html', 'opencms', 170, 300);
    	treewindowexists=true;
 }
  
