@@ -12,7 +12,7 @@ if (cms.hasValidationErrors()) {
 	errorMessage = "<p style=\"padding: 2px;\"><span class=\"formerror\">" + cms.key("form.error.validation") + "</span></p>";
 }
 
-cms.includePopup("popuphead", cms.key("letter.title"), cms.getPageUri(true));
+cms.includePopup("popuphead", cms.key("letter.title"));
 
 	%>
 	<h1 class="popup"><%= cms.key("letter.title") %></h1>
@@ -30,6 +30,7 @@ cms.includePopup("popuphead", cms.key("letter.title"), cms.getPageUri(true));
 		<input type="hidden" name="__locale" value="<%= cms.getRequestContext().getLocale() %>">
 		<input type="hidden" name="<%= CmsTemplateBean.C_PARAM_URI %>" value="<%= cms.getPageUri() %>">
 		<input type="hidden" name="<%= CmsTemplateBean.C_PARAM_SITE %>" value="<%= cms.getRequestContext().getSiteRoot() %>">
+		<input type="hidden" name="<%= CmsTemplateStyleSheet.C_PARAM_CONFIGFILE %>" value="<%= cms.getStyleSheetConfigUri() %>">
 
 		<p style="padding: 2px;">
 		<%= cms.key("letter.form.concern.title") %>*<br />
@@ -105,5 +106,5 @@ cms.includePopup("popuphead", cms.key("letter.title"), cms.getPageUri(true));
 		<div style="padding: 2px;"><%= cms.getFormText("form_foot", false) %></div>
 	</div>
 <%
-cms.includePopup("popupfoot", null, cms.getPageUri(true));
+cms.includePopup("popupfoot", null);
 %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/03/10 14:35:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/11 10:44:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
     
@@ -90,7 +90,6 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         CmsTemplateBean.C_PROPERTY_SHOW_NAVLEFT,
         CmsTemplateBean.C_PROPERTY_NAVLEFT_ELEMENTURI,
         CmsTemplateBean.C_PROPERTY_SIDE_URI,
-        CmsTemplateBean.C_PROPERTY_STARTFOLDER,
         CmsTemplateBean.C_PROPERTY_CONFIGPATH
     };
     
@@ -281,11 +280,6 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_NAVLEFT_ELEMENTURI, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_NAVLEFT_ELEMENTURI, editable));
         // build side uri search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_SIDE_URI, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_SIDE_URI, editable));                        
-        
-        // build startfolder checkbox only for folders
-        if (isFolder()) {
-            result.append(buildCheckBox(CmsTemplateBean.C_PROPERTY_STARTFOLDER, C_PARAM_TRUE, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_STARTFOLDER));
-        }
         
         // build navleft element search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_CONFIGPATH, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_CONFIGPATH, editable));
@@ -667,22 +661,4 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         
         return result; 
     }   
-    
-    /**
-     * Checks if the currently edited resource is a folder.<p>
-     * 
-     * @return true if the resource is a folder, otherwise false
-     */
-    private boolean isFolder() {
-        
-        try {
-            CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-            if (res.isFolder()) {
-                return true;
-            }
-        } catch (CmsException e) {
-            // ignore this exception
-        }       
-        return false;
-    }
 }

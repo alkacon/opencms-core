@@ -4,7 +4,7 @@
 CmsTemplateImprint cms = new CmsTemplateImprint(pageContext, request, response);
 
 if (cms.template("head")) {
-	cms.includePopup("popuphead", cms.key("imprint.headline"), cms.getRequestContext().getUri());
+	cms.includePopup("popuphead", cms.key("imprint.headline"));
 }
 
 if (cms.template("headline")) {
@@ -76,6 +76,6 @@ if (cms.template("foot")) {
 		</div>
 <%
 	}
-	cms.includePopup("popupfoot", null, cms.getRequestContext().getUri());
+	cms.includePopup("popupfoot", null);
 }
 %>

@@ -12,13 +12,13 @@ if (cms.template("popuphead")) {
 	String title = request.getParameter("title");
 	String styleSheetUri = request.getParameter("stylesheeturi");
 	String resourcePath = request.getParameter("resourcepath");
-	String uri = request.getParameter("uri");
+	String conf = request.getParameter("config");
 
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="<%= locale %>">
 <head>
 	<title><%= title %></title>
-	<link href="<%= styleSheetUri %>?respath=<%=resourcePath %>&uri=<%= uri %>&site=<%= cms.getRequestContext().getSiteRoot() %>&__locale=<%= locale %>" rel="stylesheet" type="text/css">
+	<link href="<%= styleSheetUri %>?respath=<%=resourcePath %>&config=<%= conf %>&site=<%= cms.getRequestContext().getSiteRoot() %>&__locale=<%= locale %>" rel="stylesheet" type="text/css">
 	<script type="text/javascript">
 	<!--
     function showFile(filename) {

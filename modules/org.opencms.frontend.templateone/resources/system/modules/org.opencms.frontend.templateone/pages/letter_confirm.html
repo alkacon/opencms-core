@@ -7,7 +7,7 @@
 // initialise Cms Action Element
 cms.init(pageContext, request, response);
 
-cms.includePopup("popuphead", cms.key("recommend.title"), cms.getPageUri(true));
+cms.includePopup("popuphead", cms.key("recommend.title"));
 	%>
 	<h1 class="popup"><%= cms.key("letter.title") %></h1>
 	<div class="popup" style="padding: 2px;">
@@ -30,5 +30,5 @@ cms.includePopup("popuphead", cms.key("recommend.title"), cms.getPageUri(true));
 		<%= cms.getFormText("confirm_foot", false) %>
 	</div>
 <%
-cms.includePopup("popupfoot", null, cms.getPageUri(true));
+cms.includePopup("popupfoot", null);
 %>

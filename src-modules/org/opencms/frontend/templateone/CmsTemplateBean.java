@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/03/08 11:27:08 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/03/11 10:44:58 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -64,134 +65,137 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
-    /** File name of the website area configuration file.<p> */
+    /** File name of the website area configuration file. */
     public static final String C_FILE_CONFIG_COMMON = "configuration_common";
 
-    /** File name of the CSS style sheet to use.<p> */
+    /** File name of the CSS style sheet to use. */
     public static final String C_FILE_CSS = "style.css";
 
-    /** File name of the accessible CSS style sheet to use.<p> */
+    /** File name of the accessible CSS style sheet to use. */
     public static final String C_FILE_CSS_ACCESSIBLE = "style_accessible.css";
 
-    /** File name of the head links configuration file.<p> */
+    /** File name of the head links configuration file. */
     public static final String C_FILE_LINKS_HEAD = "configuration_links";
 
-    /** Folder path to the included JSP elements.<p> */
+    /** Folder path to the included JSP elements. */
     public static final String C_FOLDER_ELEMENTS = "../elements/";
 
-    /** Name of the resource bundle containing the localized messages.<p> */
+    /** Name of the resource bundle containing the localized messages. */
     public static final String C_MESSAGE_BUNDLE = "templateone";
 
-    /** Name of the frontend module in OpenCms.<p> */
+    /** Name of the frontend module in OpenCms. */
     public static final String C_MODULE_NAME = "org.opencms.frontend.templateone";
 
-    /** Request parameter name to show the accessible version of a page.<p> */
+    /** Request parameter name to show the accessible version of a page. */
     public static final String C_PARAM_ACCESSIBLE = "accessible";
 
-    /** Request parameter name to show the common version of a page.<p> */
+    /** Request parameter name to show the common version of a page. */
     public static final String C_PARAM_COMMON = "common";
 
-    /** Request parameter name for the help page URI.<p> */
+    /** Request parameter name for the help page URI. */
     public static final String C_PARAM_HELPURI = "helpuri";
 
-    /** Request parameter name to determine the displayed version of a page.<p> */
+    /** Request parameter name to determine the displayed version of a page. */
     public static final String C_PARAM_LAYOUT = "layout";
 
-    /** Request parameter name for the login page URI.<p> */
+    /** Request parameter name for the login page URI. */
     public static final String C_PARAM_LOGINURI = "loginuri";
 
-    /** Request parameter name to determine the part of a JSP element to include.<p> */
+    /** Request parameter name to determine the part of a JSP element to include. */
     public static final String C_PARAM_PART = "part";
 
-    /** Request parameter name to show the print version of a page.<p> */
+    /** Request parameter name to show the print version of a page. */
     public static final String C_PARAM_PRINT = "print";
 
-    /** Request parameter name for the uri.<p> */
+    /** Request parameter name for the uri. */
     public static final String C_PARAM_URI = "uri";
     
-    /** Request parameter name for the site.<p> */
+    /** Request parameter name for the current site. */
     public static final String C_PARAM_SITE = "site";
 
-    /** Name of the property key to set the configuration path for the template.<p> */
+    /** Name of the property key to set the configuration path for the template. */
     public static final String C_PROPERTY_CONFIGPATH = "style_main_configpath";
 
-    /** Name of the property key to set the extension module for the template.<p> */
+    /** Name of the property key to set the extension module for the template. */
     public static final String C_PROPERTY_EXTENSIONMODULE = "style_main_extensionmodule";
 
-    /** Name of the property key to set the head default link.<p> */
+    /** Name of the property key to set the head default link. */
     public static final String C_PROPERTY_HEAD_DEFAULTLINK = "style_head_links_defaultlink";
 
-    /** Name of the property key to set the head image height.<p> */
+    /** Name of the property key to set the head image height. */
     public static final String C_PROPERTY_HEAD_IMGHEIGHT = "style_head_img_height";
 
-    /** Name of the property key to set the head image link.<p> */
+    /** Name of the property key to set the head image link. */
     public static final String C_PROPERTY_HEAD_IMGLINK = "style_head_img_link";
 
-    /** Name of the property key to set the head image uri.<p> */
+    /** Name of the property key to set the head image uri. */
     public static final String C_PROPERTY_HEAD_IMGURI = "style_head_img_uri";
 
-    /** Name of the property key to set the left navigation include element uri.<p> */
+    /** Name of the property key to set the left navigation include element uri. */
     public static final String C_PROPERTY_NAVLEFT_ELEMENTURI = "style_navleft_element_uri";
 
-    /** Name of the property key to set the resource path for the template.<p> */
+    /** Name of the property key to set the resource path for the template. */
     public static final String C_PROPERTY_RESOURCEPATH = "style_main_resourcepath";
 
-    /** Name of the property key to determine if the head navigation row is shown.<p> */
+    /** Name of the property key to determine if the head navigation row is shown. */
     public static final String C_PROPERTY_SHOW_HEADNAV = "style_show_head_nav";
 
-    /** Name of the property key to determine if the left navigation is shown.<p> */
+    /** Name of the property key to determine if the left navigation is shown. */
     public static final String C_PROPERTY_SHOW_NAVLEFT = "style_show_navleft";
 
-    /** Name of the property key to show the head image row.<p> */
+    /** Name of the property key to show the head image row. */
     public static final String C_PROPERTY_SHOWHEADIMAGE = "style_show_head_img";
 
-    /** Name of the property key to show the head links row.<p> */
+    /** Name of the property key to show the head links row. */
     public static final String C_PROPERTY_SHOWHEADLINKS = "style_show_head_links";
 
-    /** Name of the property key to set the side element uri.<p> */
+    /** Name of the property key to set the side element uri. */
     public static final String C_PROPERTY_SIDE_URI = "style_side_uri";
 
-    /** Name of the property key to set the start folder for navigation and search results.<p> */
+    /** Name of the property key to set the start folder for navigation and search results. */
     public static final String C_PROPERTY_STARTFOLDER = "style_main_startfolder";
 
-    /** Proprty value "none" for overriding certain properties.<p> */
+    /** Proprty value "none" for overriding certain properties. */
     public static final String C_PROPERTY_VALUE_NONE = "none";
+    
+    /** Resource type name for the microsite folders specifying a configurable subsite. */
+    public static final String C_RESOURCE_TYPE_MICROSITE_NAME = "microsite";
 
-    /** Stores the global website area configuration.<p> */
+    /** Stores the global website area configuration. */
     private CmsXmlContent m_globalConfiguration;
     
-    /** The current layout to parse.<p> */
+    /** The current layout to parse. */
     private String m_layout;
     
-    /** Stores the localized resource Strings.<p> */
+    /** Stores the localized resource Strings. */
     private CmsMessages m_messages;
     
-    /** Stores all properties for the requested resource.<p> */
+    /** Stores all properties for the requested resource. */
     private Map m_properties;
     
-    /** Stores the substituted path to the modules resources.<p> */
+    /** Stores the substituted path to the modules resources. */
     private String m_resPath;
     
-    /** Flag determining if the accessible version of the page should be shown.<p> */
+    /** Flag determining if the accessible version of the page should be shown. */
     private boolean m_showAccessibleVersion;
     
-    /** Flag determining if the head dhtml navigation should be shown.<p> */
+    /** Flag determining if the head dhtml navigation should be shown. */
     private boolean m_showHeadNavigation;
     
-    /** Flag determining if the print version should be shown.<p> */
+    /** Flag determining if the print version should be shown. */
     private boolean m_showPrintVersion;
     
-    /** Stores the path to the start folder for navigation and search.<p> */
+    /** Stores the path to the start folder for navigation and search. */
     private String m_startFolder;
     
-    /** Stores the URI to the CSS style sheet to use on the page.<p> */
+    /** Stores the URI to the CSS style sheet to use on the page. */
     private String m_styleUri;
     
-    /** Holds the template parts.<p> */
+    /** Holds the template parts. */
     private CmsTemplateParts m_templateParts;
 
     /**
@@ -230,7 +234,6 @@ public class CmsTemplateBean extends CmsJspActionElement {
         try {
             CmsFile configFile = cms.readFile(fileName, CmsResourceFilter.IGNORE_EXPIRATION);
             configuration = CmsXmlContentFactory.unmarshal(cms, configFile);
-
         } catch (Exception e) {
             // problem getting properties, log error
             if (OpenCms.getLog(CmsTemplateBean.class).isErrorEnabled()) {
@@ -319,7 +322,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
      */
     public String getConfigPath() {
 
-        return property(C_PROPERTY_CONFIGPATH, "search", "");
+        return property(C_PROPERTY_CONFIGPATH, "search", "/");
     }
 
     /**
@@ -620,34 +623,58 @@ public class CmsTemplateBean extends CmsJspActionElement {
     public String getStartFolder() {
 
         if (m_startFolder == null) {
-            // start folder has not yet been determined, so get it
-            String propValue = property(C_PROPERTY_STARTFOLDER, "search", "na");
-            if ("true".equals(propValue)) {
-                // property has been set somewhere, determine the right folder
-                String path = CmsResource.getFolderPath(getRequestContext().getUri());
-                boolean cont = true;
-                do {
-                    // get the property value of the currently checked folder
-                    String checkValue = property(C_PROPERTY_STARTFOLDER, path, null);
-                    if (checkValue == null) {
-                        // property not found, go to parent folder
+            // start folder has not yet been determined, so try to get it
+            String path = CmsResource.getFolderPath(getRequestContext().getUri());
+            int folderTypeId = -1;
+            try {
+                folderTypeId = OpenCms.getResourceManager().getResourceType(C_RESOURCE_TYPE_MICROSITE_NAME).getTypeId();
+            } catch (CmsLoaderException e) {
+                // resource type could not be determined
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Resource type id for microsite folder could not be determined in template one bean");
+                }
+            }
+            do {
+                // check if the current folder is a microsite type folder
+                try {
+                    // read the currently checked folder
+                    CmsResource folder = getCmsObject().readResource(path);
+                    if (folder.getTypeId() != folderTypeId) {
+                        // this is no microsite type folder
                         path = CmsResource.getParentFolder(path);
-                        if (path == null || "/".equals(path)) {
-                            cont = false;
+                        if (CmsStringUtil.isEmpty(path) || "/".equals(path)) {
+                            // root folder reached, use it as start folder
+                            m_startFolder = "/";
+                            return m_startFolder;
                         }
-                    } else if ("true".equals(checkValue)) {
+                    } else {
                         // found the folder to use as start folder
                         m_startFolder = path;
-                        cont = false;
+                        return m_startFolder;
                     }
-                } while (cont);
-            }
-            if (m_startFolder == null) {
-                // property was not found, use root folder as start folder
-                m_startFolder = "/";
-            }
+                } catch (CmsException e) {
+                    // error reading a folder, use root folder as start folder
+                    m_startFolder = "/";
+                    return m_startFolder;
+                }
+            } while (true);
         }
         return m_startFolder;
+    }
+    
+    /**
+     * Returns the URI of the CSS style sheet configuration file.<p>
+     * 
+     * @return the URI of the CSS style sheet configuration file
+     */
+    public String getStyleSheetConfigUri() {
+        
+        String confUri = property(CmsTemplateStyleSheet.C_PROPERTY_CONFIGFILE, "search", "");
+        if ("".equals(confUri)) {
+            // property not set, try to get default configuration file
+            confUri = getConfigPath() + CmsTemplateStyleSheet.C_FILENAME_CONFIGFILE;
+        }
+        return confUri;   
     }
 
     /**
@@ -732,10 +759,9 @@ public class CmsTemplateBean extends CmsJspActionElement {
      * 
      * @param element the element to display from the target
      * @param title the title for the popup page
-     * @param uri the URI of the page that called the popup
      * @throws JspException if including the element fails
      */
-    public void includePopup(String element, String title, String uri) throws JspException {
+    public void includePopup(String element, String title) throws JspException {
 
         Map properties = new HashMap();
         if ("popuphead".equals(element)) {
@@ -743,7 +769,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
             properties.put("stylesheeturi", getStyleSheetUri());
             properties.put("resourcepath", getResourcePath());
             properties.put("title", title);
-            properties.put("uri", uri);
+            properties.put(CmsTemplateStyleSheet.C_PARAM_CONFIGFILE, getStyleSheetConfigUri());
         }
         // include the element
         include(I_CmsWpConstants.C_VFS_PATH_MODULES + C_MODULE_NAME + "/pages/popup_includes.jsp", element, properties);

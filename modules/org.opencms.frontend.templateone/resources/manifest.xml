@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0 beta 1 Corrin</opencms_version>
-		<createdate>2/17/05 12:45 PM</createdate>
+		<createdate>3/11/05 11:35 AM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -28,10 +28,27 @@
 		<resources>
 			<resource uri="/system/galleries/pics/ocms-templateone/"/>
 			<resource uri="/system/modules/org.opencms.frontend.templateone/"/>
+			<resource uri="/system/workplace/resources/filetypes/microsite.gif"/>
 		</resources>
 		<parameters>
-			<param name="additionalresources">/system/galleries/pics/ocms-templateone/;/system/modules/org.opencms.frontend.templateone/</param>
+			<param name="additionalresources">/system/galleries/pics/ocms-templateone/;/system/modules/org.opencms.frontend.templateone/;/system/workplace/resources/filetypes/microsite.gif</param>
 		</parameters>
+		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended">
+				<param name="resource.type.id">19</param>
+				<param name="resource.type.name">microsite</param>
+			</type>
+		</resourcetypes>
+		<explorertypes>
+			<explorertype name="microsite" key="fileicon.microsite" icon="microsite.gif" reference="folder">
+				<newresource uri="newresource.jsp?newresourcetype=microsite" order="12"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w"/>
+				</accesscontrol>
+			</explorertype>
+		</explorertypes>
 	</module>
 	<files>
 		<file>
@@ -39,7 +56,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 17 Feb 2005 12:25:27 GMT</datecreated>
+			<datecreated>Wed, 26 Jan 2005 09:55:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -312,7 +329,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone/workplace.properties</destination>
 			<type>plain</type>
 			<uuidresource>7c8c76d8-1ebe-11d9-88bb-efd43b41b93a</uuidresource>
-			<datelastmodified>Thu, 17 Feb 2005 10:17:33 GMT</datelastmodified>
+			<datelastmodified>Wed, 09 Mar 2005 08:41:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 15 Oct 2004 15:25:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -325,7 +342,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone/workplace_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>f10c60c2-1ebe-11d9-88bb-efd43b41b93a</uuidresource>
-			<datelastmodified>Thu, 17 Feb 2005 10:17:39 GMT</datelastmodified>
+			<datelastmodified>Wed, 09 Mar 2005 08:42:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 15 Oct 2004 15:29:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -342,7 +359,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>7c8c76d8-1ebe-11d9-88bb-efd43b41b93a</uuidresource>
-			<datelastmodified>Thu, 17 Feb 2005 10:17:33 GMT</datelastmodified>
+			<datelastmodified>Wed, 09 Mar 2005 08:41:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 15 Oct 2004 15:25:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -678,7 +695,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/elements/head_image.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>0f542c5f-dbce-11d8-a76e-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 22 Sep 2004 14:08:54 GMT</datelastmodified>
+			<datelastmodified>Tue, 08 Mar 2005 10:33:55 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 22 Jul 2004 10:58:27 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -686,7 +703,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;params=(imagelink)]]></value>
+					<value><![CDATA[uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -828,7 +845,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/elements/nav_head_menus.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>61baacd9-81c3-11d9-af03-c5d4954b5b38</uuidresource>
-			<datelastmodified>Fri, 18 Feb 2005 15:43:09 GMT</datelastmodified>
+			<datelastmodified>Tue, 08 Mar 2005 10:32:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 18 Feb 2005 15:40:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -981,7 +998,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/imprint.html</destination>
 			<type>jsp</type>
 			<uuidresource>3213d530-dfd8-11d8-a31a-993e109d03c3</uuidresource>
-			<datelastmodified>Thu, 30 Sep 2004 10:55:35 GMT</datelastmodified>
+			<datelastmodified>Fri, 11 Mar 2005 09:46:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 27 Jul 2004 14:21:05 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1029,7 +1046,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/letter_confirm.html</destination>
 			<type>jsp</type>
 			<uuidresource>6ba9a838-e48a-11d8-935f-83d5f21447d1</uuidresource>
-			<datelastmodified>Mon, 11 Oct 2004 11:43:23 GMT</datelastmodified>
+			<datelastmodified>Fri, 11 Mar 2005 09:47:24 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 02 Aug 2004 13:46:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1073,7 +1090,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/letter_input.html</destination>
 			<type>jsp</type>
 			<uuidresource>076c14a6-e480-11d8-935f-83d5f21447d1</uuidresource>
-			<datelastmodified>Mon, 11 Oct 2004 11:41:04 GMT</datelastmodified>
+			<datelastmodified>Fri, 11 Mar 2005 10:13:12 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 02 Aug 2004 12:32:33 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1117,7 +1134,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/popup_includes.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>f060d85e-e227-11d8-959f-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 13 Oct 2004 09:03:00 GMT</datelastmodified>
+			<datelastmodified>Fri, 11 Mar 2005 09:45:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 30 Jul 2004 12:56:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1129,7 +1146,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[params=(title,resourcepath,stylesheeturi,uri,site);locale;element]]></value>
+					<value><![CDATA[params=(title,resourcepath,stylesheeturi,config,site);locale;element]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -1165,7 +1182,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/recommend_confirm.html</destination>
 			<type>jsp</type>
 			<uuidresource>8ac54b24-e47d-11d8-b4e5-83d5f21447d1</uuidresource>
-			<datelastmodified>Mon, 11 Oct 2004 11:36:40 GMT</datelastmodified>
+			<datelastmodified>Fri, 11 Mar 2005 09:48:25 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 02 Aug 2004 12:14:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1209,7 +1226,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/recommend_input.html</destination>
 			<type>jsp</type>
 			<uuidresource>5d6a2c35-e477-11d8-9697-83d5f21447d1</uuidresource>
-			<datelastmodified>Mon, 11 Oct 2004 11:37:11 GMT</datelastmodified>
+			<datelastmodified>Fri, 11 Mar 2005 10:13:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 02 Aug 2004 11:30:32 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1424,7 +1441,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/style.css</destination>
 			<type>jsp</type>
 			<uuidresource>46d22f8c-d571-11d8-b127-6dec57178f5b</uuidresource>
-			<datelastmodified>Thu, 17 Feb 2005 08:32:57 GMT</datelastmodified>
+			<datelastmodified>Fri, 11 Mar 2005 09:21:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 14 Jul 2004 08:39:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1436,7 +1453,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[params=(respath,site,uri,__locale)]]></value>
+					<value><![CDATA[params=(respath,site,config,__locale)]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1446,7 +1463,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/style_accessible.css</destination>
 			<type>jsp</type>
 			<uuidresource>e355ce1a-dbe3-11d8-9b6a-993e109d03c3</uuidresource>
-			<datelastmodified>Thu, 17 Feb 2005 08:33:16 GMT</datelastmodified>
+			<datelastmodified>Fri, 11 Mar 2005 09:21:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 22 Jul 2004 13:34:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1454,7 +1471,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[params=(respath,site,uri,__locale)]]></value>
+					<value><![CDATA[params=(respath,site,config,__locale)]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -1593,7 +1610,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone/templates/main</destination>
 			<type>jsp</type>
 			<uuidresource>8e1ce060-d570-11d8-b127-6dec57178f5b</uuidresource>
-			<datelastmodified>Fri, 18 Feb 2005 15:44:15 GMT</datelastmodified>
+			<datelastmodified>Fri, 11 Mar 2005 09:21:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 14 Jul 2004 08:34:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1620,6 +1637,71 @@
 					<value><![CDATA[-OpenCms Template one]]></value>
 				</property>
 			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Aug 2003 13:02:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>15</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/filetypes</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 25 Feb 2005 11:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 18 Aug 2004 11:39:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/microsite.gif</source>
+			<destination>system/workplace/resources/filetypes/microsite.gif</destination>
+			<type>image</type>
+			<uuidresource>e92b3b42-9078-11d9-8789-eb1fdbd690a5</uuidresource>
+			<datelastmodified>Wed, 09 Mar 2005 14:13:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Mar 2005 08:54:56 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
 			<accesscontrol/>
 		</file>
 	</files>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2005/03/04 17:12:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/11 10:44:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,27 +44,33 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to build the dynamic CSS style sheet of template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsTemplateStyleSheet extends CmsJspActionElement {
     
-    /** Name of the property key to set the path to the configuration file.<p> */
-    public static final String C_PROPERTY_CONFIGFILE = "properties_style";
-    
-    /** Default file name of the CSS configuration file.<p> */
+    /** Default file name of the CSS configuration file. */
     public static final String C_FILENAME_CONFIGFILE = "configuration_css";
     
-    /** Stores the substituted path to the modules resources.<p> */
-    private String m_resPath;
-    /** Stores the style sheet configuration.<p> */
+    /** Request parameter name providing the configuration file URI. */
+    public static final String C_PARAM_CONFIGFILE = "config";
+    
+    /** Name of the property key to set the path to the configuration file. */
+    public static final String C_PROPERTY_CONFIGFILE = "properties_style";
+    
+    /** Stores the style sheet configuration. */
     private CmsXmlContent m_configuration;
-    /** Stores the calculated width of the template.<p> */
+    
+    /** Stores the substituted path to the modules resources. */
+    private String m_resPath;
+    
+    /** Stores the calculated width of the template. */
     private String m_templateWidth;
     
     /**
      * Empty constructor, required for every JavaBean.<p>
      */
     public CmsTemplateStyleSheet() {
+        
         super();
     }
     
@@ -78,6 +84,7 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
      * @param res the JSP response 
      */
     public CmsTemplateStyleSheet(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+        
         super();
         init(context, req, res);
     }
@@ -90,6 +97,7 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
      * @return the new height value
      */
     public static String calculateHeight(String value, int delta) {
+        
         String newHeight = value;
         try {
             int val = Integer.parseInt(value);
@@ -108,6 +116,7 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
      * @return the configuration value for the specified key
      */
     public String getConfigValue(String key, String defaultValue) {
+        
         String value = null;
         try {
             value = m_configuration.getStringValue(getCmsObject(), key, getRequestContext().getLocale());
@@ -129,6 +138,7 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
      * @return the substituted path to the modules resource folder
      */
     public String getResourcePath() {
+        
         return m_resPath;
     }
     
@@ -138,6 +148,7 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
      * @return the width of the template
      */
     public String getTemplateWidth() {
+        
         if (m_templateWidth == null) {
             String templateType = getConfigValue("main.template.type", "normal");
             if ("small".equals(templateType)) {
@@ -160,9 +171,10 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
      * @param res the JSP response 
      */
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+        
         // call initialization of super class
         super.init(context, req, res);
-        // set site root
+        // set site root to get correct configuration files
         String siteRoot = req.getParameter(CmsTemplateBean.C_PARAM_SITE);
         if (CmsStringUtil.isNotEmpty(siteRoot)) {
             getRequestContext().setSiteRoot(siteRoot);
@@ -170,16 +182,10 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
         // set resource path
         m_resPath = req.getParameter(CmsTemplateNavigation.C_PARAM_RESPATH);
     
-        // Collect the configurations 
-        String propertyFile = property(C_PROPERTY_CONFIGFILE, "search", "");
+        // collect the configuration information 
         try {
-            if ("".equals(propertyFile)) {
-                // property not set, try to get default configuration file
-                String pageUri = req.getParameter(CmsTemplateBean.C_PARAM_URI);
-                String path = getCmsObject().readPropertyObject(pageUri, CmsTemplateBean.C_PROPERTY_CONFIGPATH, true).getValue("/");
-                propertyFile = path + C_FILENAME_CONFIGFILE;
-            }
-            m_configuration = CmsTemplateBean.getConfigurationFile(propertyFile, getCmsObject());
+            String configUri = req.getParameter(C_PARAM_CONFIGFILE);
+            m_configuration = CmsTemplateBean.getConfigurationFile(configUri, getCmsObject());
         } catch (Exception e) {
             // problem getting properties, log error
             if (OpenCms.getLog(this).isDebugEnabled()) {
@@ -187,5 +193,4 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
             }
         }
     }
-
 }

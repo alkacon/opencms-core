@@ -12,7 +12,7 @@ if (cms.hasValidationErrors()) {
 	errorMessage = "<p><span class=\"formerror\">" + cms.key("form.error.validation") + "</span></p>";
 }
 
-cms.includePopup("popuphead", cms.key("recommend.title"), cms.getPageUri(true));
+cms.includePopup("popuphead", cms.key("recommend.title"));
 
 	%>
 	<h1 class="popup"><%= cms.key("recommend.title") %></h1>
@@ -30,6 +30,7 @@ cms.includePopup("popuphead", cms.key("recommend.title"), cms.getPageUri(true));
 		<input type="hidden" name="__locale" value="<%= cms.getRequestContext().getLocale() %>">
 		<input type="hidden" name="<%= CmsTemplateBean.C_PARAM_URI %>" value="<%= cms.getPageUri() %>">
 		<input type="hidden" name="<%= CmsTemplateBean.C_PARAM_SITE %>" value="<%= cms.getRequestContext().getSiteRoot() %>">
+		<input type="hidden" name="<%= CmsTemplateStyleSheet.C_PARAM_CONFIGFILE %>" value="<%= cms.getStyleSheetConfigUri() %>">
 
 		<p>
 		<%= cms.key("recommend.form.email.recipient") %>*<br />
@@ -61,5 +62,5 @@ cms.includePopup("popuphead", cms.key("recommend.title"), cms.getPageUri(true));
 		<p><%= cms.getFormText("form_foot", false) %></p>
 	</div>
 <%
-	cms.includePopup("popupfoot", null, cms.getPageUri(true));
+	cms.includePopup("popupfoot", null);
 %>
