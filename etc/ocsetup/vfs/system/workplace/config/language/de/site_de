@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<LANGUAGE>
+		<name>English</name>
+
+		<sitemanagement>
+			<error>
+				<title>
+			
+					<newsite>New site</newsite>
+	
+				</title>
+				
+				<message>
+					<newsite>Sorry, the new site could not be created.</newsite>
+					<datamissing>Sorry, the new site could not be created.</datamissing>
+				</message>
+				
+				<reason>
+					<newsite>The entered data is invalid.</newsite>				
+					<datamissing>The fields need to be filled out</datamissing>				
+				</reason>
+				
+				<suggestion>
+					<newsite>Please check the entered data or contact your system administrator.</newsite>								
+				</suggestion>
+			</error>
+		</sitemanagement>
+</LANGUAGE>
+

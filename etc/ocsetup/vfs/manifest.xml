@@ -110,6 +110,15 @@
             <properties/>
         </file>
         <file>
+            <source>action/administration_content_sitenew.html</source>
+            <destination>system/workplace/action/administration_content_sitenew.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>7</access>
+            <properties/>
+        </file>
+        <file>
             <source>action/administration_content_database.html</source>
             <destination>system/workplace/action/administration_content_database.html</destination>
             <type>XMLTemplate</type>
@@ -2202,6 +2211,15 @@
             <properties/>
         </file>
         <file>
+            <source>config/language/de/site_de</source>
+            <destination>system/workplace/config/language/de/site_de</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
             <source>config/language/de/news_de</source>
             <destination>system/workplace/config/language/de/news_de</destination>
             <type>plain</type>
@@ -2213,6 +2231,15 @@
         <file>
             <source>config/language/uk/core_uk</source>
             <destination>system/workplace/config/language/uk/core_uk</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>config/language/uk/site_uk</source>
+            <destination>system/workplace/config/language/uk/site_uk</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
@@ -6876,6 +6903,15 @@
         <file>
             <source>templates/ButtonTemplate</source>
             <destination>system/workplace/templates/ButtonTemplate</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>templates/administration_content_sitenew</source>
+            <destination>system/workplace/templates/administration_content_sitenew</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
