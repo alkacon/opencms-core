@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/02 09:34:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/02 10:53:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -685,25 +685,18 @@ public class CmsChacc extends CmsDialog {
 
             // create the input form
             retValue.append("<form action=\""+getChaccUrl()+"\" method=\"post\" name=\"add\" class=\"nomargin\">\n");
-            retValue.append("<input type=\"hidden\" name=\"action\" value=\"addACE\">\n");
-            
+            retValue.append("<input type=\"hidden\" name=\"action\" value=\"addACE\">\n");            
             retValue.append("<table border=\"0\" width=\"100%\">\n");
-           
             retValue.append("<tr>\n");
             retValue.append("\t<td>"+buildSelect("name=\"type\"", options, optionValues, -1)+"</td>\n");
-            retValue.append("\t<td class=\"maxwidth\"><input type=\"text\" class=\"maxwidth\" name=\"name\" value=\"\"></td>\n");
-            
-            
-            retValue.append("\t<td><input class=\"dialogbutton\" style=\"width: 60px;\" type=\"button\" value=\""+key("button.search")+"\" onClick=\"javascript:opensmallwin('chaccbrowseusergroup.jsp','UserGroup',200,400);\"></td>\n");
-            
+            retValue.append("\t<td class=\"maxwidth\"><input type=\"text\" class=\"maxwidth\" name=\"name\" value=\"\"></td>\n");            
+            retValue.append("\t<td><input class=\"dialogbutton\" style=\"width: 60px;\" type=\"button\" value=\""+key("button.search")+"\" onClick=\"javascript:opendialogwin('chaccbrowseusergroup.html','UserGroup',200,400);\"></td>\n");
             retValue.append("\t<td><input class=\"dialogbutton\" type=\"submit\" value=\""+key("input.add")+"\"></td>\n");
             retValue.append("</tr>\n");
             retValue.append("</form>\n");
-            retValue.append("</table>\n"); 
+            retValue.append("</table>\n");          
             
-            
-            retValue.append(dialogBlock(HTML_END));
-       
+            retValue.append(dialogBlock(HTML_END));      
         }
         return retValue.toString();
     }
@@ -913,7 +906,7 @@ public class CmsChacc extends CmsDialog {
      * 
      * @return the users permission set
      */
-    protected CmsPermissionSet getCurPermissions() {
+    public CmsPermissionSet getCurPermissions() {
         return m_curPermissions;
     }
     
