@@ -101,7 +101,7 @@ iMaxOpts = iMaxOpts + 1;
 			<input type="text" class="textfeld" maxlength=10 name="DATE" id="DATE">
 		</td>
 		<td class=dialogtxt width=80px align=left>
-			<a href="javascript:opensmallwin('timerrefresh.html', 'Kalender', 250, 350)"><img src="]]><METHOD name="picsUrl">ic_timer.gif</METHOD><![CDATA[" border=0 width=16 height=16 align=left hspace=0></a>
+			<a href="javascript:opensmallwin('../templates/timerrefresh.html', 'Kalender', 250, 350)"><img src="]]><METHOD name="picsUrl">ic_timer.gif</METHOD><![CDATA[" border=0 width=16 height=16 align=left hspace=0></a>
 		</td>
 		<td class=formular>]]><label value="task.label.priority"/><![CDATA[:</td>
 		<td class=dialogtxt>

@@ -14,7 +14,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/02/20 14:53:37 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/20 19:22:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -63,14 +63,15 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
 		
 		// read parameters and set them into the session
 		// is the checkbox checked?
-		if("OK".equals(parameters.get("ALL"))) {
-			session.removeValue(C_SESSION_TASK_PROJECTNAME);
-		} else if(parameters.get("ALL") != null) {
-			session.putValue(C_SESSION_TASK_PROJECTNAME, reqCont.currentProject().getName());
+		if(parameters.containsKey("ALL") ) {
+			if("OK".equals(parameters.get("ALL"))) {
+				session.removeValue(C_SESSION_TASK_PROJECTNAME);
+			} else {
+				session.putValue(C_SESSION_TASK_PROJECTNAME, reqCont.currentProject().getName());
+			}
 		}
 		
 		// is the listbox chosen?
-		System.err.println("getContent" + parameters.get("filter"));
 		if((parameters.get("filter") != null) && (parameters.get("filter") != "-")) {
 			session.putValue(C_SESSION_TASK_FILTER, parameters.get("filter"));
 		}
@@ -127,7 +128,6 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
         A_CmsRequestContext reqCont = cms.getRequestContext();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
 		String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
-		System.err.println("getFilters" + filter);
 
 		int selected = 0;
 		
@@ -204,8 +204,6 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
 			selected = 14;
 		}
 		
-		System.err.println(selected);
-		System.err.println(new Integer(selected));
 		return(new Integer(selected));
     }
 }

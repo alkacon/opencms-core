@@ -14,7 +14,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/02/20 14:53:37 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/20 19:22:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -104,33 +104,27 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 			
 		// choose the right style and buttons
 		if(task.getState() == C_TASK_STATE_ENDED) {
+			button2 = xmlTemplateDocument.getProcessedXmlDataValue("button_forward", this);
+			button6 = xmlTemplateDocument.getProcessedXmlDataValue("button_reakt", this);
 			if(timeout < now ) {
-				button2 = xmlTemplateDocument.getProcessedXmlDataValue("button_forward", this);
-				button6 = xmlTemplateDocument.getProcessedXmlDataValue("button_reakt", this);
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_alertok", this);
 			} else {
-				button2 = xmlTemplateDocument.getProcessedXmlDataValue("button_forward", this);
-				button6 = xmlTemplateDocument.getProcessedXmlDataValue("button_reakt", this);
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_ok", this);
 			}
 		} else if(task.getPercentage() == 0) {
+			button2 = xmlTemplateDocument.getProcessedXmlDataValue("button_accept", this);
+			button6 = xmlTemplateDocument.getProcessedXmlDataValue("button_ok", this);
 			if(timeout < now ) {
-				button2 = xmlTemplateDocument.getProcessedXmlDataValue("button_take", this);
-				button6 = xmlTemplateDocument.getProcessedXmlDataValue("button_ok", this);
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_alert", this);
 			} else {
-				button2 = xmlTemplateDocument.getProcessedXmlDataValue("button_take", this);
-				button6 = xmlTemplateDocument.getProcessedXmlDataValue("button_ok", this);
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_new", this);
 			}
 		} else {
+			button2 = xmlTemplateDocument.getProcessedXmlDataValue("button_take", this);
+			button6 = xmlTemplateDocument.getProcessedXmlDataValue("button_ok", this);
 			if(timeout < now ) {
-				button2 = xmlTemplateDocument.getProcessedXmlDataValue("button_accept", this);
-				button6 = xmlTemplateDocument.getProcessedXmlDataValue("button_ok", this);
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_alert", this);
 			} else {
-				button2 = xmlTemplateDocument.getProcessedXmlDataValue("button_accept", this);
-				button6 = xmlTemplateDocument.getProcessedXmlDataValue("button_ok", this);
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_activ", this);
 			}
 		}

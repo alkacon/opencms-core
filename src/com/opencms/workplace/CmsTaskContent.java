@@ -14,7 +14,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/02/20 10:14:00 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/20 19:22:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -78,7 +78,6 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 		}
 		int filterNum = Integer.parseInt(filter, 16);
 		String userName = cms.getRequestContext().currentUser().getName();
-		String roleName = cms.getRequestContext().currentGroup().getName();
 		
 		switch(filterNum) {
 			case 0xa1:
@@ -92,13 +91,13 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 				break;
 
 			case 0xb1:
-				retValue = cms.readTasksForRole(project, roleName, C_TASKS_NEW, orderBy, groupBy);
+				retValue = readTasksForRole(cms, project, C_TASKS_NEW, orderBy, groupBy);
 				break;
 			case 0xb2:
-				retValue = cms.readTasksForRole(project, roleName, C_TASKS_ACTIVE, orderBy, groupBy);
+				retValue = readTasksForRole(cms, project, C_TASKS_ACTIVE, orderBy, groupBy);
 				break;
 			case 0xb3:
-				retValue = cms.readTasksForRole(project, roleName, C_TASKS_DONE, orderBy, groupBy);
+				retValue = readTasksForRole(cms, project, C_TASKS_DONE, orderBy, groupBy);
 				break;
 
 			case 0xc1:
@@ -131,4 +130,34 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 			return retValue;
 		}
     }
+	
+	/**
+	 * Reads alls tasks for all roles of a user.
+	 * @param cms The cms object.
+	 * @param project The name of the project.
+	 * @param taskType The type of the task to read.
+	 * @param orderBy A order criteria.
+	 * @param groupBy A sort criteria.
+	 * @return a vector of tasks.
+	 * @exception Throws a exception, if something goes wrong.
+	 */
+	private Vector readTasksForRole(A_CmsObject cms, String project, int taskType, String orderBy, String groupBy)
+		throws CmsException {
+		String name = cms.getRequestContext().currentUser().getName();
+		Vector groups = cms.getGroupsOfUser(name);
+		A_CmsGroup group;
+		Vector tasks;
+		Vector allTasks = new Vector();
+		
+		for(int i = 0; i < groups.size(); i++) {
+			group = (A_CmsGroup) groups.elementAt(i);
+			tasks = cms.readTasksForRole(project, group.getName(), taskType, orderBy, groupBy);
+			
+			// join the vectors
+			for(int z = 0; z < tasks.size(); z++) {
+				allTasks.addElement(tasks.elementAt(z));
+			}
+		}
+		return allTasks;
+	}
 }
