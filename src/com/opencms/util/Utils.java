@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
- * Date   : $Date: 2000/03/28 16:06:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/04/04 10:02:40 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,12 +32,13 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 
 import java.util.*;
+import java.io.*;
 
 /**
  * This is a general helper class.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/03/28 16:06:20 $
+ * @version $Revision: 1.10 $ $Date: 2000/04/04 10:02:40 $
  */
 public class Utils implements I_CmsConstants, I_CmsLogChannels {
 	/** Constant for sorting files upward by name */
@@ -245,4 +246,29 @@ public class Utils implements I_CmsConstants, I_CmsLogChannels {
 		 }
 		 return retValue;
 	 }
+     
+    /**
+     * Replaces all line breaks in a given string object by 
+     * white spaces. All lines will be <code>trim</code>ed to
+     * delete all unnecessary white spaces.
+     * @param s Input string
+     * @return Output String
+     * @exception CmsException
+     */    
+    public static String removeLineBreaks(String s) throws  CmsException {
+        StringBuffer result = new StringBuffer();
+
+        BufferedReader br = new BufferedReader(new StringReader(s));
+        String lineStr = null;
+        try { 
+            while ((lineStr = br.readLine()) != null) {
+                result.append(lineStr.trim());
+                result.append(" ");
+            }
+        } catch(IOException e) {
+            throw new CmsException("Error while reading input stream in com.opencms.util.Utils.removeLineBreaks: " + e);
+            
+        }
+        return result.toString();
+    }   
 }
