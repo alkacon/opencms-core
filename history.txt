@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.7.2 Ecaz - ?? ?? 2002
+OpenCms 4.7.2 Ecaz - 25 March 2002
 ! new values for the property 'export'. https_enabled and dynamic_https_enabled say that
   the link to such a resource from a https page wont switch to http. Used to show pics
   on a https page.
