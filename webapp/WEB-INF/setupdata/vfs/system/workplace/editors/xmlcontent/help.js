@@ -29,7 +29,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
- function findPosX(obj) {
+var iframes = new Array();
+ 
+function Browser() {
+	this.isIE = false;  // Internet Explorer
+	if (navigator.userAgent.indexOf("MSIE") != -1) {
+		this.isIE = true;
+	}
+}
+
+var browser = new Browser();
+ 
+function findPosX(obj) {
     var curleft = 0; 
     if (obj.offsetParent) {
         while (obj.offsetParent) {
@@ -58,16 +69,18 @@ function findPosY(obj) {
 function showHelp(id, fieldId) { 
 
     var text = document.getElementById("help" + id);
+    
+    // generate iframe around help text for Internet Explorer to avoid display issues 
+    if (browser.isIE && iframes[id] == null) {
+    	iframes[id] = text.parentNode.insertBefore(document.createElement("IFRAME"), text);
+    	iframes[id].style.display = "none";
+   		iframes[id].style.position = "absolute";
+    }
+    
     var icon = document.getElementById("img" + id);
     if (text.style.visibility == "visible") {
         return;
     }
-    try {
-    	var formField = document.getElementById(fieldId);
-    	if (formField.tagName.toUpperCase() == "SELECT") {
-    		formField.style.visibility = "hidden";	
-    	}
-    } catch (e) {}
     x = findPosX(icon) + 8;
     y = findPosY(icon) + 8;
     var textHeight = text.scrollHeight;
@@ -108,7 +121,16 @@ function showHelp(id, fieldId) {
     }
     text.style.left = x + "px";
     text.style.top =  y + "px";
-    text.style.visibility = "visible"; 
+    text.style.visibility = "visible";
+    
+    if (browser.isIE) {
+    	// activate iframe
+    	iframes[id].style.left = text.style.left;
+    	iframes[id].style.top  =  text.style.top;
+    	iframes[id].style.width  =  text.offsetWidth + "px";
+    	iframes[id].style.height =  text.offsetHeight + "px";
+    	iframes[id].style.display = "";	
+    }
 }
 
 function hideHelp(id, fieldId) {
@@ -116,11 +138,9 @@ function hideHelp(id, fieldId) {
     text.style.visibility = "hidden";
     text.style.left = "0px";
     text.style.top =  "0px";
-    try {
-    	var formField = document.getElementById(fieldId);
-    	if (formField.tagName.toUpperCase() == "SELECT") {
-    		formField.style.visibility = "visible";	
-    	}
-    } catch (e) {}
+    if (browser.isIE) {
+    	// deactivate iframe
+    	iframes[id].style.display = "none";	
+    }
 }
 
