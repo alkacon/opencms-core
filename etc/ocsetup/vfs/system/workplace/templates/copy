@@ -54,13 +54,6 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
                 </td>
             </tr>
             
-            <!-- Begin textfield -->
-            <tr>
-                <td class=formular width=40%>
-                    ]]><LABEL value="input.name" /><![CDATA[:</td>
-                <td class=dialogtxt  colspan=2>]]><INPUTFIELD name="file" class="textfeld" size="31" length="50" method="setValue" /><![CDATA[</td>                             
-            </tr>
-            <!-- End textfield -->
             <!-- Begin dropdown-->
             <tr>
                 <td class=formular>]]><LABEL value="input.copyto" /><![CDATA[:</td>             
@@ -84,7 +77,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
             <tr><td class=dialogtxt colspan=3>
                 <table cellspacing=0 cellpadding=5 width=100%>
                 <tr>
-                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='copy.html?newfile='+document.COPY.file.value+'&newfolder='+simpleEscape(escape(document.COPY.folder.value))+'&flags='+document.COPY.RIGHT.checked;"></td>
+                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='copy.html?newfolder='+simpleEscape(escape(document.COPY.folder.value))+'&flags='+document.COPY.RIGHT.checked;"></td>
                     <td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=lasturl"></td>
                 </tr>
                 </table>
@@ -157,13 +150,6 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
                 </td>
             </tr>
             
-            <!-- Begin textfield -->
-            <tr>
-                <td class=formular width=40%>
-                    ]]><LABEL value="input.name" /><![CDATA[:</td>
-                <td class=dialogtxt  colspan=2>]]><INPUTFIELD name="file" class="textfeld" size="31" length="50" method="setValue" /><![CDATA[</td>
-            </tr>
-            <!-- End textfield -->
             <!-- Begin dropdown-->
             <tr>
                 <td class=formular>]]><LABEL value="input.copyto" /><![CDATA[:</td>             
@@ -188,7 +174,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
             <tr><td class=dialogtxt colspan=3>
                 <table cellspacing=0 cellpadding=5 width=100%>
                 <tr>
-                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='copy.html?newfile='+document.COPY.file.value+'&newfolder='+simpleEscape(escape(document.COPY.folder.value))+'&flags='+document.COPY.RIGHT.checked;"></td>
+                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='copy.html?newfolder='+simpleEscape(escape(document.COPY.folder.value))+'&flags='+document.COPY.RIGHT.checked;"></td>
                     <td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=lasturl"></td>
                 </tr>
                 </table>
