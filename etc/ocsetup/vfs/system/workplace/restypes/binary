@@ -1,6 +1,5 @@
 
-
-    vi.resource[resource_id]=new res("binary",vi.iconPath+"ic_file_binary.gif");
+    vi.resource[resource_id]=new res("binary","language_key(fileicon.binary)",vi.iconPath+"ic_file_binary.gif","",true);
     
     addMenuEntry(resource_id, "language_key(explorer.context.lock)",            "lock.html?initial=true",               "''",   "rules_key(d d aaai dddd dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.overridelock)",    "lockchange.html?initial=true",         "''",   "rules_key(d d dddd dddd aaai aaai aaai)");

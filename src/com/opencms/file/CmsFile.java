@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/08/02 13:29:50 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -34,7 +34,7 @@ import java.io.*;
  * This class describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.14 $ $Date: 2001/08/02 13:29:50 $
  */
 public class CmsFile extends CmsResource implements Cloneable,Serializable {
 

@@ -1,5 +1,5 @@
 
-    vi.resource[resource_id]=new res("XMLTemplate",vi.iconPath+"ic_XMLTemplate.gif");
+    vi.resource[resource_id]=new res("XMLTemplate","language_key(fileicon.XMLTemplate)",vi.iconPath+"ic_XMLTemplate.gif","explorer_files_new_othertype.html?initial=true&type=XMLTemplate",true);
 
     addMenuEntry(resource_id, "language_key(explorer.context.lock)",            "lock.html?initial=true",               "''",   "rules_key(d d aaai dddd dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.overridelock)",    "lockchange.html?initial=true",         "''",   "rules_key(d d dddd dddd aaai aaai aaai)");

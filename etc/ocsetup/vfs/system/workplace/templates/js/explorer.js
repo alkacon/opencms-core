@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-* Date   : $Date: 2001/08/02 13:23:56 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2001/08/02 13:29:50 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -154,9 +154,12 @@
  /**
   *  resources
   */
- function res(text,icon){
+ function res(text,nicename,icon,createLink,uploadable){
      this.text = text;
+     this.nicename = nicename;
      this.icon = icon;
+     this.createLink = createLink;
+     this.uploadable = uploadable;
  }
 
 

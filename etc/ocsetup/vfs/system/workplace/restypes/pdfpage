@@ -1,6 +1,5 @@
 
-
-    vi.resource[resource_id]=new res("pdfpage",vi.iconPath+"ic_file_pdfpage.gif");
+    vi.resource[resource_id]=new res("pdfpage","language_key(fileicon.pdfpage)",vi.iconPath+"ic_file_pdfpage.gif","",false);
 
     addMenuEntry(resource_id, "language_key(explorer.context.lock)",            "lock.html?initial=true",               "''",   "rules_key(d d aaai dddd dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.overridelock)",    "lockchange.html?initial=true",         "''",   "rules_key(d d dddd dddd aaai aaai aaai)");
