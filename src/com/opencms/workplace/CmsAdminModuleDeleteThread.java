@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/07/18 08:14:29 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/07/31 07:04:33 $
+* Version: $Revision: 1.7 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -78,6 +78,7 @@ public class CmsAdminModuleDeleteThread extends Thread implements I_CmsConstants
 
             at = "publishProject: ";
             // now publish the project
+            m_cms.unlockProject(project.getId());
             m_cms.publishProject(project.getId());
         }
         catch(CmsException e) {
