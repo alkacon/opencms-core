@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/01/30 19:11:58 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.30 $ $Date: 2003/01/30 19:11:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -164,7 +164,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
             }else{
                 xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod"));
                 xmlTemplateDocument.setData("autoUpdate","");
-                xmlTemplateDocument.setData("text", lang.getDataValue("database.label.importend"));
+                xmlTemplateDocument.setData("text", lang.getLanguageValue("database.label.importend"));
                 session.removeValue(C_DATABASE_THREAD);
             }
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
@@ -179,7 +179,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
             }else{
                 xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod"));
                 xmlTemplateDocument.setData("autoUpdate","");
-                xmlTemplateDocument.setData("text", lang.getDataValue("database.label.exportend"));
+                xmlTemplateDocument.setData("text", lang.getLanguageValue("database.label.exportend"));
                 session.removeValue(C_DATABASE_THREAD);
             }
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/01/30 19:14:54 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.40 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.41 $ $Date: 2003/01/30 19:14:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -349,7 +349,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
                 type = filename.substring(filename.lastIndexOf(".") + 1).toUpperCase() + "-Bild";
             }
             else {
-                type = lang.getDataValue("input.unknown");
+                type = lang.getLanguageValue("input.unknown");
             }
 
 

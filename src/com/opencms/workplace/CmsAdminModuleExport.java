@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/01/30 19:12:50 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
                 // thread is finished, activate the buttons
                 xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod"));
                 xmlTemplateDocument.setData("autoUpdate","");
-                xmlTemplateDocument.setData("text", xmlTemplateDocument.getLanguageFile().getDataValue("module.lable.exportend"));
+                xmlTemplateDocument.setData("text", xmlTemplateDocument.getLanguageFile().getLanguageValue("module.lable.exportend"));
                 session.removeValue(C_MODULE_THREAD);
             }
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());

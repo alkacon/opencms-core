@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2003/01/23 10:44:09 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2003/01/30 19:14:33 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.58 $ $Date: 2003/01/23 10:44:09 $
+ * @version $Revision: 1.59 $ $Date: 2003/01/30 19:14:33 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -359,10 +359,10 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
 
         // now add the first and last value
         filenames[0] = "FIRSTENTRY";
-        nicenames[0] = lang.getDataValue("input.firstelement");
+        nicenames[0] = lang.getLanguageValue("input.firstelement");
         positions[0] = "0";
         filenames[count] = "LASTENTRY";
-        nicenames[count] = lang.getDataValue("input.lastelement");
+        nicenames[count] = lang.getLanguageValue("input.lastelement");
         positions[count] = new Float(max + 1).toString();
 
         // finally sort the nav information.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/01/30 19:13:25 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -93,7 +93,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
             }else{
                 xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod"));
                 xmlTemplateDocument.setData("autoUpdate","");
-                xmlTemplateDocument.setData("text", lang.getDataValue("staticexport.label.exportend"));
+                xmlTemplateDocument.setData("text", lang.getLanguageValue("staticexport.label.exportend"));
             }
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");

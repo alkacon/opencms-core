@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2003/01/30 19:14:03 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.56 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.57 $ $Date: 2003/01/30 19:14:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -475,7 +475,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     }
                     if((filelist & C_FILELIST_TYPE) != 0) {
                         String typename = type.getResourceTypeName();
-                        typename = lang.getDataValue("fileicon." + typename);
+                        typename = lang.getLanguageValue("fileicon." + typename);
                         template.fastSetXmlData(C_FILELIST_TYPE_VALUE, typename);
                     }
                     if((filelist & C_FILELIST_CHANGED) != 0) {
@@ -578,7 +578,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
 
                         // set the file type
                         String typename = type.getResourceTypeName();
-                        typename = lang.getDataValue("fileicon." + typename);
+                        typename = lang.getLanguageValue("fileicon." + typename);
                         template.fastSetXmlData(C_FILELIST_TYPE_VALUE, typename);
                     }
                     if((filelist & C_FILELIST_CHANGED) != 0) {

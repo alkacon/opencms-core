@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagement.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/30 19:12:27 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,9 +69,9 @@ public class CmsAdminLinkmanagement extends CmsWorkplaceDefault implements I_Cms
             doCheck.start();
             session.putValue(C_LINKCHECK_THREAD, doCheck);
             // store the text in the Session
-            String text = lang.getDataValue("linkmanagement.label.text1")
+            String text = lang.getLanguageValue("linkmanagement.label.text1")
                             + cms.getRequestContext().currentProject().getName()
-                            + lang.getDataValue("linkmanagement.label.text2");
+                            + lang.getLanguageValue("linkmanagement.label.text2");
             session.putValue(C_LM_TEXT, text);
             templateDocument.setData("data", "");
             templateDocument.setData("endMethod", "");
@@ -86,7 +86,7 @@ public class CmsAdminLinkmanagement extends CmsWorkplaceDefault implements I_Cms
                 templateDocument.setData("endMethod", templateDocument.getDataValue("endMethod"));
                 templateDocument.setData("autoUpdate","");
                 templateDocument.setData("text", (String)session.getValue(C_LM_TEXT)
-                        + "<br>" + lang.getDataValue("linkmanagement.label.textende"));
+                        + "<br>" + lang.getLanguageValue("linkmanagement.label.textende"));
                 session.removeValue(C_LM_TEXT);
                 session.removeValue(C_LINKCHECK_THREAD);
             }

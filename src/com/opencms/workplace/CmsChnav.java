@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/01/30 19:13:35 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.7 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.8 $ $Date: 2003/01/30 19:13:35 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -251,15 +251,15 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
 
         // now add the first and last value
         filenames[0] = "FIRSTENTRY";
-        nicenames[0] = lang.getDataValue("input.firstelement");
+        nicenames[0] = lang.getLanguageValue("input.firstelement");
         positions[0] = "0";
         filenames[count] = "LASTENTRY";
-        nicenames[count] = lang.getDataValue("input.lastelement");
+        nicenames[count] = lang.getLanguageValue("input.lastelement");
         positions[count] = new Float(max + 1).toString();
 
         // add the default value for no change of navigation position
         filenames[count+1] = "NOCHANGE";
-        nicenames[count+1] = lang.getDataValue("input.nochange");
+        nicenames[count+1] = lang.getLanguageValue("input.nochange");
         positions[count+1] = "-1";
 
         // finally sort the nav information.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/01/30 19:13:52 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -185,11 +185,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault implements I_CmsCo
         while(foundAt != -1) {
             int endIndex = data.indexOf(")", foundAt);
             String langKey = data.substring(data.indexOf("(", foundAt) + 1, endIndex);
-            try {
-                langKey = lang.getDataValue(langKey);
-            }
-            catch(CmsException e) {
-            }
+            langKey = lang.getLanguageValue(langKey);
             result.append(data.substring(index, foundAt) + langKey);
             index = endIndex + 1;
             foundAt = data.indexOf(myToken, index);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/01/30 19:15:07 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.13 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.14 $ $Date: 2003/01/30 19:15:07 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -111,13 +111,13 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
             //still working?
             if(doTheWork.isAlive()){
                 xmlTemplateDocument.setData("endMethod", "");
-                xmlTemplateDocument.setData("text", lang.getDataValue("project.publish.message_linkcheck"));
+                xmlTemplateDocument.setData("text", lang.getLanguageValue("project.publish.message_linkcheck"));
             }else{
                 if(doTheWork.brokenLinksFound()){
                     xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod2"));
                     xmlTemplateDocument.setData("autoUpdate","");
-                    xmlTemplateDocument.setData("text", lang.getDataValue("project.publish.message_brokenlinks")
-                                                +"<br>"+lang.getDataValue("project.publish.message_brokenlinks2"));
+                    xmlTemplateDocument.setData("text", lang.getLanguageValue("project.publish.message_brokenlinks")
+                                                +"<br>"+lang.getLanguageValue("project.publish.message_brokenlinks2"));
                 }else{
                     xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod3"));
                     xmlTemplateDocument.setData("autoUpdate","");
@@ -145,11 +145,11 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
             CmsPublishResourceThread doTheWork = (CmsPublishResourceThread)session.getValue(C_PUBLISH_THREAD);
             if(doTheWork.isAlive()){
                 xmlTemplateDocument.setData("endMethod", "");
-                xmlTemplateDocument.setData("text", lang.getDataValue("project.publish.message_publish"));
+                xmlTemplateDocument.setData("text", lang.getLanguageValue("project.publish.message_publish"));
             }else{
                 xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod"));
                 xmlTemplateDocument.setData("autoUpdate","");
-                xmlTemplateDocument.setData("text", lang.getDataValue("project.publish.message_publish2"));
+                xmlTemplateDocument.setData("text", lang.getLanguageValue("project.publish.message_publish2"));
                 session.removeValue(C_PUBLISH_THREAD);
             }
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());

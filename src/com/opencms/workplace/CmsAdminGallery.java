@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2003/01/20 23:59:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/01/30 19:11:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.*;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
      
@@ -186,7 +186,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
         int retValue = 0;
 
         // fill the names and values
-        String prompt = lang.getDataValue("input.promptgroup");
+        String prompt = lang.getLanguageValue("input.promptgroup");
         names.addElement(prompt);
         values.addElement("Aufforderung"); // without significance for the user
         for(int z = 0;z < groups.size();z++) {
