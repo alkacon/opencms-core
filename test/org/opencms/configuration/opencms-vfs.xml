@@ -71,6 +71,13 @@
         		<translation>s#/default/vfs/system/workplace/css/(.*)#/system/workplace/resources/$1#</translation>
         		<translation>s#/default/vfs/system/workplace/templates/js/(.*)#/system/workplace/scripts/$1#</translation>
         	</foldertranslations>
-        </translations>           
+        </translations>     
+		<xmlcontents>
+			<xmlcontent class="org.opencms.xml.types.CmsXmlDateTimeValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlLocaleValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlSimpleHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlStringValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
+		</xmlcontents>              
     </vfs>   
 </opencms>    

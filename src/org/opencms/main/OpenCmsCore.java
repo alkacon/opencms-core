@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/09/20 05:39:39 $
- * Version: $Revision: 1.141 $
+ * Date   : $Date: 2004/10/03 11:37:53 $
+ * Version: $Revision: 1.142 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.141 $
+ * @version $Revision: 1.142 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -221,6 +221,9 @@ public final class OpenCmsCore {
 
     /** The workplace manager contains information about the global workplace settings. */
     private CmsWorkplaceManager m_workplaceManager;
+    
+    /** The XML contnet type manager that contains the initialized XML content types. */
+    private CmsXmlContentTypeManager m_xmlContentTypeManager;
     
     /**
      * Protected constructor that will initialize the singleton OpenCms instance with runlevel 1.<p>
@@ -730,6 +733,23 @@ public final class OpenCmsCore {
     }
     
     /**
+     * Returns the XML content type manager.<p>
+     * 
+     * @return the XML content type manager
+     */
+    protected CmsXmlContentTypeManager getXmlContentTypeManager() {
+        
+        if (m_xmlContentTypeManager != null) {
+            return m_xmlContentTypeManager;
+        }
+        if (m_runLevel < 2) {
+            // this is only to enable test cases to run 
+            m_xmlContentTypeManager = CmsXmlContentTypeManager.createTypeManagerForTestCases();
+        }
+        return m_xmlContentTypeManager;
+    }
+    
+    /**
      * Returns an initialized CmsObject with the user and context initialized as provided.<p>
      * 
      * Note: Only if the provided <code>adminCms</code> CmsObject has admin permissions, 
@@ -916,7 +936,8 @@ public final class OpenCmsCore {
         
         // get the VFS configuration
         CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)m_configurationManager.getConfiguration(CmsVfsConfiguration.class);
-        m_resourceManager = vfsConfiguation.getResourceManager();        
+        m_resourceManager = vfsConfiguation.getResourceManager();    
+        m_xmlContentTypeManager = vfsConfiguation.getXmlContentTypeManager();
 
         // get the import/export configuration
         CmsImportExportConfiguration importExportConfiguration = (CmsImportExportConfiguration)m_configurationManager.getConfiguration(CmsImportExportConfiguration.class);
@@ -1042,14 +1063,12 @@ public final class OpenCmsCore {
         
         // initialize the static export manager
         m_staticExportManager.initialize(adminCms);
-        
+
+        // initialize the XML content type manager
+        m_xmlContentTypeManager.initialize(adminCms);
+
         // intialize the module manager
-        m_moduleManager.initialize(adminCms);
-        
-        int todo = 0;
-        // TODO: initializing of XML content types done right
-        // Currently this line is required to initialize the XML content types
-        CmsXmlContentTypeManager.getTypeManager();
+        m_moduleManager.initialize(adminCms);        
     }
 
     /**

@@ -11,7 +11,8 @@
 
 <!ELEMENT vfs (
 	resources,
-	translations? )>
+	translations?, 
+	xmlcontents?)>
 
 <!ELEMENT resources (
 	resourceloaders, 
@@ -31,8 +32,10 @@
 <!ELEMENT type (mapping*, param*)>
 <!ATTLIST type class CDATA #REQUIRED>
 
+<!--
+# Translations for file and folder names.
+-->
 <!ELEMENT translations (filetranslations?, foldertranslations?)>
-
 <!ELEMENT translation (#PCDATA)>
 
 <!--
@@ -69,3 +72,16 @@
 
 <!ELEMENT foldertranslations (translation*)>
 <!ATTLIST foldertranslations enabled (TRUE|true|FALSE|false) #REQUIRED>
+
+<!--
+# XML content definitions that are used to build XML content items.
+# Each XML content definition configuration requires a class that implements
+# the interface "org.opencms.xml.types.I_CmsXmlSchemaType". This type defines 
+# the basic behaviour of the XML content item data. For creating the 
+# XML content editor, a widget class must be given that implements the 
+# interface "org.opencms.workplace.xmltypes.I_CmsXmlWidget". 
+-->
+<!ELEMENT xmlcontents (xmlcontent*)>
+
+<!ELEMENT xmlcontent EMPTY>
+<!ATTLIST xmlcontent class CDATA #REQUIRED widget CDATA #REQUIRED>

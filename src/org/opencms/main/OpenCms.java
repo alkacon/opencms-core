@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/08/10 15:46:17 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/10/03 11:37:53 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.xml.CmsXmlContentTypeManager;
 
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  */
 public final class OpenCms {
 
@@ -211,14 +212,14 @@ public final class OpenCms {
 
         return OpenCmsCore.getInstance().getMemoryMonitor();
     }
-   
+
     /**
      * Returns the module manager.<p>
      * 
      * @return the module manager
-     */    
+     */
     public static CmsModuleManager getModuleManager() {
-        
+
         return OpenCmsCore.getInstance().getModuleManager();
     }
 
@@ -357,7 +358,17 @@ public final class OpenCms {
 
         return OpenCmsCore.getInstance().getWorkplaceManager();
     }
-    
+
+    /**
+     * Returns the XML content type manager.<p>
+     * 
+     * @return the XML content type manager
+     */
+    public static CmsXmlContentTypeManager getXmlContentTypeManager() {
+
+        return OpenCmsCore.getInstance().getXmlContentTypeManager();
+    }
+
     /**
      * Returns an initialized CmsObject with the user and context initialized as provided.<p>
      * 
@@ -377,9 +388,9 @@ public final class OpenCms {
      * @see org.opencms.db.CmsDefaultUsers#getUserExport()
      * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
      * @see #initCmsObject(String)
-     */        
+     */
     public static CmsObject initCmsObject(CmsObject adminCms, CmsContextInfo contextInfo) throws CmsException {
-        
+
         return OpenCmsCore.getInstance().initCmsObject(adminCms, contextInfo);
     }
 
@@ -430,14 +441,14 @@ public final class OpenCms {
 
         OpenCmsCore.getInstance().setRuntimeProperty(key, value);
     }
-    
+
     /**
      * Writes the XML configuration for the provided configuration class.<p>
      * 
      * @param clazz the configuration class to write the XML for
      */
     public static void writeConfiguration(Class clazz) {
-        
+
         OpenCmsCore.getInstance().writeConfiguration(clazz);
-    }    
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/09/27 17:14:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/03 11:37:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,14 +42,14 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
     /** The default value for nodes of this element. */
     protected String m_defaultValue;
-    
+
     /** The XML element node that contains this value. */
     protected Element m_element;
 
@@ -76,6 +76,26 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(org.dom4j.Element, int)
+     */
+    public void appendDefaultXml(Element root, int index) {
+
+        Element sub = root.addElement(getNodeName());
+        if (m_defaultValue != null) {
+            try {
+                I_CmsXmlContentValue value = createValue(sub, getNodeName(), index);
+                int todo = 0;
+                // TODO: check "double null" dilemma here...
+                value.setStringValue(null, null, m_defaultValue);
+            } catch (CmsXmlException e) {
+                // should not happen if default value is correct
+                OpenCms.getLog(this).error("Invalid default value '" + m_defaultValue + "' for XML content", e);
+                sub.clearContent();
+            }
+        }
+    }
+
+    /**
      * Appends an element XML representation of this type to the given root node.<p>
      * 
      * @param root the element to append the XML to
@@ -98,27 +118,18 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
             }
         }
     }
-       
+
     /**
-     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(org.dom4j.Element, int)
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public void appendDefaultXml(Element root, int index) {
-        
-        Element sub = root.addElement(getNodeName());
-        if (m_defaultValue != null) {
-            try {
-                I_CmsXmlContentValue value = createValue(sub, getNodeName(), index);
-                int todo = 0;
-                // TODO: check "double null" dilemma here...
-                value.setStringValue(null, null, m_defaultValue);
-            } catch (CmsXmlException e) {
-                // should not happen if default value is correct
-                OpenCms.getLog(this).error("Invalid default value '" + m_defaultValue + "' for XML content", e);
-                sub.clearContent();
-            }
+    public int compareTo(Object o) {
+
+        if (!(o instanceof I_CmsXmlSchemaType)) {
+            return 0;
         }
+        return getTypeName().compareTo(((I_CmsXmlSchemaType)o).getTypeName());
     }
-    
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
@@ -145,7 +156,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
         return m_defaultValue;
     }
-    
+
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getElement()
      */
@@ -208,5 +219,5 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     public void setDefault(String defaultValue) {
 
         m_defaultValue = defaultValue;
-    } 
+    }
 }

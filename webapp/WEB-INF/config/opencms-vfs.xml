@@ -55,5 +55,12 @@
 			</filetranslations>
 			<foldertranslations enabled="false"/>
 		</translations>
+		<xmlcontents>
+			<xmlcontent class="org.opencms.xml.types.CmsXmlStringValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlSimpleHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlLocaleValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlDateTimeValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
+		</xmlcontents>
 	</vfs>
 </opencms>

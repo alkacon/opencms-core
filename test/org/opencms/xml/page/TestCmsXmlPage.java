@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/03 11:37:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,10 @@ package org.opencms.xml.page;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkTable;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlContentTypeManager;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -51,7 +52,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5.0
  */
@@ -216,7 +217,7 @@ public class TestCmsXmlPage extends TestCase {
      */
     public void testValidateXmlPageWithSchema() throws Exception {
     
-        CmsXmlContentTypeManager typeManager = CmsXmlContentTypeManager.getTypeManager();
+        CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
         typeManager.addContentType(CmsXmlHtmlValue.class);    
         
         // create a XML entity resolver
@@ -247,7 +248,7 @@ public class TestCmsXmlPage extends TestCase {
      */
     public void testXmlPageAsXmlContentDefinition() throws Exception {
         
-        CmsXmlContentTypeManager typeManager = CmsXmlContentTypeManager.getTypeManager();
+        CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
         typeManager.addContentType(CmsXmlHtmlValue.class);        
         
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);

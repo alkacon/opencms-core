@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/03 11:37:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlContentTypeManager;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
@@ -64,7 +63,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor {
@@ -282,7 +281,7 @@ public class CmsXmlContentEditor extends CmsEditor {
                 for (int j=0; j<count; j++) {
 
                     I_CmsXmlContentValue value = content.getValue(name, locale, j);
-                    I_CmsXmlWidget widget = CmsXmlContentTypeManager.getTypeManager().getEditorWidget(value.getTypeName());
+                    I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(value.getTypeName());
                     widget.setEditorValue(getCms(), content, getJsp().getRequest().getParameterMap(), this, value);
                 }               
             }
@@ -372,7 +371,7 @@ public class CmsXmlContentEditor extends CmsEditor {
                 for (int j=0; j<count; j++) {
 
                     I_CmsXmlContentValue value = content.getValue(name, locale, j);
-                    I_CmsXmlWidget widget = CmsXmlContentTypeManager.getTypeManager().getEditorWidget(value.getTypeName());
+                    I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(value.getTypeName());
                     result.append(widget.getEditorWidget(getCms(), content, this, value));
                 }               
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/10/02 10:57:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/03 11:37:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -333,7 +333,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
             if (!linkTable.isEmpty()) {
                 
                 int todo = 0;
-                // TODO: boolean value for "editor mode" currently always set to "false"
+                // TODO: boolean value for "editor mode" currently always set to "false", see XML page handling of this
                 
                 // replace macros with links
                 CmsLinkProcessor linkProcessor = new CmsLinkProcessor(cms, linkTable, document.getEncoding(), null);                

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/09/27 17:13:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/03 11:37:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.xml;
 
+import org.opencms.main.OpenCms;
 import org.opencms.xml.types.CmsXmlLocaleValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -55,7 +56,7 @@ import org.xml.sax.InputSource;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -367,7 +368,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         }
 
         // generate the XML content definition
-        CmsXmlContentTypeManager typeManager = CmsXmlContentTypeManager.getTypeManager();
+        CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
         CmsXmlContentDefinition result = new CmsXmlContentDefinition(name, schemaLocation);
         Iterator i = typeSequenceElements.iterator();
         while (i.hasNext()) {
@@ -453,7 +454,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     public void addType(I_CmsXmlSchemaType type) throws CmsXmlException {
         
         // check if the type to add actually exists in the type manager
-        CmsXmlContentTypeManager typeManager = CmsXmlContentTypeManager.getTypeManager();        
+        CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
         if (typeManager.getContentType(type.getTypeName()) == null) {
             throw new CmsXmlException("Unregistered XML content type added");
         }
