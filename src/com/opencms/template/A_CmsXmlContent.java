@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/01/31 13:12:00 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2003/01/31 16:51:35 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
+import com.opencms.workplace.I_CmsWpConstants;
 
 /**
  * Abstract class for OpenCms files with XML content.
@@ -83,7 +84,7 @@ import com.opencms.file.CmsObject;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.66 $ $Date: 2003/01/31 13:12:00 $
+ * @version $Revision: 1.67 $ $Date: 2003/01/31 16:51:35 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -1055,113 +1056,118 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
             cms.readFileHeader(filename);
         }
         
-        /*
-        if (filename.indexOf(I_CmsWpConstants.C_VFS_DIR_LOCALES)!=-1) {
-            System.err.println( "\n" + filename );
-            this.printNode(parsedContent,0, "");
+        if (C_PRINTNODES) {
+            if (filename.indexOf(I_CmsWpConstants.C_VFS_DIR_LOCALES) != -1) {
+                System.err.println("\n" + filename);
+                this.printNode(parsedContent, 0, "");
+            }
         }
-        */
         
         init(cms, parsedContent, filename);
     }
-    
-    
-    private static final String badChars = "\n";
-    
-    private static final String[] goodChars = {
-        "\\n"
-    };    
+        
+    /** Flag to enable / disable printNode() method */
+    private static final boolean C_PRINTNODES = false;
     
     /**
      * Prints all nodes of a XML locale file in depth first order split by "."
-     * to STDOUT. This method is useful for backward compatibility: you can copy
+     * to STDOUT.<p>
+     * 
+     * This method is useful for backward compatibility: you can copy
      * the output of this method (which is written to $TOMCAT_HOME/logs/catalina.
      * out) to build Java resource bundles. This method is for internal use
-     * only, should be commented out on production system!
+     * only, should be deactivated on a production system!<p>
+     * 
+     * Activate this method by setting the value of C_PRINTNODES to true;
      * 
      * @param node the current node in the XML document that is examined
      * @param depth the current depth in the XML tree
      * @param path the current path of the XML nodes, eg. node1.node2.node3...
      */
     private void printNode(Node node, int depth, String path) {
-        int nodeType = node.getNodeType();
-
-        if (nodeType == Node.ELEMENT_NODE) {
-            String nodeName = node.getNodeName();
-
-            if (!"".equals(nodeName)) {       
-                if (depth>2) {
-                	path += ".";
-                }
-                if (depth>1) {
-                	path += nodeName;
-                }
-            }
-        }
-        else if (nodeType == Node.TEXT_NODE) {
-            String nodeValue = node.getNodeValue();
-
-            if (!"".equals(nodeValue)) {
-                int nodeValueLength = nodeValue.length();
-                String nodeValueNoBadChars = "";
-                                
-                for (int i=0;i<nodeValueLength;i++) {
-                    int index = 0;
-                    
-                    if ((index=badChars.indexOf(nodeValue.charAt(i)))!=-1) {
-                        nodeValueNoBadChars += goodChars[index];
-                    }
-                    else {
-                        nodeValueNoBadChars += nodeValue.charAt(i);
-                    }
-                }
-                
-                if (node.getPreviousSibling()==null) {
-                    System.out.print(path + "=");
-                }
-                
-                System.out.print(nodeValueNoBadChars);
-                
-                if (node.getNextSibling()==null) {
-                    System.out.print("\n");
-                }
-            }
-        }
-        else if (nodeType == Node.CDATA_SECTION_NODE) {
-            CDATASection cdata = (CDATASection)node;
-            String nodeValue = cdata.getData();
-
-            if (!"".equals(nodeValue)) {
-                int nodeValueLength = nodeValue.length();
-                String nodeValueNoBadChars = "";
-                                
-                for (int i=0;i<nodeValueLength;i++) {
-                    int index = 0;
-                    
-                    if ((index=badChars.indexOf(nodeValue.charAt(i)))!=-1) {
-                        nodeValueNoBadChars += goodChars[index];
-                    }
-                    else {
-                        nodeValueNoBadChars += nodeValue.charAt(i);
-                    }
-                }
-                
-                if (node.getPreviousSibling()==null) {
-                    System.out.print(path + "=");
-                }
-                
-                System.out.print(nodeValueNoBadChars);
-                
-                if (node.getNextSibling()==null) {
-                    System.out.print("\n");
-                }                
-            }
-        }                
         
-        NodeList nodeChildren = node.getChildNodes();
-        if (nodeChildren != null) {            
-            for (int i = 0; i < nodeChildren.getLength(); i++) {              
-                printNode(nodeChildren.item(i), depth+1, path);
+        if (C_PRINTNODES) {
+            // Char array for the printNode() method 
+            final String badChars = "\n";
+    
+            // Char array for the printNode() method
+            final String[] goodChars = { "\\n" };   
+                
+            int nodeType = node.getNodeType();
+
+            if (nodeType == Node.ELEMENT_NODE) {
+                String nodeName = node.getNodeName();
+
+                if (!"".equals(nodeName)) {
+                    if (depth > 2) {
+                        path += ".";
+                    }
+                    if (depth > 1) {
+                        path += nodeName;
+                    }
+                }
+            } else if (nodeType == Node.TEXT_NODE) {
+                String nodeValue = node.getNodeValue();
+
+                if (!"".equals(nodeValue)) {
+                    int nodeValueLength = nodeValue.length();
+                    String nodeValueNoBadChars = "";
+
+                    for (int i = 0; i < nodeValueLength; i++) {
+                        int index = 0;
+
+                        if ((index = badChars.indexOf(nodeValue.charAt(i))) != -1) {
+                            nodeValueNoBadChars += goodChars[index];
+                        } else {
+                            nodeValueNoBadChars += nodeValue.charAt(i);
+                        }
+                    }
+
+                    if (node.getPreviousSibling() == null) {
+                        System.out.print(path + "=");
+                    }
+
+                    System.out.print(nodeValueNoBadChars);
+
+                    if (node.getNextSibling() == null) {
+                        System.out.print("\n");
+                    }
+                }
+            } else if (nodeType == Node.CDATA_SECTION_NODE) {
+                CDATASection cdata = (CDATASection) node;
+                String nodeValue = cdata.getData();
+
+                if (!"".equals(nodeValue)) {
+                    int nodeValueLength = nodeValue.length();
+                    String nodeValueNoBadChars = "";
+
+                    for (int i = 0; i < nodeValueLength; i++) {
+                        int index = 0;
+
+                        if ((index = badChars.indexOf(nodeValue.charAt(i))) != -1) {
+                            nodeValueNoBadChars += goodChars[index];
+                        } else {
+                            nodeValueNoBadChars += nodeValue.charAt(i);
+                        }
+                    }
+
+                    if (node.getPreviousSibling() == null) {
+                        System.out.print(path + "=");
+                    }
+
+                    System.out.print(nodeValueNoBadChars);
+
+                    if (node.getNextSibling() == null) {
+                        System.out.print("\n");
+                    }
+                }
+            }
+
+            NodeList nodeChildren = node.getChildNodes();
+            if (nodeChildren != null) {
+                for (int i = 0; i < nodeChildren.getLength(); i++) {
+                    printNode(nodeChildren.item(i), depth + 1, path);
+                }
             }
         }
     }
