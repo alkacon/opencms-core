@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/20 10:17:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/05/20 11:30:51 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Oracle/OCI implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/05/20 10:17:18 $
+ * @version $Revision: 1.8 $ $Date: 2003/05/20 11:30:51 $
  * 
  * @see com.opencms.file.genericSql.CmsUserAccess
  * @see com.opencms.file.genericSql.I_CmsUserAccess
@@ -69,8 +69,8 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
      * @param config the configurations objects (-> opencms.properties)
      * @param theResourceBroker the instance of the resource broker
      */
-    public CmsUserAccess(Configurations config, I_CmsResourceBroker theResourceBroker) {
-        super(config, theResourceBroker);
+    public CmsUserAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker) {
+        super(config, dbPoolUrl, theResourceBroker);
     }
 
     /**
@@ -295,9 +295,9 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
         return readUser(id);
     }
 
-    public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config) {
+    public com.opencms.file.genericSql.CmsQueries initQueries(String dbPoolUrl) {
         com.opencms.file.oraclesql.CmsQueries queries = new com.opencms.file.oraclesql.CmsQueries();
-        queries.initJdbcPoolUrls(config);
+        queries.initJdbcPoolUrls(dbPoolUrl);
 
         return queries;
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/16 14:49:01 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/05/20 11:31:16 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.dbpool.CmsDbcp;
 import com.opencms.dbpool.CmsIdGenerator;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
@@ -161,7 +162,7 @@ public class CmsDbAccess {
         PreparedStatement stmnt = null;
         Connection con = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
+            con = DriverManager.getConnection(CmsDbcp.C_DBCP_JDBC_URL_PREFIX + m_poolName);
             stmnt = sqlPrepare(con, "insert_offline");
             sqlFillValues(stmnt, content.getSubId(), dataset);
             stmnt.executeUpdate();

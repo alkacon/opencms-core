@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsIdGenerator.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/05/20 11:31:25 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
+import com.opencms.dbpool.CmsDbcp;
 
 /**
  * This class is used to create OpenCms system-IDs.
@@ -118,7 +119,7 @@ public class CmsIdGenerator {
         int id;
         int borderId;
         try {
-            con = DriverManager.getConnection(poolName);
+            con = DriverManager.getConnection(CmsDbcp.C_DBCP_JDBC_URL_PREFIX + poolName);
             // repeat this operation, until the nextId is valid and can be saved
             // (this is for clustering of several OpenCms)
             do {

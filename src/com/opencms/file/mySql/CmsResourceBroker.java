@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/05/07 11:43:25 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/05/20 11:30:51 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import com.opencms.file.genericSql.I_CmsUserAccess;
 
 import source.org.apache.java.util.Configurations;
 
-
 /**
  * This is THE resource broker. It merges all resource broker
  * into one public class. The interface is local to package. <B>All</B> methods
@@ -47,44 +46,44 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.46 $ $Date: 2003/05/07 11:43:25 $
+ * @version $Revision: 1.47 $ $Date: 2003/05/20 11:30:51 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
-/**
- * return the correct DbAccess class.
- * This method should be overloaded by all other Database Drivers 
- * Creation date: (09/15/00 %r)
- * @return com.opencms.file.genericSql.CmsDbAccess
- * @param configurations source.org.apache.java.util.Configurations
- * @throws com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated. 
- */
-public com.opencms.file.genericSql.CmsDbAccess initAccess(Configurations configurations) throws CmsException
-{
-    m_VfsAccess = new com.opencms.file.mySql.CmsVfsAccess(configurations, this);
-    m_UserAccess = (I_CmsUserAccess) new com.opencms.file.mySql.CmsUserAccess(configurations, this);
-    m_dbAccess = new com.opencms.file.mySql.CmsDbAccess(configurations, this);
     
-    return m_dbAccess;
-}
-/**
- * Reads a project from the Cms.
- * 
- * <B>Security</B>
- * All users are granted.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param task The task to read the project of.
- * 
- * @throws CmsException Throws CmsException if something goes wrong.
- */
-public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, CmsTask task) throws CmsException
-{
-    // read the parent of the task, until it has no parents.
-    while (task.getParent() != 0)
-    {
-        task = readTask(currentUser, currentProject, task.getParent());
+    /**
+     * return the correct DbAccess class.
+     * This method should be overloaded by all other Database Drivers 
+     * Creation date: (09/15/00 %r)
+     * @return com.opencms.file.genericSql.CmsDbAccess
+     * @param configurations source.org.apache.java.util.Configurations
+     * @throws com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated. 
+     */
+    public com.opencms.file.genericSql.CmsDbAccess initAccess(Configurations configurations) throws CmsException {
+        m_VfsAccess = new com.opencms.file.mySql.CmsVfsAccess(configurations, m_vfsPoolUrl, this);
+        m_UserAccess = (I_CmsUserAccess) new com.opencms.file.mySql.CmsUserAccess(configurations, m_userPoolUrl, this);
+        m_dbAccess = new com.opencms.file.mySql.CmsDbAccess(configurations, m_defaultPoolUrl, this);
+
+        return m_dbAccess;
     }
-    return m_dbAccess.readProject(task);
-}    
+    
+    /**
+     * Reads a project from the Cms.
+     * 
+     * <B>Security</B>
+     * All users are granted.
+     * 
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param task The task to read the project of.
+     * 
+     * @throws CmsException Throws CmsException if something goes wrong.
+     */
+    public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, CmsTask task) throws CmsException {
+        // read the parent of the task, until it has no parents.
+        while (task.getParent() != 0) {
+            task = readTask(currentUser, currentProject, task.getParent());
+        }
+        return m_dbAccess.readProject(task);
+    }
+    
 }

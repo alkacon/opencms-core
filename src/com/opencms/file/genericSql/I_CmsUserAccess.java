@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/15 12:39:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/20 11:30:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,14 +38,12 @@ import com.opencms.flex.util.CmsUUID;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import source.org.apache.java.util.Configurations;
-
 /**
  * Defines all methods required to access to access the underlying database server
  * (or anything else) to obtain user data. 
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/15 12:39:35 $
+ * @version $Revision: 1.3 $ $Date: 2003/05/20 11:30:51 $
  * 
  * @see com.opencms.file.genericSql.CmsResourceBroker#initAccess(Configurations configurations)
  */
@@ -269,7 +267,7 @@ public interface I_CmsUserAccess {
      */
     public Vector getUsersOfGroup(String groupName, int type) throws CmsException;
 
-    public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config);
+    public com.opencms.file.genericSql.CmsQueries initQueries(String dbPoolUrl);
 
     /**
     * Returns a group object.<P/>

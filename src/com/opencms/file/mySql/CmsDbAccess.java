@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 10:17:18 $
-* Version: $Revision: 1.90 $
+* Date   : $Date: 2003/05/20 11:30:51 $
+* Version: $Revision: 1.91 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.90 $ $Date: 2003/05/20 10:17:18 $ *
+ * @version $Revision: 1.91 $ $Date: 2003/05/20 11:30:51 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -73,10 +73,10 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * @param config The OpenCms configuration.
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsDbAccess(Configurations config, I_CmsResourceBroker theResourceBroker)
+    public CmsDbAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker)
         throws CmsException {
 
-        super(config,theResourceBroker);
+        super(config,dbPoolUrl, theResourceBroker);
     }
 
     /**
@@ -147,14 +147,14 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * @throws throws CmsException if something goes wrong.
      */
     public void destroy() throws CmsException {
-        try {
-            ((com.opencms.dbpool.CmsDriver) DriverManager.getDriver(m_poolName)).destroy();
-        } catch(SQLException exc) {
-            // destroy not possible - ignoring the exception
-        }
+//        try {
+//            ((com.opencms.dbpool.CmsDriver) DriverManager.getDriver(m_poolName)).destroy();
+//        } catch(SQLException exc) {
+//            // destroy not possible - ignoring the exception
+//        }
 
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[mySql.CmsDbAccess] Destroyed");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] Destroyed");
         }
     }
 
@@ -175,12 +175,9 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * retrieve the correct instance of the queries holder.
      * This method should be overloaded if other query strings should be used.
      */
-    public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config) {
-        m_SqlQueries = new com.opencms.file.mySql.CmsQueries();
-        m_SqlQueries.initJdbcPoolUrls(config);
-    
+    public com.opencms.file.genericSql.CmsQueries initQueries(String dbPoolUrl) {
         com.opencms.file.mySql.CmsQueries queries = new com.opencms.file.mySql.CmsQueries();
-        queries.initJdbcPoolUrls(config);
+        queries.initJdbcPoolUrls(dbPoolUrl);
     
         return queries;
     }

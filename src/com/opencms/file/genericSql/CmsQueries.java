@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2003/05/15 15:18:35 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2003/05/20 11:30:51 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
-
-import source.org.apache.java.util.Configurations;
+import com.opencms.dbpool.CmsDbcp;
 
 /**
  * A helper object to manage SQL queries. First, it loads key/value encoded SQL queries from a Java
@@ -66,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * TODO: multiple instances of this class should not load the same property hashes multiple times.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.49 $ $Date: 2003/05/15 15:18:35 $
+ * @version $Revision: 1.50 $ $Date: 2003/05/20 11:30:51 $
  */
 public class CmsQueries extends Object {
 
@@ -91,7 +90,7 @@ public class CmsQueries extends Object {
      * Internal flag whether the URLs of the JDBC connection pools 
      * are read from the configurations object.
      */
-    protected static boolean poolUrlsInitialized = false;
+    //protected static boolean poolUrlsInitialized = false;
 
     /**
      * CmsQueries constructor.
@@ -163,34 +162,38 @@ public class CmsQueries extends Object {
      * 
      * @param config the configurations object
      */
-    public void initJdbcPoolUrls(Configurations config) {
-        if (!poolUrlsInitialized) {
-            // get the broker name from the config.
-            String brokerName = (String) config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER);
+    public void initJdbcPoolUrls(String dbPoolUrl) {
+//        if (!poolUrlsInitialized) {
+//            // get the broker name from the config.
+//            String brokerName = (String) config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER);
+//
+//            // get the URL of the offline JDBC pool
+//            m_JdbcUrlOffline = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + "." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
+//            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+//                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database offline pool: " + m_JdbcUrlOffline);
+//            }
+//
+//            // get the URL of the online JDBC pool
+//            m_JdbcUrlOnline = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + ".online." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
+//            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+//                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database online pool : " + m_JdbcUrlOnline);
+//            }
+//
+//            // get the URL of the backup JDBC pool
+//            m_JdbcUrlBackup = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + ".backup." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
+//            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+//                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database backup pool : " + m_JdbcUrlBackup);
+//            }
+//
+//            // set the default JDBC URL for the ID generator
+//            com.opencms.dbpool.CmsIdGenerator.setDefaultPool(m_JdbcUrlOffline);
+//
+//            poolUrlsInitialized = true;
+//        }
 
-            // get the URL of the offline JDBC pool
-            m_JdbcUrlOffline = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + "." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database offline pool: " + m_JdbcUrlOffline);
-            }
-
-            // get the URL of the online JDBC pool
-            m_JdbcUrlOnline = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + ".online." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database online pool : " + m_JdbcUrlOnline);
-            }
-
-            // get the URL of the backup JDBC pool
-            m_JdbcUrlBackup = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + ".backup." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database backup pool : " + m_JdbcUrlBackup);
-            }
-
-            // set the default JDBC URL for the ID generator
-            com.opencms.dbpool.CmsIdGenerator.setDefaultPool(m_JdbcUrlOffline);
-
-            poolUrlsInitialized = true;
-        }
+        m_JdbcUrlOffline = CmsDbcp.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
+        m_JdbcUrlOnline = CmsDbcp.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
+        m_JdbcUrlBackup = CmsDbcp.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
     }
 
     /**
@@ -309,54 +312,54 @@ public class CmsQueries extends Object {
         return con.prepareStatement(rawSql);
     }
 
-    /**
-     * Generates a new primary key ID specified by the key of a SQL query and the project-ID.
-     * 
-     * @param projectId the ID of the specified CmsProject
-     * @param queryKey the key of the SQL query
-     * @return int a new primary key ID
-     * @throws CmsException if a database access error occurs
-     */
-    public synchronized int nextPkId(int projectId, String queryKey) throws CmsException {
-        String jdbcUrl = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) ? m_JdbcUrlOnline : m_JdbcUrlOffline;
-        return nextPkId(jdbcUrl, get(projectId, queryKey));
-    }
-
-    /**
-     * Generates a new primary key ID specified by the key of a SQL query and the CmsProject.
-     * 
-     * @param project the specified CmsProject
-     * @param queryKey the key of the SQL query
-     * @return int a new primary key ID
-     * @throws CmsException if a database access error occurs
-     */
-    public synchronized int nextPkId(CmsProject project, String queryKey) throws CmsException {
-        return nextPkId(project.getId(), queryKey);
-    }
-
-    /**
-     * Generates a new primary key ID for a offline table specified by the key of a SQL query.
-     * 
-     * @param project the specified CmsProject
-     * @param queryKey the key of the SQL query
-     * @return int a new primary key ID
-     * @throws CmsException if a database access error occurs
-     */
-    public synchronized int nextPkId(String queryKey) throws CmsException {
-        return nextPkId(m_JdbcUrlOffline, get(Integer.MIN_VALUE, queryKey));
-    }
-
-    /**
-     * Generates a new primary key ID specified by the URL of the JDBC connection and the SQL query.
-     * 
-     * @param jdbcUrl
-     * @param query
-     * @return int a new primary key ID
-     * @throws CmsException if a database access error occurs
-     */
-    protected synchronized int nextPkId(String jdbcUrl, String query) throws CmsException {
-        return com.opencms.dbpool.CmsIdGenerator.nextId(jdbcUrl, query);
-    }
+//    /**
+//     * Generates a new primary key ID specified by the key of a SQL query and the project-ID.
+//     * 
+//     * @param projectId the ID of the specified CmsProject
+//     * @param queryKey the key of the SQL query
+//     * @return int a new primary key ID
+//     * @throws CmsException if a database access error occurs
+//     */
+//    public synchronized int nextPkId(int projectId, String queryKey) throws CmsException {
+//        String jdbcUrl = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) ? m_JdbcUrlOnline : m_JdbcUrlOffline;
+//        return nextPkId(jdbcUrl, get(projectId, queryKey));
+//    }
+//
+//    /**
+//     * Generates a new primary key ID specified by the key of a SQL query and the CmsProject.
+//     * 
+//     * @param project the specified CmsProject
+//     * @param queryKey the key of the SQL query
+//     * @return int a new primary key ID
+//     * @throws CmsException if a database access error occurs
+//     */
+//    public synchronized int nextPkId(CmsProject project, String queryKey) throws CmsException {
+//        return nextPkId(project.getId(), queryKey);
+//    }
+//
+//    /**
+//     * Generates a new primary key ID for a offline table specified by the key of a SQL query.
+//     * 
+//     * @param project the specified CmsProject
+//     * @param queryKey the key of the SQL query
+//     * @return int a new primary key ID
+//     * @throws CmsException if a database access error occurs
+//     */
+//    public synchronized int nextPkId(String queryKey) throws CmsException {
+//        return nextPkId(m_JdbcUrlOffline, get(Integer.MIN_VALUE, queryKey));
+//    }
+//
+//    /**
+//     * Generates a new primary key ID specified by the URL of the JDBC connection and the SQL query.
+//     * 
+//     * @param jdbcUrl
+//     * @param query
+//     * @return int a new primary key ID
+//     * @throws CmsException if a database access error occurs
+//     */
+//    protected synchronized int nextPkId(String jdbcUrl, String query) throws CmsException {
+//        return com.opencms.dbpool.CmsIdGenerator.nextId(jdbcUrl, query);
+//    }
 
     /**
      * Attemts to close the connection, statement and result set after a statement has been executed.

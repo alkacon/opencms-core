@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.203 $
+* Date   : $Date: 2003/05/20 11:30:51 $
+* Version: $Revision: 1.204 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.203 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.204 $ $Date: 2003/05/20 11:30:51 $
  *
  */
 
@@ -1762,7 +1762,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void init(Configurations config)
-        throws CmsException;
+        throws CmsException, Exception;
     /**
      * Determines, if the users current group is the admin-group.
      *

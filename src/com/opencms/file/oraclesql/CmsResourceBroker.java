@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/05/07 11:43:25 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/05/20 11:30:51 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.5 $ $Date: 2003/05/07 11:43:25 $
+ * @version $Revision: 1.6 $ $Date: 2003/05/20 11:30:51 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 
@@ -57,20 +57,20 @@ public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBr
      * @throws com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated.
      */
     public com.opencms.file.genericSql.CmsDbAccess initAccess(Configurations configurations) throws CmsException{
-        m_VfsAccess = new com.opencms.file.oraclesql.CmsVfsAccess(configurations, this);
-        m_UserAccess = (I_CmsUserAccess) new com.opencms.file.oraclesql.CmsUserAccess(configurations, this);
-        m_dbAccess = new com.opencms.file.oraclesql.CmsDbAccess(configurations, this);
+        m_VfsAccess = new com.opencms.file.oraclesql.CmsVfsAccess(configurations, m_vfsPoolUrl, this);
+        m_UserAccess = (I_CmsUserAccess) new com.opencms.file.oraclesql.CmsUserAccess(configurations, m_userPoolUrl, this);
+        m_dbAccess = new com.opencms.file.oraclesql.CmsDbAccess(configurations, m_defaultPoolUrl, this);
     
         return m_dbAccess;        
     }
 
-    /**
-     * Initializes the resource broker and sets up all required modules and connections.
-     * @param config The OpenCms configuration.
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public void init(Configurations config) throws CmsException {
-        super.init(config);
-    }
+//    /**
+//     * Initializes the resource broker and sets up all required modules and connections.
+//     * @param config The OpenCms configuration.
+//     * @throws CmsException Throws CmsException if something goes wrong.
+//     */
+//    public void init(Configurations config) throws CmsException, Exception {
+//        super.init(config);
+//    }
 
 }

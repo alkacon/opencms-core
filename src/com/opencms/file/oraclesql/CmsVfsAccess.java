@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/20 10:45:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/05/20 11:30:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import source.org.apache.java.util.Configurations;
  * Oracle/OCI implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/05/20 10:45:32 $
+ * @version $Revision: 1.5 $ $Date: 2003/05/20 11:30:51 $
  */
 public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -61,8 +61,8 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
      * @param config the configurations objects (-> opencms.properties)
      * @param theResourceBroker the instance of the resource broker
      */
-    public CmsVfsAccess(Configurations config, I_CmsResourceBroker theResourceBroker) {
-        super(config, theResourceBroker);
+    public CmsVfsAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker) {
+        super(config, dbPoolUrl, theResourceBroker);
     }
 
     /**
@@ -104,9 +104,9 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
         writeFileContent(fileId, fileContent, projectId, writeBackup);
     }
 
-    public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config) {
+    public com.opencms.file.genericSql.CmsQueries initQueries(String dbPoolUrl) {
         com.opencms.file.oraclesql.CmsQueries queries = new com.opencms.file.oraclesql.CmsQueries();
-        queries.initJdbcPoolUrls(config);
+        queries.initJdbcPoolUrls(dbPoolUrl);
 
         return queries;
     }

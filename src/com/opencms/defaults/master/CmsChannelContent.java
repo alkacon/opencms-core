@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/05/16 14:49:01 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/05/20 11:31:16 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.20 $
- * $Date: 2003/05/16 14:49:01 $
+ * $Revision: 1.21 $
+ * $Date: 2003/05/20 11:31:16 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -390,20 +390,20 @@ public class CmsChannelContent extends A_CmsContentDefinition
                         // lock the channel
                         cms.lockResource(newChannel.getAbsolutePath(), true);
                     }
-                };
+                }
             }
             // check if the owner has changed
             if(!newChannel.getOwnerId().equals(this.getOwner())){
                 cms.chown(newChannel.getAbsolutePath(), this.getOwnerName());
-            };
+            }
             // check if the group has changed
             if(!newChannel.getGroupId().equals(this.getGroupId())){
                 cms.chgrp(newChannel.getAbsolutePath(), this.getGroup());
-            };
+            }
             // check if the accessflags has changed
             if(newChannel.getAccessFlags() != this.getAccessFlags()){
                 cms.chmod(newChannel.getAbsolutePath(), this.getAccessFlags());
-            };
+            }
             m_channel = cms.readFolder(newChannel.getAbsolutePath());
         } catch (CmsException exc){
             throw exc;
@@ -721,7 +721,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
             A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Channels have no history!");
         }
         return null;
-    };
+    }
     /**
      * returns true if the CD is readable for the current user
      * @return true

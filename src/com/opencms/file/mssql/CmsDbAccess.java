@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mssql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 10:49:06 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/05/20 11:30:51 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import source.org.apache.java.util.Configurations;
  * the database.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.8 $ $Date: 2003/05/20 10:49:06 $ *
+ * @version $Revision: 1.9 $ $Date: 2003/05/20 11:30:51 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -59,9 +59,9 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * @param config The OpenCms configuration.
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsDbAccess(Configurations config, I_CmsResourceBroker theResourceBroker) throws CmsException {
+    public CmsDbAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker) throws CmsException {
 
-        super(config, theResourceBroker);
+        super(config, dbPoolUrl, theResourceBroker);
     }
 
     /**
@@ -69,11 +69,11 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * @throws throws CmsException if something goes wrong.
      */
     public void destroy() throws CmsException {
-        try {
-            ((com.opencms.dbpool.CmsDriver)DriverManager.getDriver(m_poolName)).destroy();
-        } catch (SQLException exc) {
-            // destroy not possible - ignoring the exception
-        }
+//        try {
+//            ((com.opencms.dbpool.CmsDriver)DriverManager.getDriver(m_poolName)).destroy();
+//        } catch (SQLException exc) {
+//            // destroy not possible - ignoring the exception
+//        }
 
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[mssql.CmsDbAccess] Destroyed");

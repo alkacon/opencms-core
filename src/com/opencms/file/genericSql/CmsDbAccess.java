@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 10:45:32 $
-* Version: $Revision: 1.285 $
+* Date   : $Date: 2003/05/20 11:30:51 $
+* Version: $Revision: 1.286 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.285 $ $Date: 2003/05/20 10:45:32 $ *
+ * @version $Revision: 1.286 $ $Date: 2003/05/20 11:30:51 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -227,16 +227,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param config The OpenCms configuration.
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsDbAccess(Configurations config, I_CmsResourceBroker theResourceBroker ) throws CmsException {
+    public CmsDbAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker ) throws CmsException {
         
         m_ResourceBroker = theResourceBroker;
 
         // set configurations for the dbpool driver
-        com.opencms.dbpool.CmsDriver.setConfigurations(config);
+        //com.opencms.dbpool.CmsDriver.setConfigurations(config);
 
-        m_SqlQueries = initQueries(config);
+        m_SqlQueries = initQueries(dbPoolUrl);
 
-        String rbName = null;
+        //String rbName = null;
         //String digest = null;
         boolean fillDefaults = true;
 
@@ -245,11 +245,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
 
         // read the name of the rb from the properties
-        rbName = (String)config.getString(C_CONFIGURATION_RESOURCEBROKER);
+        //String rbName = (String)config.getString(C_CONFIGURATION_RESOURCEBROKER);
 
         // read all needed parameters from the configuration
         // all needed pools are read in the following method
-        getConnectionPools(config, rbName);
+        //getConnectionPools(config, rbName);
+        
+        m_poolName = m_poolNameOnline = m_poolNameBackup = dbPoolUrl;
 
         // have we to fill the default resource like root and guest?
         try {
@@ -996,14 +998,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     public void destroy()
         throws CmsException {
-        try {
-            ((com.opencms.dbpool.CmsDriver) DriverManager.getDriver(m_poolName)).destroy();
-        } catch(SQLException exc) {
-            // destroy not possible - ignoring the exception
-        }
+//        try {
+//            ((com.opencms.dbpool.CmsDriver) DriverManager.getDriver(m_poolName)).destroy();
+//        } catch(SQLException exc) {
+//            // destroy not possible - ignoring the exception
+//        }
 
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[genericSql.CmsDbAccess] Destroyed");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] Destroyed");
         }
     }
 
@@ -3165,6 +3167,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             res = stmt.executeQuery();
 
             if (res.next()) {
+                int cols = res.getMetaData().getColumnCount();
+                
                 project =
                     new CmsProject(
                         res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_ID")),
@@ -3182,9 +3186,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 throw new CmsException("[" + this.getClass().getName() + "] " + id, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw m_SqlQueries.getCmsException(this, "readProject(int)", CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, "readProject(int)/1 ", CmsException.C_SQL_ERROR, e);
         } catch (Exception e) {
-            throw m_SqlQueries.getCmsException(this, "readProject(int)", CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_SqlQueries.getCmsException(this, "readProject(int)/2 ", CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             // close all db-resources
             m_SqlQueries.closeAll(conn, stmt, res);
@@ -4486,12 +4490,9 @@ public CmsTask readTask(int id) throws CmsException {
      * retrieve the correct instance of the queries holder.
      * This method should be overloaded if other query strings should be used.
      */
-    public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config) {
-        m_SqlQueries = new com.opencms.file.genericSql.CmsQueries();
-        m_SqlQueries.initJdbcPoolUrls(config);        
-        
+    public com.opencms.file.genericSql.CmsQueries initQueries(String dbPoolUrl) {           
         com.opencms.file.genericSql.CmsQueries queries = new com.opencms.file.genericSql.CmsQueries();
-        queries.initJdbcPoolUrls(config);
+        queries.initJdbcPoolUrls(dbPoolUrl);
         
         return queries;
     }

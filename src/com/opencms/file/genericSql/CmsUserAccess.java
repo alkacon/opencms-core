@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/19 13:30:07 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/05/20 11:30:51 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/05/19 13:30:07 $
+ * @version $Revision: 1.8 $ $Date: 2003/05/20 11:30:51 $
  */
 public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogChannels, I_CmsUserAccess {
 
@@ -92,10 +92,11 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @param config the configurations objects (-> opencms.properties)
      * @param theResourceBroker the instance of the resource broker
      */
-    public CmsUserAccess(Configurations config, I_CmsResourceBroker theResourceBroker) {
-        m_SqlQueries = initQueries(config);
-
+    public CmsUserAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker) {
+        m_SqlQueries = initQueries(dbPoolUrl);
         m_ResourceBroker = theResourceBroker;
+        
+        m_poolName = m_poolNameBackup = m_poolNameOnline = dbPoolUrl;
 
         String brokerName = (String) config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER);
 
@@ -123,29 +124,29 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
 
         ///////////////////////////////////////////////
 
-        // TODO: the following code should be removed when all methods in this
-        // class are switched to the new CmsQueries methods
-
-        // get the standard pool
-        m_poolName = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + "." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database offline pool: " + m_poolName);
-        }
-
-        // get the pool for the online resources
-        m_poolNameOnline = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + ".online." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database online pool : " + m_poolNameOnline);
-        }
-
-        // get the pool for the backup resources
-        m_poolNameBackup = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + ".backup." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database backup pool : " + m_poolNameBackup);
-        }
-
-        // set the default pool for the id generator
-        com.opencms.dbpool.CmsIdGenerator.setDefaultPool(m_poolName);
+//        // TODO: the following code should be removed when all methods in this
+//        // class are switched to the new CmsQueries methods
+//
+//        // get the standard pool
+//        m_poolName = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + "." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
+//        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database offline pool: " + m_poolName);
+//        }
+//
+//        // get the pool for the online resources
+//        m_poolNameOnline = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + ".online." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
+//        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database online pool : " + m_poolNameOnline);
+//        }
+//
+//        // get the pool for the backup resources
+//        m_poolNameBackup = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + ".backup." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
+//        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database backup pool : " + m_poolNameBackup);
+//        }
+//
+//        // set the default pool for the id generator
+//        com.opencms.dbpool.CmsIdGenerator.setDefaultPool(m_poolName);
 
         ///////////////////////////////////////////////////////        
     }
@@ -870,11 +871,11 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
         return users;
     }
 
-    public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config) {
-        com.opencms.file.genericSql.CmsQueries m_SqlQueries = new com.opencms.file.genericSql.CmsQueries();
-        m_SqlQueries.initJdbcPoolUrls(config);
+    public com.opencms.file.genericSql.CmsQueries initQueries(String dbPoolUrl) {
+        com.opencms.file.genericSql.CmsQueries queries = new com.opencms.file.genericSql.CmsQueries();
+        queries.initJdbcPoolUrls(dbPoolUrl);
 
-        return m_SqlQueries;
+        return queries;
     }
 
     /**
