@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/07 11:04:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/11/08 15:03:19 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,6 +32,7 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
+import java.text.*;
 
 import java.util.*;
 
@@ -313,6 +314,7 @@ System.err.println("mgm-Exception: "+e.toString());
  */
 private void updateTheModule(CmsObject cms, I_CmsRegistry reg, Hashtable table, String module) {
 
+	SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MM.dd.yyyy");
 	String name = (String)table.get(C_MODULE_PACKETNAME);
 	String modulePath = "/system/modules/"+name+"/";
 	String version = (String)table.get(C_VERSION);
@@ -340,7 +342,7 @@ private void updateTheModule(CmsObject cms, I_CmsRegistry reg, Hashtable table, 
 		}
 		// the adminpoint
 		if ("".equals( (String)table.get(C_ADMINPOINT) )){
-			try{ // TODO: does not work when folder is not empty
+			try{ // does not work when folder is not empty
 				cms.deleteFolder(modulePath + "administration/");
 			}catch(Exception e){}
 		}else{
@@ -350,7 +352,15 @@ private void updateTheModule(CmsObject cms, I_CmsRegistry reg, Hashtable table, 
 		reg.setModuleMaintenanceEventClass(name, (String)table.get(C_MAINTENANCE));
 		reg.setModuleAuthor(name, (String)table.get(C_AUTHOR));
 		reg.setModuleAuthorEmail(name, (String)table.get(C_EMAIL));
-		reg.setModuleCreateDate(name, (String)table.get(C_DATE));
+		// set the date
+		String date = (String)table.get(C_DATE);
+		long dateLong = 0;
+		try{
+			dateLong = dateFormat.parse(date).getTime();
+		}catch(Exception exc){
+			dateLong = (new Date()).getTime();
+		}	
+		reg.setModuleCreateDate(name, dateLong);
 		// now the dependnecies
 		Vector depNames = new Vector();
 		Vector minVersion = new Vector();
@@ -362,7 +372,7 @@ private void updateTheModule(CmsObject cms, I_CmsRegistry reg, Hashtable table, 
 			complString = complString.substring(0, complString.lastIndexOf("-")-1);
 			String min = complString.substring(complString.lastIndexOf(":")+1);
 			depNames.addElement((complString.substring(0, complString.lastIndexOf("Version:")-1)).trim());
-			int minInt = -1;
+			int minInt = 1;
 			int maxInt = -1;
 			try{
 				minInt = Integer.parseInt(min);
@@ -370,7 +380,6 @@ private void updateTheModule(CmsObject cms, I_CmsRegistry reg, Hashtable table, 
 					maxInt = Integer.parseInt(max);
 				}
 			}catch(Exception e){
-				// TODO: handle this:show error and go back to the dialog 
 			} 
 			minVersion.addElement(new Integer(minInt));
 			maxVersion.addElement(new Integer(maxInt));
@@ -385,8 +394,7 @@ private void updateTheModule(CmsObject cms, I_CmsRegistry reg, Hashtable table, 
 		reg.setModuleParameterdef(name, paraNames, paraDesc, paraTyp, paraVal);
 			
 	}catch(CmsException e){
-		// TODO: show error and go back to the dialog 
-System.err.println("mgm--Fehler beim Module administrieren: "+e.toString());
+		System.err.println("Error while module administrating: "+e.toString());
 	}
 
 }
