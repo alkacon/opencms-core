@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.31 $ $Date: 2000/01/24 12:20:04 $
+ * @version $Revision: 1.32 $ $Date: 2000/01/24 12:32:52 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -107,6 +107,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		// is the project unlocked?
 		if( testProject.getFlags() != C_PROJECT_STATE_UNLOCKED ) {
+			System.err.println("rb.accessProject() failed - was not unlocked cu:" + currentUser + " cp:" + currentProject + " pn:" + projectname);
 			return(false);
 		}
 		
@@ -127,6 +128,10 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			}
 		}
 		
+		System.err.println("rb.accessProject() failed - user not in one of the groups cu:" + currentUser + " cp:" + currentProject + " pn:" + projectname);
+		for(int i = 0; i < groups.size(); i++) {
+			System.err.println("rb.accessProject() tested group:" + i + " " + (A_CmsGroup) groups.elementAt(i));
+		}
 		return( false );
 	}
 
@@ -2532,7 +2537,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// check the access to the project
 		if( ! accessProject(currentUser, currentProject, currentProject.getName()) ) {
 			// no access to the project!
-			System.out.println("rb.accessRead().accessProject() failed");
+			System.err.println("rb.accessRead().accessProject() failed");
 			return(false);
 		}
 		
@@ -2691,7 +2696,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			}
 		}
 		// the resource isn't accesible by the user.
-		System.out.println("rb.accessOwner() failed " + resource.getAbsolutePath());
+		System.err.println("rb.accessOwner() failed " + resource.getAbsolutePath());
 		return(false);
 	}
 
@@ -2719,7 +2724,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 		// the resource isn't accesible by the user.
 
-		System.out.println("rb.accessGroup() failed "+ resource.getAbsolutePath());
+		System.err.println("rb.accessGroup() failed "+ resource.getAbsolutePath());
 		return(false);
 
 	}
@@ -2741,7 +2746,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( (resource.getAccessFlags() & flags) == flags ) {
 			return( true );
 		} else {
-			System.out.println("rb.accessOther() failed " + resource.getAbsolutePath());
+			System.err.println("rb.accessOther() failed " + resource.getAbsolutePath());
 			return( false );
 		}
 		
