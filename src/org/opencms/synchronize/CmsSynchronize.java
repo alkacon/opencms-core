@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/09/11 10:03:15 $
- * Version: $Revision: 1.13 $
- * Date   : $Date: 2003/09/11 10:03:15 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/09/11 10:32:01 $
+ * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/09/11 10:32:01 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/09/11 10:03:15 $
+ * @version $Revision: 1.14 $ $Date: 2003/09/11 10:32:01 $
  */
 public class CmsSynchronize {
 
@@ -300,7 +300,7 @@ public class CmsSynchronize {
             m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);  
             m_report.print(m_report.key("report.sync_importing_folder"), I_CmsReport.C_FORMAT_NOTE);
             m_report.print(fsFile.getAbsolutePath().replace('\\', '/'));      
-            // extract the foldername            
+            // extract the foldername
             String foldername = translate(folder);
             m_report.print(m_report.key("report.sync_from_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                     
             m_report.print(foldername);
@@ -366,7 +366,8 @@ public class CmsSynchronize {
         File fsFile;
         //data from sync list
         String resourcename = m_cms.readAbsolutePath(res);
-        if (m_syncList.containsKey(resourcename)) {
+   
+        if (m_syncList.containsKey(translate(resourcename))) {
             // this resource was already used in a previous syncprocess
             CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(resourcename));
             // get the corresponding resource from the FS
