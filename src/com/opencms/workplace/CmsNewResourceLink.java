@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/09/09 07:51:10 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/09/12 10:52:14 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,13 @@
 
 package com.opencms.workplace;
 
-import org.opencms.workplace.CmsWorkplaceAction;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.CmsLinkCheck;
 import com.opencms.util.Encoder;
 
@@ -45,13 +44,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.CmsWorkplaceSettings;
+
 /**
  * Template class for displaying the new resource screen for a new link
  * of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.50 $ $Date: 2003/09/09 07:51:10 $
+ * @version $Revision: 1.51 $ $Date: 2003/09/12 10:52:14 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault {
@@ -348,6 +353,29 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault {
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) {
         return false;
+    }
+    
+    /**
+     * Returns the current workplace path Uri
+     * 
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObject Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @throws CmsException if something goes wrong
+     */
+    public Object getCurrentPathUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+        HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession();
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute("__CmsWorkplace.WORKPLACE_SETTINGS");
+        String path = settings.getExplorerResource();
+        if (path == null) {
+            path = "/";
+        }
+        if (path.indexOf("/") != -1) {
+            path = path.substring(0, path.lastIndexOf("/") + 1);
+        }       
+        return path.getBytes();
     }
 
     /**
