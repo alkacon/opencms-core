@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-* Date   : $Date: 2001/10/16 09:12:43 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2001/12/03 08:18:12 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@
  * The flaturl to use for changing folders in filelist-only mode.
  */
  var flaturl="";
+ var showKon=true;
 
  /**
   * If we are in project-view mode this is set to true
@@ -1020,7 +1021,13 @@ function enableNewButton(showit){
              "td.inactive{ color:#8c8c8c; } "+
              "/"+"/"+"--></style></head>";
     var returnplace=wo.location.href;
-    returnplace=returnplace.substring(0, returnplace.lastIndexOf("/")) + "/explorer_files.html";
+    if(openfolderMethod == "openthisfolderflat"){
+    	returnplace=returnplace.replace(/\?/g, "%3F");
+    	returnplace=returnplace.replace(/\&/g, "%26");
+    	returnplace=returnplace.replace(/\=/g, "%3D");
+    } else {
+    	returnplace=returnplace.substring(0, returnplace.lastIndexOf("/")) + "/explorer_files.html";
+    }
     returnplace=simpleEscape(returnplace);
 
     wo.open();
@@ -1060,11 +1067,11 @@ function enableNewButton(showit){
 
          wo.writeln("<td align=center>");
 
-         if(!((this.projectView) || (this.flaturl != ""))) {
+         if(!(this.projectView) && showKon) {
             wo.writeln(brcfg.showKontext + i + "'," + i + brcfg.showKontextEnd);
          }
          wo.write("<img src='"+vi.resource[vi.liste[i].type].icon+"' border=0 width=16 height=16>");
-         if(!((this.projectView) || (this.flaturl != ""))) {
+         if(!(this.projectView) && showKon) {
             wo.write("</a>");
          }
          wo.writeln("</td>");
