@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportProperties.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/14 17:43:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsStaticExportProperties implements I_CmsEventListener {
     
@@ -131,6 +131,7 @@ public class CmsStaticExportProperties implements I_CmsEventListener {
             case com.opencms.flex.I_CmsEventListener.EVENT_CLEAR_CACHES:   
                 m_cacheOnlineLinks.clear();
                 m_cacheExportUris.clear();        
+                setExportnames();
                 break;
             default:
                 // no operation
@@ -226,7 +227,16 @@ public class CmsStaticExportProperties implements I_CmsEventListener {
      * @param cms the current cms context
      * @param resources the list of all resources that have the "exportname" property set
      */
-    public void setExportnames(CmsObject cms, Vector resources) {    
+    public synchronized void setExportnames() {        
+        Vector resources;
+        CmsObject cms = null;
+        try {
+            cms = OpenCms.initGuestUser();
+            resources = cms.getResourcesWithPropertyDefinition(I_CmsConstants.C_PROPERTY_EXPORTNAME);
+        } catch (CmsException e) {
+            resources = new Vector(0);
+        }
+        
         m_exportnameResources = new HashMap(resources.size());
         Iterator i = resources.iterator();
         while (i.hasNext()) {

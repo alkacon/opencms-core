@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/08/14 15:37:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/08/14 17:43:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -1276,10 +1276,7 @@ public class OpenCmsCore {
         exportProperties.setExportRelativeLinks(conf.getBoolean("staticexport.relative_links", false)); 
 
         // initialize "exportname" folders
-        CmsObject exCms = new CmsObject();
-        initUser(exCms, null, null, getDefaultUsers().getUserGuest(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);
-        Vector exRes = exCms.getResourcesWithPropertyDefinition(I_CmsConstants.C_PROPERTY_EXPORTNAME);
-        exportProperties.setExportnames(exCms, exRes);
+        exportProperties.setExportnames();
         
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Static export        : " + (exportProperties.isStaticExportEnabled()?"enabled":"disabled"));
@@ -1315,6 +1312,18 @@ public class OpenCmsCore {
             // ignore
         } 
         return cms;                    
+    }
+    
+    /**
+     * Returns an initialized CmsObject with "Guest" user permissions.<p>
+     * 
+     * @return an initialized CmsObject with "Guest" user permissions
+     * @throws CmsException in case of errors initializing the CmsObject
+     */
+    public CmsObject initGuestUser() throws CmsException {
+        CmsObject cms = new CmsObject();
+        initUser(cms, null, null, getDefaultUsers().getUserGuest(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);       
+        return cms;
     }
 
     /**
