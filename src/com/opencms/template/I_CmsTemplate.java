@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsTemplate.java,v $
-* Date   : $Date: 2001/05/07 08:56:25 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2001/05/10 12:32:25 $
+* Version: $Revision: 1.13 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.util.*;
  * have to be implemtented.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2001/05/07 08:56:25 $
+ * @version $Revision: 1.13 $ $Date: 2001/05/10 12:32:25 $
  */
 public interface I_CmsTemplate {
 
@@ -228,5 +228,17 @@ public interface I_CmsTemplate {
      */
     public boolean shouldReload(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector);
 
-    public abstract A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters);
+    /**
+     * Create a new element for the element cache consisting of the current template
+     * class and the given template file.
+     * <P>
+     * Complex template classes that are able to include other (sub-)templates
+     * must generate a collection of element definitions for their possible
+     * subtemplates. This collection is part of the new element.
+     * @param cms CmsObject for accessing system resources.
+     * @param templateFile Name of the template file for the new element
+     * @param parameters All parameters of the current request
+     * @return New element for the element cache
+     */
+    public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters);
 }

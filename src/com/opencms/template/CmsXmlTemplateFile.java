@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/05/09 12:37:40 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2001/05/10 12:32:22 $
+* Version: $Revision: 1.39 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.38 $ $Date: 2001/05/09 12:37:40 $
+ * @version $Revision: 1.39 $ $Date: 2001/05/10 12:32:22 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -61,7 +61,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      */
     public CmsXmlTemplateFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
-        if(!cms.getRequestContext().isStaging()) {
+        if(!cms.getRequestContext().isElementCacheEnabled()) {
             registerMyTags();
         }
         init(cms, file);
@@ -76,7 +76,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      */
     public CmsXmlTemplateFile(CmsObject cms, String filename) throws CmsException {
         super();
-        if(!cms.getRequestContext().isStaging()) {
+        if(!cms.getRequestContext().isElementCacheEnabled()) {
             registerMyTags();
         }
         init(cms, filename);
@@ -220,7 +220,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             result.append("<BODY " + getProcessedDataValue("bodytag", callingObject, parameters) + ">\n");
             while(cdataStart != -1) {
                 String tempString = xmlString.substring(currentPos, cdataStart);
-                tempString = myReplace(tempString);
+                tempString = replaceBack(tempString);
 
                 //result.append(xmlString.substring(currentPos, cdataStart).replace('<', '[').replace('>', ']'));
                 result.append(tempString);
@@ -229,7 +229,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 currentPos = xmlString.indexOf("]]>", currentPos + 1) + 3;
             }
             String tempString = xmlString.substring(currentPos);
-            tempString = myReplace(tempString);
+            tempString = replaceBack(tempString);
 
             //result.append(xmlString.substring(currentPos).replace('<', '[').replace('>', ']'));
             result.append(tempString);
@@ -498,21 +498,24 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * Gets the processed data of the appropriate <code>&lt;TEMPLATE&gt;</code> section of
      * this workplace template file.
      * <P>
-     * The correct datablock name for the template datablock will be taken
-     * from <code>getTemplateDatablockName</code>.
+     * In contrast to <code>getProcessedElementContent()</code> the <code>&lt;ELEMENT&gt;</code>
+     * tags will NOT be resolved during this loop. Instead, a new element cache variant
+     * containing links to these elements will be created.
      *
      * @param callingObject reference to the calling object. Used to look up user methods while processing.
      * @param parameters hashtable containing all user parameters.
      * @param elementName Element name of this template in our parent template.
      * @param templateSelector Name of the template section or null if the default section is requested.
-     * @return Processed template data.
+     * @return New variant for the element cache.
      * @exception CmsException
-     * @see #getTemplateDatablockName
+     * @see #getProcessedElementContent
      */
-    public void generateStagingVariant(Object callingObject, Hashtable parameters, String elementName, String templateSelector, CmsElementVariant variant) throws CmsException {
+    public CmsElementVariant generateElementCacheVariant(Object callingObject, Hashtable parameters, String elementName, String templateSelector) throws CmsException {
+        CmsElementVariant result = new CmsElementVariant();
+
         String datablockName = this.getTemplateDatablockName(templateSelector);
         if(datablockName == null && (templateSelector.toLowerCase().equals("script"))) {
-            return;
+            return result;
         }
 
         Element domEl = getProcessedData(datablockName, callingObject, parameters, null);
@@ -525,14 +528,14 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 if(elName != null && !"".equalsIgnoreCase(elName)) {
                     // If there is something in the string buffer, store is now!
                     if(buf.length() > 0) {
-                        variant.add(buf.toString().getBytes());
+                        result.add(buf.toString().getBytes());
                         buf = new StringBuffer();
 
                     }
 
                     // Create new CmsElementLink
                     CmsElementLink link = new CmsElementLink(elName);
-                    variant.add(link);
+                    result.add(link);
                 }
             } else if (n.getNodeType() == n.TEXT_NODE || n.getNodeType() == n.CDATA_SECTION_NODE) {
                 buf.append(n.getNodeValue());
@@ -541,8 +544,9 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
         // Store pending buffer content
         if(buf.length() > 0) {
-            variant.add(buf.toString().getBytes());
+            result.add(buf.toString().getBytes());
         }
+        return result;
     }
 
     public String getSectionTitle(String sectionName) throws CmsException {
@@ -725,7 +729,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         }
         return a < b ? a : b;
     }
-    private String myReplace(String s) {
+    private String replaceBack(String s) {
         StringBuffer tempContent = new StringBuffer();
 
         //int index = s.indexOf(search);

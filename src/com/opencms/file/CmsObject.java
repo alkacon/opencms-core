@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/04/20 09:50:26 $
- * Version: $Revision: 1.155 $
+ * Date   : $Date: 2001/05/10 12:30:53 $
+ * Version: $Revision: 1.156 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -34,6 +34,7 @@ import source.org.apache.java.util.*;
 
 import com.opencms.core.*;
 import com.opencms.launcher.*;
+import com.opencms.template.cache.*;
 
 /**
  * This class provides access to the OpenCms and its resources.
@@ -48,32 +49,32 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.155 $ $Date: 2001/04/20 09:50:26 $
+ * @version $Revision: 1.156 $ $Date: 2001/05/10 12:30:53 $
  *
  */
 public class CmsObject implements I_CmsConstants {
 
-	/**
-	 * The resource broker to access the cms.
-	 */
-	private I_CmsResourceBroker m_rb = null;
+    /**
+     * The resource broker to access the cms.
+     */
+    private I_CmsResourceBroker m_rb = null;
 
-	/**
-	 * The resource broker to access the cms.
-	 */
-	private CmsRequestContext m_context = null;
+    /**
+     * The resource broker to access the cms.
+     */
+    private CmsRequestContext m_context = null;
 
-	/**
-	 * The launcher manager used with this object,
-	 * Is needed to clear the template caches.
-	 */
-	private CmsLauncherManager m_launcherManager = null;
+    /**
+     * The launcher manager used with this object,
+     * Is needed to clear the template caches.
+     */
+    private CmsLauncherManager m_launcherManager = null;
 
-	/**
-	 * The default constructor.
-	 */
-	public CmsObject () {
-	}
+    /**
+     * The default constructor.
+     */
+    public CmsObject () {
+    }
 /**
  * Accept a task from the Cms.
  *
@@ -82,7 +83,7 @@ public class CmsObject implements I_CmsConstants {
  * @exception CmsException if operation was not successful.
  */
 public void acceptTask(int taskId) throws CmsException {
-	m_rb.acceptTask(m_context.currentUser(), m_context.currentProject(), taskId);
+    m_rb.acceptTask(m_context.currentUser(), m_context.currentProject(), taskId);
 }
 /**
  * Checks, if the user may create this resource.
@@ -93,11 +94,11 @@ public void acceptTask(int taskId) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public boolean accessCreate(String resource) throws CmsException {
-	try {
-		return m_rb.accessCreate(m_context.currentUser(), m_context.currentProject(), resource);
-	} catch (Exception exc) {
-		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-	}
+    try {
+        return m_rb.accessCreate(m_context.currentUser(), m_context.currentProject(), resource);
+    } catch (Exception exc) {
+        throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+    }
 }
 /**
  * Checks, if the user may lock this resource.
@@ -108,11 +109,11 @@ public boolean accessCreate(String resource) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public boolean accessLock(String resource) throws CmsException {
-	try {
-		return m_rb.accessLock(m_context.currentUser(), m_context.currentProject(), resource);
-	} catch (Exception exc) {
-		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-	}
+    try {
+        return m_rb.accessLock(m_context.currentUser(), m_context.currentProject(), resource);
+    } catch (Exception exc) {
+        throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+    }
 }
 /**
  * Checks if the user can access the project.
@@ -123,7 +124,7 @@ public boolean accessLock(String resource) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public boolean accessProject(int projectId) throws CmsException {
-	return (m_rb.accessProject(m_context.currentUser(), m_context.currentProject(), projectId));
+    return (m_rb.accessProject(m_context.currentUser(), m_context.currentProject(), projectId));
 }
 /**
  * Checks, if the user may read this resource.
@@ -134,11 +135,11 @@ public boolean accessProject(int projectId) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public boolean accessRead(String resource) throws CmsException {
-	try {
-		return m_rb.accessRead(m_context.currentUser(), m_context.currentProject(), resource);
-	} catch (Exception exc) {
-		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-	}
+    try {
+        return m_rb.accessRead(m_context.currentUser(), m_context.currentProject(), resource);
+    } catch (Exception exc) {
+        throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+    }
 }
 /**
  * Checks, if the user may write this resource.
@@ -149,11 +150,11 @@ public boolean accessRead(String resource) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public boolean accessWrite(String resource) throws CmsException {
-	try {
-		return m_rb.accessWrite(m_context.currentUser(), m_context.currentProject(), resource);
-	} catch (Exception exc) {
-		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-	}
+    try {
+        return m_rb.accessWrite(m_context.currentUser(), m_context.currentProject(), resource);
+    } catch (Exception exc) {
+        throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+    }
 }
 /**
  * Adds a file extension to the list of known file extensions.
@@ -168,7 +169,7 @@ public boolean accessWrite(String resource) throws CmsException {
  */
 
 public void addFileExtension(String extension, String resTypeName) throws CmsException {
-	m_rb.addFileExtension(m_context.currentUser(), m_context.currentProject(), extension, resTypeName);
+    m_rb.addFileExtension(m_context.currentUser(), m_context.currentProject(), extension, resTypeName);
 }
 /**
  * Adds a new group to the Cms.
@@ -185,7 +186,7 @@ public void addFileExtension(String extension, String resTypeName) throws CmsExc
  * @exception CmsException if operation was not successful.
  */
 public CmsGroup addGroup(String name, String description, int flags, String parent) throws CmsException {
-	return (m_rb.addGroup(m_context.currentUser(), m_context.currentProject(), name, description, flags, parent));
+    return (m_rb.addGroup(m_context.currentUser(), m_context.currentProject(), name, description, flags, parent));
 }
 /**
  * Adds a resource type to the Cms.
@@ -202,7 +203,7 @@ public CmsGroup addGroup(String name, String description, int flags, String pare
  * @exception CmsException if operation was not successful.
  */
 public CmsResourceType addResourceType(String resourceType, int launcherType, String launcherClass) throws CmsException {
-	return (m_rb.addResourceType(m_context.currentUser(), m_context.currentProject(), resourceType, launcherType, launcherClass));
+    return (m_rb.addResourceType(m_context.currentUser(), m_context.currentProject(), resourceType, launcherType, launcherClass));
 }
 /**
  * Adds a user to the Cms.
@@ -223,7 +224,7 @@ public CmsResourceType addResourceType(String resourceType, int launcherType, St
  * @exception CmsException if operation was not successful.
  */
 public CmsUser addUser(String name, String password, String group, String description, Hashtable additionalInfos, int flags) throws CmsException {
-	return (m_rb.addUser(m_context.currentUser(), m_context.currentProject(), name, password, group, description, additionalInfos, flags));
+    return (m_rb.addUser(m_context.currentUser(), m_context.currentProject(), name, password, group, description, additionalInfos, flags));
 }
 
 /**
@@ -254,7 +255,7 @@ public CmsUser addUser(String name, String password, String group, String descri
 public CmsUser addImportUser(String name, String password, String recoveryPassword, String description,
         String firstname, String lastname, String email, int flags, Hashtable additionalInfos,
         String defaultGroup, String address, String section, int type) throws CmsException {
-	return (m_rb.addImportUser(m_context.currentUser(), m_context.currentProject(), name, password,
+    return (m_rb.addImportUser(m_context.currentUser(), m_context.currentProject(), name, password,
             recoveryPassword, description, firstname, lastname, email, flags, additionalInfos,
             defaultGroup, address, section, type));
 }
@@ -270,7 +271,7 @@ public CmsUser addImportUser(String name, String password, String recoveryPasswo
  * @exception CmsException if operation was not successful.
  */
 public void addUserToGroup(String username, String groupname) throws CmsException {
-	m_rb.addUserToGroup(m_context.currentUser(), m_context.currentProject(), username, groupname);
+    m_rb.addUserToGroup(m_context.currentUser(), m_context.currentProject(), username, groupname);
 }
 /**
  * Adds a web user to the Cms.
@@ -291,7 +292,7 @@ public void addUserToGroup(String username, String groupname) throws CmsExceptio
  * @exception CmsException if operation was not successful.
  */
 public CmsUser addWebUser(String name, String password, String group, String description, Hashtable additionalInfos, int flags) throws CmsException {
-	return (m_rb.addWebUser(m_context.currentUser(), m_context.currentProject(), name, password, group, description, additionalInfos, flags));
+    return (m_rb.addWebUser(m_context.currentUser(), m_context.currentProject(), name, password, group, description, additionalInfos, flags));
 }
 /**
  * Returns the anonymous user object.
@@ -300,7 +301,7 @@ public CmsUser addWebUser(String name, String password, String group, String des
  * @exception CmsException if operation was not successful.
  */
 public CmsUser anonymousUser() throws CmsException {
-	return (m_rb.anonymousUser(m_context.currentUser(), m_context.currentProject()));
+    return (m_rb.anonymousUser(m_context.currentUser(), m_context.currentProject()));
 }
 /**
  * Changes the group of a resource.
@@ -324,7 +325,7 @@ public CmsUser anonymousUser() throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void chgrp(String filename, String newGroup) throws CmsException {
-	m_rb.chgrp(m_context.currentUser(), m_context.currentProject(), filename, newGroup);
+    m_rb.chgrp(m_context.currentUser(), m_context.currentProject(), filename, newGroup);
 }
 /**
  * Changes the flags of a resource.
@@ -350,7 +351,7 @@ public void chgrp(String filename, String newGroup) throws CmsException {
  * for this resource.
  */
 public void chmod(String filename, int flags) throws CmsException {
-	m_rb.chmod(m_context.currentUser(), m_context.currentProject(), filename, flags);
+    m_rb.chmod(m_context.currentUser(), m_context.currentProject(), filename, flags);
 }
 /**
  * Changes the owner of a resource.
@@ -375,7 +376,7 @@ public void chmod(String filename, int flags) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void chown(String filename, String newOwner) throws CmsException {
-	m_rb.chown(m_context.currentUser(), m_context.currentProject(), filename, newOwner);
+    m_rb.chown(m_context.currentUser(), m_context.currentProject(), filename, newOwner);
 }
 /**
  * Changes the resourcetype of a resource.
@@ -400,14 +401,14 @@ public void chown(String filename, String newOwner) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void chtype(String filename, String newType) throws CmsException {
-	m_rb.chtype(m_context.currentUser(), m_context.currentProject(), filename, newType);
+    m_rb.chtype(m_context.currentUser(), m_context.currentProject(), filename, newType);
 }
 /**
  * Clears all internal DB-Caches.
  */
 public void clearcache() {
-	m_rb.clearcache();
-	System.gc();
+    m_rb.clearcache();
+    System.gc();
 }
 /**
  * Copies a file.
@@ -419,7 +420,7 @@ public void clearcache() {
  * has not the appropriate rights to copy the file.
  */
 public void copyFile(String source, String destination) throws CmsException {
-	m_rb.copyFile(m_context.currentUser(), m_context.currentProject(), source, destination);
+    m_rb.copyFile(m_context.currentUser(), m_context.currentProject(), source, destination);
 }
 /**
  * Copies a folder.
@@ -431,7 +432,7 @@ public void copyFile(String source, String destination) throws CmsException {
  * user has not the appropriate rights to copy the folder.
  */
 public void copyFolder(String source, String destination) throws CmsException {
-	m_rb.copyFolder(m_context.currentUser(), m_context.currentProject(), source, destination);
+    m_rb.copyFolder(m_context.currentUser(), m_context.currentProject(), source, destination);
 }
 /**
  * Copies a resource from the online project to a new, specified project.
@@ -440,10 +441,10 @@ public void copyFolder(String source, String destination) throws CmsException {
  * offline project and set its state to UNCHANGED.
  *
  * @param resource the name of the resource.
- 	 * @exception CmsException if operation was not successful.
+     * @exception CmsException if operation was not successful.
  */
 public void copyResourceToProject(String resource) throws CmsException {
-	m_rb.copyResourceToProject(m_context.currentUser(), m_context.currentProject(), resource);
+    m_rb.copyResourceToProject(m_context.currentUser(), m_context.currentProject(), resource);
 }
 /**
  * Returns the copyright information for this OpenCms.
@@ -451,7 +452,7 @@ public void copyResourceToProject(String resource) throws CmsException {
  * @return copyright a String arry containing copyright information.
  */
 public String[] copyright() {
-	return C_COPYRIGHT;
+    return C_COPYRIGHT;
 }
 /**
  * Counts the locked resources in a project.
@@ -462,7 +463,7 @@ public String[] copyright() {
  * @exception CmsException if operation was not successful.
  */
 public int countLockedResources(int id) throws CmsException {
-	return m_rb.countLockedResources(m_context.currentUser(), m_context.currentProject(), id);
+    return m_rb.countLockedResources(m_context.currentUser(), m_context.currentProject(), id);
 }
 /**
  * Creates a new file with the given content and resourcetype.<br>
@@ -479,7 +480,7 @@ public int countLockedResources(int id) throws CmsException {
  * filename is not valid or if the user has not the appropriate rights to create a new file.
  */
 public CmsFile createFile(String folder, String filename, byte[] contents, String type) throws CmsException {
-	return (m_rb.createFile(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, filename, contents, type, new Hashtable()));
+    return (m_rb.createFile(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, filename, contents, type, new Hashtable()));
 }
 /**
  * Creates a new file with the given content and resourcetype.
@@ -500,7 +501,7 @@ public CmsFile createFile(String folder, String filename, byte[] contents, Strin
  * has not the appropriate rights to create a new file.
  */
 public CmsFile createFile(String folder, String filename, byte[] contents, String type, Hashtable properties) throws CmsException {
-	return (m_rb.createFile(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, filename, contents, type, properties));
+    return (m_rb.createFile(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, filename, contents, type, properties));
 }
 /**
  * Creates a new folder.
@@ -516,7 +517,7 @@ public CmsFile createFile(String folder, String filename, byte[] contents, Strin
  * a new folder.
  */
 public CmsFolder createFolder(String folder, String newFolderName) throws CmsException {
-	return (m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, new Hashtable()));
+    return (m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, new Hashtable()));
 }
 /**
  * Creates a new folder.
@@ -535,7 +536,7 @@ public CmsFolder createFolder(String folder, String newFolderName) throws CmsExc
  *
  */
 public CmsFolder createFolder(String folder, String newFolderName, Hashtable properties) throws CmsException {
-	return (m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, properties));
+    return (m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, properties));
 }
 /**
   * Creates a new project for task handling.
@@ -551,7 +552,7 @@ public CmsFolder createFolder(String folder, String newFolderName, Hashtable pro
   * @exception CmsException if operation was not successful.
   */
 public CmsTask createProject(String projectname, int projectType, String roleName, long timeout, int priority) throws CmsException {
-	return m_rb.createProject(m_context.currentUser(), projectname, projectType, roleName, timeout, priority);
+    return m_rb.createProject(m_context.currentUser(), projectname, projectType, roleName, timeout, priority);
 }
 /**
  * Creates a new project.
@@ -565,8 +566,8 @@ public CmsTask createProject(String projectname, int projectType, String roleNam
  */
 public CmsProject createProject(String name, String description, String groupname, String managergroupname) throws CmsException
 {
-	CmsProject newProject = m_rb.createProject(m_context.currentUser(), m_context.currentProject(), name, description, groupname, managergroupname);
-	return (newProject);
+    CmsProject newProject = m_rb.createProject(m_context.currentUser(), m_context.currentProject(), name, description, groupname, managergroupname);
+    return (newProject);
 }
 /**
  * Creates the property-definition for a resource type.
@@ -578,7 +579,7 @@ public CmsProject createProject(String name, String description, String groupnam
  * @exception CmsException if operation was not successful.
  */
 public CmsPropertydefinition createPropertydefinition(String name, String resourcetype, int type) throws CmsException {
-	return (m_rb.createPropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype, type));
+    return (m_rb.createPropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype, type));
 }
 /**
   * Creates a new task.
@@ -600,7 +601,7 @@ public CmsPropertydefinition createPropertydefinition(String name, String resour
   * @exception CmsException Throws CmsException if something goes wrong.
   */
 public CmsTask createTask(int projectid, String agentName, String roleName, String taskname, String taskcomment, int tasktype, long timeout, int priority) throws CmsException {
-	return m_rb.createTask(m_context.currentUser(), projectid, agentName, roleName, taskname, taskcomment, tasktype, timeout, priority);
+    return m_rb.createTask(m_context.currentUser(), projectid, agentName, roleName, taskname, taskcomment, tasktype, timeout, priority);
 }
 /**
   * Creates a new task.
@@ -619,7 +620,7 @@ public CmsTask createTask(int projectid, String agentName, String roleName, Stri
   * @exception CmsException if operation was not successful.
   */
 public CmsTask createTask(String agentName, String roleName, String taskname, String taskcomment, long timeout, int priority) throws CmsException {
-	return (m_rb.createTask(m_context.currentUser(), m_context.currentProject(), agentName, roleName, taskname, taskcomment, timeout, priority));
+    return (m_rb.createTask(m_context.currentUser(), m_context.currentProject(), agentName, roleName, taskname, taskcomment, timeout, priority));
 }
 /**
  * Deletes all properties for a file or folder.
@@ -629,7 +630,7 @@ public CmsTask createTask(String agentName, String roleName, String taskname, St
  * @exception CmsException if operation was not successful.
  */
 public void deleteAllProperties(String resourcename) throws CmsException {
-	m_rb.deleteAllProperties(m_context.currentUser(), m_context.currentProject(), resourcename);
+    m_rb.deleteAllProperties(m_context.currentUser(), m_context.currentProject(), resourcename);
 }
 /**
  * Deletes a file.
@@ -640,7 +641,7 @@ public void deleteAllProperties(String resourcename) throws CmsException {
  * has not the appropriate rights to delete the file.
  */
 public void deleteFile(String filename) throws CmsException {
-	m_rb.deleteFile(m_context.currentUser(), m_context.currentProject(), filename);
+    m_rb.deleteFile(m_context.currentUser(), m_context.currentProject(), filename);
 }
 /**
  * Deletes a folder.
@@ -654,7 +655,7 @@ public void deleteFile(String filename) throws CmsException {
  * has not the rights to delete this folder.
  */
 public void deleteFolder(String foldername) throws CmsException {
-	m_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), foldername);
+    m_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), foldername);
 }
 /**
  * Deletes a group.
@@ -666,7 +667,7 @@ public void deleteFolder(String foldername) throws CmsException {
  * @exception CmsException  if operation was not successful.
  */
 public void deleteGroup(String delgroup) throws CmsException {
-	m_rb.deleteGroup(m_context.currentUser(), m_context.currentProject(), delgroup);
+    m_rb.deleteGroup(m_context.currentUser(), m_context.currentProject(), delgroup);
 }
 /**
  * Deletes a project.
@@ -676,7 +677,7 @@ public void deleteGroup(String delgroup) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void deleteProject(int id) throws CmsException {
-	m_rb.deleteProject(m_context.currentUser(), m_context.currentProject(), id);
+    m_rb.deleteProject(m_context.currentUser(), m_context.currentProject(), id);
 }
 /**
  * Deletes a property for a file or folder.
@@ -687,7 +688,7 @@ public void deleteProject(int id) throws CmsException {
  * @exception CmsException Throws if operation was not successful.
  */
 public void deleteProperty(String resourcename, String property) throws CmsException {
-	m_rb.deleteProperty(m_context.currentUser(), m_context.currentProject(), resourcename, property);
+    m_rb.deleteProperty(m_context.currentUser(), m_context.currentProject(), resourcename, property);
 }
 /**
  * Deletes the property-definition for a resource type.
@@ -698,7 +699,7 @@ public void deleteProperty(String resourcename, String property) throws CmsExcep
  * @exception CmsException if operation was not successful.
  */
 public void deletePropertydefinition(String name, String resourcetype) throws CmsException {
-	m_rb.deletePropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype);
+    m_rb.deletePropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype);
 }
 /**
  * Deletes a user from the Cms.
@@ -711,7 +712,7 @@ public void deletePropertydefinition(String name, String resourcetype) throws Cm
  * @exception CmsException if operation was not successful.
  */
 public void deleteUser(int userId) throws CmsException {
-	m_rb.deleteUser(m_context.currentUser(), m_context.currentProject(), userId);
+    m_rb.deleteUser(m_context.currentUser(), m_context.currentProject(), userId);
 }
 /**
  * Deletes a user from the Cms.
@@ -724,7 +725,7 @@ public void deleteUser(int userId) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void deleteUser(String username) throws CmsException {
-	m_rb.deleteUser(m_context.currentUser(), m_context.currentProject(), username);
+    m_rb.deleteUser(m_context.currentUser(), m_context.currentProject(), username);
 }
 /**
  * Deletes a web user from the Cms.
@@ -734,14 +735,14 @@ public void deleteUser(String username) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void deleteWebUser(int userId) throws CmsException {
-	m_rb.deleteWebUser(m_context.currentUser(), m_context.currentProject(), userId);
+    m_rb.deleteWebUser(m_context.currentUser(), m_context.currentProject(), userId);
 }
 /**
  * Destroys the resource borker and required modules and connections.
  * @exception CmsException if operation was not successful.
  */
 public void destroy() throws CmsException {
-	m_rb.destroy();
+    m_rb.destroy();
 }
 /**
  * Ends a task of the Cms.
@@ -751,7 +752,7 @@ public void destroy() throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void endTask(int taskid) throws CmsException {
-	m_rb.endTask(m_context.currentUser(), m_context.currentProject(), taskid);
+    m_rb.endTask(m_context.currentUser(), m_context.currentProject(), taskid);
 }
 /**
  * Exports cms-resources to a zip-file.
@@ -762,8 +763,8 @@ public void endTask(int taskid) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void exportResources(String exportFile, String[] exportPaths) throws CmsException {
-	// export the resources
-	m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this);
+    // export the resources
+    m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this);
 }
 /**
  * Exports cms-resources to a zip-file.
@@ -776,8 +777,8 @@ public void exportResources(String exportFile, String[] exportPaths) throws CmsE
  * @exception CmsException if operation was not successful.
  */
 public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged) throws CmsException {
-	// export the resources
-	m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem, excludeUnchanged);
+    // export the resources
+    m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem, excludeUnchanged);
 }
 
 /**
@@ -791,8 +792,8 @@ public void exportResources(String exportFile, String[] exportPaths, boolean inc
  * @exception CmsException if operation was not successful.
  */
 public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata) throws CmsException {
-	// export the resources
-	m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem, excludeUnchanged, exportUserdata);
+    // export the resources
+    m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem, excludeUnchanged, exportUserdata);
 }
 
 /**
@@ -832,12 +833,12 @@ public void exportStaticResources(String exportTo, String res) throws CmsExcepti
  */
 private void setCmsObjectForStaticExport(int projectId) throws CmsException{
 
-	CmsObject cmsForStaticExport = new CmsObject();
+    CmsObject cmsForStaticExport = new CmsObject();
     CmsDummyRequest dReq = new CmsDummyRequest((HttpServletRequest)m_context.getRequest().getOriginalRequest());
     CmsDummyResponse dRes = new CmsDummyResponse();
 
     cmsForStaticExport.init(m_rb, dReq, dRes, C_USER_GUEST,
-                             C_GROUP_GUEST, projectId, false);
+                             C_GROUP_GUEST, projectId, false, null);
     cmsForStaticExport.setLauncherManager(getLauncherManager());
     m_rb.setCmsObjectForStaticExport(cmsForStaticExport);
 }
@@ -852,7 +853,7 @@ private void setCmsObjectForStaticExport(int projectId) throws CmsException{
  * @exception CmsException if operation was not successful.
  */
 public void forwardTask(int taskid, String newRoleName, String newUserName) throws CmsException {
-	m_rb.forwardTask(m_context.currentUser(), m_context.currentProject(), taskid, newRoleName, newUserName);
+    m_rb.forwardTask(m_context.currentUser(), m_context.currentProject(), taskid, newRoleName, newUserName);
 }
 /**
  * Returns all projects, which the current user can access.
@@ -862,7 +863,7 @@ public void forwardTask(int taskid, String newRoleName, String newUserName) thro
  * @exception CmsException if operation was not successful.
  */
 public Vector getAllAccessibleProjects() throws CmsException {
-	return (m_rb.getAllAccessibleProjects(m_context.currentUser(), m_context.currentProject()));
+    return (m_rb.getAllAccessibleProjects(m_context.currentUser(), m_context.currentProject()));
 }
 /**
  * Returns all projects which are owned by the current user or which are manageable
@@ -873,7 +874,7 @@ public Vector getAllAccessibleProjects() throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Vector getAllManageableProjects() throws CmsException {
-	return (m_rb.getAllManageableProjects(m_context.currentUser(), m_context.currentProject()));
+    return (m_rb.getAllManageableProjects(m_context.currentUser(), m_context.currentProject()));
 }
 /**
  * Returns a Hashtable with all I_CmsResourceTypes.
@@ -883,7 +884,7 @@ public Vector getAllManageableProjects() throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Hashtable getAllResourceTypes() throws CmsException {
-	return (m_rb.getAllResourceTypes(m_context.currentUser(), m_context.currentProject()));
+    return (m_rb.getAllResourceTypes(m_context.currentUser(), m_context.currentProject()));
 }
 /**
 * Gets information about the cache size.
@@ -902,7 +903,7 @@ public Hashtable getAllResourceTypes() throws CmsException {
 * @ return a Hashtable with information about the size of the various cache areas.
 */
 public Hashtable getCacheInfo() {
-	return m_rb.getCacheInfo();
+    return m_rb.getCacheInfo();
 }
 /**
  * Returns all child groups of a group.
@@ -912,7 +913,7 @@ public Hashtable getCacheInfo() {
  * @exception CmsException if operation was not successful.
  */
 public Vector getChild(String groupname) throws CmsException {
-	return (m_rb.getChild(m_context.currentUser(), m_context.currentProject(), groupname));
+    return (m_rb.getChild(m_context.currentUser(), m_context.currentProject(), groupname));
 }
 /**
  * Returns all child groups of a group.
@@ -924,14 +925,14 @@ public Vector getChild(String groupname) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Vector getChilds(String groupname) throws CmsException {
-	return (m_rb.getChilds(m_context.currentUser(), m_context.currentProject(), groupname));
+    return (m_rb.getChilds(m_context.currentUser(), m_context.currentProject(), groupname));
 }
 /**
  * Gets the configurations of the properties-file.
  * @return the configurations of the properties-file.
  */
 public Configurations getConfigurations() {
-	return m_rb.getConfigurations(getRequestContext().currentUser(), getRequestContext().currentProject());
+    return m_rb.getConfigurations(getRequestContext().currentUser(), getRequestContext().currentProject());
 }
 /**
  * Gets all groups to which a given user directly belongs.
@@ -942,7 +943,7 @@ public Configurations getConfigurations() {
  * @exception CmsException if operation was not successful.
  */
 public Vector getDirectGroupsOfUser(String username) throws CmsException {
-	return (m_rb.getDirectGroupsOfUser(m_context.currentUser(), m_context.currentProject(), username));
+    return (m_rb.getDirectGroupsOfUser(m_context.currentUser(), m_context.currentProject(), username));
 }
 /**
  * Returns a Vector with all files of a given folder.
@@ -956,7 +957,7 @@ public Vector getDirectGroupsOfUser(String username) throws CmsException {
  * @exception CmsException if the user has not hte appropriate rigths to access or read the resource.
  */
 public Vector getFilesInFolder(String foldername) throws CmsException {
-	return (m_rb.getFilesInFolder(m_context.currentUser(), m_context.currentProject(), foldername));
+    return (m_rb.getFilesInFolder(m_context.currentUser(), m_context.currentProject(), foldername));
 }
 /**
  * Returns a Vector with all resource-names of the resources that have set the given property to the given value.
@@ -969,7 +970,7 @@ public Vector getFilesInFolder(String foldername) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Vector getFilesWithProperty(String propertyDefinition, String propertyValue) throws CmsException {
-	return m_rb.getFilesWithProperty(m_context.currentUser(), m_context.currentProject(), propertyDefinition, propertyValue);
+    return m_rb.getFilesWithProperty(m_context.currentUser(), m_context.currentProject(), propertyDefinition, propertyValue);
 }
 /**
  * This method can be called, to determine if the file-system was changed in the past.
@@ -980,7 +981,7 @@ public Vector getFilesWithProperty(String propertyDefinition, String propertyVal
  * @return the number of file-system-changes.
  */
 public long getFileSystemChanges() {
-	return (m_rb.getFileSystemChanges(m_context.currentUser(), m_context.currentProject()));
+    return (m_rb.getFileSystemChanges(m_context.currentUser(), m_context.currentProject()));
 }
 /**
  * This method can be called, to determine if the file-system was changed in the past.
@@ -991,20 +992,20 @@ public long getFileSystemChanges() {
  * @return the number of file-system-changes.
  */
 public long getFileSystemFolderChanges() {
-	return (m_rb.getFileSystemFolderChanges(m_context.currentUser(), m_context.currentProject()));
+    return (m_rb.getFileSystemFolderChanges(m_context.currentUser(), m_context.currentProject()));
 }
-	/**
-	 * Returns a Vector with the complete folder-tree for this project.<br>
-	 *
-	 * Subfolders can be read from an offline project and the online project. <br>
-	 *
-	 * @return subfolders A Vector with the complete folder-tree for this project.
-	 *
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */
-	public Vector getFolderTree() throws CmsException {
-		return (m_rb.getFolderTree(m_context.currentUser(), m_context.currentProject()));
-	}
+    /**
+     * Returns a Vector with the complete folder-tree for this project.<br>
+     *
+     * Subfolders can be read from an offline project and the online project. <br>
+     *
+     * @return subfolders A Vector with the complete folder-tree for this project.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public Vector getFolderTree() throws CmsException {
+        return (m_rb.getFolderTree(m_context.currentUser(), m_context.currentProject()));
+    }
 /**
  * Returns all groups in the Cms.
  *
@@ -1013,7 +1014,7 @@ public long getFileSystemFolderChanges() {
  * @exception CmsException if operation was not successful
  */
 public Vector getGroups() throws CmsException {
-	return (m_rb.getGroups(m_context.currentUser(), m_context.currentProject()));
+    return (m_rb.getGroups(m_context.currentUser(), m_context.currentProject()));
 }
 /**
  * Gets all groups of a user.
@@ -1024,7 +1025,7 @@ public Vector getGroups() throws CmsException {
  * @exception CmsException if operation was not succesful.
  */
 public Vector getGroupsOfUser(String username) throws CmsException {
-	return (m_rb.getGroupsOfUser(m_context.currentUser(), m_context.currentProject(), username));
+    return (m_rb.getGroupsOfUser(m_context.currentUser(), m_context.currentProject(), username));
 }
 /**
  * Get the launcher manager used with this instance of CmsObject.
@@ -1033,7 +1034,7 @@ public Vector getGroupsOfUser(String username) throws CmsException {
  * @return com.opencms.launcher.CmsLauncherManager
  */
 public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
-	return m_launcherManager;
+    return m_launcherManager;
 }
 /**
  * Returns the parent group of a group.
@@ -1043,7 +1044,7 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
  * @exception CmsException if operation was not successful.
  */
 public CmsGroup getParent(String groupname) throws CmsException {
-	return (m_rb.getParent(m_context.currentUser(), m_context.currentProject(), groupname));
+    return (m_rb.getParent(m_context.currentUser(), m_context.currentProject(), groupname));
 }
 /**
  * Gets the Registry.
@@ -1053,7 +1054,7 @@ public CmsGroup getParent(String groupname) throws CmsException {
  */
 
 public I_CmsRegistry getRegistry() throws CmsException {
-	return (m_rb.getRegistry(m_context.currentUser(), m_context.currentProject(), this));
+    return (m_rb.getRegistry(m_context.currentUser(), m_context.currentProject(), this));
 }
 /**
  * Returns the current request-context.
@@ -1061,7 +1062,7 @@ public I_CmsRegistry getRegistry() throws CmsException {
  * @return the current request-context.
  */
 public CmsRequestContext getRequestContext() {
-	return (m_context);
+    return (m_context);
 }
 /**
  * Returns a Vector with the subresources for a folder.<br>
@@ -1073,7 +1074,7 @@ public CmsRequestContext getRequestContext() {
  * @exception CmsException  Throws CmsException if operation was not succesful.
  */
 public Vector getResourcesInFolder(String folder) throws CmsException {
-	return m_rb.getResourcesInFolder(m_context.currentUser(), m_context.currentProject(), folder);
+    return m_rb.getResourcesInFolder(m_context.currentUser(), m_context.currentProject(), folder);
 }
 /**
  * Returns a I_CmsResourceType.
@@ -1085,7 +1086,7 @@ public Vector getResourcesInFolder(String folder) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsResourceType getResourceType(int resourceType) throws CmsException {
-	return (m_rb.getResourceType(m_context.currentUser(), m_context.currentProject(), resourceType));
+    return (m_rb.getResourceType(m_context.currentUser(), m_context.currentProject(), resourceType));
 }
 /**
  * Returns a I_CmsResourceType.
@@ -1097,7 +1098,7 @@ public CmsResourceType getResourceType(int resourceType) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsResourceType getResourceType(String resourceType) throws CmsException {
-	return (m_rb.getResourceType(m_context.currentUser(), m_context.currentProject(), resourceType));
+    return (m_rb.getResourceType(m_context.currentUser(), m_context.currentProject(), resourceType));
 }
 /**
  * Returns a Vector with all subfolders of a given folder.
@@ -1109,7 +1110,7 @@ public CmsResourceType getResourceType(String resourceType) throws CmsException 
  * @exception CmsException if the user has not the rights to access or read the resource.
  */
 public Vector getSubFolders(String foldername) throws CmsException {
-	return (m_rb.getSubFolders(m_context.currentUser(), m_context.currentProject(), foldername));
+    return (m_rb.getSubFolders(m_context.currentUser(), m_context.currentProject(), foldername));
 }
 /**
   * Get a parameter value for a task.
@@ -1121,7 +1122,7 @@ public Vector getSubFolders(String foldername) throws CmsException {
   * @exception CmsException if operation was not successful.
   */
 public String getTaskPar(int taskid, String parname) throws CmsException {
-	return (m_rb.getTaskPar(m_context.currentUser(), m_context.currentProject(), taskid, parname));
+    return (m_rb.getTaskPar(m_context.currentUser(), m_context.currentProject(), taskid, parname));
 }
 /**
  * Get the template task id fo a given taskname.
@@ -1133,7 +1134,7 @@ public String getTaskPar(int taskid, String parname) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public int getTaskType(String taskname) throws CmsException {
-	return m_rb.getTaskType(taskname);
+    return m_rb.getTaskType(taskname);
 }
 /**
  * Returns all users in the Cms.
@@ -1143,7 +1144,7 @@ public int getTaskType(String taskname) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Vector getUsers() throws CmsException {
-	return (m_rb.getUsers(m_context.currentUser(), m_context.currentProject()));
+    return (m_rb.getUsers(m_context.currentUser(), m_context.currentProject()));
 }
 /**
  * Returns all users of the given type in the Cms.
@@ -1155,7 +1156,7 @@ public Vector getUsers() throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Vector getUsers(int type) throws CmsException {
-	return (m_rb.getUsers(m_context.currentUser(), m_context.currentProject(), type));
+    return (m_rb.getUsers(m_context.currentUser(), m_context.currentProject(), type));
 }
  /**
  * Returns all users from a given type that start with a specified string<P/>
@@ -1167,7 +1168,7 @@ public Vector getUsers(int type) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Vector getUsers(int type, String namefilter) throws CmsException {
-	return m_rb.getUsers(m_context.currentUser(), m_context.currentProject(), type,namefilter);
+    return m_rb.getUsers(m_context.currentUser(), m_context.currentProject(), type,namefilter);
 }
 /**
  * Gets all users of a group.
@@ -1178,7 +1179,7 @@ public Vector getUsers(int type, String namefilter) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Vector getUsersOfGroup(String groupname) throws CmsException {
-	return (m_rb.getUsersOfGroup(m_context.currentUser(), m_context.currentProject(), groupname));
+    return (m_rb.getUsersOfGroup(m_context.currentUser(), m_context.currentProject(), groupname));
 }
 
 /**
@@ -1219,10 +1220,10 @@ public Vector getUsersByLastname(String Lastname,
  * @exception CmsException if operation was not successful.
  */
 public void importFolder(String importFile, String importPath) throws CmsException {
-	// import the resources
-	clearcache();
-	m_rb.importFolder(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this);
-	clearcache();
+    // import the resources
+    clearcache();
+    m_rb.importFolder(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this);
+    clearcache();
 }
 /**
  * Imports a import-resource (folder or zip-file) to the cms.
@@ -1233,10 +1234,10 @@ public void importFolder(String importFile, String importPath) throws CmsExcepti
  * @exception CmsException if operation was not successful.
  */
 public void importResources(String importFile, String importPath) throws CmsException {
-	// import the resources
-	clearcache();
-	m_rb.importResources(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this);
-	clearcache();
+    // import the resources
+    clearcache();
+    m_rb.importResources(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this);
+    clearcache();
 }
 /**
  * Initializes the CmsObject without a request-context (current-user,
@@ -1246,7 +1247,7 @@ public void importResources(String importFile, String importPath) throws CmsExce
  * @exception CmsException if operation was not successful.
  */
 public void init(I_CmsResourceBroker broker) throws CmsException {
-	m_rb = broker;
+    m_rb = broker;
 }
 /**
  * Initializes the CmsObject for each request.
@@ -1258,13 +1259,14 @@ public void init(I_CmsResourceBroker broker) throws CmsException {
  * @param currentGroup the current group for this request.
  * @param currentProjectId the current projectId for this request.
  * @param streaming <code>true</code> if streaming should be enabled while creating the request context, <code>false</code> otherwise.
+ * @param elementCache Starting point for the element cache or <code>null</code> if the element cache should be disabled.
  *
  * @exception CmsException if operation was not successful.
  */
-public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, boolean streaming) throws CmsException {
-	m_rb = broker;
-	m_context = new CmsRequestContext();
-	m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId, streaming);
+public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, boolean streaming, CmsElementCache elementCache) throws CmsException {
+    m_rb = broker;
+    m_context = new CmsRequestContext();
+    m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId, streaming, elementCache);
 }
 /**
  * Checks, if the users current group is the admin-group.
@@ -1274,7 +1276,7 @@ public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse res
  * @exception CmsException if operation was not successful.
  */
 public boolean isAdmin() throws CmsException {
-	return m_rb.isAdmin(getRequestContext().currentUser(), getRequestContext().currentProject());
+    return m_rb.isAdmin(getRequestContext().currentUser(), getRequestContext().currentProject());
 }
 /**
  * Returns the user, who has locked a given resource.
@@ -1289,22 +1291,22 @@ public boolean isAdmin() throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsUser lockedBy(CmsResource resource) throws CmsException {
-	return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), resource));
+    return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), resource));
 }
 /**
- 	* Returns the user, who has locked a given resource.
- 	* <br>
- 	* A user can lock a resource, so he is the only one who can write this
- 	* resource. This methods checks, who has locked a resource.
- 	*
- 	* @param resource The complete path to the resource.
- 	*
- 	* @return the user who has locked a resource.
- 	*
- 	* @exception CmsException if operation was not successful.
- 	*/
+    * Returns the user, who has locked a given resource.
+    * <br>
+    * A user can lock a resource, so he is the only one who can write this
+    * resource. This methods checks, who has locked a resource.
+    *
+    * @param resource The complete path to the resource.
+    *
+    * @return the user who has locked a resource.
+    *
+    * @exception CmsException if operation was not successful.
+    */
 public CmsUser lockedBy(String resource) throws CmsException {
-	return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), resource));
+    return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), resource));
 }
 /**
  * Locks the given resource.
@@ -1319,8 +1321,8 @@ public CmsUser lockedBy(String resource) throws CmsException {
  *
  */
 public void lockResource(String resource) throws CmsException {
-	// try to lock the resource, prevent from overwriting an existing lock
-	lockResource(resource, false);
+    // try to lock the resource, prevent from overwriting an existing lock
+    lockResource(resource, false);
 }
 /**
  * Locks a given resource.
@@ -1335,7 +1337,7 @@ public void lockResource(String resource) throws CmsException {
  * It will also be thrown, if there is a existing lock and force was set to false.
  */
 public void lockResource(String resource, boolean force) throws CmsException {
-	m_rb.lockResource(m_context.currentUser(), m_context.currentProject(), resource, force);
+    m_rb.lockResource(m_context.currentUser(), m_context.currentProject(), resource, force);
 }
 /**
  * Logs a user into the Cms, if the password is correct.
@@ -1347,12 +1349,12 @@ public void lockResource(String resource, boolean force) throws CmsException {
  * @exception CmsException if operation was not successful
  */
 public String loginUser(String username, String password) throws CmsException {
-	// login the user
-	CmsUser newUser = m_rb.loginUser(m_context.currentUser(), m_context.currentProject(), username, password);
-	// init the new user
-	init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming());
-	// return the user-name
-	return (newUser.getName());
+    // login the user
+    CmsUser newUser = m_rb.loginUser(m_context.currentUser(), m_context.currentProject(), username, password);
+    // init the new user
+    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache());
+    // return the user-name
+    return (newUser.getName());
 }
 /**
  * Logs a web user into the Cms, if the password is correct.
@@ -1364,12 +1366,12 @@ public String loginUser(String username, String password) throws CmsException {
  * @exception CmsException if operation was not successful
  */
 public String loginWebUser(String username, String password) throws CmsException {
-	// login the user
-	CmsUser newUser = m_rb.loginWebUser(m_context.currentUser(), m_context.currentProject(), username, password);
-	// init the new user
-	init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming());
-	// return the user-name
-	return (newUser.getName());
+    // login the user
+    CmsUser newUser = m_rb.loginWebUser(m_context.currentUser(), m_context.currentProject(), username, password);
+    // init the new user
+    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache());
+    // return the user-name
+    return (newUser.getName());
 }
 /**
  * Moves a file to the given destination.
@@ -1381,7 +1383,7 @@ public String loginWebUser(String username, String password) throws CmsException
  * or if the file couldn't be moved.
  */
 public void moveFile(String source, String destination) throws CmsException {
-	m_rb.moveFile(m_context.currentUser(), m_context.currentProject(), source, destination);
+    m_rb.moveFile(m_context.currentUser(), m_context.currentProject(), source, destination);
 }
 /**
  * Returns the online project.
@@ -1393,7 +1395,7 @@ public void moveFile(String source, String destination) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsProject onlineProject() throws CmsException {
-	return (m_rb.onlineProject(m_context.currentUser(), m_context.currentProject()));
+    return (m_rb.onlineProject(m_context.currentUser(), m_context.currentProject()));
 }
 /**
  * Publishes a project.
@@ -1404,10 +1406,10 @@ public CmsProject onlineProject() throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void publishProject(int id) throws CmsException {
-	clearcache();
+    clearcache();
 //    setCmsObjectForStaticExport(id);
-	m_rb.publishProject(m_context.currentUser(), m_context.currentProject(), id);
-	clearcache();
+    m_rb.publishProject(m_context.currentUser(), m_context.currentProject(), id);
+    clearcache();
 }
 /**
  * Reads the agent of a task from the OpenCms.
@@ -1418,7 +1420,7 @@ public void publishProject(int id) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsUser readAgent(CmsTask task) throws CmsException {
-	return (m_rb.readAgent(m_context.currentUser(), m_context.currentProject(), task));
+    return (m_rb.readAgent(m_context.currentUser(), m_context.currentProject(), task));
 }
 /**
  * Reads all file headers of a file in the OpenCms.
@@ -1435,7 +1437,7 @@ public CmsUser readAgent(CmsTask task) throws CmsException {
  * @exception CmsException  if operation was not successful.
  */
 public Vector readAllFileHeaders(String filename) throws CmsException {
-	return (m_rb.readAllFileHeaders(m_context.currentUser(), m_context.currentProject(), filename));
+    return (m_rb.readAllFileHeaders(m_context.currentUser(), m_context.currentProject(), filename));
 }
 /**
  * Returns a list of all properties of a file or folder.
@@ -1447,7 +1449,7 @@ public Vector readAllFileHeaders(String filename) throws CmsException {
  * @exception CmsException if operation was not succesful.
  */
 public Hashtable readAllProperties(String name) throws CmsException {
-	return (m_rb.readAllProperties(m_context.currentUser(), m_context.currentProject(), name));
+    return (m_rb.readAllProperties(m_context.currentUser(), m_context.currentProject(), name));
 }
 /**
  * Reads all property-definitions for the given resource type.
@@ -1461,7 +1463,7 @@ public Hashtable readAllProperties(String name) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Vector readAllPropertydefinitions(int id, int type) throws CmsException {
-	return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), id, type));
+    return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), id, type));
 }
 /**
  * Reads all property-definitions for the given resource type.
@@ -1475,7 +1477,7 @@ public Vector readAllPropertydefinitions(int id, int type) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Vector readAllPropertydefinitions(String resourcetype) throws CmsException {
-	return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype));
+    return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype));
 }
 /**
  * Reads all property-definitions for the given resource type.
@@ -1490,7 +1492,7 @@ public Vector readAllPropertydefinitions(String resourcetype) throws CmsExceptio
  * @exception CmsException if operation was not successful.
  */
 public Vector readAllPropertydefinitions(String resourcetype, int type) throws CmsException {
-	return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype, type));
+    return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype, type));
 }
 /**
  * Reads the export-path of the system.
@@ -1500,7 +1502,7 @@ public Vector readAllPropertydefinitions(String resourcetype, int type) throws C
  * @exception CmsException if operation was not successful.
  */
 public String readExportPath() throws CmsException {
-	return m_rb.readExportPath(m_context.currentUser(), m_context.currentProject());
+    return m_rb.readExportPath(m_context.currentUser(), m_context.currentProject());
 }
 /**
  * Reads a file from the Cms.
@@ -1513,7 +1515,7 @@ public String readExportPath() throws CmsException {
  * or if the file couldn't be read.
  */
 public CmsFile readFile(String filename) throws CmsException {
-	return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), filename));
+    return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), filename));
 }
 /**
  * Reads a file from the Cms.
@@ -1527,7 +1529,7 @@ public CmsFile readFile(String filename) throws CmsException {
  * to read this resource, or if the file couldn't be read.
  */
 public CmsFile readFile(String folder, String filename) throws CmsException {
-	return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), folder + filename));
+    return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), folder + filename));
 }
 /**
  * Gets the known file extensions (=suffixes).
@@ -1538,7 +1540,7 @@ public CmsFile readFile(String folder, String filename) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Hashtable readFileExtensions() throws CmsException {
-	return m_rb.readFileExtensions(null, null);
+    return m_rb.readFileExtensions(null, null);
 }
 /**
  * Reads a file header from the Cms.
@@ -1553,7 +1555,7 @@ public Hashtable readFileExtensions() throws CmsException {
  * to read the file headers, or if the file headers couldn't be read.
  */
 public CmsResource readFileHeader(String filename) throws CmsException {
-	return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), filename));
+    return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), filename));
 }
 
 /**
@@ -1570,7 +1572,7 @@ public CmsResource readFileHeader(String filename) throws CmsException {
  * to read the file header, or if the file header couldn't be read.
  */
 public CmsResource readFileHeader(String folder, String filename) throws CmsException {
-	return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), folder + filename));
+    return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), folder + filename));
 }
 
 
@@ -1588,7 +1590,7 @@ public CmsResource readFileHeader(String folder, String filename) throws CmsExce
  * to read the file headers, or if the file headers couldn't be read.
  */
 public CmsResource readFileHeaderForHist(String filename, int projectId) throws CmsException {
-	return (m_rb.readFileHeaderForHist(m_context.currentUser(), m_context.currentProject(), projectId, filename));
+    return (m_rb.readFileHeaderForHist(m_context.currentUser(), m_context.currentProject(), projectId, filename));
 }
 
 /**
@@ -1602,7 +1604,7 @@ public CmsResource readFileHeaderForHist(String filename, int projectId) throws 
  * to read the file headers, or if the file headers couldn't be read.
  */
 public Vector readFileHeaders(int projectId) throws CmsException {
-	return (m_rb.readFileHeaders(m_context.currentUser(), m_context.currentProject(), projectId));
+    return (m_rb.readFileHeaders(m_context.currentUser(), m_context.currentProject(), projectId));
 }
 /**
  * Reads a folder from the Cms.
@@ -1615,7 +1617,7 @@ public Vector readFileHeaders(int projectId) throws CmsException {
  * to read this resource, or if the folder couldn't be read.
  */
 public CmsFolder readFolder(String folder) throws CmsException {
-	return (readFolder(folder, ""));
+    return (readFolder(folder, ""));
 }
 /**
  * Reads a folder from the Cms.
@@ -1630,7 +1632,7 @@ public CmsFolder readFolder(String folder) throws CmsException {
  * to read this resource, or if the folder couldn't be read.
  */
 public CmsFolder readFolder(String folder, String folderName) throws CmsException {
-	return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), folder, folderName));
+    return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), folder, folderName));
 }
 /**
   * Reads all given tasks from a user for a project.
@@ -1643,7 +1645,7 @@ public CmsFolder readFolder(String folder, String folderName) throws CmsExceptio
   * @exception CmsException if operation was not successful.
   */
 public Vector readGivenTasks(int projectId, String ownerName, int taskType, String orderBy, String sort) throws CmsException {
-	return (m_rb.readGivenTasks(m_context.currentUser(), m_context.currentProject(), projectId, ownerName, taskType, orderBy, sort));
+    return (m_rb.readGivenTasks(m_context.currentUser(), m_context.currentProject(), projectId, ownerName, taskType, orderBy, sort));
 }
 /**
  * Reads the group of a project from the OpenCms.
@@ -1653,7 +1655,7 @@ public Vector readGivenTasks(int projectId, String ownerName, int taskType, Stri
  * @exception CmsException if operation was not successful.
  */
 public CmsGroup readGroup(CmsProject project) throws CmsException {
-	return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), project));
+    return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), project));
 }
 /**
  * Reads the group of a resource from the Cms.
@@ -1663,7 +1665,7 @@ public CmsGroup readGroup(CmsProject project) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsGroup readGroup(CmsResource resource) throws CmsException {
-	return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), resource));
+    return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), resource));
 }
 /**
  * Reads the group (role) of a task from the Cms.
@@ -1674,7 +1676,7 @@ public CmsGroup readGroup(CmsResource resource) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsGroup readGroup(CmsTask task) throws CmsException {
-	return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), task));
+    return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), task));
 }
 /**
  * Reads a group of the Cms.
@@ -1685,7 +1687,7 @@ public CmsGroup readGroup(CmsTask task) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsGroup readGroup(String groupname) throws CmsException {
-	return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), groupname));
+    return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), groupname));
 }
 /**
  * Reads the managergroup of a project from the Cms.
@@ -1695,7 +1697,7 @@ public CmsGroup readGroup(String groupname) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsGroup readManagerGroup(CmsProject project) throws CmsException {
-	return (m_rb.readManagerGroup(m_context.currentUser(), m_context.currentProject(), project));
+    return (m_rb.readManagerGroup(m_context.currentUser(), m_context.currentProject(), project));
 }
 /**
  * Gets all Mime-Types known by the system.
@@ -1705,7 +1707,7 @@ public CmsGroup readManagerGroup(CmsProject project) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Hashtable readMimeTypes() throws CmsException {
-	return m_rb.readMimeTypes(null, null);
+    return m_rb.readMimeTypes(null, null);
 }
 /**
  * Reads the original agent of a task from the Cms.
@@ -1716,7 +1718,7 @@ public Hashtable readMimeTypes() throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
-	return (m_rb.readOriginalAgent(m_context.currentUser(), m_context.currentProject(), task));
+    return (m_rb.readOriginalAgent(m_context.currentUser(), m_context.currentProject(), task));
 }
 /**
  * Reads the owner of a project from the Cms.
@@ -1726,7 +1728,7 @@ public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsUser readOwner(CmsProject project) throws CmsException {
-	return (m_rb.readOwner(m_context.currentUser(), m_context.currentProject(), project));
+    return (m_rb.readOwner(m_context.currentUser(), m_context.currentProject(), project));
 }
 /**
  * Reads the owner of a resource from the Cms.
@@ -1736,7 +1738,7 @@ public CmsUser readOwner(CmsProject project) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsUser readOwner(CmsResource resource) throws CmsException {
-	return (m_rb.readOwner(m_context.currentUser(), m_context.currentProject(), resource));
+    return (m_rb.readOwner(m_context.currentUser(), m_context.currentProject(), resource));
 }
 /**
  * Reads the owner (initiator) of a task from the Cms.
@@ -1747,7 +1749,7 @@ public CmsUser readOwner(CmsResource resource) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsUser readOwner(CmsTask task) throws CmsException {
-	return (m_rb.readOwner(m_context.currentUser(), m_context.currentProject(), task));
+    return (m_rb.readOwner(m_context.currentUser(), m_context.currentProject(), task));
 }
 /**
  * Reads the owner of a tasklog from the Cms.
@@ -1757,7 +1759,7 @@ public CmsUser readOwner(CmsTask task) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsUser readOwner(CmsTaskLog log) throws CmsException {
-	return (m_rb.readOwner(m_context.currentUser(), m_context.currentProject(), log));
+    return (m_rb.readOwner(m_context.currentUser(), m_context.currentProject(), log));
 }
 /**
  * Reads a project from the Cms.
@@ -1767,7 +1769,7 @@ public CmsUser readOwner(CmsTaskLog log) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsProject readProject(int id) throws CmsException {
-	return (m_rb.readProject(m_context.currentUser(), m_context.currentProject(), id));
+    return (m_rb.readProject(m_context.currentUser(), m_context.currentProject(), id));
 }
 /**
  * Reads a project from the Cms.
@@ -1777,7 +1779,7 @@ public CmsProject readProject(int id) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsProject readProject(CmsResource res) throws CmsException {
-	return (m_rb.readProject(m_context.currentUser(), m_context.currentProject(), res));
+    return (m_rb.readProject(m_context.currentUser(), m_context.currentProject(), res));
 }
 /**
  * Reads a project from the Cms.
@@ -1787,7 +1789,7 @@ public CmsProject readProject(CmsResource res) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsProject readProject(CmsTask task) throws CmsException {
-	return (m_rb.readProject(m_context.currentUser(), m_context.currentProject(), task));
+    return (m_rb.readProject(m_context.currentUser(), m_context.currentProject(), task));
 }
 /**
   * Reads log entries for a project.
@@ -1797,7 +1799,7 @@ public CmsProject readProject(CmsTask task) throws CmsException {
   * @exception CmsException if operation was not successful.
   */
 public Vector readProjectLogs(int projectId) throws CmsException {
-	return m_rb.readProjectLogs(m_context.currentUser(), m_context.currentProject(), projectId);
+    return m_rb.readProjectLogs(m_context.currentUser(), m_context.currentProject(), projectId);
 }
 /**
  * Returns a Property of a file or folder.
@@ -1810,7 +1812,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
  * @exception CmsException if operation was not successful
  */
 public String readProperty(String name, String property) throws CmsException {
-	return (m_rb.readProperty(m_context.currentUser(), m_context.currentProject(), name, property));
+    return (m_rb.readProperty(m_context.currentUser(), m_context.currentProject(), name, property));
 }
 /**
  * Reads the property-definition for the resource type.
@@ -1822,7 +1824,7 @@ public String readProperty(String name, String property) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsPropertydefinition readPropertydefinition(String name, String resourcetype) throws CmsException {
-	return (m_rb.readPropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype));
+    return (m_rb.readPropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype));
 }
 
 /**
@@ -1833,7 +1835,7 @@ public CmsPropertydefinition readPropertydefinition(String name, String resource
  * @exception CmsException if operation was not successful.
  */
 public CmsTask readTask(int id) throws CmsException {
-	return (m_rb.readTask(m_context.currentUser(), m_context.currentProject(), id));
+    return (m_rb.readTask(m_context.currentUser(), m_context.currentProject(), id));
 }
 /**
  * Reads log entries for a task.
@@ -1843,7 +1845,7 @@ public CmsTask readTask(int id) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Vector readTaskLogs(int taskid) throws CmsException {
-	return m_rb.readTaskLogs(m_context.currentUser(), m_context.currentProject(), taskid);
+    return m_rb.readTaskLogs(m_context.currentUser(), m_context.currentProject(), taskid);
 }
 /**
  * Reads all tasks for a project.
@@ -1856,7 +1858,7 @@ public Vector readTaskLogs(int taskid) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public Vector readTasksForProject(int projectId, int tasktype, String orderBy, String sort) throws CmsException {
-	return (m_rb.readTasksForProject(m_context.currentUser(), m_context.currentProject(), projectId, tasktype, orderBy, sort));
+    return (m_rb.readTasksForProject(m_context.currentUser(), m_context.currentProject(), projectId, tasktype, orderBy, sort));
 }
 /**
  * Reads all tasks for a role in a project.
@@ -1869,7 +1871,7 @@ public Vector readTasksForProject(int projectId, int tasktype, String orderBy, S
  * @exception CmsException if operation was not successful.
  */
 public Vector readTasksForRole(int projectId, String roleName, int tasktype, String orderBy, String sort) throws CmsException {
-	return (m_rb.readTasksForRole(m_context.currentUser(), m_context.currentProject(), projectId, roleName, tasktype, orderBy, sort));
+    return (m_rb.readTasksForRole(m_context.currentUser(), m_context.currentProject(), projectId, roleName, tasktype, orderBy, sort));
 }
 /**
  * Reads all tasks for a user in a project.
@@ -1882,7 +1884,7 @@ public Vector readTasksForRole(int projectId, String roleName, int tasktype, Str
  * @exception CmsException if operation was not successful.
  */
 public Vector readTasksForUser(int projectId, String userName, int tasktype, String orderBy, String sort) throws CmsException {
-	return (m_rb.readTasksForUser(m_context.currentUser(), m_context.currentProject(), projectId, userName, tasktype, orderBy, sort));
+    return (m_rb.readTasksForUser(m_context.currentUser(), m_context.currentProject(), projectId, userName, tasktype, orderBy, sort));
 }
 /**
  * Returns a user in the Cms.
@@ -1893,7 +1895,7 @@ public Vector readTasksForUser(int projectId, String userName, int tasktype, Str
  * @exception CmsException if operation was not successful
  */
 public CmsUser readUser(int id) throws CmsException {
-	return (m_rb.readUser(m_context.currentUser(), m_context.currentProject(), id));
+    return (m_rb.readUser(m_context.currentUser(), m_context.currentProject(), id));
 }
 /**
  * Returns a user in the Cms.
@@ -1904,7 +1906,7 @@ public CmsUser readUser(int id) throws CmsException {
  * @exception CmsException if operation was not successful
  */
 public CmsUser readUser(String username) throws CmsException {
-	return m_rb.readUser(m_context.currentUser(), m_context.currentProject(), username);
+    return m_rb.readUser(m_context.currentUser(), m_context.currentProject(), username);
 }
 /**
  * Returns a user in the Cms.
@@ -1916,7 +1918,7 @@ public CmsUser readUser(String username) throws CmsException {
  * @exception CmsException if operation was not successful
  */
 public CmsUser readUser(String username, int type) throws CmsException {
-	return (m_rb.readUser(m_context.currentUser(), m_context.currentProject(), username, type));
+    return (m_rb.readUser(m_context.currentUser(), m_context.currentProject(), username, type));
 }
 /**
  * Returns a user in the Cms, if the password is correct.
@@ -1928,7 +1930,7 @@ public CmsUser readUser(String username, int type) throws CmsException {
  * @exception CmsException if operation was not successful
  */
 public CmsUser readUser(String username, String password) throws CmsException {
-	return (m_rb.readUser(m_context.currentUser(), m_context.currentProject(), username, password));
+    return (m_rb.readUser(m_context.currentUser(), m_context.currentProject(), username, password));
 }
 /**
  * Reactivates a task from the Cms.
@@ -1938,7 +1940,7 @@ public CmsUser readUser(String username, String password) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void reaktivateTask(int taskId) throws CmsException {
-	m_rb.reaktivateTask(m_context.currentUser(), m_context.currentProject(), taskId);
+    m_rb.reaktivateTask(m_context.currentUser(), m_context.currentProject(), taskId);
 }
 /**
  * Sets a new password if the user knows his recovery-password.
@@ -1950,7 +1952,7 @@ public void reaktivateTask(int taskId) throws CmsException {
  * @exception CmsException if operation was not successfull.
  */
 public void recoverPassword(String username, String recoveryPassword, String newPassword) throws CmsException {
-	m_rb.recoverPassword(m_context.currentUser(), m_context.currentProject(), username, recoveryPassword, newPassword);
+    m_rb.recoverPassword(m_context.currentUser(), m_context.currentProject(), username, recoveryPassword, newPassword);
 }
 /**
  * Removes a user from a group.
@@ -1964,7 +1966,7 @@ public void recoverPassword(String username, String recoveryPassword, String new
  * @exception CmsException if operation was not successful.
  */
 public void removeUserFromGroup(String username, String groupname) throws CmsException {
-	m_rb.removeUserFromGroup(m_context.currentUser(), m_context.currentProject(), username, groupname);
+    m_rb.removeUserFromGroup(m_context.currentUser(), m_context.currentProject(), username, groupname);
 }
 /**
  * Renames the file to the new name.
@@ -1976,7 +1978,7 @@ public void removeUserFromGroup(String username, String groupname) throws CmsExc
  * to rename the file, or if the file couldn't be renamed.
  */
 public void renameFile(String oldname, String newname) throws CmsException {
-	m_rb.renameFile(m_context.currentUser(), m_context.currentProject(), oldname, newname);
+    m_rb.renameFile(m_context.currentUser(), m_context.currentProject(), oldname, newname);
 }
 /**
  * Returns the root-folder object.
@@ -1985,7 +1987,7 @@ public void renameFile(String oldname, String newname) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public CmsFolder rootFolder() throws CmsException {
-	return (readFolder(C_ROOT));
+    return (readFolder(C_ROOT));
 }
 /**
  * Set the launcher manager used with this instance of CmsObject.
@@ -1994,7 +1996,7 @@ public CmsFolder rootFolder() throws CmsException {
  * @param newM_launcherManager com.opencms.launcher.CmsLauncherManager
  */
 public void setLauncherManager(com.opencms.launcher.CmsLauncherManager newM_launcherManager) {
-	m_launcherManager = newM_launcherManager;
+    m_launcherManager = newM_launcherManager;
 }
 /**
  * Set a new name for a task.
@@ -2005,7 +2007,7 @@ public void setLauncherManager(com.opencms.launcher.CmsLauncherManager newM_laun
  * @exception CmsException if operationwas not successful.
  */
 public void setName(int taskId, String name) throws CmsException {
-	m_rb.setName(m_context.currentUser(), m_context.currentProject(), taskId, name);
+    m_rb.setName(m_context.currentUser(), m_context.currentProject(), taskId, name);
 }
 /**
  * Sets a new parent-group for an already existing group in the Cms.
@@ -2016,7 +2018,7 @@ public void setName(int taskId, String name) throws CmsException {
  * @exception CmsException  if operation was not successfull.
  */
 public void setParentGroup(String groupName, String parentGroupName) throws CmsException {
-	m_rb.setParentGroup(m_context.currentUser(), m_context.currentProject(), groupName, parentGroupName);
+    m_rb.setParentGroup(m_context.currentUser(), m_context.currentProject(), groupName, parentGroupName);
 }
 /**
  * Sets the password for a user.
@@ -2027,7 +2029,7 @@ public void setParentGroup(String groupName, String parentGroupName) throws CmsE
  * @exception CmsException if operation was not successful.
  */
 public void setPassword(String username, String newPassword) throws CmsException {
-	m_rb.setPassword(m_context.currentUser(), m_context.currentProject(), username, newPassword);
+    m_rb.setPassword(m_context.currentUser(), m_context.currentProject(), username, newPassword);
 }
 /**
  * Sets the password for a user.
@@ -2039,7 +2041,7 @@ public void setPassword(String username, String newPassword) throws CmsException
  * @exception CmsException if operation was not successful.
  */
 public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
-	m_rb.setPassword(m_context.currentUser(), m_context.currentProject(), username, oldPassword, newPassword);
+    m_rb.setPassword(m_context.currentUser(), m_context.currentProject(), username, oldPassword, newPassword);
 }
 /**
  * Sets the priority of a task.
@@ -2050,7 +2052,7 @@ public void setPassword(String username, String oldPassword, String newPassword)
  * @exception CmsException if operation was not successful.
  */
 public void setPriority(int taskId, int priority) throws CmsException {
-	m_rb.setPriority(m_context.currentUser(), m_context.currentProject(), taskId, priority);
+    m_rb.setPriority(m_context.currentUser(), m_context.currentProject(), taskId, priority);
 }
 /**
  * Sets the recovery password for a user.
@@ -2062,7 +2064,7 @@ public void setPriority(int taskId, int priority) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void setRecoveryPassword(String username, String oldPassword, String newPassword) throws CmsException {
-	m_rb.setRecoveryPassword(m_context.currentUser(), m_context.currentProject(), username, oldPassword, newPassword);
+    m_rb.setRecoveryPassword(m_context.currentUser(), m_context.currentProject(), username, oldPassword, newPassword);
 }
 /**
  * Set a parameter for a task.
@@ -2076,7 +2078,7 @@ public void setRecoveryPassword(String username, String oldPassword, String newP
  * @exception CmsException if operation was not successful.
  */
 public void setTaskPar(int taskid, String parname, String parvalue) throws CmsException {
-	m_rb.setTaskPar(m_context.currentUser(), m_context.currentProject(), taskid, parname, parvalue);
+    m_rb.setTaskPar(m_context.currentUser(), m_context.currentProject(), taskid, parname, parvalue);
 }
 /**
  * Sets the timeout of a task.
@@ -2087,7 +2089,7 @@ public void setTaskPar(int taskid, String parname, String parvalue) throws CmsEx
  * @exception CmsException if operation was not successful.
  */
 public void setTimeout(int taskId, long timeout) throws CmsException {
-	m_rb.setTimeout(m_context.currentUser(), m_context.currentProject(), taskId, timeout);
+    m_rb.setTimeout(m_context.currentUser(), m_context.currentProject(), taskId, timeout);
 }
 /**
  * Synchronize cms-resources on virtual filesystem with the server filesystem.
@@ -2098,8 +2100,8 @@ public void setTimeout(int taskId, long timeout) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void syncFolder(String resourceName) throws CmsException {
-	// synchronize the resources
-	CmsSynchronize sync = new CmsSynchronize(this, resourceName);
+    // synchronize the resources
+    CmsSynchronize sync = new CmsSynchronize(this, resourceName);
 }
 /**
  * Unlocks all resources of a project.
@@ -2109,7 +2111,7 @@ public void syncFolder(String resourceName) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void unlockProject(int id) throws CmsException {
-	m_rb.unlockProject(m_context.currentUser(), m_context.currentProject(), id);
+    m_rb.unlockProject(m_context.currentUser(), m_context.currentProject(), id);
 }
 /**
  * Unlocks a resource.
@@ -2122,7 +2124,7 @@ public void unlockProject(int id) throws CmsException {
  * to unlock this resource.
  */
 public void unlockResource(String resource) throws CmsException {
-	m_rb.unlockResource(m_context.currentUser(), m_context.currentProject(), resource);
+    m_rb.unlockResource(m_context.currentUser(), m_context.currentProject(), resource);
 }
 /**
  * Tests, if a user is member of the given group.
@@ -2134,7 +2136,7 @@ public void unlockResource(String resource) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public boolean userInGroup(String username, String groupname) throws CmsException {
-	return (m_rb.userInGroup(m_context.currentUser(), m_context.currentProject(), username, groupname));
+    return (m_rb.userInGroup(m_context.currentUser(), m_context.currentProject(), username, groupname));
 }
 /**
  * Returns a String containing version information for this OpenCms.
@@ -2142,7 +2144,7 @@ public boolean userInGroup(String username, String groupname) throws CmsExceptio
  * @return version a String containnig the version of OpenCms.
  */
 public String version() {
-	return (C_VERSION);
+    return (C_VERSION);
 }
 /**
  * Writes the export-path for the system.
@@ -2154,7 +2156,7 @@ public String version() {
  * @exception CmsException if operation ws not successful.
  */
 public void writeExportPath(String path) throws CmsException {
-	m_rb.writeExportPath(m_context.currentUser(), m_context.currentProject(), path);
+    m_rb.writeExportPath(m_context.currentUser(), m_context.currentProject(), path);
 }
 /**
  * Writes a file to the Cms.
@@ -2166,7 +2168,7 @@ public void writeExportPath(String path) throws CmsException {
  * if the user has not the rights write the file.
  */
 public void writeFile(CmsFile file) throws CmsException {
-	m_rb.writeFile(m_context.currentUser(), m_context.currentProject(), file);
+    m_rb.writeFile(m_context.currentUser(), m_context.currentProject(), file);
 }
 /**
  * Writes the file extensions.
@@ -2178,7 +2180,7 @@ public void writeFile(CmsFile file) throws CmsException {
  */
 
 public void writeFileExtensions(Hashtable extensions) throws CmsException {
-	m_rb.writeFileExtensions(m_context.currentUser(), m_context.currentProject(), extensions);
+    m_rb.writeFileExtensions(m_context.currentUser(), m_context.currentProject(), extensions);
 }
 /**
  * Writes a file-header to the Cms.
@@ -2190,7 +2192,7 @@ public void writeFileExtensions(Hashtable extensions) throws CmsException {
  * if the user has not the rights to write the file header..
  */
 public void writeFileHeader(CmsFile file) throws CmsException {
-	m_rb.writeFileHeader(m_context.currentUser(), m_context.currentProject(), file);
+    m_rb.writeFileHeader(m_context.currentUser(), m_context.currentProject(), file);
 }
 /**
  * Writes an already existing group to the Cms.
@@ -2199,7 +2201,7 @@ public void writeFileHeader(CmsFile file) throws CmsException {
  * @exception CmsException  if operation was not successful.
  */
 public void writeGroup(CmsGroup group) throws CmsException {
-	m_rb.writeGroup(m_context.currentUser(), m_context.currentProject(), group);
+    m_rb.writeGroup(m_context.currentUser(), m_context.currentProject(), group);
 }
 /**
  * Writes a couple of Properties for a file or folder.
@@ -2210,7 +2212,7 @@ public void writeGroup(CmsGroup group) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void writeProperties(String name, Hashtable properties) throws CmsException {
-	m_rb.writeProperties(m_context.currentUser(), m_context.currentProject(), name, properties);
+    m_rb.writeProperties(m_context.currentUser(), m_context.currentProject(), name, properties);
 }
 /**
  * Writes a property for a file or folder.
@@ -2222,7 +2224,7 @@ public void writeProperties(String name, Hashtable properties) throws CmsExcepti
  * @exception CmsException if operation was not successful.
  */
 public void writeProperty(String name, String property, String value) throws CmsException {
-	m_rb.writeProperty(m_context.currentUser(), m_context.currentProject(), name, property, value);
+    m_rb.writeProperty(m_context.currentUser(), m_context.currentProject(), name, property, value);
 }
 /**
  * Writes the property-definition for the resource type.
@@ -2232,7 +2234,7 @@ public void writeProperty(String name, String property, String value) throws Cms
  * @exception CmsException if operation was not successful.
  */
 public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition definition) throws CmsException {
-	return (m_rb.writePropertydefinition(m_context.currentUser(), m_context.currentProject(), definition));
+    return (m_rb.writePropertydefinition(m_context.currentUser(), m_context.currentProject(), definition));
 }
 
 /**
@@ -2244,7 +2246,7 @@ public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition defin
  * @exception CmsException if operation was not successful.
  */
 public void writeTaskLog(int taskid, String comment) throws CmsException {
-	m_rb.writeTaskLog(m_context.currentUser(), m_context.currentProject(), taskid, comment);
+    m_rb.writeTaskLog(m_context.currentUser(), m_context.currentProject(), taskid, comment);
 }
 /**
  * Writes a new user tasklog for a task.
@@ -2256,7 +2258,7 @@ public void writeTaskLog(int taskid, String comment) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void writeTaskLog(int taskid, String comment, int taskType) throws CmsException {
-	m_rb.writeTaskLog(m_context.currentUser(), m_context.currentProject(), taskid, comment, taskType);
+    m_rb.writeTaskLog(m_context.currentUser(), m_context.currentProject(), taskid, comment, taskType);
 }
 /**
  * Updates the user information.
@@ -2269,7 +2271,7 @@ public void writeTaskLog(int taskid, String comment, int taskType) throws CmsExc
  * @exception CmsException if operation was not successful.
  */
 public void writeUser(CmsUser user) throws CmsException {
-	m_rb.writeUser(m_context.currentUser(), m_context.currentProject(), user);
+    m_rb.writeUser(m_context.currentUser(), m_context.currentProject(), user);
 }
 /**
  * Updates the user information of a web user.
@@ -2281,6 +2283,6 @@ public void writeUser(CmsUser user) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void writeWebUser(CmsUser user) throws CmsException {
-	m_rb.writeWebUser(m_context.currentUser(), m_context.currentProject(), user);
+    m_rb.writeWebUser(m_context.currentUser(), m_context.currentProject(), user);
 }
 }

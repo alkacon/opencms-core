@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLink.java,v $
-* Date   : $Date: 2001/05/03 16:00:41 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/05/10 12:32:56 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -35,7 +35,6 @@ import com.opencms.file.*;
  * An instance of CmsElementLink is a link to another element. The link contains
  * only the name of the linked element. Which element is linked will be
  * determinded during the runtime of the content-creation (getContent-method).
- * For this purpose the CmsStagingContext is used.
  *
  * @author: Andreas Schouten
  */

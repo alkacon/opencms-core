@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2001/05/09 12:29:17 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/05/10 12:31:18 $
+* Version: $Revision: 1.25 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2001/05/09 12:29:17 $
+ * @version $Revision: 1.25 $ $Date: 2001/05/10 12:31:18 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 
@@ -75,8 +75,8 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
         Hashtable newParameters = new Hashtable();
 
         // Parameters used for element cache
-        boolean isStaging = cms.getRequestContext().isStaging();
-        CmsStaging staging = null;
+        boolean elementCacheEnabled = cms.getRequestContext().isElementCacheEnabled();
+        CmsElementCache elementCache = null;
         String uri = cms.getRequestContext().getUri();
         CmsUriDescriptor uriDesc = null;
         CmsUriLocator uriLoc = null;
@@ -86,17 +86,17 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
         String templateName = null;
         CmsXmlControlFile doc = null;
 
-        if(isStaging) {
-            // Get the global staging object
-            staging = openCms.getStaging();
+        if(elementCacheEnabled) {
+            // Get the global element cache object
+            elementCache = cms.getRequestContext().getElementCache();
 
             // Prepare URI Locator
             uriDesc = new CmsUriDescriptor(uri);
-            uriLoc = staging.getUriLocator();
+            uriLoc = elementCache.getUriLocator();
             cmsUri = uriLoc.get(uriDesc);
         }
 
-        if(cmsUri == null || !isStaging) {
+        if(cmsUri == null || !elementCacheEnabled) {
             // Entry point to page file analysis.
             // For performance reasons this should only be done if the element
             // cache is not activated or if it's activated but no URI object could be found.
@@ -125,7 +125,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
             templateName = doc.getMasterTemplate();
 
             // Previously, the template class was loaded here.
-            // We avoid doing this so early, since in staging mode the template
+            // We avoid doing this so early, since in element cache mode the template
             // class is not needed here.
 
             // Now look for parameters in the page file...
@@ -194,18 +194,18 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
             }
         }
 
-        if(isStaging && cmsUri == null) {
-            // ---- staging stuff --------
+        if(elementCacheEnabled && cmsUri == null) {
+            // ---- element cache stuff --------
             // No URI could be found in cache.
             // So create a new URI object with a start element and store it using the UriLocator
             CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, templateName);
             CmsElementDefinitionCollection eldefs = doc.getElementDefinitionCollection();
             cmsUri = new CmsUri(elemDesc, null, eldefs);
-            staging.getUriLocator().put(uriDesc, cmsUri);
+            elementCache.getUriLocator().put(uriDesc, cmsUri);
         }
 
-        if(isStaging) {
-                output = staging.callCanonicalRoot(cms, newParameters);
+        if(elementCacheEnabled) {
+                output = elementCache.callCanonicalRoot(cms, newParameters);
         } else {
             // ----- traditional stuff ------
             // Element cache is deactivated. So let's go on as usual.

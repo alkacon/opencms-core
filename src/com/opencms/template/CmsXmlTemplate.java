@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/05/09 12:28:56 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2001/05/10 12:31:57 $
+* Version: $Revision: 1.57 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.56 $ $Date: 2001/05/09 12:28:56 $
+ * @version $Revision: 1.57 $ $Date: 2001/05/10 12:31:57 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -850,6 +850,13 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * <P>
      * Any exceptions thrown while processing the template will be caught,
      * printed and and thrown again.
+     * <P>
+     * If element cache is enabled, <code>generateElementCacheVariant()</code>
+     * will be called instead of <code>getProcessedTemplateContent()</code> for
+     * generating a new element cache variant instead of the completely
+     * processed output data.
+     * This new variant will be stored in the current element using the cache key
+     * given by the cache directives.
      *
      * @param cms CmsObject Object for accessing system resources.
      * @param xmlTemplateDocument XML parsed document of the content type "XML template file" or
@@ -863,24 +870,23 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     protected byte[] startProcessing(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         byte[] result = null;
 
-        if(cms.getRequestContext().isStaging()) {
+        if(cms.getRequestContext().isElementCacheEnabled()) {
             CmsElementDefinitionCollection mergedElDefs = (CmsElementDefinitionCollection)parameters.get("_ELDEFS_");
-            // We are in staging mode. Create a new variant instead of a completely processed subtemplate
-            CmsElementVariant variant = new CmsElementVariant();
-            xmlTemplateDocument.generateStagingVariant(this, parameters, elementName, templateSelector, variant);
+            // We are in element cache mode. Create a new variant instead of a completely processed subtemplate
+            CmsElementVariant variant = xmlTemplateDocument.generateElementCacheVariant(this, parameters, elementName, templateSelector);
             // Get current element.
-            CmsStaging staging = OpenCms.getStaticStaging();
+            CmsElementCache elementCache = cms.getRequestContext().getElementCache();
             CmsElementDescriptor elKey = new CmsElementDescriptor(getClass().getName(), xmlTemplateDocument.getAbsoluteFilename());
-            A_CmsElement currElem = staging.getElementLocator().get(cms, elKey, parameters);
+            A_CmsElement currElem = elementCache.getElementLocator().get(cms, elKey, parameters);
 
             // If this elemement is cacheable, store the new variant
             if(currElem.getCacheDirectives().isInternalCacheable()) {
                 //currElem.addVariant(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector), variant);
                 currElem.addVariant(currElem.getCacheDirectives().getCacheKey(cms, parameters), variant);
             }
-            result = ((CmsElementXml)currElem).resolveVariant(cms, variant, staging, mergedElDefs, elementName, parameters);
+            result = ((CmsElementXml)currElem).resolveVariant(cms, variant, elementCache, mergedElDefs, elementName, parameters);
         } else {
-            // Classic way. Staging is not activated, so let's genereate the template as usual
+            // Classic way. Element cache is not activated, so let's genereate the template as usual
             // Try to process the template file
             try {
                 result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, templateSelector).getBytes();
@@ -1122,16 +1128,25 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         }
     }
 
+    /**
+     * Create a new element for the element cache consisting of the current template
+     * class and the given template file.
+     * <P>
+     * Complex template classes that are able to include other (sub-)templates
+     * must generate a collection of element definitions for their possible
+     * subtemplates. This collection is part of the new element.
+     * @param cms CmsObject for accessing system resources.
+     * @param templateFile Name of the template file for the new element
+     * @param parameters All parameters of the current request
+     * @return New element for the element cache
+     */
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
         CmsElementDefinitionCollection subtemplateDefinitions = new CmsElementDefinitionCollection();
 
         try {
             CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, null, parameters, null);
 
-            // Code for collecting all ElementDefinitions
-            // Where shall we do this
-
-            CmsStaging staging = OpenCms.getStaticStaging();
+            CmsElementCache elementCache = cms.getRequestContext().getElementCache();
 
             Vector subtemplates = xmlTemplateDocument.getAllSubElements();
 
@@ -1161,8 +1176,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             }
         } catch(Exception e) {
             if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_STAGING, getClassName() + "Could not generate my template cache element.");
-                A_OpenCms.log(C_OPENCMS_STAGING, getClassName() + e);
+                A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, getClassName() + "Could not generate my template cache element.");
+                A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, getClassName() + e);
             }
         }
         CmsElementXml result = new CmsElementXml(getClass().getName(),

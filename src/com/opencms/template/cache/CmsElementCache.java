@@ -1,7 +1,7 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsStaging.java,v $
-* Date   : $Date: 2001/05/09 12:28:49 $
-* Version: $Revision: 1.2 $
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
+* Date   : $Date: 2001/05/10 12:32:56 $
+* Version: $Revision: 1.1 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -33,24 +33,24 @@ import com.opencms.core.*;
 import com.opencms.file.*;
 
 /**
- * This is the starting class for OpenCms Staging. Staging was implemented for
+ * This is the starting class for OpenCms element cache. Element cache was implemented for
  * performance issues. The idea is to create a flat hirarchie of elements that
  * can be accessed fast and efficient for the frontend users in the online
  * project.
  *
- * On publishing-time the data in the staging area will be created or updated.
- * All inefficiant XML-files are changed to the efficient staging data
+ * On publishing-time the data in the element cache area will be created or updated.
+ * All inefficiant XML-files are changed to the efficient element cache data
  * structure. For createing the content no XML-parsing and DOM-accessing is
  * neccessairy.
  * @author: Andreas Schouten
  */
-public class CmsStaging {
+public class CmsElementCache {
 
     private CmsUriLocator m_uriLocator;
 
     private CmsElementLocator m_elementLocator;
 
-    public CmsStaging() {
+    public CmsElementCache() {
         m_uriLocator = new CmsUriLocator();
         m_elementLocator = new CmsElementLocator();
     }
@@ -64,12 +64,8 @@ public class CmsStaging {
     }
 
     public byte[] callCanonicalRoot(CmsObject cms, Hashtable parameters) throws CmsException {
-        long time1 = System.currentTimeMillis();
         CmsUri uri = m_uriLocator.get(new CmsUriDescriptor(cms.getRequestContext().getUri()));
-        byte[]result = uri.callCanonicalRoot(this, cms, parameters);
-        long time2 = System.currentTimeMillis();
-        System.err.println("%%% Time for getting URI " + cms.getRequestContext().getUri() + ": " + (time2 - time1) + " ms");
-        return result;
+        return uri.callCanonicalRoot(this, cms, parameters);
     }
 
 }

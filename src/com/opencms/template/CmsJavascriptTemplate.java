@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsJavascriptTemplate.java,v $
-* Date   : $Date: 2001/05/07 08:56:25 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/05/10 12:31:53 $
+* Version: $Revision: 1.17 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -181,6 +181,9 @@ public class CmsJavascriptTemplate extends A_CmsTemplate implements I_CmsJavascr
         return true;
     }
 
+    /**
+     * Not yet implemented
+     */
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
         // to be implemented
         return null;

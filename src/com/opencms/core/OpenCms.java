@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/05/03 16:01:02 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2001/05/10 12:30:35 $
+* Version: $Revision: 1.51 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -52,7 +52,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.50 $ $Date: 2001/05/03 16:01:02 $
+ * @version $Revision: 1.51 $ $Date: 2001/05/10 12:30:35 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -100,10 +100,15 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     private boolean m_streaming = true;
 
     /**
-     * Reference to the Staging object containing locators for all
+     * Indicates, if the element cache should be enabled by the configurations
+     */
+    private boolean m_enableElementCache = true;
+
+    /**
+     * Reference to the CmsElementCache object containing locators for all
      * URIs and elements in cache.
      */
-    private static CmsStaging c_staging = null;
+    private static CmsElementCache c_elementCache = null;
 
     /**
      * Constructor, creates a new OpenCms object.
@@ -166,16 +171,19 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             }
         }
 
-        // create the staging object
-        try {
+        // Check, if the element cache should be enabled
+        m_enableElementCache = conf.getBoolean("elementcache.enabled", false);
             if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initialize staging...");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] element cache " + (m_enableElementCache?"en":"dis") + "abled. ");
             }
-            c_staging = new CmsStaging();
-        }
-        catch(Exception e) {
-            if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
+            if(m_enableElementCache) {
+            try {
+                c_elementCache = new CmsElementCache();
+            }
+            catch(Exception e) {
+                if(A_OpenCms.isLogging()) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
+                }
             }
         }
     }
@@ -277,7 +285,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, String user,
             String group, int project) throws CmsException {
-        cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming);
+        cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache);
     }
 
     /**
@@ -404,21 +412,5 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     public static I_CmsRegistry getRegistry() throws CmsException {
         return c_rb.getRegistry(null, null, null);
-    }
-
-    /**
-     * Get the system wide CmsStaging object.
-     * @return CmsStaging object
-     */
-    public CmsStaging getStaging() {
-        return c_staging;
-    }
-
-    /**
-     * Get the system wide CmsStaging object.
-     * @return CmsStaging object
-     */
-    public static CmsStaging getStaticStaging() {
-        return c_staging;
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/05/09 12:28:49 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/05/10 12:32:56 $
+* Version: $Revision: 1.6 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -34,7 +34,7 @@ import com.opencms.file.*;
 
 /**
  * An instance of CmsUri represents an requestable ressource in the OpenCms
- * staging-area. It points to the starting element and handles the access-
+ * element cache area. It points to the starting element and handles the access-
  * checks to this ressource in a simple way.
  *
  * If access is granted for the current user it starts the startingElement to
@@ -89,9 +89,9 @@ public class CmsUri implements I_CmsConstants {
         m_elementDefinitions = definitions;
     }
 
-    public byte[] callCanonicalRoot(CmsStaging staging, CmsObject cms, Hashtable parameters) throws CmsException  {
-        A_CmsElement elem = staging.getElementLocator().get(cms, m_startingElement, parameters);
-        return elem.getContent(staging, cms, m_elementDefinitions, C_ROOT_TEMPLATE_NAME, parameters);
+    public byte[] callCanonicalRoot(CmsElementCache elementCache, CmsObject cms, Hashtable parameters) throws CmsException  {
+        A_CmsElement elem = elementCache.getElementLocator().get(cms, m_startingElement, parameters);
+        return elem.getContent(elementCache, cms, m_elementDefinitions, C_ROOT_TEMPLATE_NAME, parameters);
     }
 
 }

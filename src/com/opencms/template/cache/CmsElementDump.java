@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2001/05/09 12:28:49 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/05/10 12:32:56 $
+* Version: $Revision: 1.6 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -34,7 +34,7 @@ import com.opencms.template.*;
 
 /**
  * An instance of CmsElementDump represents an requestable dump element in the OpenCms
- * staging-area. It contains all informations to generate the content of this
+ * element cache area. It contains all informations to generate the content of this
  * element. It also stores the variants of once generated content to speed up
  * performance.
  *
@@ -66,15 +66,14 @@ public class CmsElementDump extends A_CmsElement {
 
     /**
      * Get the content of this element.
-     * @param staging Entry point for the element cache
+     * @param elementCache Entry point for the element cache
      * @param cms CmsObject for accessing system resources
      * @param elDefs Definitions of this element's subelements
      * @param parameters All parameters of this request
      * @return Byte array with the processed content of this element.
      * @exception CmsException
      */
-    public byte[] getContent(CmsStaging staging, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters) throws CmsException  {
-        long time1 = System.currentTimeMillis();
+    public byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters) throws CmsException  {
         byte[] result = null;
 
         // Get template class.
@@ -102,7 +101,7 @@ public class CmsElementDump extends A_CmsElement {
         }
 
         if(variant != null) {
-            result = resolveVariant(cms, variant, staging, elDefs, elementName, parameters);
+            result = resolveVariant(cms, variant, elementCache, elDefs, elementName, parameters);
         } else {
             // This element was not found in the variant cache.
             // We have to generate it.
@@ -123,8 +122,6 @@ public class CmsElementDump extends A_CmsElement {
                 result = null;
             }
         }
-        long time2 = System.currentTimeMillis();
-        System.err.println("% Time for getting content of \"" + elementName + "\": " + (time2 - time1) + " ms");
         return result;
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/05/09 12:28:49 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/05/10 12:32:56 $
+* Version: $Revision: 1.6 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -35,7 +35,7 @@ import com.opencms.template.*;
 
 /**
  * An instance of CmsElementXML represents an requestable Element in the OpenCms
- * staging-area. It contains all informations to generate the content of this
+ * element cache area. It contains all informations to generate the content of this
  * element. It also stores the variants of once generated content to speed up
  * performance.
  *
@@ -67,15 +67,14 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
 
     /**
      * Get the content of this element.
-     * @param staging Entry point for the element cache
+     * @param elementCache Entry point for the element cache
      * @param cms CmsObject for accessing system resources
      * @param elDefs Definitions of this element's subelements
      * @param parameters All parameters of this request
      * @return Byte array with the processed content of this element.
      * @exception CmsException
      */
-    public byte[] getContent(CmsStaging staging, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters) throws CmsException  {
-        long time1 = System.currentTimeMillis();
+    public byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters) throws CmsException  {
         byte[] result = null;
 
         // Merge own element definitions with our parent's definitions
@@ -113,7 +112,7 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
             //variant = getVariant(templateClass.getKey(cms, m_templateName, parameters, null));
             variant = getVariant(cd.getCacheKey(cms, parameters));
             if(variant != null) {
-                result = resolveVariant(cms, variant, staging, mergedElDefs, elementName, parameters);
+                result = resolveVariant(cms, variant, elementCache, mergedElDefs, elementName, parameters);
             }
         }
         if(variant == null) {
@@ -121,11 +120,11 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
             // We have to generate it by calling the "classic" getContent() method on the template
             // class.
             try {
-                if(cd.isInternalCacheable()) {
+                /*if(cd.isInternalCacheable()) {
                     System.err.println(toString() + " ### Variant not in cache. Must be generated.");
                 } else {
                     System.err.println(toString() + " ### Element not cacheable. Generating variant temporarily.");
-                }
+                }*/
                 // startProcessing() later will be responsible for generating our new variant.
                 // since the method resolveVariant (THIS method) will be called recursively
                 // by startProcessing(), we have to pass the current element definitions.
@@ -169,8 +168,6 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                 result = null;
             }
         }
-        long time2 = System.currentTimeMillis();
-        System.err.println("% Time for getting content of \"" + elementName + "\": " + (time2 - time1) + " ms");
         return result;
     }
 }

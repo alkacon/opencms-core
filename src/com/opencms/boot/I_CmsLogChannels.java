@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/I_CmsLogChannels.java,v $
-* Date   : $Date: 2001/05/07 16:21:26 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/05/10 12:30:03 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -35,7 +35,7 @@ package com.opencms.boot;
  * Constants used for logging purposes are defined here.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2001/05/07 16:21:26 $
+ * @version $Revision: 1.4 $ $Date: 2001/05/10 12:30:03 $
  */
 public interface I_CmsLogChannels {
     /** Debugging messages */
@@ -59,8 +59,8 @@ public interface I_CmsLogChannels {
     /** Debugging messages for the dbpool */
     public static final String C_OPENCMS_POOL = "opencms_pool";
 
-    /** Messages of the new OpenCms template "staging" cache */
-    public static final String C_OPENCMS_STAGING = "opencms_staging";
+    /** Messages of the new OpenCms element cache */
+    public static final String C_OPENCMS_ELEMENTCACHE = "opencms_elementcache";
 
 
     /** Debugging messages */

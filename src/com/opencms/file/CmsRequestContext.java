@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2001/05/07 16:21:57 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2001/05/10 12:31:01 $
+ * Version: $Revision: 1.37 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -32,6 +32,7 @@ import java.util.*;
 import javax.servlet.http.*;
 
 import com.opencms.core.*;
+import com.opencms.template.cache.*;
 
 /**
  * This class provides access to the CmsRequestContext.
@@ -45,7 +46,7 @@ import com.opencms.core.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.36 $ $Date: 2001/05/07 16:21:57 $
+ * @version $Revision: 1.37 $ $Date: 2001/05/10 12:31:01 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -85,8 +86,8 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     private boolean m_streaming = true;
 
-    /** Are we staging? */
-    private boolean m_staging = false;
+    /** Starting point for element cache */
+    private CmsElementCache m_elementCache = null;
 
     /** Current languages */
     private Vector m_language = new Vector();
@@ -204,11 +205,12 @@ public class CmsRequestContext implements I_CmsConstants {
      * @param currentGroup the current group for this request.
      * @param currentProjectId the id of the current project for this request.
      * @param streaming <code>true</code> if streaming should be enabled for this response, <code>false</code> otherwise.
+     * @param elementCache Starting point for the element cache or <code>null</code> if the element cache should be disabled.
      *
      * @exception CmsException if operation was not successful.
      */
     void init(I_CmsResourceBroker rb, I_CmsRequest req, I_CmsResponse resp,
-              String user, String currentGroup, int currentProjectId, boolean streaming)
+              String user, String currentGroup, int currentProjectId, boolean streaming, CmsElementCache elementCache)
         throws CmsException {
         m_rb = rb;
         m_req = req;
@@ -232,6 +234,7 @@ public class CmsRequestContext implements I_CmsConstants {
         setCurrentProject(currentProjectId);
         m_currentGroup = m_rb.readGroup(m_user, m_currentProject, currentGroup);
         m_streaming = streaming;
+        m_elementCache = elementCache;
 
         // Analyze the user's preferred languages coming with the request
         if(req != null) {
@@ -341,21 +344,20 @@ public class CmsRequestContext implements I_CmsConstants {
     }
 
     /**
-     * Get the current mode for staging.
+     * Get the current mode for element cache.
      *
-     * @return <code>true</code> if staging is active, <code>false</code> otherwise.
+     * @return <code>true</code> if element cache is active, <code>false</code> otherwise.
      */
-    public boolean isStaging() {
-        return m_staging && currentProject().getId() == C_PROJECT_ONLINE_ID;
+    public boolean isElementCacheEnabled() {
+        return ((m_elementCache != null) && (currentProject().getId() == C_PROJECT_ONLINE_ID));
     }
 
     /**
-     * Set the current mode for staging.<p>
-     *
-     * @param b <code>true</code> if staging could be activated, <code>false</code> otherwise.
+     * Get the CmsElementCache object. This is the starting point for the element cache area.
+     * @return CmsElementCachee
      */
-    public void setStaging(boolean b) {
-        m_staging = b;
+    public CmsElementCache getElementCache() {
+        return m_elementCache;
     }
 
     /**

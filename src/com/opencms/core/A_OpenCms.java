@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2001/05/03 16:01:02 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/05/10 12:30:16 $
+* Version: $Revision: 1.17 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -49,7 +49,7 @@ import source.org.apache.java.util.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2001/05/03 16:01:02 $
+ * @version $Revision: 1.17 $ $Date: 2001/05/10 12:30:16 $
  *
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
@@ -159,17 +159,4 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @return data the sessionData.
      */
     abstract void storeSession(String sessionId, Hashtable sessionData) throws CmsException;
-
-    /**
-     * Get the system wide CmsStaging object.
-     * @return CmsStaging object
-     */
-    abstract public CmsStaging getStaging();
-
-    /*public static void setBasePath(String s) {
-        basePath = s;
-    }
-    public static String getBasePath() {
-        return basePath;
-    }*/
 }

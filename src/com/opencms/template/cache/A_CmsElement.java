@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/05/09 12:28:49 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/05/10 12:32:37 $
+* Version: $Revision: 1.6 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -36,7 +36,7 @@ import com.opencms.template.*;
 
 /**
  * An instance of A_CmsElement represents an requestable Element in the OpenCms
- * staging-area. It contains all informations to generate the content of this
+ * element cache area. It contains all informations to generate the content of this
  * element. It also stores the variants of once generated content to speed up
  * performance.
  *
@@ -107,7 +107,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     public void addVariant(Object key, CmsElementVariant variant) {
         //if(C_DEBUG && CmsBase.isLogging()) {
         if(CmsBase.isLogging()) {
-            CmsBase.log(C_OPENCMS_STAGING, toString() + " adding variant \"" + key + "\" to cache. ");
+            CmsBase.log(C_OPENCMS_ELEMENTCACHE, toString() + " adding variant \"" + key + "\" to cache. ");
         }
         m_variants.put(key, variant);
     }
@@ -122,9 +122,9 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         //if(C_DEBUG && CmsBase.isLogging()) {
         if(CmsBase.isLogging()) {
             if(result != null) {
-                CmsBase.log(C_OPENCMS_STAGING, toString() + " getting variant \"" + key + "\" from cache. ");
+                CmsBase.log(C_OPENCMS_ELEMENTCACHE, toString() + " getting variant \"" + key + "\" from cache. ");
             } else {
-                CmsBase.log(C_OPENCMS_STAGING, toString() + " Variant \"" + key + "\" is not in element cache. ");
+                CmsBase.log(C_OPENCMS_ELEMENTCACHE, toString() + " Variant \"" + key + "\" is not in element cache. ");
             }
         }
         return (CmsElementVariant)m_variants.get(key);
@@ -159,14 +159,14 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * Element classes may have different implementations for getting
      * the contents. Common tasks of all implementations are checking
      * the variant cache and creating the variant if required.
-     * @param staging Entry point for the element cache
+     * @param elementCache Entry point for the element cache
      * @param cms CmsObject for accessing system resources
      * @param elDefs Definitions of this element's subelements
      * @param parameters All parameters of this request
      * @return Byte array with the processed content of this element.
      * @exception CmsException
      */
-    public abstract byte[] getContent(CmsStaging staging, CmsObject cms, CmsElementDefinitionCollection efDefs, String elementName, Hashtable parameters) throws CmsException;
+    public abstract byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection efDefs, String elementName, Hashtable parameters) throws CmsException;
 
     /**
      * Get a template class from the template class manager.
@@ -188,14 +188,14 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * Resolve given variant of this element and get content of all sub elements.
      * @param cms CmsObject for accessing system resources
      * @param variant Variant that should be resolved
-     * @param staging Entry point for element cache
+     * @param elementCache Entry point for element cache
      * @param elDefs Definitions for all subelements
      * @param elementName Current name of the subelement during resolving
      * @param parameters All parameters of this request
      * @return Byte array with processed element content
      * @exception CmsException if resolving fails.
      */
-    public byte[] resolveVariant(CmsObject cms, CmsElementVariant variant, CmsStaging staging, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters) throws CmsException {
+    public byte[] resolveVariant(CmsObject cms, CmsElementVariant variant, CmsElementCache elementCache, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters) throws CmsException {
         boolean resolveDebug = false;
         if(resolveDebug) System.err.println("= Start resolving variant " + variant);
         int len = variant.size();
@@ -224,7 +224,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                     if(elDef != null) {
                         // We have successfully found an element definition.
                         // Try to get the corresponding element using the element locator
-                        A_CmsElement subEl = staging.getElementLocator().get(cms, elDef.getDescriptor(), parameters);
+                        A_CmsElement subEl = elementCache.getElementLocator().get(cms, elDef.getDescriptor(), parameters);
                         if(resolveDebug) System.err.println("= Element defintion for \"" + lookupName +"\" says: ");
                         if(resolveDebug) System.err.println("= -> Class    : " + elDef.getClassName());
                         if(resolveDebug) System.err.println("= -> Template : " + elDef.getTemplateName());
@@ -235,7 +235,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                             if(resolveDebug) System.err.println("= Element object found for \"" + lookupName +"\". Calling getContent on this object. ");
                             byte[] buffer = null;
                             try {
-                                buffer = subEl.getContent(staging, cms, elDefs, elementName, parameters);
+                                buffer = subEl.getContent(elementCache, cms, elDefs, elementName, parameters);
                             } catch(Exception e) {
                                 // An error occured while getting the element's content.
                                 // Do some error handling here.
@@ -283,7 +283,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                             // Do nothing but a little bit logging here.
                             if(resolveDebug) System.err.println("= Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
                             if(CmsBase.isLogging()) {
-                                CmsBase.log(C_OPENCMS_STAGING, toString() + " Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
+                                CmsBase.log(C_OPENCMS_ELEMENTCACHE, toString() + " Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
                             }
                         }
 
@@ -298,7 +298,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                         // Do some logging only and ignore this element
                         baos.write(("[" + lookupName + "] Element not defined.").getBytes());
                         if(CmsBase.isLogging()) {
-                            CmsBase.log(C_OPENCMS_STAGING, toString() + " No element definition found for \"" + lookupName +"\". Ignoring this link. ");
+                            CmsBase.log(C_OPENCMS_ELEMENTCACHE, toString() + " No element definition found for \"" + lookupName +"\". Ignoring this link. ");
                         }
                         if(resolveDebug) {
                             System.err.println("= No element definition found for \"" + lookupName +"\". Ignoring this link. ");

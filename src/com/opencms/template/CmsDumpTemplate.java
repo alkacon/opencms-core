@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2001/05/07 16:22:13 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/05/10 12:31:51 $
+* Version: $Revision: 1.22 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import com.opencms.template.cache.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.21 $ $Date: 2001/05/07 16:22:13 $
+ * @version $Revision: 1.22 $ $Date: 2001/05/10 12:31:51 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -192,6 +192,18 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
         return false;
     }
 
+    /**
+     * Create a new element for the element cache consisting of the current template
+     * class and the given template file.
+     * <P>
+     * Complex template classes that are able to include other (sub-)templates
+     * must generate a collection of element definitions for their possible
+     * subtemplates. This collection is part of the new element.
+     * @param cms CmsObject for accessing system resources.
+     * @param templateFile Name of the template file for the new element
+     * @param parameters All parameters of the current request
+     * @return New element for the element cache
+     */
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
         return new CmsElementDump(getClass().getName(), templateFile, getCacheDirectives(cms, templateFile, null, parameters, null));
     }

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2001/05/08 13:04:09 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/05/10 12:31:14 $
+* Version: $Revision: 1.22 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -47,7 +47,7 @@ import com.opencms.template.cache.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.21 $ $Date: 2001/05/08 13:04:09 $
+ * @version $Revision: 1.22 $ $Date: 2001/05/10 12:31:14 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
@@ -76,8 +76,8 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
     protected void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
         byte[] result = null;
 
-        CmsStaging staging = null;
-        boolean isStaging = cms.getRequestContext().isStaging();
+        CmsElementCache elementCache = null;
+        boolean elementCacheEnabled = cms.getRequestContext().isElementCacheEnabled();
 
         // Get the currently requested URI
         String uri = cms.getRequestContext().getUri();
@@ -87,20 +87,19 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
             templateClass = "com.opencms.template.CmsDumpTemplate";
         }
 
-        if(isStaging) {
-            // -------- staging -----
-            staging = openCms.getStaging();
+        if(elementCacheEnabled) {
+            // -------- element cache -----
+            elementCache = cms.getRequestContext().getElementCache();
 
             CmsUriDescriptor uriDesc = new CmsUriDescriptor(uri);
-            CmsUriLocator uriLoc = staging.getUriLocator();
+            CmsUriLocator uriLoc = elementCache.getUriLocator();
             CmsUri cmsUri = uriLoc.get(uriDesc);
 
             if(cmsUri == null) {
                 // hammer nich
                 CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, file.getAbsolutePath());
                 cmsUri = new CmsUri(elemDesc, null, (CmsElementDefinitionCollection)null);
-                //staging.getElementLocator().put(elemDesc, new CmsElementDump(templateClass, file.getAbsolutePath()));
-                staging.getUriLocator().put(uriDesc, cmsUri);
+                elementCache.getUriLocator().put(uriDesc, cmsUri);
             }
         }
 
@@ -133,12 +132,9 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
             }
         }
 
-        if(isStaging) {
-            // YES - we stage!
-            result = staging.callCanonicalRoot(cms, newParameters);
+        if(elementCacheEnabled) {
+            result = elementCache.callCanonicalRoot(cms, newParameters);
         } else {
-            // NO - traditional way
-
             Object tmpl = getTemplateClass(cms, templateClass);
             if(!(tmpl instanceof com.opencms.template.I_CmsDumpTemplate)) {
                 String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a Cms dump template class.";
