@@ -22,7 +22,7 @@
 		}
 
 		if (isFormSubmitted) {
-			
+			if(!conStr.endsWith("/"))conStr += "/";
 
 			String dbCreateUser = request.getParameter("dbCreateUser");
 			String dbCreatePwd = request.getParameter("dbCreatePwd");
@@ -42,7 +42,7 @@
 			Map replacer = (Map) new HashMap();
 			replacer.put("${user}", dbWorkUser);
 			replacer.put("${password}", dbWorkPwd);
-			replacer.put("${dbName}", dbName);
+			replacer.put("${database}", dbName);
 			
 			Bean.setReplacer(replacer);
 

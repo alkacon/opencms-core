@@ -1,5 +1,5 @@
 #
-# replacer = "${dbName}"
+# replacer = "${database}"
 ############################
 
 # Create the user;
@@ -10,8 +10,8 @@ CREATE USER ${user}
 
 #create the database
 
-CREATE DATABASE ${dbName}
-  WITH ENCODING='LATIN1' OWNER=${user};
+CREATE DATABASE ${database}
+  WITH ENCODING='UNICODE' OWNER=${user};
 	 
 #commit all (if connection is not autocommit)
 commit;

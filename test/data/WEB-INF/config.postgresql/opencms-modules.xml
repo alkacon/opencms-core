@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-modules.dtd">
+
+<opencms>
+    <modules>
+    	<module>
+    		<name>org.opencms.configuration.TestModule1</name>
+    		<nicename>OpenCms configuration test module</nicename>
+    		<class>org.opencms.module.TestModuleActionImpl</class>
+			<description><![CDATA[A module to test the OpenCms module configuration]]></description>
+			<version>1.0</version>
+			<authorname>Antonio Core</authorname>
+			<authoremail>antonio@starsolutions.it</authoremail>
+			<datecreated>Mon, 09 Dec 2004 09:00:00 CEST</datecreated>
+			<userinstalled>Admin</userinstalled>
+			<dateinstalled>Mon, 09 Dic 2004 12:00:00 CEST</dateinstalled>
+			<dependencies/>
+			<exportpoints/>
+			<resources>
+				<resource uri="/types/"/>
+			</resources>		
+			<parameters>
+				<param name="param1">value1</param>
+				<param name="param2">value2</param>
+			</parameters>
+			<resourcetypes>
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+                    <param name="resource.type.id">12</param>
+                    <param name="resource.type.name">article</param>
+                    <param name="schema">/sites/default/xmlcontent/article.xsd</param>
+                </type>
+            </resourcetypes>				
+    	</module>
+    </modules>    
+</opencms>    

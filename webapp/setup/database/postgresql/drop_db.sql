@@ -1,7 +1,7 @@
 #
-# replacer = "${replacer}"
+# replacer = "${database}"
 ############################
 
-DROP DATABASE ${dbName};
+DROP DATABASE ${database};
 
 drop user ${user};
