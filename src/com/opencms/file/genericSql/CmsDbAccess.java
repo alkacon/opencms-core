@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/11/15 15:43:57 $
-* Version: $Revision: 1.227 $
+* Date   : $Date: 2001/11/16 15:36:48 $
+* Version: $Revision: 1.228 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.227 $ $Date: 2001/11/15 15:43:57 $ *
+ * @version $Revision: 1.228 $ $Date: 2001/11/16 15:36:48 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -2543,7 +2543,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.setInt(1, 100);
             statement.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
             statement.setInt(3,taskId);
-            statement.executeQuery();
+            statement.executeUpdate();
 
         } catch( SQLException exc ) {
             throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
