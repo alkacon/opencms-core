@@ -9,6 +9,9 @@ Legend:
 - General comment
 
 
+OpenCms 4.3.8 Bela Tegeuse - 
+! added static export. It now is possible to export static resources to the filesystem.
+
 OpenCms 4.3.7 Bela Tegeuse - 19 April 2001
 
 * ClassLoader fixed. getRessourceAsStream threw irregular Null-Pointer exceptions.
