@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.35 $ $Date: 2000/02/04 08:50:42 $ 
+ * @version $Revision: 1.36 $ $Date: 2000/02/07 10:46:45 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -232,10 +232,23 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public Vector getAllAccessibleProjects() 
 		throws CmsException {
-		 return( c_rb.getAllAccessibleProjects(m_context.currentUser(), 
-									m_context.currentProject()) );
+		return( c_rb.getAllAccessibleProjects(m_context.currentUser(), 
+											  m_context.currentProject()) );
 	}
 	
+	/**
+	 * Returns all projects, which are owned by the user or which are manageable
+	 * for the group of the user.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 public Vector getAllManageableProjects()
+		 throws CmsException {
+		 return( c_rb.getAllManageableProjects(m_context.currentUser(), 
+											   m_context.currentProject()) );
+
+	 }
+		 
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
 	 * If there are some mandatory Metadefinitions for the resourcetype, a 

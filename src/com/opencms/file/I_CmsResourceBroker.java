@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.31 $ $Date: 2000/02/04 08:50:42 $
+ * @version $Revision: 1.32 $ $Date: 2000/02/07 10:46:45 $
  */
 interface I_CmsResourceBroker {
 
@@ -102,6 +102,22 @@ interface I_CmsResourceBroker {
 											A_CmsProject currentProject)
 		 throws CmsException;	
 	
+	/**
+	 * Returns all projects, which are owned by the user or which are manageable
+	 * for the group of the user.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 public Vector getAllManageableProjects(A_CmsUser currentUser, 
+											A_CmsProject currentProject)
+		 throws CmsException;
+	 
 	/**
 	 * Publishes a project.
 	 * 
@@ -431,9 +447,24 @@ interface I_CmsResourceBroker {
 	 * else it returns false.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	public boolean isProjectLeader(A_CmsUser currentUser, A_CmsProject currentProject) 
+	public boolean isProjectManager(A_CmsUser currentUser, A_CmsProject currentProject) 
 		throws CmsException;
 
+   	/**
+	 * Determines, if the users may manage a project.<BR/>
+	 * Only the manager of a project may publish it.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return true, if the may manage this project.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	public boolean isManagerOfProject(A_CmsUser currentUser, A_CmsProject currentProject) 
+		throws CmsException;
+	
 	/**
 	 * Returns the anonymous user object.<P/>
 	 * 

@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2000/02/04 08:50:42 $
+ * @version $Revision: 1.20 $ $Date: 2000/02/07 10:46:45 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -49,7 +49,15 @@ public class CmsShell implements I_CmsConstants {
 				shell.version();
 		
 				// wait for user-input
-				shell.commands();	
+				// shell.commands();	
+				shell.initDb();
+				
+				// init 2
+				shell = new CmsShell();
+				args[0] = "com.opencms.file.CmsInitMySql";
+				shell.init(args);
+				shell.initDb2();
+
 			}
 		} catch(Exception exc) {
 			System.out.println(exc);
@@ -69,6 +77,25 @@ public class CmsShell implements I_CmsConstants {
 		m_cms.init(m_rb);
 		m_cms.init(null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE);
 	}	
+	
+	
+	private void initDb() {
+		login("Admin", "admin");
+		addResourceType("plain", "1", "");
+		addResourceType("XMLTemplate", "3", "");
+		createProject("__setupproj", "The project to setup the cms", "Administrators", "Administrators");
+		setCurrentProject("__setupproj");
+		copyResourceToProject("/");
+		createFolder("/", "system");
+		createFolder("/system/", "workplace");
+		publishProject("__setupproj");
+		addMountPoint("/system/workplace/", "/usr/local/www/domains/mhtcms-work.mind.fact/workplace/", "workplace", "Guest", "Guests", "plain", "383");
+	}
+	
+	private void initDb2() {
+		login("Admin", "admin");
+		addMountPoint("/system/workplace/action/", "/usr/local/www/domains/mhtcms-work.mind.fact/workplace/action/", "action", "Guest", "Guests", "XMLTemplate", "383");
+	}
 	
 	/**
 	 * The commandlineinterface.
@@ -278,9 +305,9 @@ public class CmsShell implements I_CmsConstants {
 	/**
 	 * Determines, if the user is Projectleader.
 	 */
-	public void isProjectLeader() {
+	public void isProjectManager() {
 		try {
-			System.out.println( m_cms.getRequestContext().isProjectLeader() );
+			System.out.println( m_cms.getRequestContext().isProjectManager() );
 		} catch( Exception exc ) {
 			printException(exc);
 		}

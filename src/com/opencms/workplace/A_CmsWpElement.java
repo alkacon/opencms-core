@@ -17,7 +17,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/02/01 18:17:22 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/07 10:46:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -31,6 +31,11 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * Reference to icons definition file
      */
     protected static CmsXmlWpTemplateFile m_icondef = null;
+	
+    /**
+     * Reference to projectlist definition file
+     */
+    protected static CmsXmlWpTemplateFile m_projectlistdef = null;
 	
     /**
      * Reference to the label defintion file
@@ -85,6 +90,23 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
             m_icondef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_ICON_TEMPLATEFILE);
         }
         return m_icondef;
+    }
+	
+    /**
+     * Reads the projectlist definition file.
+     * @param cms The actual cms object
+     * @return Reference to the list defintion file.
+     * @exception CmsException
+     */
+    public CmsXmlWpTemplateFile getProjectlistDefinitions(A_CmsObject cms) throws CmsException {
+        if(m_projectlistdef == null) {
+            if(m_workplaceElementPath == null) {
+                CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+                m_workplaceElementPath = configFile.getWorkplaceElementPath();
+            }
+            m_projectlistdef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_PROJECTLIST_TEMPLATEFILE);
+        }
+        return m_projectlistdef;
     }
 	
     /**

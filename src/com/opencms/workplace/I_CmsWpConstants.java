@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/02/07 10:42:48 $
+ * @version $Revision: 1.23 $ $Date: 2000/02/07 10:46:45 $
  */
 public interface I_CmsWpConstants {
 
@@ -45,6 +45,9 @@ public interface I_CmsWpConstants {
 	/** The filename to the icontemplate */
 	public static final String C_ICON_TEMPLATEFILE = "icontemplate";
 	
+	/** The filename to the projectlisttemplate */
+	public static final String C_PROJECTLIST_TEMPLATEFILE = "projecttemplate";
+	
 	/** The explorer tree. */
     public static final String C_WP_EXPLORER_TREE="explorer_tree.html";
 
@@ -71,6 +74,11 @@ public interface I_CmsWpConstants {
     
     
     // tag defnitions
+	
+   /**
+    * Name of the label tag in the label definition template
+    */
+   public static final String C_TAG_PROJECTLIST_DEFAULT = "defaultprojectlist";   
     
    /**
     * Name of the label tag in the label definition template
@@ -199,6 +207,30 @@ public interface I_CmsWpConstants {
     /**  Method of the input field  */
     public static final String C_INPUT_METHOD = "method";    
     
+    /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_METHOD = "method";    
+	
+    /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_NAME = "name";    
+	
+    /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_DESCRIPTION = "description";
+	
+    /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_STATE = "STATE";    
+	
+    /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_PROJECTMANAGER = "projectmanager";    
+	
+    /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_PROJECTWORKER = "projectworker";
+	
+    /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_DATECREATED = "datecreated";    
+	
+    /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_OWNER = "owner";    
+	
     // Parameters for error boxes and error pages
     
     /** Title of the error box */

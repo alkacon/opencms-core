@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/01/21 15:18:55 $ 
+ * @version $Revision: 1.10 $ $Date: 2000/02/07 10:46:45 $ 
  * 
  */
 public abstract class A_CmsRequestContext
@@ -91,7 +91,7 @@ public abstract class A_CmsRequestContext
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	abstract public  boolean isProjectLeader()
+	abstract public  boolean isProjectManager()
 		throws CmsException;
 
 	/**

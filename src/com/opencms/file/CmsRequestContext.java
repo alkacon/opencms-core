@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/01/28 17:42:31 $
+ * @version $Revision: 1.17 $ $Date: 2000/02/07 10:46:45 $
  * 
  */
 public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
@@ -160,9 +160,9 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public  boolean isProjectLeader() 
+	public  boolean isProjectManager() 
 		throws CmsException	{
-		return( m_rb.isProjectLeader(m_user, m_currentProject) );
+		return( m_rb.isProjectManager(m_user, m_currentProject) );
 	}
 
 	/**

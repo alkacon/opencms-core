@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/02/04 08:50:42 $
+ * @version $Revision: 1.15 $ $Date: 2000/02/07 10:46:45 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -109,6 +109,14 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 														 C_GROUP_ID + " = ? and " +
 														 C_PROJECT_FLAGS + " = " + 
 														 C_PROJECT_STATE_UNLOCKED;
+	
+	/**
+     * SQL Command for reading projects.
+     */    
+    private static final String C_PROJECT_GET_BY_MANAGERGROUP = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where " + 
+																C_MANAGERGROUP_ID + " = ? and " +
+																C_PROJECT_FLAGS + " = " + 
+																C_PROJECT_STATE_UNLOCKED;
 	
 	/**
      * SQL Command for reading projects.
@@ -327,6 +335,46 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 		 }
 	 }
 
+	/**
+	 * Returns all projects, which the managergroup may manage.
+	 * 
+	 * @param managergroup The group to test.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 public Vector getAllAccessibleProjectsByManagerGroup(A_CmsGroup managergroup)
+		 throws CmsException {		 
+ 		 Vector projects = new Vector();
+
+		 try {
+			 ResultSet result;
+			 
+			 // create the statement
+			PreparedStatement statementGetProjectsByGroup = 
+				m_con.prepareStatement(C_PROJECT_GET_BY_MANAGERGROUP);
+			
+			statementGetProjectsByGroup.setInt(1,managergroup.getId());
+			result = statementGetProjectsByGroup.executeQuery();
+			 
+			 while(result.next()) {
+				 projects.addElement( new CmsProject(result.getInt(C_PROJECT_ID),
+													 result.getString(C_PROJECT_NAME),
+													 result.getString(C_PROJECT_DESCRIPTION),
+													 result.getInt(C_TASK_ID),
+													 result.getInt(C_USER_ID),
+													 result.getInt(C_GROUP_ID),
+													 result.getInt(C_MANAGERGROUP_ID),
+													 result.getInt(C_PROJECT_FLAGS),
+													 result.getTimestamp(C_PROJECT_CREATEDATE),
+													 result.getTimestamp(C_PROJECT_PUBLISHDATE)));
+			 }
+			 return(projects);
+		 } catch( SQLException exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 }
+	 }
+	 
 	/**
 	 * Returns all projects with the overgiven flag.
 	 * 

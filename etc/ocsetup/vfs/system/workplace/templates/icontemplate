@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
 <WORKPLACE>
+	
 	<defaulticon><![CDATA[<a href="]]><PROCESS>href</PROCESS><![CDATA[" target="]]><PROCESS>target</PROCESS><![CDATA["  onclick="]]><PROCESS>action</PROCESS><![CDATA["><img src="]]><METHOD name="picsUrl"><PROCESS>name</PROCESS>.gif</METHOD><![CDATA[" border=0 width=32 height=32 vspace=4><br>]]><PROCESS>label</PROCESS><![CDATA[</a>]]></defaulticon>
 </WORKPLACE>

@@ -126,7 +126,7 @@ function show_help()
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 </HEAD>
 <BODY onload="updateFrame('head', 'head.html');">
-loading...
+<LABEL value="label.loading"/>
 </BODY>
 </HTML>
 ]]>

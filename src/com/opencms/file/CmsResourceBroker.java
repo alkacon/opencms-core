@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.42 $ $Date: 2000/02/04 08:50:42 $
+ * @version $Revision: 1.43 $ $Date: 2000/02/07 10:46:45 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -172,7 +172,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 									   String managergroupname)
 		 throws CmsException {
 		 if( isAdmin(currentUser, currentProject) || 
-			 isProjectLeader(currentUser, currentProject)) {
+			 isProjectManager(currentUser, currentProject)) {
 			 
 			 // read the needed groups from the cms
 			 A_CmsGroup group = readGroup(currentUser, currentProject, groupname);
@@ -236,6 +236,47 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 }	
 	
 	/**
+	 * Returns all projects, which are owned by the user or which are manageable
+	 * for the group of the user.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 public Vector getAllManageableProjects(A_CmsUser currentUser, 
+											A_CmsProject currentProject)
+		 throws CmsException {
+		 
+		// get all groups of the user
+		Vector groups = getGroupsOfUser(currentUser, currentProject, 
+										currentUser.getName());
+		
+		// get all projects which are owned by the user.
+		Vector projects = m_projectRb.getAllAccessibleProjectsByUser(currentUser);
+		
+		// get all projects, that the user can manage with his groups.
+		for(int i = 0; i < groups.size(); i++) {
+			// get all projects, which can be managed by the current group
+			Vector projectsByGroup = 
+				m_projectRb.getAllAccessibleProjectsByManagerGroup((A_CmsGroup)
+																	groups.elementAt(i));
+			// merge the projects to the vector
+			for(int j = 0; j < projectsByGroup.size(); j++) {
+				// add only projects, which are new
+				if(!projects.contains(projectsByGroup.elementAt(j))) {
+					projects.addElement(projectsByGroup.elementAt(j));
+				}
+			}
+		}
+		// return the vector of projects
+		return(projects);
+	 }	
+	 
+	/**
 	 * Publishes a project.
 	 * 
 	 * <B>Security</B>
@@ -256,8 +297,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		A_CmsProject publishProject = m_projectRb.readProject(name);
 		
 		if( isAdmin(currentUser, currentProject) || 
-			isProjectLeader(currentUser, currentProject) || 
-			(currentProject.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
+			isManagerOfProject(currentUser, publishProject) || 
+			(publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
 			 
 			 // publish the project
 			 Vector resources = m_fileRb.publishProject(publishProject, 
@@ -736,7 +777,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// first write the lastlogin-time.
 			newUser.setLastlogin(new Date().getTime());
 			// write the user back to the cms.
-			m_userRb.writeUser(newUser);
+			// TODO: m_userRb.writeUser(newUser);
 			return(newUser);
 		} else {
 			// No Access!
@@ -811,11 +852,48 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * else it returns false.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	public boolean isProjectLeader(A_CmsUser currentUser, A_CmsProject currentProject) 
+	public boolean isProjectManager(A_CmsUser currentUser, A_CmsProject currentProject) 
 		throws CmsException { 
 		return( m_userRb.userInGroup(currentUser.getName(), C_GROUP_PROJECTLEADER) );
 	}
 
+   	/**
+	 * Determines, if the users may manage a project.<BR/>
+	 * Only the manager of a project may publish it.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return true, if the may manage this project.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	public boolean isManagerOfProject(A_CmsUser currentUser, A_CmsProject currentProject) 
+		throws CmsException { 
+		// is the user owner of the project?
+		if( currentUser.getId() == currentProject.getOwnerId() ) {
+			// YES
+			return true;
+		}
+		
+		// get all groups of the user
+		Vector groups = getGroupsOfUser(currentUser, currentProject, 
+										currentUser.getName());
+		
+		for(int i = 0; i < groups.size(); i++) {
+			// is this a managergroup for this project?
+			if( ((A_CmsGroup)groups.elementAt(i)).getId() == 
+				currentProject.getManagerGroupId() ) {
+				// this group is manager of the project
+				return true;
+			}
+		}
+		
+		// this user is not manager of this project
+		return false;
+	}
+	
 	/**
 	 * Returns the anonymous user object.<P/>
 	 * 

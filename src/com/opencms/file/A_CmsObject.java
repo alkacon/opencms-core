@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2000/02/04 08:50:41 $ 
+ * @version $Revision: 1.36 $ $Date: 2000/02/07 10:46:45 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -184,6 +184,15 @@ public abstract class A_CmsObject {
 	abstract public Vector getAllAccessibleProjects()
 		throws CmsException;
 	
+	/**
+	 * Returns all projects, which are owned by the user or which are manageable
+	 * for the group of the user.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 abstract public Vector getAllManageableProjects()
+		 throws CmsException;
+		 
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
 	 * If there are some mandatory Metadefinitions for the resourcetype, a 

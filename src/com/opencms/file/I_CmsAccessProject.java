@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/02/04 08:50:42 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/07 10:46:45 $
  */
 interface I_CmsAccessProject {
 
@@ -69,6 +69,16 @@ interface I_CmsAccessProject {
 	 * @return a Vector of projects.
 	 */
 	 public Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
+		 throws CmsException;
+	 
+	/**
+	 * Returns all projects, which the managergroup may manage.
+	 * 
+	 * @param managergroup The group to test.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 public Vector getAllAccessibleProjectsByManagerGroup(A_CmsGroup managergroup)
 		 throws CmsException;
 	 
 	/**
