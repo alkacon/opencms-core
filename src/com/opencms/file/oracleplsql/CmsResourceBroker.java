@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/25 12:08:36 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2001/07/27 08:13:19 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.28 $ $Date: 2001/07/25 12:08:36 $
+ * @version $Revision: 1.29 $ $Date: 2001/07/27 08:13:19 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 
@@ -158,9 +158,14 @@ public void copyFile(CmsUser currentUser, CmsProject currentProject, String sour
 	validFilename(destination.replace('/', 'a'));
 
 	try {
-		dbAccess.copyFile(currentProject, currentUser.getId(), source, destination);
-		// inform about the file-system-change
-		fileSystemChanged(false);
+        if(accessWrite(currentUser, currentProject, source)){
+		    dbAccess.copyFile(currentProject, currentUser.getId(), source, destination);
+		    // inform about the file-system-change
+		    fileSystemChanged(false);
+        } else {
+            throw new CmsException("[" + this.getClass().getName() + "] " + source,
+                CmsException.C_NO_ACCESS);
+        }
 	} catch (CmsException e) {
 		throw e;
 	}

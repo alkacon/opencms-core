@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/26 11:41:31 $
- * Version: $Revision: 1.259 $
+ * Date   : $Date: 2001/07/27 08:13:07 $
+ * Version: $Revision: 1.260 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.259 $ $Date: 2001/07/26 11:41:31 $
+ * @version $Revision: 1.260 $ $Date: 2001/07/27 08:13:07 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1376,18 +1376,22 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 
         CmsFolder cmsFolder = readFolder(currentUser,currentProject, foldername);
         if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
-
-            // write-acces  was granted - copy the file and the metainfos
-            m_dbAccess.copyFile(currentProject, onlineProject(currentUser, currentProject),
+            if(accessWrite(currentUser, currentProject, source)){
+                // write-acces  was granted - copy the file and the metainfos
+                m_dbAccess.copyFile(currentProject, onlineProject(currentUser, currentProject),
                               currentUser.getId(),source,cmsFolder.getResourceId(), foldername + filename);
 
-            // copy the metainfos
-            lockResource(currentUser, currentProject, destination, true);
-            writeProperties(currentUser,currentProject, destination,
+                // copy the metainfos
+                lockResource(currentUser, currentProject, destination, true);
+                writeProperties(currentUser,currentProject, destination,
                             readAllProperties(currentUser,currentProject,file.getAbsolutePath()));
-            m_accessCache.clear();
-            // inform about the file-system-change
-            fileSystemChanged(file.isFolder());
+                m_accessCache.clear();
+                // inform about the file-system-change
+                fileSystemChanged(file.isFolder());
+            } else {
+                throw new CmsException("[" + this.getClass().getName() + "] " + source,
+                    CmsException.C_NO_ACCESS);
+            }
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + destination,
                 CmsException.C_NO_ACCESS);
@@ -1423,21 +1427,26 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 
         // checks, if the destinateion is valid, if not it throws a exception
         validFilename(destination.replace('/', 'a'));
-
         foldername = destination.substring(0, destination.substring(0,destination.length()-1).lastIndexOf("/")+1);
         CmsFolder cmsFolder = readFolder(currentUser,currentProject, foldername);
         if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
             // write-acces  was granted - copy the folder and the properties
             CmsFolder folder=readFolder(currentUser,currentProject,source);
-            m_dbAccess.createFolder(currentUser,currentProject,onlineProject(currentUser, currentProject),folder,cmsFolder.getResourceId(),destination);
+            // check write access to the folder that has to be copied
+            if(accessWrite(currentUser, currentProject, (CmsResource) folder)){
+                m_dbAccess.createFolder(currentUser,currentProject,onlineProject(currentUser, currentProject),folder,cmsFolder.getResourceId(),destination);
 
-            // copy the properties
-            lockResource(currentUser, currentProject, destination, true);
-            writeProperties(currentUser,currentProject, destination,
+                // copy the properties
+                lockResource(currentUser, currentProject, destination, true);
+                writeProperties(currentUser,currentProject, destination,
                             readAllProperties(currentUser,currentProject,folder.getAbsolutePath()));
-            m_accessCache.clear();
-            // inform about the file-system-change
-            fileSystemChanged(true);
+                m_accessCache.clear();
+                // inform about the file-system-change
+                fileSystemChanged(true);
+            } else {
+                throw new CmsException("[" + this.getClass().getName() + "] " + source,
+                    CmsException.C_ACCESS_DENIED);
+            }
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + destination,
                 CmsException.C_ACCESS_DENIED);
