@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2002/12/06 23:16:58 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/01/24 20:37:58 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -200,15 +200,15 @@ final class CmsHtmlConverterTools {
 
         // HACK: if this link has already a link tag in it don't replace it
         // this is only for a special project and should be removed sometime...
-        if(valueParam != null){
-            if(valueParam.indexOf("<link>") != -1 || valueParam.indexOf("<LINK>") != -1){
+        if (valueParam != null) {
+            if (valueParam.indexOf("<link>") != -1 || valueParam.indexOf("<LINK>") != -1) {
                 return false;
             }
-            if(valueParam.startsWith("#")){
+            if (valueParam.startsWith("#")) {
                 // its an anchor in the same page
                 return false;
             }
-            if(valueParam.toLowerCase().startsWith("javascript:")){
+            if (valueParam.toLowerCase().startsWith("javascript:")) {
                 // it is a javascript (or Javasript or JavaScript or ...)
                 return false;
             }
@@ -216,24 +216,58 @@ final class CmsHtmlConverterTools {
         if (orgUrl == null) {
             return false;
         }
-        URL paramUrl = null;
-        try {
-            paramUrl = new URL(valueParam);
+
+        if (valueParam == null) {
+            return false;
         }
-        catch (MalformedURLException e) {
+
+        URL paramUrl = null;
+        String protocol = null;
+
+        // replace protocol by "http://"
+        String spec = valueParam.trim();
+
+        // get protocol
+        int index = spec.indexOf(":");
+        if (index >= 0) {
+            String tmpProtocol = spec.substring(0, index).trim().toLowerCase();
+            if ((tmpProtocol.length() > 0) && Character.isLetter(tmpProtocol.charAt(0))) {
+                char c;
+                boolean isValid = true;
+                for (int i = 1; i < tmpProtocol.length(); i++) {
+                    c = tmpProtocol.charAt(i);
+                    if (!Character.isLetterOrDigit(c) && c != '.' && c != '+' && c != '-') {
+                        isValid = false;
+                        break;
+                    }
+                }
+                if (isValid) {
+                    spec = "http" + spec.substring(index);
+                    protocol = tmpProtocol;
+                }
+            }
+        }
+
+        try {
+            // parse URL
+            paramUrl = new URL(spec);
+            if (protocol == null) {
+                protocol = paramUrl.getProtocol();
+            }
+        } catch (MalformedURLException e) {
             return true;
         }
-        if (orgUrl.getProtocol().equalsIgnoreCase(paramUrl.getProtocol())
-                && orgUrl.getHost().equalsIgnoreCase(paramUrl.getHost())) {
-            if(paramUrl.getFile() == null || "".equals(paramUrl.getFile())){
+        if (orgUrl.getProtocol().equalsIgnoreCase(protocol)
+            && orgUrl.getHost().equalsIgnoreCase(paramUrl.getHost())) {
+            if (paramUrl.getFile() == null || "".equals(paramUrl.getFile())) {
                 return false;
-            }else{
+            } else {
                 return true;
             }
         }
         return false;
     }
-
+        
     protected String reconstructTag(String replace, Node node, String param, String quotationMark) {
         StringBuffer tempString = new StringBuffer("");
         tempString.append("<");
