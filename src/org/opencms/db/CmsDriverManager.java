@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/08 16:51:47 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/07/09 10:58:09 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.29 $ $Date: 2003/07/08 16:51:47 $
+ * @version $Revision: 1.30 $ $Date: 2003/07/09 10:58:09 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1315,14 +1315,14 @@ public class CmsDriverManager extends Object {
             CmsResource offlineRes = null;
             try {
                 m_resourceCache.remove(getCacheKey(null, currentUser, currentProject, resource));
-                Vector subFiles = getFilesInFolder(currentUser, currentProject, resource, true);
-                Vector subFolders = getSubFolders(currentUser, currentProject, resource, true);
+                List subFiles = getSubFiles(currentUser, currentProject, resource, true);
+                List subFolders = getSubFolders(currentUser, currentProject, resource, true);
                 for (int i = 0; i < subFolders.size(); i++) {
-                    String foldername = ((CmsResource) subFolders.elementAt(i)).getResourceName();
+                    String foldername = ((CmsResource) subFolders.get(i)).getResourceName();
                     m_resourceCache.remove(getCacheKey(null, currentUser, currentProject, foldername));
                 }
                 for (int i = 0; i < subFiles.size(); i++) {
-                    String filename = ((CmsResource) subFiles.elementAt(i)).getResourceName();
+                    String filename = ((CmsResource) subFiles.get(i)).getResourceName();
                     m_resourceCache.remove(getCacheKey(null, currentUser, currentProject, filename));
                 }
                 
@@ -2059,12 +2059,12 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         if (onlineFolder == null) {
             // the onlinefile dosent exist => remove the file realy!
             deleteAllProperties(currentUser, currentProject, foldername);
-            m_vfsDriver.removeFolder(currentProject.getId(), cmsFolder);
+            m_vfsDriver.removeFolder(currentProject, cmsFolder);
             // remove the access control entries
             m_userDriver.removeAllAccessControlEntries(currentProject, cmsFolder.getResourceAceId());
 
         } else {
-                m_vfsDriver.deleteFolder(currentProject.getId(),cmsFolder);
+                m_vfsDriver.deleteFolder(currentProject,cmsFolder);
             // delete the access control entries
             deleteAllAccessControlEntries(currentUser, currentProject, cmsFolder);
         }
@@ -2249,7 +2249,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             // now delete the folders in the vector
             for (int i = deletedFolders.size() - 1; i > -1; i--) {
                 CmsFolder delFolder = ((CmsFolder) deletedFolders.elementAt(i));
-                m_vfsDriver.removeFolder(id, delFolder);
+                m_vfsDriver.removeFolder(currentProject, delFolder);
                 // remove the access control entries
                 m_userDriver.removeAllAccessControlEntries(currentProject, delFolder.getResourceAceId());
             }
@@ -2916,93 +2916,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         return m_userDriver.getGroupsOfUser(user.getId());
     }
 
-/**
- * Returns a Vector with all files of a folder.<br>
- *
- * Files of a folder can be read from an offline Project and the online Project.<br>
- *
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can read this resource</li>
- * </ul>
- *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param foldername the complete m_path to the folder.
- *
- * @return A Vector with all subfiles for the overgiven folder.
- *
- * @throws CmsException  Throws CmsException if operation was not succesful.
- */
-public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, String foldername) throws CmsException
-{
-    return getFilesInFolder(currentUser, currentProject, foldername, false);
-}
 
-/**
- * Returns a Vector with all files of a folder.<br>
- *
- * Files of a folder can be read from an offline Project and the online Project.<br>
- *
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can read this resource</li>
- * </ul>
- *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param foldername the complete m_path to the folder.
- * @param includeDeleted Include the folder if it is deleted
- *
- * @return A Vector with all subfiles for the overgiven folder.
- *
- * @throws CmsException  Throws CmsException if operation was not succesful.
- */
-public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, String foldername, boolean includeDeleted) throws CmsException{
-    if (! foldername.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) foldername += I_CmsConstants.C_FOLDER_SEPARATOR;
-    String cacheKey = getCacheKey(currentUser.getName() + "_files_" + includeDeleted, currentUser, currentProject, foldername);
-    Vector files = (Vector)m_resourceListCache.get(cacheKey);    
-    if ((files==null) || (files.size()==0)) {
-        // try to get the files in the current project
-        try {
-            files = helperGetFilesInFolder(currentUser, currentProject, foldername, includeDeleted);
-        } catch (CmsException e) {
-            //if access is denied to the folder, dont try to read them from the online project.)
-            if (e.getType() == CmsException.C_ACCESS_DENIED)
-                return new Vector(); //an empty vector.
-            else
-                //can't handle it here.
-                throw e;
-        }
-        if (files == null){
-            //we are not allowed to read the folder (folder deleted)
-            return new Vector();
-        }
-        Vector onlineFiles = null;
-        if (! currentProject.isOnlineProject()){
-            // this is not the onlineproject, get the files
-            // from the onlineproject, too
-            try {
-                onlineFiles = helperGetFilesInFolder(currentUser, onlineProject(currentUser, currentProject), foldername,includeDeleted);
-                // merge the resources
-            } catch (CmsException exc){
-                if (exc.getType() != CmsException.C_ACCESS_DENIED)
-                    //cant handle it.
-                    throw exc;
-            }
-        }
-        if(onlineFiles != null){
-            //if it was null, the folder was marked deleted -> no files in online project.
-            files = mergeResources(files, onlineFiles);
-        }
-        m_resourceListCache.put(cacheKey, files);
-    }
-    return (files == null)?null:(Vector)files.clone();
-}
 /**
  * Returns a Vector with all resource-names that have set the given property to the given value.
  *
@@ -3444,99 +3358,6 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
     }
 
     /**
-     * Returns a Vector with all subfolders.<br>
-     *
-     * Subfolders can be read from an offline project and the online project. <br>
-     *
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can read this resource</li>
-     * </ul>
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param foldername the complete m_path to the folder.
-     *
-     * @return subfolders A Vector with all subfolders for the given folder.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    public Vector getSubFolders(CmsUser currentUser, CmsProject currentProject,
-                                String foldername) throws CmsException {
-        return getSubFolders(currentUser, currentProject, foldername, false);
-    }
-    /**
-     * Returns a Vector with all subfolders.<br>
-     *
-     * Subfolders can be read from an offline project and the online project. <br>
-     *
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can read this resource</li>
-     * </ul>
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param foldername the complete m_path to the folder.
-     * @param includeDeleted Include the folder if it is deleted
-     *
-     * @return subfolders A Vector with all subfolders for the given folder.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    public Vector getSubFolders(CmsUser currentUser, CmsProject currentProject,
-                                String foldername, boolean includeDeleted)
-        throws CmsException {
-        CmsFolder folder = null;
-        Vector folders = new Vector();
-
-        if (! foldername.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) foldername += I_CmsConstants.C_FOLDER_SEPARATOR;
-
-        String cacheKey = getCacheKey(currentUser.getName() + "_folders", currentUser, currentProject, foldername);
-        folders = (Vector) m_resourceListCache.get(cacheKey);
-        
-        try {
-            folder = readFolder(currentUser, currentProject, foldername, includeDeleted);                
-            // check if the user has read access 
-            checkPermissions(currentUser, currentProject, folder, I_CmsConstants.C_READ_ACCESS);
-        } catch (CmsException e) {
-            return new Vector();
-        }        
-
-        if ((folders == null) || (folders.size() == 0)) {
-
-            folders = new Vector();
-            // try to get the folders in the current project
-            try {                                
-                folders = helperGetSubFolders(currentUser, currentProject, folder);
-            } catch (CmsException exc) {
-                // no folders, ignoring them
-            }
-            if (!currentProject.isOnlineProject()) {
-                // this is not the onlineproject, get the files
-                // from the onlineproject, too
-                try {
-                    Vector onlineFolders =
-                    helperGetSubFolders(currentUser,
-                                        onlineProject(currentUser, currentProject),
-                                        folder);
-                    // merge the resources
-                    folders = mergeResources(folders, onlineFolders);
-                } catch (CmsException exc) {
-                    // no onlinefolders, ignoring them
-                }
-            }
-            m_resourceListCache.put(cacheKey, folders);
-        }
-
-        // return the folders
-        return (folders == null) ? null : (Vector) folders.clone();
-    }
-    /**
      * Get a parameter value for a task.
      *
      * <B>Security:</B>
@@ -3685,81 +3506,6 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         }
     }
 
-    /**
-     * Returns a Vector with all files of a folder.
-     * The method does not read any files from the parent folder,
-     * and also returns deleted files.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param foldername the complete m_path to the folder.
-     *
-     * @return subfiles A Vector with all subfiles for the overgiven folder.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    protected Vector helperGetFilesInFolder(CmsUser currentUser, CmsProject currentProject, String foldername, boolean includeDeleted) throws CmsException {
-        // get the folder
-        CmsFolder cmsFolder = null;
-        try {
-            cmsFolder = readFolder(currentUser, currentProject, foldername, includeDeleted);
-        } catch (CmsException exc) {
-            if (exc.getType() == CmsException.C_NOT_FOUND) {
-                // ignore the exception - file dosen't exist in this project
-                return new Vector(); //just an empty vector.
-            } else {
-                throw exc;
-            }
-        }
-
-        if ((cmsFolder.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted)) {
-            //indicate that the folder was found, but deleted, and resources are not avaiable.
-            return null;
-        }
-
-        Vector _files = m_vfsDriver.getFilesInFolder(currentProject.getId(), cmsFolder);
-        Vector files = new Vector(_files.size());
-
-        // check if the user has read access 
-        for (Enumeration e = _files.elements(); e.hasMoreElements();) {
-            CmsFile file = (CmsFile) e.nextElement();
-            if (hasPermissions(currentUser, currentProject, file, I_CmsConstants.C_READ_ACCESS, false)) {
-                files.addElement(file);
-            }
-        }
-        return files;
-    }
-    /**
-     * Returns a Hashtable with all subfolders.<br>
-     * 
-     * Subfolders can be read from an offline project and the online project. <br>
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project to read the folders from.
-     * @param foldername the complete m_path to the folder.
-     *
-     * @return subfolders A Hashtable with all subfolders for the given folder.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    protected Vector helperGetSubFolders(CmsUser currentUser, CmsProject currentProject, CmsFolder parentFolder) throws CmsException {
-        // acces to all subfolders was granted - return the sub-folders.
-        Vector folders = m_vfsDriver.getSubFolders(currentProject.getId(), parentFolder);
-        CmsFolder folder;
-        for (int z = 0; z < folders.size(); z++) {
-            // read the current folder
-            folder = (CmsFolder) folders.elementAt(z);
-            // check the readability for the folder
-            if (!hasPermissions(currentUser, currentProject, folder, I_CmsConstants.C_READ_ACCESS, false)) {
-                // access to the folder was not granted delete him
-                folders.removeElementAt(z);
-                // correct the index
-                z--;
-            }
-        }
-        
-        return folders;
-    }
     /**
      * Imports a import-resource (folder or zipfile) to the cms.
      *
@@ -4033,74 +3779,8 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         
         clearResourceCache();        
         return resource;
-
-//        CmsResource cmsResource = null;
-//
-//        // read the resource, that should be locked
-//        if (resourcename.endsWith("/")) {
-//            cmsResource = (CmsFolder) readFolder(currentUser, currentProject, resourcename);
-//        } else {
-//            cmsResource = (CmsFile) readFileHeader(currentUser, currentProject, resourcename);
-//        }
-//        // Can't lock what isn't there
-//        if (cmsResource == null)
-//            throw new CmsException(CmsException.C_NOT_FOUND);
-//        // check, if the resource is in the offline-project
-//        if (cmsResource.getProjectId() != currentProject.getId()) {
-//            // the resource is not in the current project and can't be locked - so ignore.
-//            return (CmsResource) null;
-//        }
-//
-//        // check if the user has write access to the resource
-//        getVfsAccessGuard(currentUser, currentProject).check(cmsResource, I_CmsConstants.C_WRITE_ACCESS, true, VfsAccessGuard.C_CHECK_IGNORE_LOCK, true);
-//
-//        // check, if the user may lock the resource
-//        if (cmsResource.isLocked()) {
-//            // if the force switch is not set, throw an exception
-//            if (force == false) {
-//                throw new CmsException("[" + getClass().getName() + "] " + resourcename, CmsException.C_LOCKED);
-//            }
-//        }
-//
-//        // lock the resource
-//        cmsResource.setLocked(currentUser.getId());
-//        cmsResource.setLockedInProject(currentProject.getId());
-//        //update resource
-//        m_vfsDriver.updateLockstate(cmsResource, currentProject.getId());
-//        // update the cache
-//        this.clearResourceCache(resourcename, currentProject, currentUser);
-//
-//        // if this resource is a folder -> lock all subresources, too
-//        if (cmsResource.isFolder()) {
-//            Vector files = getFilesInFolder(currentUser, currentProject, resourcename);
-//            Vector folders = getSubFolders(currentUser, currentProject, resourcename);
-//            CmsResource currentResource;
-//
-//            // lock all files in this folder
-//            for (int i = 0; i < files.size(); i++) {
-//                currentResource = (CmsResource) files.elementAt(i);
-//                if (currentResource.getState() != I_CmsConstants.C_STATE_DELETED) {                  
-//                    lockResource(currentUser, currentProject, CmsResource.getAbsolutePath(readPath(currentUser,currentProject,currentResource)), true);
-//                } else {
-//                    // don't lock the resource but shift it to the current project
-//                    changeLockedInProject(currentProject.getId(), CmsResource.getAbsolutePath(readPath(currentUser,currentProject,currentResource)), currentUser);
-//                }
-//            }
-//
-//            // lock all folders in this folder
-//            for (int i = 0; i < folders.size(); i++) {
-//                currentResource = (CmsResource) folders.elementAt(i);
-//                if (currentResource.getState() != I_CmsConstants.C_STATE_DELETED) {
-//                    lockResource(currentUser, currentProject, CmsResource.getAbsolutePath(readPath(currentUser,currentProject,currentResource)), true);
-//                } else {
-//                    // don't lock the resource but shift it to the current project
-//                    changeLockedInProject(currentProject.getId(), CmsResource.getAbsolutePath(readPath(currentUser,currentProject,currentResource)), currentUser);
-//                }
-//            }
-//        }
-//
-//        return cmsResource;
     }
+    
     //  Methods working with user and groups
 
     /**
@@ -4920,33 +4600,6 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      */
     public CmsResource readFileHeader(CmsUser currentUser, CmsProject currentProject, String filename) throws CmsException {
         return readFileHeader(currentUser, currentProject, filename, false);
-
-        //        CmsResource cmsFile = null;
-        //        // check if this method is misused to read a folder
-        //        if (filename.endsWith("/")) {
-        //            return (CmsResource) readFolder(currentUser, currentProject, filename);
-        //        }
-        //
-        //        // read the resource from the currentProject, or the online-project
-        //        try {
-        //            // try to read form cache first
-        //            String cacheKey = getCacheKey(null, currentUser, currentProject, filename);
-        //            cmsFile = (CmsResource) m_resourceCache.get(cacheKey);
-        //            if (cmsFile == null) {
-        //                cmsFile = m_vfsDriver.readFileHeader(currentProject.getId(), filename, false);
-        //                m_resourceCache.put(cacheKey, cmsFile);
-        //            }
-        //        } catch (CmsException exc) {
-        //            // the resource was not readable
-        //            //System.err.println("readFileHeader:" + filename);
-        //            throw exc;
-        //        }
-        //
-        //        // check if the user has read or view access to the folder
-        //        getVfsAccessGuard(currentUser, currentProject).check(cmsFile, I_CmsConstants.C_READVIEW_ACCESS, false, true);
-        //
-        //        // acces was granted - return the file-header.
-        //        return cmsFile;
     }
 
     /**
@@ -5073,46 +4726,6 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 
         return retValue;
     }
-    /**
-     * Reads a folder from the Cms.<BR/>
-     *
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can read the resource</li>
-     * </ul>
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param project the project to read the folder from.
-     * @param foldername The complete m_path of the folder to be read.
-     *
-     * @return folder The read folder.
-     *
-     * @throws CmsException will be thrown, if the folder couldn't be read.
-     * The CmsException will also be thrown, if the user has not the rights
-     * for this resource
-     */
-//    protected CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int project, String folder) throws CmsException {
-//        if (folder == null)
-//            return null;
-//        if (!folder.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))
-//            folder += I_CmsConstants.C_FOLDER_SEPARATOR;
-//        String cacheKey = getCacheKey(null, currentUser, currentProject, folder);
-//        CmsFolder cmsFolder = (CmsFolder) m_resourceCache.get(cacheKey);
-//        if (cmsFolder == null) {
-//            cmsFolder = m_vfsDriver.readFolderInProject(project, folder);
-//            if (cmsFolder != null) {
-//                m_resourceCache.put(cacheKey, cmsFolder);
-//            }
-//        }
-//
-//        // check if the user has read access to the folder
-//        getVfsAccessGuard(currentUser, currentProject).check(cmsFolder, I_CmsConstants.C_READ_ACCESS);
-//
-//        return cmsFolder;
-//    }
 
     /**
      * Reads a folder from the Cms.<BR/>
@@ -6702,57 +6315,6 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
             // ignore attempts to unlock not locked resources
             return;
         }        
-
-//        CmsResource cmsResource = null;
-//
-//        // read the resource, that should be locked
-//        if (resourcename.endsWith("/")) {
-//            cmsResource = readFolder(currentUser, currentProject, resourcename);
-//        } else {
-//            cmsResource = (CmsFile) readFileHeader(currentUser, currentProject, resourcename);
-//        }
-//
-//        // check if the user has write access to the resource
-//        getVfsAccessGuard(currentUser, currentProject).check(cmsResource, I_CmsConstants.C_WRITE_ACCESS, true, VfsAccessGuard.C_CHECK_IGNORE_LOCK, true);
-//
-//        // unlock the resource if it is locked by this user
-//        if (cmsResource.isLockedBy().equals(currentUser.getId())) {
-//
-//            // unlock the resource
-//            cmsResource.setLocked(CmsUUID.getNullUUID());
-//
-//            //update resource
-//            m_vfsDriver.updateLockstate(cmsResource, cmsResource.getLockedInProject());
-//
-//            // update the cache
-//            this.clearResourceCache(resourcename, currentProject, currentUser);
-//        } else {
-//            // ignore attempts to unlock not locked resources
-//            return;
-//        }
-//
-//        // if this resource is a folder -> lock all subresources, too
-//        if (cmsResource.isFolder()) {
-//            Vector files = getFilesInFolder(currentUser, currentProject, resourcename);
-//            Vector folders = getSubFolders(currentUser, currentProject, resourcename);
-//            CmsResource currentResource;
-//
-//            // unlock all files in this folder
-//            for (int i = 0; i < files.size(); i++) {
-//                currentResource = (CmsResource) files.elementAt(i);
-//                if (currentResource.getState() != I_CmsConstants.C_STATE_DELETED) {
-//                    unlockResource(currentUser, currentProject, CmsResource.getAbsolutePath(readPath(currentUser,currentProject,currentResource)));
-//                }
-//            }
-//
-//            // unlock all files in this folder
-//            for (int i = 0; i < folders.size(); i++) {
-//                currentResource = (CmsResource) folders.elementAt(i);
-//                if (currentResource.getState() != I_CmsConstants.C_STATE_DELETED) {
-//                    unlockResource(currentUser, currentProject, CmsResource.getAbsolutePath(readPath(currentUser,currentProject,currentResource)));
-//                }
-//            }
-//        }
     }
 
     /**
@@ -6953,32 +6515,6 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 
         // check if the user has write access 
 		checkPermissions(currentUser, currentProject, resource, I_CmsConstants.C_WRITE_ACCESS);
-
-        // write-access was granted
-        // set the owner, group, access flags and type of this resource
-        //			CmsUser owner = readUser(currentUser,currentProject, username);			
-        //			CmsGroup group = readGroup(currentUser, groupname);
-
-        // if owner, group, accessFlags or resourcetype must be changed,
-        // check if the current user is owner of the resource or administrator
-        // TODO: check what must be done here
-        /*
-        	if((!resource.getOwnerId().equals(owner.getId())) ||
-        	    	(resource.getGroupId() != group.getId()) ||
-        	    	(resource.getAccessFlags() != accessFlags) ||
-        	    	(resource.getType() != resourceType)){
-        		if((resource.getOwnerId().equals(currentUser.getId())) ||
-              			isAdmin(currentUser, currentProject)){
-        			resource.setUserId(owner.getId());
-        			resource.setGroupId(group.getId());
-        			resource.setAccessFlags(accessFlags);
-        			resource.setType(resourceType);
-        	    } else {
-        	    	throw new CmsException("[" + getClass().getName() + "] change owner, group, access or type of " + cms.readPath(resource),
-                	CmsException.C_NO_ACCESS);
-        	    }
-        	}	
-        */
 
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);
@@ -8869,18 +8405,83 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         return resource;
     }
     
-    /*
-    public void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, Map properties, long publishDate, int versionId) throws CmsException {
-        int version = 0;
-        int maxVersionCount = 0;
-        
-        maxVersionCount = m_backupDriver.getMaxResourceVersionCount();
-        
-        version = m_backupDriver.readMaxBackupVersion(resource.getId());
-        version++;
-        
-        m_backupDriver.writeBackupResource(currentUser, publishProject, resource, properties, version, publishDate);
+    public List getSubFiles(CmsUser currentUser, CmsProject currentProject, String parentFolderName) throws CmsException {
+        return getSubFiles(currentUser, currentProject, parentFolderName, false);
     }
-    */
+    
+    public List getSubFiles(CmsUser currentUser, CmsProject currentProject, String parentFolderName, boolean includeDeleted) throws CmsException {
+        return getSubResources(currentUser, currentProject, parentFolderName, includeDeleted, false);
+    }        
+    
+    public List getSubFolders(CmsUser currentUser, CmsProject currentProject, String parentFolderName) throws CmsException {
+        return getSubFolders(currentUser, currentProject, parentFolderName, false);
+    }
+    
+    public List getSubFolders(CmsUser currentUser, CmsProject currentProject, String parentFolderName, boolean includeDeleted) throws CmsException {
+        return getSubResources(currentUser, currentProject, parentFolderName, includeDeleted, true);
+    }
+    
+    /**
+     * Gets all sub folders or sub files in a given parent folder.<p>
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project
+     * @param parentFolderName the name of the parent folder
+     * @param includeDeleted false if deleted folders should be ignored
+     * @param getSubFolders true if the sub folders of the parent folder are requested, false if the sub files are requested
+     * @return a list of all sub folders or sub files
+     * @throws CmsException if something goes wrong
+     */    
+    protected List getSubResources(CmsUser currentUser, CmsProject currentProject, String parentFolderName, boolean includeDeleted, boolean getSubFolders) throws CmsException {
+        List subResources = null;
+        CmsFolder parentFolder = null;
+        CmsResource currentResource = null;
+        String cacheKey = null;
+
+        // try to get the sub resources from the cache
+        if (getSubFolders) {
+            cacheKey = getCacheKey(currentUser.getName() + "_folders", currentUser, currentProject, parentFolderName);
+        } else {
+            cacheKey = getCacheKey(currentUser.getName() + "_files_" + includeDeleted, currentUser, currentProject, parentFolderName);
+        }
+        subResources = (List) m_resourceListCache.get(cacheKey);
+
+        try {
+            // validate the parent folder name
+            if (!parentFolderName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+                parentFolderName += I_CmsConstants.C_FOLDER_SEPARATOR;
+            }
+                      
+            // read the parent folder  
+            parentFolder = readFolder(currentUser, currentProject, parentFolderName, includeDeleted);
+            checkPermissions(currentUser, currentProject, parentFolder, I_CmsConstants.C_READ_ACCESS);
+        } catch (CmsException e) {
+            return (List) new ArrayList(0);
+        }
+        
+        if ((parentFolder.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted)) {
+            // the parent folder was found, but it is deleted -> sub resources are not available
+            return (List) new ArrayList(0);
+        }   
+        
+        if (subResources != null && subResources.size() > 0) {
+            // the parent folder is not deleted, and the sub resources were cached, no further operations required
+            return subResources;
+        }
+        
+        // get the sub resources from the VFS driver and check the required permissions
+        subResources = m_vfsDriver.getSubResources(currentProject, parentFolder, getSubFolders);
+        for (int i=0; i<subResources.size(); i++) {
+            currentResource = (CmsResource) subResources.get(i);
+            if (!hasPermissions(currentUser, currentProject, currentResource, I_CmsConstants.C_READ_ACCESS, false)) {
+                subResources.remove(i--);
+            }            
+        }
+        
+        // cache the sub resources
+        m_resourceListCache.put(cacheKey, subResources);
+
+        return subResources;
+    }    
     
 }

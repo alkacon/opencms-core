@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -50,7 +51,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.43 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.44 $ $Date: 2003/07/09 10:58:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -106,11 +107,11 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             folder = (String)session.getValue(C_PARA_FOLDER);
             if(folder == null || "".equals(folder)) {
                 folder = getConfigFile(cms).getPicGalleryPath();
-                Vector galleries = cms.getSubFolders(folder);
+                List galleries = cms.getSubFolders(folder);
                 if(galleries.size() > 0) {
 
                     // take the first gallery
-                    folder = cms.readAbsolutePath((CmsResource)galleries.elementAt(0));
+                    folder = cms.readAbsolutePath((CmsResource)galleries.get(0));
                     session.putValue(C_PARA_FOLDER, folder);
                 }
                 else {
@@ -170,12 +171,12 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
     private Vector getFilteredPicList(CmsObject cms, String folder, String filter) throws CmsException {
 
         // Get all pictures in the given folder using the cms object
-        Vector allPics = cms.getFilesInFolder(folder);
+        List allPics = cms.getFilesInFolder(folder);
 
         // Filter the pics
         Vector filteredPics = new Vector();
         for(int i = 0;i < allPics.size();i++) {
-            CmsFile file = (CmsFile)allPics.elementAt(i);
+            CmsFile file = (CmsFile)allPics.get(i);
             String filename = file.getName();
             String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
             boolean filenameFilter = inFilter(filename, filter);
@@ -215,10 +216,10 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         if(chosenFolder == null) {
             chosenFolder = "";
         }
-        Vector folders = cms.getSubFolders(getConfigFile(cms).getPicGalleryPath());
+        List folders = cms.getSubFolders(getConfigFile(cms).getPicGalleryPath());
         int numFolders = folders.size();
         for(int i = 0;i < numFolders;i++) {
-            CmsResource currFolder = (CmsResource)folders.elementAt(i);
+            CmsResource currFolder = (CmsResource)folders.get(i);
             String name = currFolder.getName();
             if(chosenFolder.equals(cms.readAbsolutePath(currFolder))) {
                 ret = i;

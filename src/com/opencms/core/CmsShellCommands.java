@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/08 14:35:29 $
-* Version: $Revision: 1.85 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.86 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.85 $ $Date: 2003/07/08 14:35:29 $
+ * @version $Revision: 1.86 $ $Date: 2003/07/09 10:58:09 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -1158,9 +1158,9 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void getFilesInFolder(String foldername) {
         try {
-            Vector files = m_cms.getFilesInFolder(foldername);
+            List files = m_cms.getFilesInFolder(foldername);
             for(int i = 0;i < files.size();i++) {
-                System.out.println((CmsFile)files.elementAt(i));
+                System.out.println((CmsFile)files.get(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1413,9 +1413,9 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void getSubFolders(String foldername) {
         try {
-            Vector folders = m_cms.getSubFolders(foldername);
+            List folders = m_cms.getSubFolders(foldername);
             for(int i = 0;i < folders.size();i++) {
-                System.out.println((CmsFolder)folders.elementAt(i));
+                System.out.println((CmsFolder)folders.get(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);

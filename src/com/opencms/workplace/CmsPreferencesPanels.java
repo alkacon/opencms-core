@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/07/07 14:48:23 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -41,16 +43,15 @@ import com.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
-
-import org.opencms.workplace.CmsWorkplaceAction;
 
 /**
  * Template class for displaying the preference panels screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.51 $ $Date: 2003/07/07 14:48:23 $
+ * @version $Revision: 1.52 $ $Date: 2003/07/09 10:58:09 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
@@ -616,7 +617,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
     public Integer getLanguageFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
         // get all folders with language files
-        Vector allLangFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_LOCALES);
+        List allLangFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_LOCALES);
         String langName = null;
         Hashtable startSettings = null;
         I_CmsSession session = cms.getRequestContext().getSession(true);
@@ -634,7 +635,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         // now go through all language files and add their name and reference to the
         // output vectors
         for(int i = 0;i < allLangFolders.size();i++) {
-            CmsFolder folder = (CmsFolder)allLangFolders.elementAt(i);
+            CmsFolder folder = (CmsFolder)allLangFolders.get(i);
             CmsXmlLanguageFile langFile = new CmsXmlLanguageFile(cms, folder.getName());
             names.addElement(langFile.getLanguageValue("name"));
             values.addElement(folder.getName());

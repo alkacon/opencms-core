@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePdfpage.java,v $
-* Date   : $Date: 2003/07/07 17:24:22 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,8 +43,10 @@ import com.opencms.template.I_CmsXmlParser;
 import com.opencms.util.Encoder;
 
 import java.io.StringWriter;
-import java.util.Enumeration;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -58,7 +60,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2003/07/07 17:24:22 $
+ * @version $Revision: 1.26 $ $Date: 2003/07/09 10:58:09 $
  */
 
 public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -301,19 +303,19 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
         }
 
         // get all files and folders in the current filelist.
-        Vector files = cms.getFilesInFolder(currentFilelist);
-        Vector folders = cms.getSubFolders(currentFilelist);
+        List files = cms.getFilesInFolder(currentFilelist);
+        List folders = cms.getSubFolders(currentFilelist);
 
         // combine folder and file vector
         Vector filefolders = new Vector();
-        Enumeration enum = folders.elements();
-        while(enum.hasMoreElements()) {
-            folder = (CmsFolder)enum.nextElement();
+        Iterator enum = folders.iterator();
+        while(enum.hasNext()) {
+            folder = (CmsFolder)enum.next();
             filefolders.addElement(folder);
         }
-        enum = files.elements();
-        while(enum.hasMoreElements()) {
-            file = (CmsFile)enum.nextElement();
+        enum = files.iterator();
+        while(enum.hasNext()) {
+            file = (CmsFile)enum.next();
             filefolders.addElement(file);
         }
         if(filefolders.size() > 0) {
@@ -328,9 +330,9 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
 
             //now check files and folders that are not deleted and include navigation
             // information
-            enum = filefolders.elements();
-            while(enum.hasMoreElements()) {
-                CmsResource res = (CmsResource)enum.nextElement();
+            enum = filefolders.iterator();
+            while(enum.hasNext()) {
+                CmsResource res = (CmsResource)enum.next();
 
                 // check if the resource is not marked as deleted
                 if(res.getState() != C_STATE_DELETED) {
@@ -428,22 +430,22 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
             Vector values, Hashtable parameters) throws CmsException {
 
         //Vector files=cms.getFilesInFolder(C_VFS_PATH_DEFAULT_TEMPLATES);
-        Vector files = cms.getFilesInFolder(C_VFS_PATH_DEFAULT_TEMPLATES);
+        List files = cms.getFilesInFolder(C_VFS_PATH_DEFAULT_TEMPLATES);
 
         // get all module Templates
-        Vector modules = new Vector();
+        List modules = (List) new ArrayList();
         modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES);
         for(int i = 0;i < modules.size();i++) {
-            Vector moduleTemplateFiles = new Vector();
-            moduleTemplateFiles = cms.getFilesInFolder(cms.readAbsolutePath((CmsFolder)modules.elementAt(i)) + "templates/");
+            List moduleTemplateFiles = (List) new ArrayList();
+            moduleTemplateFiles = cms.getFilesInFolder(cms.readAbsolutePath((CmsFolder)modules.get(i)) + "templates/");
             for(int j = 0;j < moduleTemplateFiles.size();j++) {
-                files.addElement(moduleTemplateFiles.elementAt(j));
+                files.add(moduleTemplateFiles.get(j));
             }
         }
-        Enumeration enum = files.elements();
+        Iterator enum = files.iterator();
         String templateType = null;
-        while(enum.hasMoreElements()) {
-            CmsFile file = (CmsFile)enum.nextElement();
+        while(enum.hasNext()) {
+            CmsFile file = (CmsFile)enum.next();
             templateType = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TEMPLATETYPE);
             if((file.getState() != C_STATE_DELETED) && (C_PDFTEMPLATE.equals(templateType))) {
                 String nicename = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);

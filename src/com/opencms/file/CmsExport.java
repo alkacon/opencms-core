@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2003/07/09 10:58:09 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,18 @@
 
 package com.opencms.file;
 
+import org.opencms.security.CmsAccessControlEntry;
+
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
+import com.opencms.report.CmsShellReport;
+import com.opencms.report.I_CmsReport;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.util.Utils;
+import com.opencms.workplace.I_CmsWpConstants;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,6 +49,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -50,17 +63,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import com.opencms.core.A_OpenCms;
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.flex.util.CmsUUID;
-import com.opencms.report.CmsShellReport;
-import com.opencms.report.I_CmsReport;
-import org.opencms.security.CmsAccessControlEntry;
-import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Utils;
-import com.opencms.workplace.I_CmsWpConstants;
-
 /**
  * Provides the functionality to export files from the OpenCms VFS to a ZIP file.<p>
  * 
@@ -71,7 +73,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.59 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.60 $ $Date: 2003/07/09 10:58:09 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -628,13 +630,13 @@ public class CmsExport implements I_CmsConstants, Serializable {
         }
                 
         // get all subFolders
-        Vector subFolders = m_cms.getSubFolders(path);
+        List subFolders = m_cms.getSubFolders(path);
         // get all files in folder
-        Vector subFiles = m_cms.getFilesInFolder(path);
+        List subFiles = m_cms.getFilesInFolder(path);
 
         // walk through all files and export them
         for (int i = 0; i < subFiles.size(); i++) {
-            CmsResource file = (CmsResource)subFiles.elementAt(i);
+            CmsResource file = (CmsResource)subFiles.get(i);
             int state = file.getState();
             long age = file.getDateLastModified();
 
@@ -651,7 +653,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
 
         // walk through all subfolders and export them
         for (int i = 0; i < subFolders.size(); i++) {
-            CmsResource folder = (CmsResource)subFolders.elementAt(i);
+            CmsResource folder = (CmsResource)subFolders.get(i);
             if (folder.getState() != C_STATE_DELETED) {
                 // check if this is a system-folder and if it should be included.
                 String export = m_cms.readAbsolutePath(folder);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2003/07/02 11:03:13 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,8 +37,9 @@ import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.LinkSubstitution;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -48,7 +49,7 @@ import java.util.Vector;
  * @author Alexander Kandzior
  * @author Waruschan Babachan
  * @author Thomas Weckert
- * @version $Revision: 1.48 $ $Date: 2003/07/02 11:03:13 $
+ * @version $Revision: 1.49 $ $Date: 2003/07/09 10:58:09 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -77,7 +78,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param userObj Hashtable with parameters.
      * @return String that contains the navigation.
      */
-    protected String buildNav(CmsObject cms, A_CmsXmlContent doc,Object userObject, Vector resources)
+    protected String buildNav(CmsObject cms, A_CmsXmlContent doc,Object userObject, List resources)
         throws CmsException {
 
         // get uri, currentfolder,servletpath and template file
@@ -148,7 +149,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param depth An Integer that shows how many folders must be displayed.
      * @return String that contains the navigation.
      */
-    protected String buildNavFold(CmsObject cms, CmsXmlTemplateFile template, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath,int level,int[] count)
+    protected String buildNavFold(CmsObject cms, CmsXmlTemplateFile template, Object userObject, List resources, String requestedUri, String currentFolder, String servletPath,int level,int[] count)
         throws CmsException {
 
         StringBuffer result = new StringBuffer();
@@ -214,8 +215,8 @@ public class CmsXmlNav extends A_CmsNavBase {
                 }
                 // if the folder was clicked
                 if (requestedUri.indexOf(navLink[i])!=-1) {
-                    Vector all=cms.getSubFolders(navLink[i]);
-                    Vector files=cms.getFilesInFolder(navLink[i]);
+                    List all=cms.getSubFolders(navLink[i]);
+                    List files=cms.getFilesInFolder(navLink[i]);
                     // register this folder for changes (if it is a folder!)
                     if(navLink[i].endsWith("/")){
                         Vector vfsDeps = new Vector();
@@ -223,10 +224,10 @@ public class CmsXmlNav extends A_CmsNavBase {
                         registerVariantDeps(cms, template.getAbsoluteFilename(), null, null,
                                         (Hashtable)userObject, vfsDeps, null, null);
                     }
-                    all.ensureCapacity(all.size() + files.size());
-                    Enumeration e = files.elements();
-                    while (e.hasMoreElements()) {
-                        all.addElement(e.nextElement());
+                    ((ArrayList)all).ensureCapacity(all.size() + files.size());
+                    Iterator e = files.iterator();
+                    while (e.hasNext()) {
+                        all.add(e.next());
                     }
                     result.append(buildNavFold(cms,template,userObject,all,requestedUri,currentFolder,servletPath,level,count));
                 }
@@ -253,7 +254,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param depthIsNull a boolean that determines whether the depth is given in tagcontent
      * @return String that contains the navigation.
      */
-    protected String buildNavTree(CmsObject cms, CmsXmlTemplateFile template, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath,int level,int depth,boolean depthIsNull,int[] count)
+    protected String buildNavTree(CmsObject cms, CmsXmlTemplateFile template, Object userObject, List resources, String requestedUri, String currentFolder, String servletPath,int level,int depth,boolean depthIsNull,int[] count)
         throws CmsException {
 
         StringBuffer result = new StringBuffer();
@@ -330,17 +331,17 @@ public class CmsXmlNav extends A_CmsNavBase {
                 depth--;
                 if (depthIsNull || (depthIsNull==false && depth>=0)) {
                     if (navLink[i].endsWith("/")) {
-                        Vector all=cms.getSubFolders(navLink[i]);
-                        Vector files=cms.getFilesInFolder(navLink[i]);
+                        List all=cms.getSubFolders(navLink[i]);
+                        List files=cms.getFilesInFolder(navLink[i]);
                         // register this folder for changes
                         Vector vfsDeps = new Vector();
                         vfsDeps.add(cms.readFolder(navLink[i]));
                         registerVariantDeps(cms, template.getAbsoluteFilename(), null, null,
                                         (Hashtable)userObject, vfsDeps, null, null);
-                        all.ensureCapacity(all.size() + files.size());
-                        Enumeration e = files.elements();
-                        while (e.hasMoreElements()) {
-                            all.addElement(e.nextElement());
+                        ((ArrayList)all).ensureCapacity(all.size() + files.size());
+                        Iterator e = files.iterator();
+                        while (e.hasNext()) {
+                            all.add(e.next());
                         }
                         result.append(buildNavTree(cms,template,userObject,all,requestedUri,currentFolder,servletPath,level,depth,depthIsNull,count));
                     }
@@ -423,7 +424,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param navPos an array of position of navbar.
      * @return The maximum number of navbars in navigation.
      */
-    protected int extractNav(CmsObject cms, Vector resources, String[] navLink, String[] navText, float[] navPos)
+    protected int extractNav(CmsObject cms, List resources, String[] navLink, String[] navText, float[] navPos)
         throws CmsException {
 
         String requestedUri = cms.getRequestContext().getUri();
@@ -435,7 +436,7 @@ public class CmsXmlNav extends A_CmsNavBase {
         // for any navigation metainformations and store
         // the maximum position found
         for(int i=0; i<size; i++) {
-            CmsResource currentResource = (CmsResource)resources.elementAt(i);
+            CmsResource currentResource = (CmsResource)resources.get(i);
             String path = cms.readAbsolutePath(currentResource);
             String pos = cms.readProperty(path, C_PROPERTY_NAVPOS);
             String text = cms.readProperty(path, C_PROPERTY_NAVTEXT);
@@ -615,12 +616,12 @@ public class CmsXmlNav extends A_CmsNavBase {
         registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
                         (Hashtable)userObject, vfsDeps, null, null);
         // get all resources in current folder
-        Vector resources=cms.getSubFolders(currentFolder);
-        Vector allFile=cms.getFilesInFolder(currentFolder);
-        resources.ensureCapacity(resources.size() + allFile.size());
-        Enumeration e = allFile.elements();
-        while (e.hasMoreElements()) {
-            resources.addElement(e.nextElement());
+        List resources=cms.getSubFolders(currentFolder);
+        List allFile=cms.getFilesInFolder(currentFolder);
+        ((ArrayList)resources).ensureCapacity(resources.size() + allFile.size());
+        Iterator e = allFile.iterator();
+        while (e.hasNext()) {
+            resources.add(e.next());
         }
         // if there is not exist current datablock then take the entry datablock
         if (!template.hasData("navcurrent")) {
@@ -684,12 +685,12 @@ public class CmsXmlNav extends A_CmsNavBase {
         registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
                         (Hashtable)userObject, vfsDeps, null, null);
         // get all resources
-        Vector resources=cms.getSubFolders(folder);
-        Vector allFile=cms.getFilesInFolder(folder);
-        resources.ensureCapacity(resources.size() + allFile.size());
-        Enumeration e = allFile.elements();
-        while (e.hasMoreElements()) {
-            resources.addElement(e.nextElement());
+        List resources=cms.getSubFolders(folder);
+        List allFile=cms.getFilesInFolder(folder);
+        ((ArrayList)resources).ensureCapacity(resources.size() + allFile.size());
+        Iterator e = allFile.iterator();
+        while (e.hasNext()) {
+            resources.add(e.next());
         }
 
         String result="";
@@ -759,13 +760,13 @@ public class CmsXmlNav extends A_CmsNavBase {
         vfsDeps.add(cms.readFolder(currentFolder));
         registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
                         (Hashtable)userObject, vfsDeps, null, null);
-        Vector resources=cms.getSubFolders(currentFolder);
-        Vector allFile=cms.getFilesInFolder(currentFolder);
+        List resources=cms.getSubFolders(currentFolder);
+        List allFile=cms.getFilesInFolder(currentFolder);
 
-        resources.ensureCapacity(resources.size() + allFile.size());
-        Enumeration e = allFile.elements();
-        while (e.hasMoreElements()) {
-            resources.addElement(e.nextElement());
+        ((ArrayList)resources).ensureCapacity(resources.size() + allFile.size());
+        Iterator e = allFile.iterator();
+        while (e.hasNext()) {
+            resources.add(e.next());
         }
         // if there is not exist current datablock then take the entry datablock
         if (!template.hasData("navcurrent")) {
@@ -822,12 +823,12 @@ public class CmsXmlNav extends A_CmsNavBase {
         registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
                         (Hashtable)userObject, vfsDeps, null, null);
         // get all resources, it means all files and folders.
-        Vector resources=cms.getSubFolders(currentFolder);
-        Vector allFile=cms.getFilesInFolder(currentFolder);
-        resources.ensureCapacity(resources.size() + allFile.size());
-        Enumeration e = allFile.elements();
-        while (e.hasMoreElements()) {
-            resources.addElement(e.nextElement());
+        List resources=cms.getSubFolders(currentFolder);
+        List allFile=cms.getFilesInFolder(currentFolder);
+        ((ArrayList)resources).ensureCapacity(resources.size() + allFile.size());
+        Iterator e = allFile.iterator();
+        while (e.hasNext()) {
+            resources.add(e.next());
         }
         // if there is not exist current datablock then take the entry datablock
         if (!template.hasData("navcurrent")) {
@@ -1042,13 +1043,13 @@ public class CmsXmlNav extends A_CmsNavBase {
         registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null, (Hashtable)userObject, vfsDeps, null, null);        
      
         // collect all files and subfolders
-        Vector resources = cms.getSubFolders(currentFolder);       
-        Vector files = cms.getFilesInFolder(currentFolder);
-        resources.ensureCapacity(resources.size() + files.size());
+        List resources = cms.getSubFolders(currentFolder);       
+        List files = cms.getFilesInFolder(currentFolder);
+        ((ArrayList)resources).ensureCapacity(resources.size() + files.size());
         
-        Enumeration allFiles = files.elements();
-        while (allFiles.hasMoreElements()) {
-            resources.addElement(allFiles.nextElement());
+        Iterator allFiles = files.iterator();
+        while (allFiles.hasNext()) {
+            resources.add(allFiles.next());
         }    
         
         // evaluate the navigation properties properties
@@ -1192,14 +1193,14 @@ public class CmsXmlNav extends A_CmsNavBase {
         registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
                         (Hashtable)userObject, vfsDeps, null, null);
         // get all folders in specified folder
-        Vector resources=cms.getSubFolders(folder);
+        List resources=cms.getSubFolders(folder);
         // get all files in specified folder
-        Vector allFile=cms.getFilesInFolder(folder);
+        List allFile=cms.getFilesInFolder(folder);
         // get a vector of all files und folders
-        resources.ensureCapacity(resources.size() + allFile.size());
-        Enumeration e = allFile.elements();
-        while (e.hasMoreElements()) {
-            resources.addElement(e.nextElement());
+        ((ArrayList)resources).ensureCapacity(resources.size() + allFile.size());
+        Iterator e = allFile.iterator();
+        while (e.hasNext()) {
+            resources.add(e.next());
         }
         // get the uri,servletpath and current folder
         String requestedUri = cms.getRequestContext().getUri();
@@ -1449,19 +1450,19 @@ public class CmsXmlNav extends A_CmsNavBase {
                 break;
         }
 
-        Vector resources = cms.getSubFolders(currentFolder);
-        Vector allFile = cms.getFilesInFolder(currentFolder);
-        resources.ensureCapacity(resources.size() + allFile.size());
-        Enumeration e = allFile.elements();
+        List resources = cms.getSubFolders(currentFolder);
+        List allFile = cms.getFilesInFolder(currentFolder);
+        ((ArrayList)resources).ensureCapacity(resources.size() + allFile.size());
+        Iterator e = allFile.iterator();
 
-        Vector resources2 = null;
-        Vector allFile2 = null;
-        Enumeration e2 = null;
+        List resources2 = null;
+        List allFile2 = null;
+        Iterator e2 = null;
         Object oBuffer2 = null;
 
-        Vector resources3 = null;
-        Vector allFile3 = null;
-        Enumeration e3 = null;
+        List resources3 = null;
+        List allFile3 = null;
+        Iterator e3 = null;
         Object oBuffer1 = null;
         Object oBuffer3 = null;
 
@@ -1471,9 +1472,9 @@ public class CmsXmlNav extends A_CmsNavBase {
         ArrayList alLink2 = new ArrayList();
         ArrayList alPos2 = new ArrayList();
 
-        while (e.hasMoreElements()) {
-            oBuffer1 = e.nextElement();
-            resources.addElement(oBuffer1);
+        while (e.hasNext()) {
+            oBuffer1 = e.next();
+            resources.add(oBuffer1);
         }
 
         sRet = buildNavPop(cms, doc, userObject, resources, null, 1, 0, 0, deep);
@@ -1492,16 +1493,16 @@ public class CmsXmlNav extends A_CmsNavBase {
                     alPos.add(new Integer(iCount));
                     resources2 = cms.getSubFolders(navLink[iCount]);
                     allFile2 = cms.getFilesInFolder(navLink[iCount]);
-                    resources2.ensureCapacity(resources2.size() + allFile2.size());
-                    e2 = allFile2.elements();
+                    ((ArrayList)resources2).ensureCapacity(resources2.size() + allFile2.size());
+                    e2 = allFile2.iterator();
 
-                    while (e2.hasMoreElements()) {
-                        oBuffer2 = e2.nextElement();
-                        resources2.addElement(oBuffer2);
+                    while (e2.hasNext()) {
+                        oBuffer2 = e2.next();
+                        resources2.add(oBuffer2);
                     }
 
                     for (int iResCounter = 0; iResCounter < resources2.size(); iResCounter++) {
-                        resources4.addElement(resources2.elementAt(iResCounter));
+                        resources4.addElement(resources2.get(iResCounter));
                     }
 
                     sRet = buildNavPop(cms, doc, userObject, resources2, sRet, 2, iCount, 0, deep);
@@ -1536,12 +1537,12 @@ public class CmsXmlNav extends A_CmsNavBase {
                 if (navLink[iCount].endsWith("/") || navLink[iCount].endsWith("\\")) {
                     resources3 = cms.getSubFolders(navLink[iCount]);
                     allFile3 = cms.getFilesInFolder(navLink[iCount]);
-                    resources3.ensureCapacity(resources3.size() + allFile3.size());
-                    e3 = allFile3.elements();
+                    ((ArrayList)resources3).ensureCapacity(resources3.size() + allFile3.size());
+                    e3 = allFile3.iterator();
 
-                    while (e3.hasMoreElements()) {
-                        oBuffer3 = e3.nextElement();
-                        resources3.addElement(oBuffer3);
+                    while (e3.hasNext()) {
+                        oBuffer3 = e3.next();
+                        resources3.add(oBuffer3);
                     }
 
                     int iArrayPos = -1;
@@ -1586,7 +1587,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param userObj Hashtable with parameters.
      * @return String that contains the navigation.
      */
-    protected StringBuffer buildNavPop(CmsObject cms, A_CmsXmlContent doc, Object userObject, Vector resources, StringBuffer result2, int iDirLevel, int lPos, int lPos2, int iMaxDeep) throws CmsException {
+    protected StringBuffer buildNavPop(CmsObject cms, A_CmsXmlContent doc, Object userObject, List resources, StringBuffer result2, int iDirLevel, int lPos, int lPos2, int iMaxDeep) throws CmsException {
         String requestedUri = cms.getRequestContext().getUri();
         String currentFolder = cms.readAbsolutePath(cms.getRequestContext().currentFolder());
         String servletPath = cms.getRequestContext().getRequest().getServletUrl();
@@ -1626,12 +1627,12 @@ public class CmsXmlNav extends A_CmsNavBase {
             for (int i = 0; i < max; i++) {
                 bHasSubFiles = false;
                 if (navLink[i].endsWith("/") || navLink[i].endsWith("\\")) {
-                    Vector resources2 = cms.getSubFolders(navLink[i]);
-                    Vector allFile2 = cms.getFilesInFolder(navLink[i]);
-                    resources2.ensureCapacity(resources2.size() + allFile2.size());
-                    Enumeration e2 = allFile2.elements();
-                    while (e2.hasMoreElements()) {
-                        resources2.addElement(e2.nextElement());
+                    List resources2 = cms.getSubFolders(navLink[i]);
+                    List allFile2 = cms.getFilesInFolder(navLink[i]);
+                    ((ArrayList)resources2).ensureCapacity(resources2.size() + allFile2.size());
+                    Iterator e2 = allFile2.iterator();
+                    while (e2.hasNext()) {
+                        resources2.add(e2.next());
                     }
                     int size2 = resources2.size();
                     String navLink2[] = new String[size2];

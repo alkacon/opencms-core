@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,14 +40,14 @@ import com.opencms.report.A_CmsReportThread;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * Template class for displaying the publish screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.18 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/09 10:58:09 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -270,18 +270,18 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
         if(resource.isLocked()){
             return false;
         }
-        Vector allFiles = cms.getFilesInFolder(cms.readAbsolutePath(resource));
-        Vector allFolders = cms.getSubFolders(cms.readAbsolutePath(resource));
+        List allFiles = cms.getFilesInFolder(cms.readAbsolutePath(resource));
+        List allFolders = cms.getSubFolders(cms.readAbsolutePath(resource));
         // first check if any file in the folder is locked
         for(int i=0; i<allFiles.size(); i++){
-            CmsResource curFile = (CmsResource)allFiles.elementAt(i);
+            CmsResource curFile = (CmsResource)allFiles.get(i);
             if(curFile.isLocked()){
                 return false;
             }
         }
         // now check all subfolders
         for(int j=0; j<allFolders.size(); j++){
-            CmsResource curFolder = (CmsResource)allFolders.elementAt(j);
+            CmsResource curFolder = (CmsResource)allFolders.get(j);
             if(!checkLocked(cms, curFolder)){
                 return false;
             }
@@ -305,11 +305,11 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
             cms.unlockResource(cms.readAbsolutePath(resource));
         } else {
             // need to unlock each resource
-            Vector allFiles = cms.getFilesInFolder(cms.readAbsolutePath(resource));
-            Vector allFolders = cms.getSubFolders(cms.readAbsolutePath(resource));
+            List allFiles = cms.getFilesInFolder(cms.readAbsolutePath(resource));
+            List allFolders = cms.getSubFolders(cms.readAbsolutePath(resource));
             // unlock the files
             for(int i=0; i<allFiles.size(); i++){
-                CmsResource curFile = (CmsResource)allFiles.elementAt(i);
+                CmsResource curFile = (CmsResource)allFiles.get(i);
                 if(curFile.isLocked()){
                     if(!resource.isLockedBy().equals(cms.getRequestContext().currentUser().getId())){
                         cms.lockResource(cms.readAbsolutePath(curFile),true);
@@ -319,7 +319,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
             }
             // unlock the folders
             for(int j=0; j<allFolders.size(); j++){
-                CmsResource curFolder = (CmsResource)allFolders.elementAt(j);
+                CmsResource curFolder = (CmsResource)allFolders.get(j);
                 unlockResource(cms, curFolder);
             }
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/07/08 16:51:47 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,16 +43,17 @@ import com.opencms.template.CmsXmlTemplateFile;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 /**
  * This class is used to display the administration view.
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.37 $ $Date: 2003/07/08 16:51:47 $
+ * @version $Name:  $ $Revision: 1.38 $ $Date: 2003/07/09 10:58:09 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -246,24 +247,24 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "sentBy: " + sentBy );                    
         }          
         
-        Vector iconVector = new Vector();
+        List iconVector = (List) new ArrayList();
         if(sentBy.endsWith("/administration/")) {
 
             // we must serch for administrationPoints in AdminPath and in system/modules/..
             sentBy = confFile.getWorkplaceAdministrationPath();
             iconVector = cms.getSubFolders(sentBy);
-            Vector modules = new Vector();
+            List modules = (List) new ArrayList();
 
             modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES);
 
             for(int i = 0;i < modules.size();i++) {
-                Vector moduleAdminPoints = new Vector();
-                String dummy = cms.readAbsolutePath((CmsFolder)modules.elementAt(i));
+                List moduleAdminPoints = (List) new ArrayList();
+                String dummy = cms.readAbsolutePath((CmsFolder)modules.get(i));
                 dummy += "administration/";
                 moduleAdminPoints = cms.getSubFolders(dummy);
                 for(int j = 0;j < moduleAdminPoints.size();j++) {
-                    CmsFolder currentModuleAdminFolder = (CmsFolder) moduleAdminPoints.elementAt(j);
-                    iconVector.addElement(currentModuleAdminFolder);
+                    CmsFolder currentModuleAdminFolder = (CmsFolder) moduleAdminPoints.get(j);
+                    iconVector.add(currentModuleAdminFolder);
                     //System.err.println( currentModuleAdminFolder.getResourceName() );
                 }
             }
@@ -272,7 +273,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             iconVector = cms.getSubFolders(sentBy);
         }
         session.putValue(C_SESSION_ADMIN_POS, sentBy);
-        Vector iconVector2 = cms.getFilesInFolder(sentBy);
+        List iconVector2 = cms.getFilesInFolder(sentBy);
         int numFolders = iconVector.size();
         if(numFolders > 0) {
             String iconNames[] = new String[numFolders];
@@ -284,7 +285,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             String folderActiv[] = new String[numFolders];
             String accessVisible[] = new String[numFolders];
             for(int i = 0;i < numFolders;i++) {
-                CmsResource aktIcon = (CmsResource)iconVector.elementAt(i);
+                CmsResource aktIcon = (CmsResource)iconVector.get(i);
                 try {
                     Map propertyinfos = cms.readProperties(cms.readAbsolutePath(aktIcon));
                     iconNames[i] = cms.readAbsolutePath(aktIcon);
@@ -338,7 +339,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
                         + "index.html?initial=true");
             }
             catch(Exception e) {
-                throw new CmsException("Redirect fails :" + cms.readAbsolutePath((CmsFile)iconVector2.elementAt(0)),
+                throw new CmsException("Redirect fails :" + cms.readAbsolutePath((CmsFile)iconVector2.get(0)),
                         CmsException.C_UNKNOWN_EXCEPTION, e);
             }
             return null;

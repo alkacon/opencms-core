@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsFileListUsers.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 
-import java.util.Vector;
+import java.util.List;
 
 /**
  * Interface for all classes using the workplace file list.
@@ -42,7 +42,7 @@ import java.util.Vector;
  * <code>&lt;FILELIST&gt;</code> has to implement this interface.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.8 $ $Date: 2003/07/09 10:58:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * @see com.opencms.workplace.CmsFileList
  */
@@ -71,7 +71,7 @@ public interface I_CmsFileListUsers {
      * @throws Throws CmsException if something goes wrong.
      */
     
-    public Vector getFiles(CmsObject cms) throws CmsException;
+    public List getFiles(CmsObject cms) throws CmsException;
     
     /**
      * Used to modify the bit pattern for hiding and showing columns in

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/07/03 13:29:45 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,8 +40,9 @@ import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
 import com.opencms.util.Encoder;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -50,7 +51,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.56 $ $Date: 2003/07/03 13:29:45 $
+ * @version $Revision: 1.57 $ $Date: 2003/07/09 10:58:09 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -342,11 +343,11 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      */
 
     private void getTree(CmsObject cms, CmsFolder root, Vector names, Vector values) throws CmsException {
-        Vector folders = cms.getSubFolders(cms.readAbsolutePath(root));
+        List folders = cms.getSubFolders(cms.readAbsolutePath(root));
         CmsProject currentProject = cms.getRequestContext().currentProject();
-        Enumeration enu = folders.elements();
-        while(enu.hasMoreElements()) {
-            CmsFolder folder = (CmsFolder)enu.nextElement();
+        Iterator enu = folders.iterator();
+        while(enu.hasNext()) {
+            CmsFolder folder = (CmsFolder)enu.next();
 
             // check if the current folder is part of the current project
             if(folder.inProject(currentProject)) {

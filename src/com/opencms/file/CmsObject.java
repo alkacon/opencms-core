@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/09 08:56:32 $
-* Version: $Revision: 1.302 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.303 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.302 $
+ * @version $Revision: 1.303 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1677,8 +1677,8 @@ public Vector getDirectGroupsOfUser(String username) throws CmsException {
  *
  * @throws CmsException if the user has not hte appropriate rigths to access or read the resource.
  */
-public Vector getFilesInFolder(String foldername) throws CmsException {
-    return (m_driverManager.getFilesInFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(foldername), false));
+public List getFilesInFolder(String foldername) throws CmsException {
+    return (m_driverManager.getSubFiles(m_context.currentUser(), m_context.currentProject(), getSiteRoot(foldername), false));
 }
 
 /**
@@ -1693,8 +1693,8 @@ public Vector getFilesInFolder(String foldername) throws CmsException {
  *
  * @throws CmsException if the user has not hte appropriate rigths to access or read the resource.
  */
-public Vector getFilesInFolder(String foldername, boolean includeDeleted) throws CmsException {
-    return (m_driverManager.getFilesInFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(foldername), includeDeleted));
+public List getFilesInFolder(String foldername, boolean includeDeleted) throws CmsException {
+    return (m_driverManager.getSubFiles(m_context.currentUser(), m_context.currentProject(), getSiteRoot(foldername), includeDeleted));
 }
 
 /**
@@ -1969,7 +1969,7 @@ public I_CmsResourceType getResourceType(String resourceType) throws CmsExceptio
  *
  * @throws CmsException if the user has not the rights to access or read the resource.
  */
-public Vector getSubFolders(String foldername) throws CmsException {
+public List getSubFolders(String foldername) throws CmsException {
     return (m_driverManager.getSubFolders(m_context.currentUser(), m_context.currentProject(), getSiteRoot(foldername), false));
 }
 
@@ -1983,7 +1983,7 @@ public Vector getSubFolders(String foldername) throws CmsException {
  *
  * @throws CmsException if the user has not the rights to access or read the resource.
  */
-public Vector getSubFolders(String foldername, boolean includeDeleted) throws CmsException {
+public List getSubFolders(String foldername, boolean includeDeleted) throws CmsException {
     return (m_driverManager.getSubFolders(m_context.currentUser(), m_context.currentProject(), getSiteRoot(foldername), includeDeleted));
 }
 

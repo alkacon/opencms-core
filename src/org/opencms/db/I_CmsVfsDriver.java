@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/07 09:31:53 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/09 10:58:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/07/07 09:31:53 $
+ * @version $Revision: 1.6 $ $Date: 2003/07/09 10:58:09 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -145,7 +145,7 @@ public interface I_CmsVfsDriver {
     void deleteAllProperties(int projectId, CmsResource resource) throws CmsException;
     void deleteAllProperties(int projectId, CmsUUID resourceId) throws CmsException;
     void deleteFile(CmsProject project, CmsUUID resourceId) throws CmsException;
-    void deleteFolder(int projectId, CmsFolder orgFolder) throws CmsException;
+    void deleteFolder(CmsProject currentProject, CmsFolder folder) throws CmsException;
     void deleteProjectResource(int projectId, String resourceName) throws CmsException;
     void deleteProjectResources(CmsProject project) throws CmsException;
     void deleteProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException;
@@ -165,7 +165,6 @@ public interface I_CmsVfsDriver {
     int fetchResourceID(CmsProject theProject, String theResourceName, int skipResourceTypeID) throws CmsException;
     ArrayList fetchVfsLinksForResourceID(CmsProject theProject, int theResourceID, int theResourceTypeLinkID) throws CmsException;
     void getBrokenLinks(I_CmsReport report, Vector changed, Vector deleted, Vector newRes) throws CmsException;
-    Vector getFilesInFolder(int projectId, CmsFolder parentFolder) throws CmsException;
     Vector getFilesWithProperty(int projectId, String propertyDefinition, String propertyValue) throws CmsException;
     
     /**
@@ -182,8 +181,7 @@ public interface I_CmsVfsDriver {
     Vector getResourcesInFolder(int projectId, CmsFolder offlineResource) throws CmsException;
     Vector getResourcesWithProperty(int projectId, String propertyDefinition) throws CmsException;
     Vector getResourcesWithProperty(int projectId, String propertyDefinition, String propertyValue, int resourceType) throws CmsException;
-    Vector getSubFolders(int projectId, CmsFolder parentFolder) throws CmsException;
-    Vector getUndeletedResources(Vector resources);
+    List getUndeletedResources(List resources);
     
     /**
      * Initializes this driver.<p>
@@ -285,7 +283,7 @@ public interface I_CmsVfsDriver {
     void removeFile(CmsProject currentProject, CmsUUID resourceId) throws CmsException;
     void removeFile(CmsProject currentProject, CmsUUID parentId, String filename) throws CmsException;
     
-    void removeFolder(int projectId, CmsFolder folder) throws CmsException;
+    void removeFolder(CmsProject currentProject, CmsFolder folder) throws CmsException;
     void removeFolderForPublish(CmsProject currentProject, CmsUUID folderId) throws CmsException;
     void removeTemporaryFile(CmsFile file) throws CmsException;
     int renameResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, String newResourceName) throws CmsException;
@@ -367,4 +365,16 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */
     CmsResource replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] newResContent, I_CmsResourceType newResType) throws CmsException;
+    
+    /**
+     * Gets all sub folders or sub files in a given parent folder.<p>
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project
+     * @param parentFolder the parent folder
+     * @param getSubFolders true if the sub folders of the parent folder are requested, false if the sub files are requested
+     * @return a list of all sub folders or sub files
+     * @throws CmsException if something goes wrong
+     */
+    List getSubResources(CmsProject currentProject, CmsFolder parentFolder, boolean getSubFolders) throws CmsException;
 }

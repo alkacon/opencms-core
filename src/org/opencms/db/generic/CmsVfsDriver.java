@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/08 13:27:51 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/07/09 10:58:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2003/07/08 13:27:51 $
+ * @version $Revision: 1.15 $ $Date: 2003/07/09 10:58:09 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -97,23 +97,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
-
-    /**
-      * Copies a file.
-      *
-      * @param project The project in which the resource will be used.
-      * @param userId The id of the user who wants to copy the file.
-      * @param source the source file to copy
-      * @param parentId The parentId of the resource.
-      * @param destination The complete path of the destinationfile.
-      *
-      * @throws CmsException Throws CmsException if operation was not succesful
-      * @return the file copy
-      */
-//    public CmsFile copyFile(CmsProject project, CmsUUID userId, CmsUUID parentId, String source, String destination) throws CmsException {               
-//        CmsFile file = this.readFile(project.getId(),false, resourceId);
-//        return createFile(project, file, userId, parentId, destination);
-//    }
     
     /**
      * Counts the locked resources in this project.
@@ -815,7 +798,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             // if the resource is marked as deleted remove it!
             if (e.getType() == CmsException.C_RESOURCE_DELETED) {
                 if (isFolder) {
-                    removeFolder(project.getId(), (CmsFolder) newResource);
+                    removeFolder(project, (CmsFolder) newResource);
                 } else {
                     removeFile(project, parentId, newResource.getResourceName());
                 }
@@ -988,22 +971,22 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    public void deleteFolder(int projectId, CmsFolder orgFolder) throws CmsException {
+    public void deleteFolder(CmsProject currentProject, CmsFolder orgFolder) throws CmsException {
         // the current implementation only deletes empty folders
         // check if the folder has any files in it
-        Vector files = getFilesInFolder(projectId, orgFolder);
+        List files = getSubResources(currentProject, orgFolder, false);
         files = getUndeletedResources(files);
         if (files.size() == 0) {
             // check if the folder has any folders in it
-            Vector folders = getSubFolders(projectId, orgFolder);
+            List folders = getSubResources(currentProject, orgFolder, true);
             folders = getUndeletedResources(folders);
             if (folders.size() == 0) {
                 //this folder is empty, delete it
                 Connection conn = null;
                 PreparedStatement stmt = null;
                 try {
-                    conn = m_sqlManager.getConnection(projectId);
-                    stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_REMOVE");
+                    conn = m_sqlManager.getConnection(currentProject);
+                    stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_REMOVE");
                     // mark the folder as deleted
                     stmt.setInt(1, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
                     stmt.setString(2, CmsUUID.getNullUUID().toString());
@@ -1504,38 +1487,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     }
 
     /**
-     * Returns a Vector with all file headers of a folder.<BR/>
-     *
-     * @param parentFolder The folder to be searched.
-     *
-     * @return subfiles A Vector with all file headers of the folder.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public Vector getFilesInFolder(int projectId, CmsFolder parentFolder) throws CmsException {
-        Vector files = new Vector();
-        ResultSet res = null;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            //  get all files in folder
-            conn = m_sqlManager.getConnection(projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_FILESINFOLDER");
-            stmt.setString(1, parentFolder.getId().toString());
-            res = stmt.executeQuery();
-            
-            // create new file objects
-            while (res.next()) {
-                files.addElement(createCmsFileFromResultSet(res, projectId, false, false));
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return files;
-    }
-    /**
      * Returns a Vector with all resource-names that have set the given property to the given value.
      *
      * @param projectid, the id of the project to test.
@@ -1791,58 +1742,18 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         
         return resources;
     }
-
-    /**
-     * Returns a Vector with all subfolders.<BR/>
-     *
-     * @param parentFolder The folder to be searched.
-     *
-     * @return Vector with all subfolders for the given folder.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public Vector getSubFolders(int projectId, CmsFolder parentFolder) throws CmsException {
-        Vector folders = new Vector();
-        CmsFolder folder = null;
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            //  get all subfolders
-            conn = m_sqlManager.getConnection(projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_SUBFOLDER");
-
-            stmt.setString(1, parentFolder.getId().toString());
-            res = stmt.executeQuery();
-
-            // create new folder objects
-            while (res.next()) {
-                folder = createCmsFolderFromResultSet(res, projectId, false);
-                folders.addElement(folder);
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception exc) {
-            throw new CmsException("getSubFolders " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return folders;
-    }
     
     /**
      * Gets all resources that are marked as undeleted.
      * @param resources Vector of resources
      * @return Returns all resources that are markes as deleted
      */
-    public Vector getUndeletedResources(Vector resources) {
-        Vector undeletedResources = new Vector();
+    public List getUndeletedResources(List resources) {
+        List undeletedResources = (List) new ArrayList();
         for (int i = 0; i < resources.size(); i++) {
-            CmsResource res = (CmsResource) resources.elementAt(i);
+            CmsResource res = (CmsResource) resources.get(i);
             if (res.getState() != I_CmsConstants.C_STATE_DELETED) {
-                undeletedResources.addElement(res);
+                undeletedResources.add(res);
             }
         }
         return undeletedResources;
@@ -1992,37 +1903,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     }
 
     /**
-     * Private helper method to read the fileContent for publishProject(export).
-     *
-     * @param fileId the fileId.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-//    public byte[] readFileContent(int projectId, int fileId) throws CmsException {
-//        PreparedStatement stmt = null;
-//        ResultSet res = null;
-//        Connection conn = null;
-//        byte[] returnValue = null;
-//        try {
-//            conn = m_sqlManager.getConnection(projectId);
-//            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_FILE_READ");
-//            // read fileContent from database
-//            stmt.setInt(1, fileId);
-//            res = stmt.executeQuery();
-//            if (res.next()) {
-//                returnValue = res.getBytes(m_sqlManager.get("C_FILE_CONTENT"));
-//            } else {
-//                throw new CmsException("[" + this.getClass().getName() + "]" + fileId, CmsException.C_NOT_FOUND);
-//            }
-//        } catch (SQLException e) {
-//            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-//        } finally {
-//            m_sqlManager.closeAll(conn, stmt, res);
-//        }
-//        return returnValue;
-//    }
-
-    /**
      * Reads a file header from the Cms.<BR/>
      * The reading excludes the filecontent.
      *
@@ -2168,99 +2048,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         return file;
     }
-
-    /**
-     * Reads a file header from the Cms.<BR/>
-     * The reading excludes the filecontent.
-     *
-     * @param projectId The Id of the project in which the resource will be used.
-     * @param filename The complete name of the new file (including pathinformation).
-     *
-     * @return file The read file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-//    public CmsFile readFileHeaderInProject(int projectId, String filename) throws CmsException {
-//        CmsFile file = null;
-//        ResultSet res = null;
-//        PreparedStatement stmt = null;
-//        Connection conn = null;
-//        
-//        try {
-//            conn = m_sqlManager.getConnection(projectId);
-//            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READINPROJECT");
-//            stmt.setString(1, filename);
-//            stmt.setInt(2, projectId);
-//            res = stmt.executeQuery();
-//
-//            if (res.next()) {
-//                file = createCmsFileFromResultSet(res, true, false);
-//                while (res.next()) {
-//                    // do nothing only move through all rows because of mssql odbc driver
-//                }
-//                // check if this resource is marked as deleted
-//                if (file.getState() == com.opencms.core.I_CmsConstants.C_STATE_DELETED) {
-//                    throw new CmsException("[" + this.getClass().getName() + "] " + cms.readPath(file), CmsException.C_RESOURCE_DELETED);
-//                }
-//            } else {
-//                throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
-//            }
-//        } catch (SQLException e) {
-//            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-//        } catch (CmsException ex) {
-//            throw ex;
-//        } catch (Exception exc) {
-//            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
-//        } finally {
-//            m_sqlManager.closeAll(conn, stmt, res);
-//        }
-//
-//        return file;
-//    }
-
-    /**
-     * Reads a file in the project from the Cms.<BR/>
-     *
-     * @param projectId The Id of the project in which the resource will be used.
-     * @param onlineProjectId The online projectId of the OpenCms.
-     * @param filename The complete name of the new file (including pathinformation).
-     *
-     * @return file The read file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-//    public CmsFile readFileInProject(int projectId, int onlineProjectId, String filename) throws CmsException {
-//
-//        CmsFile file = null;
-//        PreparedStatement stmt = null;
-//        ResultSet res = null;
-//        Connection conn = null;
-//        try {
-//            conn = m_sqlManager.getConnection(projectId);
-//            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_FILES_READINPROJECT");
-// 
-//            stmt.setString(1, filename);
-//            stmt.setInt(2, projectId);
-//            res = stmt.executeQuery();
-//            if (res.next()) {
-//                file = createCmsFileFromResultSet(res, projectId);
-//                while (res.next()) {
-//                    // do nothing only move through all rows because of mssql odbc driver
-//                }
-//            } else {
-//                throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
-//            }
-//        } catch (SQLException e) {
-//            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-//        } catch (CmsException ex) {
-//            throw ex;
-//        } catch (Exception exc) {
-//            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
-//        } finally {
-//            m_sqlManager.closeAll(conn, stmt, res);
-//        }
-//        return file;
-//    }
 
     /**
      * Reads all files from the Cms, that are in one project.<BR/>
@@ -2442,49 +2229,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         
         return folder;
     }
-    /**
-     * Reads a folder from the Cms that exists in the project.<BR/>
-     *
-     * @param project The project in which the resource will be used.
-     * @param foldername The name of the folder to be read.
-     *
-     * @return The read folder.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-//    public CmsFolder readFolderInProject(int projectId, String foldername) throws CmsException {
-//        CmsFolder folder = null;
-//        ResultSet res = null;
-//        PreparedStatement stmt = null;
-//        Connection conn = null;
-//        
-//        try {
-//            conn = m_sqlManager.getConnection(projectId);
-//            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READINPROJECT");
-//            stmt.setString(1, foldername);
-//            stmt.setInt(2, projectId);
-//            res = stmt.executeQuery();
-//
-//            if (res.next()) {
-//                folder = createCmsFolderFromResultSet(res, true);
-//                while (res.next()) {
-//                    // do nothing only move through all rows because of mssql odbc driver
-//                }
-//            } else {
-//                throw new CmsException("[" + this.getClass().getName() + "] " + foldername, CmsException.C_NOT_FOUND);
-//            }
-//        } catch (SQLException e) {
-//            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-//        } catch (CmsException exc) {
-//            // just throw this exception
-//            throw exc;
-//        } catch (Exception exc) {
-//            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
-//        } finally {
-//            m_sqlManager.closeAll(conn, stmt, res);
-//        }
-//        return folder;
-//    }
 
     /**
      * Reads all folders from the Cms, that are in one project.<BR/>
@@ -2923,22 +2667,22 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      * @param folder The folder.
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public void removeFolder(int projectId, CmsFolder folder) throws CmsException {
+    public void removeFolder(CmsProject currentProject, CmsFolder folder) throws CmsException {
         // the current implementation only deletes empty folders
         // check if the folder has any files in it
-        Vector files = getFilesInFolder(projectId, folder);
+        List files = getSubResources(currentProject, folder, false);
         files = getUndeletedResources(files);
         if (files.size() == 0) {
             // check if the folder has any folders in it
-            Vector folders = getSubFolders(projectId, folder);
+            List folders = getSubResources(currentProject, folder, true);
             folders = getUndeletedResources(folders);
             if (folders.size() == 0) {
                 //this folder is empty, delete it
                 Connection conn = null;
                 PreparedStatement stmt = null;
                 try {
-                    conn = m_sqlManager.getConnection(projectId);
-                    stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_ID_DELETE");
+                    conn = m_sqlManager.getConnection(currentProject);
+                    stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_ID_DELETE");
                     // delete the folder
                     stmt.setString(1, folder.getId().toString());
                     stmt.executeUpdate();
@@ -3326,23 +3070,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(8, file.getId().toString());
             stmt.executeUpdate();          
             
-//            stmt.setInt(1, file.getProjectId());
-//            int state = file.getState();
-//            if ((state == com.opencms.core.I_CmsConstants.C_STATE_NEW) || (state == com.opencms.core.I_CmsConstants.C_STATE_CHANGED)) {
-//                stmt.setInt(2, state);
-//            } else {
-//                if (changed == true) {
-//                    stmt.setInt(2, com.opencms.core.I_CmsConstants.C_STATE_CHANGED);
-//                } else {
-//                    stmt.setInt(2, file.getState());
-//                }
-//            }
-//            stmt.setString(3, file.isLockedBy().toString());      
-//            stmt.setString(4, modifiedByUserId.toString()); 
-//            stmt.setString(5, file.getResourceName());     
-//            stmt.setString(6, file.getId().toString());               
-//            stmt.executeUpdate();
-            
             //m_sqlManager.commit(conn);
         } catch (SQLException e) {
             //m_sqlManager.rollback(conn, savepoint);
@@ -3420,23 +3147,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(7, userId.toString());
             stmt.setString(8, folder.getId().toString());                       
             stmt.executeUpdate();
-                        
-//            stmt.setInt(1, folder.getProjectId());
-//            int state = folder.getState();
-//            if ((state == com.opencms.core.I_CmsConstants.C_STATE_NEW) || (state == com.opencms.core.I_CmsConstants.C_STATE_CHANGED)) {
-//                stmt.setInt(2, state);
-//            } else {
-//                if (changed == true) {
-//                    stmt.setInt(2, com.opencms.core.I_CmsConstants.C_STATE_CHANGED);
-//                } else {
-//                    stmt.setInt(2, folder.getState());
-//                }
-//            }
-//            stmt.setString(3, folder.isLockedBy().toString());  
-//            stmt.setString(4, modifiedByUserId.toString());  
-//            stmt.setString(5, folder.getResourceName());   
-//            stmt.setString(6, folder.getId().toString());       
-//            stmt.executeUpdate();
             
             //m_sqlManager.commit(conn);
         } catch (SQLException e) {
@@ -3655,23 +3365,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(7, userId.toString());
             stmt.setString(8, resource.getId().toString());
             stmt.executeUpdate();
-                        
-//            stmt.setInt(1, resource.getProjectId());
-//            int state = resource.getState();
-//            if ((state == I_CmsConstants.C_STATE_NEW) || (state == I_CmsConstants.C_STATE_CHANGED)) {
-//                stmt.setInt(2, state);
-//            } else {
-//                if (isChanged == true) {
-//                    stmt.setInt(2, I_CmsConstants.C_STATE_CHANGED);
-//                } else {
-//                    stmt.setInt(2, resource.getState());
-//                }
-//            }
-//            stmt.setString(3, resource.isLockedBy().toString());
-//            stmt.setString(4, modifiedByUserId.toString());   
-//            stmt.setString(5, resource.getResourceName());            
-//            stmt.setString(6, resource.getId().toString());
-//            stmt.executeUpdate();
             
             //m_sqlManager.commit(conn);            
         } catch (SQLException e) {
@@ -3763,14 +3456,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(1,path);
             stmt.setInt(2, projectId);
             res = stmt.executeQuery();
-
-            //while (res.next()) {
-            //    rowCount++;
-            //}
-            
-            //if (rowCount>0) {
-            //    res.beforeFirst();
-            //    projectID = new int[rowCount];
                 
             for (rowCount=0;res.next();rowCount++) {
             	int temp[] = new int[projectIds.length+1];
@@ -3885,6 +3570,49 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }   
 
         return null;     
+    }
+    
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#getSubResources(com.opencms.file.CmsUser, com.opencms.file.CmsProject, com.opencms.file.CmsFolder, boolean)
+     */
+    public List getSubResources(CmsProject currentProject, CmsFolder parentFolder, boolean getSubFolders) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;   
+        ResultSet res = null;
+        CmsResource currentResource = null;
+        List subResources = (List) new ArrayList();
+        String query = null;
+        String resourceTypeClause = null;
+        String orderClause = " ORDER BY CMS_T_STRUCTURE.RESOURCE_NAME";
+
+        if (getSubFolders) {
+            resourceTypeClause = " AND CMS_T_RESOURCES.RESOURCE_TYPE=0";
+        } else {
+            resourceTypeClause = " AND CMS_T_RESOURCES.RESOURCE_TYPE<>0";
+        }        
+        
+        try {
+            conn = m_sqlManager.getConnection(currentProject);
+            query = m_sqlManager.get(currentProject, "C_RESOURCES_GET_SUBRESOURCES") + m_sqlManager.replaceTableKey(currentProject.getId(), resourceTypeClause + orderClause);
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
+            stmt.setString(1, parentFolder.getId().toString());
+            res = stmt.executeQuery();
+            
+            while (res.next()) {
+                if (getSubFolders) {
+                    currentResource = createCmsFolderFromResultSet(res, currentProject.getId(), false);
+                } else {
+                    currentResource = createCmsFileFromResultSet(res, currentProject.getId(), false, false);
+                }
+                subResources.add(currentResource);
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        } 
+        
+        return subResources; 
     }
     
 }

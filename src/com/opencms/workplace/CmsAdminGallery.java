@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/09 10:58:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.*;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
      
@@ -221,13 +221,13 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
      * 
      * @see I_CmsFileListUsers
      */
-    public Vector getFiles(CmsObject cms) throws CmsException {
-        Vector galleries = new Vector();
-        Vector folders = cms.getSubFolders(getGalleryPath());
+    public List getFiles(CmsObject cms) throws CmsException {
+        List galleries = (List) new ArrayList();
+        List folders = cms.getSubFolders(getGalleryPath());
         int numFolders = folders.size();
         for(int i = 0;i < numFolders;i++) {
-            CmsResource currFolder = (CmsResource)folders.elementAt(i);
-            galleries.addElement(currFolder);
+            CmsResource currFolder = (CmsResource)folders.get(i);
+            galleries.add(currFolder);
         }
         return galleries;
     }

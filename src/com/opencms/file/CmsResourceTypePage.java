@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/07/04 16:00:24 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,16 +39,16 @@ import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.Serializable;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
 //import org.opencms.db.generic.linkmanagement.*;
 
 /**
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.61 $ $Date: 2003/07/04 16:00:24 $
+ * @version $Revision: 1.62 $ $Date: 2003/07/09 10:58:09 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants {
 
@@ -456,12 +456,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         String pageName = newPageName.substring(folderName.length(), newPageName.length());
 
         // Scan for mastertemplates
-        Vector allMasterTemplates = cms.getFilesInFolder(I_CmsWpConstants.C_VFS_PATH_DEFAULT_TEMPLATES);
+        List allMasterTemplates = cms.getFilesInFolder(I_CmsWpConstants.C_VFS_PATH_DEFAULT_TEMPLATES);
 
         // Select the first mastertemplate as default
         String masterTemplate = "";
         if(allMasterTemplates.size() > 0) {
-            masterTemplate = cms.readAbsolutePath((CmsFile)allMasterTemplates.elementAt(0));
+            masterTemplate = cms.readAbsolutePath((CmsFile)allMasterTemplates.get(0));
         }
 
         // Evaluate the absolute path to the new body file

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2003/07/07 14:48:23 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -47,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.24 $ $Date: 2003/07/07 14:48:23 $
+ * @version $Revision: 1.25 $ $Date: 2003/07/09 10:58:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -106,11 +107,11 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
             folder = (String)session.getValue(C_PARA_FOLDER);
             if(folder == null || "".equals(folder)) {
                 folder = getConfigFile(cms).getDownGalleryPath();
-                Vector galleries = cms.getSubFolders(folder);
+                List galleries = cms.getSubFolders(folder);
                 if(galleries.size() > 0) {
 
                     // take the first gallery
-                    folder = cms.readAbsolutePath((CmsResource)galleries.elementAt(0));
+                    folder = cms.readAbsolutePath((CmsResource)galleries.get(0));
                     session.putValue(C_PARA_FOLDER, folder);
                 }
                 else {
@@ -204,10 +205,10 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
         if(chosenFolder == null) {
             chosenFolder = "";
         }
-        Vector folders = cms.getSubFolders(getConfigFile(cms).getDownGalleryPath());
+        List folders = cms.getSubFolders(getConfigFile(cms).getDownGalleryPath());
         int numFolders = folders.size();
         for(int i = 0;i < numFolders;i++) {
-            CmsResource currFolder = (CmsResource)folders.elementAt(i);
+            CmsResource currFolder = (CmsResource)folders.get(i);
             String name = currFolder.getName();
             if(chosenFolder.equals(cms.readAbsolutePath(currFolder))) {
                 ret = i;
@@ -227,7 +228,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
      * @throws Throws CmsException if something goes wrong.
      */
 
-    public Vector getFiles(CmsObject cms) throws CmsException {
+    public List getFiles(CmsObject cms) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         Vector files = new Vector();
 
@@ -246,11 +247,11 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
         String folder = (String)session.getValue(C_PARA_FOLDER);
         if(folder == null || "".equals(folder)) {
             folder = getConfigFile(cms).getDownGalleryPath();
-            Vector galleries = cms.getSubFolders(folder);
+            List galleries = cms.getSubFolders(folder);
             if(galleries.size() > 0) {
 
                 // take the first gallery if none was chosen
-                folder = cms.readAbsolutePath((CmsResource)galleries.elementAt(0));
+                folder = cms.readAbsolutePath((CmsResource)galleries.get(0));
             }
             session.putValue(C_PARA_FOLDER, folder);
         }
@@ -277,12 +278,12 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
             throws CmsException {
 
         // Get all pictures in the given folder using the cms object
-        Vector allFiles = cms.getFilesInFolder(folder);
+        List allFiles = cms.getFilesInFolder(folder);
 
         // Filter the files
         Vector filteredFiles = new Vector();
         for(int i = 0;i < allFiles.size();i++) {
-            CmsFile file = (CmsFile)allFiles.elementAt(i);
+            CmsFile file = (CmsFile)allFiles.get(i);
             String filename = file.getName();
             String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
             boolean filenameFilter = inFilter(filename, filter);

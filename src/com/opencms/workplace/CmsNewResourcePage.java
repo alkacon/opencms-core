@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2003/07/07 17:24:22 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,8 +48,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import org.w3c.dom.Document;
@@ -62,7 +63,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.68 $ $Date: 2003/07/07 17:24:22 $
+ * @version $Revision: 1.69 $ $Date: 2003/07/09 10:58:09 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -348,19 +349,19 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         }
 
         // get all files and folders in the current filelist.
-        Vector files = cms.getFilesInFolder(currentFilelist);
-        Vector folders = cms.getSubFolders(currentFilelist);
+        List files = cms.getFilesInFolder(currentFilelist);
+        List folders = cms.getSubFolders(currentFilelist);
 
         // combine folder and file vector
         Vector filefolders = new Vector();
-        Enumeration enum = folders.elements();
-        while(enum.hasMoreElements()) {
-            folder = (CmsFolder)enum.nextElement();
+        Iterator enum = folders.iterator();
+        while(enum.hasNext()) {
+            folder = (CmsFolder)enum.next();
             filefolders.addElement(folder);
         }
-        enum = files.elements();
-        while(enum.hasMoreElements()) {
-            file = (CmsFile)enum.nextElement();
+        enum = files.iterator();
+        while(enum.hasNext()) {
+            file = (CmsFile)enum.next();
             filefolders.addElement(file);
         }
         if(filefolders.size() > 0) {
@@ -375,9 +376,9 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
 
             //now check files and folders that are not deleted and include navigation
             // information
-            enum = filefolders.elements();
-            while(enum.hasMoreElements()) {
-                CmsResource res = (CmsResource)enum.nextElement();
+            enum = filefolders.iterator();
+            while(enum.hasNext()) {
+                CmsResource res = (CmsResource)enum.next();
 
                 // check if the resource is not marked as deleted
                 if(res.getState() != C_STATE_DELETED) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/07/07 14:48:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/09 10:58:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -103,14 +103,14 @@ public class CmsFrameset extends CmsWorkplace {
      */
     public String buildContextMenues() {
         StringBuffer result = new StringBuffer();
-        Vector resTypes;
+        List resTypes = null;
         try {
             resTypes = getCms().getFilesInFolder("/system/workplace/restypes/");
         } catch (CmsException e) {
             resTypes = new Vector();
         }
         for(int i = 0; i < resTypes.size(); i++) {
-            CmsFile resourceTyp = (CmsFile)resTypes.elementAt(i);
+            CmsFile resourceTyp = (CmsFile)resTypes.get(i);
             try {
                 int resId = getCms().getResourceType(resourceTyp.getName()).getResourceType();
                 result.append(getResourceEntry(new String(getCms().readFile(getCms().readAbsolutePath(resourceTyp)).getContents()), resId));

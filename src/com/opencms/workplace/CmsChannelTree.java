@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2003/07/07 17:24:22 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,8 +41,10 @@ import com.opencms.file.I_CmsResourceType;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Encoder;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -51,7 +53,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2003/07/07 17:24:22 $
+ * @version $Revision: 1.21 $ $Date: 2003/07/09 10:58:09 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -381,15 +383,15 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
         CmsResource lastFolder = null;
         Vector subfolders = new Vector();
         Vector list = new Vector();
-        Vector untestedSubfolders = new Vector();
-        Vector untestedSubfiles = new Vector();
+        List untestedSubfolders = (List) new ArrayList();
+        List untestedSubfiles = (List) new ArrayList();
 
         // set the channel root
         cms.setContextToCos();
-        Vector untestedlist = cms.getSubFolders(curfolder);
+        List untestedlist = cms.getSubFolders(curfolder);
         // remove invisible folders
         for(int i = 0;i < untestedlist.size();i++) {
-            CmsFolder subfolder = (CmsFolder)untestedlist.elementAt(i);
+            CmsFolder subfolder = (CmsFolder)untestedlist.get(i);
             if(checkAccess(cms, subfolder)) {
                 list.addElement(subfolder);
             }
@@ -397,9 +399,9 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
 
         // load the files as well if nescessary
         if(displayFiles) {
-            Vector untestedfileslist = cms.getFilesInFolder(curfolder);
+            List untestedfileslist = cms.getFilesInFolder(curfolder);
             for(int i = 0;i < untestedfileslist.size();i++) {
-                CmsFile file = (CmsFile)untestedfileslist.elementAt(i);
+                CmsFile file = (CmsFile)untestedfileslist.get(i);
                 if(checkAccess(cms, file)) {
                     list.addElement(file);
                 }
@@ -425,7 +427,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
 
                     // now filter all invisible subfolders
                     for(int i = 0;i < untestedSubfolders.size();i++) {
-                        CmsFolder subfolder = (CmsFolder)untestedSubfolders.elementAt(i);
+                        CmsFolder subfolder = (CmsFolder)untestedSubfolders.get(i);
                         if(checkAccess(cms, subfolder)) {
                             subfolders.addElement(subfolder);
                         }
@@ -435,7 +437,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
                     if(displayFiles) {
                         untestedSubfiles = cms.getFilesInFolder(cms.readAbsolutePath(res));
                         for(int i = 0;i < untestedSubfiles.size();i++) {
-                            CmsFile subfile = (CmsFile)untestedSubfiles.elementAt(i);
+                            CmsFile subfile = (CmsFile)untestedSubfiles.get(i);
                             if(checkAccess(cms, subfile)) {
                                 subfolders.addElement(subfile);
                             }

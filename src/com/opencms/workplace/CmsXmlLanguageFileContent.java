@@ -37,7 +37,8 @@ import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.template.A_CmsXmlContent;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides backward compatibility with pre 5.0 XML-style localization.<p>
@@ -121,7 +122,7 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
      * @param language Current language
      */
     private void mergeLanguageFiles(CmsObject cms, String language) throws CmsException {
-        Vector langFiles = new Vector();
+        List langFiles = (List) new ArrayList();
 
         // Make sure old "uk" stuff still works        
         if ("uk".equals(language)) language = "en";
@@ -129,33 +130,33 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
         langFiles = cms.getFilesInFolder(I_CmsWpConstants.C_VFS_PATH_LOCALES + language + "/");
 
         // get all modules-language Files
-        Vector modules = new Vector();
+        List modules = (List) new ArrayList();
         modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES);
         String lang = I_CmsWpConstants.C_VFS_DIR_LOCALES + language + "/";
         // make sure old modules language files still work
         String oldLang = "language/" + language + "/";
         for(int i = 0;i < modules.size();i++) {
-            Vector moduleLangFiles = new Vector();
+            List moduleLangFiles = (List) new ArrayList();
             try {
-                moduleLangFiles = cms.getFilesInFolder(cms.readAbsolutePath((CmsFolder)modules.elementAt(i)) + lang);
+                moduleLangFiles = cms.getFilesInFolder(cms.readAbsolutePath((CmsFolder)modules.get(i)) + lang);
             } catch (CmsException e) {
                 // try read from old module locales path
                 try {
-                    moduleLangFiles = cms.getFilesInFolder(cms.readAbsolutePath((CmsFolder)modules.elementAt(i)) + oldLang);
+                    moduleLangFiles = cms.getFilesInFolder(cms.readAbsolutePath((CmsFolder)modules.get(i)) + oldLang);
                     if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO) ) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[" + this.getClass().getName() + ".mergeLanguageFiles/1] Old module 'locales' path used: " + cms.readAbsolutePath((CmsFolder)modules.elementAt(i)) + oldLang);
+                        A_OpenCms.log(C_OPENCMS_INFO, "[" + this.getClass().getName() + ".mergeLanguageFiles/1] Old module 'locales' path used: " + cms.readAbsolutePath((CmsFolder)modules.get(i)) + oldLang);
                     }                    
                 } catch (CmsException ex) {
                     // no language files found, we can live with that, probably the module just has none                      
                 }
             }
             for(int j = 0;j < moduleLangFiles.size();j++) {
-                langFiles.addElement(moduleLangFiles.elementAt(j));
+                langFiles.add(moduleLangFiles.get(j));
             }
         }
         CmsFile file = null;
         for(int i = 0;i < langFiles.size();i++) {
-            file = (CmsFile)langFiles.elementAt(i);
+            file = (CmsFile)langFiles.get(i);
             if(! file.getName().toLowerCase().endsWith(".txt") && file.getState() != I_CmsConstants.C_STATE_DELETED) {
                 try {
                     init(cms, cms.readAbsolutePath(file));

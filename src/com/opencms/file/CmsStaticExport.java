@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -57,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.45 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.46 $ $Date: 2003/07/09 10:58:09 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -812,13 +813,13 @@ public class CmsStaticExport implements I_CmsConstants{
     private void addSubFiles(Vector links, String folder)throws CmsException{
 
         // the firstlevel files
-        Vector files = m_cms.getFilesInFolder(folder);
+        List files = m_cms.getFilesInFolder(folder);
         for(int i=0; i<files.size(); i++){
-            links.add(m_cms.readAbsolutePath((CmsFile)files.elementAt(i)));
+            links.add(m_cms.readAbsolutePath((CmsFile)files.get(i)));
         }
-        Vector subFolders = m_cms.getSubFolders(folder);
+        List subFolders = m_cms.getSubFolders(folder);
         for(int i=0; i<subFolders.size(); i++){
-            addSubFiles(links, m_cms.readAbsolutePath((CmsFolder)subFolders.elementAt(i)));
+            addSubFiles(links, m_cms.readAbsolutePath((CmsFolder)subFolders.get(i)));
         }
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/07/07 17:24:22 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,10 +44,10 @@ import com.opencms.util.Encoder;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.Iterator;
+import java.util.List;
 
 import org.w3c.dom.Element;
 
@@ -63,7 +63,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.69 $ $Date: 2003/07/07 17:24:22 $
+ * @version $Revision: 1.70 $ $Date: 2003/07/09 10:58:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -367,7 +367,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
      * @return HTML-Code of the file list.
      */
 
-    private Object getFilelist(CmsObject cms, Vector list, A_CmsXmlContent doc,
+    private Object getFilelist(CmsObject cms, List list, A_CmsXmlContent doc,
             CmsXmlLanguageFile lang, Hashtable parameters, I_CmsFileListUsers callingObject,
             CmsXmlWpConfigFile config) throws CmsException {
         StringBuffer output = new StringBuffer();
@@ -392,7 +392,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
 
         //get the template
         CmsXmlWpTemplateFile template = (CmsXmlWpTemplateFile)doc;
-        Enumeration enum;
+        Iterator enum = null;
 
         // file and folder object required to create the file list.
         // CmsFile file;
@@ -419,9 +419,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
         }
 
         // go through all folders and files
-        enum = list.elements();
-        while(enum.hasMoreElements()) {
-            res = (CmsResource)enum.nextElement();
+        enum = list.iterator();
+        while(enum.hasNext()) {
+            res = (CmsResource)enum.next();
             if(checkAccess(cms, res)) {
                 template.setData("PREVIOUS", currentFilelist);
                 if(res.isFolder()) {
@@ -859,7 +859,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
         }
         CmsXmlWpConfigFile configFile = this.getConfigFile(cms);
         I_CmsFileListUsers filelistUser = (I_CmsFileListUsers)callingObject;
-        Vector filelist = filelistUser.getFiles(cms);
+        List filelist = filelistUser.getFiles(cms);
         return getFilelist(cms, filelist, filelistTemplate, lang, parameters, filelistUser, configFile);
     }
 }

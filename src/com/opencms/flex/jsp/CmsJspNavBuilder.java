@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/07/02 11:03:13 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/09 10:58:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,15 +39,15 @@ import com.opencms.file.CmsResource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 /**
  * Bean to provide a convenient way to build navigation structures based on 
  * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
@@ -159,7 +159,7 @@ public class CmsJspNavBuilder {
     public static ArrayList getNavigationForFolder(CmsObject cms, String folder) {
         folder = CmsFile.getPath(folder);
         ArrayList list = new ArrayList();
-        Vector v = null, dir = null;
+        List v = null, dir = null;
         try {
             // v = cms.getResourcesInFolder(folder);        
             v = cms.getFilesInFolder(folder);
@@ -505,7 +505,7 @@ public class CmsJspNavBuilder {
         if (! channel.endsWith("/")) channel += "/";    
 
         // Now read all subchannels of this channel    
-        java.util.Vector subChannels = new java.util.Vector();  
+        List subChannels = (List) new ArrayList();
         try {
             cms.setContextToCos();
             subChannels = cms.getSubFolders(channel);

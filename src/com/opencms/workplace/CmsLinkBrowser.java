@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLinkBrowser.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -49,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.9 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.10 $ $Date: 2003/07/09 10:58:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -103,11 +104,11 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
             }
             folder = (String)session.getValue(C_PARA_FOLDER);
             if(folder == null || "".equals(folder)) {
-                Vector galleries = cms.getSubFolders(C_VFS_GALLERY_EXTERNALLINKS);
+                List galleries = cms.getSubFolders(C_VFS_GALLERY_EXTERNALLINKS);
                 if(galleries.size() > 0) {
 
                     // take the first gallery
-                    folder = cms.readAbsolutePath((CmsResource)galleries.elementAt(0));
+                    folder = cms.readAbsolutePath((CmsResource)galleries.get(0));
                     session.putValue(C_PARA_FOLDER, folder);
                 } else {
 
@@ -166,12 +167,12 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
     private Vector getFilteredLinkList(CmsObject cms, String folder, String filter) throws CmsException {
 
         // Get all links in the given folder using the cms object
-        Vector allLinks = cms.getFilesInFolder(folder);
+        List allLinks = cms.getFilesInFolder(folder);
 
         // Filter the links
         Vector filteredLinks = new Vector();
         for(int i = 0;i < allLinks.size();i++) {
-            CmsFile file = (CmsFile)allLinks.elementAt(i);
+            CmsFile file = (CmsFile)allLinks.get(i);
             String filename = file.getName();
             String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
             boolean filenameFilter = inFilter(filename, filter);
@@ -211,10 +212,10 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
         if(chosenFolder == null) {
             chosenFolder = "";
         }
-        Vector folders = cms.getSubFolders(C_VFS_GALLERY_EXTERNALLINKS);
+        List folders = cms.getSubFolders(C_VFS_GALLERY_EXTERNALLINKS);
         int numFolders = folders.size();
         for(int i = 0;i < numFolders;i++) {
-            CmsResource currFolder = (CmsResource)folders.elementAt(i);
+            CmsResource currFolder = (CmsResource)folders.get(i);
             String name = currFolder.getName();
             if(chosenFolder.equals(cms.readAbsolutePath(currFolder))) {
                 ret = i;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/08 15:55:28 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2003/07/09 10:58:09 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,17 +34,19 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -1079,8 +1081,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 
     private void getAllResources(CmsObject cms, String rootFolder, Vector allFiles,
                     Vector allFolders) throws CmsException {
-        Vector folders = new Vector();
-        Vector files = new Vector();
+        List folders = (List) new ArrayList();
+        List files = (List) new ArrayList();
 
         // get files and folders of this rootFolder
         folders = cms.getSubFolders(rootFolder, true);
@@ -1088,12 +1090,12 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 
         //copy the values into the allFiles and allFolders Vectors
         for(int i = 0;i < folders.size();i++) {
-            allFolders.addElement((CmsFolder)folders.elementAt(i));
-            getAllResources(cms, cms.readAbsolutePath((CmsFolder)folders.elementAt(i), true),
+            allFolders.addElement((CmsFolder)folders.get(i));
+            getAllResources(cms, cms.readAbsolutePath((CmsFolder)folders.get(i), true),
                 allFiles, allFolders);
         }
         for(int i = 0;i < files.size();i++) {
-            allFiles.addElement((CmsFile)files.elementAt(i));
+            allFiles.addElement((CmsFile)files.get(i));
         }
     }
 
