@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/01/06 14:30:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/06 15:28:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.0
  */
@@ -71,7 +71,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         // save the edited content
         editor.actionSave();
         // delete temporary file and unlock resource in direct edit mode
-        editor.actionClear();
+        editor.actionClear(true);
         // create the publish link to redirect to
         String publishLink = jsp.link(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "jsp/dialogs/publishresource.html");
         // define the parameters which are necessary for publishing the resource 

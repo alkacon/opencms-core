@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/06 14:30:31 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/01/06 15:28:08 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,14 +59,16 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsDefaultPageEditor extends CmsEditor {
     
+    /** Constant for the customizable action button.<p> */
     public static final String EDITOR_SAVEACTION = "saveaction";
     
+    /** Constant value for the customizable action button.<p> */
     public static final int ACTION_SAVEACTION = 200;
     
     private String m_paramBodylanguage;
@@ -80,6 +82,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     /** Page object used from the action and init methods, be sure to initialize this e.g. in the initWorkplaceRequestValues method.<p>  */
     protected CmsXmlPage m_page;
     
+    /** File object used to read and write contents.<p> */
     protected CmsFile m_file;
     
     /** Helper variable to store the html content for the template selector.<p> */
@@ -530,12 +533,14 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     
     /**
      * Deletes the temporary file and unlocks the edited resource when in direct edit mode.<p>
+     * 
+     * @param forceUnlock if true, the resource will be unlocked anyway
      */
-    public void actionClear() {
+    public void actionClear(boolean forceUnlock) {
         // delete the temporary file        
         deleteTempFile();
-        if ("true".equals(getParamDirectedit())) {
-            // unlock the resource when in direct edit mode
+        if ("true".equals(getParamDirectedit()) || forceUnlock) {
+            // unlock the resource when in direct edit mode or force unlock is true
             try {
                 getCms().unlockResource(getParamResource(), false);
             } catch (CmsException e) {
@@ -571,7 +576,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public void actionExit() throws IOException {
         // clear temporary file and unlock resource, if in directedit mode
-        actionClear();
+        actionClear(false);
         if ("true".equals(getParamDirectedit())) {
             // redirect to the edited resource
             getJsp().getResponse().sendRedirect(getJsp().link(getParamResource()));
