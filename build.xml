@@ -167,16 +167,6 @@ ${build.inputlib.tidy}
             deprecation="off"
             />
 
-       <copy todir="${build.classes}">
-            <fileset dir="src" includes="**/*.properties,**/*.txt"/>
-       </copy>
-       <!-- generate version infos-->
-        <tstamp>
-            <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
-        </tstamp>
-        <property name="version.number" value="${env.USERNAME}_${timestamp}"/>
-        <echo file="${build.version.propertyfile}">version.number=${version.number}</echo>
-        <echo file="${build.version.propertyfile}" append="on">version.name=${version.name}</echo>
     </target>
 
 
@@ -396,10 +386,7 @@ ${build.inputlib.tidy}
             basedir="${build.srcdist}"/>
     </target>
 
-
-<!--  ***** BEGIN JUnit Testing ***** -->
-
-    <target name="test-user" depends="compiletests" description="Performs a unit test of all OpenCms classes concerning user management">  <!-- wieder einfuegen: depends="compiletests,setup"> -->
+    <target name="test-user" depends="compiletests,jar" description="Performs a unit test of all OpenCms classes concerning user management">  <!-- wieder einfuegen: depends="compiletests,setup"> -->
         <junit haltonfailure="no">
 			<sysproperty key="build.webinf" value="${build.webinf}"/>
 			<classpath>
@@ -420,7 +407,7 @@ ${build.inputlib.tidy}
         </junit>
     </target> 
 
-    <target name="test-resources" depends="compiletests" description="Performs a unit test of all OpenCms classes concerning resources">  <!-- wieder einfuegen: depends="setup"> -->
+    <target name="test-resources" depends="compiletests,jar" description="Performs a unit test of all OpenCms classes concerning resources">  <!-- wieder einfuegen: depends="setup"> -->
         <junit haltonfailure="no">
 			<sysproperty key="build.webinf" value="${build.webinf}"/>
 			<classpath>
@@ -442,8 +429,5 @@ ${build.inputlib.tidy}
     </target> 
 
 	<target name="test-all" description="Performs ALL OpenCms JUnit tests." depends="test-user,test-resources"/>
-
-<!--  ****** END JUnit Testing ****** -->
-
 
 </project>
