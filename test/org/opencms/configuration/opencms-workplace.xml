@@ -2,39 +2,36 @@
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-workplace.dtd">
 
 <opencms>
-    <workplace>
-    	<defaultlocale>en</defaultlocale>
-    	<dialoghandlers>
-    		<dialoghandler class="org.opencms.workplace.CmsDelete"/>
-    		<dialoghandler class="org.opencms.workplace.CmsLock"/>
-    		<dialoghandler class="org.opencms.workplace.CmsPropertyAdvanced"/>
-    	</dialoghandlers>
-    	<editorhandler class="org.opencms.workplace.editor.CmsEditorHandler"/>
-    	<editoraction class="org.opencms.workplace.editor.CmsEditorActionDefault"/>
-    	<views>
-    		<view key="select.explorer" uri="/system/workplace/jsp/explorer_fs.html" order="10"/>
-    		<view key="select.admin" uri="/system/workplace/action/administration.html" order="20"/>
-    		<view key="select.tasks" uri="/system/workplace/action/tasks.html" order="30"/>
-    	</views>
-    	<exportpoints>
-    		<exportpoint uri="/system/workplace/resources/" destination="resources/"/>
-    		<exportpoint uri="/system/workplace/skins/" destination="skins/"/>
-    	</exportpoints>
-    	<autolock>true</autolock>
-    	<enableusermanagement>true</enableusermanagement>
+	<workplace>
+		<defaultlocale>en</defaultlocale>
+		<dialoghandlers>
+			<dialoghandler class="org.opencms.workplace.CmsDelete"/>
+			<dialoghandler class="org.opencms.workplace.CmsLock"/>
+			<dialoghandler class="org.opencms.workplace.CmsPropertyAdvanced"/>
+		</dialoghandlers>
+		<editorhandler class="org.opencms.workplace.editor.CmsEditorHandler"/>
+		<editoraction class="org.opencms.workplace.editor.CmsEditorActionDefault"/>
+		<views>
+			<view key="select.explorer" uri="/system/workplace/jsp/explorer_fs.html" order="10"/>
+			<view key="select.admin" uri="/system/workplace/action/administration.html" order="20"/>
+			<view key="select.tasks" uri="/system/workplace/action/tasks.html" order="30"/>
+		</views>
+		<exportpoints>
+			<exportpoint uri="/system/workplace/resources/" destination="resources/"/>
+			<exportpoint uri="/system/workplace/skins/" destination="skins/"/>
+		</exportpoints>
+		<autolock>true</autolock>
+		<enableusermanagement>true</enableusermanagement>
 		<defaultpropertiesonstructure>true</defaultpropertiesonstructure>
 		<enableadvancedpropertytabs>true</enableadvancedpropertytabs>
-    	<maxfileuploadsize>-1</maxfileuploadsize>
-    	<labeledfolders>
-    		<resource uri="/system/"/>
-    		<resource uri="/system/login/"/>
-    	</labeledfolders>
+		<maxfileuploadsize>-1</maxfileuploadsize>
+		<labeledfolders/>
 		<explorertypes>
 			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
 				<newresource uri="newresource_folder.html" order="10"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
@@ -68,7 +65,7 @@
 				<newresource uri="newresource_xmlpage.html" order="20"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
@@ -112,7 +109,7 @@
 				<newresource uri="newresource.html?newresourcetype=plain" order="30"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
@@ -152,7 +149,7 @@
 				<newresource uri="" order="40"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
@@ -189,7 +186,7 @@
 				<newresource uri="newresource.html?newresourcetype=jsp" order="50"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v"/>
 				</accesscontrol>
 				<editoptions>
@@ -232,7 +229,7 @@
 				<newresource uri="" order="60"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
@@ -271,7 +268,7 @@
 				<newresource uri="newresource_pointer.html" order="70"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
@@ -308,7 +305,7 @@
 				<newresource uri="" order="80"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
@@ -344,7 +341,7 @@
 				<newresource uri="newresource_sibling.html" order="90"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
@@ -352,7 +349,7 @@
 				<newresource uri="newresource_upload.html" order="100"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
@@ -360,20 +357,23 @@
 		<default-preferences>
 			<workplace-preferences>
 				<workplace-generaloptions>
-					<buttonstyle>text</buttonstyle>
+					<buttonstyle>textimage</buttonstyle>
 					<reporttype>simple</reporttype>
-					<uploadapplet>true</uploadapplet>
+					<uploadapplet>false</uploadapplet>
 				</workplace-generaloptions>
 				<workplace-startupsettings>
-					<locale>de</locale>
-					<project>online</project>
+					<locale>en</locale>
+					<project>Offline</project>
 					<workplaceview>/system/workplace/jsp/explorer_fs.html</workplaceview>
+					<folder>/</folder>
+					<site>/sites/default/</site>
+					<restrictexplorerview>false</restrictexplorerview>
 				</workplace-startupsettings>
 			</workplace-preferences>
 			<explorer-preferences>
 				<explorer-generaloptions>
-					<buttonstyle>image</buttonstyle>
-					<entries>40</entries>
+					<buttonstyle>textimage</buttonstyle>
+					<entries>50</entries>
 				</explorer-generaloptions>
 				<explorer-displayoptions>
 					<show-title>true</show-title>
@@ -388,39 +388,39 @@
 					<show-usercreated>false</show-usercreated>
 					<show-datereleased>false</show-datereleased>
 					<show-dateexpired>false</show-dateexpired>
-				</explorer-displayoptions>										
+				</explorer-displayoptions>				
 			</explorer-preferences>
 			<dialogs-preferences>
 				<dialogs-defaultsettings>
 					<filecopy>createsibling</filecopy>
 					<foldercopy>preservesiblings</foldercopy> 		
-					<filedeletion>reservesiblings</filedeletion> 
+					<filedeletion>preservesiblings</filedeletion> 
 					<directpublish>onlyresource</directpublish> 	
-					<showlock>true</showlock>
-				</dialogs-defaultsettings>	
-			</dialogs-preferences>			
+					<showlock>false</showlock>
+				</dialogs-defaultsettings>		
+			</dialogs-preferences>	
 			<editors-preferences>
 				<editors-generaloptions>
-					<buttonstyle>text</buttonstyle>
-					<directeditstyle>text</directeditstyle>
-				</editors-generaloptions>	
-				<editors-preferrededitors>
-					<editor type="plain" value="/system/workplace/jsp/editors/simple/editor.html" />
+					<buttonstyle>image</buttonstyle>
+					<directeditstyle>image</directeditstyle>
+				</editors-generaloptions>
+   				<editors-preferrededitors>
+					<editor type="plain" value="bestavailable" />
 					<editor type="xmlpage" value="bestavailable" />	
 				</editors-preferrededitors>
 			</editors-preferences>	
 			<workflow-preferences>
 				<workflow-generaloptions>
 					<startupfilter>mynewtasks</startupfilter>
-					<showprojects>true</showprojects>
-				</workflow-generaloptions>			
+					<showprojects>false</showprojects>
+				</workflow-generaloptions>
 				<workflow-defaultsettings>
-					<message-accepted>true</message-accepted>
-					<message-forwarded>true</message-forwarded>
-					<message-completed>true</message-completed>
-					<informrolemembers>true</informrolemembers>
-				</workflow-defaultsettings>
-			</workflow-preferences>	
+					<message-accepted>false</message-accepted>
+					<message-forwarded>false</message-forwarded>
+					<message-completed>false</message-completed>
+					<informrolemembers>false</informrolemembers>
+				</workflow-defaultsettings>			
+			</workflow-preferences>				
 		</default-preferences>
-    </workplace>     
-</opencms>    
+	</workplace>
+</opencms>
