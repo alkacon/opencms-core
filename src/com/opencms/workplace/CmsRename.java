@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/05/30 11:44:52 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/06/02 09:46:21 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.23 $ $Date: 2000/05/30 11:44:52 $
+ * @version $Revision: 1.24 $ $Date: 2000/06/02 09:46:21 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -193,20 +193,24 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                             if (folder.getState() != C_STATE_DELETED) {
                        
                                 cms.deleteFolder(folder.getAbsolutePath());
+                                try {
+                                        cms.deleteFolder(C_CONTENTBODYPATH+folder.getAbsolutePath().substring(1));
+                                } catch (CmsException e) {
+                                }
                             }
                         }
                         
-                        // as the last step, delete the original folder
+                        // as the last step, delete the original folder in the content folder
              
 
                          cms.deleteFolder(filename);  
-                         try {
-                            cms.deleteFolder(C_CONTENTBODYPATH+filename.substring(1));
+                         try { 
+                           cms.deleteFolder(C_CONTENTBODYPATH+filename.substring(1));
                          } catch (CmsException e) {
                          }
                
                          try {
-                            cms.lockResource(C_CONTENTBODYPATH+(parent+newFile+"/").substring(1));
+                            cms.unlockResource(C_CONTENTBODYPATH+filename.substring(1));
                          } catch (CmsException e) {
                          }
                         

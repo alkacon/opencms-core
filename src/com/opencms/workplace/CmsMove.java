@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2000/05/31 15:02:05 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/06/02 09:46:21 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.22 $ $Date: 2000/05/31 15:02:05 $
+ * @version $Revision: 1.23 $ $Date: 2000/06/02 09:46:21 $
  */
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -219,6 +219,10 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
                             if (folder.getState() != C_STATE_DELETED) {
                                // System.err.println("delete folder "+folder.getAbsolutePath());                              
                                 cms.deleteFolder(folder.getAbsolutePath());
+                                try {
+                                   cms.deleteFolder(C_CONTENTBODYPATH+folder.getAbsolutePath().substring(1));
+                                } catch (CmsException e) {
+                                }
                             }
                         }
                         

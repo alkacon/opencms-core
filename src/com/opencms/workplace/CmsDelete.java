@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/05/30 11:44:51 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/06/02 09:46:21 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.24 $ $Date: 2000/05/30 11:44:51 $
+  * @version $Revision: 1.25 $ $Date: 2000/06/02 09:46:21 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -173,6 +173,10 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     if (folder.getState() != C_STATE_DELETED) {
                         //cms.lockResource(folder.getAbsolutePath());
                         cms.deleteFolder(folder.getAbsolutePath());
+                        try {
+                            cms.deleteFolder(C_CONTENTBODYPATH+folder.getAbsolutePath().substring(1));
+                        } catch (CmsException e) {
+                        }
                     }
                 }
          
