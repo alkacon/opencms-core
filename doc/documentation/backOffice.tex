@@ -1,4 +1,5 @@
 \chapter {Backoffice Modules}
+\label{Backoffice Modules}
 When writing a module for OpenCms (e.g. a News Module), it is often
 required to edit the external data that is used to create the output
 with this module. This functionality is called the Backoffice of this
@@ -173,8 +174,7 @@ provided by a Content Definition. This class can be easily extended and
 modified for each individual Backoffice module. Only the input form -
 which is always depending on the data fields of a module - must be
 implemented separately. The list of all available data objects that is
-generated with the predefined classes looks like this , the class itself
-looks as described below (figure~\ref{AbstactBO}).
+generated with the predefined classes looks like figure~\ref{AbstactBO}.
 
 \begin{figure}
 \begin{center}
@@ -185,55 +185,7 @@ looks as described below (figure~\ref{AbstactBO}).
 \label{AbstactBO}\jtabd
 \end{figure}
 
-\begin{java}
-public abstract class A\_CmsBackoffice extends CmsWorkplaceDefault \{\\
-\jtaba        /**\\
-\jtaba         * Gets the content of a given template file.\\
-\jtaba         * <P>\\
-\jtaba         * While processing the template file the user methods\\
-\jtaba         * <code>newsList</code> and <code>article</code> will be used\\
-\jtaba         * to display data of the content type "news article".\\
-\jtaba         *\\
-\jtaba         * @param cms A\_CmsObject Object for accessing system resources\\
-\jtaba         * @param templateFile Filename of the template file\\
-\jtaba         * @param elementName <em>not used here</em>.\\
-\jtaba         * @param parameters <em>not used here</em>.\\
-\jtaba         * @param templateSelector template section that should be processed.\\
-\jtaba         * @return Processed content of the given template file.\\
-\jtaba         * @exception CmsException\\
-\jtaba         */\\
-         public byte[] getContent(CmsObject cms, String templateFile, String elementName,\\
-\jtaba   Hashtable parameters, String templateSelector) throws\\
-\jtaba   CmsException \{\\
-\jtabb        // code to produce the output of the list template\\
-        \}\\
-/**\\
- * gets the content definition class\\
- * @returns class content definition class\\
- */
-public abstract Class getContentDefinitionClass() ;\\
-
-/**\\
- * gets the create url by using the cms object\\
- * @returns a string with the create url\\
- * public abstract String getCreateUrl(CmsObject cms);\\
-/**\\
- * gets the delete url by using the cms object\\
- * @returns a string with the delete url\\
- */\\
-public abstract String getDeleteUrl(CmsObject cms);\\
-/**\\
- * gets the edit url by using the cms object\\
- * @returns a string with the edit url\\
- */\\
-public abstract String getEditUrl(CmsObject cms);\\
-\}\\
-\end{java}
-\index{getCreateUrl(CmsObject cms)}
-\index{getDeleteUrl(CmsObject cms)}
-\index{getEditUrl(CmsObject cms)}
-
-To use this abstract class, it has to be extended by an implementation
+To use the abstract class, it has to be extended by an implementation
 class that extends several configuration methods, providing the
 necessary data about the Content Definition to be used and the URLs of
 the forms required for adding, editing or deleting data. The following
@@ -248,6 +200,7 @@ entry.
 data entry.
 \item getDeleteUrl: Returns the URL of the dialog to delete an
 existing data entry.
+\item getSetupUrl: Return the URL of the setup dialog
 \end{itemize}
 
 The returned URLs of those methods direct to the dialogs (i.e. templates
@@ -328,7 +281,236 @@ First to read all given parameters from the input fields, then to check
 if all data values are non empty,  to create a new Content Definition
 object with the given data and finally to store it in the data storage.
 
+%====================================================================
+\section{Changes to the Abstract Backoffice class in OpenCms 4.4}
+OpenCms uses the abstract backoffice class {\name A\_CmsBackOffice} from the
+package  \\
+{\name com.opencms.defaults} to make the writing of new backoffice 
+modules more easy. 
+This part describes the changes to the existing mechanism and how these
+changes can be used.
 
+\subsection{Changes to the getContent... methods}
+The abstract backoffice class defines three methods for processing the 
+input-form of the backoffice:
+
+\begin{itemize}
+\item getContentEdit: form to modify an existing dataset
+\item getContentNew:  form to create a new dataset
+\item getContentDelete: form to delete a dataset
+\end{itemize}
+
+The parameters of these getContent... methods are now the following:
+
+\begin{java}
+public {\bf String} getContentEdit(CmsObject cms,\\
+\jtabf CmsXmlWpTemplateFile templateFile,\\
+\jtabf {\bf A\_CmsContentDefinition cd},\\
+\jtabf String elementName,\\
+\jtabf {\bf Enumeration keys},\\
+\jtabf Hashtable parameters,\\
+\jtabf String templateSelector)\\
+\jtabf throws CmsException
+\end{java}
+\index{Enumeration keys}
+The modifications to the existing version are highlighted.
+
+\begin{itemize}
+\item A\_CmsContentDefinition cd: gives the correct instance of the Content Definition
+	to the method. This mehtod is either a new (empty) CD or a CD which includes
+	an existing dataset.This way you can always access the correct CD, without 
+	fetching it with your own programm code.
+\item Enumeration keys: Inherits the names of all data which comes from the form
+	(URL and form-paramter). It can be used to determine which parameters had 
+	been on a certain page, when working with forms over multiple pages.
+\item return-value String: The method returns a String. An empty String signals that
+	no error has occured while processing the form. If an error has occured, the 
+	String contains the error-message which will be displayed in the template.
+\end{itemize}
+
+\subsection{Additional method getSetupUrl}
+Now it is possible to add an additional setup page to the module, which can be
+called from the backoffice. This does the method
+
+\begin{java}
+public String getSetupUrl(CmsObject cms, String tagcontent, A\_CmsXmlContent doc, 
+Object userObject) throws Exception
+\end{java}
+\index{getSetupUrl() }
+
+This method has to be overwritten from your own class, which extends the class
+{\name A\_CmsBackoffice}, if this function is wanted. The method returns the URL 
+of the setup page of the module. This page can be put at any place within the module
+directory.
+\index{setup page}
+
+If a setup page is defined in this way, a button to access this page is shown in 
+the list view of the module.
+
+\subsection{Filling the template from the CD automatically}
+The main target of the changes of abstract backoffice class is to decrease the
+sumpturay of creating an own backoffice class. In order to let the abstract backoffice
+do as many tasks as possible, some conventions concerning names of variables, methods,
+datablocks and fields have to be known.
+Table~\ref{nameConv} shows an example for these naming conventions.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+member &
+get-method&
+name of&  
+name of \\
+variable&
+&
+datablock&
+inputfield\\ \hline  
+m\_text&
+public String&
+<process>text</process>&
+text\\
+&
+getText()&
+&  \\ \hline
+\end{tabular}
+\caption[name conventions]{name conventions}
+\label{nameConv}
+\end{center} 
+\end{table}
+
+With the help of this naming scheme, the form is automatically filled with the right
+values.
+
+The methods {\name getXYZ} have to return a String to enable the automatically assignment
+of the data to the fields. In the case that the method {\name getXYZ} accesses a value
+that is no String, another method {\name getXYZString} has to be written, which returns 
+the value as a String.
+The returned value is then inserted into the datablock {\name XYZ}.
+
+Member variables have always to be initialized, with 'null' in case of an Object,
+and '-1' in case of an integer.
+
+\subsection{Filling the CD from the template's fields automatically}
+Just like filling the datablocks before, the assignment of the data from the 
+templateform to the CD takes place automatically. The naming scheme for this 
+ist the same as before (Table~\ref{nameConv2}).
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+member &
+set-method&
+name of&  
+name of \\
+variable&
+&
+datablock&
+inputfield\\ \hline  
+m\_text&
+public String&
+<process>text</process>&
+text\\
+&
+setText()&
+&  \\ \hline
+\end{tabular}
+\caption[name conventions]{name conventions}
+\label{nameConv2}
+\end{center} 
+\end{table}
+
+\subsubsection{special case: file upload}
+To make it possible to read out uploaded files automatically, some further
+naming conventions has to be followed (Table~\ref{nameConv3}).
+\index{file upload}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+member &
+set-method&
+name of&  
+name of \\
+variable&
+&
+datablock&
+inputfield\\ \hline  
+m\_upload&
+public void&
+<process>text&
+Upload\\
+&
+setUpload(String filename)&
+</process>&  \\ \hline
+m\_uploadcontent&
+public void&
+---&
+---\\
+&
+setUploadContent(byte content)&
+& \\ \hline
+
+\end{tabular}
+\caption[name conventions]{name conventions}
+\label{nameConv3}
+\end{center} 
+\end{table}
+
+This means that two values are always stored, the name of the file which was
+uploaded as well as the content of the file.
+The name of the inputfield in the template is used as a key for the name within 
+the Content Definition. The according method name to set the content is 
+derived from that.
+
+\subsection{Testing for errors}
+A method in the Content Definition tests the values which have been inserted.
+This method is called automatically before the data is stored to the database.
+
+\begin{java}
+public void check(boolean finalcheck) throws CmsPlausibilizationException
+\end{java}
+\index{check() }
+\index{CmsPlausibilizationException}
+
+All data has to be tested within this method and a CmsPlausibilizationException
+has to be thrown in case of an error. The exception contains a vector of 
+error codes, which is passed to the constructor of the exception.
+
+\begin{java}
+public CmsPlausibilizationException(Vector error)
+\end{java}
+
+The certain errorcodes within the vector are Strings which are build 
+after the following scheme:
+
+'fieldname\_error'
+
+'Fieldname' is the inputfield in which the error has occured and error is
+the kind of error (e.g. 'empty'). Errormessages according to these errorcodes
+are searched within the backoffice. There is a mechanism with 3 stages, which
+serves as a naming scheme for the datablocks inside the template. The following
+datablocks are searched one after another and issued in case one was found.
+This way it is possible to have different graduations of the error messages.
+
+\begin{itemize}
+\item <errfieldname\_error>errorcode<errfieldname\_error>: This datablock 
+	defines an error text which is issued when the error code
+	'fieldname\_error' appears.
+\item <errfieldname>errorcode<errfieldname> This datablock defines
+	an error for the inputfield 'fieldname'. It is used if the 
+	datablock \\
+	'<errfieldname\_error>errorcode<errfieldname\_error>' could
+	not be found.
+\item <errerror>errorcode<errerror>: This datablock defines an error text for
+	a kind of error. It is used if the datablock 
+	'<errfieldname>errorcode<errfieldname>' could not be found.
+\end{itemize}
+
+If no error text can be found for the error code, the error code is given 
+directly to the template.
 
 
 
