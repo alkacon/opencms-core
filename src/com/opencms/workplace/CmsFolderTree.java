@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2004/06/15 10:19:21 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.69 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.70 $ $Date: 2004/06/15 10:19:21 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault {
@@ -407,7 +407,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
                 }
             }
         }
-        Enumeration enum = list.elements();
+        Enumeration en = list.elements();
         if(list.size() > 0) {
             lastFolder = (CmsResource)list.lastElement();
         }
@@ -416,8 +416,8 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
         }
 
         //CmsFolder folder=null;
-        while(enum.hasMoreElements()) {
-            CmsResource res = (CmsResource)enum.nextElement();
+        while(en.hasMoreElements()) {
+            CmsResource res = (CmsResource)en.nextElement();
 
             //CmsFolder folder=(CmsFolder)enum.nextElement();
             // check if this folder is visible

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.83 $
+* Date   : $Date: 2004/06/15 10:15:03 $
+* Version: $Revision: 1.84 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.83 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.84 $ $Date: 2004/06/15 10:15:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -396,7 +396,7 @@ public class CmsFileList extends A_CmsWpElement {
 
         //get the template
         CmsXmlWpTemplateFile template = (CmsXmlWpTemplateFile)doc;
-        Iterator enum = null;
+        Iterator en = null;
 
         // file and folder object required to create the file list.
         // CmsFile file;
@@ -423,9 +423,9 @@ public class CmsFileList extends A_CmsWpElement {
         }
 
         // go through all folders and files
-        enum = list.iterator();
-        while(enum.hasNext()) {
-            res = (CmsResource)enum.next();
+        en = list.iterator();
+        while(en.hasNext()) {
+            res = (CmsResource)en.next();
             if(checkAccess(cms, res)) {
                 template.setData("PREVIOUS", currentFilelist);
                 if(res.isFolder()) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2004/06/15 10:15:45 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.33 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.34 $ $Date: 2004/06/15 10:15:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -306,9 +306,9 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault {
             return null;
         }
         Hashtable g = new Hashtable();
-        Enumeration enum = h.keys();
-        while(enum.hasMoreElements()) {
-            Object key = enum.nextElement();
+        Enumeration en = h.keys();
+        while(en.hasMoreElements()) {
+            Object key = en.nextElement();
             Object value = h.get(key);
             Vector List = (Vector)g.get(value);
             if(List == null) {

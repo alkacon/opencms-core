@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2004/06/15 10:17:37 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.35 $ $Date: 2004/06/15 10:17:37 $
  */
 
 public class CmsExplorerTree extends CmsWorkplaceDefault {
@@ -286,15 +286,15 @@ public class CmsExplorerTree extends CmsWorkplaceDefault {
                 list.addElement(subfolder);
             }
         }
-        Enumeration enum = list.elements();
+        Enumeration en = list.elements();
         if(list.size() > 0) {
             lastFolder = (CmsFolder)list.lastElement();
         }
         else {
             lastFolder = null;
         }
-        while(enum.hasMoreElements()) {
-            CmsFolder folder = (CmsFolder)enum.nextElement();
+        while(en.hasMoreElements()) {
+            CmsFolder folder = (CmsFolder)en.nextElement();
             
             // check if this folder is visible
             if(checkAccess(cms, folder)) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
-* Date   : $Date: 2004/06/04 10:48:52 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2004/06/15 10:16:57 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.dom.Document;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2004/06/04 10:48:52 $
+ * @version $Revision: 1.13 $ $Date: 2004/06/15 10:16:57 $
  */
 public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
 
@@ -301,14 +301,14 @@ public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
 
         // combine folder and file vector
         Vector filefolders = new Vector();
-        Iterator enum = folders.iterator();
-        while(enum.hasNext()) {
-            folder = (CmsFolder)enum.next();
+        Iterator en = folders.iterator();
+        while(en.hasNext()) {
+            folder = (CmsFolder)en.next();
             filefolders.addElement(folder);
         }
-        enum = files.iterator();
-        while(enum.hasNext()) {
-            file = (CmsFile)enum.next();
+        en = files.iterator();
+        while(en.hasNext()) {
+            file = (CmsFile)en.next();
             filefolders.addElement(file);
         }
         if(filefolders.size() > 0) {
@@ -323,9 +323,9 @@ public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
 
             //now check files and folders that are not deleted and include navigation
             // information
-            enum = filefolders.iterator();
-            while(enum.hasNext()) {
-                CmsResource res = (CmsResource)enum.next();
+            en = filefolders.iterator();
+            while(en.hasNext()) {
+                CmsResource res = (CmsResource)en.next();
 
                 // check if the resource is not marked as deleted
                 if(res.getState() != C_STATE_DELETED) {
