@@ -14,7 +14,7 @@ import org.xml.sax.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/01/27 15:03:34 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/02 10:38:38 $
  */
 public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -322,7 +322,8 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
         Enumeration keys = param.keys();
         String s = "";
         while(keys.hasMoreElements()) {
-            s = s + keys.nextElement() + "<BR>";
+            String key = (String)keys.nextElement();
+            s = s + "<B>" + key + "</B>: " + param.get(key) + "<BR>";
         }
         s = s + "<B>" + tagcontent + "</B><BR>";
         return s;
@@ -451,7 +452,53 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
         String name = getClass().getName();
         return "[" + name.substring(name.lastIndexOf(".") + 1) + "] ";
     }        
-    
+
+    /**
+     * Help method that handles any occuring error by writing
+     * an error message to the OpenCms logfile and throwing a 
+     * CmsException of the type "unknown".
+     * @param errorMessage String with the error message to be printed.
+     * @exception CmsException
+     */
+    protected void throwException(String errorMessage) throws CmsException {
+        throwException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+    }
+
+    /**
+     * Help method that handles any occuring error by writing
+     * an error message to the OpenCms logfile and re-throwing a 
+     * caught exception.
+     * @param errorMessage String with the error message to be printed.
+     * @param e Exception to be re-thrown.
+     * @exception CmsException
+     */
+    protected void throwException(String errorMessage, Exception e) throws CmsException {
+        if(A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Exception: " + e);
+        }        
+        if(e instanceof CmsException) {
+            throw (CmsException)e;
+        } else {
+            throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+        }
+    }
+        
+    /**
+     * Help method that handles any occuring error by writing
+     * an error message to the OpenCms logfile and throwing a 
+     * CmsException of the given type.
+     * @param errorMessage String with the error message to be printed.
+     * @param type Type of the exception to be thrown.
+     * @exception CmsException
+     */
+    protected void throwException(String errorMessage, int type) throws CmsException {
+        if(A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+        }        
+        throw new CmsException(errorMessage, type);
+    }              
+        
     /**
      * Find the corresponding template file to be loaded by the template class.
      * this should be defined in the template file of the parent
