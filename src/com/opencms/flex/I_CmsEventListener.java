@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsEventListener.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/06/05 19:02:05 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ package com.opencms.flex;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -72,45 +72,45 @@ public interface I_CmsEventListener {
      *
      * @see com.opencms.file.CmsObject#loginUser(String, String) 
      */
-    public static int EVENT_LOGIN_USER = 1;
+    int EVENT_LOGIN_USER = 1;
 
     /**
      * Event "a project was published".<p>
      * 
      * @see com.opencms.file.CmsObject#publishProject(int, I_CmsReport)
      */    
-    public static int EVENT_PUBLISH_PROJECT = 2;
+    int EVENT_PUBLISH_PROJECT = 2;
     
     /** 
      * Event "a resource was published".<p>
      * 
      * @see com.opencms.file.CmsObject#publishResource(String, boolean)
      */    
-    public static int EVENT_PUBLISH_RESOURCE = 3;    
+    int EVENT_PUBLISH_RESOURCE = 3;    
 
     /** 
      * Event "a resource in the COS was published".<p>
      * 
      * @see com.opencms.defaults.master.CmsMasterContent#publishResource(CmsObject)
      */    
-    public static int EVENT_PUBLISH_BO_RESOURCE = 4;    
+    int EVENT_PUBLISH_BO_RESOURCE = 4;    
         
     /** 
      * Event "all caches mut be cleared".<p>
      *
      * Not thrown by the core classes, but might be used in modules.
      */
-    public static int EVENT_CLEAR_CACHES = 5;
+    int EVENT_CLEAR_CACHES = 5;
 
     /** 
      * Event used by the Flex Cluster Module.<p>
      */ 
-    public static int EVENT_FLEX_CLUSTER_CHECK_SOURCE = 6;
+    int EVENT_FLEX_CLUSTER_CHECK_SOURCE = 6;
 
     /** 
      * Event used by the Flex Cluster Module.<p>
      */      
-    public static int EVENT_FLEX_CLUSTER_HOOK = 7;
+    int EVENT_FLEX_CLUSTER_HOOK = 7;
 
     /** 
      * Event "delete all JSP pages in the "real" file system 
@@ -120,7 +120,7 @@ public interface I_CmsEventListener {
      * the button "Purge JSP repository", or if you use the <code>_flex=purge</code>
      * request parameter.
      */
-    public static int EVENT_FLEX_PURGE_JSP_REPOSITORY = 8;
+    int EVENT_FLEX_PURGE_JSP_REPOSITORY = 8;
     
     /** 
      * Event "the FlexCache must be cleared".<p>
@@ -129,13 +129,13 @@ public interface I_CmsEventListener {
      * one ot the "Clear cache" buttons, or if you use the <code>_flex=clearcache</code>
      * request parameter.
      */
-    public static int EVENT_FLEX_CACHE_CLEAR = 9;
+    int EVENT_FLEX_CACHE_CLEAR = 9;
     
     /** Event "static export has just happened"
      *
      * @see com.opencms.file.CmsObject#publishProject(int, I_CmsReport)
      */
-    public static int EVENT_STATIC_EXPORT = 10;
+    int EVENT_STATIC_EXPORT = 10;
    
     /**
      * Acknowledge the occurrence of the specified event, implement this 
@@ -143,6 +143,6 @@ public interface I_CmsEventListener {
      *
      * @param event CmsEvent that has occurred
      */
-    public void cmsEvent(CmsEvent event);
+    void cmsEvent(CmsEvent event);
 }
 

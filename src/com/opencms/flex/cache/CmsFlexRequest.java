@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/05/13 12:44:54 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
     
@@ -203,7 +203,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * This external file must have a "mirror" version, i.e. a file in the OpenCms VFS
      * that represents the external file.<p>
      *
-     * @param cms_target the OpenCms file that is a "mirror" version of the external file
+     * @param vfs_target the OpenCms file that is a "mirror" version of the external file
      * @param ext_target the external file (outside the OpenCms VFS)
      * @return the constructed CmsFlexRequestDispatcher
      */     
@@ -315,10 +315,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * return only the first one.<p>
      *
      * @param name the name of the desired request parameter
+     * @return the value of the specified request parameter
      * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
      */
     public String getParameter(String name) {
-
         String values[] = (String[]) m_parameters.get(name);
         if (values != null)
             return (values[0]);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsEvent.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import com.opencms.file.CmsObject;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsEventListener
@@ -68,7 +68,7 @@ public class CmsEvent extends java.util.EventObject {
      * @param data event data
      */
     public CmsEvent(CmsObject cms, int type, java.util.Map data) {
-        this( cms, type, data, false );
+        this(cms, type, data, false);
     }
     
     /**
@@ -94,7 +94,7 @@ public class CmsEvent extends java.util.EventObject {
      * 
      * @see I_CmsEventListener
      */    
-    public CmsEvent(CmsObject cms, int type, java.util.Map data, boolean isClusterEvent ) {
+    public CmsEvent(CmsObject cms, int type, java.util.Map data, boolean isClusterEvent) {
         super(cms);
         
         this.m_cms = cms;
@@ -153,7 +153,7 @@ public class CmsEvent extends java.util.EventObject {
      * @param value <code>true</code> if this event should be forwarded to the other 
      *         servers in the cluster, <code>false</code> otherwise
      */
-    public void setClusterEvent( boolean value ) {
+    public void setClusterEvent(boolean value) {
         this.m_isClusterEvent = value;
     }
     

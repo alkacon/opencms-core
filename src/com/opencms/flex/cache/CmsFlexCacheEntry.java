@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2003/05/13 12:44:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,14 @@
  
 package com.opencms.flex.cache;
 
+import com.opencms.core.CmsException;
 import com.opencms.flex.util.I_CmsFlexLruCacheObject;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.servlet.ServletException;
 
 /**
  * Contains the contents of a cached resource.<p>
@@ -58,7 +62,7 @@ import java.util.Map;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject {
     
@@ -88,22 +92,22 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     private int m_byteSize;
     
     /** Pointer to the next cache entry in the LRU cache */
-    private I_CmsFlexLruCacheObject m_Next;
+    private I_CmsFlexLruCacheObject m_next;
     
     /** Pointer to the previous cache entry in the LRU cache. */
-    private I_CmsFlexLruCacheObject m_Previous;
+    private I_CmsFlexLruCacheObject m_previous;
     
     /** The variation map where this cache entry is stored. */
-    private Map m_VariationMap;
+    private Map m_variationMap;
     
     /** The key under which this cache entry is stored in the variation map. */
-    private String m_VariationKey;
+    private String m_variationKey;
     
     /** Static counter to give each entry a unique ID. */
     private static int ID_COUNTER = 0;
     
     /** The internal ID of this cache entry. */
-    private int ID;
+    private int m_id;
     
     /** 
      * Constructor for class CmsFlexCacheEntry.<p>
@@ -117,10 +121,10 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
         m_headers = null;
         m_byteSize = 0;
         
-        this.setNextLruObject( null );
-        this.setPreviousLruObject( null );
+        this.setNextLruObject(null);
+        this.setPreviousLruObject(null);
         
-        this.ID = CmsFlexCacheEntry.ID_COUNTER++;
+        this.m_id = CmsFlexCacheEntry.ID_COUNTER++;
     }
     
     /** 
@@ -144,13 +148,13 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
      * @param resource a name of a resource in the OpenCms VFS
      * @param parameters a map of parameters specific to this include call
      */    
-    public void add(String resource, java.util.Map paramters) {
+    public void add(String resource, Map parameters) {
         if (m_completed) return;
         if (m_redirectTarget == null) {
             // Add only if not already redirected
             m_elements.add(resource);
-            if (paramters == null) paramters = java.util.Collections.EMPTY_MAP;
-            m_elements.add(paramters);
+            if (parameters == null) parameters = java.util.Collections.EMPTY_MAP;
+            m_elements.add(parameters);
             m_byteSize += resource.getBytes().length;
         }
     }
@@ -217,7 +221,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
      * @throws IOException might be thrown from call to RequestDispatcher.include() or from Response.sendRedirect()
      */
     public void service(CmsFlexRequest req, CmsFlexResponse res) 
-    throws com.opencms.core.CmsException, javax.servlet.ServletException, java.io.IOException {
+    throws CmsException, ServletException, IOException {
         if (!m_completed) return;
 
         if (m_redirectTarget != null) {
@@ -286,7 +290,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
         long now = System.currentTimeMillis();
         long daytime = now % 86400000;
         m_timeout = now - (daytime % timeout) + timeout;
-        if (DEBUG > 2) System.err.println("FlexCacheEntry: New entry timeout=" + m_timeout + " now=" + now + " remaining=" + (m_timeout - now) );
+        if (DEBUG > 2) System.err.println("FlexCacheEntry: New entry timeout=" + m_timeout + " now=" + now + " remaining=" + (m_timeout - now));
     } 
     
     /**
@@ -343,9 +347,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
      * @param theVariationKey the variation key
      * @param theVariationMap the variation map
      */
-    public void setVariationData( String theVariationKey, Map theVariationMap ) {
-        this.m_VariationKey = theVariationKey;
-        this.m_VariationMap = theVariationMap;
+    public void setVariationData(String theVariationKey, Map theVariationMap) {
+        this.m_variationKey = theVariationKey;
+        this.m_variationMap = theVariationMap;
     }
     
     // implementation of the com.opencms.flex.util.I_CmsFlexLruCacheObject interface methods
@@ -353,29 +357,29 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     /**
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#setNextLruObject(com.opencms.flex.util.I_CmsFlexLruCacheObject)
      */
-    public void setNextLruObject( I_CmsFlexLruCacheObject theNextEntry ) {
-        this.m_Next = theNextEntry;
+    public void setNextLruObject(I_CmsFlexLruCacheObject theNextEntry) {
+        this.m_next = theNextEntry;
     }
     
     /**
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#getNextLruObject()
      */
     public I_CmsFlexLruCacheObject getNextLruObject() {
-        return this.m_Next;
+        return this.m_next;
     }
     
     /**
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#setPreviousLruObject(com.opencms.flex.util.I_CmsFlexLruCacheObject)
      */
-    public void setPreviousLruObject( I_CmsFlexLruCacheObject thePreviousEntry ) {
-        this.m_Previous = thePreviousEntry;
+    public void setPreviousLruObject(I_CmsFlexLruCacheObject thePreviousEntry) {
+        this.m_previous = thePreviousEntry;
     }
     
     /**
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#getPreviousLruObject()
      */
     public I_CmsFlexLruCacheObject getPreviousLruObject() {
-        return this.m_Previous;
+        return this.m_previous;
     }  
     
     /**
@@ -383,16 +387,16 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
      */
     public void addToLruCache() {
         // do nothing here...
-        if (DEBUG>0) System.out.println( "Added cache entry with ID: " + this.ID + " to the LRU cache" );
+        if (DEBUG>0) System.out.println("Added cache entry with ID: " + this.m_id + " to the LRU cache");
     }
     
     /**
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#removeFromLruCache()
      */
     public void removeFromLruCache() {
-        if (m_VariationMap!=null && this.m_VariationKey!=null) {
-            this.m_VariationMap.remove( this.m_VariationKey );
-            if (DEBUG>0) System.err.println( "Removed cache entry with ID: " + this.ID + " from the LRU cache" );
+        if (m_variationMap!=null && this.m_variationKey!=null) {
+            this.m_variationMap.remove(this.m_variationKey);
+            if (DEBUG>0) System.err.println("Removed cache entry with ID: " + this.m_id + " from the LRU cache");
         }
     }
     
@@ -411,18 +415,18 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws java.lang.Throwable {
-        if (DEBUG>0) System.err.println( "Finalizing cache entry with ID: " + this.ID );
+        if (DEBUG>0) System.err.println("Finalizing cache entry with ID: " + this.m_id);
         
         this.clear();
         
         this.m_elements = null;
         this.m_headers = null;
         
-        this.m_VariationKey = null;
-        this.m_VariationMap = null;        
+        this.m_variationKey = null;
+        this.m_variationMap = null;        
         
-        this.setNextLruObject( null );
-        this.setPreviousLruObject( null );
+        this.setNextLruObject(null);
+        this.setPreviousLruObject(null);
         
         this.m_byteSize = 0;  
         

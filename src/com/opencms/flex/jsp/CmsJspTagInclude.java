@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/05/13 12:44:54 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -70,7 +70,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     private static final boolean DEBUG = false;
     
     /** URI of the bodyloader XML file in the OpenCms VFS*/    
-    public final static String C_BODYLOADER_URI = "/system/shared/bodyloader.html";
+    public static final String C_BODYLOADER_URI = "/system/shared/bodyloader.html";
         
     /**
      * Sets the include page target.<p>
@@ -95,7 +95,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     /**
      * Sets the file, same aus using <code>setPage()</code>
      * 
-     * @param target the file to set
+     * @param file the file to set
      * @see #setPage(String)
      */
     public void setFile(String file) {
@@ -207,6 +207,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     /**
      * @return <code>EVAL_BODY_BUFFERED</code>
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @throws JspException by interface default
      */    
     public int doStartTag() throws JspException {
         return EVAL_BODY_BUFFERED;
@@ -215,6 +216,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     /**
      * @return <code>EVAL_PAGE</code>
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     * @throws JspException by interface default
      */
     public int doEndTag() throws JspException {
         
@@ -416,6 +418,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * @param parameters the Map to add the parameters to
      * @param name the name to add
      * @param value the value to add
+     * @param overwrite if <code>true</code>, a parameter in the map will be overwritten by
+     *      a parameter with the same name, otherwise the request will have multiple parameters 
+     *      with the same name (which is possible in http requests)
      */
     private static void addParameter(Map parameters, String name, String value, boolean overwrite) {
         // No null values allowed in parameters
@@ -431,7 +436,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             parameters.put(name, newValues);
         } else {
             // No: Add new parameter name / value pair
-            String[] values = new String[] { value };
+            String[] values = new String[] {value};
             parameters.put(name, values);
         } 
     }

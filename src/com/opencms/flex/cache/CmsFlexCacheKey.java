@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2003/05/15 12:39:35 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,9 @@ package com.opencms.flex.cache;
 import com.opencms.file.CmsObject;
 import com.opencms.flex.util.CmsUUID;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletRequest;
 
@@ -47,15 +49,15 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsFlexCacheKey {
     
     /** The OpenCms resource that this key is used for. */    
-    public String Resource = null;
+    public String m_resource = null;
     
     /** The cache behaviour description for the resource. */    
-    public String Variation = null;
+    public String m_variation = null;
 
     /** Cache key variable: Determines if this resource can be cached alwys, never or under certain conditions. -1 = never, 0=check, 1=always */
     public int m_always = -1; // 
@@ -88,8 +90,8 @@ public class CmsFlexCacheKey {
     public java.util.Set m_ports = null;
 
     /** The list of keywords of the Flex cache language */
-    private java.util.List cacheCmds = java.util.Arrays.asList(new String[] {
-        "always", "never", "uri", "user", "groups", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error", "true"} );
+    private List m_cacheCmds = Arrays.asList(new String[] {
+        "always", "never", "uri", "user", "groups", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error", "true"});
     //   0         1        2      3       4         5         6            7          8                9          10       11       12             13
     
     /** Flag used to determine if this key is from a request or not */
@@ -115,8 +117,8 @@ public class CmsFlexCacheKey {
      */    
     public CmsFlexCacheKey(ServletRequest request, String target, boolean online) {
                 
-        Resource = getKeyName(target, online);     
-        Variation = "never";
+        m_resource = getKeyName(target, online);     
+        m_variation = "never";
         
         m_isRequest = true;
         // Fetch the cms from the request
@@ -163,8 +165,8 @@ public class CmsFlexCacheKey {
      * @param online must be true for an online resource, false for offline resources
      */        
     public CmsFlexCacheKey(String target, String cacheDirectives, boolean online) {
-        Resource = getKeyName(target, online);     
-        Variation = "never";
+        m_resource = getKeyName(target, online);     
+        m_variation = "never";
         m_isRequest = false;
         if (cacheDirectives != null) parseFlexKey(cacheDirectives);
         if (DEBUG) System.err.println("CmsFlexCacheKey for response generated:\n" + this.toString());
@@ -403,7 +405,7 @@ public class CmsFlexCacheKey {
                             str.append(param[0]);
                         }
                     } catch(Exception e) {                        
-                        if (DEBUG) System.err.println("Exception! o=" + o + "  Exception is " + e );
+                        if (DEBUG) System.err.println("Exception! o=" + o + "  Exception is " + e);
                     }
                     if (i.hasNext()) str.append(",");
                 }            
@@ -477,7 +479,7 @@ public class CmsFlexCacheKey {
                 }
                 m_always = 0;
                 if (DEBUG) System.err.println("Parsing token:" + t + " key=" + k + " value=" + v);
-                switch (cacheCmds.indexOf(k)) {
+                switch (m_cacheCmds.indexOf(k)) {
                     case 0: // always
                     case 13:                    
                         m_always = 1;
@@ -562,7 +564,7 @@ public class CmsFlexCacheKey {
         java.util.StringTokenizer toker = new java.util.StringTokenizer(value, ",");
         java.util.Map result = new java.util.HashMap();
         while (toker.hasMoreTokens()) {
-            result.put(toker.nextToken().trim(), new String[] { "&?&" } );
+            result.put(toker.nextToken().trim(), new String[] {"&?&"});
         }
         return result;
     }

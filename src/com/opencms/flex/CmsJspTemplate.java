@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.0 beta 1
  */
 public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
@@ -70,7 +70,7 @@ public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
      * 
      * @return Content of the requested JSP page.
      * 
-     * @throws CmsException
+     * @throws CmsException in case something goes wrong
      */
     public byte[] getContent(CmsObject cms, String jspFile, String elementName, Hashtable parameters) throws CmsException {
         if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(C_FLEX_LOADER)) {
@@ -88,17 +88,14 @@ public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
         } catch (com.opencms.core.CmsException e) {
             // File might not exist or no read permissions
             throw new CmsException("[CmsJspTemplate] Error while reading JSP " + jspFile + "\n" + e, e);
-        }        
-
-        catch(Exception e) {
+        } catch(Exception e) {
             String errorMessage = "[CmsJspTemplate] Error while loading jsp file " + jspFile + ": " + e;
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL) ) {
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsJspTemplate] " + errorMessage);
             }
             if(e instanceof CmsException) {
                 throw (CmsException)e;
-            }
-            else {
+            } else {
                 throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
             }
         }
@@ -125,6 +122,11 @@ public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
      * JSPs will be cached in the FlexCache and so 
      * we always return <code>true</code> here.
      * 
+     * @param cms default argument for element cache method
+     * @param templateFile default argument for element cache method
+     * @param elementName default argument for element cache method
+     * @param parameters default argument for element cache method
+     * @param templateSelector default argument for element cache method
      * @return <code>true</code>
      */
     public boolean shouldReload(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {

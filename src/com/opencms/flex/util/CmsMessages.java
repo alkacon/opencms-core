@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsMessages.java,v $
- * Date   : $Date: 2003/03/28 19:51:03 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.0 beta 2
  */
@@ -62,12 +62,12 @@ public final class CmsMessages extends Object {
      * Constructor for the messages with an initialized <code>java.util.Locale</code>.
      * 
      * @param baseName the base ResourceBundle name
-     * @param theLocale the locale to use, eg. "de", "en" etc.
+     * @param locale the locale to use, eg. "de", "en" etc.
      */
-    public CmsMessages( String baseName, Locale locale ) {
+    public CmsMessages(String baseName, Locale locale) {
         try {
             m_locale = locale;
-            m_bundle = ResourceBundle.getBundle( baseName, m_locale );        
+            m_bundle = ResourceBundle.getBundle(baseName, m_locale);        
         } catch (MissingResourceException e) {
             m_bundle = null;
         }
@@ -83,7 +83,7 @@ public final class CmsMessages extends Object {
      * 
      * @param baseName the base ResourceBundle name
      * @param language ISO language indentificator for the locale of the bundle     */
-    public CmsMessages( String baseName, String language ) {
+    public CmsMessages(String baseName, String language) {
         this(baseName, language, "", "");      
     }
 
@@ -100,7 +100,7 @@ public final class CmsMessages extends Object {
      * @param language ISO language indentificator for the locale of the bundle
      * @param country ISO 2 letter country code for the locale of the bundle 
      */
-    public CmsMessages( String baseName, String language, String country ) {
+    public CmsMessages(String baseName, String language, String country) {
         this(baseName, language, country, "");              
     }
     
@@ -119,7 +119,7 @@ public final class CmsMessages extends Object {
      * @param country 2 letter country code for the locale of the bundle 
      * @param variant a vendor or browser-specific variant code
      */    
-    public CmsMessages( String baseName, String language, String country, String variant ) {
+    public CmsMessages(String baseName, String language, String country, String variant) {
         this(baseName, new Locale(language, country, variant));
     }
             
@@ -142,9 +142,9 @@ public final class CmsMessages extends Object {
      * @param keyName the key for the desired string 
      * @return the resource string for the given key 
      */
-    public String key( String keyName ) {   
+    public String key(String keyName) {   
         try {            
-            if (m_bundle != null) return m_bundle.getString( keyName );
+            if (m_bundle != null) return m_bundle.getString(keyName);
         } catch (MissingResourceException e) {
             // not found, return warning
         }
@@ -162,8 +162,8 @@ public final class CmsMessages extends Object {
      * @return the resource string for the given key
      * @throws MissingResourceException in case the key is not found of the bundle is not initialized
      */
-    public String getString( String keyName ) throws MissingResourceException {              
-        if (m_bundle != null) return m_bundle.getString( keyName );
+    public String getString(String keyName) throws MissingResourceException {              
+        if (m_bundle != null) return m_bundle.getString(keyName);
         else throw new MissingResourceException("ResourceBundle not initialized", this.getClass().getName(), keyName);
     }       
 
@@ -173,7 +173,7 @@ public final class CmsMessages extends Object {
      * @param timestamp the date timestamp to format
      * @return a formatted date
      */
-    public String getDate( long timestamp ) {
+    public String getDate(long timestamp) {
         return getDate(new Date(timestamp));
     }
     
@@ -206,7 +206,7 @@ public final class CmsMessages extends Object {
      * @param timestamp the date timestamp to format
      * @return a formatted date with a time
      */    
-    public String getDateTime( long timestamp ) {
+    public String getDateTime(long timestamp) {
         return getDateTime(new Date(timestamp));
     }
     

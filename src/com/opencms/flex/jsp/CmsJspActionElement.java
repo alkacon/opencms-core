@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/05/28 16:47:42 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.0 beta 2
  */
@@ -108,7 +108,7 @@ public class CmsJspActionElement {
     private boolean m_handleExceptions = true;
         
     /** Error message in case bean was not properly initialized */
-    public final static String C_NOT_INITIALIZED = "+++ CmsJspActionElement not initialized +++";
+    public static final String C_NOT_INITIALIZED = "+++ CmsJspActionElement not initialized +++";
 
     /** DEBUG flag */
     private static final int DEBUG = 0;
@@ -123,7 +123,7 @@ public class CmsJspActionElement {
     /**
      * Constructor, with parameters.
      * 
-     * @param content the JSP page context object
+     * @param context the JSP page context object
      * @param req the JSP request 
      * @param res the JSP response 
      */
@@ -138,7 +138,7 @@ public class CmsJspActionElement {
      * It is required to call one of the init() methods before you can use the 
      * instance of this bean.
      * 
-     * @param content the JSP page context object
+     * @param context the JSP page context object
      * @param req the JSP request 
      * @param res the JSP response 
      */
@@ -183,7 +183,7 @@ public class CmsJspActionElement {
      * <b>Important:</b> Exceptions that occur during a call to {@link #includeSilent(String, String, Map)}
      * will NOT be handled.
      * 
-     * @param the value to set the Exception handing to
+     * @param value the value to set the Exception handing to
      */
     public void setHandleExceptions(boolean value) {
         m_handleExceptions = value;
@@ -314,7 +314,7 @@ public class CmsJspActionElement {
                     } else {
                         if (value == null)
                             value = "null";
-                        String[] newValue = new String[] { value.toString()};
+                        String[] newValue = new String[] {value.toString()};
                         modParameterMap.put(key, newValue);
                     }
                 }
@@ -600,7 +600,7 @@ public class CmsJspActionElement {
      * Checks if a template part should be used or not, same as using 
      * the <code>&lt;cms:template element="..." /&gt;</code> tag.<p>
      * 
-     * @param part the template element to check 
+     * @param element the template element to check 
      * @return <code>true</code> if the element is active, <code>false</code> otherwise
      * 
      * @see com.opencms.flex.jsp.CmsJspTagUser
@@ -762,7 +762,7 @@ public class CmsJspActionElement {
      * Handles any exception that might occur in the context of this element to 
      * ensure that templates are not disturbed.<p>
      * 
-     * @param e the exception that was catched
+     * @param t the Throwable that was catched
      */
     private void handleException(Throwable t) {
         if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) {

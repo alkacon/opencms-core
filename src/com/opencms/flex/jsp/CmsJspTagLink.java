@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagLink.java,v $
- * Date   : $Date: 2003/05/13 12:44:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,13 +44,14 @@ import javax.servlet.jsp.JspException;
  * export to work properly.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
  
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      * @return EVAL_PAGE
+     * @throws JspException in case soemthing goes wrong
      */
     public int doEndTag() throws JspException {
         

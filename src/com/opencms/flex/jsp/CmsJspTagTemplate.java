@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2003/05/13 12:44:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -52,7 +52,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
     
     /**
      * Sets the include page/file target.
-     * @param target the target to set
+     * @param element the target to set
      */
     public void setElement(String element) {
         if (element != null) {

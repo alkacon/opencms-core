@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
- * Date   : $Date: 2003/05/16 11:53:14 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -261,7 +261,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         int oldMode = cms.getMode();
         String exportUri = req.getParameter(C_EXPORT_PARAM); 
         if (exportUri != null) {
-            if (! exportUri.equals(cms.getRequestContext().getUri())) {
+            if (!exportUri.equals(cms.getRequestContext().getUri())) {
                 // URI is not the same, so this is a sub - element
                 cms.getRequestContext().setUri(exportUri);
             }
@@ -339,6 +339,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
      * @param cms provides the current cms context
      * @param file the JSP file requested
      * @return the contents of the JSP page for the export
+     * @throws CmsException in case something goes wrong
      */
     private byte[] exportJsp(CmsObject cms, CmsFile file) throws CmsException {
         
@@ -465,7 +466,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         source.org.apache.java.util.Configurations c = openCms.getConfiguration();
         m_jspWebAppRepository = c.getString("flex.jsp.repository", "/WEB-INF/jsp");
         m_jspRepository += m_jspWebAppRepository.replace('/', File.separatorChar);
-        if (! m_jspRepository.endsWith(File.separator)) m_jspRepository += File.separator;
+        if (!m_jspRepository.endsWith(File.separator)) m_jspRepository += File.separator;
         if (DEBUG > 0) System.err.println("JspLoader: Setting jsp repository to " + m_jspRepository);
         // Get the cache from the runtime properties
         m_cache = (CmsFlexCache)A_OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);
@@ -488,7 +489,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
      * This is required after <code>init()</code> called if the URL was not set in <code>opencms.
      * properties</code>.
      * 
-     * @param url the JSP export URL
+     * @param value the JSP export URL
      */
     public static void setJspExportUrl(String value) {
         m_jspExportUrl = value;
@@ -626,6 +627,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
      *
      * @param cms The initialized CmsObject which provides user permissions
      * @param file The requested OpenCms VFS resource
+     * @return the contents of the loaded template
      * 
      * @throws CmsException In case the Loader can not process the requested resource
      * 
@@ -772,7 +774,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
      * @param cms Used to access the OpenCms VFS
      * @param file The reqested JSP file resource in the VFS
      * @param req The current request
-     * @param res The current response
+     * @param controller the controller for the JSP integration
      * @param updates A Set containing all JSP pages that have been already updated
      * 
      * @return The file name of the updated JSP in the "real" FS
@@ -883,7 +885,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                         
                         if (filename != null) {
                             // a file was found, changes have to be made
-                            String pre = ((t7 == 0)?directive.substring(0,t2+t3+t5):"");                            ;
+                            String pre = ((t7 == 0)?directive.substring(0,t2+t3+t5):"");
                             String suf = ((t7 == 0)?directive.substring(t2+t3+t5+filename.length()):"");
                             // Now try to update the referenced file 
                             String absolute = controller.getCurrentRequest().toAbsolute(filename);
@@ -930,7 +932,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                 fs.close();
                 
                 if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) 
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Updated JSP file \"" + jspfilename + "\" for resource \"" + file.getAbsolutePath() + "\"") ;
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Updated JSP file \"" + jspfilename + "\" for resource \"" + file.getAbsolutePath() + "\"");
             } catch (FileNotFoundException e) {
                 throw new ServletException("JspLauncher: Could not write to file '" + f.getName() + "'\n" + e, e);
             }
@@ -973,7 +975,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
 	    } catch (ServletException e) {          
 	        // Check if this Exception has already been marked
 	        String msg = e.getMessage();
-	        if (DEBUG > 1) System.err.println("JspLauncher: Caught ServletException " + e );
+	        if (DEBUG > 1) System.err.println("JspLauncher: Caught ServletException " + e);
 	        if ((msg != null) && msg.startsWith(C_LOADER_EXCEPTION_PREFIX)) throw e;
 	        // Not marked, imprint current JSP file and stack trace
 	        throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + file.getAbsolutePath() + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);           

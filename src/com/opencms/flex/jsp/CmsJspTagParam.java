@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagParam.java,v $
- * Date   : $Date: 2003/05/16 11:53:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,65 +102,88 @@ import javax.servlet.jsp.tagext.Tag;
  */
 public class CmsJspTagParam extends BodyTagSupport {
 
-    protected String name;        
-    protected String value;
+    protected String m_name;        
+    protected String m_value;
 
     /**
      * There used to be an 'encode' attribute; I've left this as a
      * vestige in case custom subclasses want to use our functionality
      * but NOT encode parameters.
      */
-    protected boolean encode = false;
+    protected boolean m_encode = false;
     
+    /**
+     * Public constructor.<p>
+     */
 	public CmsJspTagParam() {
 		super();
 		init();
 	}
 
+    /**
+     * Initializes the internal values.<p> 
+     */
 	private void init() {
-		name = value = null;
+		m_name = m_value = null;
 	}
 
-	// for tag attribute
+    /**
+     * Sets the attribute name.<p>
+     * 
+     * @param name the name to set 
+     * @throws JspTagException (never thrown, required by interface)
+     */
 	public void setName(String name) throws JspTagException {
-		this.name = name;
+		this.m_name = name;
 	}
 
-	// for tag attribute
+    /**
+     * Sets the attribute value.<p>
+     * 
+     * @param value the name to set 
+     * @throws JspTagException (never thrown, required by interface)
+     */
 	public void setValue(String value) throws JspTagException {
-		this.value = value;
+		this.m_value = value;
 	}
 
-	// simply send our name and value to our appropriate ancestor
+    /**
+	 * Simply send our name and value to our appropriate ancestor.<p>
+     * 
+     * @throws JspException (never thrown, required by interface)
+     * @return EVAL_PAGE
+     */
 	public int doEndTag() throws JspException {
 		Tag t = findAncestorWithClass(this, I_CmsJspTagParamParent.class);
 		if (t == null)
 			throw new JspTagException("Parameter Tag <param> without parent found!");
 
 		// take no action for null or empty names
-		if (name == null || name.equals(""))
+		if (m_name == null || m_name.equals(""))
 			return EVAL_PAGE;
 
 		// send the parameter to the appropriate ancestor
 		I_CmsJspTagParamParent parent = (I_CmsJspTagParamParent) t;
-		String value = this.value;
+		String value = this.m_value;
 		if (value == null) {
 			if (bodyContent == null || bodyContent.getString() == null)
 				value = "";
 			else
 				value = bodyContent.getString().trim();
 		}
-		if (encode) {
+		if (m_encode) {
 			parent.addParameter(
-				Encoder.encode(name, A_OpenCms.getDefaultEncoding()),
+				Encoder.encode(m_name, A_OpenCms.getDefaultEncoding()),
 				Encoder.encode(value, A_OpenCms.getDefaultEncoding()));
 		} else
-			parent.addParameter(name, value);
+			parent.addParameter(m_name, value);
 
 		return EVAL_PAGE;
 	}
 
-    // Releases any resources we may have (or inherit)
+    /**
+     * Releases any resources we may have (or inherit)
+     */
     public void release() {
     	init();
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavElement.java,v $
- * Date   : $Date: 2003/03/14 12:54:51 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,16 +40,16 @@ import java.util.Map;
  * Bean to collect navigation information from a resource in the OpenCms VFS.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsJspNavElement implements Comparable {
     
     /** Property constant for <code>"locale"</code> */
-    public final static String C_PROPERTY_LOCALE = "locale";    
+    public static final String C_PROPERTY_LOCALE = "locale";    
     /** Property constant for <code>"NavImage"</code> */
-    public final static String C_PROPERTY_NAVIMAGE = "NavImage";    
+    public static final String C_PROPERTY_NAVIMAGE = "NavImage";    
     /** Property constant for <code>"NavInfo"</code> */
-    public final static String C_PROPERTY_NAVINFO = "NavInfo";    
+    public static final String C_PROPERTY_NAVINFO = "NavInfo";    
     
     // Member variables for get / set methods:
     private String m_resource = null;
@@ -178,6 +178,13 @@ public class CmsJspNavElement implements Comparable {
         if (! (o instanceof CmsJspNavElement)) return false;
         return m_resource.equals(((CmsJspNavElement)o).getResourceName());
     }    
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return super.hashCode();
+    }
 
     /**
      * Returns the nav tree level of this resource.<p>

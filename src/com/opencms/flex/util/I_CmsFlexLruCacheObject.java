@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/I_CmsFlexLruCacheObject.java,v $
- * Date   : $Date: 2003/02/26 15:19:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ package com.opencms.flex.util;
  *
  * @see com.opencms.flex.util.CmsFlexLruCache
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public interface I_CmsFlexLruCacheObject {
     
@@ -48,43 +48,43 @@ public interface I_CmsFlexLruCacheObject {
      *
      * @param theNextObject the next object
      */
-    public void setNextLruObject( I_CmsFlexLruCacheObject theNextObject );
+    void setNextLruObject(I_CmsFlexLruCacheObject theNextObject);
     
     /** 
      * Returns the next object in the double linked list of all cached objects.<p>
      *
      * @return the next object in the double linked list of all cached objects
      */
-    public I_CmsFlexLruCacheObject getNextLruObject();
+    I_CmsFlexLruCacheObject getNextLruObject();
     
     /** 
      * Set the previous object in the double linked list of all cached objects.<p>
      * 
      * @param thePreviousObject the previous object
      */
-    public void setPreviousLruObject( I_CmsFlexLruCacheObject thePreviousObject );
+    void setPreviousLruObject(I_CmsFlexLruCacheObject thePreviousObject);
      
     /** 
      * Returns the previous object in the double linked list of all cached objects.<p>
      * 
      * @return the previous object in the double linked list of all cached objects 
      */
-    public I_CmsFlexLruCacheObject getPreviousLruObject();
+    I_CmsFlexLruCacheObject getPreviousLruObject();
     
     /** 
      * Invoked after an object was added to the cache.<p>
      */
-    public void addToLruCache();
+    void addToLruCache();
     
     /** 
      * Invoked after the object was removed to the cache.<p>
      */
-    public void removeFromLruCache();
+    void removeFromLruCache();
     
     /** 
      * Returns the cache costs of this object, as for example it's byte size.<p>
      * 
      * @return the cache costs of this object
      */
-    public int getLruCacheCosts();
+    int getLruCacheCosts();
 }

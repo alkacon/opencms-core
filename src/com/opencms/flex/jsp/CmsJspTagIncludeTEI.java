@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagIncludeTEI.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,19 +39,23 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * the <code>&lt;cms:include /&gt;</code> tag.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsJspTagIncludeTEI extends TagExtraInfo {
 
-    final private static String C_ATTR_PROPERTY = "property";
-    final private static String C_ATTR_ATTRIBUTE = "attribute";
-    final private static String C_ATTR_FILE = "file";
-    final private static String C_ATTR_PAGE = "page";
-    final private static String C_ATTR_SUFFIX = "suffix";
+    private static final String C_ATTR_PROPERTY = "property";
+    private static final String C_ATTR_ATTRIBUTE = "attribute";
+    private static final String C_ATTR_FILE = "file";
+    private static final String C_ATTR_PAGE = "page";
+    private static final String C_ATTR_SUFFIX = "suffix";
     // final private static String C_ATTR_ELEMENT = "element";
     
     /**
-     * Returns true if the given attribute name is specified, false otherwise.
+     * Returns true if the given attribute name is specified, false otherwise.<p>
+     * 
+     * @param data the tag data
+     * @param attributeName the attribute name
+     * @return  true if the given attribute name is specified, false otherwise
      */
     public static boolean isSpecified(TagData data, String attributeName) {
         return (data.getAttribute(attributeName) != null);

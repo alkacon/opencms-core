@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexController.java,v $
- * Date   : $Date: 2003/05/13 12:44:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsFlexController {
     
@@ -80,6 +80,10 @@ public class CmsFlexController {
      * Default constructor.<p>
      * 
      * @param cms the initial CmsObject to wrap in the controller
+     * @param file the file requested 
+     * @param cache the instance of the flex cache
+     * @param req the current request
+     * @param res the current response
      */
     public CmsFlexController(
         CmsObject cms, 
@@ -110,6 +114,7 @@ public class CmsFlexController {
      * Returns the wrapped CmsObject form the provided request, or null if the 
      * request is not running inside OpenCms.<p>
      * 
+     * @param req the current request
      * @return the wrapped CmsObject
      */    
     public static CmsObject getCmsObject(ServletRequest req) {
@@ -124,6 +129,7 @@ public class CmsFlexController {
     /**
      * Checks if the provided request is running in OpenCms.<p>
      *
+     * @param req the current request
      * @return true if the request is running in OpenCms, false otherwise
      */
     public static boolean isCmsRequest(ServletRequest req) {
@@ -160,14 +166,29 @@ public class CmsFlexController {
         return m_file;
     }     
     
+    /**
+     * Returns the current flex request.<p>
+     * 
+     * @return the current flex request
+     */
     public CmsFlexRequest getCurrentRequest() {
         return (CmsFlexRequest)m_flexRequestList.get(m_flexRequestList.size()-1);
     }  
     
+    /**
+     * Adds another flex request to the stack.<p>
+     * 
+     * @param req the request to add
+     */
     public void pushRequest(CmsFlexRequest req) {
         m_flexRequestList.add(req);
     }
     
+    /**
+     * Returns the topmost request from the stack.<p>
+     * 
+     * @return the topmost request from the stack
+     */
     public CmsFlexRequest popRequest() {
         CmsFlexRequest result = null;
         if (m_flexRequestList.size() > 0) {
@@ -177,14 +198,29 @@ public class CmsFlexController {
         return result;
     }
     
+    /**
+     * Returns the current flex response.<p>
+     * 
+     * @return the current flex response
+     */
     public CmsFlexResponse getCurrentResponse() {
         return (CmsFlexResponse)m_flexResponseList.get(m_flexResponseList.size()-1);
     }
     
+    /**
+     * Adds another flex response to the stack.<p>
+     * 
+     * @param res the response to add
+     */    
     public void pushResponse(CmsFlexResponse res) {
         m_flexResponseList.add(res);
     }
     
+    /**
+     * Returns the topmost response from the stack.<p>
+     * 
+     * @return the topmost response from the stack
+     */
     public CmsFlexResponse popResponse() {
         CmsFlexResponse result = null;
         if (m_flexResponseList.size() > 0) {
@@ -194,6 +230,9 @@ public class CmsFlexController {
         return result;
     }    
     
+    /**
+     * Puts the response in a suspended state.<p>  
+     */
     public void suspendFlexResponse() {
         Iterator i = m_flexResponseList.iterator();
         while (i.hasNext()) {
@@ -202,14 +241,29 @@ public class CmsFlexController {
         }
     }
     
-    public int getResponseQueueSize() {
+    /**
+     * Returns the size of the response stack.<p>
+     * 
+     * @return the size of the response stack
+     */
+    public int getResponseStackSize() {
         return m_flexResponseList.size();
     }
     
+    /**
+     * Returns the current http request.<p>
+     * 
+     * @return the current http request
+     */
     public HttpServletRequest getTopRequest() {
         return m_req;
     }
     
+    /**
+     * Returns the current http response.<p>
+     * 
+     * @return the current http response
+     */
     public HttpServletResponse getTopResponse() {
         return m_res;
     }

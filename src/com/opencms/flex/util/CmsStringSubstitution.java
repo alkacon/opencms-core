@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2003/04/09 14:04:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * with Perl regular expressions.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.0
  */
 public class CmsStringSubstitution {
@@ -54,9 +54,10 @@ public class CmsStringSubstitution {
     private static String contextReplace = null;
         
     /** 
-     * Default constructor (empty).<p>
+     * Default constructor (empty), private because this class has only 
+     * static methods.<p>
      */
-    public CmsStringSubstitution() {}
+    private CmsStringSubstitution() {}
     
     /**
      * Substitutes searchString in content with replaceItem.<p>
@@ -96,8 +97,7 @@ public class CmsStringSubstitution {
     	Perl5Util perlUtil = new Perl5Util();
     	try {
     		return perlUtil.substitute(translationRule, content); 
-    	} 
-    	catch(MalformedPerl5PatternException e){
+    	} catch(MalformedPerl5PatternException e){
     		if (DEBUG>0) System.err.println("[CmsStringSubstitution]: "+e.toString());				
     	}
     	return content;		
@@ -105,9 +105,10 @@ public class CmsStringSubstitution {
         
     /**
      * Substitutes the OpenCms context path (e.g. /opencms/opencms/) in a HTML page with a 
-     * special variable so that the content also runs if the  context path of the server changes.<p>
+     * special variable so that the content also runs if the context path of the server changes.<p>
      * 
      * @param htmlContent the HTML to replace the context path in 
+     * @param context the context path of the server
      * @return the HTML with the replaced context path
      */
     public static String substituteContextPath(String htmlContent, String context) {

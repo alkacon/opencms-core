@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/05/12 10:07:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
@@ -130,9 +130,7 @@ public class CmsJspNavBuilder {
      * Collect all navigation elements from the files of the folder of the current request URI,
      * navigation elements are of class CmsJspNavElement.<p>
      *
-     * @param cms context provider for the current request
-     * @param folder the selected folder
-     * @return A sorted (ascending to nav position) ArrayList of navigation elements.
+     * @return a sorted (ascending to nav position) ArrayList of navigation elements.
      */    
     public ArrayList getNavigationForFolder() {
         return getNavigationForFolder(m_cms, m_requestUriFolder);
@@ -155,7 +153,7 @@ public class CmsJspNavBuilder {
      *
      * @param cms context provider for the current request
      * @param folder the selected folder
-     * @return A sorted (ascending to nav position) ArrayList of navigation elements.
+     * @return a sorted (ascending to nav position) ArrayList of navigation elements
      */    
     public static ArrayList getNavigationForFolder(CmsObject cms, String folder) {
         folder = CmsFile.getPath(folder);
@@ -193,6 +191,7 @@ public class CmsJspNavBuilder {
      * 
      * @param level if negative, walk this many levels up, if positive, walk this many 
      * levels down from root folder 
+     * @return a sorted (ascending to nav position) ArrayList of navigation elements
      */
     public ArrayList getNavigationForFolder(int level) {
         return getNavigationForFolder(m_cms, m_requestUriFolder, level);
@@ -208,6 +207,7 @@ public class CmsJspNavBuilder {
      * @param folder the selected folder
      * @param level if negative, walk this many levels up, if positive, walk this many 
      * levels down from root folder 
+     * @return a sorted (ascending to nav position) ArrayList of navigation elements
      */
     public ArrayList getNavigationForFolder(String folder, int level) {
         return getNavigationForFolder(m_cms, folder, level);
@@ -224,6 +224,7 @@ public class CmsJspNavBuilder {
      * @param folder the selected folder
      * @param level if negative, walk this many levels up, if positive, walk this many 
      * levels down from root folder 
+     * @return a sorted (ascending to nav position) ArrayList of navigation elements
      */
     public static ArrayList getNavigationForFolder(CmsObject cms, String folder, int level) {
         folder = CmsFile.getPath(folder);

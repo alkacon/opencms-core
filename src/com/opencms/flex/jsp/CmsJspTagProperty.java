@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagProperty.java,v $
- * Date   : $Date: 2003/05/13 12:44:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import com.opencms.flex.cache.CmsFlexController;
 import com.opencms.util.Encoder;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.jsp.JspException;
 
 /**
  * Provides access to the properties of a resource in the OpenCms VFS .<p>
@@ -83,7 +84,7 @@ import javax.servlet.ServletRequest;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -105,7 +106,7 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     public static final String USE_SEARCH_THIS = "search-this";
     
     // DEBUG flag
-    private final static int DEBUG = 0;
+    private static final int DEBUG = 0;
     
     /** static array of the possible "file" properties */
     public static final String[] m_actionValues = {
@@ -220,9 +221,10 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
     /**
      * @return SKIP_BODY
+     * @throws JspException in case somethins goes wrong
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
-    public int doStartTag() throws javax.servlet.jsp.JspException {
+    public int doStartTag() throws JspException {
         
         ServletRequest req = pageContext.getRequest();
         
@@ -304,7 +306,7 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
         }           
         if (escape) value = Encoder.escapeHtml(value);    
         if (DEBUG > 0) {
-            System.err.println("propertyTagAction(): result=" + value );
+            System.err.println("propertyTagAction(): result=" + value);
         }
         return value;
     }

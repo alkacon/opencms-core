@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2003/05/13 12:44:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/06/05 19:02:04 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since FLEX alpha 1
  * 
  * @see com.opencms.flex.cache.CmsFlexRequest
@@ -77,29 +77,33 @@ import javax.servlet.http.HttpServletResponse;
 public interface I_CmsResourceLoader {
     
     /** The name of the VFS property that steers the caching */
-    public static final String C_LOADER_CACHEPROPERTY = "cache";
+    String C_LOADER_CACHEPROPERTY = "cache";
     
     /** The name of the VFS property that steers the streaming */
-    public static final String C_LOADER_STREAMPROPERTY = "stream";
+    String C_LOADER_STREAMPROPERTY = "stream";
     
     /** Name of FlexCache runtime property */
-    public static final String C_LOADER_CACHENAME = "flex.cache";
+    String C_LOADER_CACHENAME = "flex.cache";
     
     /** Prefix for exception message that occurs in a loaded file */
-    public static final String C_LOADER_EXCEPTION_PREFIX = "Resource loader error in file";         
+    String C_LOADER_EXCEPTION_PREFIX = "Resource loader error in file";         
                
     /** 
      * Initialize the ResourceLoader.
      *
      * @param openCms An A_OpenCms object to use for initalizing.
      */
-    public void init(com.opencms.core.A_OpenCms openCms);
+    void init(com.opencms.core.A_OpenCms openCms);
     
     /** Destroy this ResourceLoder */
-    public void destroy();
+    void destroy();
         
-    /** Return a String describing the ResourceLoader */
-    public String getResourceLoaderInfo();
+    /** 
+     * Returns a String describing the ResourceLoader.<p>
+     * 
+     * @return a String describing the ResourceLoader
+     */
+    String getResourceLoaderInfo();
             
     /**
      * Basic top-page processing method for a I_CmsResourceLoader,
@@ -117,7 +121,7 @@ public interface I_CmsResourceLoader {
      * 
      * @see #service(CmsObject, CmsResource, ServletRequest, ServletResponse)
      */
-    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
+    void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException;
     
     /**
@@ -135,6 +139,6 @@ public interface I_CmsResourceLoader {
      * 
      * @see com.opencms.flex.cache.CmsFlexRequestDispatcher
      */   
-    public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) 
+    void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) 
     throws ServletException, IOException;
 }
