@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/02/01 17:11:58 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2001/02/02 10:46:57 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.17 $ $Date: 2001/02/01 17:11:58 $ *
+ * @version $Revision: 1.18 $ $Date: 2001/02/02 10:46:57 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -720,6 +720,17 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 		   removeFile(project.getId(),filename);
 		   state=C_STATE_CHANGED;
 		}
+                if (e.getType() == CmsException.C_NOT_FOUND) {
+                        try{
+                                // Test if file is in OnlineProject
+                                readFileHeader(onlineProject.getId(), filename);
+                                throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
+                        }catch(CmsException e2){
+                                if (e2.getType() == CmsException.C_FILE_EXISTS ){
+                                        throw e2;
+                                }
+                        }
+                }
 	}
 	int resourceId = nextId(C_TABLE_RESOURCES);
 	int fileId = nextId(C_TABLE_FILES);
