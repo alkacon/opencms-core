@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2000/02/10 13:15:36 $
+ * @version $Revision: 1.30 $ $Date: 2000/02/10 14:09:24 $
  */
 public interface I_CmsWpConstants {
 
@@ -331,20 +331,33 @@ public interface I_CmsWpConstants {
     /** option value of the select box */
     public static final String C_SELECTBOX_OPTIONVALUE = "value";
         
-    /** default values for font select boxes */
+    /** option values for font select boxes */
     public static final String[] C_SELECTBOX_FONTS = 
             { "Arial", "Arial Narrow", "System", "Times New Roman", "Verdana" };
 
-    /** default values for font select boxes */
+    /** option values for font select boxes */
     public static final String[] C_SELECTBOX_FONTSTYLES = 
             { "Normal", "Heading 1", "Heading 2", "Heading 3", "Heading 4", 
               "Heading 5", "Heading 6", "Address", "Formatted" };
 
-    /** default values for font select boxes */
+    /** option values for font select boxes */
     public static final String[] C_SELECTBOX_FONTSIZES = 
             { "1", "2", "3", "4", "5", "6", "7"};
-    
-   
+
+    /** option values for editor view select boxes */
+    public static final String[] C_SELECTBOX_EDITORVIEWS = 
+            { "edithtml", "edit"};
+
+    /** classes of the different option values for editor view select boxes */
+    public static final String[] C_SELECTBOX_EDITORVIEWS_CLASSES = 
+            { "com.opencms.workplace.CmsEditor", "com.opencms.workplace.CmsEditor"};
+
+    /** templates of the different option values for editor view select boxes */
+    public static final String[] C_SELECTBOX_EDITORVIEWS_TEMPLATES = 
+            { "htmledit", "textedit"};
+        
+    /** default selected option value for editor view select boxes */
+    public static final int C_SELECTBOX_EDITORVIEWS_DEFAULT = 1;
     
     // Parameters for file list
     
