@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/04/05 15:13:51 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/04/05 16:13:08 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  */
 public class CmsXmlPage {
     
@@ -185,14 +185,14 @@ public class CmsXmlPage {
 
         String allowRelative;
         try {
-            allowRelative = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_ALLOW_RELATIVE, false, "false");
+            allowRelative = cms.readPropertyObject(cms.readAbsolutePath(file), C_PROPERTY_ALLOW_RELATIVE, false).getValue("false");
         } catch (CmsException e) {
             allowRelative = "false";
         }
         
         String encoding;
         try { 
-            encoding = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, OpenCms.getSystemInfo().getDefaultEncoding());
+            encoding = cms.readPropertyObject(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
         } catch (CmsException e) {
             encoding = OpenCms.getSystemInfo().getDefaultEncoding();
         }        

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
- * Date   : $Date: 2004/02/20 13:35:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/04/05 16:13:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a vfs resource 
  * of any type derived from <code>CmsResource</code>.<p>
  * 
- * @version $Revision: 1.4 $ $Date: 2004/02/20 13:35:45 $
+ * @version $Revision: 1.5 $ $Date: 2004/04/05 16:13:08 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsVfsDocument implements I_CmsDocumentFactory {
@@ -100,13 +100,13 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
         String path = m_cms.getRequestContext().removeSiteRoot(resource.getRootPath());
         String value;
 
-        if ((value = m_cms.readProperty(path, I_CmsConstants.C_PROPERTY_TITLE)) != null) {
+        if ((value = m_cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue()) != null) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_TITLE, value));
         }
-        if ((value = m_cms.readProperty(path, I_CmsConstants.C_PROPERTY_KEYWORDS)) != null) {
+        if ((value = m_cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_KEYWORDS, false).getValue()) != null) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_KEYWORDS, value));
         }        
-        if ((value = m_cms.readProperty(path, I_CmsConstants.C_PROPERTY_DESCRIPTION)) != null) {
+        if ((value = m_cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_DESCRIPTION, false).getValue()) != null) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_DESCRIPTION, value));
         }                
 
