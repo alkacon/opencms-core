@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/file/Attic/CmsImportTest.java,v $
- * Date   : $Date: 2003/06/12 17:22:46 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/Attic/CmsImportTest.java,v $
+ * Date   : $Date: 2003/08/07 09:04:33 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,13 +29,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package com.opencms.file;
+package org.opencms.importexport;
 
 import junit.framework.TestCase;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.0
  */
@@ -92,7 +92,7 @@ public class CmsImportTest extends TestCase {
             + "    </ELEMENTDEF>\n"
             + "</PAGE>";        
         
-        content = CmsImport.setDirectories(content, rules);        
+        content = CmsImportVersion2.setDirectories(content, rules);        
         assertEquals(content, result);        
             
         content =      
@@ -109,7 +109,7 @@ public class CmsImportTest extends TestCase {
             + "picDir=/system/modules/li.castle.frontend/pics/\n"
             + "<img alt=\"Slogan CPE\" src=\"]]><LINK><![CDATA[/system/galleries/pics/castle/slogan_cpe_de.gif]]></LINK><![CDATA[\">";           
         
-        content = CmsImport.setDirectories(content, rules);      
+        content = CmsImportVersion2.setDirectories(content, rules);      
         
         System.err.println(content);  
         assertEquals(content, result);           

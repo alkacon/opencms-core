@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2003/07/22 08:40:45 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/08/07 09:04:32 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.report.I_CmsReport;
  * @author Andreas Schouten
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.43 $ $Date: 2003/07/22 08:40:45 $
+ * @version $Revision: 1.44 $ $Date: 2003/08/07 09:04:32 $
  */
 public interface I_CmsRegistry extends Cloneable {
 
@@ -578,6 +578,13 @@ public interface I_CmsRegistry extends Cloneable {
      * @return a list of all configured synchronize modification classes
      */
     public List getSynchronizeModifications();
+
+    /**
+     * Returns a list of all configured import classes.<p>
+     *
+     * @return a list of all configured import classes
+     */
+    public List getImportClasses();
 
     /**
      * Returns a list of all configured resource init classes.<p>

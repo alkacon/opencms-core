@@ -1,30 +1,36 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/08/06 07:44:07 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/08/07 09:04:32 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package org.opencms.importexport;
 
@@ -53,6 +59,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 
@@ -64,10 +71,9 @@ import org.w3c.dom.NodeList;
  * Holds the functionaility to import resources from the filesystem
  * or a zip file into the OpenCms COS.
  *
- * @author Edna Falkenhan
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $ $Date: 2003/08/06 07:44:07 $
+ * @version $Revision: 1.2 $ $Date: 2003/08/07 09:04:32 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -81,20 +87,15 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @param report a report object to output the progress information to
      * @throws CmsException if something goes wrong
      */
-    public CmsImportModuledata(
-        CmsObject cms, 
-        String importFile, 
-        String importPath, 
-        I_CmsReport report
-    ) throws CmsException {
+    public CmsImportModuledata(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException {
         // set member variables
         m_cms = cms;
         m_importFile = importFile;
-        m_importPath = importPath;          
-        m_report = report;  
+        m_importPath = importPath;
+        m_report = report;
         m_importingChannelData = true;
     }
-    
+
     /**
      * Imports the moduledata and writes them to the cms even if there already exist 
      * conflicting files.<p>
@@ -102,18 +103,30 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      */
     public void importResources() throws CmsException {
         // initialize the import
-        openImportFile();  
-        try{
+        openImportFile();
+        try {
             // first import the channels
             m_report.println(m_report.key("report.import_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-            importAllResources(null, null, null, null, null);
+            //importAllResources(null, null, null, null, null);
+            // now find the correct import implementation         
+            Iterator i=m_ImportImplementations.iterator();
+                while (i.hasNext()) {
+                    I_CmsImport imp=((I_CmsImport)i.next());
+                    if (imp.getVersion()==m_importVersion) {
+                        // this is the correct import version, so call it for the import process
+                        imp.importResources(m_cms, m_importPath, m_report, 
+                                        m_digest, m_importResource, m_importZip, m_docXml, null, null, null, null, null);
+                        break;                    
+                     }
+                 }   
+         
             m_report.println(m_report.key("report.import_channels_end"), I_CmsReport.C_FORMAT_HEADLINE);
-            
+
             // now import the moduledata
             m_report.println(m_report.key("report.import_moduledata_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             importModuleMasters();
             m_report.println(m_report.key("report.import_moduledata_end"), I_CmsReport.C_FORMAT_HEADLINE);
-        } catch (CmsException e){
+        } catch (CmsException e) {
             throw e;
         } finally {
             // close the import file
@@ -126,21 +139,21 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * and imports the data for existing modules.<p>
      * @throws CmsException in case something goes wrong
      */
-    public void importModuleMasters() throws CmsException{
+    public void importModuleMasters() throws CmsException {
         // get all available modules in this system
         Hashtable moduleExportables = new Hashtable();
         m_cms.getRegistry().getModuleExportables(moduleExportables);
         // now get the subIds of each module
         Hashtable availableModules = new Hashtable();
         Enumeration modElements = moduleExportables.elements();
-        while(modElements.hasMoreElements()){
+        while (modElements.hasMoreElements()) {
             String classname = (String)modElements.nextElement();
             // get the subId of the module
-            try{
-                int subId = getContentDefinition(classname, new Class[]{CmsObject.class}, new Object[]{m_cms}).getSubId();
+            try {
+                int subId = getContentDefinition(classname, new Class[] {CmsObject.class }, new Object[] {m_cms }).getSubId();
                 // put the subid and the classname into the hashtable of available modules
-                availableModules.put(""+subId, classname);
-            } catch (Exception e){
+                availableModules.put("" + subId, classname);
+            } catch (Exception e) {
                 // do nothing
             }
 
@@ -157,14 +170,14 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
 
             // walk through all files in manifest
             for (int i = 0; i < length; i++) {
-                currentElement = (Element) masterNodes.item(i);
+                currentElement = (Element)masterNodes.item(i);
                 // get the subid of the modulemaster
                 subid = getTextNodeValue(currentElement, CmsExportModuledata.C_EXPORT_TAG_MASTER_SUBID);
                 // check if there exists a module with this subid
                 String classname = (String)availableModules.get(subid);
-                if((classname != null) && !("".equals(classname.trim()))){
+                if ((classname != null) && !("".equals(classname.trim()))) {
                     // import the dataset, the channelrelation and the media
-                    m_report.print(" ( " + (i+1) + " / " + length + " ) ");
+                    m_report.print(" ( " + (i + 1) + " / " + length + " ) ");
                     importMaster(subid, classname, currentElement);
                 }
             }
@@ -181,34 +194,34 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @param currentElement the current element of the xml file
      * @throws CmsException in case something goes wrong
      */
-    private void importMaster(String subId, String classname, Element currentElement) throws CmsException{
+    private void importMaster(String subId, String classname, Element currentElement) throws CmsException {
         // print out some information to the report
         m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
-                                 
+
         CmsMasterDataSet newDataset = new CmsMasterDataSet();
         Vector channelRelations = new Vector();
         Vector masterMedia = new Vector();
         // try to get the dataset
-        try{
+        try {
             int subIdInt = Integer.parseInt(subId);
             newDataset = getMasterDataSet(subIdInt, currentElement);
-        } catch (Exception e){
+        } catch (Exception e) {
             m_report.println(e);
             throw new CmsException("Cannot get dataset ", e);
         }
-        m_report.print("'" + Encoder.escapeHtml(newDataset.m_title) + "' (" + classname + ")");  
+        m_report.print("'" + Encoder.escapeHtml(newDataset.m_title) + "' (" + classname + ")");
         m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
         // try to get the channelrelations
-        try{
+        try {
             channelRelations = getMasterChannelRelation(currentElement);
-        } catch (Exception e){
+        } catch (Exception e) {
             m_report.println(e);
             throw new CmsException("Cannot get channelrelations ", e);
         }
         // try to get the media
-        try{
+        try {
             masterMedia = getMasterMedia(currentElement);
-        } catch (Exception e){
+        } catch (Exception e) {
             m_report.println(e);
             throw new CmsException("Cannot get media ", e);
         }
@@ -216,22 +229,20 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         newDataset.m_channelToAdd = channelRelations;
         newDataset.m_mediaToAdd = masterMedia;
         // create the new content definition
-        CmsMasterContent newMaster = getContentDefinition(classname,
-                                     new Class[] {CmsObject.class, CmsMasterDataSet.class},
-                                     new Object[] {m_cms, newDataset});
-        try{
+        CmsMasterContent newMaster = getContentDefinition(classname, new Class[] {CmsObject.class, CmsMasterDataSet.class }, new Object[] {m_cms, newDataset });
+        try {
             CmsUUID userId = newMaster.getOwner();
             CmsUUID groupId = newMaster.getGroupId();
             // first insert the new master
             newMaster.importMaster();
             // now update the master because user and group might be changed
             newMaster.chown(m_cms, userId);
-            newMaster.chgrp(m_cms,groupId);
-        } catch (Exception e){
+            newMaster.chgrp(m_cms, groupId);
+        } catch (Exception e) {
             m_report.println(e);
             throw new CmsException("Cannot write master ", e);
         }
-        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);           
+        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }
 
     /**
@@ -242,9 +253,8 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @return the dataset with the imported information
      * @throws CmsException in case something goes wrong
      */
-    private CmsMasterDataSet getMasterDataSet(int subId, Element currentElement) throws CmsException{
-        String datasetfile, username, groupname, accessFlags, publicationDate, purgeDate, flags,
-                feedId, feedReference, feedFilename, title;
+    private CmsMasterDataSet getMasterDataSet(int subId, Element currentElement) throws CmsException {
+        String datasetfile, username, groupname, accessFlags, publicationDate, purgeDate, flags, feedId, feedReference, feedFilename, title;
         // get the new dataset object
         CmsMasterDataSet newDataset = new CmsMasterDataSet();
 
@@ -259,73 +269,67 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         // get the id of the user or set the owner to the current user
         username = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_USER);
         CmsUUID userId = m_cms.getRequestContext().currentUser().getId();
-        try{
-            if((username != null) && !("".equals(username.trim()))){
+        try {
+            if ((username != null) && !("".equals(username.trim()))) {
                 userId = m_cms.readUser(username).getId();
             }
-        } catch (Exception e){
-        }
+        } catch (Exception e) { }
         newDataset.m_userId = userId;
         // get the id of the group or set the group to the current user        
         groupname = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_GROUP);
-        
-//        CmsUUID groupId = m_cms.getRequestContext().currentGroup().getId();
-//        try{
-//            if((groupname != null) && !("".equals(groupname.trim()))){
-//                groupId = m_cms.readGroup(groupname).getId();
-//            }
-//        } catch (Exception e){
-//        }
-        
+
+        //        CmsUUID groupId = m_cms.getRequestContext().currentGroup().getId();
+        //        try{
+        //            if((groupname != null) && !("".equals(groupname.trim()))){
+        //                groupId = m_cms.readGroup(groupname).getId();
+        //            }
+        //        } catch (Exception e){
+        //        }
+
         CmsUUID groupId = CmsUUID.getNullUUID();
-        try{
-            if((groupname != null) && !("".equals(groupname.trim()))){
+        try {
+            if ((groupname != null) && !("".equals(groupname.trim()))) {
                 groupId = m_cms.readGroup(groupname).getId();
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             try {
                 groupId = m_cms.readGroup(I_CmsConstants.C_GROUP_USERS).getId();
             } catch (Exception e2) { }
         }
-                
+
         newDataset.m_groupId = groupId;
         // set the accessflags or the default flags
         accessFlags = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_ACCESSFLAGS);
-        try{
+        try {
             newDataset.m_accessFlags = Integer.parseInt(accessFlags);
-        } catch (Exception e){
+        } catch (Exception e) {
             newDataset.m_accessFlags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
         }
         // set the publication date
         publicationDate = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PUBLICATIONDATE);
-        try{
+        try {
             newDataset.m_publicationDate = convertDate(publicationDate);
-        } catch (Exception e){
-        }
+        } catch (Exception e) { }
         // set the purge date
         purgeDate = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PURGEDATE);
-        try{
+        try {
             newDataset.m_purgeDate = convertDate(purgeDate);
-        } catch (Exception e){
-        }
+        } catch (Exception e) { }
         // set the flags
         flags = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FLAGS);
-        try{
+        try {
             newDataset.m_flags = Integer.parseInt(flags);
-        } catch (Exception e){
-        }
+        } catch (Exception e) { }
         // set the feedid
         feedId = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDID);
-        try{
+        try {
             newDataset.m_feedId = Integer.parseInt(feedId);
-        } catch (Exception e){
-        }
+        } catch (Exception e) { }
         // set the feedreference
         feedReference = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDREFERENCE);
-        try{
+        try {
             newDataset.m_feedReference = Integer.parseInt(feedReference);
-        } catch (Exception e){
-        }
+        } catch (Exception e) { }
         // set the feedfilenam
         feedFilename = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDFILENAME);
         newDataset.m_feedFilename = feedFilename;
@@ -333,59 +337,59 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         title = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_TITLE);
         newDataset.m_title = title;
         // set the values of data_big
-        for(int i=0; i< newDataset.m_dataBig.length; i++){
-            String filename = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATABIG+i);
+        for (int i = 0; i < newDataset.m_dataBig.length; i++) {
+            String filename = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATABIG + i);
             String value = new String();
-            if(filename != null && !"".equals(filename.trim())){
+            if (filename != null && !"".equals(filename.trim())) {
                 // get the value from the file
-                value =  new String(getFileBytes(filename));
+                value = new String(getFileBytes(filename));
             }
             newDataset.m_dataBig[i] = value;
         }
         // get the values of data_medium
-        for(int i=0; i< newDataset.m_dataMedium.length; i++){
-            String filename = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAMEDIUM+i);
+        for (int i = 0; i < newDataset.m_dataMedium.length; i++) {
+            String filename = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAMEDIUM + i);
             String value = new String();
-            if(filename != null && !"".equals(filename.trim())){
+            if (filename != null && !"".equals(filename.trim())) {
                 // get the value from the file
-                value =  new String(getFileBytes(filename));
+                value = new String(getFileBytes(filename));
             }
             newDataset.m_dataMedium[i] = value;
         }
         // get the values of data_small
-        for(int i=0; i< newDataset.m_dataSmall.length; i++){
-            String filename = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASMALL+i);
+        for (int i = 0; i < newDataset.m_dataSmall.length; i++) {
+            String filename = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASMALL + i);
             String value = new String();
-            if(filename != null && !"".equals(filename.trim())){
+            if (filename != null && !"".equals(filename.trim())) {
                 // get the value from the file
-                value =  new String(getFileBytes(filename));
+                value = new String(getFileBytes(filename));
             }
             newDataset.m_dataSmall[i] = value;
         }
         // get the values of data_int
-        for(int i=0; i< newDataset.m_dataInt.length; i++){
-            String value = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAINT+i);
-            try{
+        for (int i = 0; i < newDataset.m_dataInt.length; i++) {
+            String value = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAINT + i);
+            try {
                 newDataset.m_dataInt[i] = new Integer(value).intValue();
-            } catch (Exception e){
+            } catch (Exception e) {
                 newDataset.m_dataInt[i] = 0;
             }
         }
         // get the values of data_reference
-        for(int i=0; i< newDataset.m_dataReference.length; i++){
-            String value = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAREFERENCE+i);
-            try{
+        for (int i = 0; i < newDataset.m_dataReference.length; i++) {
+            String value = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAREFERENCE + i);
+            try {
                 newDataset.m_dataReference[i] = new Integer(value).intValue();
-            } catch (Exception e){
+            } catch (Exception e) {
                 newDataset.m_dataReference[i] = 0;
             }
         }
         // get the values of data_date
-        for(int i=0; i< newDataset.m_dataDate.length; i++){
-            String value = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATADATE+i);
-            try{
+        for (int i = 0; i < newDataset.m_dataDate.length; i++) {
+            String value = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATADATE + i);
+            try {
                 newDataset.m_dataDate[i] = convertDate(value);
-            } catch (Exception e){
+            } catch (Exception e) {
                 newDataset.m_dataDate[i] = 0;
             }
         }
@@ -398,7 +402,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @param currentElement the current element of the xml file
      * @return vector containing the ids of all channels of the master
      */
-    private Vector getMasterChannelRelation(Element currentElement){
+    private Vector getMasterChannelRelation(Element currentElement) {
         Vector channelRelations = new Vector();
         // get the channelnames of the master
         NodeList channelNodes = currentElement.getElementsByTagName(CmsExportModuledata.C_EXPORT_TAG_MASTER_CHANNELNAME);
@@ -422,14 +426,14 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @return vector containing the media (CmsMasterMedia object) of the master
      * @throws CmsException in case something goes wrong
      */
-    private Vector getMasterMedia(Element currentElement) throws CmsException{
+    private Vector getMasterMedia(Element currentElement) throws CmsException {
         Vector masterMedia = new Vector();
         // get the mediafiles of the master
         NodeList mediaNodes = currentElement.getElementsByTagName(CmsExportModuledata.C_EXPORT_TAG_MASTER_MEDIA);
         // walk through all media
         for (int j = 0; j < mediaNodes.getLength(); j++) {
             // get the name of the file where the mediadata is stored
-            String mediaFilename = ((Element) mediaNodes.item(j)).getFirstChild().getNodeValue();
+            String mediaFilename = ((Element)mediaNodes.item(j)).getFirstChild().getNodeValue();
             // try to get the information of the media
             if ((mediaFilename != null) && !("".equals(mediaFilename.trim()))) {
                 CmsMasterMedia newMedia = getMediaData(mediaFilename);
@@ -446,7 +450,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @return the media information from the media file
      * @throws CmsException in case something goes wrong
      */
-    private CmsMasterMedia getMediaData(String mediaFilename) throws CmsException{
+    private CmsMasterMedia getMediaData(String mediaFilename) throws CmsException {
         String position, width, height, size, mimetype, type, title, name, description, contentfile;
         // get the new media object
         CmsMasterMedia newMedia = new CmsMasterMedia();
@@ -454,32 +458,27 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         Document mediaXml = this.getXmlFile(mediaFilename);
         Element media = mediaXml.getDocumentElement();
         position = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_POSITION);
-        try{
+        try {
             newMedia.setPosition(Integer.parseInt(position));
-        } catch (Exception e){
-        }
+        } catch (Exception e) { }
         width = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_WIDTH);
-        try{
+        try {
             newMedia.setWidth(Integer.parseInt(width));
-        } catch (Exception e){
-        }
+        } catch (Exception e) { }
         height = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_HEIGHT);
-        try{
+        try {
             newMedia.setHeight(Integer.parseInt(height));
-        } catch (Exception e){
-        }
+        } catch (Exception e) { }
         size = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_SIZE);
-        try{
+        try {
             newMedia.setSize(Integer.parseInt(size));
-        } catch (Exception e){
-        }
+        } catch (Exception e) { }
         mimetype = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_MIMETYPE);
         newMedia.setMimetype(mimetype);
         type = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_TYPE);
-        try{
+        try {
             newMedia.setType(Integer.parseInt(type));
-        } catch (Exception e){
-        }
+        } catch (Exception e) { }
         title = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_TITLE);
         newMedia.setTitle(title);
         name = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_NAME);
@@ -503,15 +502,15 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      *
      * @param filename the name of the file to read
      * @return the file reader for this file
-     * @throws CmsException in case something goes wrong
+     * @throws Exception in case something goes wrong
      */
-    private BufferedReader getFileReader(String filename) throws Exception{
+    private BufferedReader getFileReader(String filename) throws Exception {
         // is this a zip-file?
-        if(m_importZip != null) {
+        if (m_importZip != null) {
             // yes
             ZipEntry entry = m_importZip.getEntry(filename);
             InputStream stream = m_importZip.getInputStream(entry);
-            return new BufferedReader( new InputStreamReader(stream));
+            return new BufferedReader(new InputStreamReader(stream));
         } else {
             // no - use directory
             File xmlFile = new File(m_importResource, filename);
@@ -532,7 +531,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             BufferedReader xmlReader = getFileReader(filename);
             xmlDoc = A_CmsXmlContent.getXmlParser().parse(xmlReader);
             xmlReader.close();
-         } catch(Exception exc) {
+        } catch (Exception exc) {
 
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
@@ -540,24 +539,27 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
     }
 
     /**
-	 * Coverts a String Date in long.<p>
-	 *
-	 * @param date String
-	 * @return long converted date
-	 */
-	private long convertDate(String date){
-		java.text.SimpleDateFormat formatterFullTime = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        long adate=0;
-        try{
-            adate=formatterFullTime.parse(date).getTime();
-        }catch(ParseException e){
-        }
+     * Coverts a String Date in long.<p>
+     *
+     * @param date String
+     * @return long converted date
+     */
+    private long convertDate(String date) {
+        java.text.SimpleDateFormat formatterFullTime = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        long adate = 0;
+        try {
+            adate = formatterFullTime.parse(date).getTime();
+        } catch (ParseException e) { }
         return adate;
-	}
+    }
+
 
     /**
      * Gets the content definition class method constructor.<p>
      * 
+     * @param classname the name of the cd class
+     * @param classes types needed for cd constructor
+     * @param objects objects needed for cd constructor
      * @return content definition object
      */
     protected CmsMasterContent getContentDefinition(String classname, Class[] classes, Object[] objects) {
@@ -567,23 +569,23 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             Constructor co = cdClass.getConstructor(classes);
             cd = (CmsMasterContent)co.newInstance(objects);
         } catch (InvocationTargetException ite) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: Invocation target exception!");
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Invocation target exception!");
             }
         } catch (NoSuchMethodException nsm) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: Requested method was not found!");
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Requested method was not found!");
             }
         } catch (InstantiationException ie) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: the reflected class is abstract!");
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: the reflected class is abstract!");
             }
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: Other exception! "+e);
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Other exception! " + e);
             }
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, e.getMessage() );
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, e.getMessage());
             }
         }
         return cd;

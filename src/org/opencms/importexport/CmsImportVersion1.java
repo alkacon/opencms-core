@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/file/Attic/AllTests.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportVersion1.java,v $
+ * Date   : $Date: 2003/08/07 09:04:32 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,36 +28,30 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-package com.opencms.file;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+package org.opencms.importexport;
 
 /**
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * Implementation of the OpenCms Import Interface (@see org.opencms.importexport.I_CmsImport) for 
+ * the import version 1. <p>
  * 
- * @since 5.0
+ * This import format was used in OpenCms 4.3.23 - 5.0.0.
+ * 
+ * This import class has similar funktions to CmsImportVersion2, but because of the need for a single import
+ * class for each import version, a new, inherited class must be used, returning the correct import version.
+ * 
+ * @see org.opencms.importexport.A_CmsImport
+ *
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
  */
-public final class AllTests {
+public class CmsImportVersion1 extends CmsImportVersion2 {
 
     /**
-     * Hide constructor to prevent generation of class instances.<p>
-     */
-    private AllTests() {
-    }
-    
-    /**
-     * Returns the JUnit test suite for this package.<p>
+     * Returns the import version of the import implementation.<p>
      * 
-     * @return the JUnit test suite for this package
-     */    
-    public static Test suite() {
-        TestSuite suite = new TestSuite("Test for com.opencms.file");
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(CmsImportTest.class));
-        //$JUnit-END$
-        return suite;
+     * @return import version
+     */
+    public int getVersion() {
+        return 1;
     }
+
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/08/06 07:44:07 $
-* Version: $Revision: 1.83 $
+* Date   : $Date: 2003/08/07 09:04:32 $
+* Version: $Revision: 1.84 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.83 $ $Date: 2003/08/06 07:44:07 $
+ * @version $Revision: 1.84 $ $Date: 2003/08/07 09:04:32 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 
@@ -1582,6 +1582,15 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
      */
     public List getSynchronizeModifications() {
         return getSystemSubNodesClasses("synchronizemodifications");
+    }
+
+    /**
+     * Returns a list of all configured import classes.<p>
+     *
+     * @return a list of all configured import classes
+     */
+    public List getImportClasses() {
+        return getSystemSubNodesClasses("importclasses");
     }
 
     /**
