@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/08/27 16:00:01 $
- * Version: $Revision: 1.562 $
+ * Date   : $Date: 2004/08/30 12:44:58 $
+ * Version: $Revision: 1.563 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.5.1 Ix (aka 6.0 alpha 1) - August xx, 2004
+OpenCms 5.5.1 Caladan (aka 6.0 alpha 1) - August xx, 2004
 ! Junit test suites now have nice display names
 * Improved "Cache-Control" headers by adding a "max-age=0" for all Workplace requests 
   to prevent caching, this should allow operation with a browser 
