@@ -12,7 +12,7 @@ PACKAGE BODY opencmsresource IS
 --------------------------------------------------------------------------------------------------------------
   PROCEDURE lockResource(pUserId IN NUMBER, pProjectId IN NUMBER, pFolderName IN VARCHAR2, pForce IN VARCHAR2, pResource OUT userTypes.anyCursor) IS
   BEGIN
-    bResourceList := '';  
+    bResourceList := '';
     -- first lock the resources
     lockResource(pUserId, pProjectId, pFolderName, pForce);
     -- now build the cursor which contains the locked resources to return the resultset
@@ -618,7 +618,7 @@ PACKAGE BODY opencmsresource IS
     CLOSE curFileHeader;
 	-- split the destination into file and foldername
 	IF substr(pDestination,-1) = '/' THEN
-	  vFileName := recFileHeader.resource_name;
+	  vFileName := substr(recFileHeader.resource_name,instr(recFileHeader.resource_name,'/',-1,1)+1);
 	  vFolderName := pDestination;
 	ELSE
 	  vFolderName := substr(pDestination, 1, instr(pDestination,'/',-1,1));
