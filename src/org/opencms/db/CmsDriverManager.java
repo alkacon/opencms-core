@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/10/25 14:17:15 $
- * Version: $Revision: 1.428 $
+ * Date   : $Date: 2004/10/26 09:45:22 $
+ * Version: $Revision: 1.429 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,10 +74,10 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.428 $ $Date: 2004/10/25 14:17:15 $
+ * @version $Revision: 1.429 $ $Date: 2004/10/26 09:45:22 $
  * @since 5.1
  */
-public class CmsDriverManager extends Object implements I_CmsEventListener {
+public final class CmsDriverManager extends Object implements I_CmsEventListener {
 
     /**
      * Provides a method to build cache keys for groups and users that depend either on 
