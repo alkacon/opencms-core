@@ -17,12 +17,36 @@ function simpleEscape(text) {
 }
 
 
-function checkForName(){
-
-	if(LINK.NEUNAME.value=="")NEU.WEITER.disabled=true;
-	else NEU.WEITER.disabled=false;
- 
+function checkForValue(){
+	if(document.NEU.NEUNAME.value==""){
+	    document.NEU.WEITER.disabled=true;
+	}
+	else {
+	    document.NEU.WEITER.disabled=false;
+	}
+	
+	if((document.LINK.NEUNAME.value=="")||(document.LINK.LINKNAME.value=="")){
+	    document.LINK.WEITER.disabled=true;
+	}
+	else {
+	    document.LINK.WEITER.disabled=false;
+	}
 }
+
+function checkinputfield(nr){
+    if(nr==1){
+        if(document.LINK.LINKNAME.value!=""){
+            document.LINK.WEITER.disabled=false;
+        }
+        else document.LINK.WEITER.disabled=true;
+    }
+    if(nr==2){
+        if(document.LINK.NEUNAME.value!=""){
+            document.LINK.WEITER.disabled=false;
+         }
+         else document.LINK.WEITER.disabled=true;
+    }
+} 
 
 //-->
 </script>
@@ -80,7 +104,7 @@ function checkForName(){
 									<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
 								</tr>
      							<tr>
-									<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData2('NEU','LINK','NEWWITHOUTLINK','NEWLINK');this.checked=false;switchlyr('NEWLINK','NEWWITHOUTLINK');"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
+									<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData2('NEU','LINK','NEWWITHOUTLINK','NEWLINK');switchlyr('NEWLINK','NEWWITHOUTLINK');this.checked=false;checkForValue();"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
 								</tr>
 								<tr>
 									<td colspan=2 class="leerzeile"><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=70px></td>
@@ -126,7 +150,7 @@ function checkForName(){
 										</tr>
 										<tr>
 											<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-											<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100"  action="onfocus='LINK.WEITER.disabled=false;'"/><![CDATA[</td>
+											<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100"  action="onfocus='checkinputfield(1)'"/><![CDATA[</td>
 										</tr>
 										<tr>
 											<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
@@ -137,14 +161,14 @@ function checkForName(){
 											<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
 										</tr>
 										<tr>
-											<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData2('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;checkForName();"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
+											<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData2('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;checkForValue();"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
 										</tr>
 										<tr>
 											<td colspan=2 class=leerzeile><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=10px</td>
 										</tr>
 										<tr>
 											<td class=formular>]]><LABEL value="input.navtitle" /><![CDATA[:</td>
-											<td class=dialogtxt>]]><INPUTFIELD name="LINKNAME" class="textfeld2" size="40" length="100" /><![CDATA[</td>
+											<td class=dialogtxt>]]><INPUTFIELD name="LINKNAME" class="textfeld2" size="40" length="100" action="onFocus='checkinputfield(2)'" /><![CDATA[</td>
 										</tr>
 										<tr>
 											<td class=formular>]]><LABEL value="input.insert" /><![CDATA[</td>
