@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/09 13:08:57 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/10 07:35:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * Oracle/OCI implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/09/09 13:08:57 $
+ * @version $Revision: 1.12 $ $Date: 2003/09/10 07:35:54 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {   
@@ -178,7 +178,8 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         CmsUUID backupId,
         CmsUUID fileId,
         byte[] fileContent,
-        int tagId)
+        int tagId,
+        int versionId)
         throws CmsException {
 
         PreparedStatement stmt = null;
@@ -197,7 +198,8 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             // these two steps are necessary because of using BLOBs in the Oracle DB
             stmt.setString(1, fileId.toString());
             stmt.setInt(2, tagId);
-            stmt.setString(3, backupId.toString());
+            stmt.setInt(3, versionId);
+            stmt.setString(4, backupId.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/09 08:11:50 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/09/10 07:35:54 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.16 $ $Date: 2003/09/09 08:11:50 $
+ * @version $Revision: 1.17 $ $Date: 2003/09/10 07:35:54 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -182,9 +182,10 @@ public interface I_CmsBackupDriver {
      * @param properties the properties to write
      * @param backupId the id backup
      * @param tagId the tag ID of the backup
+     * @param versionId the version ID of the backup
      * @throws CmsException if something goes wrong
      */
-    void writeBackupProperties(CmsProject publishProject, CmsResource resource, Map properties, CmsUUID backupId, int tagId) throws CmsException;
+    void writeBackupProperties(CmsProject publishProject, CmsResource resource, Map properties, CmsUUID backupId, int tagId, int versionId) throws CmsException;
     
 
     /**
@@ -243,8 +244,9 @@ public interface I_CmsBackupDriver {
      * @param fileId the id of the file
      * @param fileContent the content of the file
      * @param tagId the tag revision
+     * @param versionId the version revision
      * @throws CmsException if something goes wrong
      */
-    void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int tagId) throws CmsException;
+    void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int tagId, int versionId) throws CmsException;
 
 }
