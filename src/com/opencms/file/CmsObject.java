@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/02/20 10:14:00 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2000/02/20 14:11:55 $
+ * Version: $Revision: 1.48 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  *  
- * @version $Revision: 1.47 $ $Date: 2000/02/20 10:14:00 $ 
+ * @version $Revision: 1.48 $ $Date: 2000/02/20 14:11:55 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -1799,5 +1799,82 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		 throws CmsException {
 		 return( c_rb.readTask(m_context.currentUser(), m_context.currentProject(), 
 							   id) );
+	 }
+
+	 /**
+	  * Accept a task from the Cms.
+	  * 
+	  * @param taskid The Id of the task to accept.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void acceptTask(int taskId)
+		 throws CmsException {
+		 c_rb.acceptTask(m_context.currentUser(), m_context.currentProject(), taskId);
+	 }
+
+	 /**
+	  * Ends a task from the Cms.
+	  * 
+	  * @param taskid The ID of the task to end.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void endTask(int taskid) 
+		 throws CmsException {
+		 c_rb.endTask(m_context.currentUser(), m_context.currentProject(), taskid);
+	 }
+
+	 /**
+	  * Writes a new user tasklog for a task.
+	  * 
+	  * @param taskid The Id of the task .
+	  * @param comment Description for the log
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void writeTaskLog(int taskid, String comment)
+		 throws CmsException {
+		 c_rb.writeTaskLog(m_context.currentUser(), m_context.currentProject(), 
+						   taskid, comment);
+	 }
+	 
+	 /**
+	  * Writes a new user tasklog for a task.
+	  * 
+	  * @param taskid The Id of the task .
+	  * @param comment Description for the log
+	  * @param tasktype Type of the tasklog. User tasktypes must be greater then 100.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void writeTaskLog(int taskid, String comment, int taskType)
+		 throws CmsException {
+		 c_rb.writeTaskLog(m_context.currentUser(), m_context.currentProject(), taskid, 
+						   comment, taskType);
+	 }
+	 
+	 /**
+	  * Reads log entries for a task.
+	  * 
+	  * @param taskid The task for the tasklog to read .
+	  * @return A Vector of new TaskLog objects 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public Vector readTaskLogs(int taskid)
+		 throws CmsException {
+		 return c_rb.readTaskLogs(m_context.currentUser(), m_context.currentProject(), taskid);
+	 }
+	 
+	 /**
+	  * Reads log entries for a project.
+	  * 
+	  * @param project The projec for tasklog to read.
+	  * @return A Vector of new TaskLog objects 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public Vector readProjectLogs(String projectName)
+		 throws CmsException {
+		 return c_rb.readProjectLogs(m_context.currentUser(), m_context.currentProject(), projectName);
 	 }
 }

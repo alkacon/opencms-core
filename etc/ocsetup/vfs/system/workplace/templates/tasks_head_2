@@ -40,7 +40,7 @@ function goback() {
 <form action="" method=post id=form1 name=form1>
 	<tr valign=center>
 		<td> 
-			]]><BUTTON href="javascript:goback();" name="bt_back" action="window.top.body.admin_content.location.href=admincontenturl;" alt="back"/><![CDATA[
+			]]><BUTTON href="javascript:goback();" name="bt_back" action="goback();" alt="back"/><![CDATA[
 		</td>
 	</tr>
 </form>

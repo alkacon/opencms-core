@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbTask.java,v $
- * Date   : $Date: 2000/02/20 10:14:00 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/02/20 14:11:55 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.11 $ $Date: 2000/02/20 10:14:00 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/20 14:11:55 $
  */
 interface I_CmsRbTask { 	
 
@@ -298,5 +298,18 @@ interface I_CmsRbTask {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public String getTaskPar(int taskid, String parname)
+		 throws CmsException;
+
+	 /**
+	  * Writes a new user tasklog for a task.
+	  * 
+	  * @param taskid The Id of the task .
+	  * @param user User who added the Log
+	  * @param comment Description for the log
+	  * @param tasktype Type of the tasklog. User tasktypes must be greater then 100.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void writeTaskLog(int taskid, A_CmsUser user, String comment, int taskType)
 		 throws CmsException;
 }

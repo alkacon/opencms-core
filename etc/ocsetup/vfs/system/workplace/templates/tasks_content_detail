@@ -34,57 +34,57 @@ function show_help()
 <!-- Tabellenaufbau Dokumentation Aufgabe-->
 <table width=90% cellspacing=1 cellpadding=4 border=0>
 	<!-- Beginn Überschrift Task-->
-	<tr><td colspan=3 class=taskviewheadnew>&Uuml;berarbeitung des Bereiches Kontakt</td></tr>
+	<tr><td colspan=3 class=]]><PROCESS>style</PROCESS><![CDATA[>]]><PROCESS>task</PROCESS><![CDATA[</td></tr>
 	<!-- Ende Überschrift -->
 	
 	<!-- Beginn Inhalt -->
 	<tr>
 		<td class=taskviewbold width=190 nowrap>Projekt:</td>
-		<td class=taskviewtxt width=190 nowrap>Relaunch Sozial</td>
-		<td class=taskviewtxt width=100% align=right><INPUT class=taskviewbutton width = 100 type="button" value="R&uuml;ckfragen" id=QUESTION name=QUESTION onClick="location='tasks_content_dialogquestion.html';"></td>
+		<td class=taskviewtxt width=190 nowrap>]]><PROCESS>project</PROCESS><![CDATA[</td>
+		<td class=taskviewtxt width=100% align=right><INPUT disabled class=taskviewbutton width = 100 type="button" value="R&uuml;ckfragen" id=QUESTION name=QUESTION onClick="location='tasks_content_dialogquestion.html';"></td>
 	</tr>
 	<tr>
 		<td class=taskviewbold nowrap>Aufgabensteller:</td>
-		<td class=taskviewtxt>Andreas Spee (a.spee)</td>
-		<td class=taskviewtxt align=right><INPUT class=taskviewbutton width = 100 type="button" value="Annehmen" id=TAKE name=TAKE onClick="location='tasks_content_dialogaccept.html';"></td>
+		<td class=taskviewtxt>]]><PROCESS>actuator</PROCESS><![CDATA[</td>
+		<td class=taskviewtxt align=right>]]><PROCESS>button2</PROCESS><![CDATA[</td>
 	</tr>
 	<tr>
 		<td class=taskviewbold nowrap>Bearbeiter:</td>
-		<td class=taskviewtxt>Michaela Schleich (m.schleich)</td>
+		<td class=taskviewtxt>]]><PROCESS>foruser</PROCESS><![CDATA[</td>
 		<td class=taskviewtxt nowrap>&nbsp;</td>
 	</tr>
 	<tr>
 		<td class=taskviewbold nowrap>F&auml;llig am:</td>
-		<td class=taskviewtxt>21.02.2000</td>
+		<td class=taskviewtxt>]]><PROCESS>due</PROCESS><![CDATA[</td>
 		<td class=taskviewtxt align=right><INPUT disabled class=taskviewbutton width = 100 type="button" value="F&auml;lligkeit" id=DATE name=DATE></td>
 	</tr>
 	<tr>
 		<td class=taskviewbold nowrap>Priorit&auml;t:</td>
-		<td class=taskviewtxt><IMG border=0 width=16 height=16 src="pics/ic_task_priohigh.gif">&nbsp;hoch</td>
+		<td class=taskviewtxt>]]><PROCESS>priority</PROCESS><![CDATA[</td>
 		<td class=taskviewtxt align=right><INPUT disabled class=taskviewbutton width = 100 type="button" value="Priorit&auml;t" id=PRIO name=PRIO></td>
 	</tr>
 	<tr>
 		<td class=taskviewbold>&nbsp;</td>
 		<td class=taskviewtxt>&nbsp;</td>
-		<td class=taskviewtxt align=right><INPUT class=taskviewbutton width=100 type ="button" value="Neuer Kommentar" id=COMMENT name=COMMENT onClick="location='tasks_content_dialogcomment.html';"></td>
+		<td class=taskviewtxt align=right><INPUT disabled class=taskviewbutton width=100 type ="button" value="Neuer Kommentar" id=COMMENT name=COMMENT onClick="location='tasks_content_dialogcomment.html';"></td>
 	</tr>
 	<tr>
 		<td class=taskviewbold>&nbsp;</td>
 		<td class=taskviewtxt>&nbsp;</td>
-		<td class=taskviewtxt align=right><INPUT disabled class=taskviewbutton width = 100 type="button" value="Abhaken" id=OK name=OK></td>
+		<td class=taskviewtxt align=right>]]><PROCESS>button6</PROCESS><![CDATA[</td>
 	</tr>	
 	<!-- Ende Inhalt -->
 	
-	<tr><td colspan=3 class=taskviewheadnew>&nbsp</td></tr>
+	<tr><td colspan=3 class=]]><PROCESS>style</PROCESS><![CDATA[>&nbsp</td></tr>
 	</table>
 
 <!--Beginn Doku -->
 <br><br>
 <table cellspacing=1 cellpadding=3 border=0 width="90%">
 <tr>
-	<td width=3%><img src="pics/empty.gif" border=0 width=16 height=2></td>
+	<td width=3%><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=16 height=2></td>
 	<td width=94%>&nbsp;</td>
-	<td width=3%><img src="pics/empty.gif" border=0 width=16 height=2></td>
+	<td width=3%><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=16 height=2></td>
 </tr>
 <!--Beginn Doku Kopf -->
 <tr>
@@ -96,7 +96,7 @@ function show_help()
 	<td colspan=3>
 	<table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
-	<td height="2" class="taskviewbackblue"><img src="pics/empty.gif" width="20" height="2" alt="" border="0"></td>
+	<td height="2" class="taskviewbackblue"><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" width="20" height="2" alt="" border="0"></td>
 	</tr>
 	</table>
 </tr>
@@ -115,4 +115,26 @@ function show_help()
 ]]>
 
 </TEMPLATE>
+
+	<!-- Priorities -->
+	<priority1><![CDATA[<IMG border=0 width=16 height=16 src="]]><METHOD name="picsUrl">ic_task_priohigh.gif</METHOD><![CDATA[">&nbsp;]]><LABEL value="task.label.prioritylevel.high" /><![CDATA[]]></priority1>
+	<priority2><LABEL value="task.label.prioritylevel.middle" /></priority2>
+	<priority3><![CDATA[<IMG border=0 width=16 height=16 src="]]><METHOD name="picsUrl">ic_task_priolow.gif</METHOD><![CDATA[">&nbsp;]]><LABEL value="task.label.prioritylevel.low" /><![CDATA[]]></priority3>
+	
+	<!-- style classes -->
+	<style_new>taskviewheadnew</style_new>
+	<style_activ>taskviewheadactive</style_activ>
+	<style_alert>taskviewheadalert</style_alert>
+	<style_ok>taskviewheadok</style_ok>
+	<style_alertok>taskviewheadalert</style_alertok>
+	
+	<!-- Button2 -->
+	<button_accept><![CDATA[<INPUT class=taskviewbutton width=100 type="button" value="Annehmen" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_detail.html?action=accept&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_accept>
+	<button_forward><![CDATA[<INPUT disabled class=taskviewbutton width=100 type="button" value="Weiterleiten" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_detail.html?action=forward&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_forward>
+	<button_take><![CDATA[<INPUT disabled class=taskviewbutton width=100 type="button" value="Übernehmen" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_detail.html?action=take&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_take>
+
+	<!-- Button6 -->
+	<button_ok><![CDATA[<INPUT class=taskviewbutton width=100 type="button" value="Abhaken" id=BUTTON6 name=BUTTON6 onClick="location='tasks_content_detail.html?action=ok&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_ok>
+	<button_reakt><![CDATA[<INPUT disabled class=taskviewbutton width=100 type="button" value="Übernehmen" id=BUTTON6 name=BUTTON6 onClick="location='tasks_content_detail.html?action=reakt&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_reakt>
+
 </WORKPLACE>

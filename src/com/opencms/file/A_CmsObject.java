@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/02/20 10:14:00 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2000/02/20 14:11:55 $
+ * Version: $Revision: 1.47 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.46 $ $Date: 2000/02/20 10:14:00 $ 
+ * @version $Revision: 1.47 $ $Date: 2000/02/20 14:11:55 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1450,5 +1450,68 @@ public abstract class A_CmsObject {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 abstract public A_CmsTask readTask(int id)
+		 throws CmsException;
+
+	 /**
+	  * Accept a task from the Cms.
+	  * 
+	  * @param taskid The Id of the task to accept.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public void acceptTask(int taskId)
+		 throws CmsException;
+
+	 /**
+	  * Ends a task from the Cms.
+	  * 
+	  * @param taskid The ID of the task to end.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public void endTask(int taskid) 
+		 throws CmsException;
+
+	 /**
+	  * Writes a new user tasklog for a task.
+	  * 
+	  * @param taskid The Id of the task .
+	  * @param comment Description for the log
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public void writeTaskLog(int taskid, String comment)
+		 throws CmsException ;
+	 
+	 /**
+	  * Writes a new user tasklog for a task.
+	  * 
+	  * @param taskid The Id of the task .
+	  * @param comment Description for the log
+	  * @param tasktype Type of the tasklog. User tasktypes must be greater then 100.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public void writeTaskLog(int taskid, String comment, int taskType)
+		 throws CmsException;	 
+	 
+	 /**
+	  * Reads log entries for a task.
+	  * 
+	  * @param taskid The task for the tasklog to read .
+	  * @return A Vector of new TaskLog objects 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public Vector readTaskLogs(int taskid)
+		 throws CmsException;
+	 
+	 /**
+	  * Reads log entries for a project.
+	  * 
+	  * @param project The projec for tasklog to read.
+	  * @return A Vector of new TaskLog objects 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public Vector readProjectLogs(String projectName)
 		 throws CmsException;
 }

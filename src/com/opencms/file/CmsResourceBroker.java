@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/20 10:14:00 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2000/02/20 14:11:55 $
+ * Version: $Revision: 1.67 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.66 $ $Date: 2000/02/20 10:14:00 $
+ * @version $Revision: 1.67 $ $Date: 2000/02/20 14:11:55 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4008,4 +4008,109 @@ System.err.println(">>> readFile(2) error for\n" +
 		 throws CmsException {
 		 return m_taskRb.readTask(id);
 	 }
+
+	 /**
+	  * Accept a task from the Cms.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task to accept.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void acceptTask(A_CmsUser currentUser, A_CmsProject currentProject, int taskId)
+		 throws CmsException {
+		 m_taskRb.acceptTask(currentUser, taskId);
+	 }
+
+	 /**
+	  * Ends a task from the Cms.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The ID of the task to end.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void endTask(A_CmsUser currentUser, A_CmsProject currentProject, int taskid) 
+		 throws CmsException {
+		 m_taskRb.endTask(currentUser, taskid);
+	 }	
+
+	 /**
+	  * Writes a new user tasklog for a task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task .
+	  * @param comment Description for the log
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void writeTaskLog(A_CmsUser currentUser, A_CmsProject currentProject, 
+							  int taskid, String comment)
+		 throws CmsException {
+		 m_taskRb.writeTaskLog(taskid, currentUser, comment);
+	 }
+	 
+	 /**
+	  * Writes a new user tasklog for a task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task .
+	  * @param comment Description for the log
+	  * @param tasktype Type of the tasklog. User tasktypes must be greater then 100.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void writeTaskLog(A_CmsUser currentUser, A_CmsProject currentProject, 
+							  int taskid, String comment, int taskType)
+		 throws CmsException {
+		 m_taskRb.writeTaskLog(taskid, currentUser, comment, taskType);
+	 }
+	 
+	 /**
+	  * Reads log entries for a task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The task for the tasklog to read .
+	  * @return A Vector of new TaskLog objects 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public Vector readTaskLogs(A_CmsUser currentUser, A_CmsProject currentProject,
+								int taskid)
+		 throws CmsException{
+		 return m_taskRb.readTaskLogs(taskid);
+	 }
+	 
+	 /**
+	  * Reads log entries for a project.
+	  * 
+	  * @param project The projec for tasklog to read.
+	  * @return A Vector of new TaskLog objects 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public Vector readProjectLogs(A_CmsUser currentUser, A_CmsProject currentProject,
+								   String projectName)
+		 throws CmsException {
+		 A_CmsProject project = readProject(currentUser, currentProject, projectName);
+		 return m_taskRb.readProjectLogs(project);
+	 }	 
 }

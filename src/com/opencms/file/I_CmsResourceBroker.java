@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/20 10:14:00 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2000/02/20 14:11:55 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.42 $ $Date: 2000/02/20 10:14:00 $
+ * @version $Revision: 1.43 $ $Date: 2000/02/20 14:11:55 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -1974,5 +1974,97 @@ interface I_CmsResourceBroker {
 	  */
 	 public A_CmsTask readTask(A_CmsUser currentUser, A_CmsProject currentProject, 
 							   int id)
+		 throws CmsException;
+
+	 /**
+	  * Accept a task from the Cms.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task to accept.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void acceptTask(A_CmsUser currentUser, A_CmsProject currentProject, int taskId)
+		 throws CmsException ;
+
+	 /**
+	  * Ends a task from the Cms.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The ID of the task to end.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void endTask(A_CmsUser currentUser, A_CmsProject currentProject, int taskid) 
+		 throws CmsException;
+
+	 /**
+	  * Writes a new user tasklog for a task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task .
+	  * @param comment Description for the log
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void writeTaskLog(A_CmsUser currentUser, A_CmsProject currentProject, 
+							  int taskid, String comment)
+		 throws CmsException ;
+	 
+	 /**
+	  * Writes a new user tasklog for a task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task .
+	  * @param comment Description for the log
+	  * @param tasktype Type of the tasklog. User tasktypes must be greater then 100.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void writeTaskLog(A_CmsUser currentUser, A_CmsProject currentProject, 
+							  int taskid, String comment, int taskType)
+		 throws CmsException;	 
+	 
+	 /**
+	  * Reads log entries for a task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The task for the tasklog to read .
+	  * @return A Vector of new TaskLog objects 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public Vector readTaskLogs(A_CmsUser currentUser, A_CmsProject currentProject,
+								int taskid)
+		 throws CmsException;
+	 
+	 /**
+	  * Reads log entries for a project.
+	  * 
+	  * @param project The projec for tasklog to read.
+	  * @return A Vector of new TaskLog objects 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public Vector readProjectLogs(A_CmsUser currentUser, A_CmsProject currentProject,
+								   String projectName)
 		 throws CmsException;
 }
