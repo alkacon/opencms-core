@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2003/11/14 11:26:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/11/14 12:29:12 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.ServletException;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
     
@@ -129,25 +129,6 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
         setPreviousLruObject(null);
         
         m_id = CmsFlexCacheEntry.ID_COUNTER++;
-    }
-    
-    /**
-     * Calculates the "true" memory footprint size of an object.<p>
-     * 
-     * @param o object to calculate the memory footprint for
-     * @return the "true" memory footprint of the object
-     */
-    private int calculateSize(Object o) {
-        if (o == null) {
-            return 0;
-        }
-        if (o instanceof byte[]) {
-            return (int)(Math.ceil(((byte[])o).length / 16.0) * 16.0);
-        }
-        if (o instanceof String) {
-        }
-        
-        return 0;
     }
     
     /** 
