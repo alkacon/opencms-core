@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/02/01 14:28:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/02/14 10:01:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,10 +52,10 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Represents an input form with all configured fields and options.<p>
  * 
- * Provides the necessary information to create an input form and confirmation outputs.<p>
+ * Provides the necessary information to create an input form, email messages and confirmation outputs.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsForm {
     
@@ -1049,17 +1049,17 @@ public class CmsForm {
         
         if (isConfirmationMailEnabled()) {
             // confirmation mail is enabled, make simple field check to avoid errors
-            CmsField conformField = new CmsField();
+            CmsField confirmField = new CmsField();
             try {
                 // try to get the confirmation email field
-                conformField = (CmsField)getFields().get(getConfirmationMailField());
+                confirmField = (CmsField)getFields().get(getConfirmationMailField());
             } catch (IndexOutOfBoundsException e) {
                 // specified confirmation email field does not exist
                 getConfigurationErrors().add(messages.key("form.configuration.error.emailfield.notfound"));
                 setConfirmationMailEnabled(false);
                 return;
             }
-            if (! CmsField.C_TYPE_EMAIL.equals(conformField.getType())) {
+            if (! CmsField.C_TYPE_EMAIL.equals(confirmField.getType())) {
                 // specified confirmation mail input field has wrong field type
                 getConfigurationErrors().add(messages.key("form.configuration.error.emailfield.type"));
             }
