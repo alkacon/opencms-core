@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbExportFile.java,v $
- * Date   : $Date: 2000/04/03 10:48:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/04/07 08:22:26 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.template.*;
  * Exports Files from database into XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.8 $ $Date: 2000/04/03 10:48:29 $
+ * @version $Revision: 1.9 $ $Date: 2000/04/07 08:22:26 $
  */
 
 class CmsDbExportFile implements I_CmsConstants {
@@ -462,7 +462,7 @@ class CmsDbExportFile implements I_CmsConstants {
 			
 			m_newElement= m_docXml.createElement(C_TFPROPERTYVALUE);
 			propertyparent.appendChild(m_newElement);
-			m_newNode = m_docXml.createTextNode(propertyinfo);
+			m_newNode = m_docXml.createCDATASection(propertyinfo);
 			m_newElement.appendChild(m_newNode);
 		}
 		
