@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/02/18 16:15:19 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/02/25 10:44:31 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
     
@@ -795,7 +795,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      * @return true if the left navigation include element should be shown
      */
     public boolean showNavLeftElement() {
-        return (getNavLeftElementUri() != null && !"".equals(getNavLeftElementUri()));    
+        return (getNavLeftElementUri() != null && !"none".equals(getNavLeftElementUri()));    
     }
     
     /**
