@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2004/04/30 09:57:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/05/25 11:23:13 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,6 +70,36 @@ import org.xml.sax.SAXParseException;
 public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     
     /**
+     * Adds resolve rules for the configured system internal DTD.<p> 
+     */
+    private class CmsConfigurationEntitiyResolver implements EntityResolver {
+        
+        /**
+         * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
+         */
+        public InputSource resolveEntity(String publicId, String systemId) {
+            Iterator i = m_dtdPrefixes.keySet().iterator();
+            while (i.hasNext()) {
+                // test all configured DTD prefixes
+                String prefix = (String)i.next();
+                if (systemId.startsWith(prefix)) {
+                    String location = (String)m_dtdPrefixes.get(prefix);
+                    String id = location + systemId.substring(prefix.length());
+                    try {
+                        return new InputSource(getClass().getClassLoader().getResourceAsStream(id));
+                    } catch (Throwable t) {
+                        if (OpenCms.getLog(this).isErrorEnabled()) {
+                            OpenCms.getLog(this).error("Did not find " + systemId + " in " + location);
+                        }
+                    }                    
+                }
+            }
+            // use the default behaviour (i.e. resolve through external URL)
+            return null;
+        }
+    }
+    
+    /**
      * Error handler used for errors during the parsing of the configuration.<p>
      */
     private class CmsErrorHandler implements ErrorHandler {
@@ -103,36 +133,6 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         }
     }
     
-    /**
-     * Adds resolve rules for the configured system internal DTD.<p> 
-     */
-    private class CmsConfigurationEntitiyResolver implements EntityResolver {
-        
-        /**
-         * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
-         */
-        public InputSource resolveEntity(String publicId, String systemId) {
-            Iterator i = m_dtdPrefixes.keySet().iterator();
-            while (i.hasNext()) {
-                // test all configured DTD prefixes
-                String prefix = (String)i.next();
-                if (systemId.startsWith(prefix)) {
-                    String location = (String)m_dtdPrefixes.get(prefix);
-                    String id = location + systemId.substring(prefix.length());
-                    try {
-                        return new InputSource(getClass().getClassLoader().getResourceAsStream(id));
-                    } catch (Throwable t) {
-                        if (OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error("Did not find " + systemId + " in " + location);
-                        }
-                    }                    
-                }
-            }
-            // use the default behaviour (i.e. resolve through external URL)
-            return null;
-        }
-    }
-    
     /** The location of the opencms configuration DTD if the default prefix is the system ID */
     public static final String C_DEFAULT_DTD_LOCATION = "org/opencms/configuration/";
     
@@ -148,6 +148,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /** The number of days to keep old backups for */
     private static final long C_MAX_BACKUP_DAYS = 15; 
     
+    /** Formatting for the backup file time prefix */
+    private static final SimpleDateFormat m_backupDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss_");
+    
     /** The config node */
     protected static final String N_CONFIG = "config";
     
@@ -157,6 +160,12 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /** The "opencms" root node of the XML configuration */
     protected static final String N_ROOT = "opencms";
     
+    /** The folder where to store the backup files of the configuration */
+    private File m_backupFolder;
+    
+    /** The base folder where the configuration files are located */
+    private File m_baseFolder;
+    
     /** The initialized configuration classes */
     private List m_configurations;
 
@@ -165,15 +174,6 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     
     /** A map of DTD prefix values for lookup */
     protected Map m_dtdPrefixes;
-    
-    /** The base folder where the configuration files are located */
-    private File m_baseFolder;
-    
-    /** The folder where to stor the backup files of the configuration */
-    private File m_backupFolder;
-    
-    /** Formatting for the backup file time prefix */
-    private static final SimpleDateFormat m_backupDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss_");
     
     /**
      * Creates a new OpenCms configuration manager.<p>
@@ -204,6 +204,29 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     }
     
     /**
+     * Simply version of a 1:1 binary file copy.<p>
+     * 
+     * @param fromFile the name of the file to copy
+     * @param toFile the name of the target file
+     * @throws IOException if any IO error occurs during the copy operation
+     */
+    public static void copy(String fromFile, String toFile) throws IOException {
+        File inputFile = new File(fromFile);
+        File outputFile = new File(toFile);
+
+        FileInputStream in = new FileInputStream(inputFile);
+        FileOutputStream out = new FileOutputStream(outputFile);
+        int c;
+
+        while ((c = in.read()) != -1) {
+           out.write(c);
+        }
+        
+        in.close();
+        out.close();
+    }    
+    
+    /**
      * Adds a configuration object to the configuration manager.<p>
      * 
      * @param configuration the configuration to add
@@ -214,25 +237,6 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         }        
         m_configurations.add(configuration);
         addDtdPrefixMapping(configuration);
-    }
-    
-    /**
-     * Adds a new DTD system id prefix mapping for internal resolution of external URLs.<p>
-     * 
-     * @param configuration the configuration to add the mapping from
-     */
-    private void addDtdPrefixMapping(I_CmsXmlConfiguration configuration) {
-        if (! m_dtdPrefixes.containsKey(configuration.getDtdUrlPrefix())) {
-            // this configuration requires a new DTD prefix mapping
-            m_dtdPrefixes.put(configuration.getDtdUrlPrefix(), configuration.getDtdSystemLocation());
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Adding DTD prefix mapping: " + configuration.getDtdUrlPrefix() + " --> " + configuration.getDtdSystemLocation());
-            }
-        } else {
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Duplicate DTD prefix not added to mapping: " + configuration.getDtdUrlPrefix() + " --> " + configuration.getDtdSystemLocation());
-            }            
-        }
     }
 
     /**
@@ -291,6 +295,16 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         // return the resulting document
         return result;
     } 
+    
+    /**
+     * Returns the backup folder.<p>
+     *
+     * @return the backup folder
+     */
+    public File getBackupFolder() {
+
+        return m_backupFolder;
+    }
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
@@ -381,6 +395,47 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     }
     
     /**
+     * Adds a new DTD system id prefix mapping for internal resolution of external URLs.<p>
+     * 
+     * @param configuration the configuration to add the mapping from
+     */
+    private void addDtdPrefixMapping(I_CmsXmlConfiguration configuration) {
+        if (! m_dtdPrefixes.containsKey(configuration.getDtdUrlPrefix())) {
+            // this configuration requires a new DTD prefix mapping
+            m_dtdPrefixes.put(configuration.getDtdUrlPrefix(), configuration.getDtdSystemLocation());
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Adding DTD prefix mapping: " + configuration.getDtdUrlPrefix() + " --> " + configuration.getDtdSystemLocation());
+            }
+        } else {
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Duplicate DTD prefix not added to mapping: " + configuration.getDtdUrlPrefix() + " --> " + configuration.getDtdSystemLocation());
+            }            
+        }
+    }
+    
+    /**
+     * Creates a backup of the given XML configurations input file.<p>
+     * 
+     * @param configuration the configuration for which the input file should be backed up
+     */
+    private void backupXmlConfiguration(I_CmsXmlConfiguration configuration) {
+        
+        String fromName = m_baseFolder.getAbsolutePath() + File.separatorChar + configuration.getXmlFileName();
+        String toDatePrefix = m_backupDateFormat.format(new Date());
+        String toName = m_backupFolder.getAbsolutePath() + File.separatorChar + toDatePrefix + configuration.getXmlFileName();
+         
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Creating configuration backup of " + fromName + " in " + toName);
+        }
+        
+        try {
+            copy(fromName, toName);
+        } catch (IOException e) {
+            OpenCms.getLog(this).error("Could not generate configuration backup file " + toName, e);
+        }        
+    }
+    
+    /**
      * Loads the OpenCms configuration from the given XML URL.<p>
      * 
      * @param url the base URL of the XML configuration to load
@@ -416,28 +471,6 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     }
     
     /**
-     * Creates a backup of the given XML configurations input file.<p>
-     * 
-     * @param configuration the configuration for which the input file should be backed up
-     */
-    private void backupXmlConfiguration(I_CmsXmlConfiguration configuration) {
-        
-        String fromName = m_baseFolder.getAbsolutePath() + File.separatorChar + configuration.getXmlFileName();
-        String toDatePrefix = m_backupDateFormat.format(new Date());
-        String toName = m_backupFolder.getAbsolutePath() + File.separatorChar + toDatePrefix + configuration.getXmlFileName();
-         
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Creating configuration backup of " + fromName + " in " + toName);
-        }
-        
-        try {
-            copy(fromName, toName);
-        } catch (IOException e) {
-            OpenCms.getLog(this).error("Could not generate configuration backup file " + toName, e);
-        }        
-    }
-    
-    /**
      * Removes all backups that are older then the given number of days.<p>
      * 
      * @param daysToKeep the days to keep the backups for
@@ -456,27 +489,4 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
             }
         }
     }
-    
-    /**
-     * Simply version of a 1:1 binary file copy.<p>
-     * 
-     * @param fromFile the name of the file to copy
-     * @param toFile the name of the target file
-     * @throws IOException if any IO error occurs during the copy operation
-     */
-    public static void copy(String fromFile, String toFile) throws IOException {
-        File inputFile = new File(fromFile);
-        File outputFile = new File(toFile);
-
-        FileInputStream in = new FileInputStream(inputFile);
-        FileOutputStream out = new FileOutputStream(outputFile);
-        int c;
-
-        while ((c = in.read()) != -1) {
-           out.write(c);
-        }
-        
-        in.close();
-        out.close();
-    }    
 }
