@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/07/05 16:32:42 $
- * Version: $Revision: 1.37 $
- * Date   : $Date: 2004/07/05 16:32:42 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/07/06 12:35:43 $
+ * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/07/06 12:35:43 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -61,7 +62,7 @@ import java.util.StringTokenizer;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.37 $ $Date: 2004/07/05 16:32:42 $
+ * @version $Revision: 1.38 $ $Date: 2004/07/06 12:35:43 $
  */
 public class CmsSynchronize {
 
@@ -454,7 +455,7 @@ public class CmsSynchronize {
             
             // get the file type of the FS file
             int resType = OpenCms.getResourceManager().getDefaultTypeForName(resName).getTypeId();
-            CmsFile newFile = (CmsFile)m_cms.createResource(translate(folder) + filename, resType, content, null);
+            CmsFile newFile = (CmsFile)m_cms.createResource(translate(folder) + filename, resType, content, new ArrayList());
             
             m_report.print(m_cms.getSitePath(newFile));
             m_report.print(m_report.key("report.dots")); 
