@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/25 10:27:47 $
-* Version: $Revision: 1.224 $
+* Date   : $Date: 2001/10/26 13:56:45 $
+* Version: $Revision: 1.225 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.224 $ $Date: 2001/10/25 10:27:47 $ *
+ * @version $Revision: 1.225 $ $Date: 2001/10/26 13:56:45 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1137,8 +1137,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
         String parent = new String();
         if (!foldername.equals(C_ROOT)) {
-                parent=foldername.substring(0, foldername.length()-1);
-                parent=parent.substring(0, parent.lastIndexOf("/")+1);
+            parent=foldername.substring(0, foldername.length()-1);
+            parent=parent.substring(0, parent.lastIndexOf("/")+1);
          }
         // if this is the rootfolder or if the parentfolder is the rootfolder
         // try to create the projectresource
@@ -1267,7 +1267,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
         // if this is the rootfolder or if the parentfolder is the rootfolder
         // try to create the projectresource
-        if (parentId == C_UNKNOWN_ID || folder.getParent().equals(C_ROOT)){
+        String parent = "/";
+        if (!folder.getResourceName().equals(C_ROOT)) {
+            parent=folder.getResourceName().substring(0,folder.getResourceName().length()-1);
+            parent=parent.substring(0,parent.lastIndexOf("/")+1);
+        }
+        if (parentId == C_UNKNOWN_ID || parent.equals(C_ROOT)){
             try {
                 String rootFolder = null;
                 try{
