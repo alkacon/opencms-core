@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
- * Date   : $Date: 2000/08/08 14:08:29 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/08/25 14:58:04 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * generation of the master template class to be used.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2000/08/08 14:08:29 $
+ * @version $Revision: 1.17 $ $Date: 2000/08/25 14:58:04 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels, I_CmsConstants {
 	
@@ -69,15 +69,7 @@ public class CmsRootTemplate implements I_CmsLogChannels, I_CmsConstants {
 		Object cacheKey = templateClass.getKey(cms, masterTemplate.getAbsolutePath(), parameters, null);
 	
 		boolean cacheable = templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null);
-		
-		if( cacheable) {
-			// set max-age to 5 minutes. In this time a proxy may cache this content.
-			cms.getRequestContext().getResponse().setHeader("Cache-Control", "max-age=300, must-revalidate");
-		} else {
-			// set the http-header to pragma no-cache.
-			cms.getRequestContext().getResponse().setHeader("Cache-Control", "no-cache");
-		}
-		
+				
 		if(cacheable
 				&& cache.has(cacheKey) 
 				&& ! templateClass.shouldReload(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null)) {
@@ -96,6 +88,18 @@ public class CmsRootTemplate implements I_CmsLogChannels, I_CmsConstants {
 				cache.put(cacheKey, result);
 			}
 	   }         
+
+		I_CmsResponse resp = cms.getRequestContext().getResponse();
+		HttpServletResponse orgResp = (HttpServletResponse)resp.getOriginalResponse();
+
+		if( cacheable) {				
+		    // set max-age to 5 minutes. In this time a proxy may cache this content.
+		    cms.getRequestContext().getResponse().setHeader("Cache-Control", "max-age=300, must-revalidate");
+		} else {
+			// set the http-header to pragma no-cache.
+			cms.getRequestContext().getResponse().setHeader("Cache-Control", "no-cache");
+		}
+		
 		return result;
 	}
 }

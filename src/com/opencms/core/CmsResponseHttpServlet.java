@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
- * Date   : $Date: 2000/08/08 14:08:21 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/08/25 14:56:07 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/08/08 14:08:21 $  
+ * @version $Revision: 1.13 $ $Date: 2000/08/25 14:56:07 $  
  */
 public class CmsResponseHttpServlet implements I_CmsConstants,  
 											   I_CmsResponse{ 
@@ -66,8 +66,9 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
 	 * The type of this CmsResponset.
 	 */
 	private int m_type=C_RESPONSE_HTTP;
-	
-	
+
+	/** We should remember all setted headers to ensure not setting twice */
+	private Vector m_headers = new Vector();
 	 /** 
 	 * Constructor, creates a new CmsResponseHttpServlet object.
 	 * It is nescessary to give the HttpServletRequest as well, because it is needed
@@ -206,7 +207,10 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
 	 * @param value The value for the header.
 	 */
 	public void setHeader(String key, String value) {
-		m_res.setHeader(key, value);
+		if(!m_headers.contains(key)) {
+		    m_res.setHeader(key, value);
+		    m_headers.addElement(key);
+		} 		
 	}
 	/**
 	 * Sets the last modified header-field in the response.

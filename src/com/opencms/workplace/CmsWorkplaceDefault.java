@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/08/08 14:08:32 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/08/25 14:56:47 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2000/08/08 14:08:32 $
+ * @version $Revision: 1.30 $ $Date: 2000/08/25 14:56:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -484,6 +484,13 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
 	 */
 	protected byte[] startProcessing(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {     
 		String lasturl = getLastUrl(cms, parameters);
+
+		// Since we are in the workplace, no browser caching is allowed here.
+		// Set all caching information to "no-cache".
+		// Don't bother about the internal caching here! Workplace users should be forced
+		// to reload the workplace pages at every request.		
+		cms.getRequestContext().getResponse().setHeader("Cache-Control", "no-cache");
+		
 		((CmsXmlWpTemplateFile)xmlTemplateDocument).setData("lasturl", lasturl);        
 		return super.startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 	}
