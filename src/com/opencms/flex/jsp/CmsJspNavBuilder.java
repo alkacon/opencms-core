@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/07/22 00:29:23 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/31 19:20:09 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
@@ -505,13 +505,14 @@ public class CmsJspNavBuilder {
 
         // Now read all subchannels of this channel    
         List subChannels = (List) new ArrayList();
+        cms.getRequestContext().saveSiteRoot();
         try {
             cms.setContextToCos();
             subChannels = cms.getSubFolders(channel);
         } catch (Exception e) {
             System.err.println("Exception: " + e);
         } finally {
-            cms.setContextToVfs();
+            cms.getRequestContext().restoreSiteRoot();
         }           
         
         // Create an ArrayList out of the Vector        
@@ -579,9 +580,10 @@ public class CmsJspNavBuilder {
         ResourceTitleContainer(CmsObject cms, CmsResource res) {
             m_res = res;
             try {
+                cms.getRequestContext().saveSiteRoot();
                 cms.setContextToCos();
                 m_title = cms.readProperty(cms.readAbsolutePath(res), com.opencms.core.I_CmsConstants.C_PROPERTY_TITLE);
-                cms.setContextToVfs();
+                cms.getRequestContext().restoreSiteRoot();
             } catch (Exception e) {
                 m_title = "";
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.354 $
+* Date   : $Date: 2003/07/31 19:20:09 $
+* Version: $Revision: 1.355 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.354 $
+ * @version $Revision: 1.355 $
  */
 public class CmsObject {
 
@@ -627,6 +627,7 @@ public class CmsObject {
      *
      */
     public CmsFolder createChannel(String parentChannel, String newChannelName) throws CmsException {
+        getRequestContext().saveSiteRoot();
         try {
             setContextToCos();
             Hashtable properties = new Hashtable();
@@ -634,7 +635,7 @@ public class CmsObject {
             properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId + "");
             return (CmsFolder)createResource(parentChannel, newChannelName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, properties);
         } finally {
-            setContextToVfs();
+            getRequestContext().restoreSiteRoot();
         }
     }
 
@@ -3955,13 +3956,6 @@ public class CmsObject {
      */
     public void setContextToCos() {
         getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
-    }
-
-    /**
-     * Sets the name of the current site root of the virtual file system.
-     */
-    public void setContextToVfs() {
-        getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_DEFAULT_SITE);
     }
 
     /**

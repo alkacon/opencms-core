@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.78 $
+* Date   : $Date: 2003/07/31 19:20:09 $
+* Version: $Revision: 1.79 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.78 $ $Date: 2003/07/31 17:02:45 $
+ * @version $Revision: 1.79 $ $Date: 2003/07/31 19:20:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -348,13 +348,14 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                         cms.copyResourceToProject((String)folders.elementAt(i));
                     }
                     //now copy the channels to the project
+                    cms.getRequestContext().saveSiteRoot();
                     cms.setContextToCos();
                     for(int j = 0; j < channels.size(); j++){
                         cms.copyResourceToProject((String)channels.elementAt(j));
                     }
-                    cms.setContextToVfs();
+                    cms.getRequestContext().restoreSiteRoot();
                 } catch(CmsException e) {
-                    cms.setContextToVfs();
+                    cms.getRequestContext().restoreSiteRoot();
                     // if there are no projectresources in the project delete the project
                     Vector projectResources = cms.readAllProjectResources(project.getId());
                     if((projectResources == null) || (projectResources.size() == 0)){

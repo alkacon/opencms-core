@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.128 $
+* Date   : $Date: 2003/07/31 19:20:09 $
+* Version: $Revision: 1.129 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.128 $ $Date: 2003/07/31 17:02:45 $
+ * @version $Revision: 1.129 $ $Date: 2003/07/31 19:20:09 $
  */
 public class CmsImport implements Serializable {
 
@@ -422,8 +422,10 @@ public class CmsImport implements Serializable {
         String destination;
         Vector resources = new Vector();
         try {
-            if (m_importingChannelData)
+            if (m_importingChannelData) {
+                m_cms.getRequestContext().saveSiteRoot();
                 m_cms.setContextToCos();
+            }
 
             // get all file-nodes
             fileNodes = m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_FILE);
@@ -455,9 +457,9 @@ public class CmsImport implements Serializable {
             m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
-            if (m_importingChannelData)
-                m_cms.setContextToVfs();
-
+            if (m_importingChannelData) {
+                m_cms.getRequestContext().restoreSiteRoot();
+            }
         }
         if (m_importZip != null) {
             try {
@@ -863,8 +865,10 @@ public class CmsImport implements Serializable {
         Element currentElement, currentEntry;
         Map properties = null;
 
-        if (m_importingChannelData)
-            m_cms.setContextToCos();
+        if (m_importingChannelData) {
+            m_cms.getRequestContext().saveSiteRoot();
+            m_cms.setContextToCos(); 
+        }
 
         // clear some required structures at the init phase of the import      
         if (excludeList == null) {
@@ -977,8 +981,9 @@ public class CmsImport implements Serializable {
             m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
-            if (m_importingChannelData)
-                m_cms.setContextToVfs();
+            if (m_importingChannelData) {
+                m_cms.getRequestContext().restoreSiteRoot();
+            }
         }
 
     }
@@ -1005,8 +1010,10 @@ public class CmsImport implements Serializable {
         long lastmodified = 0;
         Map properties = null;
 
-        if (m_importingChannelData)
+        if (m_importingChannelData) {
+            m_cms.getRequestContext().saveSiteRoot();
             m_cms.setContextToCos();
+        }
 
         if (excludeList == null) {
             excludeList = new Vector();
@@ -1154,8 +1161,9 @@ public class CmsImport implements Serializable {
             m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
-            if (m_importingChannelData)
-                m_cms.setContextToVfs();
+            if (m_importingChannelData) {
+                m_cms.getRequestContext().restoreSiteRoot();
+            }
         }
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/07/31 19:20:09 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -482,6 +482,7 @@ public class CmsDbAccess {
                 // get the channel id
                 int channeldId = res.getInt(1);
                 // read the resource by property "channelid"
+                cms.getRequestContext().saveSiteRoot();
                 cms.setContextToCos();
                 Vector resources = new Vector();
                 try {
@@ -489,7 +490,7 @@ public class CmsDbAccess {
                 } catch(CmsException exc) {
                     // ignore the exception - switch to next channel
                 }
-                cms.setContextToVfs();
+                cms.getRequestContext().restoreSiteRoot();
                 if(resources.size() >= 1) {
                     // add the name of the channel to the ret-value
                     CmsResource resource = (CmsResource)resources.get(0);
@@ -862,6 +863,7 @@ public class CmsDbAccess {
             PreparedStatement stmt = null;
             ResultSet res = null;
             Connection conn = null;
+            cms.getRequestContext().saveSiteRoot();
             try {
                 cms.setContextToCos();
                 conn = m_sqlManager.getConnection();
@@ -889,7 +891,7 @@ public class CmsDbAccess {
                     }
                 }
             } finally {
-                cms.setContextToVfs();
+                cms.getRequestContext().restoreSiteRoot();
                 m_sqlManager.closeAll(conn, stmt, res);
             }
         }
@@ -1245,10 +1247,11 @@ public class CmsDbAccess {
             for(int i = 0; i < channelToAdd.size(); i++) {
                 try {
                     stmt.setString(1, masterId.toString());
+                    cms.getRequestContext().saveSiteRoot();
                     cms.setContextToCos();
                     stmt.setInt(2, Integer.parseInt(cms.readProperty(channelToAdd.get(i)+"",
                         I_CmsConstants.C_PROPERTY_CHANNELID)));
-                    cms.setContextToVfs();
+                    cms.getRequestContext().restoreSiteRoot();
                     // stmnt.setInt(2, Integer.parseInt(cms.readProperty(C_COS_PREFIX + channelToAdd.get(i),
                     //    I_CmsConstants.C_PROPERTY_CHANNELID)));
                     stmt.executeUpdate();
@@ -1272,10 +1275,11 @@ public class CmsDbAccess {
             for(int i = 0; i < channelToDelete.size(); i++) {
                 try {
                     stmt.setString(1, masterId.toString());
+                    cms.getRequestContext().saveSiteRoot();
                     cms.setContextToCos();
                     stmt.setInt(2, Integer.parseInt(cms.readProperty(channelToDelete.get(i)+"",
                          I_CmsConstants.C_PROPERTY_CHANNELID)));
-                    cms.setContextToVfs();
+                    cms.getRequestContext().restoreSiteRoot();
                     // stmnt.setInt(2, Integer.parseInt(cms.readProperty(C_COS_PREFIX + channelToDelete.get(i),
                     //     I_CmsConstants.C_PROPERTY_CHANNELID)));
                     stmt.executeUpdate();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/07/31 19:20:09 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.26 $ $Date: 2003/07/31 19:20:09 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault {
@@ -386,6 +386,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault {
         List untestedSubfolders = (List) new ArrayList();
         List untestedSubfiles = (List) new ArrayList();
 
+        cms.getRequestContext().saveSiteRoot();
         // set the channel root
         cms.setContextToCos();
         List untestedlist = cms.getSubFolders(curfolder);
@@ -557,6 +558,6 @@ public class CmsChannelTree extends CmsWorkplaceDefault {
             }
         }
         // set the vfs root
-        cms.setContextToVfs();
+        cms.getRequestContext().restoreSiteRoot();
     }
 }

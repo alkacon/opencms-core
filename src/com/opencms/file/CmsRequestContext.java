@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.86 $
+* Date   : $Date: 2003/07/31 19:20:09 $
+* Version: $Revision: 1.87 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.86 $ $Date: 2003/07/31 17:02:45 $
+ * @version $Revision: 1.87 $ $Date: 2003/07/31 19:20:09 $
  *
  */
 public class CmsRequestContext {
@@ -523,7 +523,8 @@ public class CmsRequestContext {
      */      
     public String getAdjustedFullSiteRoot(String resourcename) {
         if (resourcename.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/")) {
-            return I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
+            // return I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
+            return "";
         } else {
             return m_siteRoot;
         }
@@ -537,7 +538,8 @@ public class CmsRequestContext {
      */
     public String getAdjustedSiteRoot(String resourcename) {
         if (resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
-            return I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
+            // return I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
+            return "";
         } else {
             return m_siteRoot;
         }  
@@ -565,6 +567,23 @@ public class CmsRequestContext {
         }
     }
     
+    private String m_savedSiteRoot = null;
+    
+    public synchronized void saveSiteRoot() {
+        if (m_savedSiteRoot != null) {
+            throw new RuntimeException("Saved siteroot not empty: " + m_savedSiteRoot);
+        }
+        m_savedSiteRoot = m_siteRoot;
+    }
+    
+    public synchronized void restoreSiteRoot() {
+        if (m_savedSiteRoot == null) {
+            throw new RuntimeException("Saved siteroot empty!");
+        }
+        m_siteRoot = m_savedSiteRoot;
+        m_savedSiteRoot = null;
+    }
+        
     /**
      * @return The directory name translator this context was initialized with
      */

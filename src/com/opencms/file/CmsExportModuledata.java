@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/07/31 19:20:09 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.w3c.dom.Element;
  * @author Edna Falkenhan
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.20 $ $Date: 2003/07/31 19:20:09 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable{
 
@@ -131,7 +131,9 @@ public class CmsExportModuledata extends CmsExport implements Serializable{
         openExportFile(null);
          
         // export the cos folders (ie. channels)               
-        m_report.println(m_report.key("report.export_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);        
+        m_report.println(m_report.key("report.export_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        m_cms.getRequestContext().saveSiteRoot();
+        
         try {
             m_cms.setContextToCos();    
             // export all the resources
@@ -140,7 +142,8 @@ public class CmsExportModuledata extends CmsExport implements Serializable{
         } catch (Exception e) {
             throw new CmsException("Error exporting COS channels", e);        
         } finally {
-            m_cms.setContextToVfs();
+            m_cms.getRequestContext().restoreSiteRoot();
+
         }
         m_report.println(m_report.key("report.export_channels_end"), I_CmsReport.C_FORMAT_HEADLINE);
 
