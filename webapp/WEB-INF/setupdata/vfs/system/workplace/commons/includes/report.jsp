@@ -509,7 +509,7 @@ function initButtons() {
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr><td width="100%" id="buttonrowcontinue" class="hide">
-    <%= wp.dialogButtonsContinue("id=\"contok\" onclick=\"update.continueReport();\"", "id=\"contcancel\"", "id=\"contdetails\"") %>
+    <%= wp.dialogButtonsContinue("id=\"contok\" onclick=\"updateWin.continueReport();\"", "id=\"contcancel\"", "id=\"contdetails\"") %>
   </td></tr>
   <tr><td width="100%" id="buttonrowok" class="hide">
     <%= wp.dialogButtonsOkCancelDetails("id=\"okclose\"", "id=\"okcancel\"", "id=\"details\"") %>
@@ -517,7 +517,7 @@ function initButtons() {
   <tr><td>
     <iframe src="<%= wp.getDialogRealUri() %>?<%= wp.PARAM_STYLE%>=<%=wp.getParamStyle()%>&<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= 
      wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= 
-     wp.getParamThreadHasNext() %>&resource=<%= wp.getParamResource() %>" name="update" style="width:20px; height:20px; margin: 0px;" marginwidth="0" 
+     wp.getParamThreadHasNext() %>&resource=<%= wp.getParamResource() %>" name="updateWin" style="width:20px; height:20px; margin: 0px;" marginwidth="0" 
      marginheight="0" frameborder="0" framespacing="0" scrolling="no" class='hide'></iframe>
   </td></tr>
 </table>
