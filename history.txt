@@ -8,6 +8,12 @@ Legend:
 * Bug fixed
 - General comment
 
+
+OpenCms 4.3.7 Bela Tegeuse - xx xx xx
+
+- Added functionality for access-right handling in A_CmsContentDefinition
+- New Ressource "Link" can now be external
+
 OpenCms 4.3.6 Bela Tegeuse - 11 April 2001
 * Corrected a bug getting sessions in threads. Null-Pointer exceptions should 
   not occure anymore.
