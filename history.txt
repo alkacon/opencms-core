@@ -9,11 +9,12 @@ Legend:
 - General comment
 
 OpenCms 4.3.26 Bela Tegeuse - 17 July 2001
-* bug in admin module (los of the parameters) fixed
+* Bug in admin module (lost of the parameters) fixed.
 ! New features on the workplace: resources can be undeleted, changes can be 
   undone by copying the resource from the online project, a single resource can be published.
 - When creating a project only /pics/, /download/ and the folders in /content/bodys/ are added
   automatically.
+- Reorganisation for tomcat-support.
 
 OpenCms 4.3.25 Bela Tegeuse - 16 July 2001
 ! changed the structure in the content folder. Added a new resourcetype compatibleplain
