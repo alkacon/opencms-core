@@ -1,6 +1,5 @@
 package com.opencms.defaults;
 
-
 /*
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,17 +42,17 @@ public abstract class A_ContentDefinition implements I_CmsContent{
  * applies the filter method
  * @returns an Vector containing the method 
  */
-public static Vector applyFilter(CmsObject cms, FilterMethod filterMethod) {
+public static Vector applyFilter(CmsObject cms, FilterMethod filterMethod) throws Exception {
 	return applyFilter(cms, filterMethod, null);
 }
 /**
  * applies the filter through the method object and the user parameters
  * @returns a vector with the filtered content 
  */
-public static Vector applyFilter(CmsObject cms, FilterMethod filterMethod, String userParameter) {
+public static Vector applyFilter(CmsObject cms, FilterMethod filterMethod, String userParameter) throws Exception {
 	
 	Vector retValue = new Vector();
-	try {
+	//try {
 		Method method = filterMethod.getFilterMethod();
 		Object[] params;
 		if( userParameter != null ) {
@@ -66,14 +65,14 @@ public static Vector applyFilter(CmsObject cms, FilterMethod filterMethod, Strin
 			params = filterMethod.getDefaultParameter();
 		}
 		return (Vector) method.invoke(null,params);
-	} catch (InvocationTargetException ite) {
+/*	} catch (InvocationTargetException ite) {
 		System.err.println("A_ContentDefinition applyFilter: InvocationTargetException!");
 		ite.getTargetException().printStackTrace();
 	} catch (Exception e) {
 		System.err.println("A_ContentDefinition applyFilter: Other Exception!");
 		e.printStackTrace();
 	}	
-	return retValue;
+	return retValue;*/
 }
 /**
  * abstract delete method

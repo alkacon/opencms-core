@@ -83,17 +83,18 @@ public abstract String getBackofficeUrl(CmsObject cms, String tagcontent, A_CmsX
  */
 
 public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-
+   
 	//return var
 	byte[] returnProcess = null;
 
 	// session will be created or fetched
 	I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
 	//create new workplace templatefile object
-	CmsXmlWpTemplateFile template = new CmsXmlWpTemplateFile(cms, templateFile);
-
+	CmsXmlWpTemplateFile template = new CmsXmlWpTemplateFile(cms, templateFile);   
+	
 	//get parameters
 	String selectbox = (String) parameters.get("selectbox");
+	String filterParam = (String) parameters.get("filterparameter");	
 	String id = (String) parameters.get("id");
 	String idlock = (String) parameters.get("idlock");
 	String iddelete = (String) parameters.get("iddelete");
@@ -162,6 +163,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		//process the body frame containing the table
 		if (selectbox != null) {
 			//process the list output
+			if (filterParam != null) parameters.put("filterparameter",filterParam);
 			returnProcess = getContentList(cms, template, elementName, parameters, templateSelector);
 			//finally return processed data
 			return returnProcess;
@@ -371,7 +373,10 @@ private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
 	//get filter method from session
 	String selectBoxValue = (String) session.getValue("selectbox");
-
+	String filterParam = (String) parameters.get("filterparameter");
+	//store filterparameter in the session
+	if (filterParam != null) session.putValue("filterparameter", filterParam);
+	
 	//create appropriate class name with underscores for labels
 	String moduleName = "";
 	moduleName = (String) getClass().toString(); //get name
@@ -410,17 +415,17 @@ private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		FilterMethod defaultFilter = (FilterMethod) filterMethods.firstElement();
 		session.putValue("selectbox", defaultFilter.getFilterName());
 	}
-
+	
+	if (filterParam != null) parameters.put("filterparameter", filterParam);
+	
 	//set the select box
 	for (int i = 0; i < filterMethods.size(); i++) {
 		FilterMethod currentFilter = (FilterMethod) filterMethods.elementAt(i);
-
 		//insert filter in the template selectbox 
 		template.setData("selectname", currentFilter.getFilterName());
 		template.setData("selectnumber", "" + i);
 		//add additional inputfield, if filter allows parameters
 		template.setData("selectparameter", "" + currentFilter.hasUserParameter());
-
 		//get processed data from the template
 		try {
 			singleSelection = template.getProcessedDataValue("singleselection", this);
@@ -446,7 +451,7 @@ private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		String cb = template.getDataValue("wand");
 		template.setData("createbutton", cb);
 	}
-
+	
 	//insert tablecontent in template		
 	template.setData("selectionbox", "" + allSelections);
 
@@ -473,19 +478,26 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 
 	//return var
 	byte[] processResult = null;
-
 	// session will be created or fetched
 	I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
 	//get the class of the content definition	
 	Class cdClass = getContentDefinitionClass();
+	
+	//change template to head section to read out the filter
 	templateSelector = "head";
+	
 	//read value of the inputfield filterparameter
-	String filterParam = (String) parameters.get("filterparameter");
+	String filterParam = (String) session.getValue("filterparameter");
+	if (filterParam == "") filterParam = null;
+	
 	//read value of the selected filter
 	String filterMethodName = (String) parameters.get("selectbox");
 	if (filterMethodName == null)
 		filterMethodName = "";
+		
+	//change template to list section for data list output 	
 	templateSelector = "list";
+	
 	//init vars				
 	String tableHead = "";
 	String singleRow = "";
@@ -553,6 +565,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		templateSelector = "error";
 		template.setData("filtername", filterMethodName);
 		template.setData("filtererror", ite.getTargetException().getMessage());
+		session.removeValue("filterparameter");
 	} catch (NoSuchMethodException nsm) {
 		if (A_OpenCms.isLogging()) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter method was not found!");
@@ -582,7 +595,6 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	String id = "";
 	String url = "";
 	for (int i = 0; i < rows; i++) {
-
 		//init	
 		entry = "";
 		singleRow = "";
@@ -665,6 +677,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 
 	//insert tablecontent in template		
 	template.setData("tablecontent", "" + allEntrys);
+
 	//save select box value into session
 	session.putValue("selectbox", filterMethodName);
 
