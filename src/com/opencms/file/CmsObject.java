@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/30 11:30:08 $
-* Version: $Revision: 1.390 $
+* Date   : $Date: 2003/09/01 09:09:17 $
+* Version: $Revision: 1.391 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.file;
  
+import org.opencms.db.*;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
@@ -80,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.390 $
+ * @version $Revision: 1.391 $
  */
 public class CmsObject {
 
@@ -2676,8 +2677,8 @@ public class CmsObject {
             changedResources = null;
             newResources = null;
 
-            changedResources = publishedResources.getChangedResources();
-            changedModuleMasters = publishedResources.getChangedModuleMasters();
+            changedResources = publishedResources.getChangedVfsResources();
+            changedModuleMasters = publishedResources.getChangedCosResources();
  
             if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
                 CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);

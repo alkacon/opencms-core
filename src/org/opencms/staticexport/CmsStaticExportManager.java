@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/08/15 18:35:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/01 09:09:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.db.CmsPublishedResources;
 import org.opencms.loader.CmsDumpLoader;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsPageLoader;
@@ -44,7 +45,6 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsPublishedResources;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -171,7 +171,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 CmsPublishedResources publishedResources = (CmsPublishedResources)event.getData().get("data");
                 if (publishedResources != null) {
                     // get list published resources
-                    Vector resources = publishedResources.getChangedResources();
+                    Vector resources = publishedResources.getChangedVfsResources();
                     // get a guest user cms context
                     CmsObject cms = OpenCms.getGuestCmsObject();
                     // iterate list of published resources

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/08/22 14:04:11 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/09/01 09:09:17 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,13 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsImportFolder;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsImportFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResourceTypeImage;
 import com.opencms.util.Encoder;
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.50 $ $Date: 2003/08/22 14:04:11 $
+ * @version $Revision: 1.51 $ $Date: 2003/09/01 09:09:17 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault {
     

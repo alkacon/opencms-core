@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.185 $
+ * Date   : $Date: 2003/09/01 09:09:17 $
+ * Version: $Revision: 1.186 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.185 $ $Date: 2003/08/30 11:30:08 $
+ * @version $Revision: 1.186 $ $Date: 2003/09/01 09:09:17 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4982,8 +4982,8 @@ public class CmsDriverManager extends Object {
             throw new CmsSecurityException("[" + getClass().getName() + "] could not publish project " + publishProjectId, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
 
-        allChanged.setChangedResources(changedResources);
-        allChanged.setChangedModuleMasters(changedModuleMasters);
+        allChanged.setChangedVfsResources(changedResources);
+        allChanged.setChangedCosResources(changedModuleMasters);
 
         return allChanged;
     }
