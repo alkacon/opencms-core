@@ -248,7 +248,7 @@ function doAction(action) {
 	    case 23: 
 		{
 		    // News Editor
-		    top.body.location.href='news_edit.html?action=edit&lasturl=' + top.body.location.href + '&file='+ kontextparam + '&initial=true';
+		    top.body.location.href='news_edit.html?action=edit&lasturl=' + simpleEscape(top.body.location.href) + '&file='+ kontextparam + '&initial=true';
 			break;
 		}
 		
