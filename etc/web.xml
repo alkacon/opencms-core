@@ -42,6 +42,7 @@
     </taglib>
 
     <!-- Additional entrys to enable JSTL, can be removed if JSTL is not required: -->
+    <!--
     <taglib>
         <taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
         <taglib-location>/WEB-INF/c.tld</taglib-location>
@@ -81,5 +82,6 @@
         <taglib-uri>http://java.sun.com/jstl/sql_rt</taglib-uri>
         <taglib-location>/WEB-INF/sql-rt.tld</taglib-location>
     </taglib>   
+    -->
 </web-app>
 
