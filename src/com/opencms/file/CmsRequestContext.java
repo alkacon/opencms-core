@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2002/01/18 08:29:01 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2002/02/05 09:07:02 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.46 $ $Date: 2002/01/18 08:29:01 $
+ * @version $Revision: 1.47 $ $Date: 2002/02/05 09:07:02 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -281,7 +281,12 @@ public class CmsRequestContext implements I_CmsConstants {
         }
 
         // set current project, group and streaming proerties for this request
-        setCurrentProject(currentProjectId);
+        try {
+            setCurrentProject(currentProjectId);
+        } catch(CmsException exc) {
+            // there was a problem to set the needed project - using the online one
+            setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+        }
         m_currentGroup = m_rb.readGroup(m_user, m_currentProject, currentGroup);
         m_streaming = streaming;
         m_elementCache = elementCache;
