@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2004/08/30 11:03:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/09/20 12:39:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -168,7 +168,8 @@ public class CmsTree extends CmsWorkplace {
     
     /**
      * Creates the output for a tree node.<p>
-     * @param path TODO:
+     * 
+     * @param path the path of the resource represented by this tree node
      * @param title the resource name
      * @param type the resource type 
      * @param grey if true, the node is displayed in grey
@@ -185,10 +186,10 @@ public class CmsTree extends CmsWorkplace {
         // type
         result.append(type);
         result.append(",");
-        // id
+        // hashcode of path
         result.append(path.hashCode());
         result.append(",");
-        // parent id
+        // hashcode of parent path
         result.append((parent != null) ? parent.hashCode() : 0);
         result.append(",");
         // project status

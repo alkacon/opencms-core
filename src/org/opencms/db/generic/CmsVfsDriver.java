@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/09/17 14:27:53 $
- * Version: $Revision: 1.206 $
+ * Date   : $Date: 2004/09/20 12:39:00 $
+ * Version: $Revision: 1.207 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsAdjacencyTree;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
@@ -70,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.206 $ $Date: 2004/09/17 14:27:53 $
+ * @version $Revision: 1.207 $ $Date: 2004/09/20 12:39:00 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {

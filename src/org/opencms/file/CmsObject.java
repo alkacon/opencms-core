@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/09/20 05:37:20 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2004/09/20 12:39:00 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.74 $
+ * @version $Revision: 1.75 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -3206,11 +3206,6 @@ public class CmsObject {
     
     /**
      * Builds a list of resources for a given path.<p>
-     * 
-     * Use this method if you want to select a resource given by it's full filename and path. 
-     * This is done by climbing down the path from the root folder using the parent-ID's and
-     * resource names. Use this method with caution! Results are cached but reading path's 
-     * inevitably increases runtime costs.
      * 
      * @param path the requested path
      * @param filter a filter object to filter the resources

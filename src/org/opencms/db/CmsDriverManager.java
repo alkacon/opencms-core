@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/09/20 05:36:58 $
- * Version: $Revision: 1.419 $
+ * Date   : $Date: 2004/09/20 12:39:00 $
+ * Version: $Revision: 1.420 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.419 $ $Date: 2004/09/20 05:36:58 $
+ * @version $Revision: 1.420 $ $Date: 2004/09/20 12:39:00 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7416,11 +7416,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /**
      * Builds a list of resources for a given path.<p>
-     * 
-     * Use this method if you want to select a resource given by it's full filename and path. 
-     * This is done by climbing down the path from the root folder using the parent-ID's and
-     * resource names. Use this method with caution! Results are cached but reading path's 
-     * inevitably increases runtime costs.<p>
      * 
      * @param projectId the project to lookup the resource
      * @param path the requested path
