@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2003/09/17 18:08:32 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Loader for "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
     
@@ -94,8 +94,8 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
             responsestream.write(C_EXPORT_SUFFIX.getBytes());
             responsestream.close();
         } catch (Throwable t) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) { 
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error during static export of " + cms.readAbsolutePath(file), t);
+            if (OpenCms.getLog(this).isErrorEnabled()) { 
+                OpenCms.getLog(this).error("Error during static export of " + cms.readAbsolutePath(file), t);
             }        
         }        
     }    

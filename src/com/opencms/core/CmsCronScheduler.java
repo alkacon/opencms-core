@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduler.java,v $
-* Date   : $Date: 2003/09/17 08:31:30 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/09/19 14:42:53 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,12 @@
 
 package com.opencms.core;
 
-import org.opencms.main.*;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsCore;
 
-
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * This is the CronScheduler. It a deamon-thread that will be stopped

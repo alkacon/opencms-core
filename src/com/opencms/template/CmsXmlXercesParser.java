@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
-* Date   : $Date: 2003/09/17 18:08:07 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/09/19 14:42:53 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.26 $ $Date: 2003/09/17 18:08:07 $
+ * @version $Revision: 1.27 $ $Date: 2003/09/19 14:42:53 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser {
     
@@ -91,8 +91,8 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             DOMSerializer domSerializer = serializer.asDOMSerializer();
             domSerializer.serialize(doc);
         } catch (Exception e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Xml parsing error", e);
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Xml parsing error", e);
             }
         }
     }
@@ -114,8 +114,8 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             DOMSerializer domSerializer = serializer.asDOMSerializer();
             domSerializer.serialize(doc);
         } catch (Exception e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Xml parsing error", e);
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Xml parsing error", e);
             }
         }
     }
@@ -163,8 +163,8 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             parser.setFeature("http://apache.org/xml/features/dom/include-ignorable-whitespace", false);
         }
         catch(SAXException e) {
-            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()  && !c_xercesWarning) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("Cannot set parser feature for apache xerces XML parser, you should use Xerces 1.1.1 or newer");
+            if(OpenCms.getLog(this).isWarnEnabled()  && !c_xercesWarning) {
+                OpenCms.getLog(this).warn("Cannot set parser feature for apache xerces XML parser, you should use Xerces 1.1.1 or newer");
                 c_xercesWarning = true;
             }
         }

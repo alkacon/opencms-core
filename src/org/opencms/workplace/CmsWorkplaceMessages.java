@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2003/09/17 18:08:33 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/19 14:42:52 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
  
 package org.opencms.workplace;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsConstants;
@@ -52,7 +51,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -240,8 +239,8 @@ public class CmsWorkplaceMessages {
         
         // key was not found
         if (DEBUG > 1) System.err.println("CmsWorkplaceMessages.key(): '" + keyName + "' not found at all (this is bad)");
-        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn("Missing value for locale key: " + keyName);
+        if (OpenCms.getLog(this).isWarnEnabled()) {
+            OpenCms.getLog(this).warn("Missing value for locale key: " + keyName);
         }        
         return "??? " + keyName + " ???";
     }

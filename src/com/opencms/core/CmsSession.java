@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
-* Date   : $Date: 2003/09/17 18:08:07 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/09/19 14:42:53 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,7 @@
 
 package com.opencms.core;
 
-import org.opencms.main.*;
-
+import org.opencms.main.OpenCms;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -45,7 +44,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Michael Emmerich
  *
- * @version $Revision: 1.29 $ $Date: 2003/09/17 18:08:07 $
+ * @version $Revision: 1.30 $ $Date: 2003/09/19 14:42:53 $
  */
 public class CmsSession implements I_CmsSession {
 
@@ -112,8 +111,8 @@ public class CmsSession implements I_CmsSession {
             // indicate, that the session should be stored after the request.
             m_session.setAttribute(I_CmsConstants.C_SESSION_IS_DIRTY, new Boolean(true));
         } catch (Exception exc) {
-            if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error marking session as dirty", exc);
+            if(OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error marking session as dirty", exc);
             }
         }
     }

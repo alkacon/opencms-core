@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2003/09/17 08:31:30 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public final class OpenCms {
     
@@ -309,13 +309,17 @@ public final class OpenCms {
     }
     
     /**
-     * Returns the log for the selected channel.<p>
+     * Returns the log for the selected object.<p>
+     * 
+     * If the provided object is a String, this String will
+     * be used as channel name. Otherwise the objects 
+     * class name will be used as channel name.<p>
      *  
-     * @param channel the channel to look up
-     * @return the log for the selected channel
-     */        
-    public static Log getLog(String channel) {
-        return OpenCmsCore.getInstance().getLog(channel);
+     * @param obj the object channel to use
+     * @return the log for the selected object channel
+     */      
+    public static Log getLog(Object obj) {
+        return OpenCmsCore.getInstance().getLog(obj);
     }
 
     /**

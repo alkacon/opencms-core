@@ -172,20 +172,20 @@ public class CmsShowMedia extends CmsXmlTemplate {
             Constructor c = cdClass.getConstructor(new Class[] { CmsObject.class, Integer.class });
             o = c.newInstance(new Object[] { cms, id });
         } catch (InvocationTargetException ite) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).warn("Invocation target exception", ite);
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Invocation target exception", ite);
             }
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).warn("Requested method was not found", nsm);
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Requested method was not found", nsm);
             }
         } catch (InstantiationException e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).warn("The reflected class is abstract", e);
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("The reflected class is abstract", e);
             }
         } catch (Exception e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).warn("Other exception", e);
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Other exception", e);
             }
     
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/09/19 14:42:51 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.50 $ $Date: 2003/09/17 14:30:14 $
+ * @version $Revision: 1.51 $ $Date: 2003/09/19 14:42:51 $
  */
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -251,8 +251,8 @@ public class CmsXmlLanguageFile {
         
         // key was not found
         if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getLanguageValue(): '" + keyName + "' not found at all (this is bad)");
-        if (OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("Missing value for locale key: " + keyName);
+        if (OpenCms.getLog(this).isWarnEnabled()) {
+            OpenCms.getLog(this).warn("Missing value for locale key: " + keyName);
         }        
         return "??? " + keyName + " ???";	
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/09/17 18:08:07 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/09/19 14:42:52 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault {
@@ -97,8 +97,8 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         File discFolder = new File(CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator));
         if(!discFolder.exists()) {
             boolean success = discFolder.mkdir();
-            if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() && (!success)) {
-                OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("Couldn't create folder " + discFolder.getAbsolutePath());
+            if(OpenCms.getLog(this).isWarnEnabled() && (!success)) {
+                OpenCms.getLog(this).warn("Couldn't create folder " + discFolder.getAbsolutePath());
             }
         }
 
@@ -135,11 +135,11 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         Hashtable parameters, 
         String templateSelector
     ) throws CmsException {               
-        if(C_DEBUG && OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isDebugEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Getting content of element "
+        if(C_DEBUG && OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Getting content of element "
                             + ((elementName == null) ? "<root>" : elementName));
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Template file is: " + templateFile);
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Delected template section is: "
+            OpenCms.getLog(this).debug("Template file is: " + templateFile);
+            OpenCms.getLog(this).debug("Delected template section is: "
                             + ((templateSelector == null) ? "<default>" : templateSelector));
         }
 

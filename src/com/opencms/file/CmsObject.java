@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/18 14:50:34 $
-* Version: $Revision: 1.413 $
+* Date   : $Date: 2003/09/19 14:42:53 $
+* Version: $Revision: 1.414 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.413 $
+ * @version $Revision: 1.414 $
  */
 public class CmsObject {
 
@@ -2709,9 +2709,9 @@ public class CmsObject {
                     }
                 }
             }
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(stamp1);
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(stamp2, e);
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error(stamp1);
+                OpenCms.getLog(this).error(stamp2, e);
             }
         } finally {
             if (changedResources == null || changedResources.size() < 1) {
@@ -2724,10 +2724,10 @@ public class CmsObject {
                     System.err.println(stamp2);
                     System.err.println(stamp3);
                 }
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug(stamp1);
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug(stamp2);
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug(stamp3);
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug(stamp1);
+                    OpenCms.getLog(this).debug(stamp2);
+                    OpenCms.getLog(this).debug(stamp3);
                 }
                 success = false;
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/18 16:24:55 $
- * Version: $Revision: 1.136 $
+ * Date   : $Date: 2003/09/19 14:42:52 $
+ * Version: $Revision: 1.137 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsVfsDriver;
 import org.opencms.main.CmsEvent;
-import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsAdjacencyTree;
 import org.opencms.util.CmsUUID;
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.136 $ $Date: 2003/09/18 16:24:55 $
+ * @version $Revision: 1.137 $ $Date: 2003/09/19 14:42:52 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -896,8 +896,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     try {
                         createFileContent(newFileId, filecontent, 0, project.getId(), false);
                     } catch (CmsException se) {
-                        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[" + this.getClass().getName() + "] " + se.getMessage());
+                        if (OpenCms.getLog(this).isErrorEnabled()) {
+                            OpenCms.getLog(this).error("[" + this.getClass().getName() + "] " + se.getMessage());
                         }
                     }
                 }

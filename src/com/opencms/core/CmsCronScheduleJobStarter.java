@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduleJobStarter.java,v $
-* Date   : $Date: 2003/09/17 18:08:07 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/09/19 14:42:53 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,8 @@
 
 package com.opencms.core;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
-
 
 import java.util.Calendar;
 
@@ -74,8 +72,8 @@ public class CmsCronScheduleJobStarter extends Thread {
         for (int i = 0; i < m_table.size(); i++) {
             if (m_table.get(i).check(m_lastRun, m_thisRun)) {
                 // we have to start the job for this entry
-                if (OpenCms.getLog(CmsLog.CHANNEL_CRON).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_CRON).info("Starting job for " + m_table.get(i));
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info("Starting job for " + m_table.get(i));
                 }
                 m_opencms.startScheduleJob(m_table.get(i));
             }

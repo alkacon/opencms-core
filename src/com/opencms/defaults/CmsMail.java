@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/09/19 14:42:53 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,6 @@
 
 package com.opencms.defaults;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
@@ -90,7 +89,7 @@ import javax.mail.internet.MimeMultipart;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.24 $ $Date: 2003/09/17 14:30:14 $
+ * @version $Name:  $ $Revision: 1.25 $ $Date: 2003/09/19 14:42:53 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread {
@@ -636,8 +635,8 @@ public class CmsMail extends Thread {
         try {
             msg = buildMessage(m_mailserver);
         } catch (Exception e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error while building Email object", e);
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error while building Email object", e);
             }
 
             // Do not continue here. We don't have a Message object we can send.
@@ -658,8 +657,8 @@ public class CmsMail extends Thread {
             }
 
             // First print out an error message...
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error while transmitting using default SMTP server", e);
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error while transmitting using default SMTP server", e);
             }
 
             // ... and now try an alternative server (if given)
@@ -667,21 +666,21 @@ public class CmsMail extends Thread {
                 try {
                     msg = buildMessage(m_alternativeMailserver);
                     Transport.send(msg);
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Mail send using alternative SMTP server");
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info("Mail send using alternative SMTP server");
                     }
                 } catch (Exception e2) {
 
                     // Get nested Exception used for pretty printed error message in logfile
                     for (; e2 instanceof MessagingException; e2 = ((MessagingException)e2).getNextException()) {
                     }
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isFatalEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).fatal("Could not send Email, even alternative SMPT server failed", e2);
+                    if (OpenCms.getLog(this).isFatalEnabled()) {
+                        OpenCms.getLog(this).fatal("Could not send Email, even alternative SMPT server failed", e2);
                     }
                 }
             } else {
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isFatalEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).fatal("No alternative SMTP server given, could not send Email");
+                if (OpenCms.getLog(this).isFatalEnabled()) {
+                    OpenCms.getLog(this).fatal("No alternative SMTP server given, could not send Email");
                 }
             }
         }

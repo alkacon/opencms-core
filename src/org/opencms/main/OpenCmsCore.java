@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/17 18:08:33 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -407,19 +407,19 @@ public class OpenCmsCore {
             m_scheduler.shutDown();
             m_driverManager.destroy();
         } catch (Throwable e) {
-            if (getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                getLog(CmsLog.CHANNEL_MAIN).error("[OpenCms]" + e.toString());
+            if (getLog(this).isErrorEnabled()) {
+                getLog(this).error("[OpenCms]" + e.toString());
             }
         }
         try {
             Utils.getModulShutdownMethods(getRegistry());
         } catch (Throwable e) {
             // log exception since we are about to shutdown anyway
-            if (getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                getLog(CmsLog.CHANNEL_MAIN).error("[OpenCms] Module shutdown exception: " + e);
+            if (getLog(this).isErrorEnabled()) {
+                getLog(this).error("[OpenCms] Module shutdown exception: " + e);
             }
         }
-        if (getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+        if (getLog(this).isInfoEnabled()) {
             getLog(CmsLog.CHANNEL_INIT).info("[OpenCms] ... shutdown completed.");
         }        
         m_instance = null;
@@ -451,8 +451,8 @@ public class OpenCmsCore {
             CmsSecurityException e = (CmsSecurityException)t;
 
             // access error - display login dialog
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[OpenCms] Access denied: " + e.getMessage());
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info("[OpenCms] Access denied: " + e.getMessage());
             }
             if (canWrite) {
                 try {
@@ -486,16 +486,16 @@ public class OpenCmsCore {
                 case CmsException.C_HTTPS_PAGE_ERROR :
                     // http page and https request - display 404 error.
                     status = HttpServletResponse.SC_NOT_FOUND;
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Trying to get a http page with a https request", e);
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info("Trying to get a http page with a https request", e);
                     }
                     break;                                       
 
                 case CmsException.C_HTTPS_REQUEST_ERROR :
                     // https request and http page - display 404 error.
                     status = HttpServletResponse.SC_NOT_FOUND;
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Trying to get a https page with a http request", e);
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info("Trying to get a https page with a http request", e);
                     }
                     break;
 
@@ -668,8 +668,8 @@ public class OpenCmsCore {
         try {
             props.load(getClass().getClassLoader().getResourceAsStream("com/opencms/core/errormsg.properties"));
         } catch (Throwable t) {
-            if (getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                getLog(CmsLog.CHANNEL_MAIN).error("Could not load com/opencms/core/errormsg.properties", t);
+            if (getLog(this).isErrorEnabled()) {
+                getLog(this).error("Could not load com/opencms/core/errormsg.properties", t);
             }
         }
         String value = props.getProperty(part);
@@ -744,7 +744,7 @@ public class OpenCmsCore {
     }
     
     /**
-     * Returns the initialized logger.<p>
+     * Returns the initialized logger (for changing the runlevel).<p>
      * 
      * @return the initialized logger
      */
@@ -753,16 +753,20 @@ public class OpenCmsCore {
     }
         
     /**
-     * Returns the log for the selected channel.<p>
+     * Returns the log for the selected object.<p>
+     * 
+     * If the provided object is a String, this String will
+     * be used as channel name. Otherwise the objects 
+     * class name will be used as channel name.<p>
      *  
-     * @param channel the channel to look up
-     * @return the log for the selected channel
-     */        
-    protected Log getLog(String channel) {
-        if (! m_log.isInitialized()) {
+     * @param obj the object channel to use
+     * @return the log for the selected object channel
+     */      
+    protected Log getLog(Object obj) {
+        if ((obj == null) || (!m_log.isInitialized())) {
             return m_log;
         }
-        return m_log.getLogger(channel);
+        return m_log.getLogger(obj);
     }
 
     /**
@@ -972,8 +976,8 @@ public class OpenCmsCore {
         }
         if (!m_defaultEncoding.equals(systemEncoding)) {
             String msg = "OpenCms startup failure: System file.encoding '" + systemEncoding + "' not equal to OpenCms encoding '" + m_defaultEncoding + "'";
-            if (getLog(CmsLog.CHANNEL_MAIN).isFatalEnabled()) {
-                getLog(CmsLog.CHANNEL_MAIN).fatal("Critical init error/1: " + msg);
+            if (getLog(this).isFatalEnabled()) {
+                getLog(this).fatal("Critical init error/1: " + msg);
             }
             throw new Exception(msg);
         }
@@ -1013,8 +1017,8 @@ public class OpenCmsCore {
                 getLog(CmsLog.CHANNEL_INIT).info(". Operating sytem      : " + osinfo);
             }
         } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled())
-                getLog(CmsLog.CHANNEL_MAIN).error("Critical init error/2", e);
+            if (getLog(this).isErrorEnabled())
+                getLog(this).error("Critical init error/2", e);
             // any exception here is fatal and will cause a stop in processing
             throw e;
         }
@@ -1027,8 +1031,8 @@ public class OpenCmsCore {
             // and init the cms-object with the rb.
             m_driverManager = CmsDriverManager.newInstance(conf);            
         } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                getLog(CmsLog.CHANNEL_MAIN).error("Critical init error/3", e);
+            if (getLog(this).isErrorEnabled()) {
+                getLog(this).error("Critical init error/3", e);
             }
             // any exception here is fatal and will cause a stop in processing
             throw new CmsException("Database init failed", CmsException.C_RB_INIT_ERROR, e);
@@ -1054,8 +1058,8 @@ public class OpenCmsCore {
                     getLog(CmsLog.CHANNEL_INIT).info(". OpenCms scheduler    : disabled");
             }
         } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                getLog(CmsLog.CHANNEL_MAIN).error("Critical init error/5", e);
+            if (getLog(this).isErrorEnabled()) {
+                getLog(this).error("Critical init error/5", e);
             }
             // any exception here is fatal and will cause a stop in processing
             throw e;
@@ -2086,8 +2090,8 @@ public class OpenCmsCore {
             CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
             job.start();
         } catch (Exception exc) {
-            if (getLog(CmsLog.CHANNEL_CRON).isErrorEnabled()) {
-                getLog(CmsLog.CHANNEL_CRON).error("Error initialising job for " + entry, exc);
+            if (getLog(this).isErrorEnabled()) {
+                getLog(this).error("Error initialising job for " + entry, exc);
             }
         }
     }
@@ -2103,8 +2107,8 @@ public class OpenCmsCore {
         if (message == null) message = cause.toString();
         System.err.println("\n--------------------\nCritical error during OpenCms context init phase:\n" + message);
         System.err.println("Giving up, unable to start OpenCms.\n--------------------");        
-        if (getLog(CmsLog.CHANNEL_MAIN).isFatalEnabled()) {
-            getLog(CmsLog.CHANNEL_MAIN).fatal("Unable to start OpenCms", cause);
+        if (getLog(this).isFatalEnabled()) {
+            getLog(this).fatal("Unable to start OpenCms", cause);
         }         
         throw cause;
     }
@@ -2116,8 +2120,8 @@ public class OpenCmsCore {
         try {
             m_table.update(m_driverManager.readCronTable());
         } catch (Exception exc) {
-            if (getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                getLog(CmsLog.CHANNEL_MAIN).error("Crontable is corrupt, Cron scheduler has been disabled", exc);
+            if (getLog(this).isErrorEnabled()) {
+                getLog(this).error("Crontable is corrupt, Cron scheduler has been disabled", exc);
             }
         }
     }

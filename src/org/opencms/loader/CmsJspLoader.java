@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/09/17 18:08:32 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -226,8 +226,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             responsestream.write(exportJsp(cms, file));
             responsestream.close();
         } catch (Throwable t) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) { 
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error during static export of " + cms.readAbsolutePath(file), t);
+            if (OpenCms.getLog(this).isErrorEnabled()) { 
+                OpenCms.getLog(this).error("Error during static export of " + cms.readAbsolutePath(file), t);
             }         
         }        
     }
@@ -797,8 +797,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         
         File d = new File(jspPath).getParentFile();   
         if ((d == null) || (d.exists() && ! (d.isDirectory() && d.canRead()))) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) 
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Could not access directory for " + jspPath);
+            if (OpenCms.getLog(this).isErrorEnabled()) 
+                OpenCms.getLog(this).error("Could not access directory for " + jspPath);
             throw new ServletException("JspLoader: Could not access directory for " + jspPath);
         }   
          
@@ -933,8 +933,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 fs.write(contents);                
                 fs.close();
                 
-                if (OpenCms.getLog(CmsLog.CHANNEL_FLEX).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_FLEX).info("Updated JSP file \"" + jspfilename + "\" for resource \"" + cms.readAbsolutePath(file) + "\"");
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info("Updated JSP file \"" + jspfilename + "\" for resource \"" + cms.readAbsolutePath(file) + "\"");
                 }
             } catch (FileNotFoundException e) {
                 throw new ServletException("JspLoader: Could not write to file '" + f.getName() + "'\n" + e, e);

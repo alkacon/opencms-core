@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.87 $
+* Date   : $Date: 2003/09/19 14:42:51 $
+* Version: $Revision: 1.88 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.87 $ $Date: 2003/09/17 14:30:14 $
+ * @version $Revision: 1.88 $ $Date: 2003/09/19 14:42:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -148,10 +148,10 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isDebugEnabled() && C_DEBUG) {
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Template file is: " + templateFile);
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+        if(OpenCms.getLog(this).isDebugEnabled() && C_DEBUG) {
+            OpenCms.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
+            OpenCms.getLog(this).debug("Template file is: " + templateFile);
+            OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsRequestContext reqCont = cms.getRequestContext();
@@ -366,8 +366,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                         cms.deleteProject(project.getId());
                         reqCont.setCurrentProject(C_PROJECT_ONLINE_ID);
                     }
-                    if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() ) {
-                        OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(e.getMessage(), e);
+                    if(OpenCms.getLog(this).isWarnEnabled() ) {
+                        OpenCms.getLog(this).warn(e.getMessage(), e);
                     }
                     throw e;
                 }

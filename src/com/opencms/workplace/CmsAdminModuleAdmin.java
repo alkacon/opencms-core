@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/09/19 14:42:52 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -154,10 +154,10 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
      * @param templateSelector template section that should be processed.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isDebugEnabled() && C_DEBUG) {
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Template file is: " + templateFile);
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+        if(OpenCms.getLog(this).isDebugEnabled() && C_DEBUG) {
+            OpenCms.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
+            OpenCms.getLog(this).debug("Template file is: " + templateFile);
+            OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsRegistry reg = cms.getRegistry();
@@ -431,8 +431,8 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
                 reg.setModuleType( name, CmsRegistry.C_MODULE_TYPE_TRADITIONAL );
             }               
         }catch(CmsException e) {
-             if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isErrorEnabled()) {
-                 OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).error("Error in module administration", e);
+             if(OpenCms.getLog(this).isErrorEnabled()) {
+                 OpenCms.getLog(this).error("Error in module administration", e);
              }
         }
     }

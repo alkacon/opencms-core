@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/09/19 14:42:53 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.43 $ $Date: 2003/09/17 14:30:14 $
+ * @version $Revision: 1.44 $ $Date: 2003/09/19 14:42:53 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent {
 
@@ -223,8 +223,8 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
     public String getMasterTemplate() throws CmsException {
         String result = getDataValue("mastertemplate");
         if(result == null || "".equals(result)) {
-            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled() ) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("<MASTERTEMPLATE> tag not found in file " + getAbsoluteFilename());
+            if(OpenCms.getLog(this).isErrorEnabled() ) {
+                OpenCms.getLog(this).error("<MASTERTEMPLATE> tag not found in file " + getAbsoluteFilename());
             }
             removeFromFileCache();
             throw new CmsException("\"MASTERTEMPLATE\" definition tag not found in file " + getAbsoluteFilename() + ".", CmsException.C_XML_TAG_MISSING);
@@ -256,8 +256,8 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
                         name = "(default)";
                     }
                     else {
-                        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename());
+                        if(OpenCms.getLog(this).isErrorEnabled()) {
+                            OpenCms.getLog(this).error("Unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename());
                         }
                         throw new CmsException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename(), CmsException.C_XML_TAG_MISSING);
                     }

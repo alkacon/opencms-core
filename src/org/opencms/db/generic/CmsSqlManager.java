@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/18 16:24:55 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/09/19 14:42:52 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.db.generic;
 
 import org.opencms.db.CmsDbPool;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 
@@ -97,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2003/09/18 16:24:55 $
+ * @version $Revision: 1.23 $ $Date: 2003/09/19 14:42:52 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -355,8 +354,8 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
 
         message = className + message;
 
-        if (!logSilent && OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(message);
+        if (!logSilent && OpenCms.getLog(this).isErrorEnabled()) {
+            OpenCms.getLog(this).error(message);
         }
 
         switch (exceptionType) {
@@ -564,8 +563,8 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream(propertyFilename));
         } catch (Throwable t) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error loading " + propertyFilename, t);
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error loading " + propertyFilename, t);
             }
             
             properties = null;
@@ -690,8 +689,8 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
 
         String value = null;
         if ((value = c_queries.getProperty(queryKey)) == null) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Query '" + queryKey + "' not found in " + C_PROPERTY_FILENAME);
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Query '" + queryKey + "' not found in " + C_PROPERTY_FILENAME);
             }
         }
 

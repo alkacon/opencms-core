@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/09/17 14:30:14 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsPointerLoader;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.loader.I_CmsResourceLoader;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
@@ -87,7 +86,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 5.0 beta 2
  */
@@ -761,8 +760,8 @@ public class CmsJspActionElement {
      * @param t the Throwable that was catched
      */
     private void handleException(Throwable t) {
-        if (OpenCms.getLog(CmsLog.CHANNEL_FLEX).isErrorEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_FLEX).error("Error in JSP action element", t);
+        if (OpenCms.getLog(this).isErrorEnabled()) {
+            OpenCms.getLog(this).error("Error in JSP action element", t);
         } 
         if (! (m_handleExceptions || getRequestContext().currentProject().isOnlineProject())) {    
             if (DEBUG > 0) {        

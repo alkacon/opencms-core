@@ -145,8 +145,8 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
                 // try read from old module locales path
                 try {
                     moduleLangFiles = cms.getFilesInFolder(cms.readAbsolutePath((CmsFolder)modules.get(i)) + oldLang);
-                    if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() ) {
-                        OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("Old module 'locales' path used: " + cms.readAbsolutePath((CmsFolder)modules.get(i)) + oldLang);
+                    if(OpenCms.getLog(this).isWarnEnabled() ) {
+                        OpenCms.getLog(this).warn("Old module 'locales' path used: " + cms.readAbsolutePath((CmsFolder)modules.get(i)) + oldLang);
                     }                    
                 } catch (CmsException ex) {
                     // no language files found, we can live with that, probably the module just has none                      
@@ -163,8 +163,8 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
                 try {
                     init(cms, cms.readAbsolutePath(file));
                 } catch(Exception exc) {
-                    if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isErrorEnabled() ) {
-                        OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).error("Error merging language file: " + cms.readAbsolutePath(file), exc);
+                    if(OpenCms.getLog(this).isErrorEnabled() ) {
+                        OpenCms.getLog(this).error("Error merging language file: " + cms.readAbsolutePath(file), exc);
                     }
                 }
             }

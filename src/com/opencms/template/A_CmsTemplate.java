@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/09/19 14:42:53 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2003/09/17 14:30:14 $
+ * @version $Revision: 1.20 $ $Date: 2003/09/19 14:42:53 $
  */
 public abstract class A_CmsTemplate implements I_CmsTemplate {
 
@@ -260,8 +260,8 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * @throws CmsException
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
-        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled() ) {
-            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error(errorMessage);
+        if(OpenCms.getLog(this).isErrorEnabled() ) {
+            OpenCms.getLog(this).error(errorMessage);
         }
         throw new CmsException(errorMessage, type);
     }
@@ -275,8 +275,8 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * @throws CmsException
      */
     protected void throwException(String errorMessage, Exception e) throws CmsException {
-        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled() ) {
-            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error(errorMessage, e);
+        if(OpenCms.getLog(this).isErrorEnabled() ) {
+            OpenCms.getLog(this).error(errorMessage, e);
         }
         if(e instanceof CmsException) {
             throw (CmsException)e;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2003/09/18 07:47:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,7 @@
  
 package org.opencms.flex;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsUUID;
 
 import com.opencms.file.CmsObject;
 
@@ -52,12 +50,12 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFlexCacheKey {
     
     /** Marker to identify use of certain String key members (m_uri, m_ip) */
-    private static final String IS_USED = "///";
+    private static final String IS_USED = "/ /";
     
     /** The OpenCms resource that this key is used for. */    
     public String m_resource;
@@ -72,7 +70,7 @@ public class CmsFlexCacheKey {
     public String m_uri;
     
     /** Cache key variable: The user id */
-    public CmsUUID m_user;
+    public String m_user;
 
     /** Cache key variable: List of parameters */
     public java.util.Map m_params;
@@ -130,7 +128,7 @@ public class CmsFlexCacheKey {
         // Get the top-level file name / uri
         m_uri = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
         // Fetch user from the current cms
-        m_user = cms.getRequestContext().currentUser().getId();        
+        m_user = cms.getRequestContext().currentUser().getName();        
         // Get the params
         m_params = request.getParameterMap();
         if (m_params.size() == 0) m_params = null;
@@ -148,8 +146,8 @@ public class CmsFlexCacheKey {
         m_ports = java.util.Collections.singleton(new Integer(request.getServerPort()));
         // Save the request ip
         m_ip = cms.getRequestContext().getRemoteAddress();
-        if (OpenCms.getLog(CmsLog.CHANNEL_FLEX).isDebugEnabled()) {        
-            OpenCms.getLog(CmsLog.CHANNEL_FLEX).debug("Creating CmsFlexCacheKey for Request: " + this.toString());
+        if (OpenCms.getLog(this).isDebugEnabled()) {        
+            OpenCms.getLog(this).debug("Creating CmsFlexCacheKey for Request: " + this.toString());
         }        
     }
     
@@ -388,7 +386,7 @@ public class CmsFlexCacheKey {
         }        
         if (m_user != null) {
             // Add user data
-            if (m_user.isNullUUID()) {
+            if (m_user == IS_USED) {
                 str.append("user;");
             } else {
                 str.append("user=(");
@@ -503,7 +501,7 @@ public class CmsFlexCacheKey {
                         m_uri = IS_USED; // marks m_uri as being used
                         break;
                     case 3: // user
-                        m_user = CmsUUID.getNullUUID();
+                        m_user = IS_USED; // marks m_user as being used
                         break;
                     case 4: // params
                         m_params = parseValueMap(v);

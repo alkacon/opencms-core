@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/18 16:24:55 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/09/19 14:42:52 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $ $Date: 2003/09/18 16:24:55 $
+ * @version $Revision: 1.16 $ $Date: 2003/09/19 14:42:52 $
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     
@@ -101,8 +101,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
             m_queries.load(getClass().getClassLoader().getResourceAsStream(queryFilename));
         } catch(Exception exc) {
             // no query.properties found - write to logstream.
-            if(OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).error("Couldn't load " + queryFilename, exc);
+            if(OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Couldn't load " + queryFilename, exc);
             }
         }
     }
@@ -230,8 +230,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     public String readQuery(String queryKey) {              
         String value = null;
         if ((value = m_queries.getProperty(queryKey)) == null) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).error("Query '" + queryKey + "' not found");
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Query '" + queryKey + "' not found");
             }
         }
         return value;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2003/09/17 14:30:13 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/09/19 14:42:51 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.39 $ $Date: 2003/09/17 14:30:13 $
+ * @version $Revision: 1.40 $ $Date: 2003/09/19 14:42:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -74,10 +74,10 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault {
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isDebugEnabled() && C_DEBUG) {
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Template file is: " + templateFile);
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+        if(OpenCms.getLog(this).isDebugEnabled() && C_DEBUG) {
+            OpenCms.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
+            OpenCms.getLog(this).debug("Template file is: " + templateFile);
+            OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
@@ -209,7 +209,6 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault {
                     String errordetails = (String)session.getValue(C_SESSION_THREAD_ERROR);
                     if(errordetails == null) {
                         // clear the languagefile cache
-                        CmsXmlWpTemplateFile.clearcache();
                         templateSelector = "done";
                     } else {
                         // get errorpage:

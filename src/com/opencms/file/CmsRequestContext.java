@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/09/18 13:20:10 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package com.opencms.file;
 
 import org.opencms.db.CmsDriverManager;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsResourceTranslator;
 
@@ -59,7 +58,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.100 $
+ * @version $Revision: 1.101 $
  */
 public class CmsRequestContext {
 
@@ -335,8 +334,8 @@ public class CmsRequestContext {
             } catch (Throwable t) {
                 // This will happen only in very rare circumstances
                 m_remoteAddr = I_CmsConstants.C_IP_LOCALHOST;
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn("Error reading remote ip address in request context", t);
+                if (OpenCms.getLog(this).isWarnEnabled()) {
+                    OpenCms.getLog(this).warn("Error reading remote ip address in request context", t);
                 }
             }
         }
@@ -517,8 +516,8 @@ public class CmsRequestContext {
             return;
         } else if ((getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) && (! (m_req instanceof CmsExportRequest))) {
             // try to get encoding from session for special system folder only                
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled()) {                                
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug("Can't get encoding property for resource "
+            if (OpenCms.getLog(this).isDebugEnabled()) {                                
+                OpenCms.getLog(this).debug("Can't get encoding property for resource "
                     + m_req.getRequestedResource() + ", trying to get it from session.");
             }                    
             I_CmsSession session = getSession(false);
@@ -528,8 +527,8 @@ public class CmsRequestContext {
         }
         if (m_encoding == null || "".equals(m_encoding)) {
             // no encoding found - use default one
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled()) {                                
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug("No encoding found - using default: " + OpenCms.getDefaultEncoding());
+            if (OpenCms.getLog(this).isDebugEnabled()) {                                
+                OpenCms.getLog(this).debug("No encoding found - using default: " + OpenCms.getDefaultEncoding());
             }                  
             m_encoding = OpenCms.getDefaultEncoding();
         }

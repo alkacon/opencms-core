@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/09/17 18:08:07 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.101 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.100 $
+ * @version $Revision: 1.101 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1543,15 +1543,15 @@ public class CmsRegistry extends A_CmsXmlContent {
                         String className = ((Element)resTypes.item(x)).getFirstChild().getNodeValue();
                         result.add(className);
                     } catch (Exception exc) {
-                        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled())
-                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn("Error getting registry node " + node, exc);
+                        if (OpenCms.getLog(this).isWarnEnabled())
+                            OpenCms.getLog(this).warn("Error getting registry node " + node, exc);
                     }
                 }
             }
         } catch (Exception e) {
             // no returnvalues
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled())
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Error getting registry node " + node, e);
+            if (OpenCms.getLog(this).isInfoEnabled())
+                OpenCms.getLog(this).info("Error getting registry node " + node, e);
         }
         return result;
     }
@@ -1570,11 +1570,11 @@ public class CmsRegistry extends A_CmsXmlContent {
             String classname = (String)i.next();
             try {
                 result.add(Class.forName(classname).newInstance());
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled())
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(". CmsSyncModification init : " + classname + " instanciated");
+                if (OpenCms.getLog(this).isInfoEnabled())
+                    OpenCms.getLog(this).info(". CmsSyncModification init : " + classname + " instanciated");
             } catch (Exception e1) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled())
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn(". CmsSyncModification init : non-critical error" + e1.toString());
+                if (OpenCms.getLog(this).isWarnEnabled())
+                    OpenCms.getLog(this).warn(". CmsSyncModification init : non-critical error" + e1.toString());
             }
         }
         return result;
@@ -2027,8 +2027,8 @@ public class CmsRegistry extends A_CmsXmlContent {
             A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, os, OpenCms.getDefaultEncoding());
             // reinit the modules-hashtable
             init(false);
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled())
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[CmsRegistry] Saved the registry");
+            if (OpenCms.getLog(this).isInfoEnabled())
+                OpenCms.getLog(this).info("[CmsRegistry] Saved the registry");
 
         } catch (Exception exc) {
             throw new CmsException("couldn't save registry", CmsException.C_REGISTRY_ERROR, exc);

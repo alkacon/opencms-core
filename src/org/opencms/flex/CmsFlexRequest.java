@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/09/15 13:30:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,45 +59,45 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            
     /** The requested resource (target resource) */    
-    private String m_resource = null;
+    private String m_resource;
     
     /** Flag to indicate if this is a workplace resource */    
-    private boolean m_isWorkplaceResource = false;
+    private boolean m_isWorkplaceResource;
     
     /** The CmsFlexCacheKey for this request */
-    private CmsFlexCacheKey m_key = null;
+    private CmsFlexCacheKey m_key;
     
     /** The CmsFlexController for this request */
-    private CmsFlexController m_controller = null;
+    private CmsFlexController m_controller;
     
     /** Flag to decide if this request can be cached or not */
-    private boolean m_canCache = false;
+    private boolean m_canCache;
     
     /** Flag to check if this request is in the online project or not */
-    private boolean m_isOnline = false;
+    private boolean m_isOnline;
     
     /** Flag to force a JSP recompile */
-    private boolean m_doRecompile = false; 
+    private boolean m_doRecompile; 
     
     /** Stores the request URI after it was once calculated */
-    private String m_requestUri = null;
+    private String m_requestUri;
     
     /** Stores the request URI after it was once calculated */
-    private StringBuffer m_requestUrl = null;
+    private StringBuffer m_requestUrl;
         
     /** Set of all include calls (to prevent an endless inclusion loop) */
     private Set m_includeCalls;    
     
     /** Map of parameters from the original request */
-    private Map m_parameters = null;
+    private Map m_parameters;
     
     /** Attribute name used for checking if _flex request parameters have already been processed */
-    public static String ATTRIBUTE_PROCESSED = "__com.opencms.flex.cache.CmsFlexRequest";
+    public static final String ATTRIBUTE_PROCESSED = "__com.opencms.flex.cache.CmsFlexRequest";
     
     /** Debug flag */
     private static final boolean DEBUG = false;
@@ -175,9 +175,6 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         super(req);
         m_controller = controller;
         m_resource = CmsLinkManager.getAbsoluteUri(resource, m_controller.getCurrentRequest().getElementUri());
-        // must reset request URI/URL buffer here because m_resource has changed
-        m_requestUri = null; 
-        m_requestUrl = null;
         m_isOnline = m_controller.getCurrentRequest().isOnline();
         m_canCache = m_controller.getCurrentRequest().isCacheable();
         m_doRecompile = m_controller.getCurrentRequest().isDoRecompile();

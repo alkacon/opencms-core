@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2003/09/17 14:30:44 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.1
  */
 public class CmsLoaderManager {
@@ -82,9 +82,9 @@ public class CmsLoaderManager {
                 }                
             } catch (Throwable e) {
                 // loader class not found, ignore class
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
                     String errorMessage = "Error while initializing loader \"" + loaderName + "\". Ignoring.";
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(errorMessage, e);
+                    OpenCms.getLog(this).error(errorMessage, e);
                 }
             }
         }

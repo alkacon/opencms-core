@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/09/17 18:08:07 $
-* Version: $Revision: 1.134 $
+* Date   : $Date: 2003/09/19 14:42:53 $
+* Version: $Revision: 1.135 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.134 $ $Date: 2003/09/17 18:08:07 $
+ * @version $Revision: 1.135 $ $Date: 2003/09/19 14:42:53 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -144,10 +144,10 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param templateSelector template section that should be processed.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isDebugEnabled() && C_DEBUG ) {
-            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).debug("[CmsXmlTemplate] getting content of element " + ((elementName == null) ? "<root>" : elementName));
-            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).debug("[CmsXmlTemplate] template file is: " + templateFile);
-            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).debug("[CmsXmlTemplate] selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
+        if(OpenCms.getLog(this).isDebugEnabled() && C_DEBUG ) {
+            OpenCms.getLog(this).debug("[CmsXmlTemplate] getting content of element " + ((elementName == null) ? "<root>" : elementName));
+            OpenCms.getLog(this).debug("[CmsXmlTemplate] template file is: " + templateFile);
+            OpenCms.getLog(this).debug("[CmsXmlTemplate] selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         if(templateSelector == null || "".equals(templateSelector)) {
@@ -792,8 +792,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         try{
             value = cms.readProperty(requestedUri, tagcontent);
         }catch(Exception e){
-            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("Usermethod getProperty throwed an Exception getting " + tagcontent, e);
+            if(OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Usermethod getProperty throwed an Exception getting " + tagcontent, e);
             }
         }
         if(value == null) {
@@ -993,8 +993,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             }
         }
         catch(CmsException e) {
-            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isInfoEnabled() ) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).info("Can not determine cache directives for my template file " + templateFile, e);
+            if(OpenCms.getLog(this).isInfoEnabled() ) {
+                OpenCms.getLog(this).info("Can not determine cache directives for my template file " + templateFile, e);
                 return new CmsCacheDirectives(false);
             }
         }
@@ -1315,8 +1315,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                     // any exception should be caught earlier and replaced by
                     // corresponding CmsExceptions.
                     String errorMessage = "Exception while getting content for (sub)template " + elementName + ". " + e;
-                    if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled() ) {
-                        OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error(errorMessage, e);
+                    if(OpenCms.getLog(this).isErrorEnabled() ) {
+                        OpenCms.getLog(this).error(errorMessage, e);
                     }
                     throw new CmsException(errorMessage);
                 }
@@ -1399,8 +1399,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         // Check if the loaded object is really an instance of an OpenCms template class
         if(!(loadedObject instanceof I_CmsTemplate)) {
             String errorMessage = "Class " + templateClass + " is no OpenCms template class.";
-            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled() ) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error(errorMessage);
+            if(OpenCms.getLog(this).isErrorEnabled() ) {
+                OpenCms.getLog(this).error(errorMessage);
             }
             throw new CmsException(errorMessage, CmsException.C_XML_NO_TEMPLATE_CLASS);
         }
@@ -1443,8 +1443,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 // Oh, oh..
 
                 // There were errors while getting the content of the subtemplate
-                if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled() ) {
-                    OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Could not generate output for template file \"" + templateFilename + "\" included as element \"" + tagcontent + "\"", e);
+                if(OpenCms.getLog(this).isErrorEnabled() ) {
+                    OpenCms.getLog(this).error("Could not generate output for template file \"" + templateFilename + "\" included as element \"" + tagcontent + "\"", e);
                 }
 
                 // The anonymous user gets an error String instead of an exception
@@ -1492,8 +1492,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @throws CmsException
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
-        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled() ) {
-            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error(errorMessage);
+        if(OpenCms.getLog(this).isErrorEnabled() ) {
+            OpenCms.getLog(this).error(errorMessage);
         }
         throw new CmsException(errorMessage, type);
     }
@@ -1507,8 +1507,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @throws CmsException
      */
     protected void throwException(String errorMessage, Exception e) throws CmsException {
-        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error(errorMessage, e);
+        if(OpenCms.getLog(this).isErrorEnabled()) {
+            OpenCms.getLog(this).error(errorMessage, e);
         }
         if(e instanceof CmsException) {
             throw (CmsException)e;
@@ -1579,8 +1579,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             }
         } catch(Exception e) {
             if(templateFile != null){
-                if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("Could not generate my template cache element", e);
+                if(OpenCms.getLog(this).isWarnEnabled()) {
+                    OpenCms.getLog(this).warn("Could not generate my template cache element", e);
                 }
             }
         }

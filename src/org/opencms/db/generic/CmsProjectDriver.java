@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/18 16:24:55 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2003/09/19 14:42:52 $
+ * Version: $Revision: 1.107 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.106 $ $Date: 2003/09/18 16:24:55 $
+ * @version $Revision: 1.107 $ $Date: 2003/09/19 14:42:52 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -692,8 +692,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 }
                 writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, currentFolder.getRootPath(), currentFolder);
             } catch (CmsException e) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing backup/publishing history of " + currentFolder.toString(), e);
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error writing backup/publishing history of " + currentFolder.toString(), e);
                 }
 
                 throw e;
@@ -704,8 +704,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 onlineFolder = m_driverManager.readFolder(context, currentFolder.getStructureId(), true);
                 onlineFolder.setFullResourceName(currentFolder.getRootPath());
             } catch (CmsException e) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error reading resource " + currentFolder.toString(), e);
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error reading resource " + currentFolder.toString(), e);
                 }
 
                 throw e;
@@ -716,8 +716,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFolder);
                 m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), currentFolder);
             } catch (CmsException e) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error deleting properties of " + currentFolder.toString(), e);
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error deleting properties of " + currentFolder.toString(), e);
                 }
 
                 throw e;
@@ -728,8 +728,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 m_driverManager.getVfsDriver().removeFolder(onlineProject, currentFolder);
                 m_driverManager.getVfsDriver().removeFolder(context.currentProject(), currentFolder);
             } catch (CmsException e) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error removing resource " + currentFolder.toString(), e);
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error removing resource " + currentFolder.toString(), e);
                 }
 
                 throw e;
@@ -740,8 +740,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 m_driverManager.getUserDriver().removeAccessControlEntries(onlineProject, onlineFolder.getResourceId());
                 m_driverManager.getUserDriver().removeAccessControlEntries(context.currentProject(), currentFolder.getResourceId());
             } catch (CmsException e) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error removing ACLs of " + currentFolder.toString(), e);
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error removing ACLs of " + currentFolder.toString(), e);
                 }
 
                 throw e;
@@ -796,8 +796,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     onlineFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), true, offlineFile.getStructureId());
                     onlineFile.setFullResourceName(offlineFileHeader.getRootPath());
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error reading resource " + offlineFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error reading resource " + offlineFile.toString(), e);
                     }
 
                     throw e;
@@ -830,8 +830,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), onlineFile);
                     }
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error deleting properties of " + offlineFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error deleting properties of " + offlineFile.toString(), e);
                     }
 
                     throw e;
@@ -842,8 +842,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     m_driverManager.getVfsDriver().removeFile(onlineProject, onlineFile);
                     m_driverManager.getVfsDriver().removeFile(context.currentProject(), offlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error removing resource " + offlineFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error removing resource " + offlineFile.toString(), e);
                     }
 
                     throw e;
@@ -854,8 +854,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     m_driverManager.getUserDriver().removeAccessControlEntries(onlineProject, onlineFile.getResourceId());
                     m_driverManager.getUserDriver().removeAccessControlEntries(context.currentProject(), offlineFile.getResourceId());
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error removing ACLs of " + offlineFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error removing ACLs of " + offlineFile.toString(), e);
                     }
 
                     throw e;
@@ -869,8 +869,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
                     writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFileHeader.getRootPath(), offlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing backup/publishing history of " + offlineFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing backup/publishing history of " + offlineFile.toString(), e);
                     }
 
                     throw e;
@@ -898,8 +898,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // remove the file online
                     m_driverManager.getVfsDriver().removeFile(onlineProject, onlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error deleting properties of " + offlineFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error deleting properties of " + offlineFile.toString(), e);
                     }
 
                     throw e;
@@ -914,8 +914,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentStructureId(), newFile.getName());
                     m_driverManager.getVfsDriver().writeResource(newFile, offlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error creating resource " + newFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error creating resource " + newFile.toString(), e);
                     }
 
                     throw e;
@@ -926,8 +926,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFile, offlineFile.getType());
                     m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), newFile, newFile.getType(), false);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing properties of " + newFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing properties of " + newFile.toString(), e);
                     }
 
                     throw e;
@@ -937,8 +937,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // write the ACL online
                     m_driverManager.getUserDriver().publishAccessControlEntries(context.currentProject(), onlineProject, newFile.getResourceId(), onlineFile.getResourceId());
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing ACLs of " + offlineFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing ACLs of " + offlineFile.toString(), e);
                     }
 
                     throw e;
@@ -951,8 +951,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
                     writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFileHeader.getRootPath(), offlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing backup/publishing history of " + offlineFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing backup/publishing history of " + offlineFile.toString(), e);
                     }
 
                     throw e;
@@ -966,8 +966,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
                     m_driverManager.getVfsDriver().writeLastModifiedProjectId(context.currentProject(), 0, offlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error reseting resource state of " + offlineFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error reseting resource state of " + offlineFile.toString(), e);
                     }
 
                     throw e;
@@ -988,14 +988,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             m_driverManager.getVfsDriver().removeFile(onlineProject, offlineFile);
                             m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentStructureId(), newFile.getName());
                         } catch (CmsException e1) {
-                            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error creating resource " + offlineFile.toString(), e);
+                            if (OpenCms.getLog(this).isErrorEnabled()) {
+                                OpenCms.getLog(this).error("Error creating resource " + offlineFile.toString(), e);
                             }
 
                             throw e1;
                         }
-                    } else if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error creating resource " + offlineFile.toString(), e);
+                    } else if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error creating resource " + offlineFile.toString(), e);
                     }
 
                     throw e;
@@ -1006,8 +1006,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFile, offlineFile.getType());
                     m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), newFile, newFile.getType(), false);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing properties of " + newFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing properties of " + newFile.toString(), e);
                     }
 
                     throw e;
@@ -1017,8 +1017,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // write the ACL online
                     m_driverManager.getUserDriver().publishAccessControlEntries(context.currentProject(), onlineProject, offlineFile.getResourceId(), newFile.getResourceId());
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing ACLs of " + newFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing ACLs of " + newFile.toString(), e);
                     }
 
                     throw e;
@@ -1031,8 +1031,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
                     writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFileHeader.getRootPath(), offlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing backup/publishing history of " + newFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing backup/publishing history of " + newFile.toString(), e);
                     }
 
                     throw e;
@@ -1046,8 +1046,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
                     m_driverManager.getVfsDriver().writeLastModifiedProjectId(context.currentProject(), 0, offlineFile);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error reseting resource state of " + offlineFile.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error reseting resource state of " + offlineFile.toString(), e);
                     }
 
                     throw e;
@@ -1094,14 +1094,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             onlineFolder.setFullResourceName(offlineFolder.getRootPath());
                             m_driverManager.getVfsDriver().writeResource(onlineFolder, offlineFolder);
                         } catch (CmsException e1) {
-                            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error reading resource " + offlineFolder.toString(), e1);
+                            if (OpenCms.getLog(this).isErrorEnabled()) {
+                                OpenCms.getLog(this).error("Error reading resource " + offlineFolder.toString(), e1);
                             }
 
                             throw e1;
                         }
-                    } else if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error creating resource " + offlineFolder.toString(), e);
+                    } else if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error creating resource " + offlineFolder.toString(), e);
                     }
 
                     throw e;
@@ -1111,8 +1111,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // write the ACL online
                     m_driverManager.getUserDriver().publishAccessControlEntries(context.currentProject(), onlineProject, offlineFolder.getResourceId(), newFolder.getResourceId());
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing ACLs of " + offlineFolder.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing ACLs of " + offlineFolder.toString(), e);
                     }
 
                     throw e;
@@ -1123,8 +1123,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFolder, offlineFolder.getType());
                     m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), newFolder, newFolder.getType(), false);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing properties of " + offlineFolder.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing properties of " + offlineFolder.toString(), e);
                     }
 
                     throw e;
@@ -1142,14 +1142,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             onlineFolder.setFullResourceName(offlineFolder.getRootPath());
                             m_driverManager.getVfsDriver().writeResourceState(context.currentProject(), onlineFolder, CmsDriverManager.C_UPDATE_ALL);
                         } catch (CmsException e1) {
-                            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error creating resource " + offlineFolder.toString(), e1);
+                            if (OpenCms.getLog(this).isErrorEnabled()) {
+                                OpenCms.getLog(this).error("Error creating resource " + offlineFolder.toString(), e1);
                             }
 
                             throw e1;
                         }
-                    } else if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error reading resource " + offlineFolder.toString(), e);
+                    } else if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error reading resource " + offlineFolder.toString(), e);
                     }
 
                     throw e;
@@ -1159,8 +1159,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // update the folder online
                     m_driverManager.getVfsDriver().writeResource(onlineFolder, offlineFolder);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error updating resource " + offlineFolder.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error updating resource " + offlineFolder.toString(), e);
                     }
 
                     throw e;
@@ -1170,8 +1170,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // write the ACL online
                     m_driverManager.getUserDriver().publishAccessControlEntries(context.currentProject(), onlineProject, offlineFolder.getResourceId(), onlineFolder.getResourceId());
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing ACLs of " + offlineFolder.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing ACLs of " + offlineFolder.toString(), e);
                     }
 
                     throw e;
@@ -1183,8 +1183,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFolder, offlineFolder.getType());
                     m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), onlineFolder, offlineFolder.getType(), false);
                 } catch (CmsException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing properties of " + offlineFolder.toString(), e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing properties of " + offlineFolder.toString(), e);
                     }
 
                     throw e;
@@ -1198,8 +1198,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 }
                 writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFolder.getRootPath(), offlineFolder);
             } catch (CmsException e) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing backup/publishing history of " + offlineFolder.toString(), e);
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error writing backup/publishing history of " + offlineFolder.toString(), e);
                 }
 
                 throw e;
@@ -1214,8 +1214,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 m_driverManager.getVfsDriver().writeLastModifiedProjectId(context.currentProject(), 0, offlineFolder);
             } catch (CmsException e) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error reseting resource state of " + offlineFolder.toString(), e);
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error reseting resource state of " + offlineFolder.toString(), e);
                 }
 
                 throw e;
@@ -1483,8 +1483,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         try {
                             discAccess.removeResource(currentResourceName, currentExportKey);
                         } catch (Exception e) {
-                            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error deleting export point of " + currentFile.toString(), e);
+                            if (OpenCms.getLog(this).isErrorEnabled()) {
+                                OpenCms.getLog(this).error("Error deleting export point of " + currentFile.toString(), e);
                             }
                         }
                     }
@@ -1513,8 +1513,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                             discAccess.writeFile(currentResourceName, currentExportKey, contents);
                         } catch (Exception e) {
-                            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error writing export point of " + currentFile.toString(), e);
+                            if (OpenCms.getLog(this).isErrorEnabled()) {
+                                OpenCms.getLog(this).error("Error writing export point of " + currentFile.toString(), e);
                             }
                         }
                     }
@@ -1631,8 +1631,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             throw e;
         } catch (OutOfMemoryError o) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isFatalEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).fatal("Out of memory error during publishing", o);
+            if (OpenCms.getLog(this).isFatalEnabled()) {
+                OpenCms.getLog(this).fatal("Out of memory error during publishing", o);
             }
 
             // clear all caches to reclaim memory

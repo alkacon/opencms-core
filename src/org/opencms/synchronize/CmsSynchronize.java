@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/09/17 18:08:33 $
- * Version: $Revision: 1.19 $
- * Date   : $Date: 2003/09/17 18:08:33 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@
 
 package org.opencms.synchronize;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 
@@ -63,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2003/09/17 18:08:33 $
+ * @version $Revision: 1.20 $ $Date: 2003/09/19 14:42:53 $
  */
 public class CmsSynchronize {
 
@@ -552,8 +551,8 @@ public class CmsSynchronize {
                         try {
                             ((I_CmsSynchonizeModification)i.next()).modifyFs(m_cms, vfsFile, fsFile);
                         } catch (CmsSynchronizeException e) {
-                            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled())
-                                OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn(". CmsSyncModification class : exportTo FS " + res.getRootPath(), e);
+                            if (OpenCms.getLog(this).isWarnEnabled())
+                                OpenCms.getLog(this).warn(". CmsSyncModification class : exportTo FS " + res.getRootPath(), e);
                             break;
                         }
                     }
@@ -617,8 +616,8 @@ public class CmsSynchronize {
                 try {
                     ((I_CmsSynchonizeModification)i.next()).modifyVfs(m_cms, vfsFile, fsFile);
                 } catch (CmsSynchronizeException e) {
-                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled())
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(". CmsSyncModification class : updateFrom FS " + res.getRootPath() + ":" + e.toString());
+                    if (OpenCms.getLog(this).isInfoEnabled())
+                        OpenCms.getLog(this).info(". CmsSyncModification class : updateFrom FS " + res.getRootPath() + ":" + e.toString());
                     break;
                 }
             }
@@ -859,8 +858,8 @@ public class CmsSynchronize {
             try {
                 translation = ((I_CmsSynchonizeModification)i.next()).translate(m_cms, name);
             } catch (CmsSynchronizeException e) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled())
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(". CmsSyncModification class : external translation " + name + ":" + e.toString());
+                if (OpenCms.getLog(this).isInfoEnabled())
+                    OpenCms.getLog(this).info(". CmsSyncModification class : external translation " + name + ":" + e.toString());
                 break;
             }
         }

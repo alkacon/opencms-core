@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/09/17 08:31:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.loader.CmsPageLoader;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
 import org.opencms.security.CmsSecurityException;
@@ -68,7 +67,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -193,8 +192,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                                     if (exportFile.exists() && exportFile.canWrite()) {
                                         exportFile.delete();
                                         // write log message
-                                        if (OpenCms.getLog(CmsLog.CHANNEL_STATICEXPORT).isInfoEnabled()) {
-                                            OpenCms.getLog(CmsLog.CHANNEL_STATICEXPORT).info("Deleted exported rfs file '" + rfsName + "'");
+                                        if (OpenCms.getLog(this).isInfoEnabled()) {
+                                            OpenCms.getLog(this).info("Deleted exported rfs file '" + rfsName + "'");
                                         }
                                     }    
                                 } catch (Throwable t) {
@@ -287,8 +286,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         exportStream.close();    
         
         // log export success 
-        if (OpenCms.getLog(CmsLog.CHANNEL_STATICEXPORT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_STATICEXPORT).info("Exported vfs file '" + vfsName + "' to rfs file '" + rfsName + "'");
+        if (OpenCms.getLog(this).isInfoEnabled()) {
+            OpenCms.getLog(this).info("Exported vfs file '" + vfsName + "' to rfs file '" + rfsName + "'");
         }
     }    
     

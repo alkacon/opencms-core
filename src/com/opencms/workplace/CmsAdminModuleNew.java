@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/09/17 18:08:07 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/09/19 14:42:52 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -86,10 +86,10 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
      * @param templateSelector template section that should be processed.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isDebugEnabled() && C_DEBUG) {
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Template file is: " + templateFile);
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+        if(OpenCms.getLog(this).isDebugEnabled() && C_DEBUG) {
+            OpenCms.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
+            OpenCms.getLog(this).debug("Template file is: " + templateFile);
+            OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
@@ -125,9 +125,9 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             File modulefolder = new File(CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH));
             if (!modulefolder.exists()) {
                 boolean success = modulefolder.mkdir();
-                if (OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled()
+                if (OpenCms.getLog(this).isWarnEnabled()
                     && (!success)) {
-                    OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("Could not create folder " + modulefolder.getAbsolutePath());
+                    OpenCms.getLog(this).warn("Could not create folder " + modulefolder.getAbsolutePath());
                 }
             }
             String listentrys = "";
@@ -170,9 +170,9 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             File discFolder = new File(CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH));
             if (!discFolder.exists()) {
                 boolean success = discFolder.mkdir();
-                if (OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled()
+                if (OpenCms.getLog(this).isWarnEnabled()
                     && (!success)) {
-                    OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("Could not create folder " + discFolder.getAbsolutePath());
+                    OpenCms.getLog(this).warn("Could not create folder " + discFolder.getAbsolutePath());
                 }
             }
 

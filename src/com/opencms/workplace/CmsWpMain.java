@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/09/19 14:42:52 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.59 $ $Date: 2003/09/17 14:30:14 $
+ * @version $Revision: 1.60 $ $Date: 2003/09/19 14:42:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -80,10 +80,10 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 	 */
 
 	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-		if (OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isDebugEnabled() && C_DEBUG) {
-			OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("[CmsXmlTemplate] getting content of element " + ((elementName == null) ? "<root>" : elementName));
-			OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("[CmsXmlTemplate] template file is: " + templateFile);
-			OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("[CmsXmlTemplate] selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
+		if (OpenCms.getLog(this).isDebugEnabled() && C_DEBUG) {
+			OpenCms.getLog(this).debug("[CmsXmlTemplate] getting content of element " + ((elementName == null) ? "<root>" : elementName));
+			OpenCms.getLog(this).debug("[CmsXmlTemplate] template file is: " + templateFile);
+			OpenCms.getLog(this).debug("[CmsXmlTemplate] selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
 		}
 
 		I_CmsSession session = cms.getRequestContext().getSession(true);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/09/17 18:08:33 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/09/19 14:42:53 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,8 +34,9 @@
 
 package org.opencms.importexport;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -43,9 +44,6 @@ import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;
 import com.opencms.file.CmsObject;
-import org.opencms.report.I_CmsReport;
-import org.opencms.util.CmsUUID;
-
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Encoder;
 
@@ -76,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.11 $ $Date: 2003/09/17 18:08:33 $
+ * @version $Revision: 1.12 $ $Date: 2003/09/19 14:42:53 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -564,20 +562,20 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             Constructor co = cdClass.getConstructor(classes);
             cd = (CmsMasterContent)co.newInstance(objects);
         } catch (InvocationTargetException ite) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn("Invocation target exception", ite);
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Invocation target exception", ite);
             }
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn("Requested method was not found", nsm);
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Requested method was not found", nsm);
             }
         } catch (InstantiationException ie) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn("The reflected class is abstract", ie);
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("The reflected class is abstract", ie);
             }
         } catch (Exception e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn("Other exception", e);
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Other exception", e);
             }
         }
         return cd;

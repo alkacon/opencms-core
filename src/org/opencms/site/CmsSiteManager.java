@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/09/17 14:30:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -87,8 +87,8 @@ public final class CmsSiteManager implements Cloneable {
             // check if this is a vailid site root entry
             if (pos < 0) {
                 // entry must have a "|" in the string
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Site root init error : malformed entry " + siteRoots[i]);
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Site root init error : malformed entry " + siteRoots[i]);
                 }
                 continue;
             }
@@ -98,8 +98,8 @@ public final class CmsSiteManager implements Cloneable {
             
             if ((matcherStr.length() == 0) || (rootStr.length() == 0)) {
                 // both matcher and root must not be empty
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Site root init error : malformed entry " + siteRoots[i]);
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Site root init error : malformed entry " + siteRoots[i]);
                 }
                 continue;
             }            

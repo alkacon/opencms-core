@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2003/09/17 14:30:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/09/19 14:42:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,39 +48,18 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsLog implements Log {
-
-    /** Messages of the OpenCms Cron Scheduler */
-    public static final String CHANNEL_CRON = "org.opencms.cron";
-
-    /** Messages for JSP generation and caching */
-    public static final String CHANNEL_FLEX = "org.opencms.flex";
 
     /** Initialization messages */
     public static final String CHANNEL_INIT = "org.opencms.init";
 
-    /** The master log channel (all other channels are child channels of this) */
+    /** The master log channel */
     public static final String CHANNEL_MAIN = "org.opencms";
 
     /** Module messsages */
-    public static final String CHANNEL_MODULE = "org.opencms.module";
-    
-    /** Module messages from the master module */
-    public static final String CHANNEL_MODULE_MASTER = "org.opencms.module.master";
-    
-    /** Messages of the static export */
-    public static final String CHANNEL_STATICEXPORT = "org.opencms.staticexport";
-
-    /** Messages of the workplace */
-    public static final String CHANNEL_WORKPLACE = "org.opencms.workplace"; 
-    
-    /** Messages of the (legacy) XML workplace */
-    public static final String CHANNEL_WORKPLACE_XML = "org.opencms.workplace.xml"; 
-
-    /** Messages of the xml template mechanism */
-    public static final String CHANNEL_TEMPLATE_XML = "org.opencms.template.xml";        
+    public static final String CHANNEL_MODULE = "org.opencms.module";      
     
     /** Messages about user loggin in (and out) */
     public static final String CHANNEL_USER = "org.opencms.user";
@@ -140,12 +119,22 @@ public class CmsLog implements Log {
     }
     
     /**
-     * Returns the log for the selected channel.<p>
+     * Returns the log for the selected object.<p>
+     * 
+     * If the provided object is a String, this String will
+     * be used as channel name. Otherwise the objects 
+     * class name will be used as channel name.<p>
      *  
-     * @param channel the channel to look up
-     * @return the log for the selected channel
+     * @param obj the object channel to use
+     * @return the log for the selected object channel
      */
-    protected Log getLogger(String channel) {
+    protected Log getLogger(Object obj) {
+        String channel;
+        if (obj instanceof String) {
+            channel = (String)obj;
+        } else {
+            channel = obj.getClass().getName();
+        }
         Object log = m_loggers.get(channel);
         if (log == null) {
             synchronized (m_loggers) {

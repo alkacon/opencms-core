@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsDatabaseExportThread.java,v $
- * Date   : $Date: 2003/09/17 14:30:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/19 14:42:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.threads;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
@@ -44,7 +43,7 @@ import com.opencms.file.CmsObject;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1.10
  */
 public class CmsDatabaseExportThread extends A_CmsReportThread {
@@ -133,8 +132,8 @@ public class CmsDatabaseExportThread extends A_CmsReportThread {
             getReport().println(getReport().key("report.export_db_end"), I_CmsReport.C_FORMAT_HEADLINE);
         } catch (CmsException e) {
             getReport().println(e);
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error exporting the database", e);
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error exporting the database", e);
             }
         }
     }

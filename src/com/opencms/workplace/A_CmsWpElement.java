@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
-* Date   : $Date: 2003/09/17 14:30:13 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/09/19 14:42:51 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import com.opencms.file.CmsObject;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.42 $ $Date: 2003/09/17 14:30:13 $
+ * @version $Revision: 1.43 $ $Date: 2003/09/19 14:42:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -372,8 +372,8 @@ public abstract class A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants
      */
 
     protected void throwException(String errorMessage, int type) throws CmsException {
-        if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() ) {
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(errorMessage);
+        if(OpenCms.getLog(this).isWarnEnabled() ) {
+            OpenCms.getLog(this).warn(errorMessage);
         }
         throw new CmsException(errorMessage, type);
     }
