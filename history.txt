@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.0a29 Giedi Prime: Rabban - 02 June 2000
+OpenCms 4.0.29 Giedi Prime: Rabban - 02 June 2000
 
 ! Added picture gallerys and adminstration tool.
 ! Added download gallerys and adminstration tool.
