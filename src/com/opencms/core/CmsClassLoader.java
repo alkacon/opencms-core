@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
-* Date   : $Date: 2001/02/20 16:51:12 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/02/21 08:28:43 $
+* Version: $Revision: 1.25 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -107,7 +107,7 @@ import java.lang.reflect.*;
  * with a parent classloader. Normally this should be the classloader
  * that loaded this loader.
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2001/02/20 16:51:12 $
+ * @version $Revision: 1.25 $ $Date: 2001/02/21 08:28:43 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -253,7 +253,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
      * @return  an URL on the resource, or null if not found.
      */
     public URL getResource(String name) {
-        return null;
+        return this.getClass().getClassLoader().getResource(name);
     }
 
     /**
@@ -267,7 +267,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
      * @return  an InputStream on the resource, or null if not found.
      */
     public InputStream getResourceAsStream(String name) {
-        return null;
+        return this.getClass().getClassLoader().getResourceAsStream(name);
     }
 
     /**
@@ -521,4 +521,5 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
     public boolean shouldReload() {
         return m_shouldReload;
     }
+
 }
