@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/18 19:19:23 $
- * Version: $Revision: 1.166 $
+ * Date   : $Date: 2003/08/19 07:29:07 $
+ * Version: $Revision: 1.167 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.166 $ $Date: 2003/08/18 19:19:23 $
+ * @version $Revision: 1.167 $ $Date: 2003/08/19 07:29:07 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1764,8 +1764,13 @@ public class CmsDriverManager extends Object {
 
         // write the link
         linkResource = m_vfsDriver.createVfsLink(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName);
-        // write its properties
         readPath(context,linkResource,true);
+        
+        if (linkProperties == null) {
+            // "empty" properties are represented by an empty property map
+            linkProperties = Collections.EMPTY_MAP;
+        }
+        // write its properties
         m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType());
         
         if (lockResource) {
