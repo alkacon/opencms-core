@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMail.java,v $
- * Date   : $Date: 2000/09/28 10:30:15 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/09/29 17:09:45 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,22 +43,22 @@ import java.io.*;
 /**
  * This class is used to send a mail, it uses Threads to send it.
  *
- * @author $Author: mla $
- * @version $Name:  $ $Revision: 1.13 $ $Date: 2000/09/28 10:30:15 $
+ * @author $Author: a.schouten $
+ * @version $Name:  $ $Revision: 1.14 $ $Date: 2000/09/29 17:09:45 $
  * @see java.lang.Thread
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
 			
 	// constants	
-	private final String c_FROM;
-	private final String[] c_TO;
+	private String c_FROM;
+	private String[] c_TO;
 	private String[] c_BCC = null;
 	private String[] c_CC = null;
-	private final String c_MAILSERVER;
-	private final String c_SUBJECT;
-	private final String c_CONTENT;	
-	private final String c_TYPE;
-	private final CmsObject c_CMS;
+	private String c_MAILSERVER;
+	private String c_SUBJECT;
+	private String c_CONTENT;	
+	private String c_TYPE;
+	private CmsObject c_CMS;
 	
 	private String m_defaultSender = null;
 	private Vector attachContent = new Vector();
