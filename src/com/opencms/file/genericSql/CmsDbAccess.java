@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/11/04 11:28:08 $
-* Version: $Revision: 1.260 $
+* Date   : $Date: 2002/11/05 09:31:10 $
+* Version: $Revision: 1.261 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.260 $ $Date: 2002/11/04 11:28:08 $ *
+ * @version $Revision: 1.261 $ $Date: 2002/11/05 09:31:10 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -11791,7 +11791,12 @@ public CmsTask readTask(int id) throws CmsException {
      */
     public void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition)
         throws CmsException {
-        CmsPropertydefinition propdef = readPropertydefinition(meta, resourceType);
+        CmsPropertydefinition propdef = null;
+        try{
+        	propdef = readPropertydefinition(meta, resourceType);
+        } catch (CmsException ex){
+        	// do nothing
+        }
         if( propdef == null) {
             // there is no propertydefinition for with the overgiven name for the resource
             // add this definition or throw an exception
