@@ -8,7 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.5  Com Jabbar   - XX XXXXX 2001
+OpenCms 4.5.5  Gom Jabbar   - XX XXXXX 2001
+! Now the stylesheet-tag is used again for displaying stylesheets in the 
+  HTML-Editor control.
 ! When creating a new page in the templateselectbox only templates with the 
   v-flag are shown.
 * The way opencms dealed elements when the template was not given was not 
@@ -20,7 +22,7 @@ OpenCms 4.5.5  Com Jabbar   - XX XXXXX 2001
 * Create Folder in extended navigation works again, it was not possible to 
   insert an logo via the picgallerywindow.
 
-OpenCms 4.5.4  Com Jabbar   - 19 August 2001
+OpenCms 4.5.4  Gom Jabbar   - 19 August 2001
 * Added missing element._TEMPLATE_, element._TEMPLATECLASS_, and 
   element._TEMPLATESELECTOR_ - parameters.
 
