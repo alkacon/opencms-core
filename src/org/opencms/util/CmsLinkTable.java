@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsLinkTable.java,v $
- * Date   : $Date: 2003/12/10 17:37:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/12/12 16:26:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/10 17:37:15 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/12 16:26:44 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsLinkTable {
@@ -51,7 +51,7 @@ public class CmsLinkTable {
     /**
      * Class to keep a single link entry.<p>
      * 
-     * @version $Revision: 1.3 $ $Date: 2003/12/10 17:37:15 $
+     * @version $Revision: 1.4 $ $Date: 2003/12/12 16:26:44 $
      * @author Carsten Weinholz (c.weinholz@alkacon.com)
      */
     public class CmsLink {
@@ -98,6 +98,25 @@ public class CmsLinkTable {
             return m_target.toString();
         }
 
+        /**
+         * Returns the host of the link.<p>
+         * 
+         * @return the host or null if undefined
+         */
+        public String getHost() {
+            
+            return m_target.getHost();
+        }
+
+        public String getServerURL() {
+        
+            if (m_target.isAbsolute()) {
+                return m_target.getScheme() + "://" + m_target.getHost();
+            } else {
+                return null;
+            }
+        }
+        
         /**
          * Convenience method to get a vfs link from the target.<p>
          * If the link is internal and starts with the context (i.e. /opencms/opencms),

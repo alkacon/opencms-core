@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsLinkProcessor.java,v $
- * Date   : $Date: 2003/12/12 11:27:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/12/12 16:26:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.util;
 
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSiteMatcher;
 
 import com.opencms.file.CmsObject;
 
@@ -48,7 +49,7 @@ import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/12 11:27:20 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/12 16:26:44 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsLinkProcessor extends NodeVisitor {
@@ -266,7 +267,11 @@ public class CmsLinkProcessor extends NodeVisitor {
      */
     private String processLink(CmsLinkTable.CmsLink link) {
 
-        if (link.isInternal()) {
+        String serverURL = link.getServerURL();
+        
+        // an internal link is substituted only, if it matches the current site
+        if (link.isInternal() 
+                && (serverURL == null || OpenCms.getSiteManager().isMatchingCurrentSite(m_cms, new CmsSiteMatcher(serverURL)))) {
             return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsTarget());
         } else {
             return link.getTarget();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2003/12/12 12:16:42 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/12/12 16:26:44 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsXmlPage {
     
@@ -155,7 +155,7 @@ public class CmsXmlPage {
      * @param cms the cms object
      * @param name name of the element
      * @param language language of the element
-     * @return the display content
+     * @return the display content or the empty string "" if the element dos not exist
      * 
      * @throws CmsPageException if something goes wrong
      */
@@ -163,22 +163,27 @@ public class CmsXmlPage {
         throws CmsPageException {
 
         Element element = getBookmark(language+"_"+name);
-        Element displaydata = element.element("displaydata");
-        String content = displaydata.getText();
+        String content = "";
+
+        if (element != null) {
+
+            Element displaydata = element.element("displaydata");      
+            content = displaydata.getText();
+            
+            CmsLinkTable linkTable = getLinkTable(name, language);
+            if (!linkTable.isEmpty()) {
+                
+                CmsLinkProcessor macroReplacer = new CmsLinkProcessor(linkTable);
+            
+                try {
+                
+                    content = macroReplacer.processLinks(cms, content);
+                } catch (Exception exc) {
+                    throw new CmsPageException ("HTML data processing failed", exc);
+                }
+            } 
+        }
         
-        CmsLinkTable linkTable = getLinkTable(name, language);
-        if (!linkTable.isEmpty()) {
-            
-            CmsLinkProcessor macroReplacer = new CmsLinkProcessor(linkTable);
-        
-            try {
-            
-                content = macroReplacer.processLinks(cms, content);
-            } catch (Exception exc) {
-                throw new CmsPageException ("HTML data processing failed", exc);
-            }
-        } 
-            
         return content;
     }    
     
@@ -187,23 +192,22 @@ public class CmsXmlPage {
      * 
      * @param name name of the element
      * @param language language of the element
-     * @return the character data of the element
+     * @return the character data of the element or null if the element does not exists
      */
     public String getElementData(String name, String language) {
 
         Element element = getBookmark(language+"_"+name);
+        String content = null;
         
         if (element != null) {
             
             Element editdata = element.element("editdata");
             
             // set the context & servlet path in editor content
-            String content = CmsStringSubstitution.substitute(editdata.getText(), I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/", OpenCms.getOpenCmsContext() + "/");
- 
-            return content;
-        } else {
-            return null;
-        }
+            content = CmsStringSubstitution.substitute(editdata.getText(), I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/", OpenCms.getOpenCmsContext() + "/");
+        } 
+        
+        return content;
     }
     
     /**
