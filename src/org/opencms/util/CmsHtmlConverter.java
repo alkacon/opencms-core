@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2004/10/08 14:02:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/11 09:48:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,10 @@ import java.util.Properties;
 import org.w3c.tidy.Tidy;
 
 /**
- * Html Parser, used to clean up html code (e.g. remove word tags) and creates xhtml output.<p>
- * 
+ * Html Parser, used to clean up html code (e.g. remove word tags) and created xhtml output.<p>
+ *  *  
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @version $Revision: 1.4 $
  */
 public class CmsHtmlConverter {
     
@@ -128,8 +130,11 @@ public class CmsHtmlConverter {
             
             try {
                 byte[] htmlInput = parser.getFileBytes(inputfile);
-                // parsing run 1, remove word tags
-                byte[] htmlOutput = parser.convertToByte(htmlInput);
+
+                String inputContent = new String(htmlInput, parser.m_encoding);
+                inputContent = parser.adjustHtml(inputContent);
+                
+                byte[] htmlOutput = parser.convertToByte(inputContent);
 
                 System.out.println(new String(htmlOutput, parser.m_encoding));
                 
@@ -326,10 +331,11 @@ public class CmsHtmlConverter {
             // check if we have some opening and closing html tags
             if ((htmlInput.toLowerCase().indexOf("<html>") == -1) 
             && (htmlInput.toLowerCase().indexOf("</html>") == -1)) {
-                // add a correct <html> tag with
-                htmlInput = "<html xmlns:o=\"urn:schemas-microsoft-com:office:office\"><body>" 
-                            + htmlInput
-                            + "</body></html>";
+                // add a correct <html> tag for word generated html
+                htmlInput = "<html xmlns:o=\"urn:schemas-microsoft-com:office:office\">" 
+                    + "<body>" 
+                    + htmlInput
+                    + "</body></html>";
             }
         }
         return htmlInput;
@@ -377,16 +383,28 @@ public class CmsHtmlConverter {
      */
     private void init(String mode) {
         // add additional tags
+        // those are newscessary to handle word 2002+ documents
         Properties additionalTags = new Properties();
-        additionalTags.put("new-empty-tags", "o:SmartTagType, o:smarttagtype");
-        additionalTags.put("new-inline-tags", "o:SmartTagType, o:smarttagtype");
+        additionalTags.put("new-empty-tags", "o:smarttagtype");
+        additionalTags.put("new-inline-tags", "o:smarttagtype");
         m_tidy.getConfiguration().addProps(additionalTags);
         
         // set the default tidy configuration
+        
+        // disable the tidy meta element in output
         m_tidy.setTidyMark(false);
+        // enable clean mode
         m_tidy.setMakeClean(true);
+        // enable num entities
         m_tidy.setNumEntities(true);
+        // create output of the body only
         m_tidy.setPrintBodyOnly(true);
+        // force output creation even if there are tidy errors
+        m_tidy.setForceOutput(true);
+        // set tidy to quiet mode to prevent output        
+        m_tidy.setQuiet(true);
+        // disable warning output
+        m_tidy.setShowWarnings(false);
         
         // set the operating mode     
         if (mode == null) {
@@ -428,9 +446,8 @@ public class CmsHtmlConverter {
      * @param htmlInput a string containing raw html code
      * @param encoding the  encoding
      * @return parsed and cleared html code
-     * @throws CmsHtmlConverterException if something goes wrong
      */
-    private byte[] parse(byte[] htmlInput, String encoding) throws CmsHtmlConverterException {
+    private byte[] parse(byte[] htmlInput, String encoding) {
         byte[] parsedHtml;
         
         // set the encoding
@@ -442,16 +459,6 @@ public class CmsHtmlConverter {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         // do the parsing
         m_tidy.parse(in, out);
-        
-        // check if there were any errors during the parsing
-        int errors = m_tidy.getParseErrors();
-        if (errors > 0) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn(
-                    "[" + this.getClass().getName() + "] " + " parse error converting HTML ");
-            }
-            throw new CmsHtmlConverterException("Found " + errors + " errors during HTML parsing", CmsHtmlConverterException.C_HTML_PARSING_ERROR);   
-        }
         
         parsedHtml = out.toByteArray();
                 
@@ -488,6 +495,5 @@ public class CmsHtmlConverter {
             }
         }
     } 
-    
-    
+
 }
