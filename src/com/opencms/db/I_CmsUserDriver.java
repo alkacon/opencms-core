@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/02 10:59:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/04 12:08:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.security.CmsAccessControlEntry;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/06/02 10:59:04 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/04 12:08:20 $
  * @since 5.1.2
  */
 public interface I_CmsUserDriver {
@@ -157,5 +157,5 @@ public interface I_CmsUserDriver {
 	 * @param resource	the id of the resource
 	 * @return			a vector of access control entries defining all permissions for the given resource
 	 */
-	public Vector getAccessControlEntries(CmsUUID resource) throws CmsException;	
+	public Vector getAccessControlEntries(CmsUUID resource, boolean inheritedOnly) throws CmsException;	
 }

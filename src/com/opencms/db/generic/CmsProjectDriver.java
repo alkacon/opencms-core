@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/06/03 17:45:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/06/04 12:07:47 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import source.org.apache.java.util.Configurations;
  * This is the generic project driver to execute operations requested by the Cms
  * using the underlying drivers. This code is still messy like a living space.
  *
- * @version $Revision: 1.8 $ $Date: 2003/06/03 17:45:46 $
+ * @version $Revision: 1.9 $ $Date: 2003/06/04 12:07:47 $
  * @since 5.1.2
  */
 public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
@@ -793,8 +793,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(setup, rootFolder, false);
 		// create the access control entries
-		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
-		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
+		// not neccessary at this level
+		// m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
+		// m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
 
         // create the folder for the default site
         rootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, rootFolder.getResourceId(), CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOT, 0);
@@ -803,8 +804,12 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         m_driverManager.getVfsDriver().writeFolder(setup, rootFolder, false);
         siteRootId = rootFolder.getResourceId();
 		// create the access control entries
-		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
-		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
+		// m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
+		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),administrators.getId(),I_CmsConstants.C_ACCESS_READ|I_CmsConstants.C_ACCESS_WRITE|I_CmsConstants.C_ACCESS_VISIBLE,0,I_CmsConstants.C_ACCESSFLAGS_INHERITED);
+		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),projectleader.getId(),I_CmsConstants.C_ACCESS_READ|I_CmsConstants.C_ACCESS_WRITE|I_CmsConstants.C_ACCESS_VISIBLE,0,I_CmsConstants.C_ACCESSFLAGS_INHERITED);
+		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),users.getId(),I_CmsConstants.C_ACCESS_READ|I_CmsConstants.C_ACCESS_WRITE|I_CmsConstants.C_ACCESS_VISIBLE,0,I_CmsConstants.C_ACCESSFLAGS_INHERITED);
+		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),guests.getId(),I_CmsConstants.C_ACCESS_READ|I_CmsConstants.C_ACCESS_VISIBLE,0,I_CmsConstants.C_ACCESSFLAGS_INHERITED);
+
 
         // create the folder for the virtual file system
         rootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, siteRootId, CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_VFS + I_CmsConstants.C_ROOT, 0);
@@ -812,8 +817,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(setup, rootFolder, false);
 		// create the access control entries
-		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
-		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
+		// everything is attached to the site root
+		// m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
+		// m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
 
         // create the folder for the context objects system
         rootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, siteRootId, CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_COS + I_CmsConstants.C_ROOT, 0);
@@ -821,8 +827,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(setup, rootFolder, false);
 		// create the access control entries
-		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
-		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
+		// everything is attached to the site root
+		// m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
+		// m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
 
     }
 

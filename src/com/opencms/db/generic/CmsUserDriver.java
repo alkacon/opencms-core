@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/04 10:04:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/06/04 12:07:47 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import com.opencms.util.SqlHelper;
  * Generic (ANSI-SQL) database server implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/06/04 10:04:07 $
+ * @version $Revision: 1.10 $ $Date: 2003/06/04 12:07:47 $
  * @since 5.1.2
  */
 public class CmsUserDriver extends Object implements I_CmsUserDriver {
@@ -1584,10 +1584,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	/**
 	 * Reads all relevant access control entries for a given resource.
 	 * 
-	 * @param resource	the id of the resource
-	 * @return			a vector of access control entries defining all permissions for the given resource
+	 * @param resource		the id of the resource
+	 * @param inheritedOnly if set, only entries with the inherit flag are returned
+	 * @return				a vector of access control entries defining all permissions for the given resource
 	 */
-	public Vector getAccessControlEntries(CmsUUID resource) throws CmsException {
+	public Vector getAccessControlEntries(CmsUUID resource, boolean inheritedOnly) throws CmsException {
 
 		Vector aceList = new Vector();
 		PreparedStatement stmt = null;
@@ -1604,7 +1605,14 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 
 			// create new CmsAccessControlEntry and add to list
 			while(res.next()) {
-				aceList.add(createAceFromResultSet(res));
+				CmsAccessControlEntry ace = createAceFromResultSet(res);
+				if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_DELETED) > 0)
+					continue;
+					
+				if (inheritedOnly && ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERITED) == 0))
+					continue;
+					
+				aceList.add(ace);
 			}
 		
 			return aceList;

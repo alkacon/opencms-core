@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/03 17:45:46 $
-* Version: $Revision: 1.274 $
+* Date   : $Date: 2003/06/04 12:08:48 $
+* Version: $Revision: 1.275 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
@@ -59,6 +58,7 @@ import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.linkmanagement.LinkChecker;
 import com.opencms.report.CmsShellReport;
 import com.opencms.report.I_CmsReport;
+import com.opencms.security.CmsAccessControlEntry;
 import com.opencms.security.CmsAccessControlList;
 import com.opencms.security.I_CmsPrincipal;
 import com.opencms.template.cache.CmsElementCache;
@@ -79,7 +79,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.274 $
+ * @version $Revision: 1.275 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4481,7 +4481,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
     }
     
     /**
-     * Looup and reads the user or group with the given name.
+     * Lookup and reads the user or group with the given name.
      * 
 	 * @param principalName
 	 * @return
@@ -4502,31 +4502,43 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		return m_driverManager.getAccessControlEntries(res,true);
 	}
 	
-	public void createAccessControlEntry(String resourceName, String principalName, String permissions) throws CmsException {
+	/**
+	 * Changes the access control for a given resource and a given principal(user/group).
+	 * 
+	 * @param resourceName	name of the resource
+	 * @param principalName	name of the principal
+	 * @param permissions	the permissions in the format ((+|-)(r|w|v|c|i))*
+	 * @throws CmsException
+	 */
+	public void chacc(String resourceName, String principalName, String permissionString) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
 		I_CmsPrincipal principal = m_driverManager.lookupPrincipal(principalName);
 		
-		StringTokenizer tok = new StringTokenizer(permissions, "+-", true);
-		int allowed = 0, denied = 0, flags = 0;
-		
-		while(tok.hasMoreElements()) {
-			String prefix = tok.nextToken();
-			String suffix = tok.nextToken();
-			switch (suffix.charAt(0)) {
-				case 'R': case 'r':
-					if (prefix.charAt(0) == '+') allowed |= I_CmsConstants.C_ACCESS_READ;
-					if (prefix.charAt(0) == '-') denied  |= I_CmsConstants.C_ACCESS_READ;
-					break;
-				case 'W': case 'w':
-					if (prefix.charAt(0) == '+') allowed |= I_CmsConstants.C_ACCESS_WRITE;
-					if (prefix.charAt(0) == '-') denied  |= I_CmsConstants.C_ACCESS_WRITE;				
-					break;
-				case 'V': case 'v':
-					if (prefix.charAt(0) == '+') allowed |= I_CmsConstants.C_ACCESS_VISIBLE;
-					if (prefix.charAt(0) == '-') denied  |= I_CmsConstants.C_ACCESS_VISIBLE;
-					break;
-			}
+		if ("".equals(permissionString)) {
+			m_driverManager.removeAccessControlEntry(res,principal.getId());	
+		} else {
+			int permissions[] = {0,0};
+			int flags = CmsAccessControlEntry.readPermissionString(permissionString, permissions);
+
+			CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissions[0], permissions[1], flags);
+			m_driverManager.writeAccessControlEntry(acEntry);
 		}
-		m_driverManager.createAccessControlEntry(res,principal.getId(),allowed,denied,flags);
+	}
+	
+	/**
+	 * Changes the access control for a given resource and a given principal(user/group).
+	 * 
+	 * @param resourceName			name of the resource
+	 * @param principalName			name of the principal
+	 * @param allowedPermissions	bitset of allowed permissions
+	 * @param deniedPermissions		bitset of denied permissions
+	 * @param flags					flags
+	 */
+	public void chacc(String resourceName, String principalName, int allowedPermissions, int deniedPermissions, int flags) throws CmsException {
+		CmsResource res = readFileHeader(resourceName);
+		I_CmsPrincipal principal = m_driverManager.lookupPrincipal(principalName);
+				
+		CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
+		m_driverManager.writeAccessControlEntry(acEntry);
 	}
 }

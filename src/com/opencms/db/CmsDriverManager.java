@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/04 10:03:50 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/06/04 12:08:20 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,13 +99,13 @@ import com.opencms.workplace.CmsAdminVfsLinkManagement;
 
 
 /**
- * @version $Revision: 1.11 $ $Date: 2003/06/04 10:03:50 $
+ * @version $Revision: 1.12 $ $Date: 2003/06/04 12:08:20 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.11 $ $Date: 2003/06/04 10:03:50 $
+ * @version $Revision: 1.12 $ $Date: 2003/06/04 12:08:20 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
@@ -1876,7 +1876,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                             readProperties(currentUser, currentProject, file.getResourceName(), null, false));
 
 				// copy the access control entries of this resource
-				ListIterator aceList = m_userDriver.getAccessControlEntries(file.getResourceId()).listIterator();
+				ListIterator aceList = m_userDriver.getAccessControlEntries(file.getResourceId(),false).listIterator();
 				while (aceList.hasNext()) {
 					CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
 					createAccessControlEntry(newResource, ace.getPrincipal(), ace.getAllowedPermissions(), ace.getDeniedPermissions(),0);
@@ -1939,7 +1939,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                             readProperties(currentUser, currentProject, folder.getResourceName(), null, false));
                             
 				// copy the access control entries of this resource
-				ListIterator aceList = m_userDriver.getAccessControlEntries(folder.getResourceId()).listIterator();
+				ListIterator aceList = m_userDriver.getAccessControlEntries(folder.getResourceId(),false).listIterator();
 				while (aceList.hasNext()) {
 					CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
 					createAccessControlEntry(newResource, ace.getPrincipal(), ace.getAllowedPermissions(), ace.getDeniedPermissions(),0);
@@ -2313,9 +2313,9 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             // write metainfos for the folder
             m_vfsDriver.writeProperties(propertyinfos, currentProject.getId(), newResource, newResource.getType(), true);
 
-			// create the access control entries
-			m_userDriver.createAccessControlEntry(newResource.getResourceId(),owner.getId(),newResource.getAccessFlags()&C_ACCESS_OWNER,0,0);
-			m_userDriver.createAccessControlEntry(newResource.getResourceId(),group.getId(),newResource.getAccessFlags()&C_ACCESS_GROUP,0,0);
+			// NO ! create the access control entries
+			// m_userDriver.createAccessControlEntry(newResource.getResourceId(),owner.getId(),newResource.getAccessFlags()&C_ACCESS_OWNER,0,0);
+			// m_userDriver.createAccessControlEntry(newResource.getResourceId(),group.getId(),newResource.getAccessFlags()&C_ACCESS_GROUP,0,0);
 
             // inform about the file-system-change
             fileSystemChanged(true);
@@ -9174,6 +9174,17 @@ protected void validName(String name, boolean blank) throws CmsException {
 	}
 	
 	/**
+	 * Removes an access control entry for a given resource and principal
+	 * @param resource
+	 * @param principal
+	 * @throws CmsException
+	 */
+	public void removeAccessControlEntry(CmsResource resource, CmsUUID principal) throws CmsException {
+		
+		m_userDriver.removeAccessControlEntry(resource.getResourceId(), principal);
+	}
+	
+	/**
 	 * Marks all access control entries belonging to a resource as deleted
 	 * 
 	 * @param resource			the resource
@@ -9211,11 +9222,11 @@ protected void validName(String name, boolean blank) throws CmsException {
 	 * 
 	 * @param resource	the resource
 	 * @return			a vector of access control entries defining all permissions for the given resource
-	 */
+	 *//*
 	public Vector getAccessControlEntries(CmsResource resource) throws CmsException {
 		
-		return m_userDriver.getAccessControlEntries(resource.getResourceId());
-	}
+		return m_userDriver.getAccessControlEntries(resource.getResourceId(), );
+	}*/
 	
 	public Vector getAccessControlEntries(CmsResource resource, boolean getInherited) throws CmsException {
 			
@@ -9230,7 +9241,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 		while (getInherited && !(resId = res.getParentId()).isNullUUID()) {
 			
 			res = m_vfsDriver.readFolder(res.getProjectId(), resId);
-			acEntries.addAll(getAccessControlEntries(resId));
+			acEntries.addAll(getAccessControlEntries(resId,getInherited));
 		}
 		
 		return acEntries;
@@ -9239,7 +9250,12 @@ protected void validName(String name, boolean blank) throws CmsException {
 	// TODO: this is the neccessary method - check if it should be exposed in the interface
 	protected Vector getAccessControlEntries(CmsUUID resourceId) throws CmsException {
 		
-		return m_userDriver.getAccessControlEntries(resourceId);
+		return m_userDriver.getAccessControlEntries(resourceId, false);
+	}
+	
+	protected Vector getAccessControlEntries(CmsUUID resourceId, boolean inheritedOnly) throws CmsException {
+		
+		return m_userDriver.getAccessControlEntries(resourceId, inheritedOnly);
 	}
 	
 	//

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/06/03 16:07:14 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2003/06/04 12:07:18 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,6 +54,7 @@ import com.opencms.file.I_CmsRegistry;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.report.CmsShellReport;
 import com.opencms.security.CmsAccessControlEntry;
+import com.opencms.security.CmsAccessControlList;
 import com.opencms.security.I_CmsPrincipal;
 
 /**
@@ -63,7 +64,7 @@ import com.opencms.security.I_CmsPrincipal;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.71 $ $Date: 2003/06/03 16:07:14 $
+ * @version $Revision: 1.72 $ $Date: 2003/06/04 12:07:18 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -3650,29 +3651,97 @@ class CmsShellCommands implements I_CmsConstants {
         }
     }
     
-    public void getAccessControlEntries(String resourceName) {
-    	try {
+    /**
+     * Changes the access control for a given resource and a given principal(user/group).
+     * 
+	 * @param resourceName		the name of the reosurce
+	 * @param principalName		the name of the principal
+	 * @param permissionString	the permissions in the format ((+|-)(r|w|v|c|i))*
+	 */
+	public void chacc(String resourceName, String principalName, String permissionString) {
+		try {
+			m_cms.chacc(resourceName, principalName, permissionString);
+		} catch (Exception e) {
+			CmsShell.printException(e);	
+		}    	
+    }
+
+	/**
+	 * Changes the access control for a given resource and a given principal(user/group).
+	 * 
+	 * @param resourceName			the name of the resource
+	 * @param principalName			the name of the principal
+	 * @param allowedPermissions	bitset of allowed permissions
+	 * @param deniedPermissions		bitset of denied permissions
+	 * @param flags					flags
+	 */
+	public void chacc(String resourceName, String principalName, int allowedPermissions, int deniedPermissions, int flags){
+		try {
+			m_cms.chacc(resourceName, principalName, allowedPermissions, deniedPermissions, flags);
+		} catch (Exception e) {
+			CmsShell.printException(e);	
+		}		
+	}
+	
+    /**
+     * Lists the access control entries of a given resource
+     * 
+	 * @param resourceName	the name of the resource
+	 */
+	public void lsacc(String resourceName) {
+		try {
 			Vector acList = m_cms.getAccessControlEntries(resourceName);
 			for (int i=0; i<acList.size(); i++) {
 				CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.elementAt(i);
-				I_CmsPrincipal principal = m_cms.lookupPrincipal(ace.getPrincipal());
-				String principalName = (principal != null) ? principal.getName() : ace.getPrincipal().toString();
-				
-				int allowedPermissions = ace.getAllowedPermissions();
-				String permissionString = (((allowedPermissions & C_ACCESS_READ)>0)?"r":"-") + (((allowedPermissions & C_ACCESS_WRITE)>0)?"w":"-") + (((allowedPermissions & C_ACCESS_VISIBLE)>0)?"v":"-");
-							
-				System.out.println(principalName + " " + permissionString);
+				I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
+				if (true) {
+					String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();							
+					System.out.println(pName + ": " + ace.getPermissionString() + " " + ace);
+				}
+			}
+		} catch (Exception e) {
+			CmsShell.printException(e);    	
+		} 
+    }
+    
+    /**
+     * Lists the access control entries belonging to the given principal.
+     *  
+	 * @param resourceName	the name of the resource
+	 * @param principalName	the name of the principal
+	 */
+	public void lsacc(String resourceName, String principalName){
+		try {
+			I_CmsPrincipal principal = m_cms.lookupPrincipal(principalName);
+			Vector acList = m_cms.getAccessControlEntries(resourceName);
+			for (int i=0; i<acList.size(); i++) {
+				CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.elementAt(i);
+				I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
+				if (acePrincipal.equals(principal)) {
+					String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();							
+					System.out.println(pName + ": " + ace.getPermissionString() + " " + ace);
+				}
+			}
+		} catch (Exception e) {
+			CmsShell.printException(e);    	
+		}   	
+    }
+    
+    /**
+     * Displays the access control list of a given rersource.
+     * 
+	 * @param resourceName the name of the resource
+	 */
+	public void getAcl(String resourceName){
+    	try {
+    		CmsAccessControlList acList = m_cms.getAccessControlList(resourceName);
+    		Enumeration principals = acList.getPrincipals();
+			while (principals.hasMoreElements()) {
+				I_CmsPrincipal p = m_cms.lookupPrincipal((CmsUUID)principals.nextElement()); 
+				System.out.println(p.getName() + ": " + acList.getPermissionString(p));
 			}
     	} catch (Exception e) {
 			CmsShell.printException(e);    	
-   		}
-    }
-    
-    public void createAccessControlEntry (String resourceName, String principalName, String permissionControl) {
-    	try {
-	    	m_cms.createAccessControlEntry(resourceName, principalName, permissionControl);
-    	} catch (Exception e) {
-			CmsShell.printException(e);	
-    	}
+		}    	
     }
 }
