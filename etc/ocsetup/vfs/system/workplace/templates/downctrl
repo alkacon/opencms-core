@@ -32,7 +32,7 @@
 
 </head>
 <body bgcolor="#C0C0C0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed  bgproperties=fixed>
-<form action="" method=post id=form1 name=form1>
+<form action="javascript:doEdit(DO_SEARCH)" method=post id=form1 name=form1>
 <table WIDTH=100% cellspacing=0 cellpadding=0 border=0>
 <TR> 
 <td class=dialogtxt>]]><BUTTON href="javascript:doEdit(DO_PREV)" method="showBackButton" name="bt_back" action="" alt="back" /><![CDATA[ </td>
