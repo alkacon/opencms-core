@@ -54,7 +54,7 @@ if (wp.isHelpEnabled()) {%>
 <%= wp.buttonBarHorizontalLine() %>
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
-<td><select class="textfeld" name="BLOCK" id="BLOCK" width=100 style="width:100px" onchange="return ParagraphStyle_onchange()" size="1"><option selected value="Normal">Normal</select></td>
+<td><select class="textfeld" name="BLOCK" id="BLOCK" width=100 style="width:100px" onchange="doEditHTML(21);" size="1"><option selected value="Normal">Normal</select></td>
 <%= wp.buttonBarSpacer(5) %>
 <%			
 if (options.showElement("font.face")) {%>
