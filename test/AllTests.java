@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/Attic/AllTests.java,v $
- * Date   : $Date: 2004/05/05 21:25:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/05/25 11:26:22 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.0
  */
@@ -60,8 +60,9 @@ public final class AllTests {
         suite.addTest(org.opencms.file.AllTests.suite());                          
         suite.addTest(org.opencms.flex.AllTests.suite());                          
         suite.addTest(org.opencms.i18n.AllTests.suite());                     
+        suite.addTest(org.opencms.importexport.AllTests.suite());      
+        suite.addTest(org.opencms.main.AllTests.suite());      
         suite.addTest(org.opencms.setup.AllTests.suite());                     
-        suite.addTest(org.opencms.importexport.AllTests.suite());        
         suite.addTest(org.opencms.staticexport.AllTests.suite());        
         suite.addTest(org.opencms.util.AllTests.suite());        
         
@@ -80,16 +81,14 @@ public final class AllTests {
     }
     
     /**
-     * One-time initialization code,
-     * might be used later to create a default OpenCms DB setup scenario.<p>
+     * One-time initialization code.<p>
      */
     public static void oneTimeSetUp() {
         System.out.println("Starting OpenCms test run...");
     }
     
     /** 
-     * One-time cleanup code,
-     * might be used later to tear down a default OpenCms DB setup scenario.<p>
+     * One-time cleanup code.<p>
      */
     public static void oneTimeTearDown() {
         System.out.println("... OpenCms test run finished!");
