@@ -2,8 +2,8 @@ package com.opencms.defaults;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2001/01/24 15:13:10 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2001/01/24 16:25:47 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.24 $ $Date: 2001/01/24 15:13:10 $
+ * @version $Revision: 1.25 $ $Date: 2001/01/24 16:25:47 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 	
@@ -84,7 +84,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			for(int i=0; i<max; i++) {			
 				xmlDataBlock.setData("navText", navText[i]);
 				xmlDataBlock.setData("count", new Integer(i+1).toString());
-				xmlDataBlock.setData("level", new Integer(extractLevel(cms)).toString());
+				xmlDataBlock.setData("level", new Integer(extractLevel(cms,navLink[i])).toString());
 				// this if condition is necessary because of url parameter,
 				// if there is no filename then the parameters are ignored, so I
 				// can't use e.g. ?cmsframe=body.
@@ -149,7 +149,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			for(int i=0; i<max; i++) {
 				xmlDataBlock.setData("navText", navText[i]);
 				xmlDataBlock.setData("count", new Integer(i+1).toString());
-				xmlDataBlock.setData("level", new Integer(extractLevel(cms)).toString());
+				xmlDataBlock.setData("level", new Integer(extractLevel(cms,navLink[i])).toString());
 				// this if condition is necessary because of url parameter,
 				// if there is no filename then the parameters are ignored, so I
 				// can't use e.g. ?cmsframe=body.
@@ -250,7 +250,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			for(int i=0; i<max; i++) {			
 				xmlDataBlock.setData("navText", navText[i]);
 				xmlDataBlock.setData("count", new Integer(i+1).toString());
-				xmlDataBlock.setData("level", new Integer(extractLevel(cms)).toString());
+				xmlDataBlock.setData("level", new Integer(extractLevel(cms,navLink[i])).toString());
 				// this if condition is necessary because of url parameter,
 				// if there is no filename then the parameters are ignored, so I
 				// can't use e.g. ?cmsframe=body.
@@ -314,7 +314,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			for(int i=0; i<max; i++) {
 				xmlDataBlock.setData("navText", navText[i]);
 				xmlDataBlock.setData("count", new Integer(i+1).toString());
-				xmlDataBlock.setData("level", new Integer(extractLevel(cms)).toString());
+				xmlDataBlock.setData("level", new Integer(extractLevel(cms,navLink[i])).toString());
 				// this if condition is necessary because of url parameter,
 				// if there is no filename then the parameters are ignored, so I
 				// can't use e.g. ?cmsframe=body.
@@ -397,10 +397,13 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param cms CmsObject Object for accessing system resources.
 	 * @return int that contains the level.
 	 */	
-	protected int extractLevel(CmsObject cms)
+	protected int extractLevel(CmsObject cms, String folder)
 		throws CmsException {
-				
-		StringTokenizer st = new StringTokenizer(cms.getRequestContext().currentFolder().getAbsolutePath(),"/");
+		
+		if (!folder.endsWith("/")) {
+			folder=folder.substring(0,folder.lastIndexOf("/"));
+		}
+		StringTokenizer st = new StringTokenizer(folder,"/");
 		return (st.countTokens()+1);
 	}	
 	/**
