@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/17 17:25:36 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/20 18:06:36 $
  */
 class CmsAccessProjectMySql extends A_CmsAccessProject {
 
@@ -152,10 +152,10 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 										result.getInt(C_PROJECT_FLAGS)));
 			 } else {
 				 // project not found!
-				 throw new CmsException(CmsException.C_NOT_FOUND);
+				 return(null);
 			 }
 		 } catch( SQLException exc ) {
-			 throw new CmsException(CmsException.C_SQL_ERROR, exc);
+			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }
 	 }
 	
@@ -183,7 +183,7 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 			 m_statementCreateProject.setInt(6,flags);
 			 m_statementCreateProject.executeUpdate();
 		 } catch( SQLException exc ) {
-			 throw new CmsException(CmsException.C_SQL_ERROR, exc);
+			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }
 		 return(readProject(name));
 	 }
@@ -206,7 +206,7 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 			 m_statementUpdateProject.setString(6,project.getName());
 			 m_statementUpdateProject.executeUpdate();
 		 } catch( SQLException exc ) {
-			 throw new CmsException(CmsException.C_SQL_ERROR, exc);
+			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }
 		 return(readProject(project.getName()));
 	 }
@@ -237,7 +237,7 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 			 }
 			 return(projects);
 		 } catch( SQLException exc ) {
-			 throw new CmsException(CmsException.C_SQL_ERROR, exc);
+			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }
 	 }
 
@@ -267,7 +267,7 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 			 }
 			 return(projects);
 		 } catch( SQLException exc ) {
-			 throw new CmsException(CmsException.C_SQL_ERROR, exc);
+			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }
 	 }
 
@@ -284,7 +284,7 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
         try {
         	m_con = DriverManager.getConnection(conUrl);
        	} catch (SQLException e)	{
-         	throw new CmsException(CmsException.C_SQL_ERROR, e);
+         	throw new CmsException(e.getMessage(), CmsException.C_SQL_ERROR, e);
 		}
     }
 	
@@ -300,7 +300,7 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 			m_statementGetProjectsByUser = m_con.prepareStatement(C_PROJECT_GET_BY_USER);
 			m_statementGetProjectsByGroup = m_con.prepareStatement(C_PROJECT_GET_BY_GROUP);
 		} catch (SQLException exc) {
-			throw new CmsException(CmsException.C_SQL_ERROR, exc);
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		}
 	}
 }

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 1999/12/17 17:25:36 $ 
+ * @version $Revision: 1.5 $ $Date: 1999/12/20 18:06:36 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -141,7 +141,7 @@ public abstract class A_CmsObject {
 
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
-	 * If there are some mandatory metadefinitions for the resourcetype, a 
+	 * If there are some mandatory Metadefinitions for the resourcetype, a 
 	 * CmsException will be thrown, because the file cannot be created without
 	 * the mandatory Metainformations.<BR/>
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
@@ -168,7 +168,7 @@ public abstract class A_CmsObject {
 	
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
-	 * If some mandatory metadefinitions for the resourcetype are missing, a 
+	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
 	 * the mandatory Metainformations.<BR/>
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
@@ -180,7 +180,7 @@ public abstract class A_CmsObject {
 	 * @param contents The contents of the new file.
 	 * @param type The resourcetype of the new file.
 	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
-	 * The keys for this Hashtable are the names for metadefinitions, the values are
+	 * The keys for this Hashtable are the names for Metadefinitions, the values are
 	 * the values for the metainfos.
 	 * 
 	 * @return file The created file.
@@ -230,7 +230,7 @@ public abstract class A_CmsObject {
 	
 	/**
 	 * Writes a file to the Cms.<BR/>
-	 * If some mandatory metadefinitions for the resourcetype are missing, a 
+	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be written without
 	 * the mandatory Metainformations.<BR/>
 	 * 
@@ -245,7 +245,7 @@ public abstract class A_CmsObject {
 	
 	/**
 	 * Writes the fileheader to the Cms.
-	 * If some mandatory metadefinitions for the resourcetype are missing, a 
+	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be written without
 	 * the mandatory Metainformations.<BR/>
 	 * 
@@ -260,13 +260,13 @@ public abstract class A_CmsObject {
 	
 	/**
 	 * Writes a file to the Cms.<BR/>
-	 * If some mandatory metadefinitions for the resourcetype are missing, a 
+	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be written without
 	 * the mandatory Metainformations.<BR/>
 	 * 
 	 * @param file The file to write.
 	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
-	 * The keys for this Hashtable are the names for metadefinitions, the values are
+	 * The keys for this Hashtable are the names for Metadefinitions, the values are
 	 * the values for the metainfos.
 	 * 
 	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
@@ -278,13 +278,13 @@ public abstract class A_CmsObject {
 	
 	/**
 	 * Writes the fileheader to the Cms.
-	 * If some mandatory metadefinitions for the resourcetype are missing, a 
+	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
 	 * the mandatory Metainformations.<BR/>
 	 * 
 	 * @param resource The resource to write the header of.
 	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
-	 * The keys for this Hashtable are the names for metadefinitions, the values are
+	 * The keys for this Hashtable are the names for Metadefinitions, the values are
 	 * the values for the metainfos.
 	 * 
 	 * @exception CmsException will be thrown, if the file couldn't be wrote. 
@@ -380,7 +380,7 @@ public abstract class A_CmsObject {
 
 	/**
 	 * Creates a new folder.
-	 * If there are some mandatory metadefinitions for the folder-resourcetype, a 
+	 * If there are some mandatory Metadefinitions for the folder-resourcetype, a 
 	 * CmsException will be thrown, because the folder cannot be created without
 	 * the mandatory Metainformations.<BR/>
 	 * If there is already a folder with this filename, a CmsDuplicateKey exception 
@@ -404,7 +404,7 @@ public abstract class A_CmsObject {
 	
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
-	 * If some mandatory metadefinitions for the resourcetype are missing, a 
+	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
 	 * the mandatory Metainformations.<BR/>
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
@@ -415,7 +415,7 @@ public abstract class A_CmsObject {
 	 * be created.
 	 * @param newFolderName The name of the new folder (No pathinformation allowed).
 	 * @param metainfos A Hashtable of metainfos, that should be set for this folder.
-	 * The keys for this Hashtable are the names for metadefinitions, the values are
+	 * The keys for this Hashtable are the names for Metadefinitions, the values are
 	 * the values for the metainfos.
 	 * 
 	 * @return file The created file.
@@ -676,7 +676,7 @@ public abstract class A_CmsObject {
 	 * Returns a Metainformation of a file or folder.
 	 * 
 	 * @param name The resource-name of which the Metainformation has to be read.
-	 * @param meta The metadefinition-name of which the Metainformation has to be read.
+	 * @param meta The Metadefinition-name of which the Metainformation has to be read.
 	 * 
 	 * @return metainfo The metainfo as string.
 	 * 
@@ -689,7 +689,7 @@ public abstract class A_CmsObject {
 	 * Writes a Metainformation for a file or folder.
 	 * 
 	 * @param name The resource-name of which the Metainformation has to be set.
-	 * @param meta The metadefinition-name of which the Metainformation has to be set.
+	 * @param meta The Metadefinition-name of which the Metainformation has to be set.
 	 * @param value The value for the metainfo to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
@@ -701,7 +701,7 @@ public abstract class A_CmsObject {
 	 * Writes a couple of Metainformation for a file or folder.
 	 * 
 	 * @param name The resource-name of which the Metainformation has to be set.
-	 * @param metainfos A Hashtable with metadefinition- metainfo-pairs as strings.
+	 * @param metainfos A Hashtable with Metadefinition- metainfo-pairs as strings.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
@@ -734,7 +734,7 @@ public abstract class A_CmsObject {
 	 * Deletes a Metainformation for a file or folder.
 	 * 
 	 * @param resourcename The resource-name of which the Metainformation has to be delteted.
-	 * @param meta The metadefinition-name of which the Metainformation has to be set.
+	 * @param meta The Metadefinition-name of which the Metainformation has to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
@@ -938,57 +938,57 @@ public abstract class A_CmsObject {
 		throws CmsException;
 	
 	/**
-	 * Reads the metadefinition for the resource type.<BR/>
+	 * Reads the Metadefinition for the resource type.<BR/>
 	 * 
-	 * @param name The name of the metadefinition to read.
-	 * @param resourcetype The resource-type for the metadefinition.
-	 * @return the metadefinition.
+	 * @param name The name of the Metadefinition to read.
+	 * @param resourcetype The resource-type for the Metadefinition.
+	 * @return the Metadefinition.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public A_CmsMetadefinition readMetaDefinition(String name, 
+	abstract public A_CmsMetadefinition readMetadefinition(String name, 
 														   A_CmsResourceType type)
 		throws CmsException;
 
 	/**
-	 * Reads all metadefinitions for the resource type.<BR/>
+	 * Reads all Metadefinitions for the resource type.<BR/>
 	 * 
-	 * @param resourcetype The resource-type for the metadefinition.
-	 * @return a Vector of metadefinitions.
+	 * @param resourcetype The resource-type for the Metadefinition.
+	 * @return a Vector of Metadefinitions.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public Vector getAllMetaDefinitions(A_CmsResourceType type)
+	abstract public Vector getAllMetadefinitions(A_CmsResourceType type)
 		throws CmsException;
 
 	/**
-	 * Writes the metadefinition for the resource type.<BR/>
+	 * Writes the Metadefinition for the resource type.<BR/>
 	 * 
 	 * Only the admin can do this.
 	 * 
-	 * @param name The name of the metadefinition to overwrite.
-	 * @param resourcetype The resource-type for the metadefinition.
-	 * @param type The type of the metadefinition (normal|mandatory|optional)
+	 * @param name The name of the Metadefinition to overwrite.
+	 * @param resourcetype The resource-type for the Metadefinition.
+	 * @param type The type of the Metadefinition (normal|mandatory|optional)
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a metadefinition with the same name for this resource-type exists already.
+	 * a Metadefinition with the same name for this resource-type exists already.
 	 */
-	abstract public void writeMetaDefinition(String name, A_CmsResourceType resourcetype, 
+	abstract public void writeMetadefinition(String name, A_CmsResourceType resourcetype, 
 									int type)
 		throws CmsDuplicateKeyException, CmsException;
 	
 	/**
-	 * Delete the metadefinition for the resource type.<BR/>
+	 * Delete the Metadefinition for the resource type.<BR/>
 	 * 
 	 * Only the admin can do this.
 	 * 
-	 * @param name The name of the metadefinition to overwrite.
-	 * @param resourcetype The resource-type for the metadefinition.
+	 * @param name The name of the Metadefinition to overwrite.
+	 * @param resourcetype The resource-type for the Metadefinition.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public void deleteMetaDefinition(String name, A_CmsResourceType type)
+	abstract public void deleteMetadefinition(String name, A_CmsResourceType type)
 		throws CmsException;
 
 	/**
