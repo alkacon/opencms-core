@@ -460,6 +460,11 @@ span.tabactive {
 	padding: 4px;
 }
 
+.texteditor {
+	font-family: fixedsys, monospace, sans-serif;
+	font-size: 11px;
+}
+
 /* special definition for IE bug displaying horizontal scroll bar in STRICT mode,
    this must ALWAYS stay at the end of the css! */
 body.dialog { voice-family: "\"}\""; voice-family: inherit; width: expression(document.documentElement.clientWidth - 20); }
