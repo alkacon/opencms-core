@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/11/19 15:06:37 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/12/15 15:04:07 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.27 $ $Date: 2004/11/19 15:06:37 $
+ * @version $Revision: 1.28 $ $Date: 2004/12/15 15:04:07 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -352,12 +352,10 @@ public class CmsSearchIndex {
      * Performs a search on the index within the given fields.<p>
      * 
      * The result is returned as List with entries of type I_CmsSearchResult.<p>
-     * 
      * @param cms the current user's Cms object
      * @param searchRoot only resource that are sub-resource of the search root are included in the search result
      * @param searchQuery the search term to search the index
      * @param fields the list of fields to search
-     * 
      * @return the List of results found or an empty list
      * @throws CmsException if something goes wrong
      */
@@ -430,16 +428,15 @@ public class CmsSearchIndex {
                 
                 // a query search- return the documents in the index matching the query expr.
                 if (fields != null) {
-    
                     BooleanQuery fieldsQuery = new BooleanQuery();
+                    BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
                     String fList[] = org.opencms.util.CmsStringUtil.splitAsArray(fields, ' ');
                     for (int i = 0; i < fList.length; i++) {
                         fieldsQuery.add(QueryParser.parse(searchQuery, fList[i], OpenCms.getSearchManager().getAnalyzer(
                             m_locale)), false, false);
-                    }
-    
+                    }    
+                    
                     query = fieldsQuery;
-    
                 } else {
                     query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, OpenCms.getSearchManager()
                         .getAnalyzer(m_locale));
@@ -453,7 +450,7 @@ public class CmsSearchIndex {
                 
                 for (int i = 0, n = hits.length(); i < n; i++) {
                     
-                    luceneDocument = hits.doc(i);                   
+                    luceneDocument = hits.doc(i); 
                     foundDocuments.add(luceneDocument);
                     scores.add(new Double(hits.score(i)));
                 }
