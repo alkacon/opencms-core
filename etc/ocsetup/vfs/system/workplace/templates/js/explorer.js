@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/01/02 13:25:40 $
-  * Version: $Revision: 1.8 $
+  * Date   : $Date: 2001/01/02 15:23:01 $
+  * Version: $Revision: 1.9 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -651,14 +651,14 @@
              "<tr valign=center>"+
              "<td class=menu nowrap width=32px>"+
              "<a href=javascript:top.histGoBack(); onmouseover=\"top.chon(document,'bt_back');\" onmouseout=\"top.choff(document,'bt_back');\" >"+
-             "<img alt='back' width=32 height=32  border=0 name='bt_back'></a></td>"+ 
+             "<img alt='"+vr.langback+"' width=32 height=32  border=0 name='bt_back'></a></td>"+ 
              "<td class=menu nowrap width=32px>"+
  			dirup+
-             "<img alt=up width=32 height=32 border=0 name=bt_up ></a></td>";
+             "<img alt='"+vr.langup+"' width=32 height=32 border=0 name=bt_up ></a></td>";
  
      var headFoot="<td class=menu width=30px nowrap align=right>&nbsp;</td>"+
              "<td class=menubold nowrap align=right valign=middle><img border=0 id='bt_folder' name='bt_folder' width=16 height=16></td>"+ 
-             "<td class=menubold nowrap align=right valign=middle><p class=einzug> <b>&nbsp;adress:&nbsp;</b> </td>"+
+             "<td class=menubold nowrap align=right valign=middle><p class=einzug> <b>&nbsp;"+vr.langadress+"&nbsp;</b> </td>"+
              "<td class=menu nowrap align=left valign=middle>"+
              "<input value="+vr.actDirectory+" size=50 maxlength=255 name=url id=url class=textfeld2>"+
              "</td></tr></table></form></body></html>";
