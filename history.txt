@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.26 Bela Tegeuse - XX July 2001
+* bug in admin module (los of the parameters) fixed
+
 OpenCms 4.3.25 Bela Tegeuse - 16 July 2001
 ! changed the structure in the content folder. Added a new resourcetype compatibleplain
   for imported templates that dosent stick to the new rules for templates. The new restype 
