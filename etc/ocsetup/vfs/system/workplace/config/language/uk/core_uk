@@ -1027,7 +1027,7 @@ A new task was reactivated for you or your role.</content>
             <name>Name</name>
             <new>New</new>  
             <newdowngal>Create new Download Gallery</newdowngal>
-            <newfileother>Create a new File of other type</newfileother>
+            <newfileother>Create a new File</newfileother>
             <newfolder>Create a new Folder</newfolder>
             <newlink>Create a new Link</newlink>
             <newpicgal>Create new Picture Gallery</newpicgal>   
