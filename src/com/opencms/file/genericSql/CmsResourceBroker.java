@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/01/18 08:29:01 $
-* Version: $Revision: 1.304 $
+* Date   : $Date: 2002/01/18 13:40:40 $
+* Version: $Revision: 1.305 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.304 $ $Date: 2002/01/18 08:29:01 $
+ * @version $Revision: 1.305 $ $Date: 2002/01/18 13:40:40 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4469,8 +4469,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                 // the project was stored in the backuptables for history
                 //new projectmechanism: the project can be still used after publishing
                 // it will be deleted if the project_flag = C_PROJECT_STATE_TEMP
-                if (publishProject.getType() == C_PROJECT_TYPE_TEMPORARY ||
-                    publishProject.getType() == (C_PROJECT_TYPE_TEMPORARY + C_PROJECT_TYPE_STATICEXPORT)) {
+                if (publishProject.getType() == C_PROJECT_TYPE_TEMPORARY) {
                     m_dbAccess.deleteProject(publishProject);
                     try{
                         m_projectCache.remove(id);
@@ -4479,7 +4478,10 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                             A_OpenCms.log(A_OpenCms.C_OPENCMS_CACHE,"Could not remove project "+id+" from cache");
                         }
                     }
-                    //deleteProject(currentUser, currentProject, id);
+                    if(id == currentProject.getId()){
+                        cms.getRequestContext().setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                    }
+
                 }
 
                 // finally set the refrish signal to another server if nescessary
