@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/01/13 14:57:59 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/01/19 08:20:43 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,6 +112,9 @@ public abstract class A_CmsImport implements I_CmsImport {
     /** The import-resource (folder) to load resources from */
     protected File m_importResource = null;
 
+    /** flag for conversion to xml pages */
+    protected boolean m_convertToXmlPage;
+    
     /**
      * The version of this import, noted in the info tag of the manifest.xml.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/01/13 14:57:59 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/01/19 08:20:43 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,9 +89,6 @@ public class CmsImportVersion2 extends A_CmsImport {
 
     /** page file storage for page file and body coversion */
     private List m_pageStorage;
-
-    /** flag for conversion to xml pages */
-    private boolean m_convertToXmlPage;
     
     /** The path to the bodies in OpenCms 4.x */
      private static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";
@@ -759,7 +756,8 @@ public class CmsImportVersion2 extends A_CmsImport {
             
             if (m_convertToXmlPage) {
 
-                CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(bodyfile.getContents()), "body", "en"); 
+                String language = m_cms.getDefaultLanguage(CmsResource.getParentFolder(resname));;
+                CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(bodyfile.getContents()), "body", language); 
                 
                 if (xmlPage != null) {
                     xmlPage.write(pagefile);

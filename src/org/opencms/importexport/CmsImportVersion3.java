@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/01/13 14:57:59 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/01/19 08:20:43 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,9 +75,6 @@ import org.w3c.dom.NodeList;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  */
 public class CmsImportVersion3 extends A_CmsImport {
-
-    /** flag for conversion to xml pages */
-    private boolean m_convertToXmlPage;
 
     /**
      * Creates a new CmsImportVerion3 object.<p>
@@ -505,6 +502,7 @@ public class CmsImportVersion3 extends A_CmsImport {
             if (m_convertToXmlPage 
                 && (resType == CmsResourceTypePage.C_RESOURCE_TYPE_ID || resType == CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID)) {
                 
+                String language = m_cms.getDefaultLanguage(CmsResource.getParentFolder(resname));
                 CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content), "body", "en");
                 ByteArrayOutputStream pageContent = new ByteArrayOutputStream();
                 xmlPage.write(pageContent, OpenCms.getDefaultEncoding());    

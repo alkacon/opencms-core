@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/01/13 14:57:59 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/01/19 08:20:43 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,9 +74,6 @@ import org.w3c.dom.NodeList;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  */
 public class CmsImportVersion4 extends A_CmsImport {
-
-    /** flag for conversion to xml pages */
-    private boolean m_convertToXmlPage;
     
     /**
      * Creates a new CmsImportVerion4 object.<p>
@@ -298,6 +295,12 @@ public class CmsImportVersion4 extends A_CmsImport {
        if (immutableResources == null) {
            immutableResources = new ArrayList();
        }
+       // get the wanted page type for imported pages
+       String convertToXmlPage = (String)OpenCms.getRuntimeProperty("import.convert.xmlpage");
+       if (convertToXmlPage != null) {
+           m_convertToXmlPage = "true".equals(convertToXmlPage);
+       }
+       
        try {
            // get all file-nodes
            fileNodes = m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_FILE);
@@ -496,7 +499,8 @@ public class CmsImportVersion4 extends A_CmsImport {
             if (m_convertToXmlPage 
                     && (resType == CmsResourceTypePage.C_RESOURCE_TYPE_ID || resType == CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID)) {
                 
-                CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content), "body", "en");
+                String language = m_cms.getDefaultLanguage(CmsResource.getParentFolder(resname));
+                CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content), "body", language);
                 ByteArrayOutputStream pageContent = new ByteArrayOutputStream();
                 xmlPage.write(pageContent, OpenCms.getDefaultEncoding());    
                 content = pageContent.toByteArray();
