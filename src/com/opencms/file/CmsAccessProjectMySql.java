@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/01/24 12:04:57 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/24 12:10:31 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -153,7 +153,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
             Statement s = m_con.createStatement();			
 			s.setEscapeProcessing(false);	
 			
-            result = s.executeQuery("Select * from PROJECTS where " + C_PROJECT_NAME + " = " + name);
+            result = s.executeQuery("Select * from PROJECTS where " + C_PROJECT_NAME + " = '" + name + "'");
 			 
 			 // if resultset exists - return it
 			 if(result.next()) {
