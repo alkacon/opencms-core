@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/06/13 12:25:34 $
- * Version: $Revision: 1.478 $
+ * Date   : $Date: 2003/07/02 10:34:32 $
+ * Version: $Revision: 1.479 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,11 +20,16 @@ Legend:
 - General comment
 
 OpenCms (next version) Salusa Secundus
-- This is a development version.
+
+OpenCms 5.1.2 Salusa Secundus - July 2, 2003
+- OpenCms 5.1.2 is a development version.
   The OpenCms core is currently undergoing heavy changes. 
   This development version is known as unstable.
   Users looking for updates or improvements of OpenCms 5.0.0 should use the 
   "branch_5_0_x" CVS branch until further notice. 
+! ACL based permission system now functional
+- Updated Import / Export to include ACL permissions
+- Further improvements in the JSP workplace
 - Added external JARs to the CVS tree for easier upgrading and installing 
 ! Split resource table in structure and resource table
 - Refactored database access and security packages to org.opencms.* name
