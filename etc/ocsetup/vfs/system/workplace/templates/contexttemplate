@@ -2,6 +2,7 @@
 <WORKPLACE>
 	<CONTEXTHEAD>
 		<![CDATA[<div id="]]><PROCESS>name</PROCESS><![CDATA[" class="kontextmenu">
+		<layer name="]]><PROCESS>name</PROCESS><![CDATA[">
 		<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor="#000000">
 		<tr><td>
 		<table class=filekontext CELLPADDING=1 CELLSPACING=0 BORDER=0>
@@ -30,6 +31,7 @@
 		</table>
 		</td></tr>
 		</table>
+		</layer>
 		</div>]]>
 	</CONTEXTFOOT>
 </WORKPLACE>

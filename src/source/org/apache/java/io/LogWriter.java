@@ -78,7 +78,7 @@ import source.org.apache.java.util.*;
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
  * @author <a href="mailto:vt@freehold.crocodile.org">Vadim Tkachenko</a>
- * @version $Revision: 1.1 $ $Date: 2000/01/05 17:27:18 $
+ * @version $Revision: 1.2 $ $Date: 2000/05/09 08:29:21 $
  */
 
 public class LogWriter 
@@ -380,7 +380,7 @@ public class LogWriter
      */
     public void log(String channel, String message) {
         if (active) {
-            this.logQueue.put(new LogRecord(channel, message, null));
+            this.logQueue.put(new LogRecord(channel,getMem()+message, null));
 
             if (this.logQueue.size() > queue_maxsize) {
                 this.logQueue.put(new LogRecord(CH_QUEUE_STATUS, "Log queue size limit exceeded", null));
@@ -389,6 +389,18 @@ public class LogWriter
         }
     }
 
+    
+    public String getMem() 
+	{
+		long total=Runtime.getRuntime().totalMemory()/1024;
+		long free=Runtime.getRuntime().freeMemory()/1024;
+		return ("OpenCms Avail. Mem:"+total
+				+"k, Free Mem:"+free
+				+"k, Used Mem:"+(total-free)+"k");
+	}
+    
+    
+    
     /**
      * Prints the error message and stack trace if channel enabled.
      *
