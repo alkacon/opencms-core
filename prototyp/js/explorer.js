@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/11/17 16:20:59 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/11/17 16:52:46 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -933,7 +933,8 @@ function printList(wo){
                         wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
                     }
                     if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='2'){
-                        wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                        //wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                        wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl=/workplace/sysrem/action/new_explorer_files.html&file="+vr.actDirectory+vi.liste[i].name+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
                     }
                 }else{
                     /* if not locked */
@@ -952,7 +953,7 @@ function printList(wo){
                         wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
                     }
                     if(display == 2){
-                        wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                        wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl=/workplace/sysrem/action/new_explorer_files.html&file="+vr.actDirectory+vi.liste[i].name+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
                     }
                 }
             }
