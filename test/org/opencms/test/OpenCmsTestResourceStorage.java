@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2005/01/11 13:10:17 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/01/18 13:09:03 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class OpenCmsTestResourceStorage {
 
@@ -112,8 +112,7 @@ public class OpenCmsTestResourceStorage {
         entry = (OpenCmsTestResourceStorageEntry)m_storage.get(mappedResourceName);
 
         if (entry == null) {
-            throw new CmsException(
-                "Not found in storage " + resourceName + " -> " + mappedResourceName);
+            throw new CmsException("Not found in storage " + resourceName + " -> " + mappedResourceName);
         }
 
         return entry;
@@ -152,8 +151,7 @@ public class OpenCmsTestResourceStorage {
          Integer state = null;
          state = (Integer)m_precalcState.get(mappedResourceName);
          if (state == null) {
-            throw new CmsException(
-                "Not found in storage " + resourceName + " -> " + mappedResourceName);
+            throw new CmsException("Not found in storage " + resourceName + " -> " + mappedResourceName);
         }
         return state.intValue();
     }

@@ -11,9 +11,9 @@
 			<version>1.0</version>
 			<authorname><![CDATA[Alexander Kandzior]]></authorname>
 			<authoremail><![CDATA[alex@opencms.org]]></authoremail>
-			<datecreated>Mon, 12 Jul 2004 12:00:00 CEST</datecreated>
+			<datecreated>Mon, 12 Jul 2004 11:00:00 GMT+01:00</datecreated>
 			<userinstalled>Admin</userinstalled>
-			<dateinstalled>Tue, 13 Jul 2004 13:00:00 CEST</dateinstalled>
+			<dateinstalled>Tue, 13 Jul 2004 12:00:00 GMT+01:00</dateinstalled>
 			<dependencies>
 				<dependency name="org.opencms.configuration.TestModule2" version="2.0" />
 			</dependencies>
