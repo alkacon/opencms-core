@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/05/02 16:13:19 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/05/05 09:10:46 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/05/02 16:13:19 $
+ * @version $Revision: 1.15 $ $Date: 2000/05/05 09:10:46 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                          I_CmsConstants {
@@ -615,8 +615,9 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         // if this fails, get the settings from the user object
         if (startSettings== null) {
             startSettings=(Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-			startSettings.put(C_START_DEFAULTGROUP,
-							  reqCont.currentUser().getDefaultGroup().getName());    
+			if (startSettings != null) {
+				startSettings.put(C_START_DEFAULTGROUP, reqCont.currentUser().getDefaultGroup().getName());    
+			}
         }                 
         // if the settings are still empty, set them to default
         if (startSettings== null) {
