@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/01/26 13:52:44 $
-  * Version: $Revision: 1.16 $
+  * Date   : $Date: 2001/01/26 14:33:24 $
+  * Version: $Revision: 1.17 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -610,15 +610,15 @@ function opensmallwin(url, name, w, h) //opens a new window with parameter URL, 
 
  
 function showWinCopyTree(doc){
-    
+
 	showTree(doc,2);
-	
+
 	//toggleNode(doc,tree.root.id,1);
 	//showTree(doc,1);
 }
 
 function showWinTree(doc){
-    
+
 	showTree(doc,1);
 	//toggleNode(doc,tree.root.id,1);
 	//showTree(doc,1);
@@ -635,7 +635,7 @@ function openTreeWin(){
 }
  
 function closeTreeWin(){
-    treewin.close();
+    if(treewin!=null)treewin.close();
 }
 
  
