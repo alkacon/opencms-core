@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjecthistory.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2005/02/21 16:56:45 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import com.opencms.template.A_CmsXmlContent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -51,7 +52,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.19 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.20 $ $Date: 2005/02/21 16:56:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -93,12 +94,12 @@ public class CmsProjecthistory extends A_CmsWpElement {
 
         // call the method for generating projectlist elements
         Method callingMethod = null;
-        Vector list = new Vector();
+        List list = new ArrayList();
         try {
             callingMethod = callingObject.getClass().getMethod(listMethod, new Class[] {
                 CmsObject.class, CmsXmlLanguageFile.class
             });
-            list = (Vector)callingMethod.invoke(callingObject, new Object[] {
+            list = (List)callingMethod.invoke(callingObject, new Object[] {
                 cms, lang
             });
         }
@@ -140,7 +141,7 @@ public class CmsProjecthistory extends A_CmsWpElement {
         for(int i = 0;i < list.size();i++) {
 
             // get the actual project
-            CmsBackupProject project = (CmsBackupProject)list.elementAt(i);
+            CmsBackupProject project = (CmsBackupProject)list.get(i);
 
             // get the processed list.
             setListEntryData(cms, lang, listdef, project);
