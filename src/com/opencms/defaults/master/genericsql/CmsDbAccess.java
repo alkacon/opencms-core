@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
- * Author : $Author: m.dernen $
- * Date   : $Date: 2001/11/14 11:22:44 $
- * Version: $Revision: 1.11 $
+ * Author : $Author: e.falkenhan $
+ * Date   : $Date: 2001/11/14 13:18:32 $
+ * Version: $Revision: 1.12 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -494,6 +494,47 @@ public class CmsDbAccess {
             } finally {
                 sqlClose(con, stmnt, null);
             }
+        }
+    }
+
+    /**
+     * @param cms the CmsObject to get access to cms-ressources.
+     * @param content the CmsMasterContent to write to the database.
+     * @param dataset the set of data for this contentdefinition.
+     */
+    public void undelete(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset)
+        throws CmsException {
+        if(isOnlineProject(cms)) {
+            // this is the onlineproject - don't write into this project directly
+            throw new CmsException("Can't undelete from the online project", CmsException.C_NO_ACCESS);
+        }
+        if(dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
+            // this is not the online row - it was read from history
+            // don't delete it!
+            throw new CmsException("Can't undelete a backup cd ", CmsException.C_NO_ACCESS);
+        }
+        if(!content.isWriteable()) {
+            // no write access
+            throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
+        }
+        // set state to deleted and update the line
+        String statement_key = "update_offline";
+        dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
+        dataset.m_lockedBy = cms.getRequestContext().currentUser().getId();
+        dataset.m_lockedInProject = cms.getRequestContext().currentProject().getId();
+        PreparedStatement stmnt = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            stmnt = sqlPrepare(con, "update_offline");
+            int rowcounter = sqlFillValues(stmnt, content.getSubId(), dataset);
+            stmnt.setInt(rowcounter++, dataset.m_masterId);
+            stmnt.setInt(rowcounter++, content.getSubId());
+            stmnt.executeUpdate();
+        } catch(SQLException exc) {
+            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+        } finally {
+            sqlClose(con, stmnt, null);
         }
     }
 
