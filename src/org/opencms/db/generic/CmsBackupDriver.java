@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/25 14:38:59 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2003/10/02 08:43:53 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.64 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.65 $ $Date: 2003/10/02 08:43:53 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -976,9 +976,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         String createdName = "";
         try {
             CmsUser lastModified = m_driverManager.getUserDriver().readUser(resource.getUserLastModified());
-            lastModifiedName = "[" + lastModified.getName() + "] " + lastModified.getFirstname() + " " + lastModified.getLastname();
+            lastModifiedName = lastModified.getName();
             CmsUser created = m_driverManager.getUserDriver().readUser(resource.getUserCreated());
-            createdName = created.getName() + " " + created.getFirstname() + " " + created.getLastname();
+            createdName = created.getName();
         } catch (CmsException e) {
             lastModifiedName = resource.getUserCreated().toString();
             createdName = resource.getUserLastModified().toString();
