@@ -7,6 +7,14 @@
 <title>]]><LABEL value="label.wptitle" /><![CDATA[ ]]><METHOD name="userName" /><![CDATA[</title>
 <!-- Beginn Styles und Scripte -->
 <link rel=stylesheet type="text/css" href="../css/format.css">
+<script language=JavaScript>
+<!--
+	 function show_help(){
+		return 'Seiteneditor/index.html';
+	 }
+//-->
+</script>
+
 <!-- Ende Styles und Scripte -->
 </head>
 

@@ -31,7 +31,7 @@
 		<td class=menu>]]><BUTTON name="bt_print" action="doEdit(15);" alt="print"/><![CDATA[</td>
 		
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="javascript:treewin=opensmallwin(help + '3_1.html', 'Hilfe', 300, 600),treewin.focus();;" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="javascript:treewin=opensmallwin('../help/de/index.html', 'Hilfe', 300, 600),treewin.focus();;" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
 
 		<td class=menu width="100%" align=right>]]><BUTTON href="javascript:doEdit(1);" name="bt_close" action="" alt="close"/><![CDATA[</td>
 	</tr>
@@ -114,7 +114,7 @@
 		<td class=menu>]]><BUTTON href="javascript:doNsEdit(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="javascript:doNsEdit(3);" name="bt_save" action="" alt="save"/><![CDATA[</td>
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="javascript:treewin=opensmallwin(help + '3_1.html', 'Hilfe', 300, 600),treewin.focus();" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="javascript:treewin=opensmallwin('../help/de/index.html', 'Hilfe', 300, 600),treewin.focus();" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
 		<td class=menu width="100%">&nbsp;</td>
 		<td class=menu align=right>]]><BUTTON href="javascript:doNsEdit(1);" name="bt_close" action="" alt="close"/><![CDATA[</td>
 	</tr>
