@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/01 17:57:01 $
- * Version: $Revision: 1.122 $
+ * Date   : $Date: 2003/08/01 19:18:50 $
+ * Version: $Revision: 1.123 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.122 $ $Date: 2003/08/01 17:57:01 $
+ * @version $Revision: 1.123 $ $Date: 2003/08/01 19:18:50 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1227,7 +1227,7 @@ public class CmsDriverManager extends Object {
                 m_accessCache.clear();
 
                 // must include files marked as deleted for publishing deleted resources
-                offlineRes = readFileHeaderInProject(context, context.currentProject().getId(), resource, true);
+                offlineRes = readFileHeader(context, resource, true);
             } catch (CmsException exc) {
                 // if the resource does not exist in the offlineProject - it's ok
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/01 17:57:01 $
-* Version: $Revision: 1.359 $
+* Date   : $Date: 2003/08/01 19:18:50 $
+* Version: $Revision: 1.360 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.359 $
+ * @version $Revision: 1.360 $
  */
 public class CmsObject {
 
@@ -418,7 +418,7 @@ public class CmsObject {
      */
     public void changeLockedInProject(int projectId, String resourcename) throws CmsException {
         // must include files marked as deleted when publishing
-        getResourceType(readFileHeader(resourcename, projectId, true).getType()).changeLockedInProject(this, projectId, resourcename);
+        getResourceType(readFileHeader(resourcename, true).getType()).changeLockedInProject(this, projectId, resourcename);
     }
 
     /**
