@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2003/01/30 19:19:41 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,14 +46,12 @@ import org.w3c.dom.Element;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.62 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.63 $ $Date: 2003/01/30 19:19:41 $
  */
 
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,I_CmsWpConstants {
 
     private Hashtable m_wpTags = new Hashtable();
-
-    private static Hashtable m_langFiles = new Hashtable();
 
     /** Reference to the actual language file. */
     private CmsXmlLanguageFile m_languageFile = null;
@@ -99,7 +97,6 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_INFO, "clear language file cache");
         }
-        m_langFiles = new Hashtable();
     }
 
     /**
@@ -269,14 +266,8 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * @param file CmsFile object of the file to be loaded and parsed.
      * @throws CmsException
      */
-
     public void init(CmsObject cms, CmsFile file) throws CmsException {
-        String currentLanguage = CmsXmlLanguageFileContent.getCurrentUserLanguage(cms);
-        if(!m_langFiles.containsKey(currentLanguage)) {
-            m_langFiles.put(currentLanguage, new CmsXmlLanguageFileContent(cms));
-        }
-        m_languageFile = new CmsXmlLanguageFile((CmsXmlLanguageFileContent)m_langFiles.get(currentLanguage));
-        //Gridnine AB Aug 8, 2002
+        m_languageFile = new CmsXmlLanguageFile(cms);
         String encoding = m_languageFile.getEncoding();
         if (encoding != null) {
             cms.getRequestContext().setEncoding(encoding);
@@ -292,14 +283,8 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * @param file CmsFile object of the file to be loaded and parsed.
      * @throws CmsException
      */
-
     public void init(CmsObject cms, String filename) throws CmsException {
-        String currentLanguage = CmsXmlLanguageFileContent.getCurrentUserLanguage(cms);
-        if(!m_langFiles.containsKey(currentLanguage)) {
-            m_langFiles.put(currentLanguage, new CmsXmlLanguageFileContent(cms));
-        }
-        m_languageFile = new CmsXmlLanguageFile((CmsXmlLanguageFileContent)m_langFiles.get(currentLanguage));
-        //Gridnine AB Aug 8, 2002
+        m_languageFile = new CmsXmlLanguageFile(cms);
         String encoding = m_languageFile.getEncoding();
         if (encoding != null) {
             cms.getRequestContext().setEncoding(encoding);
@@ -382,16 +367,5 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      */
     public void setXmlData(String tag, String data) {
         setData(tag, data);
-    }
-    
-    /**
-     * Returns the languagefile for the users language from the cache.
-     * If the languagefile does not exist in the cache the method returns null
-     * 
-     * @param userLanguage The language of the current user
-     * @return CmsXmlLanguageFileContent The language file
-     */
-    public static CmsXmlLanguageFileContent getLangFileFromCache(String userLanguage){
-    	return (CmsXmlLanguageFileContent)m_langFiles.get(userLanguage);
     }
 }

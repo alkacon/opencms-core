@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/01/21 23:20:38 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/01/30 19:19:06 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package com.opencms.workplace;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
@@ -49,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2003/01/21 23:20:38 $
+ * @version $Revision: 1.42 $ $Date: 2003/01/30 19:19:06 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -617,8 +616,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 
     public Integer getLanguageFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
-        Vector allLangFiles = null;
-
         // get all folders with language files
         Vector allLangFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_LOCALES);
         String langName = null;
@@ -639,12 +636,8 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         // output vectors
         for(int i = 0;i < allLangFolders.size();i++) {
             CmsFolder folder = (CmsFolder)allLangFolders.elementAt(i);
-
-            //allLangFiles = cms.getFilesInFolder(folder.getAbsolutePath());
-            allLangFiles = cms.getFilesInFolder(folder.getAbsolutePath());
-            CmsFile file = (CmsFile)allLangFiles.elementAt(0);
-            CmsXmlLanguageFile langFile = new CmsXmlLanguageFile(cms, file.getAbsolutePath());
-            names.addElement(langFile.getDataValue("name"));
+            CmsXmlLanguageFile langFile = new CmsXmlLanguageFile(cms, folder.getName());
+            names.addElement(langFile.getLanguageValue("name"));
             values.addElement(folder.getName());
             if(folder.getName().equals(langName)) {
                 select = i;
