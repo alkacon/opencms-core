@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/08/01 13:57:22 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/08/02 11:54:54 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.27 $ $Date: 2003/08/01 13:57:22 $
+ * @version $Revision: 1.28 $ $Date: 2003/08/02 11:54:54 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -352,7 +352,8 @@ public final class CmsLockDispatcher extends Object {
             throw new CmsLockException("Unable to unlock resource, resource is locked by another user and/or in another project", CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER);
         }
 
-        if (!forceUnlock && (lock.getType() == CmsLock.C_TYPE_INHERITED || lock.getType() == CmsLock.C_TYPE_SHARED_INHERITED || (getParentFolderLock(resourcename) != null))) {
+        //if (!forceUnlock && (lock.getType() == CmsLock.C_TYPE_INHERITED || lock.getType() == CmsLock.C_TYPE_SHARED_INHERITED || (getParentFolderLock(resourcename) != null))) {
+        if (lock.getType() == CmsLock.C_TYPE_INHERITED || lock.getType() == CmsLock.C_TYPE_SHARED_INHERITED || (getParentFolderLock(resourcename) != null)) {
             // sub-resources of a locked folder can't be unlocked
             throw new CmsLockException("Unable to unlock resource due to an inherited lock of a parent folder", CmsLockException.C_RESOURCE_LOCKED_INHERITED);
         }
