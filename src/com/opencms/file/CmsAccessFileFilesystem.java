@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/05/02 10:03:34 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/05/04 09:40:00 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2000/05/02 10:03:34 $
+ * @version $Revision: 1.30 $ $Date: 2000/05/04 09:40:00 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -1387,25 +1387,24 @@ import com.opencms.core.*;
         Vector folders=new Vector();
         Vector files=new Vector();
         
-        allFolders.addElement(readFolder(project,rootFolder));
-        
-        // get files and folders of this rootFolder
-        folders=getSubFolders(project,rootFolder);
-        files=getFilesInFolder(project,rootFolder);
+        try {
+            allFolders.addElement(readFolder(project,rootFolder));
+            // get files and folders of this rootFolder
+           folders=getSubFolders(project,rootFolder);
+           files=getFilesInFolder(project,rootFolder);
 
-        
-        
-        //copy the values into the allFiles and allFolders Vectors
-        for (int i=0;i<folders.size();i++) {
+           //copy the values into the allFiles and allFolders Vectors
+           for (int i=0;i<folders.size();i++) {
             allFolders.addElement((CmsFolder)folders.elementAt(i));
             getAllResources(((CmsFolder)folders.elementAt(i)).getAbsolutePath(),project,
                             allFiles,allFolders);
-        }
-        for (int i=0;i<files.size();i++) {
-            allFiles.addElement((CmsFile)files.elementAt(i));
-        } 
-        
-        
+           }
+          for (int i=0;i<files.size();i++) {
+             allFiles.addElement((CmsFile)files.elementAt(i));
+          } 
+        } catch (CmsException e) {
+          }
+
     }
     
     
