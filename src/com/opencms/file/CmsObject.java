@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/18 08:22:42 $
-* Version: $Revision: 1.331 $
+* Date   : $Date: 2003/07/18 09:30:51 $
+* Version: $Revision: 1.332 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.331 $
+ * @version $Revision: 1.332 $
  */
 public class CmsObject extends Object {
 
@@ -3581,6 +3581,23 @@ public class CmsObject extends Object {
      */
     public CmsUser readOwner(CmsTaskLog log) throws CmsException {
         return (m_driverManager.readOwner(m_context, log));
+    }
+    
+    /**
+     * Builds a list of resources for a given path.<p>
+     * 
+     * Use this method if you want to select a resource given by it's full filename and path. 
+     * This is done by climbing down the path from the root folder using the parent-ID's and
+     * resource names. Use this method with caution! Results are cached but reading path's 
+     * inevitably increases runtime costs.
+     * 
+     * @param path the requested path
+     * @param includeDeleted include resources that are marked as deleted
+     * @return List of CmsResource's
+     * @throws CmsException if something goes wrong
+     */
+    public List readPath(String path, boolean includeDeleted) throws CmsException {
+        return (m_driverManager.readPath(m_context, m_context.addSiteRoot(path), includeDeleted));
     }
 
     /**
