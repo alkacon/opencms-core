@@ -17,7 +17,7 @@
 
         <p>        
         <h2>1 Installing Java JDK</h2>
-        Install the Java JDK (from SUN <a href="http://java.sun.com/products/j2se/">http://java.sun.com/products/j2se/</a> or
+        Install Java JDK 1.3.x or later (from SUN <a href="http://java.sun.com/products/j2se/">http://java.sun.com/products/j2se/</a> or
         IBM <a href="http://www3.software.ibm.com">http://www3.software.ibm.com</a>).
         For details on how to install these components on your operating system,
         see the documentation that comes with them.
@@ -34,7 +34,7 @@
         <p>
         Install Jakarta Tomcat 
         <a href="http://jakarta.apache.org/tomcat/index.html">http://jakarta.apache.org/tomcat/index.html</a>
-        into your desired folder. This is the TOMCAT_HOME folder.
+        into a folder of your choice. This is the TOMCAT_HOME folder.
         </p>
         
         <p>
@@ -89,33 +89,33 @@
         <p>
         <h2>4 Deploy the opencms.war file</h2>
         Copy the opencms.war file to TOMCAT_HOME/web-apps/. Notice: replace TOMCAT_HOME
-        with the real-path to your Tomcat-installation.
+        with the real path to your Tomcat installation.
         </p>
         
         <p>
-        (Re-)Start Tomcat. Tomcat will now deploy the web-application OpenCms.
+        (Re-)Start Tomcat. Tomcat will now deploy the web application OpenCms.
         </p>
         
         <hr></hr>
         
         <p>
         <h2>5 Install OpenCms using the Setup-Wizard</h2>
-        Start the setup-wizard by pointing your webbrowser to 
+        Start the Setup-Wizard by pointing your webbrowser to 
         <a href="http://localhost:8080/opencms/ocsetup">http://localhost:8080/opencms/ocsetup</a>.
         </p>
         
         <p>
-        Notice: maybe you have to replace localhost with your servername. The port 8080 is only used if
+        Notice: Maybe you have to replace localhost with your servername. The port 8080 is only used if
         you start Tomcat in standalone mode.
         </p>
         
         <p>
-        Follow the instructions of the OpenCms Setup-Wizard. It will set up the opencms-database and
-        imports all workplace-ressources into the system.
+        Follow the instructions of the OpenCms Setup-Wizard. It will set up the opencms database and
+        import all workplace ressources into the system.
         </p>
         
         <p>
-        For normal installations with MySql and Tomcat running on the same server all default-settings
+        For normal installations with MySql and Tomcat running on the same server all default settings
         will fit your needs.
         </p>
         
@@ -124,7 +124,7 @@
         <p>
         <h2>6 Now your system is ready</h2>
         Now your system is ready to use. You can login with user: Admin password: admin. Please change the
-        password as soon as possible. The login-url of OpenCms is:
+        password as soon as possible. The login URL of OpenCms is:
         <a href="http://localhost:8080/opencms/opencms/system/workplace/action/login.html">http://localhost:8080/opencms/opencms/system/workplace/action/login.html</a>
         </p>
         
@@ -132,7 +132,7 @@
         
         <h2>7 Security</h2>
         
-        <p>After you have installed OpenCms you should look at the security.
+        <p>After you have installed OpenCms you should have a look at the security.
         Change the Admin password of OpenCms by calling the user preferences 
         ("hammer" icon on the main screen of the workplace). 
         Then you can add a password to the MySQL database. Enter the following commands 
@@ -151,8 +151,8 @@ flush privileges;
         </BLOCKQUOTE>
         
         <p>Don't forget to add the new user and password to all connect strings 
-        of the database to your opencms.properties. 
-        The new user can now only connect to the OpenCms tables. 
+        of the database in your opencms.properties file. 
+        The new user now can only connect to the OpenCms tables. 
         For more information see the MySQL documentation. 
         
     </body>
