@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMail.java,v $
- * Date   : $Date: 2000/05/26 10:13:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/05/31 12:04:01 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.io.*;
  * This class is used to send a mail, it uses Threads to send it.
  *
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.5 $ $Date: 2000/05/26 10:13:35 $
+ * @version $Name:  $ $Revision: 1.6 $ $Date: 2000/05/31 12:04:01 $
  * @see java.lang.Thread
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -258,8 +258,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 			while(enum.hasMoreElements()) {
 				v.addElement(enum.nextElement());
 			}		
-			int size=v.size();	
-			System.err.println("Size: "+size);			
+			int size=v.size();
 			if (size!=0) {
 				// create and fill the first message part
 				MimeBodyPart mbp1=new MimeBodyPart();
