@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/07/05 10:07:22 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -1261,7 +1261,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, String, String, org.opencms.report.I_CmsReport)
      */
     protected void importModuleFromDefault(String importFile) throws Exception {
-        String exportPath = m_cms.readPackagePath();
+        String exportPath = OpenCms.getSystemInfo().getPackagesRfsPath();
         String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportPath + CmsRegistry.C_MODULE_PATH + importFile);        
         OpenCms.getImportExportManager().importData(m_cms, fileName, null, new CmsShellReport());        
     }

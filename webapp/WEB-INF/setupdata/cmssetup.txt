@@ -47,9 +47,6 @@ addFileExtension jsp jsp
 # Switch to the root context
 setSiteRoot "/"
 
-# Set the path for the VFS database export / import
-writePackagePath "packages/"
-
 # Create folder structure
 createFolder "/" "system/"
 createFolder "/" "sites/"

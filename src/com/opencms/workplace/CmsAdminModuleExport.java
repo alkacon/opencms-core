@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2004/07/05 10:07:22 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -205,7 +205,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
                 } 
             }                            
             
-            String filename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + CmsRegistry.C_MODULE_PATH + moduleName + "_" + reg.getModuleVersion(moduleName));
+            String filename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + CmsRegistry.C_MODULE_PATH + moduleName + "_" + reg.getModuleVersion(moduleName));
             
             CmsModuleImportExportHandler moduleExportHandler = new CmsModuleImportExportHandler();
             moduleExportHandler.setFileName(filename);

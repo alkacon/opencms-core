@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2004/02/25 14:12:43 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2004/07/05 10:07:22 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.57 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault {
@@ -93,7 +93,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         }
         filecontent = (byte[])session.getValue(C_PARA_FILECONTENT);
         // first create the folder if it doesnt exists
-        File discFolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator));
+        File discFolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator));
         if(!discFolder.exists()) {
             boolean success = discFolder.mkdir();
             if(OpenCms.getLog(this).isWarnEnabled() && (!success)) {
@@ -102,7 +102,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         }
 
         // now write the file into the modules dierectory in the exportpaht
-        File discFile = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + filename));
+        File discFile = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + filename));
         try {
 
             // write the new file to disk
@@ -244,7 +244,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 
                 // start the thread for: export
                 CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-                vfsExportHandler.setFileName(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + fileName));
+                vfsExportHandler.setFileName(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + fileName));
                 vfsExportHandler.setExportPaths(exportPaths);
                 vfsExportHandler.setExcludeSystem(excludeSystem);
                 vfsExportHandler.setExcludeUnchanged(excludeUnchanged);
@@ -282,7 +282,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 
                 // start the thread for: exportmodules
                 CmsCosImportExportHandler cosExportHandler = new CmsCosImportExportHandler();
-                cosExportHandler.setFileName(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + fileName));
+                cosExportHandler.setFileName(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + fileName));
                 cosExportHandler.setExportChannels(exportChannels);
                 cosExportHandler.setExportModules(exportModules);
                 cosExportHandler.setDescription("Database COS export to " + cosExportHandler.getFileName());
@@ -306,7 +306,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 if ("go".equals(step) ){
                     // start the thread for: import
                     A_CmsReportThread doImport = new CmsDatabaseImportThread(cms,
-                        OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + existingFile));                   
+                        OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + existingFile));                   
                     doImport.start();
                     session.putValue(C_DATABASE_THREAD, doImport);
                     xmlTemplateDocument.setData("time", "10");
@@ -349,7 +349,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         Hashtable parameters 
     ) throws CmsException {
         // get the systems-exportpath
-        String exportpath = cms.readPackagePath();
+        String exportpath = OpenCms.getSystemInfo().getPackagesRfsPath();
         exportpath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportpath);
         File folder = new File(exportpath);
         if (!folder.exists()) {

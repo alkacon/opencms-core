@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2004/02/25 14:12:43 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2004/07/05 10:07:22 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -121,7 +121,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");         
         } else if ("server".equals(step)) {
-            File modulefolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH));
+            File modulefolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + CmsRegistry.C_MODULE_PATH));
             if (!modulefolder.exists()) {
                 boolean success = modulefolder.mkdir();
                 if (OpenCms.getLog(this).isWarnEnabled()
@@ -166,7 +166,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             filecontent = (byte[]) session.getValue(C_PARA_FILECONTENT);
 
             // first create the folder if it doesnt exists
-            File discFolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH));
+            File discFolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + CmsRegistry.C_MODULE_PATH));
             if (!discFolder.exists()) {
                 boolean success = discFolder.mkdir();
                 if (OpenCms.getLog(this).isWarnEnabled()
@@ -177,7 +177,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
 
             // now write the file into the modules dierectory in the exportpaht
             File discFile =
-                new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath()+ File.separator + CmsRegistry.C_MODULE_PATH + filename));
+                new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath()+ File.separator + CmsRegistry.C_MODULE_PATH + filename));
             try {
 
                 // write the new file to disk
@@ -188,7 +188,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage());
             }
             session.removeValue(C_MODULE_NAV);
-            templateSelector = importModule(cms, reg, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + CmsRegistry.C_MODULE_PATH + filename));
+            templateSelector = importModule(cms, reg, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + CmsRegistry.C_MODULE_PATH + filename));
                         
         } else if ("serverupload".equals(step)) {
             String filename = (String) parameters.get("moduleselect");
@@ -196,7 +196,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             if ((filename == null) || ("".equals(filename))) {
                 templateSelector = C_DONE;
             } else {
-                templateSelector = importModule(cms, reg, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + CmsRegistry.C_MODULE_PATH + filename));
+                templateSelector = importModule(cms, reg, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + CmsRegistry.C_MODULE_PATH + filename));
             }
         }
 

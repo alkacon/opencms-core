@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/07/03 10:16:51 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/07/05 10:07:22 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  */
 public class CmsObject {
 
@@ -1906,18 +1906,7 @@ public class CmsObject {
     public Hashtable readLinkCheckTable() throws CmsException {
         return m_driverManager.readLinkCheckTable();
     }
-    
-    /**
-     * Reads the package path of the system.
-     * This path is used for db-export and db-import and all module packages.
-     *
-     * @return the package path
-     * @throws CmsException if operation was not successful
-     */
-    public String readPackagePath() throws CmsException {
-        return m_driverManager.readPackagePath();
-    }
-    
+        
     /**
      * Returns the parameters of a resource in the table of all published template resources.<p>
      * @param rfsName the rfs name of the resource
@@ -2046,18 +2035,6 @@ public class CmsObject {
      */
     public void writeLinkCheckTable(Hashtable linkchecktable) throws CmsException {
         m_driverManager.writeLinkCheckTable(m_context, linkchecktable);
-    }
-
-    /**
-     * Writes the package for the system.<p>
-     * 
-     * This path is used for db-export and db-import as well as module packages.<p>
-     *
-     * @param path the package path
-     * @throws CmsException if operation ws not successful
-     */
-    public void writePackagePath(String path) throws CmsException {
-        m_driverManager.writePackagePath(m_context, path);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/07/05 10:07:22 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -492,7 +492,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, String, String, org.opencms.report.I_CmsReport)
      */
     public void importModuleFromDefault(String importFile) throws Exception {              
-        String exportPath = m_cms.readPackagePath();
+        String exportPath = OpenCms.getSystemInfo().getPackagesRfsPath();
         String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportPath + CmsRegistry.C_MODULE_PATH + importFile);        
         OpenCms.getImportExportManager().importData(m_cms, fileName, null, new CmsShellReport());
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/06/14 14:25:56 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/07/05 10:07:22 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -85,6 +85,9 @@ public class CmsSystemInfo {
     
     /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code>. */
     private String m_openCmsContext;
+    
+    /** The abolute path to the "packages" folder (in the "real" file system). */
+    private String m_packagesRfsPath;
     
     /** The name of the OpenCms server. */
     private String m_serverName;
@@ -187,6 +190,19 @@ public class CmsSystemInfo {
         return m_configurationFileRfsPath;
     }
 
+    /**
+     * Returns the abolute path to the "packages" folder (in the "real" file system).<p>
+     * 
+     * @return the abolute path to the "packages" folder
+     */
+    public String getPackagesRfsPath() {
+        if (m_packagesRfsPath == null) {
+            m_packagesRfsPath = getAbsoluteRfsPathRelativeToWebInf(I_CmsConstants.C_PACKAGES_FOLDER);
+        }
+        return m_packagesRfsPath;
+    }
+    
+    
     /**
      * Returns the web application context path, e.g. "" (empty String) if the web application 
      * is the default web application (usually "ROOT"), or "/opencms" if the web application 

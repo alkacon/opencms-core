@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/07/03 10:16:27 $
- * Version: $Revision: 1.394 $
+ * Date   : $Date: 2004/07/05 10:07:22 $
+ * Version: $Revision: 1.395 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.394 $ $Date: 2004/07/03 10:16:27 $
+ * @version $Revision: 1.395 $ $Date: 2004/07/05 10:07:22 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6385,17 +6385,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         return readUser(log.getUser());
     }
 
-    /**
-     * Reads the package path of the system.<p>
-
-     * This path is used for db-export and db-import and all module packages.
-     *
-     * @return the package path
-     * @throws CmsException if operation was not successful
-     */
-    public String readPackagePath() throws CmsException {
-        return (String)m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH);
-    }
 
     /**
      * Builds the path for a given CmsResource including the site root, e.g. <code>/default/vfs/some_folder/index.html</code>.<p>
@@ -7788,34 +7777,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
     }
 
-    /**
-     * Writes the package for the system.<p>
-     * 
-     * This path is used for db-export and db-import as well as module packages.
-     *
-     * @param context the current request context
-     * @param path the package path
-     * @throws CmsException if operation ws not successful
-     */
-    public void writePackagePath(CmsRequestContext context, String path) throws CmsException {
-        // check the security
-        if (isAdmin(context)) {
-
-            // security is ok - write the exportpath.
-            if (m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH) == null) {
-                // the property wasn't set before.
-                m_projectDriver.createSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH, path);
-            } else {
-                // overwrite the property.
-                m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH, path);
-            }
-
-        } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] writePackagePath()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
-
-    
     /**
      * Inserts an entry in the published resource table.<p>
      * 
