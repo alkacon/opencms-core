@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -88,7 +88,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      */
     public CmsXmlContent(CmsXmlContentDefinition contentDefinition, Locale locale, String encoding) {
 
-        initDocument(contentDefinition.createDocument(locale), encoding, contentDefinition);
+        initDocument(contentDefinition.createDocument(this, locale), encoding, contentDefinition);
     }
 
     /**
@@ -131,7 +131,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         }
 
         // create empty document with new Locale
-        Document newDocument = m_contentDefinition.createDocument(locale);
+        Document newDocument = m_contentDefinition.createDocument(this, locale);
         Element newElement = (Element)newDocument.getRootElement().elements().get(0);
 
         // detach new element from parent folder before adding it 
@@ -403,12 +403,12 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      */
     private I_CmsXmlContentValue addValue(Element parent, I_CmsXmlSchemaType type, Locale locale, int insertIndex) {
 
-        Element element = m_contentDefinition.createDefaultXml(type.getElementName(), locale);       
+        Element element = m_contentDefinition.createDefaultXml(this, type.getElementName(), locale);       
         
         List parentContent = parent.content();
         parentContent.add(insertIndex, element);
 
-        I_CmsXmlContentValue value = type.createValue(element, locale);
+        I_CmsXmlContentValue value = type.createValue(this, element, locale);
         if (type.getDefault(locale) != null) {
             try {
                 value.setStringValue(type.getDefault(locale));
@@ -474,7 +474,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             I_CmsXmlSchemaType schemaType = definition.getSchemaType(name);
                        
             // directly add simple type to schema
-            I_CmsXmlContentValue value = schemaType.createValue(element, locale);
+            I_CmsXmlContentValue value = schemaType.createValue(this, element, locale);
             addBookmark(path, locale, true, value);
             
             if (! schemaType.isSimpleType()) {

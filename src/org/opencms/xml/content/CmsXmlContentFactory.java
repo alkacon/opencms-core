@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentFactory.java,v $
- * Date   : $Date: 2004/10/16 08:24:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public final class CmsXmlContentFactory {
@@ -83,7 +83,8 @@ public final class CmsXmlContentFactory {
      */
     public static Document createDocument(Locale locale, CmsXmlContentDefinition contentDefinition) {
 
-        return contentDefinition.createDocument(locale);
+        CmsXmlContent document = new CmsXmlContent(contentDefinition, locale, CmsEncoder.C_UTF8_ENCODING);
+        return contentDefinition.createDocument(document, locale);
     }
 
     /**

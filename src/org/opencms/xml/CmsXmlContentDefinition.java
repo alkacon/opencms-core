@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -556,19 +556,20 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Creates the default XML element for a node of the given name according to the rules of 
-     * this XML content definition.<p> 
-     * 
+     * this XML content definition.<p>
+     *  
+     * @param document the OpenCms XML document the XML is created for
      * @param name the name of the node to generate the XML for
      * @param locale the localet to generate the XML for
      * 
      * @return the default XML element for a node of the given name
      */
-    public Element createDefaultXml(String name, Locale locale) {
+    public Element createDefaultXml(I_CmsXmlDocument document, String name, Locale locale) {
 
         Document doc = DocumentHelper.createDocument();
         I_CmsXmlSchemaType type = getSchemaType(name);
         Element root = doc.addElement("root");
-        type.appendDefaultXml(root, locale);
+        type.appendDefaultXml(document, root, locale);
         Element result = (Element)root.elements().get(0);
         result.detach();
         return result;
@@ -577,10 +578,12 @@ public class CmsXmlContentDefinition implements Cloneable {
     /**
      * Generates a valid XML document according to the XML schema of this content definition.<p>
      * 
+     * @param document the OpenCms XML document the XML is created for
      * @param locale the locale to create the default element in the document with
+     * 
      * @return a valid XML document according to the XML schema of this content definition
      */
-    public Document createDocument(Locale locale) {
+    public Document createDocument(I_CmsXmlDocument document, Locale locale) {
 
         Document doc = DocumentHelper.createDocument();
 
@@ -595,7 +598,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         while (i.hasNext()) {
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
             for (int j = 0; j < type.getMinOccurs(); j++) {
-                type.appendDefaultXml(element, locale);
+                type.appendDefaultXml(document, element, locale);
             }
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlValueCdataBase.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
@@ -44,13 +44,13 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public abstract class A_CmsXmlValueCdataBase extends A_CmsXmlContentValue {
 
     /** The String value of the element node. */
     protected String m_stringValue;
-    
+
     /**
      * Default constructor for a xml content type 
      * that initializes some internal values.<p> 
@@ -59,16 +59,17 @@ public abstract class A_CmsXmlValueCdataBase extends A_CmsXmlContentValue {
 
         super();
     }
-    
+
     /**
      * Initializes the required members for this XML content value.<p>
      * 
+     * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
      */
-    protected A_CmsXmlValueCdataBase(Element element, Locale locale) {
+    protected A_CmsXmlValueCdataBase(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        super(element, locale);
+        super(document, element, locale);
         m_stringValue = element.getText();
     }
 
@@ -83,7 +84,7 @@ public abstract class A_CmsXmlValueCdataBase extends A_CmsXmlContentValue {
 
         super(name, minOccurs, maxOccurs);
     }
-    
+
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(java.lang.String)
      */
@@ -92,23 +93,23 @@ public abstract class A_CmsXmlValueCdataBase extends A_CmsXmlContentValue {
         m_element.clearContent();
         if (CmsStringUtil.isNotEmpty(value)) {
             m_element.addCDATA(value);
-        }  
+        }
         m_stringValue = value;
     }
-    
-    /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument)
-     */
-    public String getPlainText(CmsObject cms, I_CmsXmlDocument document) {
 
-        return getStringValue(cms, document);
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject)
+     */
+    public String getPlainText(CmsObject cms) {
+
+        return getStringValue(cms);
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject, I_CmsXmlDocument)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject)
      */
-    public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {
+    public String getStringValue(CmsObject cms) {
 
         return m_stringValue;
-    }    
+    }
 }

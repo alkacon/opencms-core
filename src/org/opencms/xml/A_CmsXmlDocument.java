@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/11/29 01:38:15 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -231,8 +231,8 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                 // an example for this is the HTML value that does link replacement                
                 String name = (String)j.next();
                 I_CmsXmlContentValue value = getValue(name, locale);
-                String content = value.getStringValue(cms, this);
-                value.setStringValue(cms, this, content);
+                String content = value.getStringValue(cms);
+                value.setStringValue(cms, content);
             }
         }
 
@@ -326,7 +326,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
         I_CmsXmlContentValue value = getValueInternal(createXpath(name, 0), locale);
         if (value != null) {
-            return value.getStringValue(cms, this);
+            return value.getStringValue(cms);
         }
         return null;
     }
@@ -340,7 +340,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         // since the most costs are generated in resolving the Xpath name
         I_CmsXmlContentValue value = getValueInternal(createXpath(name, index), locale);
         if (value != null) {
-            return value.getStringValue(cms, this);
+            return value.getStringValue(cms);
         }
         return null;
     }

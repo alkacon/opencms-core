@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlVfsFileWidget.java,v $
- * Date   : $Date: 2004/11/28 21:57:59 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
@@ -82,14 +82,13 @@ public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
     }
     
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, I_CmsXmlDocument)
      */
     public String getDialogInitMethod(
         CmsObject cms,
-        I_CmsXmlDocument document,
         I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
-        I_CmsXmlContentValue value) {
+        I_CmsXmlDocument document) {
         
         StringBuffer result = new StringBuffer(8);
         result.append("function initVfsFileSelector() {\n");
@@ -108,11 +107,10 @@ public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public String getDialogWidget(
         CmsObject cms,
-        I_CmsXmlDocument document,
         I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) throws CmsXmlException {
@@ -126,7 +124,7 @@ public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>"); 
         result.append("<input class=\"xmlInputMedium\" value=\"");
-        result.append(value.getStringValue(cms, document));
+        result.append(value.getStringValue(cms));
         result.append("\" name=\"");
         result.append(id);
         result.append("\" id=\"");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlBooleanWidget.java,v $
- * Date   : $Date: 2004/11/28 21:57:59 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
-import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.CmsXmlBooleanValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -46,7 +45,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.2
  */
 public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
@@ -60,15 +59,14 @@ public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public String getDialogWidget(
         CmsObject cms,
-        I_CmsXmlDocument document,
         I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) throws CmsXmlException {
-
+        
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
         result.append(getMessage(widgetDialog, contentDefinition, value.getElementName()));
@@ -81,7 +79,7 @@ public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
         result.append(id);
         result.append("\" value=\"true\"");
         
-        boolean booleanValue = CmsXmlBooleanValue.getBooleanValue(cms, document, value);
+        boolean booleanValue = CmsXmlBooleanValue.getBooleanValue(cms, value);
         if (booleanValue) {
             result.append(" checked=\"checked\"");    
         }
@@ -91,11 +89,10 @@ public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, java.util.Map, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public void setEditorValue (
         CmsObject cms,
-        I_CmsXmlDocument document,
         Map formParameters,
         I_CmsWidgetDialog widgetDialog,
         I_CmsXmlContentValue value) throws CmsXmlException {
@@ -104,7 +101,7 @@ public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
         if ((values != null) && (values.length > 0)) {
 
             // first get the current boolean value for the element
-            boolean booleanValue = CmsXmlBooleanValue.getBooleanValue(cms, document, value);
+            boolean booleanValue = CmsXmlBooleanValue.getBooleanValue(cms, value);
             
             // now check if there's a new value in the form parameters
             String formValue = values[0].trim();
@@ -113,10 +110,10 @@ public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
             }
             
             // set the value
-            value.setStringValue(cms, document, String.valueOf(booleanValue));
+            value.setStringValue(cms, String.valueOf(booleanValue));
             
         } else {
-            value.setStringValue(cms, document, Boolean.FALSE.toString());
+            value.setStringValue(cms, Boolean.FALSE.toString());
         }
     }
 }

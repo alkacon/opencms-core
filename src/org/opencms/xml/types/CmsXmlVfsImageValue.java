@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsImageValue.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.xml.types;
 
+import org.opencms.xml.I_CmsXmlDocument;
+
 import java.util.Locale;
 
 import org.dom4j.Element;
@@ -40,7 +42,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.3
  */
 public class CmsXmlVfsImageValue extends A_CmsXmlValueTextBase {
@@ -59,12 +61,13 @@ public class CmsXmlVfsImageValue extends A_CmsXmlValueTextBase {
     /**
      * Creates a new XML content value of type "OpenCmsVfsImage".<p>
      * 
+     * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
      */
-    public CmsXmlVfsImageValue(Element element, Locale locale) {
+    public CmsXmlVfsImageValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        super(element, locale);
+        super(document, element, locale);
     }
 
     /**
@@ -80,11 +83,11 @@ public class CmsXmlVfsImageValue extends A_CmsXmlValueTextBase {
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, Locale)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, Locale locale) {
+    public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlVfsImageValue(element, locale);
+        return new CmsXmlVfsImageValue(document, element, locale);
     }
 
     /**

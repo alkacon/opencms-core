@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlHtmlWidget.java,v $
- * Date   : $Date: 2004/11/28 21:57:59 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
@@ -91,14 +91,13 @@ public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
     }
     
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, I_CmsXmlDocument)
      */
     public String getDialogInitMethod(
         CmsObject cms,
-        I_CmsXmlDocument document,
         I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
-        I_CmsXmlContentValue value) {
+        I_CmsXmlDocument document) {
         
         StringBuffer result = new StringBuffer(8);
         result.append("function initHtmlArea() {\n");
@@ -108,11 +107,10 @@ public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public String getDialogWidget(
         CmsObject cms,
-        I_CmsXmlDocument document,
         I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) throws CmsXmlException {
@@ -129,18 +127,17 @@ public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
         result.append("\" id=\"");
         result.append(id);
         result.append("\" rows=\"15\" wrap=\"virtual\">");
-        result.append(value.getStringValue(cms, document));
+        result.append(value.getStringValue(cms));
         result.append("</textarea>");
         result.append("</td></tr>\n");
         return result.toString();
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, java.util.Map, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public void setEditorValue(
         CmsObject cms,
-        I_CmsXmlDocument document,
         Map formParameters,
         I_CmsWidgetDialog widgetDialog,
         I_CmsXmlContentValue value) throws CmsXmlException {
@@ -148,7 +145,7 @@ public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
         String[] values = (String[])formParameters.get(getParameterName(value));
         if ((values != null) && (values.length > 0)) {
             String val = CmsEncoder.decode(values[0], CmsEncoder.C_UTF8_ENCODING);
-            value.setStringValue(cms, document, val);
+            value.setStringValue(cms, val);
         }
     }
 }

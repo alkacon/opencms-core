@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2004/11/28 21:57:59 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.main.CmsException;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
-import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Arrays;
@@ -50,7 +49,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentHandler {
@@ -92,7 +91,6 @@ public interface I_CmsXmlContentHandler {
      * schema to define the mappings of elements to widgets.<p>
      * 
      * @param value the XML content value to get the widget for
-     * @param content the XML content to resolve the mappings for
      * @param contentDefinition the XML content definition of the XML content
      * 
      * @return the editor widget that should be used for the given XML content value
@@ -101,7 +99,6 @@ public interface I_CmsXmlContentHandler {
      */
     I_CmsXmlWidget getEditorWidget(
         I_CmsXmlContentValue value,
-        I_CmsXmlDocument content,
         CmsXmlContentDefinition contentDefinition) throws CmsXmlException;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,13 +49,16 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
     /** The default value for nodes of this value. */
     protected String m_defaultValue;
+
+    /** The XML content instance this value belongs to. */
+    protected I_CmsXmlDocument m_document;
 
     /** The XML element node that contains this value. */
     protected Element m_element;
@@ -85,13 +88,15 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     /**
      * Initializes the required members for this XML content value.<p>
      * 
+     * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
      */
-    protected A_CmsXmlContentValue(Element element, Locale locale) {
+    protected A_CmsXmlContentValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
         m_element = element;
         m_name = element.getName();
+        m_document = document;
         m_locale = locale;
     }
 
@@ -128,14 +133,14 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(org.dom4j.Element, Locale)
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
-    public void appendDefaultXml(Element root, Locale locale) {
+    public void appendDefaultXml(I_CmsXmlDocument document, Element root, Locale locale) {
 
         Element element = root.addElement(getElementName());
         if (getDefault(locale) != null) {
             try {
-                I_CmsXmlContentValue value = createValue(element, locale);
+                I_CmsXmlContentValue value = createValue(document, element, locale);
                 value.setStringValue(getDefault(locale));
             } catch (CmsXmlException e) {
                 // should not happen if default value is correct
@@ -206,6 +211,14 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getDocument()
+     */
+    public I_CmsXmlDocument getDocument() {
+
+        return m_document;
+    }
+
+    /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getElement()
      */
     public Element getElement() {
@@ -260,9 +273,9 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject)
      */
-    public String getPlainText(CmsObject cms, I_CmsXmlDocument document) {
+    public String getPlainText(CmsObject cms) {
 
         return null;
     }
@@ -295,9 +308,9 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, java.lang.String)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, java.lang.String)
      */
-    public void setStringValue(CmsObject cms, I_CmsXmlDocument document, String value) throws CmsXmlException {
+    public void setStringValue(CmsObject cms, String value) throws CmsXmlException {
 
         // for most values, no special processing on the users OpenCms context is required
         setStringValue(value);

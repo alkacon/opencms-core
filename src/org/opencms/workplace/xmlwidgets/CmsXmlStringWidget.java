@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlStringWidget.java,v $
- * Date   : $Date: 2004/11/28 21:57:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public class CmsXmlStringWidget extends A_CmsXmlWidget {
@@ -71,14 +71,13 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, I_CmsXmlDocument)
      */
     public String getDialogInitMethod(
         CmsObject cms,
-        I_CmsXmlDocument document,
         I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
-        I_CmsXmlContentValue value) throws CmsXmlException {
+        I_CmsXmlDocument document) throws CmsXmlException {
 
         StringBuffer result = new StringBuffer(8);
         result.append("function initStringFields() {\n");
@@ -98,7 +97,6 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
                 I_CmsXmlContentValue value2 = document.getValue(name, locale, j);
                 I_CmsXmlWidget widget = contentDefinition.getContentHandler().getEditorWidget(
                     value2,
-                    document,
                     contentDefinition);
 
                 if (this.equals(widget)) {
@@ -108,7 +106,7 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
                         I_CmsXmlContentValue contentValue = document.getValue(name, locale, j);
 
                         String id = getParameterName(contentValue);
-                        String currValue = contentValue.getStringValue(cms, document);
+                        String currValue = contentValue.getStringValue(cms);
                         currValue = CmsStringUtil.escapeJavaScript(currValue.trim());
                         result.append("\tdocument.forms[\"EDITOR\"].elements[\"");
                         result.append(id);
@@ -131,11 +129,10 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.xml.CmsXmlContentDefinition, org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public String getDialogWidget(
         CmsObject cms,
-        I_CmsXmlDocument document,
         I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) {

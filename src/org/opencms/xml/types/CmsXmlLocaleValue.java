@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlLocaleValue.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.xml.types;
 
+import org.opencms.xml.I_CmsXmlDocument;
+
 import java.util.Locale;
 
 import org.dom4j.Element;
@@ -40,14 +42,14 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public class CmsXmlLocaleValue extends A_CmsXmlValueTextBase {
 
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsLocale";
-    
+
     /**
      * Creates a new, empty schema type descriptor of type "OpenCmsLocale".<p>
      */
@@ -59,12 +61,13 @@ public class CmsXmlLocaleValue extends A_CmsXmlValueTextBase {
     /**
      * Creates a new XML content value of type "OpenCmsLocale".<p>
      * 
+     * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
      */
-    public CmsXmlLocaleValue(Element element, Locale locale) {
+    public CmsXmlLocaleValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        super(element, locale);
+        super(document, element, locale);
     }
 
     /**
@@ -80,11 +83,11 @@ public class CmsXmlLocaleValue extends A_CmsXmlValueTextBase {
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, Locale)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, Locale locale) {
+    public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlLocaleValue(element, locale);
+        return new CmsXmlLocaleValue(document, element, locale);
     }
 
     /**

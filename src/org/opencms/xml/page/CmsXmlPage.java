@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
 
@@ -229,7 +229,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         element.addElement(NODE_LINKS);
         element.addElement(NODE_CONTENT);
 
-        CmsXmlHtmlValue value = new CmsXmlHtmlValue(element, locale);
+        CmsXmlHtmlValue value = new CmsXmlHtmlValue(this, element, locale);
 
         // bookmark the element
         addBookmark(createXpathElement(name, 0), locale, true, value);
@@ -397,7 +397,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
         if (value != null) {
             // set the values
-            value.setStringValue(cms, this, content);
+            value.setStringValue(cms, content);
         } else {
             throw new CmsXmlException("Invalid XML page element '" + locale + "/" + name + "' selected");
         }
@@ -434,7 +434,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                     boolean enabled = (elementEnabled == null) ? true : Boolean.valueOf(elementEnabled).booleanValue();
 
                     // create an element type from the XML node                    
-                    CmsXmlHtmlValue value = new CmsXmlHtmlValue(element, locale);
+                    CmsXmlHtmlValue value = new CmsXmlHtmlValue(this, element, locale);
 
                     // add the element type bookmark
                     addBookmark(createXpathElement(name, 0), locale, enabled, value);

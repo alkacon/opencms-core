@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/Attic/CmsXmlSimpleHtmlValue.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public class CmsXmlSimpleHtmlValue extends A_CmsXmlValueCdataBase {
@@ -63,12 +63,13 @@ public class CmsXmlSimpleHtmlValue extends A_CmsXmlValueCdataBase {
     /**
      * Creates a new XML content value of type "OpenCmsSimpleHtml".<p>
      * 
+     * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
      */
-    public CmsXmlSimpleHtmlValue(Element element, Locale locale) {
+    public CmsXmlSimpleHtmlValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        super(element, locale);
+        super(document, element, locale);
     }
 
     /**
@@ -84,21 +85,21 @@ public class CmsXmlSimpleHtmlValue extends A_CmsXmlValueCdataBase {
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, Locale)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, Locale locale) {
+    public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlSimpleHtmlValue(element, locale);
+        return new CmsXmlSimpleHtmlValue(document, element, locale);
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject)
      */
-    public String getPlainText(CmsObject cms, I_CmsXmlDocument document) {
+    public String getPlainText(CmsObject cms) {
 
         try {
             CmsHtmlExtractor extractor = new CmsHtmlExtractor();
-            return extractor.extractText(this.getStringValue(cms, document), document.getEncoding());
+            return extractor.extractText(this.getStringValue(cms), m_document.getEncoding());
         } catch (Exception exc) {
             return null;
         }

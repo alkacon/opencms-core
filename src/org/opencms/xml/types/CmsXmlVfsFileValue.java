@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
@@ -72,12 +72,13 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     /**
      * Creates a new XML content value of type "OpenCmsVfsFile".<p>
      * 
+     * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
      */
-    public CmsXmlVfsFileValue(Element element, Locale locale) {
+    public CmsXmlVfsFileValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        super(element, locale);
+        super(document, element, locale);
         m_stringValue = element.getText();
     }
 
@@ -94,11 +95,11 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, Locale)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, Locale locale) {
+    public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlVfsFileValue(element, locale);
+        return new CmsXmlVfsFileValue(document, element, locale);
     }
 
     /**
@@ -127,9 +128,9 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject, I_CmsXmlDocument)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject)
      */
-    public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {
+    public String getStringValue(CmsObject cms) {
 
         if (cms != null) {
             return cms.getRequestContext().removeSiteRoot(m_stringValue);
@@ -155,11 +156,11 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, java.lang.String)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, java.lang.String)
      */
-    public void setStringValue(CmsObject cms, I_CmsXmlDocument document, String value) {
+    public void setStringValue(CmsObject cms, String value) {
 
-        if ((cms != null) && (document != null)) {
+        if (cms != null) {
             // add site path if required
             value = CmsLinkManager.getSitePath(cms, null, value);
         }
@@ -180,6 +181,6 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     public void setStringValue(String value) {
 
         // we don't have any information available for link processing
-        setStringValue(null, null, value);
+        setStringValue(null, value);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -275,7 +275,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(5, titleSequence.getMaxOccurs());
         assertEquals(
             "This is just a modification test", 
-            titleSequence.getValue(0).getStringValue(cms, xmlcontent));
+            titleSequence.getValue(0).getStringValue(cms));
 
         CmsXmlStringValue newValue;
 
@@ -297,10 +297,10 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(5, titleSequence.getMaxOccurs());
         assertEquals(
             "This is another Value!", 
-            titleSequence.getValue(0).getStringValue(cms, xmlcontent));
+            titleSequence.getValue(0).getStringValue(cms));
         assertEquals(
             "This is just a modification test", 
-            titleSequence.getValue(1).getStringValue(cms, xmlcontent));
+            titleSequence.getValue(1).getStringValue(cms));
 
         // add an element at the last position
         newValue = (CmsXmlStringValue)titleSequence.addValue(2);
@@ -323,10 +323,10 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(4, titleSequence.getElementCount());
         assertEquals(1, titleSequence.getMinOccurs());
         assertEquals(5, titleSequence.getMaxOccurs());
-        assertEquals("This is another Value!", titleSequence.getValue(0).getStringValue(cms, xmlcontent));
-        assertEquals("This is the 2nd value.", titleSequence.getValue(1).getStringValue(cms, xmlcontent));
-        assertEquals("This is just a modification test", titleSequence.getValue(2).getStringValue(cms, xmlcontent));
-        assertEquals("This is the last value.", titleSequence.getValue(3).getStringValue(cms, xmlcontent));
+        assertEquals("This is another Value!", titleSequence.getValue(0).getStringValue(cms));
+        assertEquals("This is the 2nd value.", titleSequence.getValue(1).getStringValue(cms));
+        assertEquals("This is just a modification test", titleSequence.getValue(2).getStringValue(cms));
+        assertEquals("This is the last value.", titleSequence.getValue(3).getStringValue(cms));
 
         // now the optional element
         CmsXmlContentValueSequence optionSequence;
@@ -358,12 +358,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(0, optionSequence.getMinOccurs());
         assertEquals(2, optionSequence.getMaxOccurs());
 
-        assertEquals("Optional value 0", optionSequence.getValue(0).getStringValue(cms, xmlcontent));
-        assertEquals("Optional value 1", optionSequence.getValue(1).getStringValue(cms, xmlcontent));
+        assertEquals("Optional value 0", optionSequence.getValue(0).getStringValue(cms));
+        assertEquals("Optional value 1", optionSequence.getValue(1).getStringValue(cms));
         
         optionSequence.removeValue(1);
         assertEquals(1, optionSequence.getElementCount());
-        assertEquals("Optional value 0", optionSequence.getValue(0).getStringValue(cms, xmlcontent));
+        assertEquals("Optional value 0", optionSequence.getValue(0).getStringValue(cms));
         
         optionSequence.removeValue(0);
         assertEquals(0, optionSequence.getElementCount());
@@ -379,8 +379,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         titleSequence.removeValue(0);
         titleSequence.removeValue(2);
         assertEquals(2, titleSequence.getElementCount());
-        assertEquals("This is the 2nd value.", titleSequence.getValue(0).getStringValue(cms, xmlcontent));
-        assertEquals("This is just a modification test", titleSequence.getValue(1).getStringValue(cms, xmlcontent));
+        assertEquals("This is the 2nd value.", titleSequence.getValue(0).getStringValue(cms));
+        assertEquals("This is just a modification test", titleSequence.getValue(1).getStringValue(cms));
 
         // now re-create the XML content from the XML document
         content = xmlcontent.toString();
@@ -416,7 +416,6 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // make sure the selected widgets are of the configured "non-standard" type
         I_CmsXmlWidget widget = definition.getContentHandler().getEditorWidget(
             xmlcontent.getValue("Title", Locale.ENGLISH),
-            xmlcontent,
             definition);
         assertNotNull(widget);
         assertEquals(CmsXmlBooleanWidget.class.getName(), widget.getClass().getName());
@@ -536,8 +535,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlVfsFileValue vfsValue = (CmsXmlVfsFileValue)xmlcontent.getValue("VfsLink", Locale.ENGLISH);
 
         // must set the value again to ensure link table is properly initialized
-        htmlValue.setStringValue(cms, xmlcontent, htmlValue.getStringValue(cms, xmlcontent));
-        vfsValue.setStringValue(cms, xmlcontent, vfsValue.getStringValue(cms, xmlcontent));
+        htmlValue.setStringValue(cms, htmlValue.getStringValue(cms));
+        vfsValue.setStringValue(cms, vfsValue.getStringValue(cms));
 
         Iterator i;
         CmsLinkTable table;
@@ -568,6 +567,6 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsLink link = (CmsLink)table.iterator().next();
         assertEquals("/sites/default/index.html", link.getTarget());
         assertTrue(link.isInternal());
-        assertEquals("/index.html", vfsValue.getStringValue(cms, xmlcontent));
+        assertEquals("/index.html", vfsValue.getStringValue(cms));
     }
 }

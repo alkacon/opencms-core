@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.xml.types;
 
+import org.opencms.xml.I_CmsXmlDocument;
+
 import java.util.Locale;
 
 import org.dom4j.Element;
@@ -55,7 +57,7 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  * 
  * @see org.opencms.xml.types.I_CmsXmlContentValue
@@ -78,10 +80,11 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * not to add values to an already initialized XML content. To add values after initialization,
      * use {@link org.opencms.xml.content.CmsXmlContent#addValue(String, java.util.Locale, int)}.<p>
      * 
+     * @param document the document this value belongs to
      * @param root the element to append the XML to
      * @param locale the locale to generate the element default content for
      */
-    void appendDefaultXml(Element root, Locale locale);
+    void appendDefaultXml(I_CmsXmlDocument document, Element root, Locale locale);
 
     /**
      * Appends an XML representation of this schema type to the given XML element.<p>
@@ -96,12 +99,13 @@ public interface I_CmsXmlSchemaType extends Comparable {
     /**
      * Creates a XML content value object for this type.<p>
      * 
+     * @param document the XML content instance this value belongs to
      * @param element the XML element to create the value from
      * @param locale the locale to create the value for
      * 
      * @return the created XML content value object
      */
-    I_CmsXmlContentValue createValue(Element element, Locale locale);
+    I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale);
 
     /**
      * Returns the default value for a node of this type in the current schema.<p>

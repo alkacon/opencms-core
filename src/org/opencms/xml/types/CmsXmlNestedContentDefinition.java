@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlNestedContentDefinition.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.4
  */
 public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implements I_CmsXmlSchemaType {
@@ -56,13 +56,18 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
     /**
      * Creates a new XML content value for the nested content definition.<p> 
      * 
+     * @param document the XML content instance this value belongs to
      * @param contentDefinition the nested XML content definition
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
      */
-    public CmsXmlNestedContentDefinition(CmsXmlContentDefinition contentDefinition, Element element, Locale locale) {
+    public CmsXmlNestedContentDefinition(
+        CmsXmlContentDefinition contentDefinition,
+        I_CmsXmlDocument document,
+        Element element,
+        Locale locale) {
 
-        super(element, locale);
+        super(document, element, locale);
         m_contentDefinition = contentDefinition;
     }
 
@@ -85,12 +90,12 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(org.dom4j.Element, Locale)
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
-    public void appendDefaultXml(Element root, Locale locale) {
+    public void appendDefaultXml(I_CmsXmlDocument document, Element root, Locale locale) {
 
         // create a default XML document for the nested content definition
-        Document doc = m_contentDefinition.createDocument(Locale.ENGLISH);
+        Document doc = m_contentDefinition.createDocument(document, Locale.ENGLISH);
         // the first language nod contains the created values        
         Element element = (Element)doc.getRootElement().elements().get(0);
         // detach the created element
@@ -104,11 +109,11 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlSchemaType#createValue(org.dom4j.Element, Locale)
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#createValue(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, Locale locale) {
+    public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlNestedContentDefinition(m_contentDefinition, element, locale);
+        return new CmsXmlNestedContentDefinition(m_contentDefinition, document, element, locale);
     }
 
     /**
@@ -130,9 +135,9 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(org.opencms.file.CmsObject)
      */
-    public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {
+    public String getStringValue(CmsObject cms) {
 
         throw new RuntimeException("Unable to get the string value of a nested XML content definition");
     }

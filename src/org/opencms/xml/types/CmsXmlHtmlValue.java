@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -81,12 +81,13 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     /**
      * Creates a new XML content value of type "OpenCmsHtml".<p>
      * 
+     * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
      */
-    public CmsXmlHtmlValue(Element element, Locale locale) {
+    public CmsXmlHtmlValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        super(element, locale);
+        super(document, element, locale);
     }
 
     /**
@@ -102,9 +103,9 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(org.dom4j.Element, Locale)
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
-    public void appendDefaultXml(Element root, Locale locale) {
+    public void appendDefaultXml(I_CmsXmlDocument document, Element root, Locale locale) {
 
         Element element = root.addElement(getElementName());
         int index = element.getParent().elements(element.getQName()).indexOf(element);
@@ -114,7 +115,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
 
         if (m_defaultValue != null) {
             try {
-                I_CmsXmlContentValue value = createValue(element, locale);
+                I_CmsXmlContentValue value = createValue(document, element, locale);
                 value.setStringValue(m_defaultValue);
             } catch (CmsXmlException e) {
                 // should not happen if default value is correct
@@ -125,11 +126,11 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, Locale)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, Locale locale) {
+    public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlHtmlValue(element, locale);
+        return new CmsXmlHtmlValue(document, element, locale);
     }
 
     /**
@@ -171,13 +172,13 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject)
      */
-    public String getPlainText(CmsObject cms, I_CmsXmlDocument document) {
+    public String getPlainText(CmsObject cms) {
 
         try {
             CmsHtmlExtractor extractor = new CmsHtmlExtractor();
-            return extractor.extractText(this.getStringValue(cms, document), document.getEncoding());
+            return extractor.extractText(this.getStringValue(cms), m_document.getEncoding());
         } catch (Exception exc) {
             return null;
         }
@@ -196,12 +197,12 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(org.opencms.file.CmsObject)
      */
-    public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {
+    public String getStringValue(CmsObject cms) {
 
         if (m_stringValue == null) {
-            m_stringValue = createStringValue(cms, document);
+            m_stringValue = createStringValue(cms, m_document);
         }
 
         return m_stringValue;
@@ -224,31 +225,27 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, java.lang.String)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, java.lang.String)
      */
-    public void setStringValue(CmsObject cms, I_CmsXmlDocument document, String value) throws CmsXmlException {
+    public void setStringValue(CmsObject cms, String value) throws CmsXmlException {
 
         Element content = m_element.element(CmsXmlPage.NODE_CONTENT);
         Element links = m_element.element(CmsXmlPage.NODE_LINKS);
         CmsLinkProcessor linkProcessor = null;
 
-        if (document != null) {
-            // may be null in case of default value generation (i.e. setStringValue(String) was called)
+        String encoding = m_document.getEncoding();
+        linkProcessor = m_document.getLinkProcessor(cms, new CmsLinkTable());
 
-            String encoding = document.getEncoding();
-            linkProcessor = document.getLinkProcessor(cms, new CmsLinkTable());
+        if (encoding != null) {
+            // ensure all chars in the given content are valid chars for the selected charset
+            value = CmsEncoder.adjustHtmlEncoding(value, encoding);
+        }
 
-            if (encoding != null) {
-                // ensure all chars in the given content are valid chars for the selected charset
-                value = CmsEncoder.adjustHtmlEncoding(value, encoding);
-            }
-
-            // remove unnecessary tags if required
-            String contentConversion = document.getConversion();
-            if (CmsHtmlConverter.isConversionEnabled(contentConversion)) {
-                CmsHtmlConverter converter = new CmsHtmlConverter(encoding, contentConversion);
-                value = converter.convertToStringSilent(value);
-            }
+        // remove unnecessary tags if required
+        String contentConversion = m_document.getConversion();
+        if (CmsHtmlConverter.isConversionEnabled(contentConversion)) {
+            CmsHtmlConverter converter = new CmsHtmlConverter(encoding, contentConversion);
+            value = converter.convertToStringSilent(value);
         }
 
         if (linkProcessor != null) {
@@ -300,7 +297,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     public void setStringValue(String value) throws CmsXmlException {
 
         // we don't have any information available for link processing
-        setStringValue(null, null, value);
+        setStringValue(null, value);
     }
 
     /**

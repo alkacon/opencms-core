@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/11/28 21:57:59 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -387,9 +387,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     m_contentDefinition.getContentHandler();
                     
                     I_CmsXmlWidget widget = 
-                        m_contentDefinition.getContentHandler().getEditorWidget(value, m_content, m_contentDefinition);
+                        m_contentDefinition.getContentHandler().getEditorWidget(value, m_contentDefinition);
                     
-                    widget.setEditorValue(getCms(), m_content, getJsp().getRequest().getParameterMap(), this, value);
+                    widget.setEditorValue(getCms(), getJsp().getRequest().getParameterMap(), this, value);
                 }               
             }
             String decodedContent = m_content.toString();
@@ -495,8 +495,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
                     I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
                     I_CmsXmlWidget widget = 
-                        m_contentDefinition.getContentHandler().getEditorWidget(value, m_content, m_contentDefinition);                    
-                    result.append(widget.getDialogWidget(getCms(), m_content, this, m_contentDefinition, value));
+                        m_contentDefinition.getContentHandler().getEditorWidget(value, m_contentDefinition);                    
+                    result.append(widget.getDialogWidget(getCms(), this, m_contentDefinition, value));
                 }               
             }
             
@@ -533,8 +533,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     
                     I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
                     I_CmsXmlWidget widget = 
-                        m_contentDefinition.getContentHandler().getEditorWidget(value, m_content, m_contentDefinition);
-                    result.append(widget.getDialogHtmlEnd(getCms(), m_content, this, m_contentDefinition, value));
+                        m_contentDefinition.getContentHandler().getEditorWidget(value, m_contentDefinition);
+                    result.append(widget.getDialogHtmlEnd(getCms(), this, m_contentDefinition, value));
                 }               
             }
         } catch (CmsXmlException e) {
@@ -597,7 +597,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             Iterator i = getWidgets().iterator();
             while (i.hasNext()) {
                 I_CmsXmlWidget widget = (I_CmsXmlWidget)i.next();
-                result.append(widget.getDialogInitMethod(getCms(), m_content, this, m_contentDefinition, null));
+                result.append(widget.getDialogInitMethod(getCms(), this, m_contentDefinition, m_content));
                 result.append("\n");
             }
         } catch (CmsXmlException e) {
@@ -639,7 +639,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             for (int i=0; i<values.size(); i++) {
                 I_CmsXmlContentValue value = (I_CmsXmlContentValue)values.get(i);
                 try {
-                    I_CmsXmlWidget widget = m_contentDefinition.getContentHandler().getEditorWidget(value, m_content, m_contentDefinition);
+                    I_CmsXmlWidget widget = m_contentDefinition.getContentHandler().getEditorWidget(value, m_contentDefinition);
                     types.add(widget);
                 } catch (CmsXmlException e) {
                     // should usually not happen

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlBooleanValue.java,v $
- * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.2
  */
 public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
@@ -66,12 +66,13 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
     /**
      * Creates a new XML content value of type "OpenCmsBoolean".<p>
      * 
+     * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
      */
-    public CmsXmlBooleanValue(Element element, Locale locale) {
+    public CmsXmlBooleanValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        super(element, locale);
+        super(document, element, locale);
         m_boolean = Boolean.valueOf(m_stringValue).booleanValue();
     }
 
@@ -91,14 +92,12 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
      * Returns the boolean value of the given XML content value.<p>
      * 
      * @param cms an initialized instance of a CmsObject
-     * @param document the XML document this value belongs to
      * @param value the XML content value to get the boolean value of
      * 
      * @return the boolean value of the given XML content value
      * @throws CmsXmlException if something goes wrong
      */
-    public static boolean getBooleanValue(CmsObject cms, I_CmsXmlDocument document, I_CmsXmlContentValue value)
-    throws CmsXmlException {
+    public static boolean getBooleanValue(CmsObject cms, I_CmsXmlContentValue value) throws CmsXmlException {
 
         boolean result;
         if (value instanceof CmsXmlBooleanValue) {
@@ -106,17 +105,17 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
             result = ((CmsXmlBooleanValue)value).getBooleanValue();
         } else {
             // get the boolean value from the String value
-            result = Boolean.valueOf(value.getStringValue(cms, document)).booleanValue();
+            result = Boolean.valueOf(value.getStringValue(cms)).booleanValue();
         }
         return result;
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, Locale)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, Locale locale) {
+    public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlBooleanValue(element, locale);
+        return new CmsXmlBooleanValue(document, element, locale);
     }
 
     /**
@@ -147,7 +146,7 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
 
         return "<xsd:simpleType name=\"" + C_TYPE_NAME + "\"><xsd:restriction base=\"xsd:boolean\" /></xsd:simpleType>";
     }
-    
+
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#getTypeName()
      */

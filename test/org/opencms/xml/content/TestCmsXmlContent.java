@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContent.java,v $
- * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/30 17:20:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestCase;
  * Tests for generating an XML content.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsXmlContent extends TestCase {
 
@@ -95,9 +95,9 @@ public class TestCmsXmlContent extends TestCase {
         CmsXmlHtmlValue htmlValue = (CmsXmlHtmlValue)xmlcontent.getValue("Html", Locale.ENGLISH);
         CmsXmlLocaleValue localeValue = (CmsXmlLocaleValue)xmlcontent.getValue("Locale", Locale.ENGLISH);
         
-        assertEquals("Multitest 1", stringValue.getStringValue(null, xmlcontent));
-        assertEquals("-58254180000", dateTimeValue.getStringValue(null, xmlcontent));
-        assertEquals("<p>This is some Html</p>", htmlValue.getStringValue(null, xmlcontent));
-        assertEquals("en_EN", localeValue.getStringValue(null, xmlcontent));
+        assertEquals("Multitest 1", stringValue.getStringValue(null));
+        assertEquals("-58254180000", dateTimeValue.getStringValue(null));
+        assertEquals("<p>This is some Html</p>", htmlValue.getStringValue(null));
+        assertEquals("en_EN", localeValue.getStringValue(null));
     }
 }
