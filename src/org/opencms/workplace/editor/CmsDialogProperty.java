@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/04/11 16:49:49 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/04/28 22:34:06 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workplace.CmsNewResourceXmlPage;
 import org.opencms.workplace.CmsPropertyAdvanced;
 import org.opencms.workplace.CmsPropertyCustom;
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.3.0
  */
@@ -188,9 +189,9 @@ public class CmsDialogProperty extends CmsPropertyCustom {
                 counter++;
             }
             if (! found) {
-                // current template was not found among valid templates, add current template as option
+                // current template was not found among module templates, add current template as option
                 addCurrentTemplate(currentTemplate, options, values);
-                selectedValue = counter;                
+                selectedValue = 0;                
             }
         }
 
@@ -207,21 +208,28 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      */
     private void addCurrentTemplate(String currentTemplate, List options, List values) {
         // template was not found in regular template folders, add current template value
-        String name = null;
-        try { 
-            // read the title of the current template
-            name = getCms().readPropertyObject(currentTemplate, I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
-        } catch (CmsException e) {
-            // ignore this exception - the title for this template was not readable
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info("Could not read title property on template", e);
+        if (CmsStringSubstitution.isEmpty(currentTemplate)) {
+            // current template not available, add "please select" value
+            options.add(0, "--- " + key("please.select") + " ---");
+            values.add(0, "");            
+        } else {
+            // current template was set to some value, add this value to the selection
+            String name = null;        
+            try { 
+                // read the title of the current template
+                name = getCms().readPropertyObject(currentTemplate, I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
+            } catch (CmsException e) {
+                // ignore this exception - the title for this template was not readable
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info("Could not read title property on template", e);
+                }
             }
+            if (name == null) {
+                name = currentTemplate;
+            }
+            options.add(0, "* " + name);
+            values.add(0, currentTemplate);
         }
-        if (name == null) {
-            name = currentTemplate;
-        }
-        options.add("* " + name);
-        values.add(currentTemplate);           
     }
 
     /**

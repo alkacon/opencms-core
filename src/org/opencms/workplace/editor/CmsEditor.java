@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/04/28 22:34:06 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package org.opencms.workplace.editor;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
-
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -42,8 +41,7 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
 import javax.servlet.jsp.JspException;
 
@@ -53,7 +51,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 5.1.12
  */
@@ -208,10 +206,10 @@ public abstract class CmsEditor extends CmsDialog {
     protected void commitTempFile() throws CmsException {
         switchToTempProject();
         CmsFile tempFile = null;
-        Map properties = null;
+        List properties = null;
         try {
             tempFile = getCms().readFile(getParamTempfile());
-            properties = getCms().readProperties(getParamTempfile());
+            properties = getCms().readPropertyObjects(getParamTempfile(), false);
         } finally {
             switchToCurrentProject();
         }
@@ -219,13 +217,8 @@ public abstract class CmsEditor extends CmsDialog {
         CmsFile orgFile = getCms().readFile(getParamResource());
         orgFile.setContents(tempFile.getContents());
         getCms().writeFile(orgFile);
-        Iterator keys = properties.keySet().iterator();
-        while (keys.hasNext()) {
-            String keyName = (String)keys.next();
-            getCms().writeProperty(getParamResource(), keyName, (String)properties.get(keyName));
-        }
+        getCms().writePropertyObjects(getParamResource(), properties);
     }
-
     
     /**
      * Creates a temporary file which is needed while working in an editor with preview option.<p>

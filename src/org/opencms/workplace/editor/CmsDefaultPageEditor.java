@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/04/08 08:51:19 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/04/28 22:34:06 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -56,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 5.1.12
  */
@@ -279,22 +278,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @return the html for the element name selectbox
      */
     public String buildSelectElementName(String attributes) {
-        List elementList = null;
-        try { 
-            elementList = CmsDialogElements.computeElements(getCms(), getParamTempfile());
-        } catch (CmsException e) {
-            // no property found, display all present elements instead
-            List bodies = m_page.getNames(getElementLocale());
-            Collections.sort(bodies);
-            int currentIndex = bodies.indexOf(getParamElementname());   
-            if (currentIndex == -1) {
-                // mark the default element as selected
-                currentIndex = bodies.indexOf(I_CmsConstants.C_XML_BODY_ELEMENT);
-                setParamElementname(I_CmsConstants.C_XML_BODY_ELEMENT);
-            }
-            return buildSelect(attributes, bodies, bodies, currentIndex, false);
-        }
-        
+
+        List elementList = CmsDialogElements.computeElements(getCms(), m_page, getParamTempfile(), getElementLocale());
+
         int counter = 0;
         int currentIndex = -1; 
         Iterator i = elementList.iterator();
@@ -302,18 +288,16 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         List values = new ArrayList(elementList.size());
         while (i.hasNext()) {
             // get the current list element
-            String[] currentElement = (String[])i.next();               
-            String elementName = currentElement[0];
-            String elementNice = currentElement[1];
-            if (getParamElementname().equals(elementName)) {
+            CmsDialogElement element = (CmsDialogElement)i.next();               
+            if (getParamElementname().equals(element.getName())) {
                 // current element is the displayed one, mark it as selected
                 currentIndex = counter;
             }
-            if ((!m_page.hasElement(elementName, getElementLocale()) && "1".equals(currentElement[2]))
-            || m_page.isEnabled(elementName, getElementLocale())) {
+            if ((!m_page.hasElement(element.getName(), getElementLocale()) && element.isMandantory())
+               || m_page.isEnabled(element.getName(), getElementLocale())) {
                 // add element if it is not available or if it is enabled
-                options.add(elementNice);
-                values.add(elementName);
+                options.add(element.getNiceName());
+                values.add(element.getName());
                 counter++;
             }
         } 

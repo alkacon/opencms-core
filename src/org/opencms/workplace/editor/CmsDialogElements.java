@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/04/08 08:51:19 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/04/28 22:34:06 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.3.0
  */
@@ -124,57 +124,103 @@ public class CmsDialogElements extends CmsDialog {
     } 
     
     /**
-     * Creates a list of possible elements of a template from the template property "template-elements".<p>
+     * Creates a list of possible elements of a template from the template property "template-elements"
+     * and the elements available in the provided xmlPage.<p>
      * 
      * @param cms the CmsObject
-     * @param resource the resource to read from
+     * @param xmlPage the resource to read the elements from
+     * @param xmlPageUri the URI of the resouirce to read the template property from
+     * @param locale the current element locale
      * @return the list of elements in a String array with element name, nice name (if present) and mandatory flag
-     * @throws CmsException if reading the property fails
      */
-    public static List computeElements(CmsObject cms, String resource) throws CmsException {   
-        List elementList = new ArrayList();
-        String currentTemplate = cms.readPropertyObject(resource, I_CmsConstants.C_PROPERTY_TEMPLATE, true).getValue();
-        if (currentTemplate == null || currentTemplate.length() == 0) {
-            // no template found, return empty list
-            return elementList;
-        }
-        String elements = null;
+    public static List computeElements(CmsObject cms, CmsXmlPage xmlPage, String xmlPageUri, Locale locale) {
+        List result = new ArrayList();
         
+        if (xmlPage != null) {
+            List elementNames = xmlPage.getNames(locale);
+            
+            Iterator i = elementNames.iterator();
+            while (i.hasNext()) {
+                String name = (String)i.next();
+                CmsDialogElement element = new CmsDialogElement(name, null, false, false, true);
+                result.add(element);
+            }
+        }
+        
+        String currentTemplate = null;
         try {
-            // read the property from the template file
-            elements = cms.readPropertyObject(currentTemplate, I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS, false).getValue(null);
+            currentTemplate = cms.readPropertyObject(xmlPageUri, I_CmsConstants.C_PROPERTY_TEMPLATE, true).getValue();
         } catch (CmsException e) {
             if (OpenCms.getLog(CmsDialogElements.class.getName()).isWarnEnabled()) {
-                OpenCms.getLog(CmsDialogElements.class.getName()).warn("Error reading property '" + I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS + "' on resource " + currentTemplate, e);
+                OpenCms.getLog(CmsDialogElements.class.getName()).warn("Error reading property '" + I_CmsConstants.C_PROPERTY_TEMPLATE + "' on resource " + xmlPageUri, e);
+            }
+        } 
+        if (currentTemplate != null && currentTemplate.length() > 0) {
+            // template found, check template-elements property
+            String elements = null;
+            try {
+                // read the property from the template file
+                elements = cms.readPropertyObject(currentTemplate, I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS, false).getValue(null);
+            } catch (CmsException e) {
+                if (OpenCms.getLog(CmsDialogElements.class.getName()).isWarnEnabled()) {
+                    OpenCms.getLog(CmsDialogElements.class.getName()).warn("Error reading property '" + I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS + "' on resource " + currentTemplate, e);
+                }
+            }
+            if (elements != null) {
+                // elements are defined on template file, merge with available elements
+                StringTokenizer T = new StringTokenizer(elements, ",");
+                while (T.hasMoreTokens()) {
+                    String currentElement = T.nextToken();
+                    String niceName = null;
+                    boolean mandatory = false;
+                    int sepIndex = currentElement.indexOf("|");
+                    if (sepIndex != -1) {
+                        // nice name found for current element, extract it
+                        niceName = currentElement.substring(sepIndex + 1);
+                        currentElement = currentElement.substring(0, sepIndex);
+                    }
+                    if (currentElement.endsWith("*")) {
+                        // element is mandatory
+                        mandatory = true;
+                        currentElement = currentElement.substring(0, currentElement.length() - 1);
+                    }
+                                        
+                    CmsDialogElement element = new CmsDialogElement(currentElement, niceName, mandatory, true, false);
+                    if (result.contains(element)) {
+                        element.setExisting(true);
+                        result.remove(element);
+                    }
+                    result.add(element);
+                   
+                }
             }
         }
-        if (elements == null) {
-            // no elements defined on template file , return empty list
-            return Collections.EMPTY_LIST;
-        }
-        StringTokenizer T = new StringTokenizer(elements, ",");
-        while (T.hasMoreTokens()) {
-            String currentElement = T.nextToken();
-            String niceName = "";
-            String mandatory = "0";
-            int sepIndex = currentElement.indexOf("|");
-            if (sepIndex != -1) {
-                // nice name found for current element, extract it
-                niceName = currentElement.substring(sepIndex + 1);
-                currentElement = currentElement.substring(0, sepIndex);
-            }
-            if (currentElement.endsWith("*")) {
-                // element is mandatory
-                mandatory = "1";
-                currentElement = currentElement.substring(0, currentElement.length() - 1);
-            }
-            if ("".equals(niceName)) {
-                // no nice name found, use element name as nice name
-                niceName = currentElement;
-            }
-            elementList.add(new String[] {currentElement, niceName, mandatory});
-        }
-        return elementList;
+        
+        Collections.sort(result);
+        return result;
+    }
+    
+    /**
+     * Creates a list of possible elements of a template from the template property "template-elements"
+     * and the elements available in the provided resource file.<p>
+     * 
+     * @param cms the CmsObject
+     * @param xmlPageUri the resource to read the elements from
+     * @param locale the current element locale
+     * @return the list of elements in a String array with element name, nice name (if present) and mandatory flag
+     */
+    public static List computeElements(CmsObject cms, String xmlPageUri, Locale locale) {           
+     
+        CmsXmlPage page = null;        
+        try {
+            // read the xmlpage file
+            CmsFile pageFile = cms.readFile(xmlPageUri);
+            page = CmsXmlPage.read(cms, pageFile);
+        } catch (CmsException e) {
+            OpenCms.getLog(CmsDialogElements.class).warn("Could not read xmlPage from uri '" + xmlPageUri + "'", e);
+            // xmlpage will be null, only "template-elements" property on template will be checked
+        }        
+        return computeElements(cms, page, xmlPageUri, locale);        
     }
     
     /**
@@ -199,9 +245,6 @@ public class CmsDialogElements extends CmsDialog {
     public void actionUpdateElements() {
         try {
             List elementList = computeElements();
-            if (elementList == null) {
-                throw new CmsException("Elements not specified on template file!");
-            }
             CmsFile file = getCms().readFile(this.getParamTempfile());
             CmsXmlPage page = CmsXmlPage.read(getCms(), file);
             boolean foundMandatory = false;
@@ -209,25 +252,31 @@ public class CmsDialogElements extends CmsDialog {
             Iterator i = elementList.iterator();
             while (i.hasNext()) {
                 // get the current list element
-                String[] currentElement = (String[])i.next();               
-                String elementName = currentElement[0];
-                boolean isExisting = page.hasElement(elementName, getElementLocale());
-                boolean isMandatory = "1".equals(currentElement[2]);
-                if (isMandatory || "true".equals(getJsp().getRequest().getParameter(PREFIX_PARAM_BODY + elementName))) {
-                    if (!isExisting) {
+                CmsDialogElement element = (CmsDialogElement)i.next();               
+                if (element.isMandantory() 
+                || "true".equals(getJsp().getRequest().getParameter(PREFIX_PARAM_BODY + element.getName()))) {
+                    if (!element.isExisting()) {
                         // create element in order to enable it properly 
-                        page.addElement(elementName, getElementLocale());
+                        page.addElement(element.getName(), getElementLocale());
                     }
-                    page.setEnabled(elementName, getElementLocale(), true);
-                    if (isMandatory && !foundMandatory) {
-                        m_changeElement = elementName;
+                    page.setEnabled(element.getName(), getElementLocale(), true);
+                    if (element.isMandantory() && !foundMandatory) {
+                        m_changeElement = element.getName();
                         foundMandatory = true;
                     }
                 } else {
-                    if (isExisting) {
+                    if (element.isExisting()) {
+                        // must set enabled to true or check for contains always fails
+                        page.setEnabled(element.getName(), getElementLocale(), true);
                         // disable element if it is already existing
-                        page.setEnabled(elementName, getElementLocale(), false);
-                    }
+                        if (! element.isTemplateElement() 
+                        && "".equals(page.getContent(getCms(), element.getName(), getElementLocale()))) {
+                            // element is not defined in template, empty and disabled - remove it
+                            page.removeElement(element.getName(), getElementLocale());
+                        } else {
+                            page.setEnabled(element.getName(), getElementLocale(), false);
+                        }
+                    }                    
                 }
             }
             // write the temporary file
@@ -236,7 +285,9 @@ public class CmsDialogElements extends CmsDialog {
             if (page.isEnabled(getParamElementname(), getElementLocale())) {
                 m_changeElement = getParamElementname();
             } else if (!foundMandatory) {
-                m_changeElement = ((String[])elementList.get(0))[0];
+                if (elementList.size() > 0) {
+                    m_changeElement = ((CmsDialogElement)elementList.get(0)).getName();                    
+                }
             }                       
         } catch (CmsException e) {
             // show error dialog
@@ -273,9 +324,6 @@ public class CmsDialogElements extends CmsDialog {
             
             // get the list of all possible elements
             List elementList = computeElements();
-            if (elementList == null) {
-                throw new CmsException("Elements not specified on template file!");
-            }
             
             // get all present bodies from the temporary file
             CmsFile file = getCms().readFile(this.getParamTempfile());
@@ -285,30 +333,27 @@ public class CmsDialogElements extends CmsDialog {
             Iterator i = elementList.iterator();
             while (i.hasNext()) {
                 // get the current list element
-                String[] currentElement = (String[])i.next();               
-                String elementName = currentElement[0];
-                String elementNice = currentElement[1];
-                boolean isMandatory = "1".equals(currentElement[2]);
+                CmsDialogElement element = (CmsDialogElement)i.next();               
                 // build an element row
                 retValue.append("<tr>\n");
-                retValue.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">" + elementNice);
+                retValue.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">" + element.getNiceName());
                 retValue.append("</td>\n");
-                retValue.append("\t<td class=\"textcenter\" unselectable=\"on\"><input type=\"checkbox\" name=\"" + PREFIX_PARAM_BODY + elementName + "\" value=\"true\"");
+                retValue.append("\t<td class=\"textcenter\" unselectable=\"on\"><input type=\"checkbox\" name=\"" + PREFIX_PARAM_BODY + element.getName() + "\" value=\"true\"");
                 
-                if ((!page.hasElement(elementName, getElementLocale()) && isMandatory)
-                || page.isEnabled(elementName, getElementLocale())) {
+                if ((!page.hasElement(element.getName(), getElementLocale()) && element.isMandantory())
+                || page.isEnabled(element.getName(), getElementLocale())) {
                     retValue.append(" checked=\"checked\"");
                 }
-                if (isMandatory) {
+                if (element.isMandantory()) {
                     retValue.append(" disabled=\"disabled\"");
                 }
                 retValue.append(">");
                 retValue.append("</td>\n");
                 retValue.append("\t<td class=\"textcenter\" unselectable=\"on\">");
                 retValue.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-                if (!"".equals(page.getContent(getCms(), elementName, getElementLocale()))) {
+                if (!"".equals(page.getContent(getCms(), element.getName(), getElementLocale()))) {
                     // current element has content that can be deleted
-                    retValue.append(button("javascript:confirmDelete('" + elementName + "');", null, "deletecontent", "button.delete", 0));
+                    retValue.append(button("javascript:confirmDelete('" + element.getName() + "');", null, "deletecontent", "button.delete", 0));
                 } else {
                     // current element is empty
                     retValue.append(button(null, null, "deletecontent_in", "button.delete", 0));
@@ -332,11 +377,10 @@ public class CmsDialogElements extends CmsDialog {
      * Creates a list of possible elements of a template from the template property "template-elements".<p>
      * 
      * @return the list of elements in a String array with element name, nice name (if present) and mandatory flag
-     * @throws CmsException if reading the property fails
      */
-    public List computeElements() throws CmsException {
+    public List computeElements() {
         if (m_elementList == null) {
-            m_elementList = computeElements(getCms(), getParamTempfile());
+            m_elementList = computeElements(getCms(), getParamTempfile(), getElementLocale());
         }
         return m_elementList;
     }

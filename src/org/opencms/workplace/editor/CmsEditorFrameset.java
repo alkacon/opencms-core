@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorFrameset.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/04/28 22:34:06 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1.12
  */
@@ -86,7 +86,7 @@ public class CmsEditorFrameset extends CmsEditor {
         while (paramNames.hasMoreElements()) {
             String paramName = (String)paramNames.nextElement();
             String paramValue = request.getParameter(paramName);
-            retValue.append(paramName + "=" + CmsEncoder.encode(paramValue));
+            retValue.append(paramName + "=" + CmsEncoder.encode(paramValue, getCms().getRequestContext().getEncoding()));
             if (paramNames.hasMoreElements()) {
                 retValue.append("&");
             }
