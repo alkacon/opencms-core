@@ -172,10 +172,14 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	String idnewsave = (String) session.getValue("idnew");
 	//access to new dialog
 	if ((id != null) && (id.equals("new")) || ((idsave != null) && (idsave.equals("new")))) {
-		if (idsave != null)
-			parameters.put("idsave", idsave);
-		if (id != null)
+    if (idsave != null) {
+			parameters.put("id", idsave);
+      //session.removeValue("idsave");
+    }
+		if (id != null) {
 			parameters.put("id", id);
+      session.putValue("idsave", id);
+    }
 		//process the "new entry" form
 		returnProcess = getContentNew(cms, template, elementName, parameters, templateSelector);
 		//finally retrun processed data
@@ -193,6 +197,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     if(action == null) action = "";
 		if (action.equalsIgnoreCase("list")){
 			//process the list output
+      // clear "idsave" here in case user verification of data failed and input has to be shown again ...
+      session.removeValue("idsave");
 			returnProcess = getContentList(cms, template, elementName, parameters, templateSelector);
 			//finally return processed data
 			return returnProcess;
@@ -203,10 +209,14 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 			//go to the edit dialog
 			if ((idedit != null) || (ideditsave != null)) {
 				//store id parameters for edit dialog
-				if (idsave != null)
-					parameters.put("idsave", idsave);
-				if (id != null)
+				if (idsave != null) {
+					parameters.put("id", idsave);
+          //session.removeValue("idsave");
+        }
+				if (id != null) {
 					parameters.put("id", id);
+          session.putValue("idsave", id);
+        }
 				returnProcess = getContentEdit(cms, template, elementName, parameters, templateSelector);
 				//finally return processed data
 				return returnProcess;
@@ -214,8 +224,10 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 				//store id parameters for delete and lock
 				if (idsave != null) {
 					parameters.put("id", idsave);
+          session.removeValue("idsave");
 				} else {
 					parameters.put("id", id);
+          session.putValue("idsave", id);
 				}
 				//get marker for accessing the delete dialog
 				String iddeletesave = (String) session.getValue("iddelete");
@@ -332,7 +344,7 @@ private byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, St
 	String id = (String) parameters.get("id");
 	if (id == null)
 		id = "";
-	if (id != "") {
+	/*if (id != "") {
 		session.putValue("idsave", id);
 	} else {
 		String idsave = (String) session.getValue("idsave");
@@ -340,7 +352,7 @@ private byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, St
 			idsave = "";
 		id = idsave;
 		session.removeValue("idsave");
-	}
+	}*/
 
 	// get value of hidden input field action
 	String action = (String) parameters.get("action");
@@ -669,6 +681,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		templateSelector = "error";
 		template.setData("filtername", filterMethodName);
 		template.setData("filtererror", ite.getTargetException().getMessage());
+    session.removeValue(sessionFilterParam);
 		//session.removeValue("filterparameter");
 	} catch (NoSuchMethodException nsm) {
 		if (A_OpenCms.isLogging()) {
@@ -677,7 +690,8 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		templateSelector = "error";
 		template.setData("filtername", filterMethodName);
 		template.setData("filtererror", nsm.getMessage());
-		session.removeValue("filterparameter");
+		session.removeValue(sessionFilterParam);
+    //session.removeValue("filterparameter");
 	} catch (Exception e) {
 		if (A_OpenCms.isLogging()) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter: Other Exception!");
@@ -685,7 +699,8 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		templateSelector = "error";
 		template.setData("filtername", filterMethodName);
 		template.setData("filtererror", e.getMessage());
-		session.removeValue("filterparameter");
+    session.removeValue(sessionFilterParam);
+		//session.removeValue("filterparameter");
 	}
 	//get the number of rows
 	int rows = tableContent.size();
@@ -836,7 +851,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	String id = (String) parameters.get("id");
 	if (id == null)
 		id = "";
-	if (id != "") {
+	/*if (id != "") {
 		session.putValue("idsave", id);
 	} else {
 		String idsave = (String) session.getValue("idsave");
@@ -844,7 +859,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			idsave = "";
 		id = idsave;
 		session.removeValue("idsave");
-	}
+	} */
 	parameters.put("idlock", id);
 
 	// get value of hidden input field action
@@ -927,7 +942,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		// confirmation button pressed, process data!
 	} else {
 		templateSelector = "done";
-		session.removeValue("idsave");
+		// session.removeValue("idsave");
 
 		//access content definition constructor by reflection
 		Integer idInteger = null;
