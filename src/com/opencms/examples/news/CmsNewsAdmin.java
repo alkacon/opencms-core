@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/03/30 08:15:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/03/31 12:30:39 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,10 +43,11 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/03/30 08:15:51 $
+ * @version $Revision: 1.4 $ $Date: 2000/03/31 12:30:39 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
-public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants {
+public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants,
+                                                                 I_CmsFileListUsers {
 
     /** Name of the file parameter in the URL */
     public static final String C_NEWS_PARAM_FILE = "file";
