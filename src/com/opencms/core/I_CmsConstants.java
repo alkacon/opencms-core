@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2000/02/09 19:05:21 $
+ * @version $Revision: 1.32 $ $Date: 2000/02/11 18:59:59 $
  */
 public interface I_CmsConstants
 {
@@ -524,5 +524,63 @@ public interface I_CmsConstants
 	/**User type value for the task log */
 	public static final int C_TASKLOG_USER   = 1;	
 	
+
+	/**
+	 * Type values for the database import and export
+	 */
+	// what to export
+	final static int C_EXPORTUSERSFILES=0;
+	final static int C_EXPORTONLYUSERS=1;
+	final static int C_EXPORTONLYFILES=2;
+	// root element in the XML file (document node)
+	final static String C_FELEMENT = "CMS_EXPORT";
+	// for the files
+	final static String C_TFILES = "FILES";
+	final static String C_TFILEOBJ = "FILEOBJ";
+	final static String C_TFNAME = "NAME";	
+	final static String C_TFTYPE = "TYPE";	
+	final static String C_TFTYPENAME = "TYPENAME";
+	//final static String C_TFFLAG = "FLAG";
+	//final static String C_TFUSER = "USER";
+	//final static String C_TFGROUP = "GROUP";
+	//final static String C_TFACCESSFLAG = "ACCESSFLAG";
+	//final static String C_TFSTATE = "STATE";
+	//final static String C_TFLOCKED = "LOCKED";
+	//final static String C_TFLAUNCHER = "LAUNCHER";	
+	//final static String C_TFLAUNCHERCLASS = "LAUNCHERCLASS";	
+	//final static String C_TFCREATED = "CFREATED";	
+	//final static String C_TFMODIFIED = "MODIFIED";	
+	//final static String C_TFSIZE = "SIZE";
+	final static String C_TFMETAINFO = "METAINFO";	
+	final static String C_TFMETANAME = "METANAME";
+	final static String C_TFMETATYPE = "METATYP";
+	final static String C_TFMETAVALUE = "METAVALUE";
+	final static String C_FCONTENT = "CONTENT";	
+	// for the groups
+	final static String C_TGROUPS = "GROUPS";
+	final static String C_TGROUPOBJ = "GROUPOBJ";
+	final static String C_TGNAME = "NAME";	
+	final static String C_TGPARENTGROUP = "PARENTGROUP";	
+	final static String C_TGDESC = "DESC";	
+	final static String C_TGFLAG = "FLAG";
+	final static String C_TGROUPUSERS = "GROUPUSERS";
+	final static String C_TGUSER = "USER";
+	// for the useres
+	final static String C_TUSERS = "USERS";
+	final static String C_TUSEROBJ = "USEROBJ";
+	final static String C_TULOGIN = "LOGIN";
+	final static String C_TUPASSWD = "PASSWD";
+	final static String C_TUNAME = "NAME";	
+	final static String C_TUFIRSTNAME = "FIRSTNAME";	
+	final static String C_TUDESC = "DESC";	
+	final static String C_TUEMAIL = "EMAIL";	
+	final static String C_TUDGROUP = "DEFAULTGROUP";	
+	final static String C_TUDISABLED = "DISABLED";	
+	final static String C_TUFLAG = "FLAG";
+	final static String C_TUSERGROUPS = "USERGROUPS";
+	final static String C_TUGROUP = "GROUP";
+	final static String C_TUADDINFO = "ADDINFO";
+	final static String C_TUINFOKEY = "INFOKEY";
+	final static String C_TUINFOVALUE = "INFOVALUE";
 }
 

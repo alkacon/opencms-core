@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.34 $ $Date: 2000/02/11 09:36:02 $
+ * @version $Revision: 1.35 $ $Date: 2000/02/11 19:00:00 $
  */
 interface I_CmsResourceBroker {
 
@@ -1652,4 +1652,42 @@ interface I_CmsResourceBroker {
 	 * @return the number of file-system-changes.
 	 */
 	public long getFileSystemChanges(A_CmsUser currentUser, A_CmsProject currentProject);
+	
+	
+	// database import and export stuff
+	/**
+	 * exports database (files, groups, users) into a specified file
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param exportFile the name (absolute Path) for the XML file
+	 * @param exportPath the name (absolute Path) for the folder to export
+	 * @param exportType what to export:
+	 *			C_EXPORTUSERSFILES exports all
+	 *			C_EXPORTONLYUSERS  exports only users and groups
+	 *			C_EXPORTONLYFILES  exports only files
+	 * 
+	 * @return wether the user has access, to do this or not
+	 *         if he has access, the export will be executed.
+	 */
+	public boolean exportDb(A_CmsUser currentUser,  A_CmsProject currentProject, String exportFile, String exportPath, int exportType);
+	
+	/**
+	 * imports a (files, groups, users) XML file into database
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 * @param importFile the name (absolute Path) of the XML import file
+	 * 
+	 * @return wether the user has access, to do this or not
+	 *         if he has access, the export will be executed.
+	 */
+	public boolean importDb(A_CmsUser currentUser,  A_CmsProject currentProject, String importPath, String importFile);
 }

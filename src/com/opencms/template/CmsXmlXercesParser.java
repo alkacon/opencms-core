@@ -18,7 +18,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/11 19:00:00 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
     
@@ -38,10 +38,19 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
 
     /**
      * Creates an empty DOM XML document.
+     * Workarround caus original method is corruped
+     * 
+     * @author Michaela Schleich
+     * @param docNod first Node in empty  XML document
      * @return Empty document.
      */
-    public Document createEmptyDocument() {
-        return (Document)(new DocumentImpl(null));
+    public Document createEmptyDocument(String docNod) throws Exception {
+        String docXml = new String("<?xml version=\"1.0\" encoding=\"UTF8\"?>");
+		docXml = docXml+"<"+docNod+">"+"</"+docNod+">";
+		StringReader reader = new StringReader(docXml);
+
+		return parse(reader);
+		//return (Document)(new DocumentImpl(null));
     }    
     
     /**
@@ -65,7 +74,11 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
         
         Printer printer = Printer.makePrinter(out, of);
         try {
-            printer.print(doc);      
+            System.out.println(doc);
+			System.out.println(printer);
+			System.out.println(out);
+			printer.print(doc);   
+			
         } catch(Exception e) {
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlXerxesParser] " + e);
@@ -80,7 +93,7 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
      * @param out OutputStream to print to.
      */
     public void getXmlText(Document doc, OutputStream out) {
-        OutputFormat of = new OutputFormat(doc, OutputFormat.DEFAULT_ENCODING, false);
+        OutputFormat of = new OutputFormat(doc, OutputFormat.DEFAULT_ENCODING, true);
         
         try {
             Printer printer = Printer.makePrinter(out, of);

@@ -10,7 +10,7 @@ import org.w3c.dom.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/11 19:00:00 $
  */
 public interface I_CmsXmlParser {
     
@@ -26,7 +26,7 @@ public interface I_CmsXmlParser {
      * Creates an empty DOM XML document.
      * @return Empty document.
      */
-    public Document createEmptyDocument();
+    public Document createEmptyDocument(String docNod) throws Exception;
     
     /**
      * Used to import a node from a foreign document.

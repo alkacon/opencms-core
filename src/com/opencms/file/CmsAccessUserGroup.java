@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/01/28 17:42:31 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/11 18:59:59 $
  */
  class CmsAccessUserGroup implements I_CmsAccessUserGroup, I_CmsConstants {
 
@@ -257,16 +257,17 @@ import com.opencms.core.*;
         throws CmsException {
         A_CmsUser user=null;
         A_CmsGroup defaultGroup=null;
-                      
+                     
         //get the group id of the user default group
         defaultGroup=m_accessGroup.readGroup(group);
         //add the basic user data in the user database.
         user=m_accessUser.createUser(name,password,description);
         //store the additional information in the additional information database.
+
 		user.setDefaultGroup(defaultGroup);
 		user.setFlags(flags);
 		user.setLastlogin(0);
-        m_accessUserInfo.addUserInformation(user);  
+	    m_accessUserInfo.addUserInformation(user);  
         //combine user object and additional information to the complete user object.
         user.setAdditionalInfo(additionalInfos);
         user.setDefaultGroup(defaultGroup);
