@@ -1,0 +1,26 @@
+body
+{
+        font-family: Arial;
+	margin-top: 0pt;
+	background-color: #FFFFFF;
+	width: 100%;
+}
+td.head
+{
+        background: #CCCCCC;
+        bg: #CCCCCC;
+	font-size:11pt;
+}
+td.info
+{
+        background: #EEEEEE;
+        bg: #EEEEEE;
+	font-size:11pt;
+}
+td.bg
+{
+        background: #888888;
+        bg: #888888;
+	font-size:11pt;
+}
+
