@@ -251,7 +251,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>383</access>
             <properties>
                 <property>
                     <name>Title</name>
