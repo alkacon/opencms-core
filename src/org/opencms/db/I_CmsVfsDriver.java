@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/04 10:56:59 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/08/04 15:59:09 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.29 $ $Date: 2003/08/04 10:56:59 $
+ * @version $Revision: 1.30 $ $Date: 2003/08/04 15:59:09 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -453,5 +453,19 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if somethong goes wrong
      */
     void resetProjectId(CmsProject currentProject, CmsResource resource) throws CmsException;
+    
+    /**
+     * Replaces the content and properties of an existing resource.<p>
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project
+     * @param resName the resource name
+     * @param resType the resource type
+     * @param resProps the resource properties
+     * @param resContent the resource content
+     * @return CmsResource the resource with replaced content and properties
+     * @throws CmsException if something goes wrong
+     */
+    void replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] newResContent, int newResType) throws CmsException;    
      
 }

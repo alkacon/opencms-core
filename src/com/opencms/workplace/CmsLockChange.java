@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
-* Date   : $Date: 2003/08/03 15:11:59 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/08/04 15:59:09 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.45 $ $Date: 2003/08/03 15:11:59 $
+ * @version $Revision: 1.46 $ $Date: 2003/08/04 15:59:09 $
  */
 
 public class CmsLockChange extends CmsWorkplaceDefault {
@@ -112,7 +112,8 @@ public class CmsLockChange extends CmsWorkplaceDefault {
                 session.removeValue(C_PARA_RESOURCE);
                 try{
                     //cms.unlockResource(filename, false);
-                    cms.lockResource(filename, true);
+                    //cms.lockResource(filename, true);
+                    cms.changeLock(filename);
                 } catch (CmsException e){
                     CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
                     if (e instanceof CmsSecurityException) {

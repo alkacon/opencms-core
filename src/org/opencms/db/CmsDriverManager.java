@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/04 12:22:38 $
- * Version: $Revision: 1.134 $
+ * Date   : $Date: 2003/08/04 15:59:09 $
+ * Version: $Revision: 1.135 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.134 $ $Date: 2003/08/04 12:22:38 $
+ * @version $Revision: 1.135 $ $Date: 2003/08/04 15:59:09 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1088,9 +1088,9 @@ public class CmsDriverManager extends Object {
         newResourceProps = readProperties(context, source, null, false);
         
         // create a copy of the source file in the destination parent folder      
-        if (copyAsLink)
-            createVfsLink(context, destination, source, newResourceProps);
-        else {
+        if (copyAsLink) {
+            newResource = createVfsLink(context, destination, source, newResourceProps, lockCopy);
+        } else {
             newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, sourceFile.getFlags(), destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
 
             // copy the properties
@@ -1107,7 +1107,7 @@ public class CmsDriverManager extends Object {
         }
         
         if (lockCopy) {
-            lockResource(context, destination, true);
+            lockResource(context, destination);
         }
 
         clearAccessControlListCache();
@@ -1174,7 +1174,7 @@ public class CmsDriverManager extends Object {
         }
         
         if (lockCopy) {
-            lockResource(context, destination, true);
+            lockResource(context, destination);
         }
 
         clearAccessControlListCache();
@@ -1689,10 +1689,11 @@ public class CmsDriverManager extends Object {
      * @param linkName the name of the link
      * @param targetName the name of the target
      * @param linkProperties the properties to attach via the the link
+     * @param lockResource, true, if the new created link should be initially locked
      * @return the new resource
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createVfsLink(CmsRequestContext context, String linkName, String targetName, Map linkProperties) throws CmsException {
+    public CmsResource createVfsLink(CmsRequestContext context, String linkName, String targetName, Map linkProperties, boolean lockResource) throws CmsException {
         CmsResource targetResource = null;
         CmsResource linkResource = null;
         String parentFolderName = null;
@@ -1740,8 +1741,11 @@ public class CmsDriverManager extends Object {
         // write its properties
         readPath(context,linkResource,true);
         m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType());
-        // lock the resource
-        lockResource(context,linkName,true);
+        
+        if (lockResource) {
+            // lock the resource
+            lockResource(context,linkName);
+        }
 
         // if the source
         clearResourceCache();
@@ -1880,7 +1884,7 @@ public class CmsDriverManager extends Object {
         // upgrade a potential inherited, non-shared lock into an exclusive lock
         currentLock = getLock(context, filename);
         if (currentLock.getType() == CmsLock.C_TYPE_INHERITED) {
-            lockResource(context, filename, false);            
+            lockResource(context, filename);            
         }
 
         // add the resource itself to the list of all resources that get deleted/removed
@@ -1921,7 +1925,8 @@ public class CmsDriverManager extends Object {
                     existsOnline = false;
                 }
                 
-                unlockResource(context, currentResource.getFullResourceName(), true);                
+                //unlockResource(context, currentResource.getFullResourceName());
+                m_lockDispatcher.removeResource(this, context, currentResource.getFullResourceName(), true);                
 
                 if (!existsOnline) {
                     // remove the properties                
@@ -2096,7 +2101,7 @@ public class CmsDriverManager extends Object {
                     CmsLock lock = getLock(context, currentFile);
                     if (lock.isNullLock()) {
                         // lock the resource
-                        lockResource(context, currentResourceName, true);
+                        lockResource(context, currentResourceName);
                     }
                     // undo all changes in the file
                     undoChanges(context, currentResourceName);
@@ -2107,7 +2112,7 @@ public class CmsDriverManager extends Object {
                     CmsLock lock = getLock(context, currentFile);                    
                     if (lock.isNullLock()) {
                         // lock the resource
-                        lockResource(context, currentResourceName, true);
+                        lockResource(context, currentResourceName);
                     }
                     // then undo all changes in the file
                     undoChanges(context, currentResourceName);
@@ -2126,7 +2131,7 @@ public class CmsDriverManager extends Object {
                 } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {                    
                     if (lock.isNullLock()) {
                         // lock the resource
-                        lockResource(context, currentResourceName, true);
+                        lockResource(context, currentResourceName);
                     }
                     // undo all changes in the folder
                     undoChanges(context, currentResourceName);
@@ -2135,7 +2140,7 @@ public class CmsDriverManager extends Object {
                     undeleteResource(context, currentResourceName);
                     if (lock.isNullLock()) {
                         // lock the resource
-                        lockResource(context, currentResourceName, true);
+                        lockResource(context, currentResourceName);
                     }
                     // then undo all changes in the folder
                     undoChanges(context, currentResourceName);
@@ -4347,49 +4352,59 @@ public class CmsDriverManager extends Object {
      *
      * @param context the current request context
      * @param resourcename the resource name that gets locked
-     * @param stealLock true, if the lock should be taken away from another user
      * @throws CmsException if something goes wrong
      */
-    public void lockResource(CmsRequestContext context, String resourcename, boolean stealLock) throws CmsException {
+    public void lockResource(CmsRequestContext context, String resourcename) throws CmsException {
         CmsResource resource = readFileHeader(context, resourcename);
-        CmsLock oldLock = null;
-        CmsLock exclusiveLock = null;
 
-        if (stealLock) {
+        // check if the user has write access to the resource
+        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
-            // stealing a lock: checking permissions will throw an exception coz the
-            // resource is still locked for the other user. thus, the resource is unlocked
-            // before the permissions of the new user are checked. if the new user 
-            // has insufficient permissions, the previous lock is restored.
-
-            // save the lock of the resource's exclusive locked sibling
-            exclusiveLock = m_lockDispatcher.getExclusiveLockedSibling(this, context, resourcename);
-            // save the lock of the resource itself
-            oldLock = getLock(context, resourcename);
-
-            // TODO move this code into the CmsLockDispatcher
-            /*
-            if (oldLock.getType() == CmsLock.C_TYPE_INHERITED || oldLock.getType() == CmsLock.C_TYPE_SHARED_INHERITED) {
-                throw new CmsLockException("Unable to steal lock due to an inherited lock of a parent folder", CmsLockException.C_RESOURCE_LOCKED_INHERITED);
-            }
-            */
-
-            unlockResource(context, resourcename, true);
+        if (resource.getState() != I_CmsConstants.C_STATE_UNCHANGED && resource.getProjectId() != context.currentProject().getId()) {
+            // update the project flag of a modified resource as "modified inside the current project"
+            m_vfsDriver.updateProjectId(context.currentProject(), resource);
         }
 
+        // add the resource to the lock dispatcher
+        m_lockDispatcher.addResource(this, context, resource.getFullResourceName(), context.currentUser().getId(), context.currentProject().getId());
+
+        // update the resource cache
+        clearResourceCache();
+    }
+    
+    public void changeLock(CmsRequestContext context, String resourcename) throws CmsException {
+        CmsResource resource = readFileHeader(context, resourcename);
+        CmsLock oldLock = getLock(context, resourcename);
+        CmsLock exclusiveLock = null;
+        
+        if (oldLock.isNullLock()) {
+            throw new CmsLockException( "Unable to steal lock on a unlocked resource", CmsLockException.C_RESOURCE_UNLOCKED);
+        }
+        
+        // stealing a lock: checking permissions will throw an exception coz the
+        // resource is still locked for the other user. thus, the resource is unlocked
+        // before the permissions of the new user are checked. if the new user 
+        // has insufficient permissions, the previous lock is restored.
+
+        // save the lock of the resource's exclusive locked sibling
+        exclusiveLock = m_lockDispatcher.getExclusiveLockedSibling(this, context, resourcename);
+        // save the lock of the resource itself
+        oldLock = getLock(context, resourcename);
+
+        // remove the lock
+        m_lockDispatcher.removeResource(this, context, resourcename, true);  
+        
         try {
             // check if the user has write access to the resource
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
         } catch (CmsSecurityException e) {
-            if (stealLock && (oldLock.getType() != CmsLock.C_TYPE_INHERITED) && (oldLock.getType() != CmsLock.C_TYPE_SHARED_INHERITED) && !exclusiveLock.isNullLock()) {
-                // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
-                // a new user with insufficient permissions on the resource
-                m_lockDispatcher.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
-            }
+            // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
+            // a new user with insufficient permissions on the resource
+            m_lockDispatcher.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
 
             throw e;
-        }
-
+        } 
+        
         if (resource.getState() != I_CmsConstants.C_STATE_UNCHANGED && resource.getProjectId() != context.currentProject().getId()) {
             // update the project flag of a modified resource as "modified inside the current project"
             m_vfsDriver.updateProjectId(context.currentProject(), resource);
@@ -4579,7 +4594,7 @@ public class CmsDriverManager extends Object {
         m_vfsDriver.updateResourceState(context.currentProject(), destination, C_UPDATE_STRUCTURE);
 
         // lock the new resource
-        lockResource(context,destinationName,false);
+        lockResource(context,destinationName);
     }
 
     /**
@@ -6829,13 +6844,13 @@ public class CmsDriverManager extends Object {
         CmsResource resource = null;
 
         // read the existing resource
-        resource = readFileHeader(context, resourceName, true);
+        resource = readFileHeader(context, resourceName, false);
 
         // check if the user has write access 
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
         // replace the existing with the new file content
-        m_vfsDriver.writeFileContent(resource.getFileId(), newResourceContent, context.currentProject().getId(), false);    
+        m_vfsDriver.replaceResource(context.currentUser(), context.currentProject(), resource, newResourceContent, newResourceType);    
 
         // write the properties
         m_vfsDriver.writeProperties(newResourceProperties, context.currentProject().getId(), resource, resource.getType());
@@ -7435,12 +7450,12 @@ public class CmsDriverManager extends Object {
      * @return the removed lock
      * @throws CmsException if something goes wrong
      */
-    public CmsLock unlockResource(CmsRequestContext context, String resourcename, boolean forceUnlock) throws CmsException {    
-        CmsLock oldLock = m_lockDispatcher.removeResource(this, context, resourcename, forceUnlock);        
-        clearResourceCache();   
-        
-        return oldLock;     
-        }
+    public CmsLock unlockResource(CmsRequestContext context, String resourcename) throws CmsException {
+        CmsLock oldLock = m_lockDispatcher.removeResource(this, context, resourcename, false);
+        clearResourceCache();
+
+        return oldLock;
+    }
         
     /**
      * When a project is published this method aktualises the online link table.

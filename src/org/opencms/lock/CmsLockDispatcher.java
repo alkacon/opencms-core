@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/08/02 12:28:01 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/08/04 15:59:09 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.29 $ $Date: 2003/08/02 12:28:01 $
+ * @version $Revision: 1.30 $ $Date: 2003/08/04 15:59:09 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -329,10 +329,13 @@ public final class CmsLockDispatcher extends Object {
     /**
      * Removes a resource from the lock dispatcher.<p>
      * 
+     * The forceUnlock option should be used with caution. forceUnlock will remove the lock
+     * by ignoring any rules which may cause wrong lock states.
+     * 
      * @param driverManager the driver manager
      * @param context the current request context
      * @param resourcename the full resource name including the site root
-     * @param forceUnlock true, if a resource is force to get unlocked, no matter by which user and in which project the resource is currently locked
+     * @param forceUnlock true, if a resource is forced to get unlocked, no matter by which user and in which project the resource is currently locked
      * @return the previous CmsLock object of the resource, or null if the resource was unlocked
      * @throws CmsLockException if the user tried to unlock a resource in a locked folder
      */
@@ -438,6 +441,15 @@ public final class CmsLockDispatcher extends Object {
         }
 
         return buf.toString();
+    }
+    
+    /**
+     * Returnes the number of exclusive locked resources.<p>
+     * 
+     * @return the number of exclusive locked resources
+     */
+    public int size() {
+        return m_exclusiveLocks.size();
     }
 
 }

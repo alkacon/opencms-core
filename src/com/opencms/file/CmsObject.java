@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/04 12:22:38 $
-* Version: $Revision: 1.363 $
+* Date   : $Date: 2003/08/04 15:59:09 $
+* Version: $Revision: 1.364 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.363 $
+ * @version $Revision: 1.364 $
  */
 public class CmsObject {
 
@@ -868,7 +868,7 @@ public class CmsObject {
     }
 
     public CmsResource createVfsLink(String linkName, String targetName, Map linkProperties) throws CmsException {
-        return m_driverManager.createVfsLink(m_context, addSiteRoot(linkName), addSiteRoot(targetName), linkProperties);
+        return m_driverManager.createVfsLink(m_context, addSiteRoot(linkName), addSiteRoot(targetName), linkProperties, true);
     }
     /**
      * Deletes all properties for a file or folder.
@@ -1351,7 +1351,7 @@ public class CmsObject {
      * It will also be thrown, if there is a existing lock and force was set to false.
      */
     protected void doLockResource(String resource, boolean force) throws CmsException {
-        m_driverManager.lockResource(m_context, addSiteRoot(resource), force);
+        m_driverManager.lockResource(m_context, addSiteRoot(resource));
     }
 
     /**
@@ -1461,7 +1461,7 @@ public class CmsObject {
      * to unlock this resource.
      */
     protected void doUnlockResource(String resource) throws CmsException {
-        m_driverManager.unlockResource(m_context, addSiteRoot(resource), false);
+        m_driverManager.unlockResource(m_context, addSiteRoot(resource));
     }
 
     /**
@@ -2571,6 +2571,10 @@ public class CmsObject {
      */
     public void lockResource(String resource, boolean force) throws CmsException {
         getResourceType(readFileHeader(resource).getType()).lockResource(this, resource, force);
+    }
+    
+    public void changeLock(String resourcename) throws CmsException {
+        m_driverManager.changeLock(m_context, addSiteRoot(resourcename));
     }
 
     /**

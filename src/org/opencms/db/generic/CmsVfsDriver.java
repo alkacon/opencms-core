@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/04 10:56:59 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2003/08/04 15:59:09 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.84 $ $Date: 2003/08/04 10:56:59 $
+ * @version $Revision: 1.85 $ $Date: 2003/08/04 15:59:09 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -3884,47 +3884,31 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     }
     
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#switchLinkType(com.opencms.file.CmsUser, com.opencms.file.CmsProject, com.opencms.file.CmsResource, com.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsVfsDriver#replaceResource(com.opencms.file.CmsUser, com.opencms.file.CmsProject, com.opencms.file.CmsResource, java.util.Map, byte[])
      */
-    /*
-    public void switchLinkType(CmsUser currentUser, CmsProject currentProject, CmsResource softLink, CmsResource hardLink) throws CmsException {
-        PreparedStatement stmt = null;
+    public void replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] resContent, int newResType) throws CmsException {
         Connection conn = null;
-        int state = -1;
-
-        try {
-            conn = m_sqlManager.getConnection(currentProject);
-
-            if (softLink != null) {
-                state = softLink.getState() == I_CmsConstants.C_STATE_UNCHANGED ? I_CmsConstants.C_STATE_CHANGED : softLink.getState();
-                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_CHANGE_LINK_TYPE");
-                stmt.setInt(1, I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
-                stmt.setInt(2, state);
-                stmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-                stmt.setString(4, currentUser.getId().toString());
-                stmt.setString(5, softLink.getId().toString());
-                stmt.executeUpdate();
-}
-            if (hardLink != null) {
-                m_sqlManager.closeAll(null, stmt, null);
+        PreparedStatement stmt = null;   
                 
-                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_CHANGE_LINK_TYPE");
-                state = hardLink.getState() == I_CmsConstants.C_STATE_UNCHANGED ? I_CmsConstants.C_STATE_CHANGED : hardLink.getState();
-                stmt.setInt(1, I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
-                stmt.setInt(2, state);
-                stmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-                stmt.setString(4, currentUser.getId().toString());
-                stmt.setString(5, hardLink.getId().toString());
-                stmt.executeUpdate();
+        try {
+            // write the file content
+            if (resContent!=null) {
+                writeFileContent(res.getFileId(), resContent, currentProject.getId(), false);
             }
+            
+            // update the resource record
+            conn = m_sqlManager.getConnection(currentProject);
+            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCE_REPLACE"); 
+            stmt.setInt(1, newResType);
+            stmt.setInt(2, resContent.length);
+            stmt.setString(3, res.getResourceId().toString());
+            stmt.executeUpdate(); 
+            
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception exc) {
-            throw new CmsException("switchLinkType" + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
-        }
+        }       
     }
-    */
     
 }
