@@ -69,7 +69,7 @@
 
 </head>
 
-<!-- onload="window.top.body.admin_content.location.href='Backoffice.html'" -->
+<!-- onload="window.top.body.admin_content.location.href='backoffice.html'" -->
 <body bgcolor="#C0C0C0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed onload="window.top.body.admin_content.location.href=']]><method name="getServletPath"/><method name="getBackofficeUrl"/><![CDATA[?action=list']]><process>setfocus</process><![CDATA[">  
 
 	<table border="0" cellspacing=0 cellpadding=0 valign=bottom>
