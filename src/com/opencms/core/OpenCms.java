@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/12/06 09:10:57 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2001/12/07 10:30:33 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.69 $ $Date: 2001/12/06 09:10:57 $
+ * @version $Revision: 1.70 $ $Date: 2001/12/07 10:30:33 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -150,6 +150,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * The path to where the export will go
      */
     private static String m_staticExportPath = null;
+
+    /**
+     * Is the static export enabled of diabled
+     */
+    private static boolean c_staticExportEnabled = false;
 
     /**
      * Constructor, creates a new OpenCms object.
@@ -293,7 +298,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             // at last the target for the export
             m_staticExportPath = com.opencms.boot.CmsBase.getAbsoluteWebPath(conf.getString(C_STATICEXPORT_PATH));
 
-
+            // is the static export enabled?
+            c_staticExportEnabled = conf.getBoolean("staticexport.enabled", false);
         }catch(Exception e){
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
@@ -379,6 +385,12 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         return c_variantDeps;
     }
 
+    /**
+     * Returns true if the static export is enabled
+     */
+    public static boolean isStaticExportEnabled(){
+        return c_staticExportEnabled;
+    }
     /**
      * This method gets the requested document from the OpenCms and returns it to the
      * calling module.
