@@ -5,6 +5,7 @@ function vars_resources() {
     this.actProject;
     this.onlineProject;
     this.lockedBy="locked by:";
+    this.titleString="Arbeitsplatz von";
     this.actDirectory;
     
 
