@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/04/02 14:37:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/04/05 05:39:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@
  */
 
 package org.opencms.file;
+
+import org.opencms.main.OpenCms;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -78,7 +80,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2004/04/02 14:37:04 $
+ * @version $Revision: 1.8 $ $Date: 2004/04/05 05:39:54 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -148,7 +150,17 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      */
     public static final CmsProperty getNullProperty() {
 
-        return CmsProperty.C_NULL_PROPERTY;
+        return C_NULL_PROPERTY;
+    }
+    
+    /**
+     * Checks if this property object is the null property object.<p>
+     * 
+     * @return true if this property object is the null property object
+     */
+    public boolean isNullProperty() {
+        
+        return this == C_NULL_PROPERTY;
     }
 
     /**
@@ -314,41 +326,58 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     /**
      * Tests if a specified object is equal to this CmsProperty object.<p>
      * 
+     * Two property objecs are equal if their key names are equal.<p>
+     * 
      * @param object another object
      * @return true, if the specified object is equal to this CmsProperty object
      */
     public boolean equals(Object object) {
-
-        boolean isEqual = false;
-
+        
         if (object == null || !(object instanceof CmsProperty)) {
             return false;
         }
+        
+        return (m_key != null) && m_key.equals(((CmsProperty)object).getKey());
+    }
+
+    /**
+     * Tests if a given CmsProperty is identical to this CmsProperty object.<p>
+     * 
+     * The property object are identical if their key, structure and 
+     * resource values are all equals.<p>
+     * 
+     * @param property another property object
+     * @return true, if the specified object is equal to this CmsProperty object
+     */
+    public boolean isIdentical(CmsProperty property) {
+        
+        boolean isEqual;
 
         // compare the key
         if (m_key == null) {
-            isEqual = (((CmsProperty)object).getKey() == null);
+            isEqual = (property.getKey() == null);
         } else {
-            isEqual = m_key.equals(((CmsProperty)object).getKey());
+            isEqual = m_key.equals(property.getKey());
         }
 
         // compare the structure value
         if (m_structureValue == null) {
-            isEqual &= (((CmsProperty)object).getStructureValue() == null);
+            isEqual &= (property.getStructureValue() == null);
         } else {
-            isEqual &= m_structureValue.equals(((CmsProperty)object).getStructureValue());
+            isEqual &= m_structureValue.equals(property.getStructureValue());
         }
 
         // compare the resource value
         if (m_resourceValue == null) {
-            isEqual &= (((CmsProperty)object).getResourceValue() == null);
+            isEqual &= (property.getResourceValue() == null);
         } else {
-            isEqual &= m_resourceValue.equals(((CmsProperty)object).getResourceValue());
+            isEqual &= m_resourceValue.equals(property.getResourceValue());
         }
 
         return isEqual;
     }
-
+    
+    
     /**
      * Returns the key name of this property.<p>
      * 
@@ -448,7 +477,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @param resourceValue the value of this property attached to the resource record
      */
     public void setResourceValue(String resourceValue) {
-
+ 
         m_resourceValue = resourceValue;
     }
 
@@ -458,7 +487,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @param structureValue the value of this property attached to the structure record
      */
     public void setStructureValue(String structureValue) {
-
+       
         m_structureValue = structureValue;
     }
 
