@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2004/11/08 15:55:29 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -204,7 +204,6 @@ public class CmsImportVersion4 extends A_CmsImport {
      * @param source the path to the source-file
      * @param destination the path to the destination-file in the cms
      * @param resType the resource-type of the file
-     * @param loaderId the loader id of the resource
      * @param uuidresource  the resource uuid of the resource
      * @param datelastmodified the last modification date of the resource
      * @param userlastmodified the user who made the last modifications to the resource

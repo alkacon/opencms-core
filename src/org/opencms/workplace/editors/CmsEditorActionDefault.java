@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/10/22 15:53:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/08 15:55:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.0
  */
@@ -74,7 +74,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     }
     
     /**
-     * @see org.opencms.workplace.editors.I_CmsEditorActionHandler#editorAction(org.opencms.workplace.editors.CmsDefaultPageEditor, CmsJspActionElement)
+     * @see org.opencms.workplace.editors.I_CmsEditorActionHandler#editorAction(org.opencms.workplace.editors.CmsEditor, org.opencms.jsp.CmsJspActionElement)
      */
     public void editorAction(CmsEditor editor, CmsJspActionElement jsp) throws IOException, JspException {
         // save the edited content

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsWordTextPiece.java,v $
- * Date   : $Date: 2004/02/11 15:58:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/08 15:55:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.search.documents;
 /**
  * This class stores info about the data structure describing a run of text.
  * 
- * @author
+ * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 
 class CmsWordTextPiece {

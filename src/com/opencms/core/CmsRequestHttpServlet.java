@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2004/07/08 15:21:14 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2004/11/08 15:55:29 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.52 $ $Date: 2004/07/08 15:21:14 $
+ * @version $Revision: 1.53 $ $Date: 2004/11/08 15:55:29 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -563,9 +563,6 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      * @return A flag indicating whether this is the last part
      * @throws IOException If there's a problem reading or parsing the
      * request
-     *
-     * @see readParameter
-     * @see readAndSaveFile
      */
     private boolean readNextPart(CmsMultipartInputStreamHandler in, String boundary) throws IOException {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/11/04 15:58:00 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2004/11/08 15:55:29 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.69 $ $Date: 2004/11/04 15:58:00 $
+ * @version $Revision: 1.70 $ $Date: 2004/11/08 15:55:29 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -479,7 +479,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * Initializes the default users and groups.<p>
      * 
-     * @throw CmsException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
     private void internalCreateDefaultUsersAndGroups () throws CmsException {
         

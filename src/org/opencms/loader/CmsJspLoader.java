@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/11/05 18:15:11 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2004/11/08 15:55:29 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -520,8 +520,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * Delivers a Flex controller, either by creating a new one, or by re-using an existing one.<p> 
      * 
      * @param cms the initial CmsObject to wrap in the controller
-     * @param resource the resource requested 
-     * @param cache the instance of the flex cache
+     * @param resource the resource requested
      * @param req the current request
      * @param res the current response
      * @param streaming indicates if the response is streaming

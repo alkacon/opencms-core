@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/11/04 15:58:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/08 15:55:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.map.LRUMap;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -3954,7 +3954,6 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param resource the resource on which permissions are required
      * @param requiredPermissions the set of permissions required to access the resource
-     * @param context the current request context
      * 
      * @throws CmsSecurityException if the required permissions are not satisfied
      * @throws CmsVfsResourceNotFoundException if the required resource has been filtered
