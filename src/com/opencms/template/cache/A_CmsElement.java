@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/08/19 06:10:17 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/08/19 06:29:46 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -338,13 +338,15 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         if(!elementName.equals(parameters.get("_ELEMENT_"))) {
             // yes, we have to set the missing element-parameters
             CmsElementDefinition currentDefinition = elDefs.get(elementName);
-            parameters.put("_ELEMENT_", currentDefinition.getName());
-            parameters.put(currentDefinition.getName() + "._TEMPLATE_", currentDefinition.getTemplateName());
-            parameters.put(currentDefinition.getName() + "._CLASS_", currentDefinition.getClassName());
-            if(currentDefinition.getTemplateSelector()!= null) {
-                parameters.put(currentDefinition.getName() + "._TEMPLATESELECTOR_", currentDefinition.getTemplateSelector());
-            } else {
-                parameters.put(currentDefinition.getName() + "._TEMPLATESELECTOR_", "default");
+            if(currentDefinition != null) {
+                parameters.put("_ELEMENT_", currentDefinition.getName());
+                parameters.put(currentDefinition.getName() + "._TEMPLATE_", currentDefinition.getTemplateName());
+                parameters.put(currentDefinition.getName() + "._CLASS_", currentDefinition.getClassName());
+                if(currentDefinition.getTemplateSelector()!= null) {
+                    parameters.put(currentDefinition.getName() + "._TEMPLATESELECTOR_", currentDefinition.getTemplateSelector());
+                } else {
+                    parameters.put(currentDefinition.getName() + "._TEMPLATESELECTOR_", "default");
+                }
             }
         }
         // Try to get the corresponding element using the element locator
