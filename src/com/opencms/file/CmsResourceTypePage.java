@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2001/08/02 11:29:06 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/08/02 14:28:33 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2001/08/02 11:29:06 $
+ * @version $Revision: 1.10 $ $Date: 2001/08/02 14:28:33 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -878,9 +878,9 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                   CmsFolder newfolder=cms.doCreateFolder(completePath,foldername);
                   CmsFolder folder=cms.readFolder(orgFolder);
                   cms.doLockResource(newfolder.getAbsolutePath(),false);
-                  cms.doChown(newfolder.getAbsolutePath(),cms.readOwner(folder).getName());
                   cms.doChgrp(newfolder.getAbsolutePath(),cms.readGroup(folder).getName());
                   cms.doChmod(newfolder.getAbsolutePath(),folder.getAccessFlags());
+                  cms.doChown(newfolder.getAbsolutePath(),cms.readOwner(folder).getName());
                   cms.doUnlockResource(newfolder.getAbsolutePath());
               }
               completePath+=foldername+"/";
