@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2002/11/02 10:37:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2002/11/04 11:27:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,50 +35,78 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
+import com.opencms.flex.util.CmsMessages;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateFile;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
+import java.util.Locale;
+import java.util.Vector;
 
 /**
  * Template class for displaying the login screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  */
 
-public class CmsLoginNew extends CmsXmlTemplate implements I_CmsWpConstants,I_CmsConstants {
+public class CmsLoginNew extends CmsXmlTemplate {
 
     /** Debug flag, set to 9 for maximum verbosity */
     private static final int DEBUG = 0;
 
     /**
-     * Overwrtied the getContent method of the CmsWorkplaceDefault.<br>
-     * Gets the content of the longin templated and processed the data input.
-     * If the user has authentificated to the system, the login window is closed and
-     * the workplace is opened. <br>
+     * Gets the content of the login template and processes the data input.<p>
+     * 
+     * If the user has authenticated himself to the system, 
+     * the login window is closed and the workplace is opened.
      * If the login was incorrect, an error message is displayed and the login
      * dialog is displayed again.
-     * @param cms The CmsObject.
-     * @param templateFile The login template file
+     * 
+     * @param cms request initialized CmsObject
+     * @param templateFile the login template file
      * @param elementName not used
-     * @param parameters Parameters of the request and the template.
-     * @param templateSelector Selector of the template tag to be displayed.
-     * @return Bytearre containgine the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @param parameters parameters of the request and the template
+     * @param templateSelector selector of the template tag to be displayed
+     * @return the processed data of the template
+     * @throws CmsException if something goes wrong
      */
+    public byte[] getContent(CmsObject cms, String templateFile, 
+        String elementName, Hashtable parameters, String templateSelector) 
+    throws CmsException {
+                                              
+        if (DEBUG > 1) System.err.println("\nCmsLoginNew: Login process started");
 
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName,
-            Hashtable parameters, String templateSelector) throws CmsException {
-                                      
+        // Initialize the display - language
+        Vector v = cms.getRequestContext().getAcceptedLanguages();
+        for (int i=0; i<v.size(); i++) {
+            m_messages = new CmsMessages("workplace", new Locale((String)v.get(i), "", ""));  
+            if (m_messages.isInitialized()) break;                  
+        }        
+        // Still no initialized locale, so use "en".
+        if (! m_messages.isInitialized()) {
+            m_messages = new CmsMessages("workplace", new Locale("en", "", ""));  
+        }
+        
+        // Check if a "logout=true" parameter is present, if so trash the session
+        boolean logout = (null != (String)parameters.get("logout"));
+        
         I_CmsSession session = cms.getRequestContext().getSession(false);
         // Check if there already is a session
         if (session != null) {
             // Old session found, must be invalidated
-            session.invalidate();
+            if (logout) {
+                session.invalidate();
+                if (DEBUG > 2) System.err.println("CmsLoginNew: logout, trashed old session");
+            } else {
+                if (DEBUG > 2) System.err.println("CmsLoginNew: kept old session, no logout parameter found");
+            }
+        } else {
+            if (DEBUG > 2) System.err.println("CmsLoginNew: no current active session");
         }
 
         // the template to be displayed
@@ -88,13 +116,16 @@ public class CmsLoginNew extends CmsXmlTemplate implements I_CmsWpConstants,I_Cm
         CmsUser user;
 
         // get user name and password
-        String name = (String)parameters.get("NAME");
-        String password = (String)parameters.get("PASSWORD");
+        String name = (String)parameters.get("OPENCMSUSERNAME");
+        String password = (String)parameters.get("OPENCMSPASSWORD");
+        // get further startup parameters
+        String startTaskId = (String)parameters.get(I_CmsWpConstants.C_PARA_STARTTASKID);
+        String startProjectId = (String)parameters.get(I_CmsWpConstants.C_PARA_STARTPROJECTID);
 
-        if (DEBUG > 1) System.err.println("CmsLoginNew: name=" + name + " password=" + password);
+        if (DEBUG > 1) System.err.println("CmsLoginNew: name=" + name + " password=" + password + " task=" + startTaskId + " project=" + startProjectId);
 
         if((name != null) && (password != null)) {
-
+            if (DEBUG > 1) System.err.println("CmsLoginNew: trying to log in");
             // user and password have been submitted, try to log in the user        
             boolean validLogin;
             try {
@@ -135,30 +166,14 @@ public class CmsLoginNew extends CmsXmlTemplate implements I_CmsWpConstants,I_Cm
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsLogin] Login user " + username);
             }
 
-            // now get the users preferences
+            // read the user data from the databsse
             user = cms.readUser(username);
+            
+            // set the startup project id
+            setStartProjectId(cms, session, startProjectId);
 
-            // set current project to the default online project or to 
-            // project specified in the users preferences
-            int currentProject = cms.onlineProject().getId();
-            // check out the user information if a default project is stored there.
-            Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-            if(startSettings != null) {
-                Integer i = (Integer)startSettings.get(C_START_PROJECT);
-                if (i != null) currentProject = i.intValue();
-            }
-            // set the current project
-            try {
-                if (! cms.accessProject(currentProject)) {
-                    // user has no access to the project
-                    currentProject = cms.onlineProject().getId();
-                }
-            }
-            catch(Exception e) {
-                // project will default to online project
-                currentProject = cms.onlineProject().getId();
-            }
-            cms.getRequestContext().setCurrentProject(currentProject);
+            // set startup task view
+            setStartTaskId(cms, session, startTaskId);            
             
             // set the additional user preferences
             Hashtable preferences = (Hashtable)user.getAdditionalInfo(C_ADDITIONAL_INFO_PREFERENCES);
@@ -166,15 +181,109 @@ public class CmsLoginNew extends CmsXmlTemplate implements I_CmsWpConstants,I_Cm
             if(preferences == null) {
                 preferences = getDefaultPreferences();
             }
-            session.putValue(C_ADDITIONAL_INFO_PREFERENCES, preferences);
+            session.putValue(C_ADDITIONAL_INFO_PREFERENCES, preferences);            
+            
+            // trigger call of "login()" JavaScript in Template on page load
+            xmlTemplateDocument.setData("onload", "onload='login();'");
+        } else if ((! logout) && ((cms.getRequestContext().currentUser()) != null) &&        
+            ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), cms.C_GROUP_USERS)) ||
+             (cms.userInGroup(cms.getRequestContext().currentUser().getName(), cms.C_GROUP_PROJECTLEADER)) ||
+             (cms.userInGroup(cms.getRequestContext().currentUser().getName(), cms.C_GROUP_ADMIN)) )) {
+            // the user is already logged in and no logout parameter is present, open a new window
+            if (DEBUG > 1) System.err.println("CmsLoginNew: re-using old login");            
+            xmlTemplateDocument.setData("onload", "onload='login();'");        
+        } else {
+            // no user logged in, no call to "login()" JavaScript
+            if (DEBUG > 1) System.err.println("CmsLoginNew: no login or logout, displaying template");            
+            xmlTemplateDocument.setData("onload", "onload='init();'");
         }
 
         long id = System.currentTimeMillis();
-        xmlTemplateDocument.setData("ID", new Long(id).toString());
-        
+        xmlTemplateDocument.setData("windowId", new Long(id).toString());
+        xmlTemplateDocument.setData("startTaskId", startTaskId);
+        xmlTemplateDocument.setData("startProjectId", startProjectId);
+
+        if (DEBUG > 1) System.err.println("CmsLoginNew: Login process finished");
+
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, templateSelector);
     }
+
+    /**
+     * Sets the startup project to the one read from the user
+     * preferences or the one from the request parameters.
+     * 
+     * @param cms the initialized CmsObject
+     * @param session the initialized user session 
+     * @param startProjectId the id value of the request parameter (might be null)
+     * @throws CmeSxception in case of issues reading the registry
+     */
+    private void setStartProjectId(CmsObject cms, I_CmsSession session, String startProjectId) 
+    throws CmsException 
+    {
+        // set current project to the default online project or to 
+        // project specified in the users preferences
+        int currentProject = cms.onlineProject().getId();
+        
+        if ((startProjectId != null) && (! "".equals(startProjectId))) {
+            // try to set project to id from parameters
+            try {
+                currentProject = (new Integer(startProjectId)).intValue();
+            } catch (NumberFormatException e) {
+                // currentProject will still have online project value
+            }            
+        } else {    
+            // check out the user information if a default project is stored there.
+            Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+            if(startSettings != null) {
+                Integer i = (Integer)startSettings.get(C_START_PROJECT);
+                if (i != null) currentProject = i.intValue();
+            }
+        }
+
+        // try to set the current project
+        try {
+            if (! cms.accessProject(currentProject)) {
+                // user has no access to the project
+                currentProject = cms.onlineProject().getId();
+            }
+        } catch(Exception e) {
+            // project will default to online project
+            currentProject = cms.onlineProject().getId();
+        }
+        
+        // set the current project id
+        cms.getRequestContext().setCurrentProject(currentProject);
+    }
+
+    /**
+     * Sets the startup view to display the selected start task.
+     * 
+     * @param cms the initialized CmsObject
+     * @param session the initialized user session 
+     * @param startTaskId the id of the task to display
+     * @throws CmeSxception in case of issues reading the registry
+     */
+    private void setStartTaskId(CmsObject cms, I_CmsSession session, String startTaskId) 
+    throws CmsException 
+    {
+        if ((startTaskId == null) || ("".equals(startTaskId))) return;
+        Vector viewNames = new Vector();
+        Vector viewLinks = new Vector();
+        // this will initialize the Vectors with the values from the registry.xml
+        cms.getRegistry().getViews(viewNames, viewLinks);
+        String link = "";
+        for(int i = 0;i < viewNames.size();i++) {
+            if(((String)viewNames.elementAt(i)).equals("select.tasks")) {
+                link = (String)viewLinks.elementAt(i);
+                break;
+            }
+        }
+        session.putValue(I_CmsWpConstants.C_PARA_STARTTASKID, startTaskId);
+        session.putValue(I_CmsWpConstants.C_PARA_VIEW, link);
+    }
+
+    private CmsMessages m_messages;
 
     /**
      * Sets the default preferences for the current user if those values are not available.
@@ -183,13 +292,9 @@ public class CmsLoginNew extends CmsXmlTemplate implements I_CmsWpConstants,I_Cm
 
     private Hashtable getDefaultPreferences() {
         Hashtable pref = new Hashtable();
-
         // set the default columns in the filelist
-        int filelist = C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_CHANGED;
-
-        // HACK
-        filelist = 4095 + 512;
-        pref.put(C_USERPREF_FILELIST, new Integer(filelist));
+        int filelist = 4095 + 512;
+        pref.put(I_CmsWpConstants.C_USERPREF_FILELIST, new Integer(filelist));
         return pref;
     }
 
@@ -204,8 +309,8 @@ public class CmsLoginNew extends CmsXmlTemplate implements I_CmsWpConstants,I_Cm
      * @return String with customized title information
      * @exception CmsException
      */
-    public Object getTitle(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
-            Object userObject) throws CmsException {
+    public Object getTitle(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    throws CmsException {
         String title = (String)super.getTitle(cms, tagcontent, doc, userObject);
         if(title == null) title = "";
         title += " - " + cms.version();
@@ -222,8 +327,25 @@ public class CmsLoginNew extends CmsXmlTemplate implements I_CmsWpConstants,I_Cm
      * @return String with the version information of this OpenCms instance
      * @exception CmsException in case of errors processing the template
      */
-    public Object version(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object version(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    throws CmsException {
         return cms.version();
+    }
+
+    /**
+     * Returns a localized String for the key value given as <code>tagcontent</code> 
+     * parameter.
+     *
+     * @param cms for accessing system resources
+     * @param tagcontent key value for the resource bundle
+     * @param doc reference to the A_CmsXmlContent object of the initiating XML document.
+     * @param userObj must ba a <code>java.util.Hashtable</code> with request parameters
+     * @return String with the version information of this OpenCms instance
+     * @exception CmsException in case of errors processing the template
+     */
+    public Object message(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    throws CmsException {
+        return m_messages.key(tagcontent);
     }
 
     /**

@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/login/Attic/index,v $
+Date   : $Date: 2002/11/04 11:25:57 $
+Version: $Revision: 1.2 $
+ 
+Template for the OpenCms login screen.
+
+The localization Strings are read from standard Java ResourceBundles. These can be found in the VFS directory 
+"/system/workplace/modules/default/classes". When they are published they will be mirrored to the real file 
+system in the directory "{webapp-dir}/WEB-INF/classes" and thus are accessible to the normal ResourceBundle
+property lookup mechanism. 
+
+If you make changes to the resources you must restart OpenCms. This is so because the standard Java 
+ResourceBundle mechanism caches all bundles once it has read them and there is no standard way 
+(at last that I know of) to clear this cache. 
+
+Author :  Alexander Kandzior (a.kandzior@alkacon.com)
+
+-->
 <XMLTEMPLATE>
 
 <TEMPLATE>
@@ -22,8 +42,9 @@ input.button { color: black; font-family: sans-serif; font-size: 11px; font-weig
 -->
 </style>
 
-<script language="JavaScript" TYPE="text/javascript" SRC="]]><LINK>version.js</LINK><![CDATA["></script>
-<script language=JavaScript>
+<script language="JavaScript" type="text/javascript" SRC="]]><LINK>version.js</LINK><![CDATA["></script>
+<script language="JavaScript">
+<!--
 function simpleEscape(text) {
     return text.replace(/\//g, "%2F");
 }
@@ -44,7 +65,7 @@ function openwin(url, name, w, h) //opens a new window with parameter URL, Windo
         if(w==0) w=screen.availWidth-20;
         if(h==0) h=screen.availHeight-100;
         encodedurl = encodeUrl(url);
-        workplace = window.open(encodedurl,name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width='+w+',height='+h);
+        workplace = window.open(encodedurl, name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width=' + w + ',height=' + h);
         workplace.moveTo(0,0);
         if(workplace != null) {
               if (workplace.opener == null)
@@ -57,84 +78,78 @@ function openwin(url, name, w, h) //opens a new window with parameter URL, Windo
     return workplace;
 }
 
-function init() {
-    if(navigator.appName.substring(0,9) == "Microsoft") {
-        document.LOGIN.NAME.focus();    
-    }    
-	var theURL=window.location.href;
-	var pos=theURL.indexOf('submit=true');        
-	if(pos!=-1) {
-   		openwin(']]><LINK>/system/workplace/action/index.html</LINK><![CDATA[', 'opencms]]><PROCESS>ID</PROCESS><![CDATA[', 0, 0); 
-    	if(window.name != 'opencms]]><PROCESS>ID</PROCESS><![CDATA[') {
-    		window.close();
-	    }
-	}  
+function init() {  
+	if(navigator.appName.substring(0,9) == "Microsoft") {
+		document.LOGIN.OPENCMSUSERNAME.focus();
+	} 
 }
-</script>
 
-<!-- End Styles and Scripts -->
+function login() {
+   	openwin(']]><LINK>/system/workplace/action/index.html</LINK><![CDATA[', 'opencms]]><PROCESS>windowId</PROCESS><![CDATA[', 0, 0); 
+    if(window.name != 'opencms]]><PROCESS>windowId</PROCESS><![CDATA[') {
+    	window.close();
+	}
+}
+ 
+// -->
+</script>
 
 </head>
 
 <!-- Begin content login -->
-<body bgcolor="#ffffff" marginwidth = 0 marginheight = 20 leftmargin=0 topmargin=20 onload="init();">
+<body bgcolor="#ffffff" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20" ]]><PROCESS>onload</PROCESS><![CDATA[>
 
-<form action="]]><LINK>index.html?submit=true</LINK><![CDATA[" method=post id=LOGIN name=LOGIN>
-<CENTER>
-<!-- Begin Logo opencms -->
-<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+<form action="]]><LINK>index.html?login=true</LINK><![CDATA[" method="post" name="LOGIN">
+<center>
+<table border="0" cellspacing="0" cellpadding="0" align=center height="100">
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><LINK>login_logo.gif</LINK><![CDATA["></td>
+        <td><img alt="OpenCms" border="0" hspace="0" src="]]><LINK>login_logo.gif</LINK><![CDATA["></td>
     </tr>
 </table>
-<!-- End Logo opencms -->
 
-<!-- Begin login -->
-<table cellspacing=0 cellpadding=0 border=2>
-<tr><td><table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+<table cellspacing="0" cellpadding="0" border="2">
+<tr><td><table cellspacing="0" cellpadding="5" border="0" width="100%" height="100%">
         <tr> 
-            <td colspan=2 class="head">]]><LABEL value="title.login" /><![CDATA[</td>                  
+            <td class="head" colspan="2">]]><METHOD name="message">login.title</METHOD><![CDATA[</td>                  
         </tr>
         <tr> 
-            <td colspan=2 class=dialogtxt> 
-            ]]><LABEL value="message.login1" /><![CDATA[<br>
-            ]]><LABEL value="message.login2" /><![CDATA[
+            <td class="dialogtxt" colspan="2"> 
+            ]]><METHOD name="message">login.message1</METHOD><![CDATA[<br>
+            ]]><METHOD name="message">login.message2</METHOD><![CDATA[
             </td>
         </tr>
         <tr>
-            <td width=35% class=formular>]]><LABEL value="input.username" /><![CDATA[:</td>
-            <td class=formular><input class="textfeld" value="" size=15 maxlength=32 name="NAME" id="NAME" ></td>
+            <td class="formular" width="35%">]]><METHOD name="message">login.username</METHOD><![CDATA[:</td>
+            <td class="formular"><input class="textfeld" value="" size="15" maxlength="32" name="OPENCMSUSERNAME"></td>
         </tr>
          <tr>
-            <td class=formular>]]><LABEL value="input.password" /><![CDATA[:</td>   
-            <td class=formular><input type ="password" class="textfeld" size=15 maxlength=32 name="PASSWORD" id="PASSWORD"></td>
+            <td class="formular">]]><METHOD name="message">login.password</METHOD><![CDATA[:</td>   
+            <td class="formular"><input type ="password" class="textfeld" size="15" maxlength="32" name="OPENCMSPASSWORD"></td>
         </tr>
         <tr>
-            <td colspan=2 align=middle class=formular><input type="submit" class="button" width=100 value="]]><LABEL value="button.login" /><![CDATA[" name="LOGIN" id="LOGIN" onClick=""></td>
+            <td class="formular" colspan="2" align="middle"><input type="submit" class="button" width="100" value="]]><METHOD name="message">login.button</METHOD><![CDATA["></td>
         </tr>
         </table>    
 </td></tr>
 </table>
-<!-- End login -->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+
+<script language="JavaScript">
+<!--
     if(version != "]]><METHOD name="version"/><![CDATA[") {
-        document.write('<p>&nbsp;<p><table cellpadding=5><tr><td align="right" bgcolor="#ff6666"><font size=2 color="white">');
-        document.write("<b>]]><LABEL value="message.login3" /><![CDATA[</b><p><b>Workplace:</b> " + version + "<br><b>Classes:</b> ]]><METHOD name="version"/><![CDATA[");
-        document.write("</font></td></tr></table>");
+        document.write('<p>&nbsp;<p><table cellpadding="5"><tr><td align="right" bgcolor="#ff6666"><font size="2" color="white">');
+        document.write('<b>]]><METHOD name="message">login.warning</METHOD><![CDATA[</b><p><b>Workplace:</b> ' + version + '<br><b>Classes:</b> ]]><METHOD name="version"/><![CDATA[');
+        document.write('</font></td></tr></table>');
     }
-</SCRIPT>    
-</CENTER>
+// -->    
+</script>
+</center>
+<input type="hidden" name="startTaskId" value="]]><PROCESS>startTaskId</PROCESS><![CDATA[">
+<input type="hidden" name="startProjectId" value="]]><PROCESS>startProjectId</PROCESS><![CDATA[">
 </form>
 
 </body>
-<!-- End content login -->
 </html>
-]]>
-</TEMPLATE>
 
-<TEMPLATE name="error">
-<![CDATA[
-]]><ERRORPAGE title="error.title.login" message="error.message.login" reason="error.reason.login" suggestion="error.suggestion.login" ref="login.html" ><process>details</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 

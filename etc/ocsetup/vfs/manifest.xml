@@ -190,6 +190,50 @@
             </properties>
         </file>
         <file>
+            <destination>system/modules/default/classes</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[ ]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/modules/default/classes/workplace_de.properties</source>
+            <destination>system/modules/default/classes/workplace_de.properties</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>content-encoding</name>
+                    <type>3</type>
+                    <value><![CDATA[UTF-8]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/modules/default/classes/workplace_en.properties</source>
+            <destination>system/modules/default/classes/workplace_en.properties</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>content-encoding</name>
+                    <type>3</type>
+                    <value><![CDATA[UTF-8]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
             <destination>system/modules/default/contenttemplates</destination>
             <type>folder</type>
             <user>Admin</user>

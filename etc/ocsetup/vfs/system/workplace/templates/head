@@ -48,7 +48,7 @@
         ]]><PROCESS>SYNC</PROCESS><![CDATA[
         <td class=dialogtxt>]]><BUTTON href="#" action="javascript:url='../help/de/index.html'; openwin(url, 'Hilfe', 310, 600);" name="bt_hilfe" alt="help"/><![CDATA[</td>
         <td class=dialogtxt>&nbsp;</td>
-        <td class=dialogtxt>]]><BUTTON href="javascript:window.top.location.href='../../login/index.html'" name="bt_exit" action="" alt="exit"/><![CDATA[</td>
+        <td class=dialogtxt>]]><BUTTON href="javascript:window.top.location.href='../../login/index.html?logout=true'" name="bt_exit" action="" alt="exit"/><![CDATA[</td>
         <td class=dialogtxt width=10%>&nbsp;</td>
         <td class=dialogtxt><img src="]]><METHOD name="resourcesUri">opencms_grau.gif</METHOD><![CDATA[" width=114 height=32 border=0 alt="opencms"><br></a></td>
     </tr>

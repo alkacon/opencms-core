@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2002/10/30 10:38:04 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2002/11/04 11:27:09 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.32 $ $Date: 2002/10/30 10:38:04 $
+ * @version $Revision: 1.33 $ $Date: 2002/11/04 11:27:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -766,7 +766,12 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         }
         CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
         String actionPath = conf.getWorkplaceActionPath();
-        return scheme + "://" + serverName + servletPath + actionPath + "login.html?startTaskId="
-                + taskid + "&startProjectId=" + projectid;
+        if (I_CmsWpConstants.C_NEW_VFS_STRUCTURE) {
+            return scheme + "://" + serverName + servletPath + "/system/login/index.html?startTaskId="
+                    + taskid + "&startProjectId=" + projectid;
+        } else {
+            return scheme + "://" + serverName + servletPath + actionPath + "login.html?startTaskId="
+                    + taskid + "&startProjectId=" + projectid;
+        }
     }
 }
