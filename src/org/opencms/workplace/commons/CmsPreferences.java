@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2004/11/29 14:23:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/29 14:47:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -76,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
@@ -91,9 +90,6 @@ public class CmsPreferences extends CmsTabDialog {
     /** Value for the action: reload the workplace. */
     public static final int ACTION_RELOAD = 201;
     
-    /** Constant for filter. */
-    private static final String C_SPACER = "------------------------------------------------";
-    
     /** Request parameter value for the action: change the password. */
     public static final String DIALOG_CHPWD = "chpwd";
 
@@ -106,6 +102,21 @@ public class CmsPreferences extends CmsTabDialog {
     /** Request parameter name prefix for the preferred editors. */
     public static final String INPUT_DEFAULT = "default";
     
+    /** Request parameter name for the dialog copy file siblings default setting. */
+    public static final String PARAM_DIALOGS_COPYFILEMODE = "tabdicopyfilemode";
+    
+    /** Request parameter name for the dialog copy folder siblings default setting. */
+    public static final String PARAM_DIALOGS_COPYFOLDERMODE = "tabdicopyfoldermode";
+    
+    /** Request parameter name for the dialog delete file siblings default setting. */
+    public static final String PARAM_DIALOGS_DELETEFILEMODE = "tabdideletefilemode";
+    
+    /** Request parameter name for the dialog publish file siblings default setting. */
+    public static final String PARAM_DIALOGS_PUBLISHFILEMODE = "tabdipublishfilemode";
+    
+    /** Request parameter name for the dialog show lock. */
+    public static final String PARAM_DIALOGS_SHOWLOCK = "tabdishowlock";
+    
     /** Request parameter name for the direct edit button style. */
     public static final String PARAM_DIRECTEDIT_BUTTONSTYLE = "tabeddirecteditbuttonstyle";
     
@@ -117,9 +128,15 @@ public class CmsPreferences extends CmsTabDialog {
     
     /** Request parameter name for the explorer file date created. */
     public static final String PARAM_EXPLORER_FILEDATECREATED = "tabexfiledatecreated";
+ 
+    /** Request parameter name for the explorer file date expired. */
+    public static final String PARAM_EXPLORER_FILEDATEEXPIRED = "tabexfiledateexpired"; 
     
     /** Request parameter name for the explorer file date last modified. */
     public static final String PARAM_EXPLORER_FILEDATELASTMODIFIED = "tabexfiledatelastmodified";
+ 
+    /** Request parameter name for the explorer file date released. */
+    public static final String PARAM_EXPLORER_FILEDATERELEASED = "tabexfiledatereleased";
     
     /** Request parameter name for the explorer file entry number. */
     public static final String PARAM_EXPLORER_FILEENTRIES = "tabexfileentries";
@@ -147,12 +164,6 @@ public class CmsPreferences extends CmsTabDialog {
     
     /** Request parameter name for the explorer file user last modified. */
     public static final String PARAM_EXPLORER_FILEUSERLASTMODIFIED = "tabexfileuserlastmodified";
- 
-    /** Request parameter name for the explorer file date released. */
-    public static final String PARAM_EXPLORER_FILEDATERELEASED = "tabexfiledatereleased";
- 
-    /** Request parameter name for the explorer file date expired. */
-    public static final String PARAM_EXPLORER_FILEDATEEXPIRED = "tabexfiledateexpired"; 
     
     /** Request parameter name for the new password. */
     public static final String PARAM_NEWPASSWORD = "newpassword";
@@ -184,14 +195,8 @@ public class CmsPreferences extends CmsTabDialog {
     /** Request parameter name for the workplace button style. */
     public static final String PARAM_WORKPLACE_BUTTONSTYLE = "tabwpbuttonstyle";
     
-    /** Request parameter name for the dialog copy file siblings default setting. */
-    public static final String PARAM_DIALOGS_COPYFILEMODE = "tabdicopyfilemode";
-    
-    /** Request parameter name for the dialog copy folder siblings default setting. */
-    public static final String PARAM_DIALOGS_COPYFOLDERMODE = "tabdicopyfoldermode";
-    
-    /** Request parameter name for the dialog delete file siblings default setting. */
-    public static final String PARAM_DIALOGS_DELETEFILEMODE = "tabdideletefilemode";
+    /** Request parameter name for the workplace start folder. */
+    public static final String PARAM_WORKPLACE_FOLDER = "tabwpfolder";
     
     /** Request parameter name for the workplace language. */
     public static final String PARAM_WORKPLACE_LANGUAGE = "tabwplanguage";
@@ -199,29 +204,23 @@ public class CmsPreferences extends CmsTabDialog {
     /** Request parameter name for the workplace project. */
     public static final String PARAM_WORKPLACE_PROJECT = "tabwpproject";
     
-    /** Request parameter name for the dialog publish file siblings default setting. */
-    public static final String PARAM_DIALOGS_PUBLISHFILEMODE = "tabdipublishfilemode";
-    
     /** Request parameter name for the workplace report type. */
     public static final String PARAM_WORKPLACE_REPORTTYPE = "tabwpreporttype";
     
-    /** Request parameter name for the dialog show lock. */
-    public static final String PARAM_DIALOGS_SHOWLOCK = "tabdishowlock";
-    
-    /** Request parameter name for the workplace use upload applet. */
-    public static final String PARAM_WORKPLACE_USEUPLOADAPPLET = "tabwpuseuploadapplet";
-    
-    /** Request parameter name for the workplace start folder. */
-    public static final String PARAM_WORKPLACE_FOLDER = "tabwpfolder";
+    /** Request parameter name for the workplace explorer view restriction. */
+    public static final String PARAM_WORKPLACE_RESTRICTEXPLORERVIEW = "tabwprestrictexplorerview"; 
     
     /** Request parameter name for the workplace start site. */
     public static final String PARAM_WORKPLACE_SITE = "tabwpsite";
     
+    /** Request parameter name for the workplace use upload applet. */
+    public static final String PARAM_WORKPLACE_USEUPLOADAPPLET = "tabwpuseuploadapplet";
+    
     /** Request parameter name for the workplace view. */
     public static final String PARAM_WORKPLACE_VIEW = "tabwpview";
     
-    /** Request parameter name for the workplace explorer view restriction. */
-    public static final String PARAM_WORKPLACE_RESTRICTEXPLORERVIEW = "tabwprestrictexplorerview"; 
+    /** Constant for filter. */
+    private static final String C_SPACER = "------------------------------------------------";
     
     private String m_paramNewPassword;
     private String m_paramOldPassword;
@@ -357,23 +356,6 @@ public class CmsPreferences extends CmsTabDialog {
                 OpenCms.getLog(this).info(e);
             }            
         }
-    }
-    
-    /**
-     * Builds the html for a common button style select box.<p>
-     * 
-     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
-     * @param selectedIndex the index of the selected option
-     * @return the html for the common button style select box
-     */
-    private String buildSelectButtonStyle(String htmlAttributes, int selectedIndex) {
-        List options = new ArrayList(3);      
-        options.add(key("preferences.buttonstyle.img"));
-        options.add(key("preferences.buttonstyle.imgtxt"));
-        options.add(key("preferences.buttonstyle.txt"));
-        String [] vals = new String[] {"0", "1", "2"};
-        List values = new ArrayList(java.util.Arrays.asList(vals));
-        return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
     
     /**
@@ -526,7 +508,7 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectLanguage(String htmlAttributes) {
         // get available locales from the workplace manager
-        Set locales = OpenCms.getWorkplaceManager().getLocales();
+        List locales = OpenCms.getWorkplaceManager().getLocales();
         List options = new ArrayList(locales.size());
         List values = new ArrayList(locales.size());
         int checkedIndex = 0;
@@ -814,35 +796,6 @@ public class CmsPreferences extends CmsTabDialog {
     }
     
     /**
-     * Returns the preferred editor preselection value either from the request, if not present, from the user settings.<p>
-     * 
-     * @param request the current http servlet request
-     * @param resourceType the preferred editors resource type 
-     * @return the preferred editor preselection value or null, if none found
-     */
-    private String computeEditorPreselection(HttpServletRequest request, String resourceType) {
-        // first check presence of the setting in request parameter
-        String preSelection = request.getParameter(PARAM_PREFERREDEDITOR_PREFIX + resourceType);
-        if (preSelection != null && !"".equals(preSelection.trim())) {
-            return CmsEncoder.decode(preSelection);
-        } else {
-            // no value found in request, check current user settings (not the member!)
-            CmsUserSettings userSettings = new CmsUserSettings(getSettings().getUser());
-            return userSettings.getPreferredEditor(resourceType);
-            
-        }
-    }
-    
-    /**
-     * Fills the parameter values according to the settings of the current user.<p>
-     * 
-     * This method is called once when first displaying the preferences dialog.<p>
-     */
-    private void fillUserSettings() {
-        m_userSettings = new CmsUserSettings(getSettings().getUser());
-    }
-    
-    /**
      * Returns the new password value.<p>
      * 
      * @return the new password value
@@ -858,6 +811,51 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String getParamOldPassword() {
         return m_paramOldPassword;
+    }
+    
+    /**
+     * Returns the "copy file default" setting.<p>
+     * 
+     * @return the "copy file default" setting
+     */
+    public String getParamTabDiCopyFileMode() {
+        return "" + m_userSettings.getDialogCopyFileMode();
+    }
+    
+    /**
+     * Returns the "copy folder default" setting.<p>
+     * 
+     * @return the "copy folder default" setting
+     */
+    public String getParamTabDiCopyFolderMode() {
+        return "" + m_userSettings.getDialogCopyFolderMode();
+    }
+    
+    /**
+     * Returns the "delete file default" setting.<p>
+     * 
+     * @return the "delete file default" setting
+     */
+    public String getParamTabDiDeleteFileMode() {
+        return "" + m_userSettings.getDialogDeleteFileMode();
+    }
+    
+    /**
+     * Returns the "publish file siblings default" setting.<p>
+     * 
+     * @return the "publish file siblings default" setting
+     */
+    public String getParamTabDiPublishFileMode() {
+        return "" + m_userSettings.getDialogPublishSiblings();
+    }
+    
+    /**
+     * Returns the "display lock dialog" setting.<p>
+     * 
+     * @return "true" if the "display lock dialog" input field is checked, otherwise ""
+     */
+    public String getParamTabDiShowLock() {
+        return isParamEnabled(m_userSettings.getDialogShowLock());
     }
     
     /**
@@ -897,6 +895,15 @@ public class CmsPreferences extends CmsTabDialog {
     public String getParamTabExFileDateCreated() {
         return isParamEnabled(m_userSettings.showExplorerFileDateCreated());
     }
+
+    /**
+     * Returns the "display file date expired" setting.<p>
+     * 
+     * @return "true" if the file date expired input field is checked, otherwise ""
+     */
+    public String getParamTabExFileDateExpired() {
+        return isParamEnabled(m_userSettings.showExplorerFileDateExpired());
+    }
     
     /**
      * Returns the "display file last modification date" setting.<p>
@@ -905,6 +912,15 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String getParamTabExFileDateLastModified() {
         return isParamEnabled(m_userSettings.showExplorerFileDateLastModified());
+    }
+    
+    /**
+     * Returns the "display file date released" setting.<p>
+     * 
+     * @return "true" if the file date released input field is checked, otherwise ""
+     */
+    public String getParamTabExFileDateReleased() {
+        return isParamEnabled(m_userSettings.showExplorerFileDateReleased());
     }
     
     /**
@@ -977,24 +993,6 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String getParamTabExFileUserCreated() {
         return isParamEnabled(m_userSettings.showExplorerFileUserCreated());
-    }
-    
-    /**
-     * Returns the "display file date released" setting.<p>
-     * 
-     * @return "true" if the file date released input field is checked, otherwise ""
-     */
-    public String getParamTabExFileDateReleased() {
-        return isParamEnabled(m_userSettings.showExplorerFileDateReleased());
-    }
-
-    /**
-     * Returns the "display file date expired" setting.<p>
-     * 
-     * @return "true" if the file date expired input field is checked, otherwise ""
-     */
-    public String getParamTabExFileDateExpired() {
-        return isParamEnabled(m_userSettings.showExplorerFileDateExpired());
     }
     
     
@@ -1071,30 +1069,12 @@ public class CmsPreferences extends CmsTabDialog {
     }
     
     /**
-     * Returns the "copy file default" setting.<p>
+     * Returns the "start folder" setting.<p>
      * 
-     * @return the "copy file default" setting
+     * @return the "start folder" setting
      */
-    public String getParamTabDiCopyFileMode() {
-        return "" + m_userSettings.getDialogCopyFileMode();
-    }
-    
-    /**
-     * Returns the "copy folder default" setting.<p>
-     * 
-     * @return the "copy folder default" setting
-     */
-    public String getParamTabDiCopyFolderMode() {
-        return "" + m_userSettings.getDialogCopyFolderMode();
-    }
-    
-    /**
-     * Returns the "delete file default" setting.<p>
-     * 
-     * @return the "delete file default" setting
-     */
-    public String getParamTabDiDeleteFileMode() {
-        return "" + m_userSettings.getDialogDeleteFileMode();
+    public String getParamTabWpFolder() {
+        return m_userSettings.getStartFolder();    
     }
     
     /**
@@ -1116,15 +1096,6 @@ public class CmsPreferences extends CmsTabDialog {
     }
     
     /**
-     * Returns the "publish file siblings default" setting.<p>
-     * 
-     * @return the "publish file siblings default" setting
-     */
-    public String getParamTabDiPublishFileMode() {
-        return "" + m_userSettings.getDialogPublishSiblings();
-    }
-    
-    /**
      * Returns the "workplace report type" setting.<p>
      * 
      * @return the "workplace report type" setting
@@ -1140,24 +1111,6 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String getParamTabWpRestrictExplorerView() {
         return "" + m_userSettings.getRestrictExplorerView();    
-    }
-    
-    /**
-     * Returns the "display lock dialog" setting.<p>
-     * 
-     * @return "true" if the "display lock dialog" input field is checked, otherwise ""
-     */
-    public String getParamTabDiShowLock() {
-        return isParamEnabled(m_userSettings.getDialogShowLock());
-    }
-    
-    /**
-     * Returns the "start folder" setting.<p>
-     * 
-     * @return the "start folder" setting
-     */
-    public String getParamTabWpFolder() {
-        return m_userSettings.getStartFolder();    
     }
     
     /**
@@ -1214,44 +1167,6 @@ public class CmsPreferences extends CmsTabDialog {
         tabList.add(key("panel.user"));
         return tabList;
     }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // create an empty user settings object
-        m_userSettings = new CmsUserSettings(); 
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-             
-        // get the active tab from request parameter or display first tab
-        getActiveTab();
-        
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_SET.equals(getParamAction())) {
-            setAction(ACTION_SET);
-        } else if (DIALOG_OK.equals(getParamAction())) {
-            setAction(ACTION_OK); 
-        } else if (DIALOG_RELOAD.equals(getParamAction())) {
-            setAction(ACTION_RELOAD); 
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {
-            setAction(ACTION_CANCEL); 
-        } else if (DIALOG_CHPWD.equals(getParamAction())) {
-            setAction(ACTION_CHPWD); 
-        } else {
-            if (!DIALOG_SWITCHTAB.equals(getParamAction())) {
-                // first call of preferences dialog, fill param values with current settings
-                fillUserSettings();
-            }
-            
-            setAction(ACTION_DEFAULT);
-            // build title for preferences dialog     
-            setParamTitle(key("title.preferences"));
-        }      
-     
-    } 
     
     /**
      * Helper method to add the "checked" attribute to an input field.<p>
@@ -1264,42 +1179,6 @@ public class CmsPreferences extends CmsTabDialog {
             return " checked=\"checked\"";
         }
         return "";
-    }
-    
-    /**
-     * Helper method for the request parameter methods to return a String depending on the boolean parameter.<p>
-     * 
-     * @param isEnabled the boolean variable to check
-     * @return "true" if isEnabled is true, otherwise ""
-     */
-    private String isParamEnabled(boolean isEnabled) {
-        if (isEnabled) {
-            return "true";
-        }
-        return "";
-    }
-    
-    /**
-     * Returns the values of all parameter methods of this workplace class instance.<p>
-     * 
-     * This overwrites the super method because of the possible dynamic editor selection entries.<p> 
-     * 
-     * @return the values of all parameter methods of this workplace class instance
-     */
-    protected Map paramValues() {
-        Map map = super.paramValues();
-        HttpServletRequest request = getJsp().getRequest();
-        Enumeration en = request.getParameterNames();
-        while (en.hasMoreElements()) {
-            String paramName = (String)en.nextElement();
-            if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX)) {
-                String paramValue = request.getParameter(paramName);
-                if (paramValue != null && !"".equals(paramValue.trim())) {
-                    map.put(paramName, CmsEncoder.decode(paramValue));
-                }
-            }
-        }         
-        return map;
     }
     
     /**
@@ -1318,6 +1197,72 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamOldPassword(String oldPwd) {
         m_paramOldPassword = oldPwd;
+    }
+    
+    /**
+     * Sets the "copy file default" setting.<p>
+     * 
+     * @param value the "copy file default" setting
+     */
+    public void setParamTabDiCopyFileMode(String value) {
+        try {
+            m_userSettings.setDialogCopyFileMode(Integer.parseInt(value));
+        } catch (Throwable t) {
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(t);
+            }
+        }
+    }
+    
+    /**
+     * Sets the "copy folder default" setting.<p>
+     * 
+     * @param value the "copy folder default" setting
+     */
+    public void setParamTabDiCopyFolderMode(String value) {
+        try {
+            m_userSettings.setDialogCopyFolderMode(Integer.parseInt(value));
+        } catch (Throwable t) {
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(t);
+            }
+        }
+    }
+    
+    /**
+     * Sets the "delete file siblings default" setting.<p>
+     * 
+     * @param value the "delete file siblings default" setting
+     */
+    public void setParamTabDiDeleteFileMode(String value) {
+        try {
+            m_userSettings.setDialogDeleteFileMode(Integer.parseInt(value));
+        } catch (Throwable t) {
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(t);
+            }
+        }
+    }
+    
+    /**
+     * Sets the "publish file siblings default" setting.<p>
+     * 
+     * @param value the "publish file siblings default" setting
+     */
+    public void setParamTabDiPublishFileMode(String value) {
+        m_userSettings.setDialogPublishSiblings("true".equals(value));
+    }
+
+    /**
+     * Sets the "display lock dialog" setting.<p>
+     * 
+     * @param value "true" to enable the "display lock dialog" setting, all others to disable
+     */
+    public void setParamTabDiShowLock(String value) {
+        m_userSettings.setDialogShowLock("true".equals(value));
     }
     
     /**
@@ -1376,6 +1321,15 @@ public class CmsPreferences extends CmsTabDialog {
     public void setParamTabExFileDateCreated(String value) {
         m_userSettings.setShowExplorerFileDateCreated("true".equals(value));
     }
+    
+    /**
+     * Sets the "display file expired date" setting.<p>
+     * 
+     * @param value "true" to enable the "display file expired date" setting, all others to disable
+     */
+    public void setParamTabExFileDateExpired(String value) {
+        m_userSettings.setShowExplorerFileDateExpired("true".equals(value));
+    }
 
     /**
      * Sets the "display file last modification date" setting.<p>
@@ -1384,6 +1338,15 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabExFileDateLastModified(String value) {
         m_userSettings.setShowExplorerFileDateLastModified("true".equals(value));
+    }
+    
+    /**
+     * Sets the "display file released date" setting.<p>
+     * 
+     * @param value "true" to enable the "display file released date" setting, all others to disable
+     */
+    public void setParamTabExFileDateReleased(String value) {
+        m_userSettings.setShowExplorerFileDateReleased("true".equals(value));
     }
     
     /**
@@ -1463,24 +1426,6 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabExFileUserCreated(String value) {
         m_userSettings.setShowExplorerFileUserCreated("true".equals(value));
-    }
-    
-    /**
-     * Sets the "display file released date" setting.<p>
-     * 
-     * @param value "true" to enable the "display file released date" setting, all others to disable
-     */
-    public void setParamTabExFileDateReleased(String value) {
-        m_userSettings.setShowExplorerFileDateReleased("true".equals(value));
-    }
-    
-    /**
-     * Sets the "display file expired date" setting.<p>
-     * 
-     * @param value "true" to enable the "display file expired date" setting, all others to disable
-     */
-    public void setParamTabExFileDateExpired(String value) {
-        m_userSettings.setShowExplorerFileDateExpired("true".equals(value));
     }
     
     /**
@@ -1566,51 +1511,12 @@ public class CmsPreferences extends CmsTabDialog {
     }
     
     /**
-     * Sets the "copy file default" setting.<p>
+     * Sets the "start folder" setting.<p>
      * 
-     * @param value the "copy file default" setting
+     * @param value the start folder to show in the explorer view
      */
-    public void setParamTabDiCopyFileMode(String value) {
-        try {
-            m_userSettings.setDialogCopyFileMode(Integer.parseInt(value));
-        } catch (Throwable t) {
-            // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(t);
-            }
-        }
-    }
-    
-    /**
-     * Sets the "copy folder default" setting.<p>
-     * 
-     * @param value the "copy folder default" setting
-     */
-    public void setParamTabDiCopyFolderMode(String value) {
-        try {
-            m_userSettings.setDialogCopyFolderMode(Integer.parseInt(value));
-        } catch (Throwable t) {
-            // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(t);
-            }
-        }
-    }
-    
-    /**
-     * Sets the "delete file siblings default" setting.<p>
-     * 
-     * @param value the "delete file siblings default" setting
-     */
-    public void setParamTabDiDeleteFileMode(String value) {
-        try {
-            m_userSettings.setDialogDeleteFileMode(Integer.parseInt(value));
-        } catch (Throwable t) {
-            // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(t);
-            }
-        }
+    public void setParamTabWpFolder(String value) {
+        m_userSettings.setStartFolder(value);
     }
 
     /**
@@ -1629,15 +1535,6 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabWpProject(String value) {
         m_userSettings.setStartProject(value);
-    }
-    
-    /**
-     * Sets the "publish file siblings default" setting.<p>
-     * 
-     * @param value the "publish file siblings default" setting
-     */
-    public void setParamTabDiPublishFileMode(String value) {
-        m_userSettings.setDialogPublishSiblings("true".equals(value));
     }
 
     /**
@@ -1659,24 +1556,6 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabWpRestrictExplorerView(String value) {
         m_userSettings.setRestrictExplorerView("true".equals(value));    
-    }
-
-    /**
-     * Sets the "display lock dialog" setting.<p>
-     * 
-     * @param value "true" to enable the "display lock dialog" setting, all others to disable
-     */
-    public void setParamTabDiShowLock(String value) {
-        m_userSettings.setDialogShowLock("true".equals(value));
-    }
-    
-    /**
-     * Sets the "start folder" setting.<p>
-     * 
-     * @param value the start folder to show in the explorer view
-     */
-    public void setParamTabWpFolder(String value) {
-        m_userSettings.setStartFolder(value);
     }
     
     /**
@@ -1704,6 +1583,126 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabWpView(String value) {
         m_userSettings.setStartView(value);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        // create an empty user settings object
+        m_userSettings = new CmsUserSettings(); 
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+             
+        // get the active tab from request parameter or display first tab
+        getActiveTab();
+        
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_SET.equals(getParamAction())) {
+            setAction(ACTION_SET);
+        } else if (DIALOG_OK.equals(getParamAction())) {
+            setAction(ACTION_OK); 
+        } else if (DIALOG_RELOAD.equals(getParamAction())) {
+            setAction(ACTION_RELOAD); 
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            setAction(ACTION_CANCEL); 
+        } else if (DIALOG_CHPWD.equals(getParamAction())) {
+            setAction(ACTION_CHPWD); 
+        } else {
+            if (!DIALOG_SWITCHTAB.equals(getParamAction())) {
+                // first call of preferences dialog, fill param values with current settings
+                fillUserSettings();
+            }
+            
+            setAction(ACTION_DEFAULT);
+            // build title for preferences dialog     
+            setParamTitle(key("title.preferences"));
+        }      
+     
+    } 
+    
+    /**
+     * Returns the values of all parameter methods of this workplace class instance.<p>
+     * 
+     * This overwrites the super method because of the possible dynamic editor selection entries.<p> 
+     * 
+     * @return the values of all parameter methods of this workplace class instance
+     */
+    protected Map paramValues() {
+        Map map = super.paramValues();
+        HttpServletRequest request = getJsp().getRequest();
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String)en.nextElement();
+            if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX)) {
+                String paramValue = request.getParameter(paramName);
+                if (paramValue != null && !"".equals(paramValue.trim())) {
+                    map.put(paramName, CmsEncoder.decode(paramValue));
+                }
+            }
+        }         
+        return map;
+    }
+    
+    /**
+     * Builds the html for a common button style select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @param selectedIndex the index of the selected option
+     * @return the html for the common button style select box
+     */
+    private String buildSelectButtonStyle(String htmlAttributes, int selectedIndex) {
+        List options = new ArrayList(3);      
+        options.add(key("preferences.buttonstyle.img"));
+        options.add(key("preferences.buttonstyle.imgtxt"));
+        options.add(key("preferences.buttonstyle.txt"));
+        String [] vals = new String[] {"0", "1", "2"};
+        List values = new ArrayList(java.util.Arrays.asList(vals));
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }
+    
+    /**
+     * Returns the preferred editor preselection value either from the request, if not present, from the user settings.<p>
+     * 
+     * @param request the current http servlet request
+     * @param resourceType the preferred editors resource type 
+     * @return the preferred editor preselection value or null, if none found
+     */
+    private String computeEditorPreselection(HttpServletRequest request, String resourceType) {
+        // first check presence of the setting in request parameter
+        String preSelection = request.getParameter(PARAM_PREFERREDEDITOR_PREFIX + resourceType);
+        if (preSelection != null && !"".equals(preSelection.trim())) {
+            return CmsEncoder.decode(preSelection);
+        } else {
+            // no value found in request, check current user settings (not the member!)
+            CmsUserSettings userSettings = new CmsUserSettings(getSettings().getUser());
+            return userSettings.getPreferredEditor(resourceType);
+            
+        }
+    }
+    
+    /**
+     * Fills the parameter values according to the settings of the current user.<p>
+     * 
+     * This method is called once when first displaying the preferences dialog.<p>
+     */
+    private void fillUserSettings() {
+        m_userSettings = new CmsUserSettings(getSettings().getUser());
+    }
+    
+    /**
+     * Helper method for the request parameter methods to return a String depending on the boolean parameter.<p>
+     * 
+     * @param isEnabled the boolean variable to check
+     * @return "true" if isEnabled is true, otherwise ""
+     */
+    private String isParamEnabled(boolean isEnabled) {
+        if (isEnabled) {
+            return "true";
+        }
+        return "";
     }
     
 }
