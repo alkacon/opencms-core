@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/05 15:36:49 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2000/06/06 09:51:08 $
+ * Version: $Revision: 1.77 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,6 +30,7 @@ package com.opencms.file;
 
 import java.util.*;
 import javax.servlet.http.*;
+import source.org.apache.java.util.*;
 
 import com.opencms.core.*;
 
@@ -46,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.76 $ $Date: 2000/06/05 15:36:49 $ 
+ * @version $Revision: 1.77 $ $Date: 2000/06/06 09:51:08 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -88,6 +89,15 @@ public class CmsObject implements I_CmsConstants {
 		throws CmsException {
 		m_context = new CmsRequestContext();
 		m_context.init(c_rb, req, resp, user, currentGroup, currentProjectId);
+	}
+	
+	/**
+	 * Method to access the configurations of the properties-file.
+	 * @return The Configurations of the properties-file.
+	 */
+	public Configurations getConfigurations() {
+		return c_rb.getConfigurations(getRequestContext().currentUser(),
+									  getRequestContext().currentProject());
 	}
 	
 	/**

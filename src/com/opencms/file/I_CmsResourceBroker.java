@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/06 08:40:23 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2000/06/06 09:51:08 $
+ * Version: $Revision: 1.74 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.73 $ $Date: 2000/06/06 08:40:23 $
+ * @version $Revision: 1.74 $ $Date: 2000/06/06 09:51:08 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -61,6 +61,21 @@ public interface I_CmsResourceBroker {
         throws CmsException;
                               
     
+	// Method to access the configuration
+
+	/**
+	 * Method to access the configurations of the properties-file.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return The Configurations of the properties-file.
+	 */
+	public Configurations getConfigurations(CmsUser currentUser, CmsProject currentProject);
+	
+											  
     // Methods working with projects
 
     /**

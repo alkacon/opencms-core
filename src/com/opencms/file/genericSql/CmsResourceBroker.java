@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/06 08:57:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/06/06 09:51:09 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,13 +46,17 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/06/06 08:57:55 $
+ * @version $Revision: 1.3 $ $Date: 2000/06/06 09:51:09 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker {
+	
+	/**
+	 * Memeber to store the configuration of the property-file.
+	 */
+	private Configurations m_configuration = null;
 
-    // Internal ResourceBroker methods
-    
+    // Internal ResourceBroker methods   
     
     /**
      * Initializes the resource broker and sets up all required modules and connections.
@@ -61,8 +65,28 @@ public class CmsResourceBroker implements I_CmsResourceBroker {
      */
     public void init(Configurations config) 
         throws CmsException {
+		
+		// Store the configuration.
+		m_configuration = config;
+		
+		
     }
-                              
+	
+	// Method to access the configuration
+
+	/**
+	 * Method to access the configurations of the properties-file.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return The Configurations of the properties-file.
+	 */
+	public Configurations getConfigurations(CmsUser currentUser, CmsProject currentProject) {
+		return m_configuration;
+	}
     
     // Methods working with projects
 
