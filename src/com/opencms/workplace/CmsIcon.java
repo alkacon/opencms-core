@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsIcon.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/28 12:02:05 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/04/20 08:11:54 $
+ * @version $Revision: 1.8 $ $Date: 2000/04/28 12:02:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -73,8 +73,9 @@ public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpCo
 		String iconAction = n.getAttribute(C_ICON_ACTION);
 		String iconHref = n.getAttribute(C_ICON_HREF);
 		String iconTarget = n.getAttribute(C_ICON_TARGET);
-        String iconMethod = n.getAttribute(C_ICON_METHOD);
-        
+        String iconActiveMethod = n.getAttribute(C_ICON_ACTIVE_METHOD);
+        String iconVisibleMethod = n.getAttribute(C_ICON_VISIBLE_METHOD);
+       
 		if(iconHref == null || "".equals(iconHref)) {
 		    iconHref = "";
 		}
@@ -82,15 +83,15 @@ public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpCo
         // call the method for activation decision
         boolean activate=true;
         
-        if(iconMethod != null && ! "".equals(iconMethod))
+        if(iconActiveMethod != null && ! "".equals(iconActiveMethod))
         {
             Method groupsMethod = null;
             try {
-                groupsMethod = callingObject.getClass().getMethod(iconMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class});
+                groupsMethod = callingObject.getClass().getMethod(iconActiveMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class});
                 activate = ((Boolean)groupsMethod.invoke(callingObject, new Object[] {cms, lang, parameters})).booleanValue();
             } catch(NoSuchMethodException exc) {
             // The requested method was not found.
-            throwException("Could not find icon activation method " + iconMethod + " in calling class " + callingObject.getClass().getName() + " for generating icon.", CmsException.C_NOT_FOUND);
+            throwException("Could not find icon activation method " + iconActiveMethod + " in calling class " + callingObject.getClass().getName() + " for generating icon.", CmsException.C_NOT_FOUND);
             } catch(InvocationTargetException targetEx) {
                 // the method could be invoked, but throwed a exception
                 // itself. Get this exception and throw it again.              
@@ -98,14 +99,44 @@ public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpCo
                 if(!(e instanceof CmsException)) {
                     // Only print an error if this is NO CmsException
                     e.printStackTrace();
-                    throwException("Icon activation method " + iconMethod + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                    throwException("Icon activation method " + iconActiveMethod + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
                 } else {
                     // This is a CmsException
                     // Error printing should be done previously.
                     throw (CmsException)e;
                 }
             } catch(Exception exc2) {
-                throwException("Icon activation method " + iconMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
+                throwException("Icon activation method " + iconActiveMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
+            }
+        }
+		
+		// call the method for the visibility decision
+        boolean visible=true; 
+		
+        if(iconVisibleMethod != null && ! "".equals(iconVisibleMethod))
+        {
+            Method groupsMethod = null;
+            try {
+                groupsMethod = callingObject.getClass().getMethod(iconVisibleMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class});
+                visible = ((Boolean)groupsMethod.invoke(callingObject, new Object[] {cms, lang, parameters})).booleanValue();
+            } catch(NoSuchMethodException exc) {
+            // The requested method was not found.
+            throwException("Could not find icon activation method " + iconVisibleMethod + " in calling class " + callingObject.getClass().getName() + " for generating icon.", CmsException.C_NOT_FOUND);
+            } catch(InvocationTargetException targetEx) {
+                // the method could be invoked, but throwed a exception
+                // itself. Get this exception and throw it again.              
+                Throwable e = targetEx.getTargetException();
+                if(!(e instanceof CmsException)) {
+                    // Only print an error if this is NO CmsException
+                    e.printStackTrace();
+                    throwException("Icon activation method " + iconVisibleMethod + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                } else {
+                    // This is a CmsException
+                    // Error printing should be done previously.
+                    throw (CmsException)e;
+                }
+            } catch(Exception exc2) {
+                throwException("Icon activation method " + iconVisibleMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
             }
         }
                 
@@ -125,10 +156,15 @@ public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpCo
 		icondef.setData(C_ICON_ACTION, iconAction);
 		icondef.setData(C_ICON_HREF, iconHref);
 		icondef.setData(C_ICON_TARGET, iconTarget);
-        if(activate) {
-            return icondef.getProcessedDataValue("defaulticon", callingObject);
-        } else {
-            return icondef.getProcessedDataValue("deactivatedicon", callingObject);
-        }
+		 
+		if (visible){
+			if(activate) {
+				return icondef.getProcessedDataValue("defaulticon", callingObject);
+			} else {
+				return icondef.getProcessedDataValue("deactivatedicon", callingObject);
+			}
+		} else {
+			return icondef.getProcessedDataValue("noicon", callingObject);
+		}
     }           
 }

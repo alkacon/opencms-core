@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/04/20 08:53:32 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/04/28 12:02:05 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/04/20 08:53:32 $
+ * @version $Revision: 1.17 $ $Date: 2000/04/28 12:02:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -277,7 +277,18 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);            
             configFile.getWorkplaceIniData(m_viewNames, m_viewLinks,"WORKPLACEVIEWS","VIEW");            
         }
-        
+		//------- TEMPORARY: NOT display admin view if user should't see it  
+		if (!(reqCont.isAdmin() || reqCont.isProjectManager())) {
+			// should not see the Administration view	 
+			int indexAdmin = m_viewNames.indexOf("admin");
+			if (indexAdmin != -1 ){
+				m_viewLinks.removeElementAt(indexAdmin);
+				m_viewNames.removeElementAt(indexAdmin);	
+			}
+		}
+		//--------------
+		
+		
         // OK. Now m_viewNames and m_viewLinks contail all available
         // view information.
         // Loop through the vectors and fill the result vectors.
@@ -286,11 +297,11 @@ public class CmsWpMain extends CmsWorkplaceDefault {
         for(int i=0; i<numViews; i++) {
             String loopValue = (String)m_viewLinks.elementAt(i);
             String loopName = (String)m_viewNames.elementAt(i);
-            values.addElement(loopValue);
-            names.addElement(lang.getLanguageValue("select." + loopName));
-            if(loopValue.equals(currentView)) {
+			values.addElement(loopValue);
+			names.addElement(lang.getLanguageValue("select." + loopName));
+			if(loopValue.equals(currentView)) {
                 currentViewIndex = i;
-            }
+			} 
         }
         return new Integer(currentViewIndex);
     }
