@@ -12,7 +12,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/02/14 14:10:23 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/14 18:44:36 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -132,10 +132,10 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     /**
      * Gets an enumeration of all used subelements in the default section
      * of a template file.
-     * @return Enumeration of all subtemplate names.
+     * @return Vector of all subtemplate names.
      * @exception CmsException
      */
-    public Enumeration getAllSubElements() throws CmsException {
+    public Vector getAllSubElements() throws CmsException {
         return getAllSubElements(null);
     }
     
@@ -143,17 +143,17 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * Gets an enumeration of all used subelements in the given section
      * of a template file.
      * @param selector Section to be scanned for subelements
-     * @return Enumeration of all subtemplate names.
+     * @return Vector of all subtemplate names.
      * @exception CmsException
      */
-    public Enumeration getAllSubElements(String selector) throws CmsException {
+    public Vector getAllSubElements(String selector) throws CmsException {
         String templateDatablockName = getTemplateDatablockName(selector);
         Element templateElement = getData(templateDatablockName);
         NodeList nl = templateElement.getChildNodes();
         return getNamesFromNodeList(nl, "ELEMENT", false);
     }
     
-    public Enumeration getAllSections() throws CmsException {
+    public Vector getAllSections() throws CmsException {
         NodeList nl = ((Element)getXmlDocument().getDocumentElement()).getChildNodes();             
         return getNamesFromNodeList(nl, "TEMPLATE", true);
     }
@@ -161,10 +161,10 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     /**
      * Gets an enumeration of all parameter names of a given subelement definition.
      * @param elementName Name of the subelement.
-     * @return Enumeration of all names.
+     * @return Vector of all names.
      * @exception CmsException
      */
-    public Enumeration getParameterNames(String elementName) throws CmsException {
+    public Vector getParameterNames(String elementName) throws CmsException {
         Element elementDefinition = getData("elementdef." + elementName);
         NodeList parameterTags = elementDefinition.getChildNodes();
         return getNamesFromNodeList(parameterTags, "PARAMETER", false);            
@@ -443,7 +443,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @return Enumeration of all "name" attributes.
      * @exception CmsException
      */
-    private Enumeration getNamesFromNodeList(NodeList nl, String tag, boolean unnamedAllowed) throws CmsException {
+    private Vector getNamesFromNodeList(NodeList nl, String tag, boolean unnamedAllowed) throws CmsException {
         int numElements = nl.getLength();
         Vector collectNames = new Vector();
 
@@ -466,7 +466,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 collectNames.addElement(name);
             }
         }
-        return collectNames.elements();
+        return collectNames;
     }
     
     

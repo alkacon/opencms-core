@@ -18,7 +18,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/02/14 14:10:58 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/14 18:45:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -144,28 +144,19 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             }
             oldEdit = editor; 
             
-            // Initialize the body field
-            body = "-- unnamed --";
-            
             // And finally the document title
             title = cms.readMetainformation(file, C_METAINFO_TITLE);
             if(title == null) {
                 title = "";
             }
-            oldTitle = title;            
-        
+            oldTitle = title;                    
+
             // Okay. All values are initialized. Now we can create
             // the temporary files.
             tempPageFilename = createTemporaryFile(cms, pageFileResource);
-            tempBodyFilename = createTemporaryFile(cms, contentFileResource); 
-
-            CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
-            temporaryControlFile.setElementTemplSelector("body", body);
-            temporaryControlFile.setElementTemplate("body", tempBodyFilename);
-            temporaryControlFile.write();
-            
+            tempBodyFilename = createTemporaryFile(cms, contentFileResource);             
             session.putValue("te_temppagefile", tempPageFilename);
-            session.putValue("te_tempbodyfile", tempBodyFilename);            
+            session.putValue("te_tempbodyfile", tempBodyFilename);                        
         } 
         
         if(templatechangeRequested) {
@@ -215,7 +206,22 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         Element bodyTag = layoutTemplateFile.getBodyTag();
         bodyTemplateFile.setBodyTag(bodyTag);
         
-               
+        
+        if(!existsContentParam) {
+            Vector allBodys = bodyTemplateFile.getAllSections();
+            if(allBodys == null || allBodys.size() == 0) {
+                body = "";
+            } else {
+                body = (String)allBodys.elementAt(0);
+            }
+
+            CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
+            temporaryControlFile.setElementTemplSelector("body", body);
+            temporaryControlFile.setElementTemplate("body", tempBodyFilename);
+            temporaryControlFile.write();
+        }
+        
+        
         if(existsContentParam) {
             // save file contents to our temporary file.
             Encoder encoder = new Encoder();
@@ -254,7 +260,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // files to the original files.
         if(saveRequested) {
             commitTemporaryFile(cms, bodyElementFilename, tempBodyFilename);
-            cms.writeMetainformation(file, "Title", cms.readMetainformation(tempPageFilename, "Title"));
+            cms.writeMetainformation(file, C_METAINFO_TITLE, cms.readMetainformation(tempPageFilename, C_METAINFO_TITLE));
 
             CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
             CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
@@ -351,12 +357,13 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         CmsXmlTemplate bodyElementClassObject = (CmsXmlTemplate)tempObj;
         CmsXmlTemplateFile bodyTemplateFile = bodyElementClassObject.getOwnTemplateFile(cms, bodyFilename, "body", parameters, null);
             
-        Enumeration allBodys = bodyTemplateFile.getAllSections();
+        Vector allBodys = bodyTemplateFile.getAllSections();
         int loop=0;
         int currentBodySectionIndex = 0;
 
-        while(allBodys.hasMoreElements()) {
-            String bodyname = (String)allBodys.nextElement();
+        int numBodys = allBodys.size();
+        for(int i=0; i<numBodys; i++) {
+            String bodyname = (String)allBodys.elementAt(i);
             if(bodyname.equals(currentBodySection)) {
                 currentBodySectionIndex = loop;
             }
@@ -382,7 +389,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             A_CmsResource file = (A_CmsResource)allTemplateFiles.elementAt(i);
             if(file.getState() != C_STATE_DELETED) {
                 String filename = file.getName();
-                String title = cms.readMetainformation(file.getAbsolutePath(), "Title");
+                String title = cms.readMetainformation(file.getAbsolutePath(), C_METAINFO_TITLE);
                 if(title == null || "".equals(title)) {
                     title = file.getName();
                 }            

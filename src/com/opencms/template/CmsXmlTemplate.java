@@ -14,7 +14,7 @@ import org.xml.sax.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/02/14 14:10:23 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/14 18:44:50 $
  */
 public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -265,15 +265,16 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
         subTemplate = (I_CmsTemplate)loadedObject;        
 
         // Template class is now loaded. Next try to read the parameters        
-        Enumeration parameterTags = null;
+        Vector parameterTags = null;
         try {
             parameterTags = templateFile.getParameterNames(tagcontent);
         } catch(CmsException e) {
             // ignore
         }
         if(parameterTags != null) {
-            while(parameterTags.hasMoreElements()) {
-                String paramName = (String)parameterTags.nextElement();
+            int numParameterTags = parameterTags.size();
+            for(int i=0; i< numParameterTags; i++) {
+                String paramName = (String)parameterTags.elementAt(i);
                 String paramValue = templateFile.getParameter(tagcontent, paramName);
                 if(! parameterHashtable.containsKey(paramName)) {
                     parameterHashtable.put(tagcontent + "." + paramName, paramValue);
@@ -415,7 +416,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     public boolean subtemplatesCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) { 
         boolean cacheable = true;
         CmsXmlTemplateFile doc = null;
-        Enumeration subtemplates = null;
+        Vector subtemplates = null;
         try {
             doc = this.getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
             doc.init(cms, templateFile);               
@@ -425,8 +426,9 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
             return false;
         }
 
-        while(subtemplates.hasMoreElements()) {
-            String elName = (String)subtemplates.nextElement();
+        int numSubtemplates = subtemplates.size();
+        for(int i=0; i<numSubtemplates; i++) {
+            String elName = (String)subtemplates.elementAt(i);
             
             String className = null;
             String templateName = null;
