@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
-* Date   : $Date: 2003/02/12 12:05:11 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/02/16 19:31:08 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.report.I_CmsReport;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.36 $ $Date: 2003/02/12 12:05:11 $
+ * @version $Revision: 1.37 $ $Date: 2003/02/16 19:31:08 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -442,7 +442,7 @@ public String getModuleUploadedBy(String module);
  * @param String the name of the module.
  * @return java.lang.String the version of the module.
  */
-public int getModuleVersion(String modulename);
+public float getModuleVersion(String modulename);
 /**
  * Returns the name of the view, that is implemented by the module.
  *
@@ -785,10 +785,10 @@ public void setModuleRepositories(String modulename, String[] repositories) thro
 /**
  * This method sets the version of the module.
  *
- * @param String the name of the module.
- * @param int the version of the module.
+ * @param modulename the name of the module.
+ * @param version the version of the module.
  */
-public void setModuleVersion(String modulename, int version) throws CmsException;
+public void setModuleVersion(String modulename, String version) throws CmsException;
 /**
  * Sets a view for a module
  *

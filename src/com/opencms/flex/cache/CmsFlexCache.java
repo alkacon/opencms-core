@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2003/02/13 10:14:50 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/02/16 19:31:08 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,16 +74,14 @@ import java.util.Map;
  * For every entry a key is saved which contains the resource name and the variation.
  * </ul>
  *
- * <b>TODO: partial cache flushing
- * </b>
  * Currenty the whole cache is flushed if something is published.
  * Implement partial cache flushing, i.e. remove only changed elements at publish
- * or change event (in case of offline resources).<br>
+ * or change event (in case of offline resources).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -804,7 +802,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.12 $ 
+     * @version $Revision: 1.13 $ 
      */
     class CmsFlexCacheVariation extends Object implements com.opencms.flex.util.I_CmsFlexLruCacheObject {
         

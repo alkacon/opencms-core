@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/02/12 12:05:11 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/02/16 19:31:08 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.63 $ $Date: 2003/02/12 12:05:11 $
+ * @version $Revision: 1.64 $ $Date: 2003/02/16 19:31:08 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
@@ -198,7 +198,7 @@ private Vector checkDependencies(Element module) throws CmsException {
             int maxVersion = Integer.parseInt(((Element) deps.item(i)).getElementsByTagName("maxversion").item(0).getFirstChild().getNodeValue());
 
             // get the version of the needed repository
-            int currentVersion = getModuleVersion(name);
+            float currentVersion = getModuleVersion(name);
 
             if( currentVersion == -1 ) {
                 retValue.addElement("The needed module " + name + " dosen't exists");
@@ -1296,10 +1296,10 @@ public String getModuleUploadedBy(String modulename) {
  * @param String the name of the module.
  * @return java.lang.String the version of the module.
  */
-public int getModuleVersion(String modulename) {
-    int retValue = -1;
+public float getModuleVersion(String modulename) {
+    float retValue = -1;
     try {
-        retValue = Integer.parseInt(getModuleData(modulename, "version"));
+        retValue = Float.parseFloat(getModuleData(modulename, "version"));
     } catch (Exception exc) {
         // ignore the exception - reg is not welformed
     }
@@ -2270,11 +2270,18 @@ public void setModuleRepositories(String modulename, String[] repositories) thro
 /**
  * This method sets the version of the module.
  *
- * @param String the name of the module.
- * @param int the version of the module.
+ * @param modulename the name of the module.
+ * @param version the version of the module.
  */
-public void setModuleVersion(String modulename, int version) throws CmsException {
-    setModuleData(modulename, "version", version + "");
+public void setModuleVersion(String modulename, String version) throws CmsException {
+    if (version == null) version = "0";
+    try {
+        Float.parseFloat(version); 
+    } catch (NumberFormatException nf) {
+        throw new CmsException("Module version '" + version + "' not a number", CmsException.C_UNKNOWN_EXCEPTION, nf);
+    }
+    version = version.trim();    
+    setModuleData(modulename, "version", version);
 }
 /**
  * Sets a view for a module

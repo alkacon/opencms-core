@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/02/16 19:31:08 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ class CmsTemplateCache implements I_CmsTemplateCache,I_CmsLogChannels {
     
     /** Hashtable to store the cached data */
     
-    // TODO: get the cache-size from properties
     private CmsCache templateCache = new CmsCache(1000);
     
     /** Default constructor to create a template cache */

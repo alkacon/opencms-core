@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/02/16 19:31:09 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -337,11 +337,8 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         // set the module version
         String version = (String)table.get(C_VERSION);
         try {
-            int v = Integer.parseInt(version);
-            reg.setModuleVersion(name, v);
-        }
-        catch(Exception e) {
-        }    
+            reg.setModuleVersion(name, version);
+        } catch (CmsException e) {}
         
         try {
             reg.setModuleNiceName(name, (String)table.get(C_MODULENAME));
