@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.30 Bela Tegeuse - XX July 2001
+! new feature in history: a version of a file can be restored from the history
+
 OpenCms 4.3.29 Bela Tegeuse - 19 July 2001
 * fixed bug when reading all files or all subfolders in an offline folder
 
