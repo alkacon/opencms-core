@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/15 13:53:47 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2003/07/15 14:20:38 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.49 $ $Date: 2003/07/15 13:53:47 $
+ * @version $Revision: 1.50 $ $Date: 2003/07/15 14:20:38 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -3753,6 +3753,7 @@ public class CmsDriverManager extends Object {
 
     /**
      * Gets all sub folders or sub files in a folder.<p>
+     * Note: the list contains all resources that are readable or visible.
      * 
      * @param context.currentUser() the current user
      * @param context.currentProject() the current project
@@ -3803,7 +3804,9 @@ public class CmsDriverManager extends Object {
         subResources = m_vfsDriver.getSubResources(context.currentProject(), parentFolder, getSubFolders);
         for (int i = 0; i < subResources.size(); i++) {
             currentResource = (CmsResource) subResources.get(i);
-            if (!hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, false)) {
+            if (!includeDeleted && currentResource.getState() == I_CmsConstants.C_STATE_DELETED) {
+                subResources.remove(i--);
+            } else if (!hasPermissions(context, currentResource, I_CmsConstants.C_READ_OR_VIEW_ACCESS, false)) {
                 subResources.remove(i--);
             }
         }
