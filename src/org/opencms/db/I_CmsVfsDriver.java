@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/16 09:42:20 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2003/09/16 10:21:26 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.56 $ $Date: 2003/09/16 09:42:20 $
+ * @version $Revision: 1.57 $ $Date: 2003/09/16 10:21:26 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -194,27 +194,6 @@ public interface I_CmsVfsDriver {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     void deleteAllProperties(int projectId, CmsResource resource) throws CmsException;
-
-    /**
-     * Tags a resource as deleted without removing it physically in the database.<p>
-     * 
-     * @param currentProject the current project
-     * @param resource the resource
-     * @throws CmsException if something goes wrong
-     */
-    void deleteFile(CmsProject currentProject, CmsResource resource) throws CmsException;
-
-    /**
-     * Deletes the folder.<p>
-     *
-     * Only empty folders can be deleted yet.
-     *
-     * @param currentProject The project in which the resource will be used.
-     * @param orgFolder The folder that will be deleted.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    void deleteFolder(CmsProject currentProject, CmsFolder orgFolder) throws CmsException;
 
     /**
      * Deletes a property for a file or folder.
@@ -587,22 +566,13 @@ public interface I_CmsVfsDriver {
     void replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] newResContent, int newResType, int loaderId) throws CmsException;
 
     /**
-     * Sets the project ID for a list of resources back to 0 after a project was published.<p>
-     * 
-     * @param currentProject the current project
-     * @param resources the project ID of these resources get set back
-     * @throws CmsException if somethong goes wrong
-     */
-    void resetProjectId(CmsProject currentProject, CmsResource resource) throws CmsException;
-
-    /**
      * Updates the project ID attrib. of a resource record.<p>
      * 
      * @param project the resource record is updated with the ID of this project
      * @param resource the resource that gets updated
      * @throws CmsException if something goes wrong
      */
-    void updateProjectId(CmsProject project, CmsResource resource) throws CmsException;
+    void updateProjectId(CmsProject project, int projectId, CmsResource resource) throws CmsException;
 
     /**
      * Updates the structure and resource records of an existing offline resource for it's online counterpart.<p>

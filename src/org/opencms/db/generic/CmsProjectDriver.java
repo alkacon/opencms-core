@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/16 07:25:39 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2003/09/16 10:21:26 $
+ * Version: $Revision: 1.98 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.97 $ $Date: 2003/09/16 07:25:39 $
+ * @version $Revision: 1.98 $ $Date: 2003/09/16 10:21:26 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -964,7 +964,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         offlineFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
                         m_driverManager.getVfsDriver().updateResourceState(context.currentProject(), offlineFile, CmsDriverManager.C_UPDATE_ALL);
                     }
-                    m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), offlineFile);
+                    m_driverManager.getVfsDriver().updateProjectId(context.currentProject(), 0, offlineFile);
                 } catch (CmsException e) {
                     if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                         OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishFile] error reseting resource state, type: " + e.getTypeText() + ",  " + offlineFile.toString());
@@ -1044,7 +1044,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         offlineFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
                         m_driverManager.getVfsDriver().updateResourceState(context.currentProject(), offlineFile, CmsDriverManager.C_UPDATE_ALL);
                     }
-                    m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), offlineFile);
+                    m_driverManager.getVfsDriver().updateProjectId(context.currentProject(), 0, offlineFile);
                 } catch (CmsException e) {
                     if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                         OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishFile] error reseting resource state, type: " + e.getTypeText() + ",  " + offlineFile.toString());
@@ -1212,7 +1212,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     m_driverManager.getVfsDriver().updateResourceState(context.currentProject(), offlineFolder, CmsDriverManager.C_UPDATE_ALL);
                 }
 
-                m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), offlineFolder);
+                m_driverManager.getVfsDriver().updateProjectId(context.currentProject(), 0, offlineFolder);
             } catch (CmsException e) {
                 if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                     OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishFolder] error reseting resource state, type: " + e.getTypeText() + ",  " + offlineFolder.toString());

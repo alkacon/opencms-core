@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/16 09:45:01 $
- * Version: $Revision: 1.222 $
+ * Date   : $Date: 2003/09/16 10:21:26 $
+ * Version: $Revision: 1.223 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.222 $ $Date: 2003/09/16 09:45:01 $
+ * @version $Revision: 1.223 $ $Date: 2003/09/16 10:21:26 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -791,7 +791,7 @@ public class CmsDriverManager extends Object {
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
 
         // update the project flag of a modified resource as "modified inside the current project"
-        m_vfsDriver.updateProjectId(context.currentProject(), resource);
+        m_vfsDriver.updateProjectId(context.currentProject(), context.currentProject().getId(), resource);
         //m_vfsDriver.changeLockedInProject(projectId, resource.getResourceId());        
 
         clearResourceCache();
@@ -2125,12 +2125,14 @@ public class CmsDriverManager extends Object {
                     // delete the access control entries
                     deleteAllAccessControlEntries(context, currentResource);
                     // the resource exists online => mark the file as deleted
-                    m_vfsDriver.deleteFile(context.currentProject(), currentResource);
+                    //m_vfsDriver.deleteFile(context.currentProject(), currentResource);
+                    currentResource.setState(I_CmsConstants.C_STATE_DELETED);
+                    m_vfsDriver.updateResourceState(context.currentProject(), currentResource, C_UPDATE_STRUCTURE_STATE);                    
                     // add the project id as a property, this is later used for publishing
                     m_vfsDriver.writeProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), ""+context.currentProject().getId(), currentResource, currentResource.getType(), false);
                     // TODO: still necessary after we have the property?
                     // update the project ID
-                    m_vfsDriver.updateProjectId(context.currentProject(), currentResource);
+                    m_vfsDriver.updateProjectId(context.currentProject(), context.currentProject().getId(), currentResource);
                 }
             }
         }               
@@ -2203,7 +2205,7 @@ public class CmsDriverManager extends Object {
             deleteAllAccessControlEntries(context, cmsFolder);
             // update the project ID
             // TODO: still nescessary?
-            m_vfsDriver.updateProjectId(context.currentProject(), cmsFolder);            
+            m_vfsDriver.updateProjectId(context.currentProject(), context.currentProject().getId(), cmsFolder);            
         }       
         
         // update cache
@@ -4521,7 +4523,7 @@ public class CmsDriverManager extends Object {
 
         if (resource.getState() != I_CmsConstants.C_STATE_UNCHANGED && resource.getProjectLastModified() != context.currentProject().getId()) {
             // update the project flag of a modified resource as "modified inside the current project"
-            m_vfsDriver.updateProjectId(context.currentProject(), resource);
+            m_vfsDriver.updateProjectId(context.currentProject(), context.currentProject().getId(), resource);
         }
 
         // add the resource to the lock dispatcher
@@ -4568,7 +4570,7 @@ public class CmsDriverManager extends Object {
 
         if (resource.getState() != I_CmsConstants.C_STATE_UNCHANGED && resource.getProjectLastModified() != context.currentProject().getId()) {
             // update the project flag of a modified resource as "modified inside the current project"
-            m_vfsDriver.updateProjectId(context.currentProject(), resource);
+            m_vfsDriver.updateProjectId(context.currentProject(), context.currentProject().getId(), resource);
         }
 
         m_lockDispatcher.addResource(this, context, resource.getRootPath(), context.currentUser().getId(), context.currentProject().getId());

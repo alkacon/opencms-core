@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/16 09:42:20 $
- * Version: $Revision: 1.128 $
+ * Date   : $Date: 2003/09/16 10:21:26 $
+ * Version: $Revision: 1.129 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.128 $ $Date: 2003/09/16 09:42:20 $
+ * @version $Revision: 1.129 $ $Date: 2003/09/16 10:21:26 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -834,84 +834,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#deleteFile(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
-     */
-    public void deleteFile(CmsProject currentProject, CmsResource resource) throws CmsException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        try {
-            conn = m_sqlManager.getConnection(currentProject);
-
-            // delete the structure record
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_DELETE_STRUCTURE");
-            stmt.setInt(1, I_CmsConstants.C_STATE_DELETED);
-            stmt.setString(2, resource.getStructureId().toString());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Deletes the folder.<p>
-     *
-     * Only empty folders can be deleted yet.
-     *
-     * @param currentProject The project in which the resource will be used.
-     * @param orgFolder The folder that will be deleted.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public void deleteFolder(CmsProject currentProject, CmsFolder orgFolder) throws CmsException {
-        // the current implementation only deletes empty folders
-        // check if the folder has any files in it
-        List files = getSubResources(currentProject, orgFolder, false);
-        files = internalFilterUndeletedResources(files);
-        if (files.size() == 0) {
-            // check if the folder has any folders in it
-            List folders = getSubResources(currentProject, orgFolder, true);
-            folders = internalFilterUndeletedResources(folders);
-            if (folders.size() == 0) {
-                //this folder is empty, delete it
-                Connection conn = null;
-                PreparedStatement stmt = null;
-                try {
-                    conn = m_sqlManager.getConnection(currentProject);
-                    stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_REMOVE");
-                    // mark the folder as deleted
-                    stmt.setInt(1, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
-                    stmt.setString(2, CmsUUID.getNullUUID().toString());
-                    stmt.setString(3, orgFolder.getResourceId().toString());
-                    stmt.executeUpdate();
-                } catch (SQLException e) {
-                    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-                } finally {
-                    m_sqlManager.closeAll(conn, stmt, null);
-                }
-            } else {
-                String errorResNames = "";
-                Iterator i = folders.iterator();
-                while (i.hasNext()) {
-                    CmsResource errorRes = (CmsResource) i.next();
-                    errorResNames += "[" + errorRes.getName() + "]";
-                }
-                throw new CmsException("[" + this.getClass().getName() + "] " + orgFolder.getName() + errorResNames, CmsException.C_NOT_EMPTY);
-            }
-        } else {
-            String errorResNames = "";
-            Iterator i = files.iterator();
-            while (i.hasNext()) {
-                CmsResource errorRes = (CmsResource) i.next();
-                errorResNames += "[" + errorRes.getName() + "]";
-            }
-            throw new CmsException("[" + this.getClass().getName() + "] " + orgFolder.getName() + errorResNames, CmsException.C_NOT_EMPTY);
         }
     }
 
@@ -2660,36 +2582,16 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#resetProjectId(CmsProject, CmsResource)
-     */
-    public void resetProjectId(CmsProject currentProject, CmsResource currentResource) throws CmsException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        try {
-            conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_UPDATE_PROJECT_ID");
-            stmt.setInt(1, 0);
-            stmt.setString(2, currentResource.getResourceId().toString());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
      * @see org.opencms.db.I_CmsVfsDriver#updateProjectId(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
      */
-    public void updateProjectId(CmsProject project, CmsResource resource) throws CmsException {
+    public void updateProjectId(CmsProject project, int projectId, CmsResource resource) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
             conn = m_sqlManager.getConnection(project);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_PROJECT_ID");
-            stmt.setInt(1, project.getId());
+            stmt.setInt(1, projectId);
             stmt.setString(2, resource.getResourceId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
