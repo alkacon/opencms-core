@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/20 12:33:29 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2000/07/20 18:17:09 $
+ * Version: $Revision: 1.104 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.103 $ $Date: 2000/07/20 12:33:29 $ * 
+ * @version $Revision: 1.104 $ $Date: 2000/07/20 18:17:09 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2353,7 +2353,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 					statement.setInt(1, nextId(C_TABLE_PROPERTIES));
 					statement.setInt(2, propdef.getId());
 					statement.setInt(3, resourceId);
-					statement.setString(4, value);
+					statement.setString(4, checkNull(value));
 					statement.executeUpdate();
                     newprop=true;
 				}
