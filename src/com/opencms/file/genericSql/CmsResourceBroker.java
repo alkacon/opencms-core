@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 10:03:40 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/06/09 11:14:51 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2000/06/09 10:03:40 $
+ * @version $Revision: 1.36 $ $Date: 2000/06/09 11:14:51 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -55,6 +55,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * Constant to count the file-system changes.
 	 */
 	private long m_fileSystemChanges = 0;
+	
+	/**
+	 * Hashtable with resource-types.
+	 */
+	private Hashtable m_resourceTypes = null;
 
 	
 	/**
@@ -2780,7 +2785,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
 							  String resource)
         throws CmsException {
-     return null;
+		return m_dbAccess.readUser(readFileHeader(currentUser, currentProject, resource).isLockedBy(), C_USER_TYPE_SYSTEMUSER) ;
     }
 	
 	/**
@@ -2801,7 +2806,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
 							  CmsResource resource)
         throws CmsException {
-     return null;
+		return m_dbAccess.readUser(resource.isLockedBy(), C_USER_TYPE_SYSTEMUSER) ;
     }
 	
 	/**
@@ -2820,7 +2825,18 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Hashtable getAllResourceTypes(CmsUser currentUser, 
 										 CmsProject currentProject) 
         throws CmsException {
-     return null;
+		// check, if the resourceTypes were read bevore
+		if(m_resourceTypes == null) {
+			// read the resourceTypes from the propertys
+			m_resourceTypes = (Hashtable) 
+							   m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE);
+
+			// remove the last index.
+			m_resourceTypes.remove(C_TYPE_LAST_INDEX);
+		}
+		
+		// return the resource-types.
+		return(m_resourceTypes);
     }
 
 	/**
@@ -3212,7 +3228,19 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 											 CmsProject currentProject,
 											 String resourceType) 
         throws CmsException {
-     return null;
+		// try to get the resource-type
+		try { 
+			CmsResourceType type = (CmsResourceType)getAllResourceTypes(currentUser, currentProject).get(resourceType);
+			if(type == null) {
+				throw new CmsException("[" + this.getClass().getName() + "] " + resourceType, 
+					CmsException.C_NOT_FOUND);
+			}
+			return type;
+		} catch(NullPointerException exc) {
+			// was not found - throw exception
+			throw new CmsException("[" + this.getClass().getName() + "] " + resourceType, 
+				CmsException.C_NOT_FOUND);
+		}
     }
 
 	/**
@@ -3233,7 +3261,19 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 											 CmsProject currentProject,
 											 int resourceType)
         throws CmsException {
-     return null;
+		// try to get the resource-type
+		Hashtable types = getAllResourceTypes(currentUser, currentProject);
+		Enumeration keys = types.keys();
+		CmsResourceType currentType;
+		while(keys.hasMoreElements()) {
+			currentType = (CmsResourceType) types.get(keys.nextElement());
+			if(currentType.getResourceType() == resourceType) {
+				return(currentType);
+			}
+		}
+		// was not found - throw exception
+		throw new CmsException("[" + this.getClass().getName() + "] " + resourceType, 
+			CmsException.C_NOT_FOUND);
     }
 	
     
@@ -3255,7 +3295,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     public CmsResource getParentResource(CmsUser currentUser, CmsProject currentProject,
                                          String resourcename) 
         throws CmsException {
-     return null;
+		
+		// TODO: this can maybe done via the new parent id'd
+		
+		String parentresourceName = readFileHeader(currentUser, currentProject, resourcename).getParent();
+		return readFileHeader(currentUser, currentProject, parentresourceName);
     }
     
     
@@ -3280,7 +3324,41 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 											 String resourceType, int launcherType, 
 											 String launcherClass) 
         throws CmsException {
-     return null;
+		if( isAdmin(currentUser, currentProject) ) {
+
+			// read the resourceTypes from the propertys
+			m_resourceTypes = (Hashtable) 
+							   m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE);
+
+			synchronized(m_resourceTypes) {
+
+				// get the last index and increment it.
+				Integer lastIndex = 
+					new Integer(((Integer)
+								  m_resourceTypes.get(C_TYPE_LAST_INDEX)).intValue() + 1);
+						
+				// write the last index back
+				m_resourceTypes.put(C_TYPE_LAST_INDEX, lastIndex); 
+						
+				// add the new resource-type
+				m_resourceTypes.put(resourceType, new CmsResourceType(lastIndex.intValue(), 
+																	  launcherType, 
+																	  resourceType, 
+																	  launcherClass));
+						
+				// store the resource types in the properties
+				m_dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE, m_resourceTypes);
+						
+			}
+
+			// the cached resource types aren't valid any more.
+			m_resourceTypes = null;				
+			// return the new resource-type
+			return(getResourceType(currentUser, currentProject, resourceType));
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + resourceType, 
+				CmsException.C_NO_ACCESS);
+		}
     }
     
     	
@@ -3298,7 +3376,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return the number of file-system-changes.
 	 */
     public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject) {
-		return this.m_fileSystemChanges;
+		return m_fileSystemChanges;
     }
         
 	/**
@@ -3312,7 +3390,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public boolean accessRead(CmsUser currentUser, CmsProject currentProject,
                               CmsResource resource) throws CmsException {
-        return true;
+		return(true);
     }
 
 	/**
