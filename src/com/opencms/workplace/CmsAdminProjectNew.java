@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/09/12 09:02:20 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2001/09/24 14:18:46 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.56 $ $Date: 2001/09/12 09:02:20 $
+ * @version $Revision: 1.57 $ $Date: 2001/09/24 14:18:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -182,6 +182,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsRequestContext reqCont = cms.getRequestContext();
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+        // flag for extended features in the editor, e.g. list of external links
+        I_CmsRegistry registry = cms.getRegistry();
+        boolean extendedNavigation = "on".equals(registry.getSystemValue("extendedNavigation"));
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {
@@ -323,6 +326,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                 String downloadpath = getConfigFile(cms).getDownGalleryPath();
                 allResources = allResources + ";" + picspath + ";"
                         + downloadpath;
+                if(extendedNavigation){
+                    allResources = allResources + ";/content/elements/";
+                }
                 // 'allResurces' has the "form res1;res2;...resk;"
                 // this is because the simpler 'getParameterValues' method doesn't work with Silverstream
                 Vector folders = parseResources(allResources);
