@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2002/11/11 12:49:57 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2002/11/11 15:27:31 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 	private final String C_ACTION = "action";
 	private final String C_NAME_PARAMETER = "module";
 
-	private static final int C_MINIMUM_MODULE_RESOURCE_COUNT = 3;
+	private static final int C_MINIMUM_MODULE_RESOURCE_COUNT = C_VFS_NEW_STRUCTURE?1:3;
 
 	private static final int DEBUG = 0;
 
@@ -114,10 +114,6 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 
 					resourceCount = (additionalResourceTokens.countTokens() * 2) + CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT;
 
-					if (C_VFS_NEW_STRUCTURE) {
-						resourceCount -= 2;
-					}
-
 					resourcen = new String[resourceCount];
 
 					// add each resource plus its equivalent at content/bodys to 
@@ -136,13 +132,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 				}
 				else {
 					// no additional resources were specified...
-					if (!C_VFS_NEW_STRUCTURE) {
-						resourceCount = CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT;
-					}
-					else {
-						resourceCount = CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT - 2;
-					}
-
+				    resourceCount = CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT;
 					resourcen = new String[resourceCount];
 					i = 0;
 				}
@@ -153,13 +143,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 					System.out.println(exportName + " is a traditional module");
 				}
 
-				if (!C_VFS_NEW_STRUCTURE) {
-					resourceCount = CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT;
-				}
-				else {
-					resourceCount = CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT - 2;
-				}
-
+				resourceCount = CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT;
 				resourcen = new String[resourceCount];
 				i = 0;
 			}
