@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/01 19:18:50 $
-* Version: $Revision: 1.360 $
+* Date   : $Date: 2003/08/03 09:42:42 $
+* Version: $Revision: 1.361 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.360 $
+ * @version $Revision: 1.361 $
  */
 public class CmsObject {
 
@@ -767,27 +767,27 @@ public class CmsObject {
     /**
      * Creates a new project.
      *
-     * @param name the name of the project to read.
-     * @param description the description for the new project.
-     * @param groupname the name of the group to be set.
-     * @param managergroupname the name of the managergroup to be set.
-     *
+     * @param name the name of the project to create
+     * @param description the description for the new project
+     * @param groupname the name of the project user group
+     * @param managergroupname the name of the project manager group
+     * @return the created project
      * @throws CmsException if operation was not successful.
      */
     public CmsProject createProject(String name, String description, String groupname, String managergroupname) throws CmsException {
-        CmsProject newProject = m_driverManager.createProject(m_context, name, description, groupname, managergroupname);
+        CmsProject newProject = m_driverManager.createProject(m_context, name, description, groupname, managergroupname, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
         return (newProject);
     }
 
     /**
      * Creates a new project.
      *
-     * @param name the name of the project to read.
-     * @param description the description for the new project.
-     * @param groupname the name of the group to be set.
-     * @param managergroupname the name of the managergroup to be set.
+     * @param name the name of the project to create
+     * @param description the description for the new project
+     * @param groupname the name of the project user group
+     * @param managergroupname the name of the project manager group
      * @param projecttype the type of the project (normal or temporary)
-     *
+     * @return the created project
      * @throws CmsException if operation was not successful.
      */
     public CmsProject createProject(String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException {

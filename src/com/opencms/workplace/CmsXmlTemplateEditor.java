@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.113 $
+* Date   : $Date: 2003/08/03 09:42:42 $
+* Version: $Revision: 1.114 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.113 $ $Date: 2003/07/31 17:02:45 $
+ * @version $Revision: 1.114 $ $Date: 2003/08/03 09:42:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -373,7 +373,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         parameters.put("filename_for_relative_template", file);
         
         // Simple page support
-        String templateProp = cms.readProperty(file, C_XML_CONTROL_TEMPLATE_PROPERTY);
+        String templateProp = cms.readProperty(file, C_PROPERTY_TEMPLATE);
         boolean isSimplePage = (templateProp != null);
 
         // Check, if the selected page file is locked
@@ -520,7 +520,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             }
             bodytitle = body.equals("(default)") ? "" : body;
             if (isSimplePage) {
-                style = cms.readProperty(layoutTemplateFilename, C_XML_CONTROL_TEMPLATE_PROPERTY);
+                style = cms.readProperty(layoutTemplateFilename, C_PROPERTY_TEMPLATE);
                 if (style != null) {
                     style =  hostName + A_OpenCms.getOpenCmsContext() + style;
                 } else {
@@ -565,9 +565,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                 // The user requested a change of the layout template
                 if (isSimplePage) {
                     cms.getRequestContext().setCurrentProject(tempProject);
-                    cms.writeProperty(tempPageFilename, C_XML_CONTROL_TEMPLATE_PROPERTY, layoutTemplatFilenameRelative);
+                    cms.writeProperty(tempPageFilename, C_PROPERTY_TEMPLATE, layoutTemplatFilenameRelative);
                     cms.getRequestContext().setCurrentProject(curProject);         
-                    style = cms.readProperty(layoutTemplateFilename, C_XML_CONTROL_TEMPLATE_PROPERTY);    
+                    style = cms.readProperty(layoutTemplateFilename, C_PROPERTY_TEMPLATE);    
                     if (style != null) {
                         style = hostName + A_OpenCms.getOpenCmsContext() + style;
                     } else {

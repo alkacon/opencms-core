@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/08/01 09:55:34 $
-* Version: $Revision: 1.254 $
+* Date   : $Date: 2003/08/03 09:42:42 $
+* Version: $Revision: 1.255 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.254 $ $Date: 2003/08/01 09:55:34 $
+ * @version $Revision: 1.255 $ $Date: 2003/08/03 09:42:42 $
  */
 public interface I_CmsConstants {
 
@@ -97,79 +97,48 @@ public interface I_CmsConstants {
     /** prefix for temporary files */
     String C_TEMP_PREFIX = "~";
 
-    /**
-     * Property for resource title
-     */
+    /** Property for the resource title */
     String C_PROPERTY_TITLE = "Title";
 
-    /**
-     * Property for resource navigation title
-     */
+    /** Property for the navigation title */
     String C_PROPERTY_NAVTEXT = "NavText";
 
-    /**
-     * Property for resource navigation title
-     */
-    String C_PROPERTY_VISIBLE = "visiblemethod";
-
-    /**
-     * Property for resource export name. When resource is exported
-     * by the export this name is used instead of the realname.
-     */
-    String C_PROPERTY_EXPORTNAME = "exportname";
-
-    /**
-     * Property for resource export name. When resource is exported
-     * by the export this name is used instead of the realname.
-     */
-    String C_PROPERTY_EXPORT = "export";
-
-    /**
-     * Property for resource navigation title
-     */
-    String C_PROPERTY_ACTIV = "activemethod";
-
-    /**
-     * Property for resource navigation position
-     */
+    /** Property for the navigation position */
     String C_PROPERTY_NAVPOS = "NavPos";
 
-    /**
-     * Property for template type
-     */
-    String C_PROPERTY_TEMPLATETYPE = "TemplateType";
-
-    /**
-     * Property for keywords
-     */
+    /** Property for the keywords */
     String C_PROPERTY_KEYWORDS = "Keywords";
 
-    /**
-     * Property for the description
-     */
+    /** Property for the description */
     String C_PROPERTY_DESCRIPTION = "Description";
 
-    /**
-     * Property for the description
-     */
+    /** Property for the channel id */
     String C_PROPERTY_CHANNELID = "ChannelId";
 
-    /**
-     * Property for content encoding
-     */
-    // Encoding project:
-    String C_PROPERTY_CONTENT_ENCODING = "content-encoding";
+    /** Property for the visible method in the administration view */
+    String C_PROPERTY_VISIBLE = "visiblemethod";
 
-    /**
-     * Property for default file in folders
-     */
+    /** Property for the active method in the administration view */
+    String C_PROPERTY_ACTIV = "activemethod";
+
+    /** Property for the static export */
+    String C_PROPERTY_EXPORT = "export";
+
+    /** Property for the resource export name, during export this name is used instead of the resource name */
+    String C_PROPERTY_EXPORTNAME = "exportname";
+
+    /** Property for the default file in folders */
     String C_PROPERTY_DEFAULT_FILE = "default-file";
 
-    /**
-     * Property for relative root link substitution
-     */
+    /** Property for the relative root link substitution */
     String C_PROPERTY_RELATIVEROOT = "relativeroot";
 
+    /** Property to control the template */
+    String C_PROPERTY_TEMPLATE = "template";
+
+    /** Property for the content encoding */
+    String C_PROPERTY_CONTENT_ENCODING = "content-encoding";
+    
     /**
      * This is the group for guests.
      */
@@ -1406,9 +1375,6 @@ public interface I_CmsConstants {
 
     /** suffix for caching of simple pages */
     String C_XML_CONTROL_FILE_SUFFIX = ".xmlcontrol";
-
-    /** template property for simple pages */
-    String C_XML_CONTROL_TEMPLATE_PROPERTY = "template";
 
     /** default class for templates */
     String C_XML_CONTROL_DEFAULT_CLASS = "com.opencms.template.CmsXmlTemplate";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
- * Date   : $Date: 2003/08/01 15:42:18 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2003/08/03 09:42:42 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  */
 public class OpenCmsHttpServlet extends HttpServlet {
     
@@ -280,7 +280,9 @@ public class OpenCmsHttpServlet extends HttpServlet {
                 
         if (t instanceof ServletException) {
             ServletException s = (ServletException)t;
-            t = s.getRootCause();
+            if (s.getRootCause() != null) {
+                t = s.getRootCause();
+            }
         }        
 
         if (t instanceof CmsException) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeNewPage.java,v $
- * Date   : $Date: 2003/08/01 10:33:30 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/03 09:42:42 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1
  */
 public class CmsResourceTypeNewPage extends A_CmsResourceType {
@@ -109,7 +109,7 @@ public class CmsResourceTypeNewPage extends A_CmsResourceType {
      * @throws CmsException if something goes wrong
      */
     public CmsResource createResourceForTemplate(CmsObject cms, String resourcename, Hashtable properties, byte[] contents, String masterTemplate) throws CmsException {        
-        properties.put(I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY, masterTemplate);
+        properties.put(I_CmsConstants.C_PROPERTY_TEMPLATE, masterTemplate);
         CmsFile resource = (CmsFile)createResource(cms, resourcename, properties, contents, null);                
         return resource;
     }

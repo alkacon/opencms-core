@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/02 12:28:01 $
- * Version: $Revision: 1.126 $
+ * Date   : $Date: 2003/08/03 09:42:42 $
+ * Version: $Revision: 1.127 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.126 $ $Date: 2003/08/02 12:28:01 $
+ * @version $Revision: 1.127 $ $Date: 2003/08/03 09:42:42 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1544,50 +1544,19 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Creates a project.
+     * Creates a project.<p>
      *
      * <B>Security</B>
-     * Only the users which are in the admin or projectleader-group are granted.
+     * Only the users which are in the admin or projectmanager groups are granted.<p>
      *
      * @param context the current request context
-     * @param name The name of the project to read.
-     * @param description The description for the new project.
-     * @param group the group to be set.
-     * @param managergroup the managergroup to be set.
-     * @param parentId the parent project
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public CmsProject createProject(CmsRequestContext context, String name, String description, String groupname, String managergroupname) throws CmsException {
-        if (isAdmin(context) || isProjectManager(context)) {
-            if (I_CmsConstants.C_PROJECT_ONLINE.equals(name)) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
-            }
-            // read the needed groups from the cms
-            CmsGroup group = readGroup(context, groupname);
-            CmsGroup managergroup = readGroup(context, managergroupname);
-
-            // create a new task for the project
-            CmsTask task = createProject(context, name, 1, group.getName(), System.currentTimeMillis(), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
-            return m_projectDriver.createProject(context.currentUser(), group, managergroup, task, name, description, I_CmsConstants.C_PROJECT_STATE_UNLOCKED, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
-        } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
-        }
-    }
-
-    /**
-     * Creates a project.
-     *
-     * <B>Security</B>
-     * Only the users which are in the admin or projectleader-group are granted.
-     *
-     * Changed: added the project type
-     * @param context the current request context
-     * @param name The name of the project to read.
-     * @param description The description for the new project.
-     * @param group the group to be set.
-     * @param managergroup the managergroup to be set.
-     * @param project type the type of the project
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @param name the name of the project to create
+     * @param description the description of the project
+     * @param groupname the project user group to be set
+     * @param managergroupname the project manager group to be set
+     * @param projecttype type the type of the project
+     * @return the created project
+     * @throws CmsException if something goes wrong
      */
     public CmsProject createProject(CmsRequestContext context, String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException {
         if (isAdmin(context) || isProjectManager(context)) {

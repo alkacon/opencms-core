@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/08/01 15:42:18 $
- * Version: $Revision: 1.155 $
+ * Date   : $Date: 2003/08/03 09:42:42 $
+ * Version: $Revision: 1.156 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.155 $
+ * @version $Revision: 1.156 $
  */
 public final class OpenCms extends A_OpenCms {
 
@@ -851,7 +851,6 @@ public final class OpenCms extends A_OpenCms {
      * @param cmsReq the current I_CmsRequest (usually initialized form the HttpServletRequest)
      * @param cmsRes the current I_CmsResponse (usually initialized form the HttpServletResponse)
      * @param user the name of the user to init
-     * @param group the name of the current group
      * @param currentSite the users current site 
      * @param project the id of the current project
      * @param sessionStorage the session storage for this OpenCms instance

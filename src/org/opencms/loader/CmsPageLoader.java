@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsPageLoader.java,v $
- * Date   : $Date: 2003/07/22 00:29:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/08/03 09:42:42 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1
  */
 public class CmsPageLoader implements I_CmsResourceLoader {   
@@ -138,11 +138,11 @@ public class CmsPageLoader implements I_CmsResourceLoader {
      */
     private CmsFile getTemplateFile(CmsObject cms, CmsFile file) throws CmsException {        
         String absolutePath = cms.readAbsolutePath(file);        
-        String templateProp = cms.readProperty(absolutePath, I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY);       
+        String templateProp = cms.readProperty(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE);       
 
         if (templateProp == null) {
             // no template property defined, throw exception
-            throw new CmsException("Property '" + I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY + "' undefined for page file " + absolutePath);
+            throw new CmsException("Property '" + I_CmsConstants.C_PROPERTY_TEMPLATE + "' undefined for page file " + absolutePath);
         }        
 
         return cms.readFile(templateProp);

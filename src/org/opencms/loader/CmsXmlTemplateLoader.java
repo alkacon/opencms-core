@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/07/23 10:07:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/03 09:42:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
@@ -331,7 +331,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
 
         // ladies and gentelman: and now for something completly different 
         String absolutePath = cms.readAbsolutePath(file);
-        String templateProp = cms.readProperty(absolutePath, I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY);
+        String templateProp = cms.readProperty(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE);
         String xmlTemplateContent = null;
         if (templateProp != null) {
             // i got a black magic template,

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2003/07/16 14:30:03 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/08/03 09:42:42 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ public class LinkChecker {
         String bodyClassName = null;
         CmsXmlTemplateFile bodyTemplateFile = null;
 
-        boolean isSimplePage = (null != cms.readProperty(page, I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY));
+        boolean isSimplePage = (null != cms.readProperty(page, I_CmsConstants.C_PROPERTY_TEMPLATE));
         
         if (isSimplePage) {
             

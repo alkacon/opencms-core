@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/08/01 13:57:22 $
-* Version: $Revision: 1.131 $
+* Date   : $Date: 2003/08/03 09:42:42 $
+* Version: $Revision: 1.132 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.131 $ $Date: 2003/08/01 13:57:22 $
+ * @version $Revision: 1.132 $ $Date: 2003/08/03 09:42:42 $
  */
 public class CmsImport implements Serializable {
 
@@ -1254,10 +1254,10 @@ public class CmsImport implements Serializable {
 
         // check if the template property exists. If not, create it.
         try {
-            m_cms.readPropertydefinition(I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY, CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
+            m_cms.readPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE, CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
         } catch (CmsException e) {
             // the template propertydefintion does not exist. So create it.
-            m_cms.createPropertydefinition(I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY, CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
+            m_cms.createPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE, CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
         }
         // copy all propertydefinitions of the old page to the new page
         Vector definitions = m_cms.readAllPropertydefinitions(CmsResourceTypePage.C_RESOURCE_TYPE_ID);
@@ -1331,7 +1331,7 @@ public class CmsImport implements Serializable {
                     // write all changes                     
                     m_cms.writeFile(pagefile);
                     // add the template property to the controlfile
-                    m_cms.writeProperty(resname, I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY, mastertemplate);
+                    m_cms.writeProperty(resname, I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate);
                     m_cms.writeProperties(resname, properties);
                     m_cms.touch(resname, pagefile.getDateLastModified(), false, pagefile.getUserLastModified());
                     // don, ulock the resource                   

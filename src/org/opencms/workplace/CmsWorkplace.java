@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/08/01 19:30:29 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/08/03 09:42:42 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1
  */
@@ -227,7 +227,7 @@ public abstract class CmsWorkplace {
         } catch (CmsException e) {
             // error reading site root, in this case we will use a readable default
         }
-        if((res == null) || !access) {
+        if ((res == null) || !access) {
             List sites = CmsSiteManager.getAvailableSites(cms, true);
             if (sites.size() > 0) {
                 siteRoot = ((CmsSite)sites.get(0)).getSiteRoot();
