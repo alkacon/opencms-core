@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/08 17:12:57 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2000/06/08 17:57:47 $
+ * Version: $Revision: 1.37 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.36 $ $Date: 2000/06/08 17:12:57 $ * 
+ * @version $Revision: 1.37 $ $Date: 2000/06/08 17:57:47 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -138,9 +138,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	private static final String C_CONFIGURATIONS_DIGEST = "digest";
 	
 	/**
+	 * Constant to get property from configurations.
+	 */
+	private static final String C_CONFIGURATIONS_GUARD = "guard";
+	
+	/**
 	 * The prepared-statement-pool.
 	 */
 	private CmsPreparedStatementPool m_pool = null;
+	
+	/**
+	 * The connection guard.
+	 */
+	private CmsConnectionGuard m_guard = null;
 	
 	/**
 	 * A array containing all max-ids for the tables.
@@ -166,6 +176,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		String user = null;
 		String password = null;
 		String digest = null;
+		int sleepTime;
 		boolean fillDefaults;
 		int maxConn;
 		
@@ -212,6 +223,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read digest from configurations: " + digest);
 		}
 		
+		sleepTime = config.getInteger(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_GUARD, 120);
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read guard-sleeptime from configurations: " + sleepTime);
+		}
+		
 		// create the digest
 		try {
 			m_digest = MessageDigest.getInstance(digest);
@@ -251,7 +267,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 			fillDefaults();			
 		}
 		
-		// TODO: start the connection-guard here...
+		// start the connection-guard
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] start connection guard");
+		}
+		m_guard = new CmsConnectionGuard(m_pool, sleepTime);
+		m_guard.start();		
     }
 
      // methods working with users and groups
@@ -2778,5 +2799,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
 		}
+		
+		// stop the connection-guard
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] stop connection guard");
+		}
+		m_guard.destroy();
 	}
 }
