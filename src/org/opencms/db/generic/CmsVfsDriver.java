@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/31 17:21:25 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2003/07/31 18:35:09 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.72 $ $Date: 2003/07/31 17:21:25 $
+ * @version $Revision: 1.73 $ $Date: 2003/07/31 18:35:09 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1023,25 +1023,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
               }
           }            
             
-          // write the resource
-          stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");           
-          stmt.setString(1, resourceId.toString());
-          stmt.setInt(2, newResource.getType());
-          stmt.setInt(3, newResource.getFlags());         
-          stmt.setString(4, newFileId.toString());          
-          stmt.setInt(5, newResource.getLoaderId());
-          stmt.setTimestamp(6, new Timestamp(newResource.getDateCreated()));
-          stmt.setString(7, newResource.getUserCreated().toString());
-          stmt.setTimestamp(8, new Timestamp(newResource.getDateLastModified()));
-          stmt.setString(9, modifiedByUserId.toString());
-          stmt.setInt(10, state);
-          stmt.setInt(11, newResource.getLength());
-          stmt.setString(12, newResource.isLockedBy().toString());
-          stmt.setInt(13, project.getId());
-          stmt.setInt(14, 1);
-          stmt.executeUpdate();
-          m_sqlManager.closeAll(null, stmt, null);
-            
           // write the structure                                  
           stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
           stmt.setString(1, structureId.toString());
@@ -1049,7 +1030,37 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
           stmt.setString(3, resourceId.toString());
           stmt.setString(4, newResource.getResourceName());
           stmt.setInt(5, state);              
-          stmt.executeUpdate();                        
+          stmt.executeUpdate();  
+          
+          if (!existsResource(project.getId(), newResource)) {
+                                       
+            // write the resource
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");           
+            stmt.setString(1, resourceId.toString());
+            stmt.setInt(2, newResource.getType());
+            stmt.setInt(3, newResource.getFlags());         
+            stmt.setString(4, newFileId.toString());          
+            stmt.setInt(5, newResource.getLoaderId());
+            stmt.setTimestamp(6, new Timestamp(newResource.getDateCreated()));
+            stmt.setString(7, newResource.getUserCreated().toString());
+            stmt.setTimestamp(8, new Timestamp(newResource.getDateLastModified()));
+            stmt.setString(9, modifiedByUserId.toString());
+            stmt.setInt(10, state);
+            stmt.setInt(11, newResource.getLength());
+            stmt.setString(12, newResource.isLockedBy().toString());
+            stmt.setInt(13, project.getId());
+            stmt.setInt(14, 1);
+            stmt.executeUpdate();
+            m_sqlManager.closeAll(null, stmt, null);
+          } else {
+              // update the link Count
+               stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_LINK_COUNT");
+               stmt.setInt(1, this.countVfsLinks(project.getId(),  newResource.getResourceId()));
+               stmt.setString(2,  newResource.getResourceId().toString());
+               stmt.executeUpdate();
+          }
+            
+                      
       } catch (SQLException e) {
           throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
       } finally {
