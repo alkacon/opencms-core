@@ -66,6 +66,7 @@ function checkIt(wasdenn){
 					'&keywords='+formu.NEUKEYWORDS.value+
 					'&description='+formu.NEUDESCRIPTION.value+
 					'&template='+simpleEscape(formu.TEMPLATE.value)+
+					'&default_body='+formu.DEFAULT_BODY.value+
 					'&navtitle='+simpleEscape(formu.LINKNAME.value)+
 					'&navpos='+ formu.LINKPOS.value;
 			}
@@ -76,6 +77,7 @@ function checkIt(wasdenn){
 					'&keywords='+formu.NEUKEYWORDS.value+
 					'&description='+formu.NEUDESCRIPTION.value+
 					'&template='+simpleEscape(formu.TEMPLATE.options[formu.TEMPLATE.selectedIndex].value)+
+					'&default_body='+formu.DEFAULT_BODY.options[formu.DEFAULT_BODY.selectedIndex].value+
 					'&navtitle='+simpleEscape(formu.LINKNAME.value)+
 					'&navpos='+ formu.LINKPOS.value;
 			}	
@@ -100,12 +102,14 @@ function checkIt(wasdenn){
 				'&title='+formu.NEUTITEL.value+
 				'&keywords='+formu.NEUKEYWORDS.value+
 				'&description='+formu.NEUDESCRIPTION.value+
-				'&template='+simpleEscape(formu.TEMPLATE.value);
+				'&template='+simpleEscape(formu.TEMPLATE.value)+
+				'&default_body='+formu.DEFAULT_BODY.value;
 			if(ns)location='explorer_files_new_page.html?step=1&newfile='+formu.NEUNAME.value+
 				'&title='+formu.NEUTITEL.value+
 				'&keywords='+formu.NEUKEYWORDS.value+
 				'&description='+formu.NEUDESCRIPTION.value+
-				'&template='+simpleEscape(formu.TEMPLATE.options[formu.TEMPLATE.selectedIndex].value);
+				'&template='+simpleEscape(formu.TEMPLATE.options[formu.TEMPLATE.selectedIndex].value)+
+				'&default_body='+formu.DEFAULT_BODY.options[formu.DEFAULT_BODY.selectedIndex].value;
 		}
 	}
 }
@@ -175,6 +179,10 @@ function checkInTheBox(){
 									<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
 								</tr>
 								<tr>
+									<td class=formular>]]><LABEL value="input.default_body" /><![CDATA[:</td>
+									<td class=dialogtxt>]]><SELECT class="localstyle" name="DEFAULT_BODY" width="370" div="true" method="getLayouts" /><![CDATA[</td>
+								</tr>
+								<tr>
 									<td class=formular>]]><LABEL value="input.keywords" /><![CDATA[:</td>
 									<td class=dialogtxt> ]]><INPUTFIELD name="NEUKEYWORDS" class="textfeld2" size="40" length="100" /><![CDATA[</td>	
 								</tr>
@@ -238,6 +246,10 @@ function checkInTheBox(){
 										<tr>
 											<td class=formular>]]><LABEL value="input.template" /><![CDATA[:</td>
 											<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
+										</tr>
+										<tr>
+											<td class=formular>]]><LABEL value="input.default_body" /><![CDATA[:</td>
+											<td class=dialogtxt>]]><SELECT class="localstyle" name="DEFAULT_BODY" width="370" div="true" method="getLayouts" /><![CDATA[</td>
 										</tr>
 										<tr>
 											<td class=formular>]]><LABEL value="input.keywords" /><![CDATA[:</td>
