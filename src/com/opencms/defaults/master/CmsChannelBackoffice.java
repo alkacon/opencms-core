@@ -74,7 +74,11 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         //get the Languagedata
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         //create appropriate class name with underscores for labels
-        String moduleName = "channelbackoffice";
+        String moduleName = "";
+        moduleName = (String) getClass().toString(); //get name
+        moduleName = moduleName.substring(5); //remove 'class' substring at the beginning
+        moduleName = moduleName.trim();
+        moduleName = moduleName.replace('.', '_'); //replace dots with underscores
         //session
         I_CmsSession session = cms.getRequestContext().getSession(true);
         //default error
