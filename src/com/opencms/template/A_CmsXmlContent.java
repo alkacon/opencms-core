@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/08/08 14:08:29 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/10/04 14:31:32 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -75,7 +75,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.31 $ $Date: 2000/08/08 14:08:29 $
+ * @version $Revision: 1.32 $ $Date: 2000/10/04 14:31:32 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
 	
@@ -534,8 +534,14 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 			if(childNodes != null) {
 				for(int i=0; i<numchilds; i++) {
 					child = childNodes.item(i);
-					if(child.getNodeType() == n.TEXT_NODE || child.getNodeType() == n.CDATA_SECTION_NODE) {
+					//if(child.getNodeType() == n.TEXT_NODE || child.getNodeType() == n.CDATA_SECTION_NODE) {						
+					if(child.getNodeType() == n.CDATA_SECTION_NODE) {						
 						result.append(child.getNodeValue());
+					} else if(child.getNodeType() == n.TEXT_NODE) {
+						String s = child.getNodeValue().trim();
+						if(!"".equals(s)) {
+							result.append(child.getNodeValue());
+						}
 					}
 				}
 			}
