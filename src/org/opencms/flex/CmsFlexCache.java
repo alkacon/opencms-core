@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/04/01 09:22:39 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -1006,7 +1006,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     private void put(CmsFlexCacheKey key, CmsFlexCacheEntry theCacheEntry) {
         Object o = m_keyCache.get(key.m_resource);
         if (key.m_timeout > 0) {
-            theCacheEntry.setDateExpires(key.m_timeout * 60000);
+            theCacheEntry.setDateExpires(key.m_timeout);
         }
         if (o != null) {
             // We already have a variation map for this resource

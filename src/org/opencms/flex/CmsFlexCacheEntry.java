@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2004/04/01 06:22:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/04/01 09:22:39 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.ServletException;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
     
@@ -379,7 +379,8 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
         
         long now = System.currentTimeMillis();
         long daytime = now % 86400000;
-        m_dateExpires = now - (daytime % timeout) + timeout;
+        long timeoutMinutes = timeout * 60000;
+        m_dateExpires = now - (daytime % timeoutMinutes) + timeoutMinutes;
         if (DEBUG > 2) {
             System.err.println("FlexCacheEntry: New entry expiration=" + m_dateExpires + " now=" + now + " remaining=" + (m_dateExpires - now));
         }
@@ -403,13 +404,11 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * @param timeout the timeout value to use to calculate the date last modified
      */
     public void setDateLastModifiedToPreviousTimeout(long timeout) {
-        if (timeout < 0 || ! m_completed) {
-            return;
-        }
-        
+    
         long now = System.currentTimeMillis();
         long daytime = now % 86400000;
-        setDateLastModified(now - (daytime % timeout));  
+        long timeoutMinutes = timeout * 60000;        
+        setDateLastModified(now - (daytime % timeoutMinutes));  
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/03/31 08:11:07 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/04/01 09:22:39 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
 
@@ -68,7 +69,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -398,10 +399,26 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 
         CmsFile file;
         // TODO: Check if setting site root to "/" still works with HTML pages that contain links
-        cms.getRequestContext().setSiteRoot("/");
-        String vfsName = data.getVfsName();
+       
+        String vfsName = data.getVfsName();        
         String rfsName = data.getRfsName();
         CmsResource resource = data.getResource();
+        
+        // cut the site root from the vfsName and switch to the correct site
+        String siteRoot = CmsSiteManager.getSiteRoot(vfsName);
+        
+        if (siteRoot != null) {
+            vfsName = vfsName.substring(siteRoot.length());
+        } else {
+            siteRoot="/";
+        }
+    
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Site root "+siteRoot+" / vfsName "+ vfsName);
+        }
+                
+        cms.getRequestContext().setSiteRoot(siteRoot);
+
         String oldUri = null;
                
         // this flag signals if the export method is used for "export on demand" or 
@@ -477,10 +494,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 // update the file with the modification date from the server
                 if (req != null) {
                     Long dateLastModified = (Long)req.getAttribute(I_CmsConstants.C_HEADER_OPENCMS_EXPORT);
-                    if (dateLastModified != null) {
+                    if ((dateLastModified != null) && (dateLastModified.longValue() != -1)) {
                         exportFile.setLastModified((dateLastModified.longValue() / 1000) * 1000);
-                    }                                      
-                } else {
+                    }            
+                           
+                    if (OpenCms.getLog(this).isDebugEnabled()) {
+                        OpenCms.getLog(this).debug("res "+exportFile.getName()+" [Timestamp="+(dateLastModified.longValue() / 1000) * 1000+"]");
+                    }  
+                  
+              } else {
                     // otherweise take the last modification date form the OpenCms resource
                     exportFile.setLastModified((resource.getDateLastModified() / 1000) *1000);
                 }
@@ -791,9 +813,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         File exportFile = new File(exportFileName);
                         if (exportFile != null) {
                             long dateLastModified = exportFile.lastModified();
-                            urlcon.setIfModifiedSince(dateLastModified);                   
+                            urlcon.setIfModifiedSince(dateLastModified);
+                           
+                            if (OpenCms.getLog(this).isDebugEnabled()) {
+                                OpenCms.getLog(this).debug("req "+exportFile.getName()+" [Timestamp="+(dateLastModified / 1000) *1000+"]");
+                            } 
                         }
-                        
+                     
                         // now perform the request
                         urlcon.connect();
                         int status = urlcon.getResponseCode();
