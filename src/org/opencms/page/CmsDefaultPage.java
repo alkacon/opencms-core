@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsDefaultPage.java,v $
- * Date   : $Date: 2003/11/27 16:20:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/11/28 16:13:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.xml.sax.XMLReader;
 /**
  * Simple DOM based implementation of CmsDefaultPage.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2003/11/27 16:20:36 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/28 16:13:11 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
@@ -178,7 +178,7 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
         for (Iterator i = m_elements.keySet().iterator(); i.hasNext();) {
             String name = (String)i.next();
             if (name.startsWith(language+"_")) {
-                names.add(name);
+                names.add(name.substring(language.length()+1));
             }
         }
         return names;

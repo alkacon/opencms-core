@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/11/28 12:49:43 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/11/28 16:13:11 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1.12
  */
@@ -103,6 +103,9 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
             } else if (EDITOR_CHANGE_TEMPLATE.equals(getParamAction())) {
                 setAction(ACTION_SHOW);
                 actionChangeTemplate();
+            } else if (EDITOR_NEW_BODY.equals(getParamAction())) {
+                setAction(ACTION_SHOW);
+                actionNewBody();
             } else if (EDITOR_SHOW.equals(getParamAction())) {
                 setAction(ACTION_SHOW);
             } else if (EDITOR_PREVIEW.equals(getParamAction())) {

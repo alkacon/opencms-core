@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2003/11/28 12:49:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/28 16:13:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.Vector;
 
@@ -58,16 +59,17 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsDefaultPageEditor extends CmsEditor {
      
     private String m_paramBodylanguage;
-    private String m_paramBodyName;
+    private String m_paramBodyname;
+    private String m_paramNewbodyname;
     private String m_paramOldbodylanguage;
-    private String m_paramOldbodyName; 
+    private String m_paramOldbodyname; 
     private String m_paramPageTemplate;
 
     protected CmsDefaultPage m_page;
@@ -109,7 +111,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @return the current body element name
      */
     public String getParamBodyname() {
-        return m_paramBodyName;
+        return m_paramBodyname;
     }
 
     /**
@@ -118,7 +120,28 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @param bodyName the current body element name
      */
     public void setParamBodyname(String bodyName) {
-        m_paramBodyName = bodyName;
+        m_paramBodyname = bodyName;
+    }
+    
+    /**
+    * Returns the new body element language.<p>
+    * 
+    * @return the new body element language
+    */
+    public String getParamNewbodyname() {
+        if (m_paramNewbodyname == null) {
+            m_paramNewbodyname = "";
+        }
+        return m_paramNewbodyname;
+    }
+    
+    /**
+     * Sets the new body element name.<p>
+     * 
+     * @param newBodyName the new body element name
+     */
+    public void setParamNewbodyname(String newBodyName) {
+        m_paramNewbodyname = newBodyName;
     }
 
     /**
@@ -145,7 +168,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     * @return the old body element name
     */
    public String getParamOldbodyname() {
-       return m_paramOldbodyName;
+       return m_paramOldbodyname;
    }
 
    /**
@@ -154,7 +177,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     * @param oldBodyName the old body element name
     */
    public void setParamOldbodyname(String oldBodyName) {
-       m_paramOldbodyName = oldBodyName;
+       m_paramOldbodyname = oldBodyName;
    }
     
     /**
@@ -188,7 +211,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             if (!m_page.hasElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLanguage)) {
                 m_page.addElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLanguage);
             }
-            m_page.setElementData(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLanguage, "".getBytes());
             getCms().writeFile(m_page.marshal());
             setParamBodylanguage(defaultLanguage);
         } else {
@@ -217,7 +239,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
        if (bodies.size() == 0) {
            // no body present, so create an empty default body
             m_page.addElement(I_CmsConstants.C_XML_BODY_ELEMENT, getParamBodylanguage());
-            m_page.setElementData(I_CmsConstants.C_XML_BODY_ELEMENT, getParamBodylanguage(), "".getBytes());
             getCms().writeFile(m_page.marshal());
             setParamBodyname(I_CmsConstants.C_XML_BODY_ELEMENT);
         } else {
@@ -241,7 +262,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             CmsDefaultPage page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
             byte[] elementData = page.getElementData(getParamBodyname(), getParamBodylanguage());
             if (elementData != null) {
-                setParamContent(new String(elementData));
+                setParamContent(new String(elementData).trim());
             } else {
                 setParamContent("");
             }
@@ -293,6 +314,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public String buildSelectBodyLanguage(String attributes) throws CmsException {
         Set languages = m_page.getLanguages();
+        List options = new ArrayList(languages.size());
         List selectList = new ArrayList(languages.size());
         Iterator i = languages.iterator();
         int currentIndex = -1;
@@ -300,6 +322,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         while (i.hasNext()) {
             String curLang = (String)i.next();
             selectList.add(curLang);
+            Locale curLocale = new Locale(curLang);
+            options.add(curLocale.getDisplayLanguage(new Locale(getSettings().getLanguage())));
             if (curLang.equals(getParamBodylanguage())) {
                 currentIndex = counter;
             }
@@ -314,7 +338,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             }
         }
     
-        return buildSelect(attributes, selectList, selectList, currentIndex, false);      
+        return buildSelect(attributes, options, selectList, currentIndex, false);      
     }
     
     /**
@@ -417,10 +441,32 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     }
     
     /**
-     * Performs the preview page action in a new browser window.<p>
+     * Performs the creation of a new body action.<p>
+     * 
+     * @throws CmsException if something goes wrong
      */
-    public void actionPreview() {
-        // TODO: save content to temporary file...
+    public void actionNewBody() throws CmsException {
+        // save content of the editor to the temporary file
+        performSaveContent(getParamBodyname(), getParamBodylanguage());
+        String newBody = getParamNewbodyname();
+        if (newBody != null && !"".equals(newBody.trim()) && !"null".equals(newBody)) {
+            if (!m_page.hasElement(newBody, getParamBodylanguage())) {
+                m_page.addElement(newBody, getParamBodylanguage());
+                getCms().writeFile(m_page.marshal());
+                setParamBodyname(newBody);
+                initContent();
+            }
+        }        
+    }
+    
+    /**
+     * Performs the preview page action in a new browser window.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void actionPreview() throws CmsException {
+        // save content of the editor to the temporary file
+        performSaveContent(getParamBodyname(), getParamBodylanguage());
         try {
             getCms().getRequestContext().getResponse().sendCmsRedirect(getParamTempfile());
         } catch (IOException e) {
