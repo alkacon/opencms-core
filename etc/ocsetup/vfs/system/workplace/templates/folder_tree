@@ -11,6 +11,7 @@
 <script language=JavaScript>
 <!--
 function selectFolder(pathStr){
+if(pathStr==']]><LABEL value="title.rootfolder" /><![CDATA[')pathStr='/';
 	window.opener.self.document.]]><PROCESS>FORMNAME</PROCESS><![CDATA[.]]><PROCESS>VARIABLE</PROCESS><![CDATA[.value = pathStr;
 	if (top.window.opener.copySelection) { 
 		top.window.opener.copySelection();
