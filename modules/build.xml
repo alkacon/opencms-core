@@ -203,7 +203,6 @@
 		<mkdir dir="${opencms.output}/build/zips-modules" />
 
 		<!-- get the jars and zips -->
-		<echo>${opencms.output.distfiles}</echo>
 		<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
     		<if>
