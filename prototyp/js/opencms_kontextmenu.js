@@ -40,6 +40,7 @@ var x=0;
 var y=0;
 
 // which operation is clicked
+//==FILES=================================
 var DO_LOCK=1;
 var DO_LOCKUSER=2;
 var DO_UNLOCK=3;
@@ -82,7 +83,7 @@ var DO_HISTVIEW=41;
 
 var DO_RECOVER=50;
 var DO_TAKEOVER=51;
-//=======================================
+//==PROJECTS==============================
 var DO_PUNLOCK=1;
 var DO_PONLINELOCK=2;
 var DO_PONLINE=3;
@@ -92,6 +93,17 @@ var DO_PTASK=10;
 var DO_TASK=99;
 
 var DO_PREACT=20;
+//==TASKS=================================
+var DO_TASKREQUEST= 70;
+var DO_TASKACCEPT=  71;
+var DO_TASKCOMMENT= 72;
+var DO_TASKOK=      73;
+var DO_TASKDELETE=  74;
+var DO_TASKFORWARD= 75;
+var DO_TASKDATE=    76;
+var DO_TASKPRIO=    77;
+var DO_TASKTAKEOVER=78;
+//========================================
 
 
 // mousekoordinates on click
@@ -345,6 +357,51 @@ function doAction(action) // which action on layer is clicked
 		case 51:
 		{
 			location.href='explorer_files_takeover.html';
+			break;
+		}
+		case 70:
+		{
+			location.href='tasks_content_dialogquestion.html';
+			break;
+		}
+		case 71:
+		{
+			location.href='tasks_content_dialogaccept.html';
+			break;
+		}
+		case 72:
+		{
+			location.href='tasks_content_dialogcomment.html';
+			break;
+		}
+		case 73:
+		{
+			location.href='tasks_content_dialogok.html';
+			break;
+		}
+		case 74:
+		{
+			location.href='tasks_content_dialogdelete.html';
+			break;
+		}
+		case 75:
+		{
+			location.href='tasks_content_dialoggive.html';
+			break;
+		}
+		case 76:
+		{
+			location.href='tasks_content_dialogdate.html';
+			break;
+		}
+		case 77:
+		{
+			location.href='tasks_content_dialogprio.html';
+			break;
+		}
+		case 78:
+		{
+			location.href='tasks_content_dialogtake.html';
 			break;
 		}
 	}

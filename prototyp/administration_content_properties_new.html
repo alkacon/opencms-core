@@ -1,0 +1,91 @@
+<html>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '5_2_9_1.html';
+}
+//-->
+</script>
+
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="css/format.css">
+<!-- Ende Style -->
+<!-- Beginn externe Scripte wegen Datumsprüfung-->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+<!-- um 2te Combobox zu füllen -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_task.js"></SCRIPT>
+<!-- Script wegen Datumsprüfung-->
+
+</head>
+
+<body bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed onLoad="parent.frames[0].admincontenturl='administration_content_properties.html';">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+<form id=PROPERTIES name=PROPERTIES action="administration_content_properties.html" onSubmit="return checkFilePath('PROPERTIES','NAME','')">
+
+<!-- Tabellenaufbau für Neue Aufgabe-->
+<table border=2 cellspacing=0 cellpadding=0 width=500>
+<tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
+
+	<!-- Beginn Überschrift blau-->
+	<tr><td colspan=4 class=head>Neue Eigenschaft für Dateityp XY</td></tr>
+	<!-- Ende Überschrift blau-->
+	
+	<!-- Beginn Leerzele-->
+	<tr><td colspan=4 class=formular>&nbsp;</tr>
+	<!-- Ende Leerzeile-->
+	
+	<!-- Beginn Inhalt -->
+	<tr>
+		<td class=formular>Name:</td>
+		<td class=dialogtxt>
+		<INPUT size="20" maxlength="50" class="textfeld1" type="text" id=NAME name=NAME>	
+		</td>
+		<td class=formular>Typ:</td>
+		<td class=dialogtxt>
+			<select name="TEAM" width=150 style="width:150px" onchange="">		
+				<option selected value="string">String
+				<option value="int">Integer
+				<option value="date">Datum
+			</select>
+		</td>
+	</tr>
+	
+	<!-- Ende Inhalt -->
+	
+	<!-- Beginn Leerzele-->
+	<tr><td colspan=4 class=leerzeile><br></td></tr>
+	<!-- Ende Leerzeile-->
+
+	<!-- Beginn Buttonleiste Zurück inaktiv-->
+	<tr><td colspan=4 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=50%><INPUT class=button width = 100 type="submit" value="OK" id=OK name=OK></td>
+				<td class=formular align=left width=50%><INPUT class=button width = 100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="window.history.back();"></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- Ende Buttonleiste-->
+	</table>
+</td>
+</tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+<!-- Ende Zentrierung -->
+</body>
+</html>

@@ -4,7 +4,7 @@
 <!--
 function show_help()
 {
-	return '2_2_2_2_4_6.html';
+	return '5_2_8_1_1.html';
 }
 //-->
 </script>
@@ -16,21 +16,21 @@ function show_help()
 <link rel=stylesheet type="text/css" href="css/format.css">
 
 </HEAD>
-<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="parent.frames[0].admincontenturl='administration_content_datatypes.html';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
-<form id=UEBERNEHMEN name=UEBERNEHMEN>
+<form id=DELETE name=DELETE>
 <table cellspacing=0 cellpadding=0 border=2 width=300>
 	<tr><td>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 			
 			<!-- Beginn Tabellenkopf blau-->
 			<tr> 
-           		<td colspan=2 class="head">&Uuml;bernehmen der Datei xyz.html</td>
+           		<td colspan=2 class="head">Endung schon vorhanden</td>
 			</tr>
 			<!-- Ende Tabellenkopf blau-->
 			
@@ -42,14 +42,15 @@ function show_help()
 			
 			<tr>
 				<td class=dialogtxt colspan=2>
-					   Wollen Sie die aktuelle Version der Datei xyz.html aus dem Online-Projekt XY &uuml;bernehmen?
+					Die Endung "*.js" ist bereits dem Dateityp "script" zugeordnet. Diese Zuordnung wird hierdurch aufgehoben und durch die neue ersetzt.
 				</td>
 			</tr>
 			<tr>
 				<td class=dialogtxt colspan=2>
-					       Die momentane Offline-Version wird ersetzt.
+					Wollen Sie wirklich fortfahren?
 				</td>
 			</tr>
+			
 			
 			<!-- Beginn Leerzeile-->
 			<tr> 
@@ -61,8 +62,8 @@ function show_help()
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="OK" id=OK name=OK onClick="location.href='explorer_files_projekt.html'"></td>
-					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="location.href='explorer_files_projekt.html'"></td>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="OK" id=OK name=OK onClick="location.href='administration_content_datatypes.html'"></td>
+					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="location.href='administration_content_datatypes_new.html'"></td>
 				</tr>
 				</table>
 			</td>
@@ -73,8 +74,7 @@ function show_help()
 	</td></tr>
 </table>
 </form>
-<A href="explorer_files_takeover_01.html">[Fehlermeldung]</A> 
-    
+
 </td></tr>
 </table>
 

@@ -17,6 +17,8 @@ function show_help()
 <!-- Beginn Style -->
 <link rel=stylesheet type="text/css" href="css/format.css">
 <!-- Ende Style -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_choosebrowser.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_kontextmenu.js"></SCRIPT>
 
 </head>
 
@@ -37,7 +39,7 @@ function show_help()
 	</tr>
 
 	<tr>
-		<td nowrap><img src="pics/ic_task_ok.gif" border=0 width=16 height=16 alt="Aufgabe abgehakt"></td>
+		<td nowrap><A href="javascript:showkontext('task_ok',0)"><img src="pics/ic_task_ok.gif" border=0 width=16 height=16 alt="Aufgabe abgehakt"></a></td>
 		<td nowrap><IMG border=0 width=16 height=16 src="pics/ic_task_priohigh.gif" alt="Hohe Priorität"></td>
 		<td nowrap class=taskok><p class=einzug><a href="tasks_content_viewok.html" class=taskok>Überarbeitung des Bereiches Kontakt</a></td>
 		<td nowrap class=taskok><p class=einzug>m.schleich</td>
@@ -48,7 +50,7 @@ function show_help()
 		<td nowrap><p class=einzug>Relaunch Sozial</p></td>
 	</tr>
 	<tr>
-		<td nowrap><img src="pics/ic_task_ok.gif" border=0 width=16 height=16 alt="Aufgabe abgehakt"></td>
+		<td nowrap><A href="javascript:showkontext('task_ok',1)"><img src="pics/ic_task_ok.gif" border=0 width=16 height=16 alt="Aufgabe abgehakt"></a></td>
 		<td nowrap></td>
 		<td nowrap class=taskok><p class=einzug><a href="tasks_content_viewok.html" class=taskok>Routine für Datumprüfung</a></td>
 		<td nowrap class=taskok><p class=einzug>m.schleich</td>
@@ -59,7 +61,7 @@ function show_help()
 		<td nowrap><p class=einzug>Relaunch Sozial</p></td>
 	</tr>
 	<tr>
-		<td nowrap><img src="pics/ic_task_ok.gif" border=0 width=16 height=16 alt="Aufgabe abgehakt"></td>
+		<td nowrap><A href="javascript:showkontext('task_ok',2)"><img src="pics/ic_task_ok.gif" border=0 width=16 height=16 alt="Aufgabe abgehakt"></a></td>
 		<td nowrap></td>
 		<td nowrap class=taskok><p class=einzug><a href="tasks_content_viewok.html" class=taskok>Docloader für EBK</a></td>
 		<td nowrap class=taskok><p class=einzug>m.schleich</td>
@@ -70,7 +72,7 @@ function show_help()
 		<td nowrap><p class=einzug>Relaunch Sozial</p></td>
 	</tr>
 	<tr>
-		<td nowrap><img src="pics/ic_task_ok.gif" border=0 width=16 height=16 alt="Aufgabe abgehakt"></td>
+		<td nowrap><A href="javascript:showkontext('task_ok',3)"><img src="pics/ic_task_ok.gif" border=0 width=16 height=16 alt="Aufgabe abgehakt"></a></td>
 		<td nowrap><img src="pics/ic_task_priolow.gif" border=0 width=16 height=16 alt="Niedrige Priorität"></td>
 		<td nowrap class=taskok><p class=einzug><a href="tasks_content_viewok.html" class=taskok>File Export</a></td>
 		<td nowrap class=taskok><p class=einzug>m.schleich</td>
@@ -83,6 +85,45 @@ function show_help()
 	
 </table>
 <!-- Ende Inhalt Aufgaben Projektbezogen -->
+
+<!-- Layer Von mir erledigte Aufgaben -->
+<DIV ID="task_ok" class=kontextmenu>
+<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor="#000000">
+<tr>
+<td>
+<table class=filekontext CELLPADDING=1 CELLSPACING=0 BORDER=0>
+<tr><td>
+<table width="150" CELLPADDING=1 CELLSPACING=1 BORDER=0>
+	<TR><TD class=inaktiv>
+		R&uuml;ckfragen
+	</TD></TR>
+	<TR><TD class=inaktiv>
+		Weiterleiten
+	</TD></TR>
+	<tr><td><hr></td></tr>
+	<TR><TD class=inaktiv>
+		F&auml;lligkeit
+	</TD></TR>
+	<TR><TD class=inaktiv>
+		Priorit&auml;t
+	</TD></TR>
+	<TR><TD class=inaktiv>
+		Neuer Kommentar
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_TASKACTIVATE);">Reaktivieren</A> 
+	</TD></TR>
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_TASKDELETE);">L&ouml;schen</A>
+	</TD></TR>
+	</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</DIV>
+<!-- Ende Layer Von mir erledigte Aufgaben -->
 
 </body>
 </html>
