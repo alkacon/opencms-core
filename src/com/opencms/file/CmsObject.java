@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/16 16:19:39 $
-* Version: $Revision: 1.287 $
+* Date   : $Date: 2003/06/17 16:24:11 $
+* Version: $Revision: 1.288 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.287 $
+ * @version $Revision: 1.288 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4553,10 +4553,6 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		CmsResource res = readFileHeader(resourceName);
 		CmsAccessControlEntry acEntry = null;
 		I_CmsPrincipal principal = null;
-
-		if ("".equals(permissionString)) {
-			m_driverManager.removeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, principal.getId());	
-		} 
 				
 		if ("group".equals(principalType.toLowerCase())) {
 			principal = readGroup (principalName);
@@ -4599,6 +4595,28 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		}		
 
 		m_driverManager.writeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, acEntry);
+	}
+	
+	/**
+	 * Removes an access control entry of a griven principal from a given resource.
+	 * 
+	 * @param resourceName		name of the resource
+	 * @param principalType		the type of the principal (currently group or user)
+	 * @param principalName		name of the principal
+	 * @throws CmsException		if something goes wrong
+	 */
+	public void rmacc(String resourceName, String principalType, String principalName) throws CmsException {
+
+		CmsResource res = readFileHeader(resourceName);
+		I_CmsPrincipal principal = null;
+		
+		if ("group".equals(principalType.toLowerCase())) {
+			principal = readGroup (principalName);
+		} else if ("user".equals(principalType.toLowerCase())) {
+			principal = readUser(principalName);
+		}		
+		
+		m_driverManager.removeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, principal.getId());
 	}
 	
 	/**
