@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2004/02/20 16:28:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/20 17:35:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2004/02/20 16:28:56 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/20 17:35:12 $
  * @since 5.3
  */
 public class CmsSetupTests extends Object implements Serializable, Cloneable {
@@ -149,7 +149,7 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
 
             if (!supportedJDK) {
                 testResult.setRed();
-                testResult.setHelp("No help available.");
+                testResult.setHelp("OpenCms requires at least JDK version " + requiredJDK + " to run. Please update your JDK");
             } else {
                 testResult.setGreen();
             }
@@ -198,10 +198,12 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
             if (unsupportedServletEngine > -1) {
                 testResult.setRed();
                 testResult.setInfo(unsupportedServletEngineInfo[unsupportedServletEngine]);
-                testResult.setHelp("No help available.");
+                testResult.setHelp("This servlet engine does not work with OpenCms. Even though OpenCms is fully standards compliant, " 
+                        + "the standard leaves some 'grey' (i.e. undefined) areas. " 
+                        + "Please consider using another, supported engine.");
             } else if (!supportedServletEngine) {
                 testResult.setYellow();
-                testResult.setHelp("No help available.");
+                testResult.setHelp("This servlet engine has not been tested with OpenCms. Please consider using another, supported engine.");
             } else {
                 testResult.setGreen();
             }
@@ -254,9 +256,10 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
                 testResult.setResult("yes");
             } else {
                 testResult.setRed();
-                testResult.setInfo("OpenCms cannot be installed unless the OpenCms WAR file is unpacked!");
-                testResult.setHelp("No help available.");
-                testResult.setResult("no");
+                testResult.setInfo("OpenCms cannot be installed unless the OpenCms WAR file is unpacked! "
+                                    + "Please check the settings of your servlet container or unpack the WAR file manually.");
+                testResult.setHelp(testResult.getInfo());
+                testResult.setResult("WAR file NOT unpacked");
             }
         } catch (Exception e) {
             testResult.setRed();

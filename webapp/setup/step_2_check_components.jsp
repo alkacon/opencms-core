@@ -60,10 +60,11 @@ OpenCms Setup Wizard - Check components
 		}
 	} else { 	
 %>	
-
-		<%= Bean.getHtmlPart("C_BLOCK_START", "System components") %>		
 		
-		<table border="0" cellpadding="5" cellspacing="0" style="width: 100%;">
+		<%= Bean.getHtmlPart("C_BLOCK_START", "System components") %>	
+		<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;"><tr><td>
+		<div style="width: 100%; height:100px; overflow: auto;">
+		<table border="0" cellpadding="2">
 		
 <%
 		List testResults = setupTests.getTestResults();
@@ -89,22 +90,23 @@ OpenCms Setup Wizard - Check components
 			
 %>
 			<tr>
-				<td style="text-align: left; width: 130px;"><%= testResult.getName() %>:</td>
-				<td style="text-align: left; font-weight:bold; width: 300px;"><%= testResult.getResult() %></td>
-				<td style="text-align: right; width: 200px;"><%= helpIcon %>&nbsp;<img src="resources/<%= resultIcon %>.gif"></td>
+				<td style="text-align: left; white-space: nowrap;"><%= testResult.getName() %>:</td>
+				<td style="text-align: left; font-weight:bold; width: 100%;"><%= testResult.getResult() %></td>
+				<td style="text-align: right; width: 40px; height: 16px;"><%= helpIcon %>&nbsp;<img src="resources/<%= resultIcon %>.gif" border="0"></td>
 			</tr>
 <%
 		}	
 %>
 		</table>
-		
+		</div>
+		</td></tr></table>
 		<%= Bean.getHtmlPart("C_BLOCK_END") %>
 		
 		<div class="dialogspacer" unselectable="on">&nbsp;</div>
-		<div class="dialogspacer" unselectable="on">&nbsp;</div>
 		
+		<div style="width: 100%; height:150px; overflow: auto;">
 		<table border="0" cellpadding="5" cellspacing="0">
-			<tr><td align="center" valign="bottom">
+			<tr><td align="center" valign="top">
 			<%
 				if(setupTests.isRed()) {
 					out.print("<img src='resources/error.gif'>");
@@ -118,22 +120,27 @@ OpenCms Setup Wizard - Check components
 			<td colspan="2" valign="middle">
 			<%
 				if (setupTests.isRed()) {
-					out.println("<p><b>Attention:</b> Your system does not have the necessary components to use OpenCms. It is assumed that OpenCms will not run on your system.</p>");
+					out.println("<p>Your system does not have the necessary components to use OpenCms. It is assumed that OpenCms will not run on your system.</p>");
 					out.println(violatedConditions);
 				} else if (setupTests.isYellow()) {
-					out.print("<b>Attention:</b> Your system uses components which have not been tested to work with OpenCms. It is possible that OpenCms will not run on your system.");
+					out.print("Your system uses components which have not been tested to work with OpenCms. It is possible that OpenCms will not run on your system.");
 					out.println(questionableConditions);
 				} else {
 					out.print("<b>Your system uses components which have been tested to work properly with OpenCms.</b>");
 				}
 			%></td>
 			</tr>
-			<tr><td colspan="3" height="30">&nbsp;</td></tr>
+		</table>
+		</div>
+		
+		<div class="dialogspacer" unselectable="on">&nbsp;</div>
+		
+		<table border="0" cellpadding="2" cellspacing="0">
 			<% if (!setupTests.isGreen()) { %>
-				<tr><td colspan="3">
+				<tr><td>
 				<table border="0"><tr>
 					<td style="vertical-align: top;"><input type="checkbox" name="accept" value="true" onClick="toggleContinueButton()"> </td>
-					<td>I have noticed that my system may not have the necessary components to use OpenCms. Continue anyway.</td>
+					<td style="padding-top: 5px;">I have noticed that my system may not have the necessary components to use OpenCms. Continue anyway.</td>
 				</tr></table>
 				</td></tr>
 			<% } %>
