@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/10 08:12:58 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/11/10 10:21:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2003/11/10 08:12:58 $
+ * @version $Revision: 1.8 $ $Date: 2003/11/10 10:21:16 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -110,6 +110,9 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
     /** flag for memory warning mail send */
     private boolean m_warningSendSinceLastEmail;
     
+    /** flag for memory warning mail send */
+    private boolean m_warningLoggedSinceLastLog;
+    
     /**
      * Empty constructor, required by OpenCms scheduler.<p>
      */
@@ -124,6 +127,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      */
     public CmsMemoryMonitor(ExtendedProperties configuration) {
         m_warningSendSinceLastEmail = false;
+        m_warningLoggedSinceLastLog = false;
         m_lastEmailWarning = 0;
         m_lastEmailStatus = 0;       
         m_lastLogStatus = 0;
@@ -458,7 +462,8 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      * @param warning if true, write a memory warning log entry 
      */
     private void monitorWriteLog(boolean warning) {
-        if ((warning) || ((m_intervalLog <= 0) && (System.currentTimeMillis() < (m_lastLogWarning + m_intervalWarning)))) {
+        if ((warning && m_warningLoggedSinceLastLog) 
+            || ((m_intervalLog <= 0) && (System.currentTimeMillis() < (m_lastLogWarning + m_intervalWarning)))) {
             // send only one warning email between regular status emails OR if status is disabled and warn interval has passed
             return;
         } else if ((! OpenCms.getLog(this).isDebugEnabled()) || ((! warning) && (m_intervalLog <= 0))) {
@@ -474,10 +479,12 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         
         if (warning) {
             m_lastLogWarning = System.currentTimeMillis();
+            m_warningLoggedSinceLastLog = true;
             OpenCms.getLog(this).warn("W A R N I N G Memory consumption of " + usage 
                  + "% has reached a critical level" 
                  + " (" + m_maxUsagePercent + "% configured)");
         } else {
+            m_warningLoggedSinceLastLog = false;
             m_lastLogStatus = System.currentTimeMillis();
         }
                 
