@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestTouch.java,v $
- * Date   : $Date: 2004/05/27 16:22:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/28 08:21:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
  
 package org.opencms.file;
 
-import org.opencms.main.I_CmsConstants;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
@@ -42,7 +41,7 @@ import java.util.List;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestTouch extends OpenCmsTestCase {
   
@@ -85,7 +84,7 @@ public class TestTouch extends OpenCmsTestCase {
     public static void touchResource(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {            
 
         tc.storeResources(cms, resource1);
- 
+       
         long timestamp = System.currentTimeMillis();
         cms.touch(resource1, timestamp, false);
 
@@ -94,7 +93,7 @@ public class TestTouch extends OpenCmsTestCase {
         // project must be current project
         tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
         // state must be "changed"
-        tc.assertState(cms, resource1, I_CmsConstants.C_STATE_CHANGED);
+        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
         // date last modified must be the date set in the tough operation
         tc.assertDateLastModified(cms, resource1, timestamp);
         // the user last modified must be the current user
@@ -111,7 +110,7 @@ public class TestTouch extends OpenCmsTestCase {
     public static void touchResources(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {
 
         tc.storeResources(cms, resource1);
- 
+         
         long timestamp = System.currentTimeMillis();
         cms.touch(resource1, timestamp, false);
 
@@ -120,14 +119,14 @@ public class TestTouch extends OpenCmsTestCase {
         // project must be current project
         tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
         // state must be "changed"
-        tc.assertState(cms, resource1, I_CmsConstants.C_STATE_CHANGED);
+        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
         // date last modified must be the date set in the tough operation
         tc.assertDateLastModified(cms, resource1, timestamp);
         // the user last modified must be the current user
         tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
         
         // evaluate all subresources
-        List subresources = cms.getResourcesInTimeRange(resource1, CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT);
+        List subresources = tc.getSubtree(cms, resource1);
         
         // iterate through the subresources
         Iterator i = subresources.iterator();
@@ -149,7 +148,7 @@ public class TestTouch extends OpenCmsTestCase {
     public static void touchResourcesRecursive(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {
             
         tc.storeResources(cms, resource1);
- 
+        
         long timestamp = System.currentTimeMillis();
         cms.touch(resource1, timestamp, true);
 
@@ -158,14 +157,14 @@ public class TestTouch extends OpenCmsTestCase {
         // project must be current project
         tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
         // state must be "changed"
-        tc.assertState(cms, resource1, I_CmsConstants.C_STATE_CHANGED);
+        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
         // date last modified must be the date set in the tough operation
         tc.assertDateLastModified(cms, resource1, timestamp);
         // the user last modified must be the current user
         tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
         
         // evaluate all subresources
-        List subresources = cms.getResourcesInTimeRange(resource1, CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT);
+        List subresources = tc.getSubtree(cms, resource1);
         
         // iterate through the subresources
         Iterator i = subresources.iterator();
@@ -177,7 +176,7 @@ public class TestTouch extends OpenCmsTestCase {
             // project must be current project
             tc.assertProject(cms, resName, cms.getRequestContext().currentProject());
             // state must be "changed"
-            tc.assertState(cms, resName, I_CmsConstants.C_STATE_CHANGED);
+            tc.assertState(cms, resName, tc.getPreCalculatedState(resName));           
             // date last modified must be the date set in the tough operation
             tc.assertDateLastModified(cms, resName, timestamp);
             // the user last modified must be the current user

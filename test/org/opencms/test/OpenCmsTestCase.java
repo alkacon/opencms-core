@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/05/27 16:22:19 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/05/28 08:21:16 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.5
  */
@@ -124,27 +124,6 @@ public class OpenCmsTestCase extends TestCase {
             
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
-        }
-    }
-    
-    /**
-     * Tests if the the current date last modified of a resource is later then a given date.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource to compare
-     * @param dateLastModified the last modification date
-     */
-    protected void assertDateLastModifiedAfter(CmsObject cms, String resourceName, long dateLastModified) {
-        try {
-            // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
-            
-            if (res.getDateLastModified() < dateLastModified) {
-                fail("[DateLastModified " + dateLastModified + " > "+res.getDateLastModified() + "]");
-            }
-            
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName+" " + CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -335,6 +314,225 @@ public class OpenCmsTestCase extends TestCase {
             
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
+        }
+    }
+    
+    /**
+     * Compares the current state of a resource with a given state.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param state the state
+     */
+    public void assertState(CmsObject cms, String resourceName, int state) {
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            
+            if (res.getState() != state) {
+                fail("[State " + state + " <-> " + res.getState() + "]");
+            }
+            
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
+        }
+    }
+    
+    /**
+     * Compares the current user last modified of a resource with a given user.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param user the last modification user
+     */
+    public void assertUserLastModified(CmsObject cms, String resourceName, CmsUser user) {
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            
+            if (!res.getUserLastModified().equals(user.getId())) {
+                fail("[UserLastModified (" + user.getName() + ") " + user.getId() + " <-> " + res.getUserLastModified() + "]");
+            }
+            
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
+        }
+    }
+    
+    
+    /**
+     * Gets an precalculate resource state from the storage.<p>
+     * 
+     * @param resourceName the name of the resource to get  the state
+     * @return precalculated resource state
+     * @throws CmsException in case something goes wrong
+     */
+    public int getPreCalculatedState(String resourceName) throws CmsException {
+         return m_resourceStrorage.getPreCalculatedState(resourceName);
+    }
+    
+    
+    /**
+     * Gets a list of all subresources in of a folder.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the folder to get the subtree from
+     * @return list of CmsResource objects
+     * @throws CmsException if something goes wrong
+     */
+    public List getSubtree(CmsObject cms, String resourceName) throws CmsException {
+        return cms.getResourcesInTimeRange(resourceName, CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT);
+    }
+    
+    
+    /**
+     * Removes the initialized OpenCms database and all 
+     * temporary files created during the test run.<p>
+     */
+    public void removeOpenCms() {
+        
+        // output a message
+        m_shell.printPrompt(); 
+        System.out.println("----- Test cases finished -----");        
+
+        // exit the shell
+        m_shell.exit();
+        
+        // remove the database
+        removeDatabase();
+
+        // get the name of the folder for the backup configuration files
+        File configBackupDir = new File(getTestDataPath() + "WEB-INF/config/backup/");
+        
+        // remove the backup configuration files
+        CmsStaticExportManager.purgeDirectory(configBackupDir);        
+    }
+    
+    /**
+     * Sets up a complete OpenCms instance, creating the usual projects,
+     * and importing a default database.<p>
+     * 
+     * @param importFolder the folder to import in the "real" FS
+     * @param targetFolder the target folder of the import in the VFS
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     * @throws FileNotFoundException in case of file access errors
+     * @throws CmsException in case of OpenCms access errors
+     */
+    public CmsObject setupOpenCms(String importFolder, String targetFolder) throws FileNotFoundException, CmsException {
+        // create a new database first
+        setupDatabase();
+        
+        // kill any old shell that might have remained from a previous test 
+        if (m_shell != null) {
+            try {
+                m_shell.exit();
+                m_shell = null;
+            } catch (Throwable t) {
+                // ignore
+            }
+        }
+        
+        // create a shell instance
+        m_shell = new CmsShell(
+            getTestDataPath() + "WEB-INF" + File.separator,
+            "${user}@${project}>", 
+            null);
+        
+        // open the test script 
+        File script;
+        FileInputStream stream = null;
+        
+        // start the shell with the base script
+        script = new File(getTestDataPath() + "scripts/script_base.txt");
+        stream = new FileInputStream(script);
+        m_shell.start(stream);
+        
+        // add the default folders by script
+        script = new File(getTestDataPath() + "scripts/script_default_folders.txt");
+        stream = new FileInputStream(script);        
+        m_shell.start(stream); 
+        
+        // log in the Admin user and switch to the setup project
+        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+        cms.loginUser("Admin", "admin");
+        cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
+        
+        // import the "simpletest" files
+        importResources(cms, importFolder, targetFolder);  
+        
+        // publish the current project by script
+        script = new File(getTestDataPath() + "scripts/script_publish.txt");
+        stream = new FileInputStream(script);        
+        m_shell.start(stream);      
+        
+        // switch to the "Offline" project
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.getRequestContext().setSiteRoot("/sites/default/");               
+
+        // init the storage
+        m_resourceStrorage = new OpenCmsTestResourceStorage(cms);
+        
+        // output a message 
+        System.out.println("----- Starting test cases -----");
+        
+        // return the initialized cms context Object
+        return cms;
+    }
+    
+    /**
+     * Stores the state (e.g. attributes, properties, content, lock state and ACL) of 
+     * a resource in the internal resource storage.<p>
+     * 
+     * If the resourceName is the name of a folder in the vfs, all subresoruces are stored as well.
+     *   
+     * @param cms an initialized CmsObject
+     * @param resourceName the name of the resource in the vfs
+     */
+    public void storeResources(CmsObject cms, String resourceName) {
+        
+        String resName = "";
+        
+        try {            
+            CmsResource resource = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            // test if the name belongs to a file or folder
+            if (resource.isFile()) {
+                m_resourceStrorage.add(resourceName, resource);
+            } else {
+                // this is a folder, so first add the folder itself to the storeage
+                m_resourceStrorage.add(resourceName, resource);
+                
+                // now get all subresources and add them as well
+                List resources = getSubtree(cms, resourceName);
+                Iterator i = resources.iterator();
+                while (i.hasNext()) {
+                    CmsResource res = (CmsResource) i.next();
+                    resName = cms.readAbsolutePath(resource, CmsResourceFilter.ALL) + res.getName();
+                    m_resourceStrorage.add(resName, res);
+                }
+            }
+            } catch (CmsException e) {
+                fail("cannot read resource "+resourceName+" or " +resName + " "+CmsException.getStackTraceAsString(e));                
+            }
+    }
+    
+    /**
+     * Tests if the the current date last modified of a resource is later then a given date.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param dateLastModified the last modification date
+     */
+    protected void assertDateLastModifiedAfter(CmsObject cms, String resourceName, long dateLastModified) {
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            
+            if (res.getDateLastModified() < dateLastModified) {
+                fail("[DateLastModified " + dateLastModified + " > "+res.getDateLastModified() + "]");
+            }
+            
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName+" " + CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -640,48 +838,6 @@ public class OpenCmsTestCase extends TestCase {
     } 
     
     /**
-     * Compares the current state of a resource with a given state.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource to compare
-     * @param state the state
-     */
-    public void assertState(CmsObject cms, String resourceName, int state) {
-        try {
-            // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
-            
-            if (res.getState() != state) {
-                fail("[State " + state + " <-> " + res.getState() + "]");
-            }
-            
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
-        }
-    }
-    
-    /**
-     * Compares the current user last modified of a resource with a given user.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource to compare
-     * @param user the last modification user
-     */
-    public void assertUserLastModified(CmsObject cms, String resourceName, CmsUser user) {
-        try {
-            // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
-            
-            if (!res.getUserLastModified().equals(user.getId())) {
-                fail("[UserLastModified (" + user.getName() + ") " + user.getId() + " <-> " + res.getUserLastModified() + "]");
-            }
-            
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
-        }
-    }
-    
-    /**
      * Check the setup DB for errors that might have occured.<p>
      * 
      * @param setupDb the setup DB object to check
@@ -756,6 +912,16 @@ public class OpenCmsTestCase extends TestCase {
         setupDb.dropTables(C_DB_PRODUCT);
         return setupDb;      
     }
+    
+    /**
+     * Writes a message to the current output stream.<p>
+     * 
+     * @param message the message to write
+     */
+    protected void echo(String message) {
+        m_shell.printPrompt();
+        System.out.println(message);
+    }   
 
     /**
      * Returns an initialized replacer map.<p>
@@ -894,29 +1060,6 @@ public class OpenCmsTestCase extends TestCase {
     }    
     
     /**
-     * Removes the initialized OpenCms database and all 
-     * temporary files created during the test run.<p>
-     */
-    public void removeOpenCms() {
-        
-        // output a message
-        m_shell.printPrompt(); 
-        System.out.println("----- Test cases finished -----");        
-
-        // exit the shell
-        m_shell.exit();
-        
-        // remove the database
-        removeDatabase();
-
-        // get the name of the folder for the backup configuration files
-        File configBackupDir = new File(getTestDataPath() + "WEB-INF/config/backup/");
-        
-        // remove the backup configuration files
-        CmsStaticExportManager.purgeDirectory(configBackupDir);        
-    }
-    
-    /**
      * Sets the mapping for resourcenames.<p>
      *
      * @param source the source resource name
@@ -942,113 +1085,6 @@ public class OpenCmsTestCase extends TestCase {
         checkErrors(setupDb);        
         setupDb = createTables();            
         checkErrors(setupDb);
-    }
-    
-    /**
-     * Sets up a complete OpenCms instance, creating the usual projects,
-     * and importing a default database.<p>
-     * 
-     * @param importFolder the folder to import in the "real" FS
-     * @param targetFolder the target folder of the import in the VFS
-     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
-     * @throws FileNotFoundException in case of file access errors
-     * @throws CmsException in case of OpenCms access errors
-     */
-    public CmsObject setupOpenCms(String importFolder, String targetFolder) throws FileNotFoundException, CmsException {
-        // create a new database first
-        setupDatabase();
-        
-        // kill any old shell that might have remained from a previous test 
-        if (m_shell != null) {
-            try {
-                m_shell.exit();
-                m_shell = null;
-            } catch (Throwable t) {
-                // ignore
-            }
-        }
-        
-        // create a shell instance
-        m_shell = new CmsShell(
-            getTestDataPath() + "WEB-INF" + File.separator,
-            "${user}@${project}>", 
-            null);
-        
-        // open the test script 
-        File script;
-        FileInputStream stream = null;
-        
-        // start the shell with the base script
-        script = new File(getTestDataPath() + "scripts/script_base.txt");
-        stream = new FileInputStream(script);
-        m_shell.start(stream);
-        
-        // add the default folders by script
-        script = new File(getTestDataPath() + "scripts/script_default_folders.txt");
-        stream = new FileInputStream(script);        
-        m_shell.start(stream); 
-        
-        // log in the Admin user and switch to the setup project
-        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        cms.loginUser("Admin", "admin");
-        cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
-        
-        // import the "simpletest" files
-        importResources(cms, importFolder, targetFolder);  
-        
-        // publish the current project by script
-        script = new File(getTestDataPath() + "scripts/script_publish.txt");
-        stream = new FileInputStream(script);        
-        m_shell.start(stream);      
-        
-        // switch to the "Offline" project
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        cms.getRequestContext().setSiteRoot("/sites/default/");               
-
-        // init the storage
-        m_resourceStrorage = new OpenCmsTestResourceStorage(cms);
-        
-        // output a message 
-        System.out.println("----- Starting test cases -----");
-        
-        // return the initialized cms context Object
-        return cms;
-    }
-    
-    /**
-     * Stores the state (e.g. attributes, properties, content, lock state and ACL) of 
-     * a resource in the internal resource storage.<p>
-     * 
-     * If the resourceName is the name of a folder in the vfs, all subresoruces are stored as well.
-     *   
-     * @param cms an initialized CmsObject
-     * @param resourceName the name of the resource in the vfs
-     */
-    public void storeResources(CmsObject cms, String resourceName) {
-        
-        String resName = "";
-        
-        try {            
-            CmsResource resource = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
-            // test if the name belongs to a file or folder
-            if (resource.isFile()) {
-                m_resourceStrorage.add(resourceName, resource);
-            } else {
-                // this is a folder, so first add the folder itself to the storeage
-                m_resourceStrorage.add(resourceName, resource);
-                
-                // now get all subresources and add them as well
-                List resources = cms.getResourcesInTimeRange(resourceName, CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT);
-                Iterator i = resources.iterator();
-                while (i.hasNext()) {
-                    CmsResource res = (CmsResource) i.next();
-                    resName = cms.readAbsolutePath(resource, CmsResourceFilter.ALL) + res.getName();
-                    m_resourceStrorage.add(resName, res);
-                }
-            }
-            } catch (CmsException e) {
-                fail("cannot read resource "+resourceName+" or " +resName + " "+CmsException.getStackTraceAsString(e));                
-            }
     }
     
     
@@ -1080,13 +1116,5 @@ public class OpenCmsTestCase extends TestCase {
             return noMatches;
     }
     
-    /**
-     * Writes a message to the current output stream.<p>
-     * 
-     * @param message the message to write
-     */
-    protected void echo(String message) {
-        m_shell.printPrompt();
-        System.out.println(message);
-    }      
+    
 }
