@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/oracle/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/05/21 14:32:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/22 12:54:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,11 +51,13 @@ import java.util.Hashtable;
 
 import oracle.jdbc.driver.OracleResultSet;
 
+import org.apache.commons.dbcp.DelegatingPreparedStatement;
+
 /**
  * Oracle/OCI implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/21 14:32:53 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/22 12:54:59 $
  * 
  * @see com.opencms.db.generic.CmsUserDriver
  * @see com.opencms.db.generic.I_CmsUserDriver
@@ -230,15 +232,18 @@ public class CmsUserDriver extends com.opencms.db.generic.CmsUserDriver implemen
             stmt.setString(12, defaultGroup.getId().toString());
             stmt.setString(13, m_sqlManager.validateNull(address));
             stmt.setString(14, m_sqlManager.validateNull(section));
-            stmt.setInt(15, type);
-            stmt.executeUpdate();
+            stmt.setInt(15, type); 
+            stmt.executeUpdate();            
             stmt.close();
 
             // now update user_info of the new user
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERSFORUPDATE");
             stmt2.setString(1, id.toString());
             conn.setAutoCommit(false);
-            res = stmt2.executeQuery();
+            
+            res = ((DelegatingPreparedStatement)stmt2).getDelegate().executeQuery();            
+            //res = stmt2.executeQuery();
+            
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("USER_INFO");
                 ByteArrayInputStream instream = new ByteArrayInputStream(value);
