@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/03/23 10:34:21 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/03/26 09:25:33 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -104,7 +104,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault implements I_Cms
                 // when changing the project in the dialog the currentProject is set
                 // because of the folder-tree that is used to choose resources.
                 // when leaving the dialog the currentProject is reset to the original project.
-                session.putValue(C_CURPROJECT, valueOf(reqCont.currentProject().getId()));
+                session.putValue(C_CURPROJECT, reqCont.currentProject().getId() + "");
                 session.putValue(C_STEP, "nextstep");
             }
         } else {
