@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2005/03/06 12:32:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/08 10:50:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.Buffer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1
  */
 public class CmsSessionManager {
@@ -328,7 +328,7 @@ public class CmsSessionManager {
     }
 
     /**
-     * Called by the {@link OpenCmsListener} when a http session is created.<p>
+     * Called by the {@link OpenCmsListener} when a http session is destroyed.<p>
      * 
      * @param event the http session event
      * 

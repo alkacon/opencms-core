@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/08 06:21:01 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/03/08 10:50:32 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.36 $ $Date: 2005/03/08 06:21:01 $
+ * @version $Revision: 1.37 $ $Date: 2005/03/08 10:50:32 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -455,20 +455,23 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 // initially this was a simple PrefixQuery based on the DOC_PATH
                 // however, internally Lucene rewrote that to literally hundreds of BooleanQuery parts
                 // the following implementation will lead to just one Lucene query and is thus much better
-                String[] path = CmsStringUtil.splitAsArray(searchRoot, '/');
-                if (path.length > 0) {
-                    PhraseQuery pathQuery = new PhraseQuery();
-                    // add root term
-                    pathQuery.add(new Term(I_CmsDocumentFactory.DOC_ROOT, C_ROOT_PATH_TOKEN));
-                    for (int i = 0; i < path.length; i++) {
-                        if (CmsStringUtil.isEmpty(path[i])) {
-                            continue;
-                        }
-                        // add term for the folder
-                        pathQuery.add(new Term(I_CmsDocumentFactory.DOC_ROOT, path[i]));
-                    }
-                    query.add(pathQuery, true, false);
-                }
+//                String[] path = CmsStringUtil.splitAsArray(searchRoot, '/');
+//                if (path.length > 0) {                            
+//                    PhraseQuery pathQuery = new PhraseQuery();
+//                    // add root term
+//                    pathQuery.add(new Term(I_CmsDocumentFactory.DOC_ROOT, C_ROOT_PATH_TOKEN));
+//                    for (int i = 0; i < path.length; i++) {
+//                        if (CmsStringUtil.isEmpty(path[i])) {
+//                            continue;
+//                        }
+//                        // add term for the folder
+//                        pathQuery.add(new Term(I_CmsDocumentFactory.DOC_ROOT, path[i]));
+//                    }
+//                    query.add(pathQuery, true, false);
+//                }
+                String phrase = "\"" + C_ROOT_PATH_TOKEN + " " + searchRoot.replace('/', ' ').trim() + "\""; 
+                Query phraseQuery = QueryParser.parse(phrase, I_CmsDocumentFactory.DOC_ROOT, languageAnalyzer);
+                query.add(phraseQuery, true, false);                
             }
 
             if (!C_SEARCH_QUERY_RETURN_ALL.equals(searchQuery) && (fields != null) && (fields.length > 0)) {
