@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/03/30 09:49:31 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/04/05 13:29:14 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  */
 public class CmsLinkManager {
 
@@ -428,10 +428,6 @@ public class CmsLinkManager {
                     resultLink);
             }
 
-            if (useRelativeLinks) {
-                // we want relative links in export, so make the absolute link relative
-                resultLink = getRelativeUri(uriBaseName, resultLink);
-            }
             // read only properties, if the current site and the target site both do have a secure server
             if (targetSite.hasSecureServer() || CmsSiteManager.getCurrentSite(cms).hasSecureServer()) {
                 if (!link.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
@@ -465,6 +461,11 @@ public class CmsLinkManager {
                         }
                     }
                 }
+            }
+            // make absolute link relative, if relative links in export are required
+            // and if the link does not point to another server
+            if (useRelativeLinks && CmsStringUtil.isEmpty(serverPrefix)) {
+                resultLink = getRelativeUri(uriBaseName, resultLink);
             }
 
         } else {
