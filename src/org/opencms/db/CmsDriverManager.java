@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/07 13:52:43 $
- * Version: $Revision: 1.265 $
+ * Date   : $Date: 2003/10/08 15:02:58 $
+ * Version: $Revision: 1.266 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.265 $ $Date: 2003/10/07 13:52:43 $
+ * @version $Revision: 1.266 $ $Date: 2003/10/08 15:02:58 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4150,10 +4150,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             List labeledSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
 
             // check if one of the other vfs links lies in a labeled site folder
-            List vfsLinkList = readSiblings(context, resource.getRootPath(), false);
+            List vfsLinkList = m_vfsDriver.readSiblings(context.currentProject(), resource);
             Iterator i = vfsLinkList.iterator();
             while (i.hasNext()) {
                 CmsResource currentResource = (CmsResource)i.next();
+                if (currentResource.equals(resource)) {
+                    currentResource = (CmsResource)i.next();
+                }
+                currentResource.setFullResourceName(readPath(context, currentResource, true));
                 String curPath = currentResource.getRootPath();
                 for (int k = 0; k < labeledSites.size(); k++) {
                     if (curPath.startsWith((String)labeledSites.get(k))) {
