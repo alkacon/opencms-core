@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/07/10 08:05:37 $
-* Version: $Revision: 1.199 $
+* Date   : $Date: 2002/08/08 09:36:25 $
+* Version: $Revision: 1.200 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.199 $ $Date: 2002/07/10 08:05:37 $
+ * @version $Revision: 1.200 $ $Date: 2002/08/08 09:36:25 $
  */
 public interface I_CmsConstants {
 
@@ -1197,7 +1197,17 @@ public interface I_CmsConstants {
      * The name of the launcher tag in registry.
      */
     static final String C_REGISTRY_LAUNCHER = "launcher";
+    
+    /**
+     * The name of the exportpoint source tag in registry.
+     */
+    static final String C_REGISTRY_SOURCE = "source";
 
+    /**
+     * The name of the exportpoint destination tag in registry.
+     */
+    static final String C_REGISTRY_DESTINATION = "destination";
+    
     /**
      * The name of the error tag seperator in backoffice templates
      */
