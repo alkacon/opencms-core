@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/03/04 11:35:00 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/03/06 18:49:13 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.main;
 
+import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
@@ -67,7 +68,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -174,10 +175,10 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @see CmsObject#chacc(String, String, String, String)
      */
     public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
-        if ("group".equals(principalType.toLowerCase().trim())) {
-            principalName = OpenCms.getDefaultUsers().translateGroup(principalName);
+        if (CmsImportExportConfiguration.C_PRINCIPAL_GROUP.equalsIgnoreCase(principalType.trim())) {
+            principalName = OpenCms.getImportExportManager().translateGroup(principalName);
         } else {
-            principalName = OpenCms.getDefaultUsers().translateUser(principalName);
+            principalName = OpenCms.getImportExportManager().translateUser(principalName);
         }
         m_cms.chacc(resourceName, principalType, principalName, permissionString);
     }        
@@ -551,7 +552,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @param password the password of the user
      */
     public void login(String username, String password) {
-        username = OpenCms.getDefaultUsers().translateUser(username);
+        username = OpenCms.getImportExportManager().translateUser(username);
         try {
             m_cms.loginUser(username, password);
             System.out.println("You are now logged in as user '" + whoami().getName() + "'.");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2004/02/27 11:35:29 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/03/06 18:48:09 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,8 @@
 package org.opencms.db;
 
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
-
-
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -47,7 +42,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $ $Date: 2004/02/27 11:35:29 $
+ * @version $Revision: 1.18 $ $Date: 2004/03/06 18:48:09 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
@@ -60,12 +55,6 @@ public class CmsDefaultUsers {
     private String m_userAdmin;
     private String m_userExport;
     private String m_userGuest;
-
-    /** Matching group names for group name translation */
-    private Map m_groupTranslations;
-
-    /** Matching user names for user name translation */  
-    private Map m_userTranslations;
     
     /**
      * Public constructor with name array.<p>
@@ -124,14 +113,6 @@ public class CmsDefaultUsers {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Projectmanagers group: " + defaultUsers.getGroupProjectmanagers());
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Users group          : " + defaultUsers.getGroupUsers());
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Guests group         : " + defaultUsers.getGroupGuests());
-        } 
-        try {
-            String[] translationArray = configuration.getStringArray("import.name.translations");
-            defaultUsers.setNameTranslations(translationArray);  
-        } catch (Exception e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Name translation     : non-critical error " + e.getMessage());
-            }
         }        
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {            
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Default user names   : initialized");
@@ -201,108 +182,6 @@ public class CmsDefaultUsers {
      */
     public String getUserGuest() {
         return m_userGuest;
-    }
-        
-    /**
-     * Initilaizes the user / group name translations.<p>
-     * 
-     * This feature is used when importing data from a system where the
-     * user name configuration for the default (and other) users
-     * was different from the running system. 
-     * 
-     * The format of the entrys in the array must look like this:<br>
-     * <code>
-     * GROUP.Users=ocusers<br>
-     * USER.Admin=ocadmin<br>
-     * </code>
-     * In this example, the default name for the users group "Users" is
-     * translated to "ocusers", and the default name for the admin user "Admin"
-     * is translated to "ocadmin".<p>
-     * 
-     * @param translations array of name translations
-     */
-    private void setNameTranslations(String[] translations) {
-        if ((translations == null) || (translations.length == 0)) {
-            return;
-        }
-        for (int i=0; i<translations.length; i++) {
-            String match = translations[i];
-            if (match == null) {
-                continue;
-            }
-            boolean valid = true;
-            match = match.trim();
-            int pos = match.indexOf(':');
-            if (pos <= 0) {
-                valid = false;
-            }
-            String ucmatch = match.toUpperCase();
-            if (valid && ucmatch.startsWith(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_GROUP)) {
-                String name1 = match.substring(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_GROUP.length(), pos);
-                String name2 = match.substring(pos+1);      
-                if (m_groupTranslations == null) {
-                    m_groupTranslations = new HashMap();
-                } 
-                m_groupTranslations.put(name1, name2);  
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Name translation     : group " + name1 + " to " + name2);
-                }                
-            } else if (valid && ucmatch.startsWith(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_USER)) {
-                String name1 = match.substring(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_USER.length(), pos);
-                String name2 = match.substring(pos+1);      
-                if (m_userTranslations == null) {
-                    m_userTranslations = new HashMap();
-                } 
-                m_userTranslations.put(name1, name2);      
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Name translation     : user " + name1 + " to " + name2);
-                }                             
-            } else {
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Name translation     : ignoring invalid entry '" + match + "'");
-                }                 
-            }
-        }         
-    }
-    
-    /**
-     * Returns the translated name for the given group name.<p>
-     * 
-     * If no matching name is found, the given group name is returned.<p>
-     * 
-     * @param name the group name to translate
-     * @return the translated name for the given group name
-     */
-    public String translateGroup(String name) {
-        if (m_groupTranslations == null) {
-            return name;
-        }
-        String match = (String)m_groupTranslations.get(name);
-        if (match != null) {
-            return match;
-        } else {
-            return name;
-        }
-    }    
-    
-    /**
-     * Returns the translated name for the given user name.<p>
-     * 
-     * If no matching name is found, the given user name is returned.<p>
-     * 
-     * @param name the user name to translate
-     * @return the translated name for the given user name
-     */
-    public String translateUser(String name) {
-        if (m_userTranslations == null) {
-            return name;
-        }
-        String match = (String)m_userTranslations.get(name);
-        if (match != null) {
-            return match;
-        } else {
-            return name;
-        }
     }
     
     /**
