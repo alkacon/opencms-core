@@ -37,7 +37,7 @@
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 				<mapping element="Release" mapto="attribute:datereleased" />
-				<mapping element="Expiration" mapto="attribute:dateexpires" />
+				<mapping element="Expiration" mapto="attribute:dateexpired" />
 			</mappings>
 			<validationrules/>
 			<defaults>
