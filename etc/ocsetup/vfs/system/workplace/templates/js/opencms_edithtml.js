@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
- * Date   : $Date: 2000/05/25 15:23:35 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/06/02 13:02:08 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -372,10 +372,10 @@ function doEditHTML(para)
 		DECMD_IMAGE_onclick();
 		break;		
     case 43:
-        window.open("picturebrowser.html?initial=true", "PicBrowser", "width=500, height=500, resizable=yes, top=200, left=450");
+        window.open("picturebrowser.html?initial=true", "PicBrowser", "width=550, height=500, resizable=yes, top=200, left=450");
 		break;
 	case 44: 
-		binlist = window.open('downloadbrowser.html?initial=true','DownBrowser', "width=500, height=500, resizable=yes, top=200, left=450");
+		binlist = window.open('downloadbrowser.html?initial=true','DownBrowser', "width=550, height=500, resizable=yes, top=200, left=450");
         binlist.focus(); 
 	 	break;
 	case 45:
