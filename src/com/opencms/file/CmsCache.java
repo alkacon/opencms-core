@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCache.java,v $
- * Date   : $Date: 2000/02/19 10:15:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/04/18 14:13:27 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import java.util.*;
  * data read from the File DB.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/19 10:15:27 $
+ * @version $Revision: 1.2 $ $Date: 2000/04/18 14:13:27 $
  */
 
 class CmsCache
@@ -117,7 +117,7 @@ class CmsCache
 		if (cachedObject != null) {
             // update  timestamp
 		    cachedObject.setTimestamp(); 
-		        ret=(CmsCachedObject)cachedObject.clone();
+	        ret=(CmsCachedObject)cachedObject.clone();
        		return (((CmsCachedObject)ret).getContents());
 		} else {
 		   return null;

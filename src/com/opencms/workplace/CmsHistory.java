@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
- * Date   : $Date: 2000/04/17 16:11:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/18 14:13:27 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/04/17 16:11:35 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/18 14:13:27 $
  */
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -58,6 +58,7 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
     public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        
         return false;
     }
         

@@ -764,6 +764,7 @@ A new task was reactivated for you or your role.</content>
 			<deleteextension>Delete the association of file extension</deleteextension>
 			<editpropertyinfo>Edit Property of</editpropertyinfo>
 			<move>Move File</move>
+			<movefolder>Move Folder</movefolder>
 			<group>Group</group>
 			<history>History of</history>
 			<historydetails>Show details of</historydetails>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/04/17 16:11:35 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2000/04/18 14:13:27 $
+ * Version: $Revision: 1.55 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.54 $ $Date: 2000/04/17 16:11:35 $
+ * @version $Revision: 1.55 $ $Date: 2000/04/18 14:13:27 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -895,7 +895,7 @@ import com.opencms.util.*;
                 //DATE_LASTMODIFIED
                 statementResourceUpdate.setTimestamp(10,new Timestamp(System.currentTimeMillis()));
                 //SIZE
-                statementResourceUpdate.setInt(11,file.getContents().length);
+                statementResourceUpdate.setInt(11,file.getLength());
                 // set query parameters
                 statementResourceUpdate.setString(12,absoluteName(file.getAbsolutePath()));
                 statementResourceUpdate.setInt(13,file.getProjectId());

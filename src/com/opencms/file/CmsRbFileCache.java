@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/04/07 15:57:37 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/04/18 14:13:27 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,12 +41,15 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/04/07 15:57:37 $
+ * @version $Revision: 1.14 $ $Date: 2000/04/18 14:13:27 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
      /** The filecache */
      private CmsCache m_filecache=null;
+     
+     /** The cache for filelists */
+     private CmsCache m_fofcache=null;
      
      /** The file size */
      private final static int C_FILECACHE=200;
@@ -66,6 +69,7 @@ import com.opencms.core.*;
     public CmsRbFileCache(I_CmsAccessFile accessFile) {
         super(accessFile);
         m_filecache=new CmsCache(C_FILECACHE);
+        m_fofcache=new CmsCache(C_FILECACHE);
     }
 	
      /**
@@ -371,6 +375,38 @@ import com.opencms.core.*;
         m_accessFile.removeFolder(project,foldername);
         m_filecache.remove(key);
      }
+    
+    	 /**
+	 * Returns a Vector with all files of a folder.<br>
+	 * 
+	 * Files of a folder can be read from an offline Project and the online Project.<br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read this resource</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param foldername the complete path to the folder.
+	 * 
+	 * @return subfiles A Vector with all subfiles for the overgiven folder.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	/*public Vector getFilesInFolder(A_CmsProject project, String foldername)
+		throws CmsException {
+
+         Vector fof=null;
+         String key=C_FILE+project.getId()+foldername;       
+         fof=(Vector)m_fofcache.get(key);
+         if ((fof== null) || (fof.size()==0)) {
+             fof=m_accessFile.getFilesInFolder(project, foldername); 
+             m_fofcache.put(key,fof);
+         }
+        return fof;
+     }/*
     
     /**
      * Deletes all resources of a project.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/04/03 10:48:32 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/04/18 14:13:27 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/04/03 10:48:32 $
+ * @version $Revision: 1.22 $ $Date: 2000/04/18 14:13:27 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -127,13 +127,15 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                    cms.writeProperty(file.getAbsolutePath(),C_PROPERTY_TITLE,title);
                    
                    // now create the page content file
-                    try {
+                   contentFile=cms.createFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile,C_DEFAULTBODY.getBytes(),"plain");
+                   
+                   /* try {
                         contentFile=cms.readFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile);
                    } catch (CmsException e) {
                         if (contentFile == null) {
                              contentFile=cms.createFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile,C_DEFAULTBODY.getBytes(),"plain");
                         }
-                   }
+                   }*/
                         
                    // set the flags for the content file to internal use, the content 
                    // should not be loaded 
