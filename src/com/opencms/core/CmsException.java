@@ -1,29 +1,81 @@
 package com.opencms.core;
 
-
 /**
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 1999/12/16 18:11:56 $
+ * @version $Revision: 1.6 $ $Date: 1999/12/17 14:37:04 $
  */
 public class CmsException extends Exception {
 	
+    /**
+     * Stores the error code of the CmsException.
+     */
     private int m_Type = 0;
 	
+    /**
+     * Stores a forwared exception.
+     */
     private Exception m_Exception = null;
 	
+    /**
+     * Definition of error code for unknown exception.
+     */
 	public final static int C_UNKNOWN_EXCEPTION = 0;
+    
+    /**
+    * Definition of error code for access denied exception.
+    */
 	public final static int C_NO_ACCESS = 1;
+    
+    /**
+    * Definition of error code for not found exception.
+    */
 	public final static int C_NOT_FOUND = 2;
+    
+    /**
+    * Definition of error code for bad name exception.
+    */
 	public final static int C_BAD_NAME = 3;
+    
+    /**
+    * Definition of error code for sql exception.
+    */
 	public final static int C_SQL_ERROR = 4;
+    
+    /**
+    * Definition of error code for not empty exception.
+    */
 	public final static int C_NOT_EMPTY = 5;
+    
+    /**
+    * Definition of error code for no admin exception.
+    */
 	public final static int C_NOT_ADMIN = 6;
+    
+    /**
+    * Definition of error code for serialization exception.
+    */
 	public final static int C_SERIALIZATION = 7;
+    
+    /**
+    * Definition of error code for no group exception.
+    */
     public final static int C_NO_GROUP = 8;
+    
+    /**
+    * Definition of error code for group not empty exception.
+    */ 
     public final static int C_GROUP_NOT_EMPTY = 9;
+    
+    /**
+    * Definition of error code for no user exception.
+    */
     public final static int C_NO_USER= 10;
+    
+    /**
+    * Definition of error code for no default group exception.
+    */
     public final static int C_NO_DEFAULT_GROUP= 11;
 
 	public final static String C_EXTXT[] = {
@@ -58,9 +110,9 @@ public class CmsException extends Exception {
 	}
 	
 	 /** 
-	 * Contructs a  CmsException with reserved error code
+	 * Contructs a CmsException with reserved error code
 	 * <p>
-	 * Codes are: 
+	 * Available error codes are: 
 	 * <ul>
 	 * <li> <b>0:</b> Unknown exception </li>
 	 * <li> <b>1:</b> Access denied </li>
@@ -69,8 +121,12 @@ public class CmsException extends Exception {
 	 * <li> <b>4:</b> Sql exception </li>
 	 * <li> <b>5:</b> Folder not empty </li>
 	 * <li> <b>6:</b> Admin access required </li>
-	 * <li> <b>7:</b> No Base64 Code </li>
-	 * </ul>
+	 * <li> <b>7:</b> Serialization/Deserialization failed </li>
+	 * <li> <b>8:</b> Unknown User Group </li>
+	 * <li> <b>9:</b> Group not empty </li>
+	 * <li> <b>10:</b> Unknown User </li>
+     * <li> <b>11:</b> No removal from Default Group </li>
+      * </ul>
 	 * 
 	 * @param i Exception code
 	 */
@@ -82,7 +138,7 @@ public class CmsException extends Exception {
 	 /** 
 	 * Constructs a  CmsException with reserved error code and additional information
 	 * <p>
-	 * Codes are: 
+	 * Available error codes are: 
 	 * <ul>
 	 * <li> <b>0:</b> Unknown exception </li>
 	 * <li> <b>1:</b> Access denied </li>
@@ -91,7 +147,11 @@ public class CmsException extends Exception {
 	 * <li> <b>4:</b> Sql exception </li>
 	 * <li> <b>5:</b> Folder not empty </li>
 	 * <li> <b>6:</b> Admin access required </li>
-	 * <li> <b>7:</b> No Base64 Code </li>
+	 * <li> <b>7:</b> Serialization/Deserialization failed </li>
+	 * <li> <b>8:</b> Unknown User Group </li>
+	 * <li> <b>9:</b> Group not empty </li>
+	 * <li> <b>10:</b> Unknown User </li>
+     * <li> <b>11:</b> No removal from Default Group </li>
 	 * </ul>
 	 * 
 	 * @param s Exception description
@@ -106,7 +166,7 @@ public class CmsException extends Exception {
 	 * Construtcs a CmsException  with a detail message and a forwarded other exception
 	 * 
 	 * @param s Exception description 
-	 * @param e Forawarded general exception
+	 * @param e Forwaarded general exception
 	 */
 	public CmsException(String s, Exception e){
 		super(s);
@@ -116,7 +176,7 @@ public class CmsException extends Exception {
 	 /** 
 	 * Creates a CmsException with reserved error code and a forwarded other exception
 	 * <p>
-	 * Codes are: 
+	 * Available error codes are: 
 	 * <ul>
 	 * <li> <b>0:</b> Unknown exception </li>
 	 * <li> <b>1:</b> Access denied </li>
@@ -125,7 +185,11 @@ public class CmsException extends Exception {
 	 * <li> <b>4:</b> Sql exception </li>
 	 * <li> <b>5:</b> Folder not empty </li>
 	 * <li> <b>6:</b> Admin access required </li>
-	 * <li> <b>7:</b> No Base64 Code </li>
+	 * <li> <b>7:</b> Serialization/Deserialization failed </li>
+	 * <li> <b>8:</b> Unknown User Group </li>
+	 * <li> <b>9:</b> Group not empty </li>
+	 * <li> <b>10:</b> Unknown User </li>
+     * <li> <b>11:</b> No removal from Default Group </li>
 	 * </ul>
 	 * 
 	 * 
@@ -141,7 +205,7 @@ public class CmsException extends Exception {
 	 /** 
 	 * Creates a CmsException with reserved error code, a forwarded other exception and a detail message
 	 * <p>
-	 * Codes are: 
+	 * Available error codes are: 
 	 * <ul>
 	 * <li> <b>0:</b> Unknown exception </li>
 	 * <li> <b>1:</b> Access denied </li>
@@ -150,7 +214,11 @@ public class CmsException extends Exception {
 	 * <li> <b>4:</b> Sql exception </li>
 	 * <li> <b>5:</b> Folder not empty </li>
 	 * <li> <b>6:</b> Admin access required </li>
-	 * <li> <b>7:</b> No Base64 Code </li>
+	 * <li> <b>7:</b> Serialization/Deserialization failed </li>
+	 * <li> <b>8:</b> Unknown User Group </li>
+	 * <li> <b>9:</b> Group not empty </li>
+	 * <li> <b>10:</b> Unknown User </li>
+     * <li> <b>11:</b> No removal from Default Group </li>
 	 * </ul>
 	 * 
 	 * @param s Exception description 

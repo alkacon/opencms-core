@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/17 14:37:04 $
  */
 abstract class A_CmsAccessFile {
 
@@ -42,7 +42,7 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract A_CmsFile createFile(String project, String folder, String filename, 
+	abstract CmsFile createFile(String project, String folder, String filename, 
 								byte[] contents, A_CmsResourceType type, 
 								Hashtable metainfos)
 		throws CmsException, CmsDuplicateKeyException;
@@ -61,7 +61,7 @@ abstract class A_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract A_CmsFile readFile(String project, String folder, String filename)
+	abstract CmsFile readFile(String project, String folder, String filename)
 		throws CmsException;
 	
 	/**
@@ -101,7 +101,7 @@ abstract class A_CmsAccessFile {
 	 * if the user has not the rights for this resource.
 	 */	
 	abstract void writeFile(String project, 
-				   A_CmsFile file, Hashtable metainfos)
+				   CmsFile file, Hashtable metainfos)
 		throws CmsException;
 	
 	/**
@@ -233,7 +233,7 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract A_CmsFolder createFolder(String project, String folder, 
+	abstract CmsFolder createFolder(String project, String folder, 
 								  String newFolderName, Hashtable metainfos)
 		throws CmsException, CmsDuplicateKeyException;
 
@@ -252,7 +252,7 @@ abstract class A_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract A_CmsFolder readFolder(String project, String folder, String folderName)
+	abstract CmsFolder readFolder(String project, String folder, String folderName)
 		throws CmsException;
 	
 	/**

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/17 14:35:31 $ 
+ * @version $Revision: 1.3 $ $Date: 1999/12/17 14:37:04 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -49,7 +49,7 @@ public abstract class A_CmsObject {
 	 * 
 	 * @return the root-folder object.
 	 */
-	abstract public A_CmsFolder rootFolder();
+	abstract public CmsFolder rootFolder();
 	
 	/**
 	 * Returns the anonymous user object.
@@ -162,7 +162,7 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract public A_CmsFile createFile(String folder, String filename, 
+	abstract public CmsFile createFile(String folder, String filename, 
 								byte[] contents, A_CmsResourceType type)
 		throws CmsException, CmsDuplicateKeyException;
 	
@@ -192,7 +192,7 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract public A_CmsFile createFile(String folder, String filename, 
+	abstract public CmsFile createFile(String folder, String filename, 
 								byte[] contents, A_CmsResourceType type, 
 								Hashtable metainfos)
 		throws CmsException, CmsDuplicateKeyException;
@@ -209,7 +209,7 @@ public abstract class A_CmsObject {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract public A_CmsFile readFile(String folder, String filename)
+	abstract public CmsFile readFile(String folder, String filename)
 		throws CmsException;
 	
 	/**
@@ -240,7 +240,7 @@ public abstract class A_CmsObject {
 	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
 	 * if the user has not the rights for this resource.
 	 */	
-	abstract public void writeFile(A_CmsFile file) 
+	abstract public void writeFile(CmsFile file) 
 		throws CmsException;
 	
 	/**
@@ -273,7 +273,7 @@ public abstract class A_CmsObject {
 	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
 	 * if the user has not the rights for this resource.
 	 */	
-	abstract public void writeFile(A_CmsFile file, Hashtable metainfos)
+	abstract public void writeFile(CmsFile file, Hashtable metainfos)
 		throws CmsException;
 	
 	/**
@@ -399,7 +399,7 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract public A_CmsFolder createFolder(String folder, String newFolderName)
+	abstract public CmsFolder createFolder(String folder, String newFolderName)
 		throws CmsException, CmsDuplicateKeyException;
 	
 	/**
@@ -426,7 +426,7 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract public A_CmsFolder createFolder(String folder, String newFolderName, 
+	abstract public CmsFolder createFolder(String folder, String newFolderName, 
 											 Hashtable metainfos)
 		throws CmsException, CmsDuplicateKeyException;
 
@@ -443,7 +443,7 @@ public abstract class A_CmsObject {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract public A_CmsFolder readFolder(String folder, String folderName)
+	abstract public CmsFolder readFolder(String folder, String folderName)
 		throws CmsException;
 	
 	/**

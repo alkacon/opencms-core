@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/15 15:09:33 $ 
+ * @version $Revision: 1.2 $ $Date: 1999/12/17 14:37:04 $ 
  * 
  */
 public abstract class A_CmsRequestContext
@@ -54,7 +54,7 @@ public abstract class A_CmsRequestContext
 	 * 
 	 * @return the current folder object.
 	 */
-	abstract public A_CmsFolder currentFolder();	
+	abstract public CmsFolder currentFolder();	
 
 	/**
 	 * Returns the current user object.

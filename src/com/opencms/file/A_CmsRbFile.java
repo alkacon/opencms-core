@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/17 14:37:04 $
  */
 abstract class A_CmsRbFile {
 	
@@ -27,7 +27,7 @@ abstract class A_CmsRbFile {
 	 * @param callingUser The user who wants to use this method.
 	 * @return the root-folder object.
 	 */
-	abstract A_CmsFolder rootFolder(A_CmsUser callingUser);
+	abstract CmsFolder rootFolder(A_CmsUser callingUser);
 	
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
@@ -66,7 +66,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract A_CmsFile createFile(A_CmsUser callingUser, String project, String folder, String filename, 
+	abstract CmsFile createFile(A_CmsUser callingUser, String project, String folder, String filename, 
 								byte[] contents, A_CmsResourceType type, 
 								Hashtable metainfos)
 		throws CmsException, CmsDuplicateKeyException;
@@ -92,7 +92,7 @@ abstract class A_CmsRbFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract A_CmsFile readFile(A_CmsUser callingUser, String project, String folder, String filename)
+	abstract CmsFile readFile(A_CmsUser callingUser, String project, String folder, String filename)
 		throws CmsException;
 	
 	/**
@@ -147,7 +147,7 @@ abstract class A_CmsRbFile {
 	 * if the user has not the rights for this resource.
 	 */	
 	abstract void writeFile(A_CmsUser callingUser, String project, 
-				   A_CmsFile file, Hashtable metainfos)
+				   CmsFile file, Hashtable metainfos)
 		throws CmsException;
 	
 	/**
@@ -324,7 +324,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if 
 	 * same templfile already exists
 	 */		
-    abstract A_CmsFile copyTemporaryFile(A_CmsUser callingUser, String source)
+    abstract CmsFile copyTemporaryFile(A_CmsUser callingUser, String source)
             throws CmsException, CmsDuplicateKeyException;    
     
     /**
@@ -400,7 +400,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract A_CmsFolder createFolder(A_CmsUser callingUser, String project, String folder, 
+	abstract CmsFolder createFolder(A_CmsUser callingUser, String project, String folder, 
 								  String newFolderName, Hashtable metainfos)
 		throws CmsException, CmsDuplicateKeyException;
 
@@ -426,7 +426,7 @@ abstract class A_CmsRbFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract A_CmsFolder readFolder(A_CmsUser callingUser, String project, String folder, String folderName)
+	abstract CmsFolder readFolder(A_CmsUser callingUser, String project, String folder, String folderName)
 		throws CmsException;
 	
 	/**

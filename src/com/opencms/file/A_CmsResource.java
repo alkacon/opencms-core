@@ -3,11 +3,12 @@ package com.opencms.file;
 import java.util.*;
 
 /**
- * This interface describes a resource in the Cms.
+ * This abstact class describes a resource in the Cms.
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/14 11:59:30 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.4 $ $Date: 1999/12/17 14:37:04 $
  */
 abstract class A_CmsResource {
 	/**
@@ -46,11 +47,11 @@ abstract class A_CmsResource {
     abstract public String getName();
     	
 	/**
-	 * Gets the type for this resource.
+	 * Gets the type id for this resource.
 	 * 
-	 * @return the type of this resource.
+	 * @return the type id of this resource.
 	 */
-	abstract public A_CmsResourceType getType();
+	abstract public int getType();
 
 	/**
 	 * Returns the date of the creation for this resource.
@@ -80,27 +81,20 @@ abstract class A_CmsResource {
 	 * @return true, if the object is identically else it returns false.
 	 */
     abstract public boolean equals(Object obj);
-
-	/**
-	 * Returns the resource-header without any file or folder specific stuff.
-	 * 
-	 * @return the resource-header without any file or folder specific stuff.
-	 */
-	abstract public A_CmsResource getHeader();
     
 	/**
 	 * Returns the userid of the resource owner.
 	 * 
 	 * @return the userid of the resource owner.
 	 */
-	abstract long getOwnerID();
+	abstract int getOwnerId();
 	
 	/**
 	 * Returns the groupid of this resource.
 	 * 
 	 * @return the groupid of this resource.
 	 */
-    abstract long getGroupID();
+    abstract int getGroupId();
 	
 	/**
 	 * Returns the accessflags of this resource.
@@ -108,15 +102,7 @@ abstract class A_CmsResource {
 	 * @return the accessflags of this resource.
 	 */
     abstract public int getFlags();
-	
-	/**
-	 * Returns the id of this resource.<BR/>
-	 * Some resources have no id, C_UNKNOWN_ID will be returned.
-	 * 
-	 * @return the id of this resource.
-	 */	
-    abstract long getID();
-    	
+	  	
 	/**
 	 * Determines, if this resource is a folder.
 	 * 
@@ -147,41 +133,18 @@ abstract class A_CmsResource {
 	abstract public boolean isLocked();
 
 	/**
-	 * Returns the user that locked this resource.
+	 * Returns the user id that locked this resource.
 	 * 
-	 * @return the user that locked this resource.
-	 * If this resource is free it returns null.
+	 * @return the user id that locked this resource.
+	 * If this resource is free it returns the unknown user id.
 	 */
-	abstract public A_CmsUser isLockedBy();
+	abstract public int isLockedBy();
 
 	/**
-	 * Returns the project for this resource.
+	 * Returns the project id for this resource.
 	 * 
-	 * @return the project for this resource.
+	 * @return The project idfor this resource.
 	 */
-	abstract public A_CmsProject getProject();
+	abstract public int getProject();
 	
-	// the following methods are not used, because the functionality is handled by
-	// a A_CmsObjectBase:
-	/*
-	public boolean canRead();
-    public boolean canWrite();
-    public boolean accessPublic(int flags);
-    public boolean accessPublicRead();
-    public boolean accessPublicWrite();
-    public boolean accessPublicVisible();
-    public boolean accessInternalRead();
-    public boolean accessUser(A_CmsUser user, int flags);
-    public boolean accessUserRead(A_CmsUser user);
-    public boolean accessUserWrite(A_CmsUser user);
-    public boolean accessUserVisible(A_CmsUser user);
-    public boolean accessGroupRead(A_CmsGroup group);
-    public boolean accessGroupWrite(A_CmsGroup group);
-    public boolean accessGroupVisible(A_CmsGroup group);
-    public boolean isOwnedBy(A_CmsUser user);
-    public boolean isOwnedBy(int id);
-    public boolean isOfGroup(A_CmsUser user);
-    public boolean isOfGroup(A_CmsGroup group);
-    public boolean isOfGroup(int id);   
-	*/
 }
