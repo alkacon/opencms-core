@@ -124,5 +124,8 @@ setSiteRoot "/sites/default/"
 # that have been selected in the setup wizard
 importModulesFromSetupBean
 
+# Build search indexes
+updateIndex
+
 # The setup is finished
 exit

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/02/14 21:25:41 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/02/20 15:56:44 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  */
 class CmsShellCommands {
 
@@ -680,7 +680,7 @@ class CmsShellCommands {
      * @see org.opencms.search.CmsSearchManager#updateIndex(org.opencms.report.I_CmsReport)
      */
     public void updateIndex() throws Exception {
-        OpenCms.getSearchManager().updateIndex(new CmsShellReport());
+        OpenCms.getSearchManager().updateIndex(new CmsShellReport(), true);
     }
     
     /**

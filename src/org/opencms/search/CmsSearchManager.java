@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/02/20 14:22:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/20 15:56:44 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -134,7 +134,7 @@ import org.apache.lucene.index.IndexWriter;
  * <p>The <code>GermanAnalyzer</code> will be used for analyzing the contents of resources
  * when building an index with "de" as specified language.</p>
  * 
- * @version $Revision: 1.7 $ $Date: 2004/02/20 14:22:17 $
+ * @version $Revision: 1.8 $ $Date: 2004/02/20 15:56:44 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -583,13 +583,25 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void updateIndex(I_CmsReport report) throws CmsException {
+        updateIndex(report, false);
+    }
+
+    /**
+     * Updates all indexes that are configured in the registry.<p>
+     * An index will be updated only if rebuild mode is set to auto.
+     * 
+     * @param report the report object to write messages or null
+     * @param wait flag signals to wait until the indexing threads are finished
+     * @throws CmsException if something goes wrong
+     */
+    public void updateIndex(I_CmsReport report, boolean wait) throws CmsException {
         
         for (Iterator i = getIndexNames().iterator(); i.hasNext();) {
             
             CmsSearchIndex index = getIndex((String)i.next());
             
             if ("auto".equals(index.getRebuildMode())) {            
-                updateIndex(index.getName(), report);
+                updateIndex(index.getName(), report, wait);
             }
         }    
     } 
@@ -623,6 +635,23 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void updateIndex(String indexName, I_CmsReport report) throws CmsException {
+        updateIndex(indexName, report, false);
+    }
+
+    /**
+     * Updates the index belonging to the passed name.<p>
+     * If the index is not already created, it will be created, too.
+     * If the rebuild flag is set to true, it will be rebuild ignoring 
+     * the value of the rebuild configuration entry in the registry
+     * Further configuration information about this index must be available 
+     * in the registry.
+     * 
+     * @param indexName the name of the index
+     * @param report the report object to write messages or null
+     * @param wait flag signals to wait until the indexing threads are finished
+     * @throws CmsException if something goes wrong
+     */
+    public void updateIndex(String indexName, I_CmsReport report, boolean wait) throws CmsException {
                         
         CmsSearchIndex index = null;
         IndexWriter writer = null;
@@ -670,6 +699,10 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
                 m_cosIndexer.updateIndex(cosChannel);
             }
             
+            // wait for indexing threads
+            while (wait && threadManager.isRunning()) {
+                Thread.sleep(1000);
+            }
             threadManager.reportStatistics();
                         
         } catch (Exception exc) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2004/02/17 12:09:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/20 15:56:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the management of indexing threads.<p>
  * 
- * @version $Revision: 1.4 $ $Date: 2004/02/17 12:09:57 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/20 15:56:44 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -165,9 +165,18 @@ public class CmsIndexingThreadManager extends Thread {
      * Signals the thread manager that a thread has finished its job and will exit immediately<p>
      */
     public synchronized void finished() {
-            m_returnedCounter++;    
+        m_returnedCounter++;    
     }   
-         
+     
+    /**
+     * Returns if the indexing manager still have indexing threads.<p>
+     * 
+     * @return true if the indexing manager still have indexing threads
+     */
+    public boolean isRunning() {
+        return (m_returnedCounter + m_abandonedCounter < m_fileCounter);
+    }
+    
     /**
      * Starts the thread manager to look for non-terminated threads<p>
      * The thread manager looks all 10 minutes if threads are not returned
