@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2001/09/10 08:32:51 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2001/09/25 06:55:08 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.44 $ $Date: 2001/09/10 08:32:51 $
+ * @version $Revision: 1.45 $ $Date: 2001/09/25 06:55:08 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -207,6 +207,10 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                         CmsFile layoutFile = cms.readFile(layoutFilePath);
                         bodyBytes = layoutFile.getContents();
                     }
+                    CmsFile bodyFile = cms.readFile(C_CONTENTBODYPATH + currentFilelist.substring(1,
+                                currentFilelist.length()), newFile);
+                    bodyFile.setContents(bodyBytes);
+                    cms.writeFile(bodyFile);
 
                     // now check if navigation informations have to be added to the new page.
                     if(navtitle != null) {
