@@ -44,6 +44,7 @@ function doEdit(para)
 	{
 	case 1:
 	{
+		doSubmit();
 		document.EDITOR.save.value = "0";
 		document.EDITOR.EXIT.value = "1";
 		document.EDITOR.submit();

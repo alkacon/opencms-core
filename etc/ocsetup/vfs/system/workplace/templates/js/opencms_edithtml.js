@@ -155,6 +155,7 @@ function doEditHTML(para)
 	case 1:
 		document.EDITOR.EXIT.value = "1";
 		document.EDITOR.save.value = "0";
+		doSubmit();
 		document.EDITOR.submit();
 		break;
 	case SAVECLOSE:
@@ -343,7 +344,7 @@ function MENU_FILE_SAVEAS_onclick()
 //=======================================================
 function ParagraphStyle_onchange() 
 {	 
-  EDITOR.EDIT_HTML.ExecCommand(DECMD_SETBLOCKFMT, OLECMDEXECOPT_DODEFAULT, document.all.BLOCK.value);
+  document.EDITOR.EDIT_HTML.ExecCommand(DECMD_SETBLOCKFMT, OLECMDEXECOPT_DODEFAULT, parseInt("1"));
   EDITOR.EDIT_HTML.focus();
 }
 function FontName_onchange()

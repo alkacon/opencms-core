@@ -14,6 +14,7 @@
 		switch (para)
 		{
 		case 1:
+			doSubmit();
 			document.EDITOR.bodychanged.value = "1";
 			document.EDITOR.submit();
 			break;
@@ -28,6 +29,23 @@
 			// new template selected
 			doSubmit();
 			document.EDITOR.submit();
+			break;
+		case 5:
+			// preview selected
+			doSubmit();
+			document.PREVIEW.bodyclass.value = document.EDITOR.bodyclass.value;
+			document.PREVIEW.bodyfile.value = document.EDITOR.bodyfile.value;
+			document.PREVIEW.title.value = document.EDITOR.title.value;
+			document.PREVIEW.body.value = document.EDITOR.body.value;
+			document.PREVIEW.bodychanged.value = document.EDITOR.bodychanged.value;
+			document.PREVIEW.template.value = document.EDITOR.template.value;
+			document.PREVIEW.editor.value = document.EDITOR.editor.value;
+			document.PREVIEW.CONTENT.value = document.EDITOR.CONTENT.value;
+			document.PREVIEW.EXIT.value = document.EDITOR.EXIT.value;
+			document.PREVIEW.save.value = document.EDITOR.save.value;
+			document.PREVIEW.file.value = document.EDITOR.file.value;
+			document.PREVIEW.preview.value = "1";
+			document.PREVIEW.submit();
 			break;
 		}
 	}
@@ -56,13 +74,33 @@ return DisplayChanged()
 
 <body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed scroll=no onLoad="setText();" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5>
 
+<table cellspacing=0 cellpadding=0 border=0 width="100%" height="100%"> <tr> <td valign="top">
+<form 
+	name=PREVIEW 
+	id=PREVIEW
+	TARGET="PREVIEW"
+	ACTION="]]><METHOD name="previewUrl"/><![CDATA["  	
+	METHOD=POST>
+	<INPUT TYPE=HIDDEN name="bodyclass">
+	<INPUT TYPE=HIDDEN name="bodyfile">
+	<INPUT TYPE=HIDDEN name="title">
+	<INPUT TYPE=HIDDEN name="body">
+	<INPUT TYPE=HIDDEN name="bodychanged">
+	<INPUT TYPE=HIDDEN name="template">
+	<INPUT TYPE=HIDDEN name="editor">
+	<INPUT TYPE=HIDDEN NAME="CONTENT">
+	<INPUT TYPE=HIDDEN NAME="EXIT">
+	<INPUT TYPE=HIDDEN NAME="save">	
+	<INPUT TYPE=HIDDEN NAME="file">		
+	<INPUT TYPE=HIDDEN NAME="preview">		
+</form>
 <form 
 	name=EDITOR 
 	id=EDITOR
 	METHOD=POST>
 	<INPUT TYPE=HIDDEN name="bodyclass" value="]]><PROCESS>bodyclass</PROCESS><![CDATA[">
 	<INPUT TYPE=HIDDEN name="bodyfile" value="]]><PROCESS>bodyfile</PROCESS><![CDATA[">
-<table cellspacing=0 cellpadding=0 border=0 width="100%" height=32px>
+<table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menubold><p class=einzug>]]><LABEL value="input.title"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
 		<td class=dialogtxt>]]><INPUTFIELD name="title" class="textfeld" size="20" length="255" method="setTitle"/><![CDATA[
@@ -75,13 +113,14 @@ return DisplayChanged()
 		<td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="150" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>
 		<td class=menubold><p class=tab>]]><LABEL value="input.editor"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
 		<td class=dialogtxt>]]><SELECT class="textfeld" name="editor" width="100" method="getEditorViews" onchange="doTemplSubmit(3);"/><![CDATA[</td>
-		<td class=menu width="100%" align=right>]]><BUTTON href="#" name="bt_docpreview" action="" alt="preview"/><![CDATA[</td>		
+		<td class=menu width="100%" align=right>]]><BUTTON href="javascript:doTemplSubmit(5);" name="bt_docpreview" action="" alt="preview"/><![CDATA[</td>		
 	</tr>
 </table>
 
 <hr>
   ]]><ELEMENT name="editor"/><![CDATA[
 </form>
+</td> </tr> </table>
 </body>
 </html>
 ]]>

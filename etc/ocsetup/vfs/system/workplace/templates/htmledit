@@ -2,7 +2,7 @@
 <workplace>
 <template>
 <![CDATA[
-<table cellspacing=0 cellpadding=0 border=0 width="100%" height=32px>
+<table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menu>]]><BUTTON href="javascript:doEditHTML(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="javascript:doEditHTML(3);" name="bt_save" action="" alt="saveclose"/><![CDATA[</td>
@@ -37,7 +37,7 @@
 <hr>
 
 		<!-- Schriftformatierung -->
-<table cellspacing=0 cellpadding=0 border=0 width="100%" height=32px>
+<table cellspacing=0 cellpadding=0 border=0 width="100%"> 
 	<tr>
 		<td class=menu>]]><SELECT class="textfeld" name="BLOCK" width="80" method="getFontStyles" onchange="return ParagraphStyle_onchange()"/><![CDATA[</td>
 		<td class=menu>]]><SELECT class="textfeld" name="FONTFACE" width="120" method="getFonts" onchange="doEditHTML(22);"/><![CDATA[</td>
@@ -51,7 +51,7 @@
 
 <hr>
 
-<table cellspacing=0 cellpadding=0 border=0 width="100%" height=80%>
+<table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr height=32px>
 		<td class=menu>]]><BUTTON href="#" name="bt_alignleft" action="doEditHTML(31);" alt="alignleft"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_aligncenter" action="doEditHTML(32);" alt="aligncenter"/><![CDATA[</td>
@@ -82,31 +82,31 @@
 		<td class=menu width="100%">&nbsp;</td>
 	</tr>
 	<tr><td colspan=20><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=2 height=3></td></tr>
-	
+</table>	
 	<tr>
-		<td colspan=20 width=100% height=100%>
+		<td colspan=20 width=100% height=75%>
 
 			<OBJECT
 				CLASSID="clsid:2D360200-FFF5-11d1-8D03-00A0C959BC0A" 
 				ID="EDIT_HTML"
-				HEIGHT="100%"
 				WIDTH="100%"
+				height="100%"
 				VIEWASTEXT>
 				<param name=Scrollbars value=true>
 			</OBJECT>
-			<INPUT TYPE=HIDDEN NAME="CONTENT">
-			<INPUT TYPE=HIDDEN NAME="EXIT">
-			<INPUT TYPE=HIDDEN NAME="save">	
-			<INPUT TYPE=HIDDEN NAME="file" value="]]><PROCESS>file</PROCESS><![CDATA[">				
-		</td>
-	</tr>
-</table>
 			<!-- DEInsertTableParam Object -->
 			<object ID="ObjTableInfo" CLASSID="clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C" VIEWASTEXT>
 			</object>
 			<!-- DEGetBlockFmtNamesParam Object -->
 			<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT>
 			</object>
+			<INPUT TYPE=HIDDEN NAME="CONTENT">
+			<INPUT TYPE=HIDDEN NAME="EXIT">
+			<INPUT TYPE=HIDDEN NAME="save">	
+			<INPUT TYPE=HIDDEN NAME="file" value="]]><PROCESS>file</PROCESS><![CDATA[">				
+			</td>
+	</tr>
+</table>
 ]]>
 </template>
 </workplace>

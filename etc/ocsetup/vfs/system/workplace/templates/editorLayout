@@ -22,12 +22,14 @@
 </head>
 
 <body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" scroll=no onLoad="setText();" leftmargin=5 topmargin=5 marginwidth = 5 marginheight = 5>
+<table cellspacing=0 cellpadding=0 border=0 width="100%" height="100%"> <tr> <td>
 <form 
 	name=EDITOR 
 	id=EDITOR
 	METHOD=POST>
 ]]><ELEMENT name="editor"/> <![CDATA[
 </form>
+</td> </tr> </table>
 </body>
 </html>
 ]]>
