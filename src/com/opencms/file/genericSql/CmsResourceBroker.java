@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/20 15:29:02 $
- * Version: $Revision: 1.130 $
+ * Date   : $Date: 2000/09/21 10:59:55 $
+ * Version: $Revision: 1.131 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.130 $ $Date: 2000/09/20 15:29:02 $
+ * @version $Revision: 1.131 $ $Date: 2000/09/21 10:59:55 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2993,7 +2993,7 @@ public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, String
  *
  * <B>Security:</B>
  * All users are granted.
- *
+ * @author Jan Krag
  * @return com.opencms.file.CmsSite
  * @param user com.opencms.file.CmsUser
  * @param project com.opencms.file.CmsProject
@@ -3003,10 +3003,11 @@ public CmsSite getSiteFromUrl(CmsUser user, CmsProject project, StringBuffer url
 	return m_dbAccess.getSiteFromUrl(url);
 }
 /**
- * Find the site of a project.
+ * Find the site of a project based on the id of any pproject belonging to this site.
  *
  * <B>Security:</B>
  * All users are granted.
+ *@author Jan Krag
  *
  * @return com.opencms.file.CmsSite
  * @param user com.opencms.file.CmsUser
@@ -3023,7 +3024,7 @@ throws com.opencms.core.CmsException
  *
  * <B>Security:</B>
  * All users are granted.
- *
+ * @author Jan Krag
  * @return com.opencms.file.CmsSite
  * @param user com.opencms.file.CmsUser
  * @param project com.opencms.file.CmsProject
@@ -3817,7 +3818,13 @@ public CmsSite newSite(String name, String description, int category, int langua
 {
 	if (isAdmin(currentUser, currentProject))
 	{
-		return getSite(currentUser, currentProject, onlineProject(currentUser, currentProject).getId());
+		int newOnlineProjectId = (createProject(currentUser,currentProject,name, description+" project", user, group)).getId();
+		CmsSite newSite = m_dbAccess.newSiteRecord(name, description, category, language, country, newOnlineProjectId);
+		int newSiteId = newSite.getId();
+		m_dbAccess.newSiteProjectRecord(newSiteId, newOnlineProjectId);
+		m_dbAccess.newSiteUrlRecord(url,newSiteId,url);
+		
+		return newSite;
 	}
 	else
 	{
