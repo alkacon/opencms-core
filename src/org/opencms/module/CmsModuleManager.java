@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2004/10/28 12:58:07 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/10/28 14:01:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.main.OpenCmsCore;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 
