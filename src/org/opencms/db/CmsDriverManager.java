@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/10/26 12:34:02 $
- * Version: $Revision: 1.430 $
+ * Date   : $Date: 2004/10/28 11:07:27 $
+ * Version: $Revision: 1.431 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.*;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
@@ -74,7 +75,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.430 $ $Date: 2004/10/26 12:34:02 $
+ * @version $Revision: 1.431 $ $Date: 2004/10/28 11:07:27 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -319,13 +320,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * <li>finally, the driver instances are passed to the driver manager during initialization</li>
      * </ul>
      * 
-     * @param configuration the configurations from the propertyfile
+     * @param configurationManager the configuration manager
      * @param runtimeInfoFactory the initialized OpenCms runtime info factory
      * @return CmsDriverManager the instanciated driver manager.
      * @throws CmsException if the driver manager couldn't be instanciated.
      */
-    public static CmsDriverManager newInstance(ExtendedProperties configuration, I_CmsRuntimeInfoFactory runtimeInfoFactory) throws CmsException {
+    public static CmsDriverManager newInstance(CmsConfigurationManager configurationManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) throws CmsException {
 
+        ExtendedProperties configuration = configurationManager.getConfiguration();
+        
         // initialize static hastables
         CmsDbUtil.init();
         
@@ -380,31 +383,31 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_VFS));
         driverName = configuration.getString((String)drivers.get(0) + ".vfs.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        vfsDriver = (I_CmsVfsDriver)driverManager.newDriverInstance(configuration, runtimeInfoFactory, driverName, drivers);
+        vfsDriver = (I_CmsVfsDriver)driverManager.newDriverInstance(configurationManager, runtimeInfoFactory, driverName, drivers);
 
         // read the user driver class properties and initialize a new instance 
         drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_USER));
         driverName = configuration.getString((String)drivers.get(0) + ".user.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        userDriver = (I_CmsUserDriver)driverManager.newDriverInstance(configuration, runtimeInfoFactory, driverName, drivers);
+        userDriver = (I_CmsUserDriver)driverManager.newDriverInstance(configurationManager, runtimeInfoFactory, driverName, drivers);
 
         // read the project driver class properties and initialize a new instance 
         drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_PROJECT));
         driverName = configuration.getString((String)drivers.get(0) + ".project.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        projectDriver = (I_CmsProjectDriver)driverManager.newDriverInstance(configuration, runtimeInfoFactory, driverName, drivers);
+        projectDriver = (I_CmsProjectDriver)driverManager.newDriverInstance(configurationManager, runtimeInfoFactory, driverName, drivers);
 
         // read the workflow driver class properties and initialize a new instance 
         drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_WORKFLOW));
         driverName = configuration.getString((String)drivers.get(0) + ".workflow.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        workflowDriver = (I_CmsWorkflowDriver)driverManager.newDriverInstance(configuration, runtimeInfoFactory, driverName, drivers);
+        workflowDriver = (I_CmsWorkflowDriver)driverManager.newDriverInstance(configurationManager, runtimeInfoFactory, driverName, drivers);
 
         // read the backup driver class properties and initialize a new instance 
         drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_BACKUP));
         driverName = configuration.getString((String)drivers.get(0) + ".backup.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        backupDriver = (I_CmsBackupDriver)driverManager.newDriverInstance(configuration, runtimeInfoFactory, driverName, drivers);
+        backupDriver = (I_CmsBackupDriver)driverManager.newDriverInstance(configurationManager, runtimeInfoFactory, driverName, drivers);
         
         try {
             // invoke the init method of the driver manager
@@ -5178,7 +5181,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Gets a new driver instance.<p>
      * 
-     * @param configuration the configurations
+     * @param configurationManager the configuration manager
      * @param runtimeInfoFactory the initialized OpenCms runtime info factory
      * @param driverName the driver name
      * @param successiveDrivers the list of successive drivers
@@ -5186,10 +5189,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return the driver object
      * @throws CmsException if something goes wrong
      */
-    public Object newDriverInstance(ExtendedProperties configuration, I_CmsRuntimeInfoFactory runtimeInfoFactory, String driverName, List successiveDrivers) throws CmsException {
+    public Object newDriverInstance(CmsConfigurationManager configurationManager, I_CmsRuntimeInfoFactory runtimeInfoFactory, String driverName, List successiveDrivers) throws CmsException {
 
-        Class initParamClasses[] = {ExtendedProperties.class, List.class, CmsDriverManager.class, I_CmsRuntimeInfoFactory.class};
-        Object initParams[] = {configuration, successiveDrivers, this, runtimeInfoFactory};
+        Class initParamClasses[] = {CmsConfigurationManager.class, List.class, CmsDriverManager.class, I_CmsRuntimeInfoFactory.class};
+        Object initParams[] = {configurationManager, successiveDrivers, this, runtimeInfoFactory};
 
         Class driverClass = null;
         Object driver = null;

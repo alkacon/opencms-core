@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/10/25 14:17:15 $
- * Version: $Revision: 1.192 $
+ * Date   : $Date: 2004/10/28 11:07:27 $
+ * Version: $Revision: 1.193 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db.generic;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
@@ -73,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.192 $ $Date: 2004/10/25 14:17:15 $
+ * @version $Revision: 1.193 $ $Date: 2004/10/28 11:07:27 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -479,10 +480,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager, I_CmsRuntimeInfoFactory)
+     * @see org.opencms.db.I_CmsDriver#init(org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager, org.opencms.db.I_CmsRuntimeInfoFactory)
      */
-    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) {
+    public void init(CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) {
         
+        ExtendedProperties configuration = configurationManager.getConfiguration();
         String poolUrl = configuration.getString("db.project.pool");
         String classname = configuration.getString("db.project.sqlmanager");
         m_sqlManager = this.initSqlManager(classname);

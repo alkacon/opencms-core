@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/10/22 15:13:30 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/10/28 11:07:27 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db.oracle;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsRuntimeInfo;
@@ -55,7 +56,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.dbcp.DelegatingResultSet;
 
 /**
@@ -64,7 +64,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.37 $ $Date: 2004/10/22 15:13:30 $
+ * @version $Revision: 1.38 $ $Date: 2004/10/28 11:07:27 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -135,11 +135,11 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager, I_CmsRuntimeInfoFactory)
+     * @see org.opencms.db.I_CmsDriver#init(org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager, org.opencms.db.I_CmsRuntimeInfoFactory)
      */
-    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) {
-        m_enableServerCopy = "true".equals(configuration.getString("db.oracle.servercopy"));
-        super.init(configuration, successiveDrivers, driverManager, runtimeInfoFactory);
+    public void init(CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) {
+        m_enableServerCopy = "true".equals(configurationManager.getConfiguration().getString("db.oracle.servercopy"));
+        super.init(configurationManager, successiveDrivers, driverManager, runtimeInfoFactory);
     }
     
     /**

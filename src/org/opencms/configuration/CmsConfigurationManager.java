@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2004/09/20 08:16:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/10/28 11:07:27 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -109,6 +109,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /** The digester for reading the XML configuration. */
     private Digester m_digester;
 
+    /** The configuration parameter. */
+    private ExtendedProperties m_configurationParameter;
+    
     /**
      * Creates a new OpenCms configuration manager.<p>
      * 
@@ -230,8 +233,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      */
     public ExtendedProperties getConfiguration() {
 
-        // noop, this configuration has no additional parameters
-        return null;
+        return m_configurationParameter;
     }
 
     /**
@@ -331,6 +333,16 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         removeOldBackups(C_MAX_BACKUP_DAYS);
     }
 
+    /**
+     * Sets the additional configuration parameters.<p>
+     * 
+     * @param configurationParameter the additional configuration parameters
+     */
+    public void setConfiguration(ExtendedProperties configurationParameter) {
+        
+        m_configurationParameter = configurationParameter;
+    }
+    
     /**
      * Writes the XML configuration for the provided configuration instance.<p>
      * 

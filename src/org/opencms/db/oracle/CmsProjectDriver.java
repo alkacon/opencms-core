@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/10/28 11:07:27 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db.oracle;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsRuntimeInfoFactory;
 import org.opencms.db.generic.CmsSqlManager;
@@ -41,13 +42,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
-import org.apache.commons.collections.ExtendedProperties;
-
-
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.31 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.32 $ $Date: 2004/10/28 11:07:27 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -55,11 +53,11 @@ import org.apache.commons.collections.ExtendedProperties;
 public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {    
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager, I_CmsRuntimeInfoFactory)
+     * @see org.opencms.db.I_CmsDriver#init(org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager, org.opencms.db.I_CmsRuntimeInfoFactory)
      */
-    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) {
+    public void init(CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) {
 
-        super.init(configuration, successiveDrivers, driverManager, runtimeInfoFactory);
+        super.init(configurationManager, successiveDrivers, driverManager, runtimeInfoFactory);
     }
     
     /**

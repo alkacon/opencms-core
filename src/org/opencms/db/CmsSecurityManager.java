@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/10/25 14:17:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/28 11:07:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.*;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -62,7 +63,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -84,18 +85,18 @@ public final class CmsSecurityManager {
     /**
      * Creates a new instance of the OpenCms security manager.<p>
      * 
-     * @param configuration the opencms.properties configuration file
+     * @param configurationManager the configuation manager
      * @param runtimeInfoFactory the initialized OpenCms runtime info factory
      * 
      * @return a new instance of the OpenCms security manager
      * @throws CmsException if something goes wrong
      */
     public static CmsSecurityManager newInstance(
-        ExtendedProperties configuration,
+        CmsConfigurationManager configurationManager,
         I_CmsRuntimeInfoFactory runtimeInfoFactory) throws CmsException {
 
         CmsSecurityManager securityManager = new CmsSecurityManager();
-        securityManager.init(configuration, runtimeInfoFactory);
+        securityManager.init(configurationManager, runtimeInfoFactory);
 
         return securityManager;
     }
@@ -1966,13 +1967,13 @@ public final class CmsSecurityManager {
     /**
      * Initializes this security manager with a given runtime info factory.<p>
      * 
-     * @param configuration the opencms.properties configuration file
+     * @param configurationManager the configurationManager
      * @param runtimeInfoFactory the initialized OpenCms runtime info factory
      * @throws CmsException if something goes wrong
      */
-    public void init(ExtendedProperties configuration, I_CmsRuntimeInfoFactory runtimeInfoFactory) throws CmsException {
+    public void init(CmsConfigurationManager configurationManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) throws CmsException {
 
-        m_driverManager = CmsDriverManager.newInstance(configuration, runtimeInfoFactory);
+        m_driverManager = CmsDriverManager.newInstance(configurationManager, runtimeInfoFactory);
 
         if (runtimeInfoFactory == null) {
             String message = "Critical error while loading security manager: runtime info factory is null";

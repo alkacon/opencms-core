@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsDriver.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/10/28 11:07:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,14 @@
  
 package org.opencms.db;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.main.CmsException;
 
 import java.util.List;
 
-import org.apache.commons.collections.ExtendedProperties;
-
-
 
 /**
- * @version $Revision: 1.6 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.7 $ $Date: 2004/10/28 11:07:27 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public interface I_CmsDriver {
@@ -48,14 +46,14 @@ public interface I_CmsDriver {
     /**
      * Initializes the driver.<p>
      * 
-     * @param configuration the opencms.properties configuration file
+     * @param configurationManager the configuration manager
      * @param successiveDrivers a list of successive drivers to be initialized
      * @param driverManager the initialized OpenCms driver manager
      * @param runtimeInfoFactory the runtime info factory configured in opencms-system.xml, if a driver needs to create his own runtime info objects
      * 
      * @throws CmsException if something goes wrong
      */
-    void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) throws CmsException;
+    void init(CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) throws CmsException;
     
     /**
      * Returns information about the driver.<p>

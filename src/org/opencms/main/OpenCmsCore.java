@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/10/24 08:48:46 $
- * Version: $Revision: 1.146 $
+ * Date   : $Date: 2004/10/28 11:07:27 $
+ * Version: $Revision: 1.147 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.146 $
+ * @version $Revision: 1.147 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -912,6 +912,8 @@ public final class OpenCmsCore {
         m_configurationManager = new CmsConfigurationManager(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("config/"));
         // now load the XML configuration
         m_configurationManager.loadXmlConfiguration();
+        // set the given configuration as default parameters
+        m_configurationManager.setConfiguration(configuration);
         
         // get the system configuration
         CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)m_configurationManager.getConfiguration(CmsSystemConfiguration.class);
@@ -966,7 +968,7 @@ public final class OpenCmsCore {
                 
         try {
             // init the OpenCms security manager
-            m_securityManager = CmsSecurityManager.newInstance(configuration, systemConfiguration.getRuntimeInfoFactory());
+            m_securityManager = CmsSecurityManager.newInstance(m_configurationManager, systemConfiguration.getRuntimeInfoFactory());
         } catch (Exception e) {
             if (getLog(this).isErrorEnabled()) {
                 getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "3", e);
