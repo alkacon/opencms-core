@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2004/05/05 21:25:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/05/08 03:10:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,8 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The OpenCms CmsEncoder class provides static methods to decode and encode data.<p>
@@ -62,6 +64,9 @@ public final class CmsEncoder {
     
     /** Default encoding for JavaScript decodeUriComponent methods is UTF-8 by w3c standard */
     public static final String C_UTF8_ENCODING = "UTF-8";
+
+    /** The regex pattern to match HTML entities */
+    private static final Pattern C_ENTITIY_PATTERN = Pattern.compile("\\&#\\d+;");
 
     /**
      * Constructor
@@ -183,19 +188,21 @@ public final class CmsEncoder {
     }
 
     /**
-     * Encodes a given String for HTML display in the given charset encoding.<p>
+     * Encodes all characters that are contained in the String which can not displayed 
+     * in the given encodings charset with HTML entity references
+     * like <code>&amp;#8364;</code>.<p>
      * 
-     * Characters that are contained in the String which can not displayed 
-     * in the given encodings charset are encoded using HTML entity references
-     * like <code>&amp;#8364;</code>. This is required since a Java String is 
+     * This is required since a Java String is 
      * internally always stored as Unicode, meaning it can contain almost every character, but 
      * the HTML charset used might not support all such characters.<p>
      * 
      * @param input the input to encode for HTML
-     * @param encoding the charset to encode the input with
-     * @return the encoded HTML input
+     * @param encoding the charset to encode the result with
+     * @return the input with the encoded HTML entities
+     * @see #decodeHtmlEntities(String, String)
      */
-    public static String encodeForHtml(String input, String encoding) {
+    public static String encodeHtmlEntities(String input, String encoding) {
+        
         StringBuffer result = new StringBuffer(input.length() * 2);
         CharBuffer buffer = CharBuffer.wrap(input.toCharArray());
         Charset charset = Charset.forName(encoding);
@@ -219,7 +226,59 @@ public final class CmsEncoder {
         }
         return result.toString();
     }        
+    
+    /**
+     * Adjusts the given String by making sure all characters that can be displayed 
+     * in the given charset are contained as chars, whereas all other non-displayable
+     * characters are converted to HTML entities.<p> 
+     * 
+     * Just calls {@link #decodeHtmlEntities(String, String)} first and feeds the result
+     * to {@link #encodeHtmlEntities(String, String)}. <p>
+     *  
+     * @param input the input to adjust the HTML encoding for
+     * @param encoding the charset to encode the result with
+     * @return the input with the decoded/encoded HTML entities
+     */
+    public static final String adjustHtmlEncoding(String input, String encoding) {
+        return encodeHtmlEntities(decodeHtmlEntities(input, encoding), encoding);
+    }
 
+    /**
+     * Decodes HTML entity references like <code>&amp;#8364;</code> that are contained in the 
+     * String to a regulat character, but only if that character is contained in the given 
+     * encodings charset.<p> 
+     * 
+     * @param input the input to decode the HTML enties in
+     * @param encoding the charset to decode the input for
+     * @return the input with the decoded HTML entities
+     * @see #encodeHtmlEntities(String, String)
+     */
+    public static final String decodeHtmlEntities(String input, String encoding) {
+                
+        Matcher matcher = C_ENTITIY_PATTERN.matcher(input);        
+        StringBuffer result = new StringBuffer(input.length());
+        Charset charset = Charset.forName(encoding);
+        CharsetEncoder encoder = charset.newEncoder();
+        
+        while (matcher.find()) {            
+            String entity = matcher.group();
+            String value = entity.substring(2, entity.length()-1);
+            int c = Integer.valueOf(value).intValue();
+            if (c < 128) {
+                // first 128 chars are contained in almost every charset
+                entity = new String(new char[] {(char)c});                
+                // this is intendend as performance improvement since 
+                // the canEncode() operation appears quite CPU heavy
+            } else if (encoder.canEncode((char)c)) {
+                // encoder can endoce this char
+                entity = new String(new char[] {(char)c});                
+            }
+            matcher.appendReplacement(result, entity);
+        }
+        matcher.appendTail(result);        
+        return result.toString();
+    }
+    
     /**
      * Encodes a String in a way that is compatible with the JavaScript escape function.
      * 

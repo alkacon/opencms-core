@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2004/05/05 21:25:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/05/08 03:12:53 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1.12
  */
@@ -170,7 +170,7 @@ public class CmsSimpleEditor extends CmsEditor {
         try {
             editFile = getCms().readFile(getParamResource());            
             // ensure all chars in the content are valid for the selected encoding
-            String decodedContent = CmsEncoder.encodeForHtml(decodeContent(getParamContent()), getFileEncoding());
+            String decodedContent = CmsEncoder.adjustHtmlEncoding(decodeContent(getParamContent()), getFileEncoding());
             
             try {
                 editFile.setContents(decodedContent.getBytes(getFileEncoding()));
