@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2004/07/08 15:21:12 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2004/07/27 14:41:31 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -131,7 +131,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
                     // check if all the resources are writeable
                     // if not, return a message
                     Vector notWriteable = new Vector();
-                    if(!checkWriteable(cms, allResources)) {
+                    if(!isReadable(cms, allResources)) {
                         notWriteable.addElement(allResources);
                         templateSelector = "errorsyncproperties";
                     }
@@ -311,8 +311,8 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
      * @return True or false.
      * @throws CmsException if something goes wrong.
      */
-    private boolean checkWriteable(CmsObject cms, String resPath)  throws CmsException {
+    private boolean isReadable(CmsObject cms, String resPath)  throws CmsException {
         CmsResource res = cms.readResource(resPath, CmsResourceFilter.IGNORE_EXPIRATION);
-        return cms.hasPermissions(res, C_WRITE_ACCESS);
+        return cms.hasPermissions(res, C_READ_ACCESS);
     }
 }
