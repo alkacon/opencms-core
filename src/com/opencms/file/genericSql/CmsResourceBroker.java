@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/27 16:47:15 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2000/06/28 08:50:34 $
+ * Version: $Revision: 1.77 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.76 $ $Date: 2000/06/27 16:47:15 $
+ * @version $Revision: 1.77 $ $Date: 2000/06/28 08:50:34 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -294,12 +294,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							  int id)
         throws CmsException {
 		// read the project that should be deleted.
-		CmsProject deleteProject = readProject(currentUser, currentProject, id);
-		
+  		CmsProject deleteProject = readProject(currentUser, currentProject, id);
+
 		if( isAdmin(currentUser, currentProject) || 
 			isManagerOfProject(currentUser, deleteProject) || 
 			(deleteProject.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
-			 
 			 // delete the project
 			 m_dbAccess.deleteProject(deleteProject);
              m_projectCache.remove(id);
@@ -2696,7 +2695,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, 
-								String groupname)
+								String groupname) 
         throws CmsException {
         // check security
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
