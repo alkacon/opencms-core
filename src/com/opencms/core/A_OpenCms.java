@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/16 09:21:00 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -33,6 +33,9 @@ import java.io.*;
 import com.opencms.file.*;
 import com.opencms.launcher.*;
 
+import source.org.apache.java.io.*;
+import source.org.apache.java.util.*;
+
 /**
 * Abstract class for the main class of the OpenCms system. 
 * <p>
@@ -45,12 +48,18 @@ import com.opencms.launcher.*;
 *   
 * @author Alexander Lucas
 * @author Michael Emmerich
-* @version $Revision: 1.3 $ $Date: 2000/02/15 17:53:48 $  
+* @version $Revision: 1.4 $ $Date: 2000/02/16 09:21:00 $  
 * 
 */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
-     /**
+    /** Reference to the system log */
+    private static CmsLog c_cmsLog = null;
+
+    /** Indicates if the system log is initialized */
+    protected static boolean c_servletLogging = false;
+    
+    /**
      * This method gets the requested document from the OpenCms and returns it to the 
      * calling module.
      * 
@@ -84,20 +93,41 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      */
     abstract void setResponse(A_CmsObject cms, CmsFile file);
     
+        
+    /**
+     * Initializes the logging mechanism of the Jserv
+     * @param configurations the configurations needed at initialization.
+     */
+    public static void initializeServletLogging(Configurations config) {
+        c_cmsLog = new CmsLog("log", config);
+        c_servletLogging = true;
+    }
+    
     /**
      * Checks if the system logging is active.
      * @return <code>true</code> if the logging is active, <code>false</code> otherwise.
      */
     public static boolean isLogging() {
-        return true;
+        if(c_servletLogging) {
+            return c_cmsLog.isActive();
+        } else {
+            return true;
+        }
     }
     
     /**
-     * Logs a message into the OpenCms logfile
+     * Logs a message into the OpenCms logfile.
+     * If the logfile was not initialized (e.g. due tue a missing
+     * ServletConfig while working with the console)
+     * any log output will be written to the apache error log.
      * @param channel The channel the message is logged into
      * @message The message to be logged,
      */
     public static void log(String channel, String message) {
-        System.err.println(message);
+        if(c_servletLogging) {
+            c_cmsLog.log(channel, message);
+        } else {            
+            System.err.println(message);
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/02/16 09:21:00 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.16 $ $Date: 2000/02/15 17:53:48 $  
+* @version $Revision: 1.17 $ $Date: 2000/02/16 09:21:00 $  
 * 
 */
 
@@ -133,11 +133,15 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
         // get the classname of the initializer class
         initializerClassname=(String)m_configurations.getString(C_INILITALIZER_CLASSNAME);
         
+        // Initialize the logging
+        A_OpenCms.initializeServletLogging(m_configurations);
+        
         // invoke the OpenCms
         m_opencms=new OpenCms(propertyDriver,propertyConnect,initializerClassname);
         
         //initalize the session storage
         m_sessionStorage=new CmsSession();
+        
     }
      
     

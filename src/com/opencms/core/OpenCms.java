@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/02/16 09:21:00 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.17 $ $Date: 2000/02/15 17:53:48 $  
+* @version $Revision: 1.18 $ $Date: 2000/02/16 09:21:00 $  
 * 
 */
 
@@ -254,6 +254,9 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
 		for(int i = 0; i < copy.length; i++) {
 			System.err.println(copy[i]);
 			System.out.println(copy[i]);
+            if(c_servletLogging) {
+                this.log(C_OPENCMS_INFO, copy[i]);
+            }
 		}
 	}
     
