@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/10/14 12:06:12 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/10/15 09:50:42 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -377,7 +377,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     // print out the information to the report
                     m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(translatedName);
-                    m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(m_report.key("report.dots"));
 
                     // get all properties
                     properties = getPropertiesFromXml(currentElement, resType, propertyName, propertyValue, deleteProperties);

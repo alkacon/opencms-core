@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/10/15 07:38:37 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/10/15 09:50:42 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.14 $ $Date: 2003/10/15 07:38:37 $
+ * @version $Revision: 1.15 $ $Date: 2003/10/15 09:50:42 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -218,7 +218,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             throw new CmsException("Cannot get dataset ", e);
         }
         m_report.print("'" + Encoder.escapeHtml(newDataset.m_title) + "' (" + classname + ")");
-        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+        m_report.print(m_report.key("report.dots"));
         // try to get the channelrelations
         try {
             channelRelations = getMasterChannelRelation(currentElement);

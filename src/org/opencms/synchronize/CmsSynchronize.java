@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/09/29 08:31:34 $
- * Version: $Revision: 1.21 $
- * Date   : $Date: 2003/09/29 08:31:34 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/10/15 09:50:42 $
+ * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/10/15 09:50:42 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2003/09/29 08:31:34 $
+ * @version $Revision: 1.22 $ $Date: 2003/10/15 09:50:42 $
  */
 public class CmsSynchronize {
 
@@ -268,7 +268,7 @@ public class CmsSynchronize {
                     m_report.print(m_report.key("report.sync_deleting_rfs_folder"), I_CmsReport.C_FORMAT_NOTE);
                 }     
                 m_report.print(res[i].getAbsolutePath().replace('\\', '/'));               
-                m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);   
+                m_report.print(m_report.key("report.dots"));   
                 
                 res[i].delete();
                 m_syncList.remove(translate(vfsFile));
@@ -303,7 +303,7 @@ public class CmsSynchronize {
             String foldername = translate(folder);
             m_report.print(m_report.key("report.sync_from_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                     
             m_report.print(foldername);
-            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE); 
+            m_report.print(m_report.key("report.dots")); 
                         
             CmsResource newFolder = m_cms.createResource(foldername, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, new HashMap(), new byte[0], null);
             // now check if there is some external method to be called which 
@@ -460,7 +460,7 @@ public class CmsSynchronize {
             CmsFile newFile = (CmsFile)m_cms.createResource(translate(folder), filename, m_cms.getResourceTypeId(type), null, content);
             
             m_report.print(m_cms.readAbsolutePath(newFile));
-            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE); 
+            m_report.print(m_report.key("report.dots")); 
      
             // now check if there is some external method to be called which
             // should modify the imported resource in the VFS
@@ -536,7 +536,7 @@ public class CmsSynchronize {
                     m_report.print(m_cms.readAbsolutePath(res));               
                     m_report.print(m_report.key("report.sync_to_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                    
                     m_report.print(fsFile.getAbsolutePath().replace('\\', '/'));
-                    m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);                
+                    m_report.print(m_report.key("report.dots"));                
                     // create the resource if nescessary
                     if (!fsFile.exists()) {
                         createNewLocalFile(fsFile);
@@ -561,7 +561,7 @@ public class CmsSynchronize {
                     m_report.print(m_cms.readAbsolutePath(res));               
                     m_report.print(m_report.key("report.sync_to_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                    
                     m_report.print(fsFile.getAbsolutePath().replace('\\', '/'));   
-                    m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);                                                          
+                    m_report.print(m_report.key("report.dots"));                                                          
                     // its a folder, so create a folder in the FS
                     fsFile.mkdir();
                 }
@@ -599,7 +599,7 @@ public class CmsSynchronize {
             m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);
             m_report.print(m_report.key("report.sync_updating_file"), I_CmsReport.C_FORMAT_NOTE);     
             m_report.print(resourcename);               
-            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);    
+            m_report.print(m_report.key("report.dots"));    
             
             // lock the file in the VFS, so that it can be updated
             m_cms.lockResource(resourcename);
@@ -672,7 +672,7 @@ public class CmsSynchronize {
                 m_report.print(m_report.key("report.sync_deleting_folder"), I_CmsReport.C_FORMAT_NOTE);
             }     
             m_report.print(resourcename);               
-            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);   
+            m_report.print(m_report.key("report.dots"));   
             
             // lock the file in the VFS, so that it can be updated
             m_cms.lockResource(resourcename);

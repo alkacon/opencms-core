@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2003/10/14 15:18:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/10/15 09:50:42 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -221,7 +221,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             m_report.print(" ( " + (++i) + " / " + linksSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
             m_report.print(m_report.key("report.convert_link"), I_CmsReport.C_FORMAT_NOTE);
             m_report.print(key + " ");
-            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(m_report.key("report.dots"));
 
             // now check if this is an internal link
             if (link.startsWith("/")) {
@@ -458,7 +458,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 try {
                     m_report.print(m_report.key("report.importing_group"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(name);
-                    m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(m_report.key("report.dots"));
                     m_cms.createGroup(id, name, description, Integer.parseInt(flags), parentgroupName);
                     m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                 } catch (CmsException exc) {
@@ -530,7 +530,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             try {
                 m_report.print(m_report.key("report.importing_user"), I_CmsReport.C_FORMAT_NOTE);
                 m_report.print(name);
-                m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+                m_report.print(m_report.key("report.dots"));
                 m_cms.addImportUser(id, name, password, recoveryPassword, description, firstname, lastname, email, Integer.parseInt(flags), userInfo, defaultGroup, address, section, Integer.parseInt(type));
                 // add user to all groups vector
                 for (int i = 0; i < userGroups.size(); i++) {
@@ -554,7 +554,7 @@ public abstract class A_CmsImport implements I_CmsImport {
     protected void updatePageLinks() {
         int importPagesSize = m_importedPages.size();
         for (int i = 0; i < importPagesSize; i++) {
-            m_report.print(" ( " + (i + 1) + " / " + importPagesSize + " ) ",I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(" ( " + (i + 1) + " / " + importPagesSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
             try {
                 // first parse the page
                 CmsPageLinks links = m_cms.getPageLinks((String)m_importedPages.elementAt(i));

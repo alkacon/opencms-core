@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/09/29 17:27:22 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/10/15 09:50:42 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.15 $ $Date: 2003/09/29 17:27:22 $
+ * @version $Revision: 1.16 $ $Date: 2003/10/15 09:50:42 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 
@@ -330,7 +330,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         }
         // write the XML
         digestElement(parent, master);
-        getReport().print(getReport().key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+        getReport().print(getReport().key("report.dots"));
         getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/10 14:19:43 $
- * Version: $Revision: 1.274 $
+ * Date   : $Date: 2003/10/15 09:50:41 $
+ * Version: $Revision: 1.275 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.274 $ $Date: 2003/10/10 14:19:43 $
+ * @version $Revision: 1.275 $ $Date: 2003/10/15 09:50:41 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2167,10 +2167,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 
                 // now we know which backup versions must be deleted, so remove them now
                 if (versionsToDelete > 0) {
-                    report.print(report.key("report.history.deleting") + report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+                    report.print(report.key("report.history.deleting") + report.key("report.dots"));
                     m_backupDriver.deleteBackup(res, maxTag, versionsToDelete);           
                 } else {
-                    report.print(report.key("report.history.nothing") + report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+                    report.print(report.key("report.history.nothing") + report.key("report.dots"));
                 }
                 report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                 counter++;
@@ -8246,9 +8246,15 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     if (report != null) {
                         // print some report messages
                         if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
-                            report.println(report.key("report.export_points_delete") + currentPublishedResource.getRootPath(), I_CmsReport.C_FORMAT_NOTE);
+                            report.print(report.key("report.export_points_delete"), I_CmsReport.C_FORMAT_NOTE);
+                            report.print(currentPublishedResource.getRootPath());
+                            report.print(report.key("report.dots"));
+                            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                         } else {
-                            report.println(report.key("report.export_points_write") + currentPublishedResource.getRootPath(), I_CmsReport.C_FORMAT_NOTE);
+                            report.print(report.key("report.export_points_write"), I_CmsReport.C_FORMAT_NOTE);
+                            report.print(currentPublishedResource.getRootPath());
+                            report.print(report.key("report.dots"));
+                            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                         }
                     } else if (OpenCms.getLog(this).isDebugEnabled()) {
                         // print some log messages

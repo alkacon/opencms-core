@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/10 11:58:37 $
- * Version: $Revision: 1.124 $
+ * Date   : $Date: 2003/10/15 09:50:41 $
+ * Version: $Revision: 1.125 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.124 $ $Date: 2003/10/10 11:58:37 $
+ * @version $Revision: 1.125 $ $Date: 2003/10/15 09:50:41 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -711,7 +711,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         try {
             report.print("( " + m + " / " + n + " ) " + report.key("report.deleting.folder"), I_CmsReport.C_FORMAT_NOTE);
-            report.println(context.removeSiteRoot(currentFolder.getRootPath()));
+            report.print(context.removeSiteRoot(currentFolder.getRootPath()));
+            report.print(report.key("report.dots"));
 
             try {
                 // write the folder to the backup and publishing history                
@@ -776,6 +777,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 throw e;
             }
+            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
         } catch (Exception e) {
             // this is a dummy try-catch block to have a finally clause here
 
@@ -815,7 +817,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         try {
             if (offlineFileHeader.getState() == I_CmsConstants.C_STATE_DELETED) {
                 report.print("( " + m + " / " + n + " ) " + report.key("report.deleting.file"), I_CmsReport.C_FORMAT_NOTE);
-                report.println(context.removeSiteRoot(offlineFileHeader.getRootPath()));
+                report.print(context.removeSiteRoot(offlineFileHeader.getRootPath()));
+                report.print(report.key("report.dots"));
 
                 try {
                     // read the file header online
@@ -915,9 +918,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                     throw e;
                 }
+                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
             } else if (offlineFileHeader.getState() == I_CmsConstants.C_STATE_CHANGED) {
                 report.print("( " + m + " / " + n + " ) " + report.key("report.publishing.file"), I_CmsReport.C_FORMAT_NOTE);
-                report.println(context.removeSiteRoot(offlineFileHeader.getRootPath()));
+                report.print(context.removeSiteRoot(offlineFileHeader.getRootPath()));
+                report.print(report.key("report.dots"));
 
                 try {
                     // read the file header online                   
@@ -1007,9 +1012,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                     throw e;
                 }
+                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
             } else if (offlineFileHeader.getState() == I_CmsConstants.C_STATE_NEW) {
                 report.print("( " + m + " / " + n + " ) " + report.key("report.publishing.file"), I_CmsReport.C_FORMAT_NOTE);
-                report.println(context.removeSiteRoot(offlineFileHeader.getRootPath()));
+                report.print(context.removeSiteRoot(offlineFileHeader.getRootPath()));
+                report.print(report.key("report.dots"));
 
                 try {
                     // publish the file content
@@ -1087,6 +1094,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                     throw e;
                 }
+                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
             }
         } catch (Exception e) {
             // this is a dummy try-catch block to have a finally clause here 
@@ -1156,7 +1164,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         try {
             report.print("( " + m + " / " + n + " ) " + report.key("report.publishing.folder"), I_CmsReport.C_FORMAT_NOTE);
-            report.println(context.removeSiteRoot(offlineFolder.getRootPath()));
+            report.print(context.removeSiteRoot(offlineFolder.getRootPath()));
+            report.print(report.key("report.dots"));
 
             if (offlineFolder.getState() == I_CmsConstants.C_STATE_NEW) {
                 try {
@@ -1269,6 +1278,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 throw e;
             }
+            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
         } catch (Exception e) {
             // this is a dummy try-catch block to have a finally clause here
 
@@ -1627,11 +1637,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             StringBuffer stats = new StringBuffer();
             stats.append(report.key("report.publish_stats"));
             stats.append(report.key("report.publish_stats_files"));
-            stats.append(publishedFileCount);
+            stats.append(publishedFileCount + ",");
             stats.append(report.key("report.publish_stats_folders"));
-            stats.append(publishedFolderCount);
+            stats.append(publishedFolderCount + ",");
             stats.append(report.key("report.publish_stats_deleted_folders"));
-            stats.append(deletedFolderCount);
+            stats.append(deletedFolderCount + ",");
             stats.append(report.key("report.publish_stats_duration"));
             stats.append(report.formatRuntime()); 
             

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/10/06 13:50:50 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/10/15 09:50:42 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.21 $ $Date: 2003/10/06 13:50:50 $
+ * @version $Revision: 1.22 $ $Date: 2003/10/15 09:50:42 $
  */
 public class CmsExport implements Serializable {
 
@@ -563,7 +563,7 @@ public class CmsExport implements Serializable {
         getReport().print(" ( " + ++m_exportCount + " ) ", I_CmsReport.C_FORMAT_NOTE);
         getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
         getReport().print(getCms().readAbsolutePath(file));
-        getReport().print(getReport().key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+        getReport().print(getReport().key("report.dots"));
         try {
             // store content in zip-file
             // check if the content of this resource was not already exported
@@ -631,7 +631,7 @@ public class CmsExport implements Serializable {
             getReport().print(" ( " + (i+1) + " / " + l + " ) ", I_CmsReport.C_FORMAT_NOTE);
             getReport().print(getReport().key("report.exporting_group"), I_CmsReport.C_FORMAT_NOTE);
             getReport().print(group.getName());
-            getReport().print(getReport().key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+            getReport().print(getReport().key("report.dots"));
             exportGroup(parent, group);
             getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
@@ -660,7 +660,7 @@ public class CmsExport implements Serializable {
             getReport().print(" ( " + ++m_exportCount + " ) ", I_CmsReport.C_FORMAT_NOTE);
             getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
             getReport().print(getCms().readAbsolutePath(resource));
-            getReport().print(getReport().key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+            getReport().print(getReport().key("report.dots"));
             getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
 
@@ -810,7 +810,7 @@ public class CmsExport implements Serializable {
             getReport().print(" ( " + (i+1) + " / " + l + " ) ", I_CmsReport.C_FORMAT_NOTE);
             getReport().print(getReport().key("report.exporting_user"), I_CmsReport.C_FORMAT_NOTE);
             getReport().print(user.getName());
-            getReport().print(getReport().key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+            getReport().print(getReport().key("report.dots"));
             exportUser(parent, user);
             getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
