@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2004/11/23 11:53:22 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/01/10 14:28:12 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -442,7 +442,7 @@ public class CmsTree extends CmsWorkplace {
                         if (includeFiles()) {
                             resources.addAll(getCms().getResourcesInFolder(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                         } else {
-                            resources.addAll(getCms().getSubFolders(startFolder));
+                            resources.addAll(getCms().getSubFolders(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                         }                     
                         StringTokenizer tok = new StringTokenizer(currentTargetFolder.substring(startFolder.length()), "/");
                         while (tok.hasMoreTokens()) {
