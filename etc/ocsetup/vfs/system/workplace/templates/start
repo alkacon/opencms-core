@@ -4,10 +4,8 @@
 <![CDATA[
 <html>
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-<title>opencms</title>
-<link rel=stylesheet type="text/css" href="css/format.css">
+<title>OpenCMS</title>
 </head>
-
 
 <CENTER>
 <!-- Begin Logo opencms -->
@@ -18,18 +16,14 @@
 </table>
 <!-- End Logo opencms -->
 
-<!-- Begin login -->
+<!-- Begin please wait text -->
 <table cellspacing=0 cellpadding=0 border=0>
 <tr>
-<td>]]><LABEL value="message.wait"/><![CDATA[</td>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
 </tr>
 </table>
-<!-- End login -->
+<!-- End please wait text -->
 </CENTER>
-
-
-
-
 
 </html>
 ]]>
