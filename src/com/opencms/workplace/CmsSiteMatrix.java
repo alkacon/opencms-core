@@ -2,7 +2,7 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSiteMatrix.java,v $
- * Date   : $Date: 2000/10/04 19:32:36 $
+ * Date   : $Date: 2000/10/05 05:25:05 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -111,8 +111,9 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 			//
 			xmlTemplateDocument.setData("x", country_place);
 			csname = (String) siteinfo.get("country_sname");
-			if (csname == null)
-				csname = (String) siteinfo.get("country_name");
+			if (csname == null) csname = (String) siteinfo.get("country_name");
+			lsname = (String) siteinfo.get("lang_sname");
+			if (lsname == null) lsname = (String) siteinfo.get("lang_name");
 			xmlTemplateDocument.setData("shortname", csname + " (" + lsname + ")");
 			xmlTemplateDocument.setData("name", (String) siteinfo.get("country_name") + " (" + (String) siteinfo.get("lang_name") + ")");
 			lines.append(xmlTemplateDocument.getProcessedDataValue("domain"));
@@ -126,9 +127,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		//
 		xmlTemplateDocument.setData("x", country_place);
 		xmlTemplateDocument.setData("y", category_place);
-		lsname = (String) siteinfo.get("lang_sname");
-		if (lsname == null)
-			lsname = (String) siteinfo.get("lang_name");
 		xmlTemplateDocument.setData("id", "" + ((Integer) siteinfo.get("siteid")).intValue());
 		xmlTemplateDocument.setData("name", (String) siteinfo.get("sitename"));
 		nodes.append(xmlTemplateDocument.getProcessedDataValue("sitenode"));
