@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2001/12/21 08:27:48 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/05/13 14:49:32 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import java.util.zip.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
 import com.opencms.util.*;
+import com.opencms.linkmanagement.*;
 import java.util.*;
 
 import java.io.*;
@@ -45,7 +46,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.25 $ $Date: 2001/12/21 08:27:48 $
+ * @version $Revision: 1.26 $ $Date: 2002/05/13 14:49:32 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -346,15 +347,16 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 
             // Now the new page file is created. Copy the body file
             cms.doCopyFile(bodyPath, newbodyPath);
-            // set access flags, if neccessary
+            // linkmanagement: copy the links of the page
+            cms.createLinkEntrys(newPageFile.getResourceId(), cms.readLinkEntrys(file.getResourceId()));
         } else {
             // The body part of the source was not found at
             // the default place. Leave it there, don't make
             // a copy and simply make a copy of the page file.
             // So the new page links to the old body.
             cms.doCopyFile(source, destination);
-            // set access flags, if neccessary
         }
+        // set access flags, if neccessary
         if(!keepFlags) {
             setDefaultFlags(cms, destination);
         }
@@ -428,6 +430,11 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             flags += C_ACCESS_INTERNAL_READ;
         }
         cms.chmod(bodyFile.getAbsolutePath(), flags);
+        // linkmanagement: create the links of the new page (for the case that the content was not empty
+        if(contents.length > 1){
+            CmsPageLinks linkObject = cms.getPageLinks(folder+name);
+            cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
+        }
         return file;
     }
 
@@ -450,6 +457,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     public void deleteResource(CmsObject cms, String filename) throws CmsException{
         CmsFile file = cms.readFile(filename);
         cms.doDeleteFile(filename);
+        // linkmanagement: delete the links on the page
+        cms.deleteLinkEntrys(file.getResourceId());
         String bodyPath = checkBodyPath(cms, (CmsFile)file);
         if (bodyPath != null){
             try{
@@ -495,6 +504,10 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // Clear it!
         String currentProject = cms.getRequestContext().currentProject().getName();
         CmsXmlControlFile.clearFileCache(currentProject + ":" + filename);
+
+        // linkmanagement: create the links of the restored page
+        CmsPageLinks linkObject = cms.getPageLinks(file.getAbsolutePath());
+        cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
     }
 
     /**
@@ -637,6 +650,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             changeContent(cms, source, hbodyPath);
         }
         cms.doMoveFile(source, destination);
+        // linkmanagement: delete the links of the old page and create them for the new one
+        int oldId = file.getResourceId();
+        int newId = cms.readFileHeader(destination).getResourceId();
+        cms.createLinkEntrys(newId, cms.readLinkEntrys(oldId));
+        cms.deleteLinkEntrys(oldId);
+
     }
 
     /**
@@ -659,8 +678,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             hbodyPath = bodyPath.substring(0,help) + newname;
             changeContent(cms, oldname, hbodyPath);
         }
-
         cms.doRenameFile(oldname,newname);
+        // linkmanagement: delete the links of the old page and create them for the new one
+        int oldId = file.getFileId();
+        int newId = cms.readFileHeader(newname).getFileId();
+        cms.createLinkEntrys(newId, cms.readLinkEntrys(oldId));
+        cms.deleteLinkEntrys(oldId);
     }
 
     /**
@@ -694,6 +717,9 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                 }
             }
         }
+    // linkmanagement: create the links of the restored page
+    CmsPageLinks linkObject = cms.getPageLinks(file.getAbsolutePath());
+    cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
     }
 
     /**
@@ -715,6 +741,9 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         if (bodyPath != null){
             cms.doUndoChanges(bodyPath);
         }
+        // linkmanagement: create the links of the restored page
+        CmsPageLinks linkObject = cms.getPageLinks(file.getAbsolutePath());
+        cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2001/10/12 07:46:09 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2002/05/13 14:49:34 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.workplace;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
+import com.opencms.linkmanagement.*;
 import com.opencms.template.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
@@ -44,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.46 $ $Date: 2001/10/12 07:46:09 $
+ * @version $Revision: 1.47 $ $Date: 2002/05/13 14:49:34 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -207,6 +208,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                     }
 
                     byte[] bodyBytes = null;
+                    boolean layoutFileDefined = false;
                     if (layoutFilePath == null || layoutFilePath.equals("")) {
                         // layout not specified, use default body
                         bodyBytes = C_DEFAULTBODY.getBytes();
@@ -214,12 +216,18 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                         // do not catch exceptions, a specified layout should exist
                         CmsFile layoutFile = cms.readFile(layoutFilePath);
                         bodyBytes = layoutFile.getContents();
+                        layoutFileDefined = true;
                     }
                     CmsFile bodyFile = cms.readFile(C_CONTENTBODYPATH + currentFilelist.substring(1,
                                 currentFilelist.length()), newFile);
                     bodyFile.setContents(bodyBytes);
                     cms.writeFile(bodyFile);
 
+                    // care about the linkmanagement if a default body was selected
+                    if(layoutFileDefined){
+                        CmsPageLinks linkObject = cms.getPageLinks(currentFilelist+newFile);
+                        cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
+                    }
                     // now check if navigation informations have to be added to the new page.
                     if(navtitle != null) {
                         cms.writeProperty(file.getAbsolutePath(), C_PROPERTY_NAVTEXT, navtitle);

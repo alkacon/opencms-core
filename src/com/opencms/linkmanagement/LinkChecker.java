@@ -1,0 +1,119 @@
+/*
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
+* Date   : $Date: 2002/05/13 14:50:39 $
+* Version: $Revision: 1.1 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+package com.opencms.linkmanagement;
+
+import java.util.*;
+import com.opencms.file.*;
+import com.opencms.core.*;
+import com.opencms.template.*;
+import com.opencms.report.*;
+
+/**
+ * Title:       OpenCms
+ * Description: This Class is used to extract all links of a page (or a String) to a
+ *              CmsPageLinks Object for saving in the database.
+ *
+ * @author Hanjo Riege
+ * @version 1.0
+ */
+
+public class LinkChecker{
+
+    public LinkChecker() {
+    }
+
+    public CmsPageLinks extractLinks(CmsObject cms, String page) throws CmsException{
+
+        // first lets get the prefix of the page name (we need it later)
+        String rootName = cms.readFileHeader(page).getRootName();
+        // get the pages content
+        String bodyFileName = null;
+        String bodyClassName = null;
+        CmsXmlControlFile pageControlFile = new CmsXmlControlFile(cms, page);
+        if(pageControlFile.isElementTemplateDefined(I_CmsConstants.C_TYPE_BODY_NAME)){
+            bodyFileName = pageControlFile.getElementTemplate(I_CmsConstants.C_TYPE_BODY_NAME);
+        }
+        if(pageControlFile.isElementClassDefined(I_CmsConstants.C_TYPE_BODY_NAME)){
+            bodyClassName = pageControlFile.getElementClass(I_CmsConstants.C_TYPE_BODY_NAME);
+        }
+        CmsXmlTemplate bodyClassObject = (CmsXmlTemplate)CmsTemplateClassManager.getClassInstance(cms, bodyClassName);
+        CmsXmlTemplateFile bodyTemplateFile = bodyClassObject.getOwnTemplateFile(cms,
+            bodyFileName, I_CmsConstants.C_TYPE_BODY_NAME, null, null);
+        Vector result = bodyTemplateFile.getAllLinkTagValues();
+        // we have to cleanup the result. Relative links will be inserted as absolute links
+        // and we cut the parameters.
+        Vector cleanResult = new Vector(result.size());
+        for(int i=0; i<result.size(); i++){
+            String work = (String)result.elementAt(i);
+            // first the parameters
+            int paraStart = work.indexOf("?");
+            if(paraStart >= 0){
+                work = work.substring(0, paraStart);
+            }
+            // here is something for the future: if link starts with /// it is the full name of the resource
+            if(work.startsWith("///")){
+                work = work.substring(2);
+            }else{
+                // now for relative links
+                work = com.opencms.util.Utils.mergeAbsolutePath(page, work);
+                // now we need the site prefix (lets take it from the page itself)
+                work = rootName +work;
+            }
+            cleanResult.add(work);
+        }
+        return new CmsPageLinks(cms.readFileHeader(page).getResourceId(), cleanResult);
+    }
+
+    /**
+     * This Method checks if the online project has broken links when the project with
+     * the projectId is published (if projectId = onlineProjectId it simply checks the
+     * online project).
+     *
+     * @param cms The CmsObject.
+     * @param projectId The id of the project to be published.
+     * @param report A cmsReport object for logging while the method is still running.
+     *
+     * The report is filled with a CmsPageLinks object for each page containing broken links
+     *          this CmsPageLinks object contains all links on the page withouth a valid target.
+     */
+    public void checkProject(CmsObject cms, int projectId, CmsReport report)throws CmsException{
+        if(projectId == cms.C_PROJECT_ONLINE_ID){
+            // lets check only the online project
+            Vector result = cms.getOnlineBrokenLinks();
+            for(int i=0; i<result.size(); i++){
+                report.addPageLinks((CmsPageLinks)result.elementAt(i));
+            }
+        }else{
+            // we are in a project. First get the changed, new ,deleted resources
+            Vector deleted = cms.readProjectView(projectId, "deleted");
+            Vector changed = cms.readProjectView(projectId, "changed");
+            Vector newRes  = cms.readProjectView(projectId, "new");
+            cms.getBrokenLinks(projectId, report, changed, deleted, newRes);
+        }
+    }
+}

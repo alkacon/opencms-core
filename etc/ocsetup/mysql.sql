@@ -253,6 +253,16 @@ create table CMS_EXPORT_DEPENDENCIES    (LINK_ID int not null,
                                          key (LINK_ID),
                                          unique(LINK_ID, RESOURCENAME));
 
+create table CMS_LINKS                  (PAGE_ID int not null,
+                                         LINK_DEST varchar(255) not null,
+                                         key (PAGE_ID),
+                                         unique (PAGE_ID, LINK_DEST));
+
+create table CMS_ONLINE_LINKS           (PAGE_ID int not null,
+                                         LINK_DEST varchar(255) not null,
+                                         key (PAGE_ID),
+                                         unique (PAGE_ID, LINK_DEST));
+
 create table CMS_SESSIONS               (SESSION_ID varchar(255) not null,
                                          SESSION_LASTUSED datetime not null,
                                          SESSION_DATA mediumblob not null,

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2002/04/05 12:34:50 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2002/05/13 14:49:34 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,12 +42,15 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.52 $ $Date: 2002/04/05 12:34:50 $
+ * @version $Revision: 1.53 $ $Date: 2002/05/13 14:49:34 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
     /** Name of the tag for the editable templates */
     public static final String C_EDIT_TEMPLATE = "edittemplate";
+
+    /** Name of the tag for the templates */
+    public static final String C_TEMPLATE = "template";
 
     /**
      * Default constructor.
@@ -105,6 +108,34 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public Vector getAllSections() throws CmsException {
         NodeList nl = ((Element)getXmlDocument().getDocumentElement()).getChildNodes();
         return getNamesFromNodeList(nl, "TEMPLATE", true);
+    }
+
+    /**
+     * This method is used by the linkmanagement. It returns a Vector with all
+     * link tag values in all TEMPLATE sections of the document.
+     */
+    public Vector getAllLinkTagValues()throws CmsException{
+        Vector retValue = new Vector();
+        NodeList list = ((Element)getXmlDocument().getDocumentElement()).getChildNodes();
+        int numElements = list.getLength();
+        for(int i=0; i < numElements; i++){
+            Node n = (Node)list.item(i);
+            // we only search in the template tags
+            if(n.getNodeType() == n.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(C_TEMPLATE)){
+                NodeList subList = n.getChildNodes();
+                for(int j=0; j<subList.getLength(); j++){
+                    Node subNode = (Node)subList.item(j);
+                    if(subNode.getNodeType()==subNode.ELEMENT_NODE && subNode.getNodeName().equalsIgnoreCase("link")){
+                        String value = subNode.getFirstChild().getNodeValue();
+                        if(!retValue.contains(value)){
+                            retValue.add(value);
+                        }
+                    }
+                }
+            }
+        }
+
+        return retValue;
     }
 
     /**
@@ -291,12 +322,10 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             if(n.getNodeType() == n.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(tag.toLowerCase())) {
                 String name = ((Element)n).getAttribute("name");
                 if(name == null || "".equals(name)) {
-
                     // unnamed element found.
                     if(unnamedAllowed) {
                         name = "(default)";
-                    }
-                    else {
+                    }else {
                         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                             A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlControlFile] unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename() + ".");
                         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/04/30 09:31:33 $
-* Version: $Revision: 1.175 $
+* Date   : $Date: 2002/05/13 14:49:32 $
+* Version: $Revision: 1.176 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import java.util.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 import com.opencms.core.*;
+import com.opencms.report.*;
 
 /**
  * This interface describes THE resource broker. All DB-specific access modules must
@@ -42,7 +43,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.175 $ $Date: 2002/04/30 09:31:33 $
+ * @version $Revision: 1.176 $ $Date: 2002/05/13 14:49:32 $
  *
  */
 
@@ -1999,6 +2000,73 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         throws CmsException;
     // Methods working with system properties
 
+/****************     methods for link management            ****************************/
+
+/**
+ * deletes all entrys in the link table that belong to the pageId
+ *
+ * @param pageId The resourceId (offline) of the page whose links should be deleted
+ */
+public void deleteLinkEntrys(int pageId)throws CmsException;
+
+/**
+ * creates a link entry for each of the link targets in the linktable.
+ *
+ * @param pageId The resourceId (offline) of the page whose liks should be traced.
+ * @param linkTarget A vector of strings (the linkdestinations).
+ */
+public void createLinkEntrys(int pageId, Vector linkTargets)throws CmsException;
+
+/**
+ * returns a Vector (Strings) with the link destinations of all links on the page with
+ * the pageId.
+ *
+ * @param pageId The resourceId (offline) of the page whose liks should be read.
+ */
+public Vector readLinkEntrys(int pageId)throws CmsException;
+
+/**
+ * deletes all entrys in the online link table that belong to the pageId
+ *
+ * @param pageId The resourceId (online) of the page whose links should be deleted
+ */
+public void deleteOnlineLinkEntrys(int pageId)throws CmsException;
+
+/**
+ * creates a link entry for each of the link targets in the online linktable.
+ *
+ * @param pageId The resourceId (online) of the page whose liks should be traced.
+ * @param linkTarget A vector of strings (the linkdestinations).
+ */
+public void createOnlineLinkEntrys(int pageId, Vector linkTarget)throws CmsException;
+
+/**
+ * returns a Vector (Strings) with the link destinations of all links on the page with
+ * the pageId.
+ *
+ * @param pageId The resourceId (online) of the page whose liks should be read.
+ */
+public Vector readOnlineLinkEntrys(int pageId)throws CmsException;
+
+/**
+ * serches for broken links in the online project.
+ *
+ * @return A Vector with a CmsPageLinks object for each page containing broken links
+ *          this CmsPageLinks object contains all links on the page withouth a valid target.
+ */
+public Vector getOnlineBrokenLinks() throws CmsException;
+
+/**
+ * checks a project for broken links that would appear if the project is published.
+ *
+ * @param projectId
+ * @param changed A vecor (of CmsResources) with the changed resources in the project.
+ * @param deleted A vecor (of CmsResources) with the deleted resources in the project.
+ * @param newRes A vecor (of CmsResources) with the new resources in the project.
+ */
+ public void getBrokenLinks(int projectId, CmsReport report, Vector changed, Vector deleted, Vector newRes)throws CmsException;
+
+/****************  end  methods for link management          ****************************/
 
     /**
      * Reads the export-path for the system.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2001/12/07 14:21:41 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2002/05/13 14:49:34 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.53 $ $Date: 2001/12/07 14:21:41 $
+ * @version $Revision: 1.54 $ $Date: 2002/05/13 14:49:34 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -1186,11 +1186,9 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         Document lookup = (Document)m_filecache.get(currentProject + ":" + filename);
         if(lookup != null) {
             try {
-
                 //cachedDoc = lookup.cloneNode(true).getOwnerDocument();
                 cachedDoc = (Document)lookup.cloneNode(true);
-            }
-            catch(Exception e) {
+            }catch(Exception e) {
                 lookup = null;
                 cachedDoc = null;
             }

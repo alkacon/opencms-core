@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2002/01/02 10:20:21 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2002/05/13 14:49:31 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.37 $ $Date: 2002/01/02 10:20:21 $
+ * @version $Revision: 1.38 $ $Date: 2002/05/13 14:49:31 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -208,6 +208,13 @@ public class CmsXmlNav extends A_CmsNavBase {
                 if (requestedUri.indexOf(navLink[i])!=-1) {
                     Vector all=cms.getSubFolders(navLink[i]);
                     Vector files=cms.getFilesInFolder(navLink[i]);
+                    // register this folder for changes (if it is a folder!)
+                    if(navLink[i].endsWith("/")){
+                        Vector vfsDeps = new Vector();
+                        vfsDeps.add(cms.readFolder(navLink[i]));
+                        registerVariantDeps(cms, template.getAbsoluteFilename(), null, null,
+                                        (Hashtable)userObject, vfsDeps, null, null);
+                    }
                     all.ensureCapacity(all.size() + files.size());
                     Enumeration e = files.elements();
                     while (e.hasMoreElements()) {
@@ -317,6 +324,11 @@ public class CmsXmlNav extends A_CmsNavBase {
                     if (navLink[i].endsWith("/")) {
                         Vector all=cms.getSubFolders(navLink[i]);
                         Vector files=cms.getFilesInFolder(navLink[i]);
+                        // register this folder for changes
+                        Vector vfsDeps = new Vector();
+                        vfsDeps.add(cms.readFolder(navLink[i]));
+                        registerVariantDeps(cms, template.getAbsoluteFilename(), null, null,
+                                        (Hashtable)userObject, vfsDeps, null, null);
                         all.ensureCapacity(all.size() + files.size());
                         Enumeration e = files.elements();
                         while (e.hasMoreElements()) {

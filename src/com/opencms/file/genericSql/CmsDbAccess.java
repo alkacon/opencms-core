@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/04/30 09:27:57 $
-* Version: $Revision: 1.242 $
+* Date   : $Date: 2002/05/13 14:49:33 $
+* Version: $Revision: 1.243 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,8 @@ import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.file.utils.*;
 import com.opencms.util.*;
+import com.opencms.linkmanagement.*;
+import com.opencms.report.*;
 import com.opencms.launcher.*;
 
 
@@ -52,7 +54,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.242 $ $Date: 2002/04/30 09:27:57 $ *
+ * @version $Revision: 1.243 $ $Date: 2002/05/13 14:49:33 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -5900,6 +5902,523 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         return file;
      }
 
+/****************     methods for link management            ****************************/
+
+    /**
+     * deletes all entrys in the link table that belong to the pageId
+     *
+     * @param pageId The resourceId (offline) of the page whose links should be deleted
+     */
+    public void deleteLinkEntrys(int pageId)throws CmsException{
+        Connection con = null;
+        PreparedStatement statement = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            // delete all project-resources.
+            statement = con.prepareStatement(m_cq.get("C_LM_DELETE_ENTRYS"));
+            statement.setInt(1, pageId);
+            statement.executeQuery();
+        } catch (SQLException e){
+           throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        }finally {
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }
+    }
+
+    /**
+     * creates a link entry for each of the link targets in the linktable.
+     *
+     * @param pageId The resourceId (offline) of the page whose liks should be traced.
+     * @param linkTarget A vector of strings (the linkdestinations).
+     */
+    public void createLinkEntrys(int pageId, Vector linkTargets)throws CmsException{
+        //first delete old entrys in the database
+        deleteLinkEntrys(pageId);
+        if(linkTargets == null || linkTargets.size()==0){
+            return;
+        }
+        // now write it
+        Connection con = null;
+        PreparedStatement statement = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            statement = con.prepareStatement(m_cq.get("C_LM_WRITE_ENTRY"));
+            statement.setInt(1, pageId);
+            for(int i=0; i < linkTargets.size(); i++){
+                try{
+                    statement.setString(2, (String)linkTargets.elementAt(i));
+                    statement.executeUpdate();
+                }catch(SQLException e){
+                }
+            }
+        } catch (SQLException e){
+             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } finally {
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }
+    }
+
+    /**
+     * returns a Vector (Strings) with the link destinations of all links on the page with
+     * the pageId.
+     *
+     * @param pageId The resourceId (offline) of the page whose liks should be read.
+     */
+    public Vector readLinkEntrys(int pageId)throws CmsException{
+        Vector result = new Vector();
+        PreparedStatement statement = null;
+        ResultSet res = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            statement = con.prepareStatement(m_cq.get("C_LM_READ_ENTRYS"));
+            statement.setInt(1, pageId);
+            res = statement.executeQuery();
+            while(res.next()){
+                result.add(res.getString(m_cq.get("C_LM_LINK_DEST")));
+            }
+            return result;
+        }catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        }catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);
+        } finally {
+            // close all db-resources
+            if(res != null) {
+                 try {
+                     res.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }
+    }
+
+    /**
+     * deletes all entrys in the online link table that belong to the pageId
+     *
+     * @param pageId The resourceId (online) of the page whose links should be deleted
+     */
+    public void deleteOnlineLinkEntrys(int pageId)throws CmsException{
+        Connection con = null;
+        PreparedStatement statement = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            // delete all project-resources.
+            statement = con.prepareStatement(m_cq.get("C_LM_DELETE_ENTRYS_ONLINE"));
+            statement.setInt(1, pageId);
+            statement.executeQuery();
+        } catch (SQLException e){
+           throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        }finally {
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }
+    }
+
+    /**
+     * creates a link entry for each of the link targets in the online linktable.
+     *
+     * @param pageId The resourceId (online) of the page whose liks should be traced.
+     * @param linkTarget A vector of strings (the linkdestinations).
+     */
+    public void createOnlineLinkEntrys(int pageId, Vector linkTargets)throws CmsException{
+        //first delete old entrys in the database
+        deleteLinkEntrys(pageId);
+        if(linkTargets == null || linkTargets.size()==0){
+            return;
+        }
+        // now write it
+        Connection con = null;
+        PreparedStatement statement = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            statement = con.prepareStatement(m_cq.get("C_LM_WRITE_ENTRY_ONLINE"));
+            statement.setInt(1, pageId);
+            for(int i=0; i < linkTargets.size(); i++){
+                try{
+                    statement.setString(2, (String)linkTargets.elementAt(i));
+                    statement.executeUpdate();
+                }catch(SQLException e){
+                }
+            }
+        } catch (SQLException e){
+             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } finally {
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }
+    }
+
+    /**
+     * returns a Vector (Strings) with the link destinations of all links on the page with
+     * the pageId.
+     *
+     * @param pageId The resourceId (online) of the page whose liks should be read.
+     */
+    public Vector readOnlineLinkEntrys(int pageId)throws CmsException{
+        Vector result = new Vector();
+        PreparedStatement statement = null;
+        ResultSet res = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            statement = con.prepareStatement(m_cq.get("C_LM_READ_ENTRYS_ONLINE"));
+            statement.setInt(1, pageId);
+            res = statement.executeQuery();
+            while(res.next()){
+                result.add(res.getString(m_cq.get("C_LM_LINK_DEST")));
+            }
+            return result;
+        }catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        }catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);
+        } finally {
+            // close all db-resources
+            if(res != null) {
+                 try {
+                     res.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }
+    }
+
+    /**
+     * serches for broken links in the online project.
+     *
+     * @return A Vector with a CmsPageLinks object for each page containing broken links
+     *          this CmsPageLinks object contains all links on the page withouth a valid target.
+     */
+    public Vector getOnlineBrokenLinks() throws CmsException{
+        Vector result = new Vector();
+        PreparedStatement statement = null;
+        ResultSet res = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            statement = con.prepareStatement(m_cq.get("C_LM_GET_ONLINE_BROKEN_LINKS"));
+            res = statement.executeQuery();
+            int current = -1;
+            CmsPageLinks links = null;
+            while(res.next()){
+                int next = res.getInt(m_cq.get("C_LM_PAGE_ID"));
+                if(next != current){
+                    if(links != null){
+                        result.add(links);
+                    }
+                    links = new CmsPageLinks(next);
+                    links.addLinkTarget(res.getString(m_cq.get("C_LM_LINK_DEST")));
+                    links.setOnline(true);
+                }else{
+                    links.addLinkTarget(res.getString(m_cq.get("C_LM_LINK_DEST")));
+                }
+            }
+            if(links != null){
+                result.add(links);
+            }
+            return result;
+        }catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        }catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);
+        } finally {
+            // close all db-resources
+            if(res != null) {
+                 try {
+                     res.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }
+    }
+
+    /**
+     * checks a project for broken links that would appear if the project is published.
+     *
+     * @param projectId
+     * @param report A cmsReport object for logging while the method is still running.
+     * @param changed A vecor (of CmsResources) with the changed resources in the project.
+     * @param deleted A vecor (of CmsResources) with the deleted resources in the project.
+     * @param newRes A vecor (of CmsResources) with the new resources in the project.
+     */
+     public void getBrokenLinks(int projectId, CmsReport report, Vector changed, Vector deleted, Vector newRes)throws CmsException{
+
+        // first create some Vectors for performance increase
+        Vector deletedByName = new Vector(deleted.size());
+        for(int i=0; i<deleted.size(); i++){
+            deletedByName.add(((CmsResource)deleted.elementAt(i)).getResourceName());
+        }
+        Vector newByName = new Vector(newRes.size());
+        for(int i=0; i<newRes.size(); i++){
+            newByName.add(((CmsResource)newRes.elementAt(i)).getResourceName());
+        }
+        Vector changedByName = new Vector(changed.size());
+        for(int i=0; i<changed.size(); i++){
+            changedByName.add(((CmsResource)changed.elementAt(i)).getResourceName());
+        }
+        Vector onlineResNames = getOnlineResourceNames();
+
+        // now check the new and the changed resources
+        for(int i=0; i<changed.size(); i++){
+            int resId = ((CmsResource)changed.elementAt(i)).getResourceId();
+            Vector currentLinks = readLinkEntrys(resId);
+            CmsPageLinks aktualBrokenList = new CmsPageLinks(resId);
+            for(int index=0; index<currentLinks.size(); index++){
+                String curElement = (String)currentLinks.elementAt(index);
+                if(!( (onlineResNames.contains(curElement) && !deletedByName.contains(curElement))
+                        ||(newByName.contains(curElement)) )){
+                    // this is a broken link
+                    aktualBrokenList.addLinkTarget(curElement);
+                }
+            }
+            if(aktualBrokenList.getLinkTargets().size() != 0){
+                aktualBrokenList.setResourceName(((CmsResource)changed.elementAt(i)).getResourceName());
+                report.addPageLinks(aktualBrokenList);
+            }
+        }
+        for(int i=0; i<newRes.size(); i++){
+            int resId = ((CmsResource)newRes.elementAt(i)).getResourceId();
+            Vector currentLinks = readLinkEntrys(resId);
+            CmsPageLinks aktualBrokenList = new CmsPageLinks(resId);
+            for(int index=0; index<currentLinks.size(); index++){
+                String curElement = (String)currentLinks.elementAt(index);
+                if(!( (onlineResNames.contains(curElement) && !deletedByName.contains(curElement))
+                        ||(newByName.contains(curElement)) )){
+                    // this is a broken link
+                    aktualBrokenList.addLinkTarget(curElement);
+                }
+            }
+            if(aktualBrokenList.getLinkTargets().size() != 0){
+                aktualBrokenList.setResourceName(((CmsResource)newRes.elementAt(i)).getResourceName());
+                report.addPageLinks(aktualBrokenList);
+            }
+        }
+
+        // now we have to check if the deleted resources make any problems
+        Hashtable onlineResults = new Hashtable();
+        for(int i=0; i<deleted.size(); i++){
+            Vector refs = getAllOnlineReferencesForLink(((CmsResource)deleted.elementAt(i)).getResourceName(), changedByName);
+            for(int index=0; index<refs.size(); index++){
+                CmsPageLinks pl = (CmsPageLinks)refs.elementAt(index);
+                Integer key = new Integer(pl.getResourceId());
+                CmsPageLinks old = (CmsPageLinks)onlineResults.get(key);
+                if(old == null){
+                    onlineResults.put(key, pl);
+                }else{
+                    old.addLinkTarget((String)(pl.getLinkTargets().firstElement()));
+                }
+            }
+        }
+        // now lets put the results in the report (behind a seperator)
+        report.addSeperator(0);
+        Enumeration enu = onlineResults.elements();
+        while(enu.hasMoreElements()){
+            report.addPageLinks((CmsPageLinks)enu.nextElement());
+        }
+     }
+
+     /**
+      * helper method for getBrokenLinks.
+      */
+     private Vector getAllOnlineReferencesForLink(String link, Vector exeptions)throws CmsException{
+        Vector resources = new Vector();
+        ResultSet res = null;
+        PreparedStatement statement = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            statement = con.prepareStatement(m_cq.get("C_LM_GET_ONLINE_REFERENCES"));
+            statement.setString(1, link);
+            res = statement.executeQuery();
+            while(res.next()) {
+                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
+                if(!exeptions.contains(resName)){
+                    CmsPageLinks pl = new CmsPageLinks(res.getInt(m_cq.get("C_LM_PAGE_ID")));
+                    pl.setOnline(true);
+                    pl.addLinkTarget(link);
+                    pl.setResourceName(resName);
+                    resources.add(pl);
+                }
+            }
+        } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } catch (Exception ex) {
+            throw new CmsException("["+this.getClass().getName()+"]", ex);
+        } finally {
+            // close all db-resources
+            if(res != null) {
+                try {
+                    res.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(con != null) {
+                try {
+                    con.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+        }
+        return resources;
+     }
+
+     /**
+      * This method reads all resource names from the table CmsOnlineResources
+      *
+      * @return A Vector (of Strings) with the resource names (like from getAbsolutePath())
+      */
+     public Vector getOnlineResourceNames()throws CmsException{
+
+        Vector resources = new Vector();
+        ResultSet res = null;
+        PreparedStatement statement = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            statement = con.prepareStatement(m_cq.get("C_LM_GET_ALL_ONLINE_RES_NAMES"));
+            res = statement.executeQuery();
+            // create new resource
+            while(res.next()) {
+                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
+                resources.add(resName);
+            }
+        } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } catch (Exception ex) {
+            throw new CmsException("["+this.getClass().getName()+"]", ex);
+        } finally {
+            // close all db-resources
+            if(res != null) {
+                try {
+                    res.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(con != null) {
+                try {
+                    con.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+        }
+        return resources;
+     }
+/****************  end  methods for link management          ****************************/
+
     /**
      * Reads a exportrequest from the Cms.
      *
@@ -6238,10 +6757,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             // the ones we need
             for(int i=0; i<resources.size(); i++){
                 for(int j=0; j<firstResult.size(); j++){
-                    if( ((String)resources.elementAt(i)).startsWith((String)firstResult.elementAt(j))
-                            || ((String)firstResult.elementAt(j)).startsWith((String)resources.elementAt(i))){
+                    if(((String)firstResult.elementAt(j)).startsWith((String)resources.elementAt(i))){
                         if(!retValue.contains(secondResult.elementAt(j))){
                             retValue.add(secondResult.elementAt(j));
+                        }
+                    }else if(((String)resources.elementAt(i)).startsWith((String)firstResult.elementAt(j))){
+                        if(!retValue.contains(secondResult.elementAt(j))){
+                            // only direct subfolders count
+                            int index = ((String)firstResult.elementAt(j)).length();
+                            String test = ((String)resources.elementAt(i)).substring(index);
+                            index=test.indexOf("/");
+                            if(index == -1 || index+1 == test.length()){
+                                retValue.add(secondResult.elementAt(j));
+                            }
                         }
                     }
                 }

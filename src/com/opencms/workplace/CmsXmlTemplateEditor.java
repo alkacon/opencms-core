@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2002/04/24 08:13:51 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2002/05/13 14:49:34 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.workplace;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
+import com.opencms.linkmanagement.*;
 import com.opencms.template.*;
 import org.xml.sax.*;
 import org.w3c.dom.*;
@@ -44,7 +45,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.62 $ $Date: 2002/04/24 08:13:51 $
+ * @version $Revision: 1.63 $ $Date: 2002/05/13 14:49:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -596,6 +597,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
                 originalControlFile.setMasterTemplate(temporaryControlFile.getMasterTemplate());
                 originalControlFile.write();
+                // here we care about the linkmanagement
+                CmsPageLinks linkObject = cms.getPageLinks(file);
+                cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
             } catch (CmsException e){
                 // there was an exception while the file should be saved
                 // return to the editor and show the exception so the user can save the changes
