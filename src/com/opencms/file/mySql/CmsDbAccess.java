@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/10/09 13:12:47 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2000/10/09 18:24:41 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.37 $ $Date: 2000/10/09 13:12:47 $ * 
+ * @version $Revision: 1.38 $ $Date: 2000/10/09 18:24:41 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -182,7 +182,8 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 		   // Test if the file is already there and marked as deleted.
 		   // If so, delete it
 			try {
-			  if (readFileHeader(project.getId(),filename).getState() == C_STATE_DELETED)
+ 		  	CmsResource resource = readFileHeader(project.getId(),filename);
+				if ((resource != null) && (resource.getState() == C_STATE_DELETED))
 			  {
 				  removeFile(project.getId(),filename);
 				  state=C_STATE_CHANGED;
@@ -975,7 +976,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 			   file=readFileHeader(projectId, filename);
 	  
 			   // check if the file is marked as deleted
-			   if (file.getState() == C_STATE_DELETED) {
+				 if ((file != null) && (file.getState() == C_STATE_DELETED)) {
 				   throw new CmsException("["+this.getClass().getName()+"] "+CmsException.C_RESOURCE_DELETED); 
 			   }
 			   // read the file content
