@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/04/24 13:00:31 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2001/04/24 16:09:29 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.24 $ $Date: 2001/04/24 13:00:31 $ *
+ * @version $Revision: 1.25 $ $Date: 2001/04/24 16:09:29 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1161,9 +1161,7 @@ public Vector getAllGroupsOfUser(String username) throws CmsException {
     try {
 	    user = readUser(username, C_USER_TYPE_SYSTEMUSER);
     } catch (CmsException exc){
-        if (exc.getType() == CmsException.C_NOT_FOUND){
-            user = readUser(username, C_USER_TYPE_WEBUSER);
-        }
+        user = readUser(username, C_USER_TYPE_WEBUSER);
     }
 	CmsGroup group;
 	Vector groups = new Vector();
