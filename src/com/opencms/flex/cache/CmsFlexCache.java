@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2003/08/15 17:38:04 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/08/25 10:28:43 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -154,7 +154,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * This is because you need some of the FlexCache data structures
      * for JSP inclusion buffering.<p>
      *
-     * @param openCms the OpenCms instance
+     * @param conf the OpenCms configuration
      */
     public CmsFlexCache(Configurations conf) {
         m_enabled = conf.getBoolean("flex.cache.enabled", true);
@@ -177,7 +177,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 I_CmsEventListener.EVENT_CLEAR_CACHES,
                 I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR       
-            } );
+            });
         }
         
         // make the flex cache available to other classes through the runtime properties
@@ -864,7 +864,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.25 $ 
+     * @version $Revision: 1.26 $ 
      */
     class CmsFlexCacheVariation extends Object implements com.opencms.flex.util.I_CmsFlexLruCacheObject {
         

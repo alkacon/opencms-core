@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/20 16:01:55 $
-* Version: $Revision: 1.384 $
+* Date   : $Date: 2003/08/26 10:01:42 $
+* Version: $Revision: 1.386 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.384 $
+ * @version $Revision: 1.386 $
  */
 public class CmsObject {
 
@@ -1908,34 +1908,8 @@ public class CmsObject {
      *
      * @return the number of file-system-changes.
      */
-    public long getFileSystemChanges() {
-        return (m_driverManager.getFileSystemChanges());
-    }
-
-    /**
-     * This method can be called, to determine if the file-system was changed in the past.
-     * <br>
-     * A module can compare its previously stored number with the returned number.
-     * If they differ, the file system has been changed.
-     *
-     * @return the number of file-system-changes.
-     */
     public long getFileSystemFolderChanges() {
         return (m_driverManager.getFileSystemFolderChanges());
-    }
-
-    /**
-     * Returns a Vector with the complete folder-tree for this project.<br>
-     *
-     * Subfolders can be read from an offline project and the online project. <br>
-     *
-     * @return subfolders A Vector with the complete folder-tree for this project.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    public List getFolderTree() throws CmsException {
-        CmsFolder rootFolder = readFolder(I_CmsConstants.C_ROOT);
-        return m_driverManager.getFolderTree(m_context, rootFolder);
     }
 
     /**

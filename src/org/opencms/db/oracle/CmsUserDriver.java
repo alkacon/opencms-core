@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2003/08/22 14:54:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/25 10:28:43 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,12 +49,11 @@ import java.sql.Timestamp;
 import java.util.Hashtable;
 
 import org.apache.commons.dbcp.DelegatingResultSet;
-import org.apache.commons.dbcp.PoolablePreparedStatement;
 
 /**
  * Oracle/OCI implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.6 $ $Date: 2003/08/22 14:54:43 $
+ * @version $Revision: 1.7 $ $Date: 2003/08/25 10:28:43 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1

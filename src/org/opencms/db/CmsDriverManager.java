@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/25 09:10:43 $
- * Version: $Revision: 1.174 $
+ * Date   : $Date: 2003/08/25 10:28:42 $
+ * Version: $Revision: 1.175 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.174 $ $Date: 2003/08/25 09:10:43 $
+ * @version $Revision: 1.175 $ $Date: 2003/08/25 10:28:42 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -113,11 +113,6 @@ public class CmsDriverManager extends Object {
      * The configured drivers 
      */
     protected HashMap m_drivers = null;
-
-    /**
-     * Constant to count the file-system changes.
-     */
-    protected long m_fileSystemChanges = 0;
 
     /**
      * Constant to count the file-system changes if Folders are involved.
@@ -866,11 +861,9 @@ public class CmsDriverManager extends Object {
      * for this resource.
      */
     public void chstate(CmsRequestContext context, String filename, int state) throws CmsException {
-        boolean isFolder = false;
         CmsResource resource = null;
         // read the resource to check the access
         if (filename.endsWith("/")) {
-            isFolder = true;
             resource = readFolder(context, filename);
         } else {
             resource = (CmsFile) readFileHeader(context, filename);
@@ -893,8 +886,6 @@ public class CmsDriverManager extends Object {
             //clearResourceCache(filename, context.currentProject(), context.currentUser());
             clearResourceCache();
         }
-        // inform about the file-system-change
-        fileSystemChanged(isFolder);
     }
 
     /**
@@ -941,9 +932,6 @@ public class CmsDriverManager extends Object {
         // update the cache
         //clearResourceCache(filename, context.currentProject(), context.currentUser());
         clearResourceCache();
-
-        // inform about the file-system-change
-        fileSystemChanged(false);
     }
 
     /**
@@ -1147,8 +1135,6 @@ public class CmsDriverManager extends Object {
         clearAccessControlListCache();
         m_accessCache.clear();
         clearResourceCache();
-
-        fileSystemChanged(false);
     }
 
     /**
@@ -1232,8 +1218,6 @@ public class CmsDriverManager extends Object {
         clearAccessControlListCache();
         m_resourceListCache.clear();
         m_accessCache.clear();
-        // inform about the file-system-change
-        fileSystemChanged(true);
     }
 
     /**
@@ -1412,10 +1396,6 @@ public class CmsDriverManager extends Object {
         readPath(context,file,true);
         // write the metainfos
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), file, file.getType());
-
-        // inform about the file-system-change
-        fileSystemChanged(false);
-
         return file;
     }
 
@@ -1472,9 +1452,6 @@ public class CmsDriverManager extends Object {
         readPath(context,newFolder,true);
         // write metainfos for the folder
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newFolder, newFolder.getType());
-
-        // inform about the file-system-change
-        fileSystemChanged(true);
         // return the folder
         return newFolder;
     }
@@ -1993,9 +1970,6 @@ public class CmsDriverManager extends Object {
         clearAccessControlListCache();
         clearResourceCache();
         m_accessCache.clear();         
-
-        // update the FS checksum
-        fileSystemChanged(false);
     }
 
     /**
@@ -2062,9 +2036,6 @@ public class CmsDriverManager extends Object {
         clearAccessControlListCache();
         clearResourceCache();
         m_accessCache.clear();
-        
-        // inform about the file-system-change
-        fileSystemChanged(true);
     }
 
     /**
@@ -2605,19 +2576,6 @@ public class CmsDriverManager extends Object {
         
         CmsResource resource = readFileHeader(context, resourcename);
         return m_vfsDriver.getAllVfsSoftLinks(context.currentProject(), resource);
-    }    
-
-    /**
-     * This method is called, when a resource was changed. Currently it counts the
-     * changes.
-     */
-    protected void fileSystemChanged(boolean folderChanged) {
-        // count only the changes - do nothing else!
-        // in the future here will maybe a event-story be added
-        m_fileSystemChanges++;
-        if (folderChanged) {
-            m_fileSystemFolderChanges++;
-        }
     }
 
     protected void finalize() throws Throwable {
@@ -3173,21 +3131,6 @@ public class CmsDriverManager extends Object {
      * @param context the current request context
      * @return the number of file-system-changes.
      */
-    public long getFileSystemChanges() {
-        return m_fileSystemChanges;
-    }
-
-    /**
-     * This method can be called, to determine if the file-system was changed
-     * in the past. A module can compare its previosly stored number with this
-     * returned number. If they differ, a change was made.
-     *
-     * <B>Security:</B>
-     * All users are granted.
-     *
-     * @param context the current request context
-     * @return the number of file-system-changes.
-     */
     public long getFileSystemFolderChanges() {
         return m_fileSystemFolderChanges;
     }
@@ -3232,13 +3175,15 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Creates a HashSet containing all CmsUUID of the subfolders of a given folder.<p>
+     * Creates Set containing all CmsUUIDs of the subfolders of a given folder.<p>
      * 
-     * This HashSet can be used to test if a resource is inside a subtree of the given folder. 
+     * This HashSet can be used to test if a resource is inside a subtree of the given folder.
+     * No permission check is performed on the set of folders, if required this has to be done
+     * in the method that calls this method.<p> 
      *  
      * @param context the current request context
      * @param folder the folder to get the subresources from
-     * @return HahsMap with CmsUUIDs
+     * @return Set of CmsUUIDs
      * @throws CmsException if operation was not succesful
      */
     private Set getFolderIds(CmsRequestContext context, String folder) throws CmsException {
@@ -3252,39 +3197,31 @@ public class CmsDriverManager extends Object {
             // check if this folder is not marked as deleted
             if (fold.getState() != I_CmsConstants.C_STATE_DELETED) {
                 // check the read access to the folder
-                if (hasPermissions(context, fold, I_CmsConstants.C_READ_ACCESS, false)) {
-                    // this is a valid folder, add it to the compare list 
-                    CmsUUID id = fold.getId();
-                    storage.add(id);
-                }
+                storage.add(fold.getId());
             }
         }
         return storage;
     }
 
     /**
-     * Returns a Vector with the complete folder-tree for this project.<br>
+     * Returns a List that contains all folders that are below the given folder in an 
+     * unsorted order.<p>
      *
-     * Subfolders can be read from an offline project and the online project. <br>
-     *
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can read this resource</li>
-     * </ul>
+     * No permission check is performed, if this is required it has to be done 
+     * in the method that calls this method.<p>
      *
      * @param context the current request context
-     * @return subfolders A Vector with the complete folder-tree for this project.
+     * @return subfolders List that contains all folders below the given folder
      *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
-    public List getFolderTree(CmsRequestContext context, CmsResource parentResource) throws CmsException {
+    private List getFolderTree(CmsRequestContext context, CmsResource parentResource) throws CmsException {
         // try to read from cache
         String cacheKey = getCacheKey(context.currentUser().getName() + "_tree", context.currentUser(), context.currentProject(), parentResource.getFullResourceName());
         List retValue = (List) m_resourceListCache.get(cacheKey);
         if (retValue == null || retValue.size() == 0) {
-            List resources = m_vfsDriver.getFolderTree(context.currentProject(), parentResource);
+            retValue = m_vfsDriver.getFolderTree(context.currentProject(), parentResource);
+            /*
             retValue = (List) new ArrayList();
             String lastcheck = "#"; // just a char that is not valid in a filename
 
@@ -3299,6 +3236,7 @@ public class CmsDriverManager extends Object {
                     }
                 }
             }
+            */
             m_resourceListCache.put(cacheKey, retValue);
         }
 
@@ -3559,7 +3497,7 @@ public class CmsDriverManager extends Object {
     public List getResourcesInTimeRange(CmsRequestContext context, String folder, long starttime, long endtime) throws CmsException {
         // get the folder tree
         Set storage = getFolderIds(context, folder);
-        //now get all resources which contain the selected property
+        // now get all resources which contain the selected property
         List resources = m_vfsDriver.getResourcesInTimeRange(context.currentProject().getId(), starttime, endtime);
         // filter the resources inside the tree
         return extractResourcesInTree(context, storage, resources);
@@ -4143,10 +4081,6 @@ public class CmsDriverManager extends Object {
          readPath(context, newResource, true);
          // write metainfos for the folder
          m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newResource, newResource.getType(), true);
-
-         // inform about the file-system-change
-         fileSystemChanged(true);
-
          // return the folder
          return newResource;
      }
@@ -4964,9 +4898,6 @@ public class CmsDriverManager extends Object {
                 throw e;
             } finally {
                 this.clearResourceCache();
-                // inform about the file-system-change
-                fileSystemChanged(true);
-
                 // the project was stored in the backuptables for history
                 //new projectmechanism: the project can be still used after publishing
                 // it will be deleted if the project_flag = C_PROJECT_STATE_TEMP
@@ -7560,7 +7491,6 @@ public class CmsDriverManager extends Object {
         m_vfsDriver.updateResourceState(context.currentProject(), res, C_UPDATE_RESOURCE);
         
         clearResourceCache();
-        fileSystemChanged(res.isFolder());
     }
     
 //    /**
@@ -7749,8 +7679,6 @@ public class CmsDriverManager extends Object {
 
         m_propertyCache.clear();
         m_accessCache.clear();
-        // inform about the file-system-change
-        fileSystemChanged(false);
     }
 
     /**
@@ -8069,9 +7997,6 @@ public class CmsDriverManager extends Object {
         // update the cache
         clearResourceCache();
         m_accessCache.clear();
-
-        // inform about the file-system-change
-        fileSystemChanged(false);
     }
 
     /**
@@ -8144,7 +8069,6 @@ public class CmsDriverManager extends Object {
 
         // inform about the file-system-change
         m_accessCache.clear();
-        fileSystemChanged(false);
     }
 
     /**
@@ -8333,8 +8257,6 @@ public class CmsDriverManager extends Object {
         clearResourceCache();
 
         m_accessCache.clear();
-        // inform about the file-system-change
-        fileSystemChanged(false);
     }
 
     /**

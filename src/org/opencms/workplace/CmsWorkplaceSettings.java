@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/08/25 10:28:42 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.workplace;
 
 import org.opencms.main.OpenCms;
 
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsUser;
 
 
@@ -40,7 +41,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -58,7 +59,6 @@ public class CmsWorkplaceSettings {
     private boolean m_explorerShowLinks;
     
     private int m_explorerPage;
-    private int m_explorerChecksum;
     private String m_explorerFlaturl;
     private String m_permissionDetailView;
     private String m_currentSite;
@@ -68,7 +68,6 @@ public class CmsWorkplaceSettings {
      */
     CmsWorkplaceSettings() { 
         m_explorerPage = 1;
-        m_explorerChecksum = -1;
         m_currentSite = OpenCms.getSiteManager().getDefaultSite().getSiteRoot(); 
     }
     
@@ -197,7 +196,13 @@ public class CmsWorkplaceSettings {
      * @param value the current resource to be displayed in the explorer
      */
     public synchronized void setExplorerResource(String value) {
-        m_explorerResource = value;
+        if (value == null) return;
+        if (value.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/") && (! value.startsWith(m_currentSite))) {
+            // restrict access to /system/ 
+            m_explorerResource = "/";   
+        } else {
+            m_explorerResource = value;
+        }
     }
     
     /**
@@ -234,24 +239,6 @@ public class CmsWorkplaceSettings {
      */
     public synchronized void setExplorerPage(int page) {
         m_explorerPage = page;
-    }
-
-    /**
-     * Returns the explorer checksum.<p>
-     * 
-     * @return the explorer checksum
-     */
-    public int getExplorerChecksum() {
-        return m_explorerChecksum;
-    }
-
-    /**
-     * Sets the explorer checksum.<p>
-     * 
-     * @param value the explorer checksum
-     */
-    public void setExplorerChecksum(int value) {
-        m_explorerChecksum = value;
     }
     
     /**

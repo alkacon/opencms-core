@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/08/25 09:10:42 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/08/25 10:28:42 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,14 +55,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.dbcp.DelegatingPreparedStatement;
-import org.apache.commons.dbcp.DelegatingResultSet;
-
 /**
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/08/25 09:10:42 $
+ * @version $Revision: 1.14 $ $Date: 2003/08/25 10:28:42 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {

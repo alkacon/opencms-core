@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/08/20 11:44:58 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2003/08/25 10:28:42 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,6 @@ import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
@@ -62,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 5.1
  */
@@ -152,19 +151,6 @@ public class CmsExplorer extends CmsWorkplace {
         
         // the flaturl 
         settings.setExplorerFlaturl(request.getParameter("flaturl"));
-        
-        // the checksum
-        int checksum = -1;
-        int increment = (settings.getExplorerChecksum() == -2)?1:0;
-        String check = request.getParameter("check");
-        if (check != null) {
-            try {
-                checksum = Integer.parseInt(check);
-            } catch (NumberFormatException e) {
-                // default is -1
-            }
-        }        
-        settings.setExplorerChecksum(checksum + increment);
     }
     
     /**
@@ -226,7 +212,7 @@ public class CmsExplorer extends CmsWorkplace {
      *
      * @return the html for the explorer file list
      */
-    public String getFileListFunction() { 
+    public String getFileList() { 
         // if mode is "listonly", only the list will be shown
         boolean galleryView = "galleryview".equals(getSettings().getExplorerMode()); 
         // if mode is "projectview", all changed files in that project will be shown
@@ -260,9 +246,6 @@ public class CmsExplorer extends CmsWorkplace {
             }            
         }
         
-        long check = getCms().getFileSystemFolderChanges();
-        boolean newTreePlease = getSettings().getExplorerChecksum() != check;
-        
         // get the currentFolder Id
         CmsUUID currentFolderId;
         if (currentResource.isFile()) {
@@ -292,10 +275,6 @@ public class CmsExplorer extends CmsWorkplace {
         // the onlineProject
         content.append("top.setOnlineProject(");
         content.append(I_CmsConstants.C_PROJECT_ONLINE_ID);
-        content.append(");\n");
-        // set the checksum for the tree
-        content.append("top.setChecksum(");
-        content.append(check);
         content.append(");\n");
         // set the writeAccess for the current Folder       
         boolean writeAccess = "explorerview".equals(getSettings().getExplorerMode());
@@ -563,115 +542,6 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"");
             content.append(");\n");
         }
-
-        // now the tree, only if changed
-        if (newTreePlease && (!(galleryView || projectView))) {
-            content.append("\ntop.rT();\n");
-            List tree = null;
-            try {
-                tree = getCms().getFolderTree();
-            } catch (CmsException e) {
-                tree = new Vector();
-            }
-            int startAt = 1;
-            CmsUUID parentId = CmsUUID.getNullUUID();
-            boolean grey = false;
-
-            if (CmsProject.isOnlineProject(getSettings().getProject())) {
-                // all easy: we are in the onlineProject
-                CmsFolder rootFolder = (CmsFolder)tree.get(0);
-                content.append("top.aC(\"");
-                content.append(rootFolder.getId().hashCode());
-                content.append("\", ");
-                content.append("\"");
-                content.append(getSettings().getMessages().key("title.rootfolder"));
-                content.append("\", \"");
-                content.append(rootFolder.getParentId().hashCode());
-                content.append("\", false);\n");
-                for (int i = startAt; i < tree.size(); i++) {
-                    CmsFolder folder = (CmsFolder)tree.get(i);
-                    content.append("top.aC(\"");
-                    // id
-                    content.append(folder.getId().hashCode());
-                    content.append("\", ");
-                    // name
-                    content.append("\"");
-                    content.append(folder.getResourceName());
-                    content.append("\", \"");
-                    // parentId
-                    content.append(folder.getParentId().hashCode());
-                    content.append("\", false);\n");                    
-                }
-            } else {
-                // offline Project
-                Hashtable idMixer = new Hashtable();
-                CmsFolder rootFolder = (CmsFolder)tree.get(0);
-                String folderToIgnore = null;
-                if (getCms().isInsideCurrentProject(rootFolder)) {
-                    grey = false;
-                } else {
-                    grey = true;
-                }
-                content.append("top.aC(\"");
-                content.append(rootFolder.getId().hashCode());
-                content.append("\", ");
-                content.append("\"");
-                content.append(getSettings().getMessages().key("title.rootfolder"));
-                content.append("\", \"");
-                content.append(rootFolder.getParentId().hashCode());
-                content.append("\", ");
-                content.append(grey);
-                content.append(");\n");
-                for (int i = startAt; i < tree.size(); i++) {
-                    CmsFolder folder = (CmsFolder)tree.get(i);
-                    if ((folder.getState() == I_CmsConstants.C_STATE_DELETED) || (getCms().readAbsolutePath(folder).equals(folderToIgnore))) {
-
-                        // if the folder is deleted - ignore it and the following online res
-                        folderToIgnore = getCms().readAbsolutePath(folder);
-                    } else {
-                        if (! CmsProject.isOnlineProject(folder.getProjectId())) {
-                            //grey = false;
-                            parentId = folder.getParentId();
-                            try {
-                                // the next res is the same res in the online-project: ignore it!
-                                if (getCms().readAbsolutePath(folder).equals(getCms().readAbsolutePath((CmsFolder)tree.get(i + 1)))) {
-                                    i++;
-                                    idMixer.put(tree.get(i), folder.getId());
-                                }
-                            } catch (IndexOutOfBoundsException exc) {
-                            // ignore the exception, this was the last resource
-                            }
-                        } else {
-                            //grey = true;
-                            parentId = folder.getParentId();
-                            if (idMixer.containsKey(parentId)) {
-                                parentId = (CmsUUID) idMixer.get(parentId);
-                            }
-                        }
-                        
-                        if (getCms().isInsideCurrentProject(folder)) {
-                            grey = false;
-                        } else {
-                            grey = true;
-                        }                        
-                        
-                        content.append("top.aC(\"");
-                        // id
-                        content.append(folder.getId().hashCode());
-                        content.append("\", ");
-                        // name
-                        content.append("\"");
-                        content.append(folder.getResourceName());
-                        content.append("\", \"");
-                        // parentId
-                        content.append(parentId.hashCode());
-                        content.append("\", ");
-                        content.append(grey);
-                        content.append(");\n");
-                    }
-                }
-            }
-        }
         
         content.append("top.dU(document,");
         content.append(numberOfPages);
@@ -681,15 +551,6 @@ public class CmsExplorer extends CmsWorkplace {
         
         content.append("}\n");
         return content.toString();
-    }
-    
-    /**
-     * Returns the javascript initialize call for the filelist.<p>
-     *  
-     * @return the javascript initialize call for the filelist
-     */
-    public String getFileListInitializer() {
-        return "initialize();";
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/08/18 15:11:21 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/08/25 10:28:42 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -93,12 +93,6 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
 
     /** The element cache used for the online project */
     private static CmsElementCache m_elementCache;
-
-    /** Value of the filesystem counter, when the last XML file clear cache was done */
-    private static long m_lastFsCounterFile = 0;
-
-    /** Value of the filesystem counter, when the last template clear cache was done */
-    private static long m_lastFsCounterTemplate = 0;
 
     /** The template cache that holds all cached templates */
     protected static I_CmsTemplateCache m_templateCache = new CmsTemplateCache();
@@ -122,14 +116,11 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
      * @param clearTemplates if true, internal template cache is cleared
      */
     private static void clearLoaderCache(CmsObject cms, boolean clearFiles, boolean clearTemplates) {
-        long currentFsCounter = cms.getFileSystemChanges();
-        if (clearFiles || (currentFsCounter > m_lastFsCounterFile)) {
+        if (clearFiles) {
             A_CmsXmlContent.clearFileCache();
-            m_lastFsCounterFile = currentFsCounter;
         }
-        if (clearTemplates || (currentFsCounter > m_lastFsCounterTemplate)) {
+        if (clearTemplates) {
             m_templateCache.clearCache();
-            m_lastFsCounterTemplate = currentFsCounter;
         }        
     }
 

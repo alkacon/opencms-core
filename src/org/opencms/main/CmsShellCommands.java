@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/08/20 16:01:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/25 10:28:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $ $Date: 2003/08/20 16:01:56 $ 
+ * @version $Revision: 1.6 $ $Date: 2003/08/25 10:28:43 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -1266,32 +1266,7 @@ class CmsShellCommands {
             CmsShell.printException(exc);
         }
     }
-
-    /**
-     * This method can be called, to determine if the file-system was changed
-     * in the past. A module can compare its previosly stored number with this
-     * returned number. If they differ, a change was made.
-     */
-    public void getFileSystemChanges() {
-        System.out.println(m_cms.getFileSystemChanges());
-    }
-
-    /**
-     * Returns a Vector with the complete folder-tree for this project.<br>
-     *
-     * Subfolders can be read from an offline project and the online project. <br>
-     */
-    public void getFolderTree() {
-        try {
-            List folders = m_cms.getFolderTree();
-            for (int i = 0; i < folders.size(); i++) {
-                System.out.println(folders.get(i));
-            }
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
+        
     /**
      * Returns all users of the cms.
      */
