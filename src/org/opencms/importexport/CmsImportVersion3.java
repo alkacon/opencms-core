@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/06/04 17:14:37 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -542,8 +542,6 @@ public class CmsImportVersion3 extends A_CmsImport {
                 1, 
                 size
             );
-            // TODO: must read expired / released from manifest
-            int date_warning = 0;
             
             // import this resource in the VFS   
             res = m_cms.importResource(resource, content, properties, m_importPath + destination);

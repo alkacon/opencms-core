@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/06/04 15:42:07 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2004/06/04 17:14:37 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -586,8 +586,6 @@ public class CmsImportVersion2 extends A_CmsImport {
                 1, 
                 size
             );
-            // TODO: must read expired / released from manifest
-            int date_warning = 0;
                         
             if (C_RESOURCE_TYPE_LINK_ID == resourceTypeId) {
                 // store links for later conversion
