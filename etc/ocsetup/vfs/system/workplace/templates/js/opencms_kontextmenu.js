@@ -15,6 +15,9 @@ var letztelyr='null';
 var x=0;
 var y=0;
 
+// decides, if the kontextmenu should be displayed
+var disableKontext = false;
+
 // parameter for the kontextmenu
 var kontextparam;
 var kontextid;
@@ -99,7 +102,7 @@ function mouseClicked(e)
 //----------------------------------------
 function showkontext(welche, parameter, id)
 {
-    if(document.layers != null) {
+    if(disableKontext == false) {
         // set the kontextparameter
         kontextparam = parameter.replace(/\//g, "%2F");
         kontextid = id; 
