@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/27 13:43:15 $
- * Version: $Revision: 1.179 $
+ * Date   : $Date: 2001/07/30 06:14:51 $
+ * Version: $Revision: 1.180 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.179 $ $Date: 2001/07/27 13:43:15 $
+ * @version $Revision: 1.180 $ $Date: 2001/07/30 06:14:51 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2314,7 +2314,7 @@ public void publishResource(String resourcename) throws CmsException {
         // check access to project
         if(isAdmin() || isManagerOfProject()){
             int newProjectId = m_rb.createProject(m_context.currentUser(), m_context.currentProject(),
-                                              "__forPublish","project for single resource publishing","Users",
+                                              "Temporaeres Projekt","Projekt zum Veroeffentlichen einzelner Ressourcen","Users",
                                               "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
             getRequestContext().setCurrentProject(newProjectId);
 	        I_CmsResourceType rt = getResourceType(res.getType());
