@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
- * Date   : $Date: 2000/04/18 13:30:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/04/28 08:58:46 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/04/18 13:30:26 $
+ * @version $Revision: 1.3 $ $Date: 2000/04/28 08:58:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -180,7 +180,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
         for (int i=0;i<folders.size();i++) {
 			folder = (CmsFolder)folders.elementAt(i);
 			
-			if(! folder.inProject(cms.onlineProject())){			
+			if( (! folder.inProject(cms.onlineProject())) && checkAccess(cms, folder) ){
 				if(folder.getState() != C_STATE_UNCHANGED) {
 					addResource(resources, filter, (A_CmsResource)folder);
 				}
@@ -191,7 +191,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
         for (int i=0;i<files.size();i++) {
 			file = (CmsFile)files.elementAt(i);
 			if( ( !file.inProject(cms.onlineProject()) )&& 
-				(file.getState() != C_STATE_UNCHANGED) ) {
+				(file.getState() != C_STATE_UNCHANGED) && checkAccess(cms, file) ) {
 				addResource(resources, filter, (A_CmsResource)file);
 			}
         } 
@@ -270,4 +270,32 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
         filelistTemplate.setData("SHORTNAME_VALUE", name);
         filelistTemplate.setData("PATH_VALUE", path);        
     }    
+
+     /** 
+      * Check if this resource should be displayed in the filelist.
+      * @param cms The CmsObject
+      * @param res The resource to be checked.
+      * @return True or false.
+      * @exception CmsException if something goes wrong.
+      */
+     private boolean checkAccess(A_CmsObject cms, CmsResource res)
+     throws CmsException {
+         boolean access=false;
+         int accessflags=res.getAccessFlags();
+         
+         // First check if the user may have access by one of his groups.
+         boolean groupAccess = false;
+         Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
+         while((!groupAccess) && allGroups.hasMoreElements()) {
+             groupAccess = cms.readGroup(res).equals((A_CmsGroup)allGroups.nextElement());
+         }
+         
+         if ( ((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) ||
+              (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_VISIBLE) > 0) ||
+              (groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0) ||
+              (cms.getRequestContext().currentUser().getName().equals(C_USER_ADMIN))) {
+             access=true;
+         }
+         return access;
+     }
 }
