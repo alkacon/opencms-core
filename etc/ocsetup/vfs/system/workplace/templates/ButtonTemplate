@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <WP_BUTTONS>
-	<defaultbutton><![CDATA[<A href="]]><PROCESS>href</PROCESS><![CDATA[" onmousedown="ChPush(']]><PROCESS>name</PROCESS><![CDATA[');doEdit(]]><PROCESS>action</PROCESS><![CDATA[);" onmouseout="ChOff(']]><PROCESS>name</PROCESS><![CDATA[')" onmouseover="ChOn(']]><PROCESS>name</PROCESS><![CDATA[')" onmouseup="ChOn(']]><PROCESS>name</PROCESS><![CDATA[')"><IMG alt="]]><PROCESS>alt</PROCESS><![CDATA[" border=0 name=]]><PROCESS>name</PROCESS><![CDATA[ src="../pics/]]><PROCESS>name</PROCESS><![CDATA[_off.gif" ></a>]]></defaultbutton>
+	<defaultbutton><![CDATA[<A href="]]><PROCESS>href</PROCESS><![CDATA[" onmousedown="ChPush(']]><PROCESS>name</PROCESS><![CDATA[');]]><PROCESS>action</PROCESS><![CDATA[" onmouseout="ChOff(']]><PROCESS>name</PROCESS><![CDATA[')" onmouseover="ChOn(']]><PROCESS>name</PROCESS><![CDATA[')" onmouseup="ChOn(']]><PROCESS>name</PROCESS><![CDATA[')"><IMG alt="]]><PROCESS>alt</PROCESS><![CDATA[" border=0 name=]]><PROCESS>name</PROCESS><![CDATA[ src="../pics/]]><PROCESS>name</PROCESS><![CDATA[_off.gif" ></a>]]></defaultbutton>
 	<buttonseparator><![CDATA[<IMG border=0 height=32 src="../pics/gr_line.gif" width=2>]]></buttonseparator>
 	<submitbutton><![CDATA[<input type="submit" class="]]><PROCESS>style</PROCESS><![CDATA[" width=]]><PROCESS>width</PROCESS><![CDATA[ value="]]><PROCESS>value</PROCESS><![CDATA[" name="]]><PROCESS>name</PROCESS><![CDATA[" id="]]><PROCESS>name</PROCESS><![CDATA[" ]]><PROCESS>action</PROCESS><![CDATA[>]]></submitbutton>
 </WP_BUTTONS>

@@ -28,34 +28,34 @@ function setText()
 <form id=EDITTEXT name=EDITTEXT>
 <table cellspacing=0 cellpadding=0 border=0 width="100%" height="100%">
 	<tr>
-		<td class=menu>]]><BUTTON href="#" name="bt_close" action="1" alt="close"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_saveclose" action="2" alt="saveclose"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_save" action="3" alt="save"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_close" action="doEdit(1);" alt="close"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_saveclose" action="doEdit(2);" alt="saveclose"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_save" action="doEdit(3);" alt="save"/><![CDATA[</td>
 		
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_undo" action="4" alt="undo"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_redo" action="5" alt="redo"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_undo" action="doEdit(4);" alt="undo"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_redo" action="doEdit(5);" alt="redo"/><![CDATA[</td>
 
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_search" action="6" alt="search"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_searchreplace" action="7" alt="searchreplace"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_goto" action="8" alt="goto"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_search" action="doEdit(6);" alt="search"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_searchreplace" action="doEdit(7);" alt="searchreplace"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_goto" action="doEdit(8);" alt="goto"/><![CDATA[</td>
 		
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_cut" action="9" alt="cut"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_copy" action="10" alt="copy"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_paste" action="11" alt="paste"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_cut" action="doEdit(9);" alt="cut"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_copy" action="doEdit(10);" alt="copy"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_paste" action="doEdit(11);" alt="paste"/><![CDATA[</td>
 		
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_fileimport" action="12" alt="fileimport"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_fileexport" action="13" alt="fileexport"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_fileexportas" action="14" alt="fileexportas"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_fileimport" action="doEdit(12);" alt="fileimport"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_fileexport" action="doEdit(13);" alt="fileexport"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_fileexportas" action="doEdit(14);" alt="fileexportas"/><![CDATA[</td>
 		
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON name="bt_print" action="15" alt="print"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON name="bt_print" action="doEdit(15);" alt="print"/><![CDATA[</td>
 		
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="javascript:openwin('help/standard.html', 'Hilfe', 300, 600);" name="bt_hilfe" action="16" alt="help"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="javascript:openwin('help/standard.html', 'Hilfe', 300, 600);" name="bt_hilfe" action="doEdit(16);" alt="help"/><![CDATA[</td>
 
 		<td class=menu width="100%">&nbsp;</td> 
 	</tr>
