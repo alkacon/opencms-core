@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/08/17 15:37:57 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/08/17 17:25:54 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -365,7 +365,11 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                         parameters.put("_ELEMENT_", elDef.getName());
                         parameters.put(elDef.getName() + "._TEMPLATE_", elDef.getTemplateName());
                         parameters.put(elDef.getName() + "._CLASS_", elDef.getClassName());
-                        parameters.put(elDef.getName() + "._TEMPLATESELECTOR_", elDef.getTemplateSelector());
+                        if(elDef.getTemplateSelector()!= null) {
+                            parameters.put(elDef.getName() + "._TEMPLATESELECTOR_", elDef.getTemplateSelector());
+                        } else {
+                            parameters.put(elDef.getName() + "._TEMPLATESELECTOR_", "default");
+                        }
                         // Try to get the corresponding element using the element locator
                         A_CmsElement subEl = elementCache.getElementLocator().get(cms, elDef.getDescriptor(), parameters);
                         if(resolveDebug) System.err.println("= Element defintion for \"" + lookupName +"\" says: ");
