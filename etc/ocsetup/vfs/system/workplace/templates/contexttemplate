@@ -17,6 +17,14 @@
 		]]>
 	</CONTEXTENTRY>
 	
+	<CONTEXTDISABLED>
+		<![CDATA[
+		<TR><TD>
+		<A class=inaktiv>]]><PROCESS>name</PROCESS><![CDATA[</A> 
+		</TD></TR>
+		]]>
+	</CONTEXTDISABLED>
+	
 	<CONTEXTSPACER>
 		<![CDATA[
 			<tr><td><hr></td></tr>

@@ -15,7 +15,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/02/08 15:45:03 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/08 15:58:39 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -62,11 +62,15 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement, I
 				if(e.getTagName().toLowerCase().equals("contextspacer")) {
 					// append a spacer
 					result.append(context.getProcessedXmlDataValue("CONTEXTSPACER", callingObject, parameters));
-				} else {
+				} else if(e.getTagName().toLowerCase().equals("contextentry")){
 					// append a entry
 					context.setXmlData("name", lang.getLanguageValue(e.getAttribute("name")));
 					context.setXmlData("href", e.getAttribute("href"));
 					result.append(context.getProcessedXmlDataValue("CONTEXTENTRY", callingObject, parameters));
+				} else if(e.getTagName().toLowerCase().equals("contextdisabled")){
+					// append a entry
+					context.setXmlData("name", lang.getLanguageValue(e.getAttribute("name")));
+					result.append(context.getProcessedXmlDataValue("CONTEXTDISABLED", callingObject, parameters));
 				}
 			}
 		}
