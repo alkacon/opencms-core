@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/08/08 09:42:38 $
-* Version: $Revision: 1.330 $
+* Date   : $Date: 2002/08/13 07:48:53 $
+* Version: $Revision: 1.331 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.330 $ $Date: 2002/08/08 09:42:38 $
+ * @version $Revision: 1.331 $ $Date: 2002/08/13 07:48:53 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -6280,7 +6280,12 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
         throws CmsException {
 
         CmsUser user = m_dbAccess.readUser(userName, C_USER_TYPE_SYSTEMUSER);
-        return m_dbAccess.readTasks(currentProject, user, null, null, taskType, orderBy, sort);
+        CmsProject project = null;
+        // try to read the project, if projectId == -1 we must return the tasks of all projects
+        if(projectId != C_UNKNOWN_ID){
+            project = m_dbAccess.readProject(projectId);
+        }
+        return m_dbAccess.readTasks(project, user, null, null, taskType, orderBy, sort);
     }
     /**
      * Returns a user object.<P/>
