@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHtmlExtractor.java,v $
- * Date   : $Date: 2004/10/28 13:20:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/16 16:57:59 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,9 @@
 // Revision Control Information
 //
 // $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHtmlExtractor.java,v $
-// $Author: a.kandzior $
-// $Date: 2004/10/28 13:20:53 $
-// $Revision: 1.3 $
+// $Author: c.weinholz $
+// $Date: 2004/11/16 16:57:59 $
+// $Revision: 1.4 $
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -74,7 +74,7 @@ import org.htmlparser.visitors.NodeVisitor;
 /**
  * Extracts plain text from HTML.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2004/10/28 13:20:53 $
+ * @version $Revision: 1.4 $ $Date: 2004/11/16 16:57:59 $
  * @author  Carsten Weinholz (c.weinholz@alkacon.com)
  *
  * @author Derrick Oswald
@@ -298,7 +298,7 @@ public class CmsHtmlExtractor extends NodeVisitor {
         
         String result = m_buffer.toString();
         m_buffer = null;
-        return result.substring(CmsLinkProcessor.C_HTML_START.length(), result.length() - CmsLinkProcessor.C_HTML_END.length()); 
+        return result; 
     }
 
     //
