@@ -145,7 +145,7 @@
 				<td class=menu width="100%" align=right>]]><BUTTON href="#" name="bt_docpreview" action="javascript:doTemplSubmit(5);" alt="preview"/><![CDATA[</td>
 			</tr>
 		</table>
-		<hr height=1>
+		<hr>
 		<table>
 			<tr>
 				<td class=menubold>]]><LABEL value="input.body"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
- * Date   : $Date: 2000/06/02 13:02:08 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2001/01/04 14:06:33 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -244,6 +244,10 @@ function DisplayChanged()
 	document.all.FONTSIZE.disabled = false;
     document.all.FONTSIZE.value = document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTSIZE, OLECMDEXECOPT_DODEFAULT);
   }
+  
+  if(document.activeElement != EDITOR.EDIT_HTML) {
+    EDITOR.EDIT_HTML.focus();
+  }
 }
 
 // which button is clicked
@@ -463,18 +467,16 @@ function MENU_FILE_IMPORT_onclick()
 }
 function MENU_FILE_EXPORT_onclick()
 {
-  if (EDITOR.EDIT_HTML.IsDirty) {
-    if (EDITOR.EDIT_HTML.CurrentDocumentPath != "") {
-      var path;
-      
-      path = EDITOR.EDIT_HTML.CurrentDocumentPath;
-      if (path.substring(0, 7) == "http://")
-        EDITOR.EDIT_HTML.SaveDocument("", true);
-      else
-        EDITOR.EDIT_HTML.SaveDocument(EDITOR.EDIT_HTML.CurrentDocumentPath, false);
-    } else {
+  if (EDITOR.EDIT_HTML.CurrentDocumentPath != "") {
+    var path;
+    
+    path = EDITOR.EDIT_HTML.CurrentDocumentPath;
+    if (path.substring(0, 7) == "http://")
       EDITOR.EDIT_HTML.SaveDocument("", true);
-    }
+    else
+      EDITOR.EDIT_HTML.SaveDocument(EDITOR.EDIT_HTML.CurrentDocumentPath, false);
+  } else {
+    EDITOR.EDIT_HTML.SaveDocument("", true);
   }
   EDITOR.EDIT_HTML.focus();
 }

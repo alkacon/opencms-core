@@ -45,7 +45,7 @@
 		<td class=menu>]]><BUTTON href="#" name="bt_bold" action="doEditHTML(24);" alt="bold"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_italic" action="doEditHTML(25);" alt="italic"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_underline" action="doEditHTML(26);" alt="underline"/><![CDATA[</td>
-		<td class=menu width="100%" align="center">]]><BUTTONSEPARATOR/><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu align="center">]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_alignleft" action="doEditHTML(31);" alt="alignleft"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_aligncenter" action="doEditHTML(32);" alt="aligncenter"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_alignright" action="doEditHTML(33);" alt="alignright"/><![CDATA[</td>
