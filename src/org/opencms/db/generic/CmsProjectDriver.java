@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/02/23 23:27:03 $
- * Version: $Revision: 1.151 $
+ * Date   : $Date: 2004/03/01 15:50:50 $
+ * Version: $Revision: 1.152 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.151 $ $Date: 2004/02/23 23:27:03 $
+ * @version $Revision: 1.152 $ $Date: 2004/03/01 15:50:50 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -920,7 +920,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             // in any case by removing it's content ID from the set of published content IDs
                             m_driverManager.getVfsDriver().removeFile(onlineProject, offlineFileHeader, true);
                             publishedContentIds.remove(offlineFileHeader.getFileId());
-                            m_driverManager.getProjectDriver().publishFileContent(context.currentProject(), onlineProject, offlineFileHeader, publishedContentIds);
+                            newFile = m_driverManager.getProjectDriver().publishFileContent(context.currentProject(), onlineProject, offlineFileHeader, publishedContentIds);
                         } catch (CmsException e1) {
                             if (OpenCms.getLog(this).isErrorEnabled()) {
                                 OpenCms.getLog(this).error("Error creating resource " + offlineFileHeader.toString(), e);
