@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/01/29 18:06:00 $
- * Version: $Revision: 1.183 $
+ * Date   : $Date: 2001/02/01 13:30:15 $
+ * Version: $Revision: 1.184 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.183 $ $Date: 2001/01/29 18:06:00 $ * 
+ * @version $Revision: 1.184 $ $Date: 2001/02/01 13:30:15 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -970,6 +970,17 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		} catch (CmsException e) {
 			if (e.getType() == CmsException.C_FILE_EXISTS) {
 				throw e;
+			}	
+			if (e.getType() == CmsException.C_NOT_FOUND) {
+				try{
+					// Test if Folder is in OnlineProject
+					readFolder(C_PROJECT_ONLINE_ID, foldername);
+					throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
+				}catch(CmsException e2){
+					if (e2.getType() == CmsException.C_FILE_EXISTS ){
+						throw e2;
+					}
+				}
 			}	
 		}
 		int resourceId = nextId(C_TABLE_RESOURCES);
