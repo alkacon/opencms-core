@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2003/11/13 10:29:27 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/11/17 07:48:39 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.collections.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -999,19 +999,19 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             m_map = Collections.synchronizedMap(new HashMap(CmsFlexCache.C_INITIAL_CAPACITY_VARIATIONS));
         }
    
-        /**
-         * @see java.lang.Object#finalize()
-         */
-        protected void finalize() throws java.lang.Throwable {
-            try {
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Finalizing FlexCache variation: " + this);
-                }
-            } catch (Throwable t) {
-                // ignore
-            }
-            super.finalize();      
-        }     
+//        /**
+//         * @see java.lang.Object#finalize()
+//         */
+//        protected void finalize() throws java.lang.Throwable {
+//            try {
+//                if (OpenCms.getLog(this).isDebugEnabled()) {
+//                    OpenCms.getLog(this).debug("Finalizing FlexCache variation: " + this);
+//                }
+//            } catch (Throwable t) {
+//                // ignore
+//            }
+//            super.finalize();      
+//        }     
     }    
     
     /**
