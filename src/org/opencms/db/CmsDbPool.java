@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2004/08/10 15:44:19 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/11/22 20:45:49 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.23 $ $Date: 2004/08/10 15:44:19 $
+ * @version $Revision: 1.24 $ $Date: 2004/11/22 20:45:49 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -233,13 +233,26 @@ public final class CmsDbPool extends Object {
             
         // create an instance of the JDBC driver
         Class.forName(jdbcDriver).newInstance();
-
+        
         // initialize a keyed object pool to store connections
-        GenericObjectPool connectionPool = null;
+        GenericObjectPool connectionPool = new GenericObjectPool(null);
 
-        // use the generic pool
-        connectionPool = new GenericObjectPool(null);
-
+        /* Abandoned pool configuration:
+         *  
+         * In case the systems encounters "pool exhaustion" (runs out of connections),
+         * comment the above line with "new GenericObjectPool(null)" and uncomment the 
+         * 5 lines below. This will generate an "abandoned pool" configuration that logs 
+         * abandoned connections to the System.out. Unfortunatly this code is deprecated,
+         * so to avoid code warnings it's also disabled here. 
+         * Tested with commons-pool v 1.2.
+         */
+        
+//        AbandonedConfig abandonedConfig = new AbandonedConfig();
+//        abandonedConfig.setLogAbandoned(true);
+//        abandonedConfig.setRemoveAbandoned(true);
+//        abandonedConfig.setRemoveAbandonedTimeout(5);
+//        GenericObjectPool connectionPool = new AbandonedObjectPool(null, abandonedConfig);
+        
         // initialize an object pool to store connections
         connectionPool.setMaxActive(maxActive);
         connectionPool.setMaxIdle(maxIdle);
@@ -253,29 +266,32 @@ public final class CmsDbPool extends Object {
         if (jdbcUrlParams != null) {
             jdbcUrl += jdbcUrlParams;
         }
+        
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
-
-        // initialize a keyed object pool to store PreparedStatements
-        //KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory();
-        //KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory(null, 5000, 0);
-
+        
         // Set up statement pool, if desired
         GenericKeyedObjectPoolFactory statementFactory = null;
         if (poolingStmts) {
             statementFactory = new GenericKeyedObjectPoolFactory(null, maxActiveStmts, whenStmtsExhaustedAction, maxWaitStmts, maxIdleStmts);
-        }
+        }       
         
         // initialize a factory to obtain pooled connections and prepared statements
-        new PoolableConnectionFactory(connectionFactory, connectionPool, statementFactory, testQuery, false, true);
-
+        new PoolableConnectionFactory(
+            connectionFactory,
+            connectionPool,
+            statementFactory,
+            testQuery,
+            false,
+            true);
+        
         // initialize a new pooling driver using the pool
         PoolingDriver driver = new PoolingDriver();
-        driver.registerPool(poolUrl, connectionPool);
+        driver.registerPool(poolUrl, connectionPool);        
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Init. JDBC pool      : " + poolUrl + " (" + jdbcUrl + ")");
         }
-                
+             
         return driver;
     } 
 

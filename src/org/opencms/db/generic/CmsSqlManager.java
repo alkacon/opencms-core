@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/11/22 18:03:06 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2004/11/22 20:45:49 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -58,7 +59,7 @@ import java.util.Properties;
  * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.44 $ $Date: 2004/11/22 18:03:06 $
+ * @version $Revision: 1.45 $ $Date: 2004/11/22 20:45:49 $
  * @since 5.1
  */
 public class CmsSqlManager implements Serializable, Cloneable {
@@ -126,6 +127,10 @@ public class CmsSqlManager implements Serializable, Cloneable {
         } catch (Throwable t) {
             OpenCms.getLog(org.opencms.db.generic.CmsSqlManager.class.getName()).error(". SQL manager class '" + classname  + "' could not be instanciated", t);
             sqlManager = null;
+        }
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver SQL manager   : " + classname);
         }
         
         return sqlManager;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/11/22 18:03:05 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/11/22 20:45:49 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -422,9 +422,9 @@ public final class CmsSecurityManager {
     public void changeLastModifiedProjectId(CmsRequestContext context, CmsResource resource) throws CmsException {
         
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check the access permissions
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.changeLastModifiedProjectId(dbc, resource);
         } catch (Exception e) {
             dbc.report(
@@ -599,6 +599,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);      
         try {
+            // check the access permissions
             checkPermissions(dbc, resource, requiredPermissions, checkLock, filter);
         } finally {
             dbc.clear();
@@ -617,9 +618,9 @@ public final class CmsSecurityManager {
     public void chflags(CmsRequestContext context, CmsResource resource, int flags) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check if the user has write access 
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);               
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);               
             m_driverManager.chflags(dbc, resource, flags);
         } catch (Exception e) {
             dbc.report(null, "Error changing flags of " + resource.getRootPath(), e);
@@ -640,9 +641,9 @@ public final class CmsSecurityManager {
     public void chtype(CmsRequestContext context, CmsResource resource, int type) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check if the user has write access 
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.chtype(dbc, resource, type);
         } catch (Exception e) {
             dbc.report(null, "Error changing resource type of " + resource.getRootPath(), e);
@@ -664,9 +665,9 @@ public final class CmsSecurityManager {
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check the permissions
-        checkPermissions(dbc, destination, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
         try {
+            // check the access permissions
+            checkPermissions(dbc, destination, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
             m_driverManager.copyAccessControlEntries(dbc, source, destination);
         } catch (Exception e) {
             dbc.report(null, "Error copying ACEs from " + source.getRootPath() + " to " + destination.getRootPath(), e);
@@ -1300,9 +1301,9 @@ public final class CmsSecurityManager {
     public void deleteResource(CmsRequestContext context, CmsResource resource, int siblingMode) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check if the user has write access 
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.deleteResource(dbc, resource, siblingMode);
         } catch (Exception e) {
             dbc.report(null, "Error deleting resource " + resource.getRootPath(), e);
@@ -2081,8 +2082,8 @@ public final class CmsSecurityManager {
         boolean checkLock,
         CmsResourceFilter filter) throws CmsException {
         
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
         int result = 0;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
         try {
             result = hasPermissions(dbc, resource, requiredPermissions, checkLock, filter);
         } finally {
@@ -2111,8 +2112,9 @@ public final class CmsSecurityManager {
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
             m_driverManager.importAccessControlEntries(dbc, resource, acEntries);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -2303,9 +2305,9 @@ public final class CmsSecurityManager {
     public void lockResource(CmsRequestContext context, CmsResource resource, int mode) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check if the user has write access to the resource
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
             m_driverManager.lockResource(dbc, resource, mode);
         } catch (Exception e) {
             dbc.report(null, "Error deleting resource " + resource.getRootPath(), e);
@@ -2548,10 +2550,11 @@ public final class CmsSecurityManager {
      */
     public List readAllBackupFileHeaders(CmsRequestContext context, String resourcename) throws CmsException {
         
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        CmsResource resource = readResource(dbc, resourcename, CmsResourceFilter.ALL);        
         List result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
+            // read the resource first (this will check for read permissions)
+            CmsResource resource = readResource(dbc, resourcename, CmsResourceFilter.ALL);        
             result = m_driverManager.readAllBackupFileHeaders(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -2620,12 +2623,11 @@ public final class CmsSecurityManager {
      */
     public CmsBackupResource readBackupFile(CmsRequestContext context, int tagId, String filename) throws CmsException {
         
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context); 
-        // read the resource (also checks read permission)
-        CmsResource resource = readResource(dbc, filename, CmsResourceFilter.ALL);
-        // now read the backup resource  
         CmsBackupResource result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context); 
         try {
+            // read the resource first (this will check for read permissions)
+            CmsResource resource = readResource(dbc, filename, CmsResourceFilter.ALL);
             result = m_driverManager.readBackupFile(dbc, tagId, resource);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -2683,10 +2685,11 @@ public final class CmsSecurityManager {
         boolean getFolders,
         boolean getFiles) throws CmsException {
 
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);      
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
         List result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);      
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
             result = m_driverManager.readChildResources(dbc, resource, filter, getFolders, getFiles);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -2709,12 +2712,11 @@ public final class CmsSecurityManager {
      */
     public CmsFile readFile(CmsRequestContext context, String filename, CmsResourceFilter filter) throws CmsException {
 
-        CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
-        // first read as resource, this also checks the permissions
-        CmsResource resource = readResource(dbc, filename, filter);
-        // now read the full file content
         CmsFile result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context); 
         try {
+            // read the resource first (this will check for read permissions)
+            CmsResource resource = readResource(dbc, filename, filter);
             result = m_driverManager.readFile(dbc, resource, filter);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -2738,8 +2740,8 @@ public final class CmsSecurityManager {
     public CmsFolder readFolder(CmsRequestContext context, String resourcename, CmsResourceFilter filter)
     throws CmsException {
         
-        CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
         CmsFolder result = null;
+        CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
         try {
             result = readFolder(dbc, resourcename, filter);
         } catch (Exception e) {
@@ -3196,12 +3198,11 @@ public final class CmsSecurityManager {
     public CmsProperty readPropertyObject(CmsRequestContext context, String resourceName, String key, boolean search)
     throws CmsException {
 
-        CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
-        // read the resource first (also checks the permissions)
-        CmsResource resource = readResource(dbc, resourceName, CmsResourceFilter.ALL);
-        // now read the property         
         CmsProperty result = null;
+        CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
         try {
+            // read the resource first (this will check for read permissions)
+            CmsResource resource = readResource(dbc, resourceName, CmsResourceFilter.ALL);
             result = m_driverManager.readPropertyObject(dbc, resource, key, search);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -3226,12 +3227,11 @@ public final class CmsSecurityManager {
     public List readPropertyObjects(CmsRequestContext context, String resourceName, boolean search) 
     throws CmsException {
 
-        CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
-        // read the resource first (also checks the permissions)
-        CmsResource resource = readResource(dbc, resourceName, CmsResourceFilter.ALL);
-        // now read the property
         List result = null;
+        CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
         try {
+            // read the resource first (this will check for read permissions)
+            CmsResource resource = readResource(dbc, resourceName, CmsResourceFilter.ALL);
             result = m_driverManager.readPropertyObjects(dbc, resource, search);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -3283,8 +3283,8 @@ public final class CmsSecurityManager {
         String resourcePath,
         CmsResourceFilter filter) throws CmsException {
 
-        CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
         CmsResource result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context); 
         try {
             result = readResource(dbc, resourcePath, filter);
         } catch (Exception e) {
@@ -3309,10 +3309,11 @@ public final class CmsSecurityManager {
     public List readResources(CmsRequestContext context, CmsResource parent, CmsResourceFilter filter, boolean readTree)
     throws CmsException {
 
-        CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
-        checkPermissions(dbc, parent, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
         List result = null;
+        CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
         try {
+            // check the access permissions
+            checkPermissions(dbc, parent, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
             result = m_driverManager.readResources(dbc, parent, filter, readTree);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -3364,12 +3365,11 @@ public final class CmsSecurityManager {
     public List readSiblings(CmsRequestContext context, String resourcename, CmsResourceFilter filter)
     throws CmsException {
 
-        CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
-        // read the base resource first (will also check the permissions)
-        CmsResource resource = readResource(dbc, resourcename, filter);
-        // now read the siblings
         List result = null;
+        CmsDbContext dbc =  m_dbContextFactory.getDbContext(context); 
         try {
+            // read the resource first (this will check for read permissions)
+            CmsResource resource = readResource(dbc, resourcename, filter);
             result = m_driverManager.readSiblings(dbc, resource, filter);
         } catch (Exception e) {
             dbc.report(null, null, e);
@@ -3717,9 +3717,9 @@ public final class CmsSecurityManager {
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check the permissions
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
             m_driverManager.removeAccessControlEntry(dbc, resource, principal);
         } catch (Exception e) {
             dbc.report(null, "Error removing ACE on resource " + resource.getRootPath(), e);
@@ -3779,9 +3779,9 @@ public final class CmsSecurityManager {
         List properties) throws CmsException {
      
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check if the user has write access 
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.replaceResource(dbc, resource, type, content, properties);
         } catch (Exception e) {
             dbc.report(null, "Error replacing resource " + resource.getRootPath(), e);
@@ -3829,9 +3829,9 @@ public final class CmsSecurityManager {
     public void restoreResource(CmsRequestContext context, CmsResource resource, int tag) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check if the user has write access 
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.restoreResource(dbc, resource, tag);
         } catch (Exception e) {
             dbc.report(null, "Error restoring resource " + resource.getRootPath(), e);
@@ -4005,9 +4005,9 @@ public final class CmsSecurityManager {
         long dateExpired) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        //  check if the user has write access
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
             m_driverManager.touch(dbc, resource, dateLastModified, dateReleased, dateExpired);
         } catch (Exception e) {
             dbc.report(null, "Error touching resource " + resource.getRootPath(), e);
@@ -4031,9 +4031,9 @@ public final class CmsSecurityManager {
     public void undoChanges(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check if the user has write access
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.undoChanges(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, "Error undoing changes of resource " + resource.getRootPath(), e);
@@ -4077,9 +4077,9 @@ public final class CmsSecurityManager {
     public void unlockResource(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check if the user has write access to the resource
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.unlockResource(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, "Error undoing changes of resource " + resource.getRootPath(), e);
@@ -4156,9 +4156,9 @@ public final class CmsSecurityManager {
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check the permissions
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
             m_driverManager.writeAccessControlEntry(dbc, resource, ace);
         } catch (Exception e) {
             dbc.report(null, "Error writing ACE on resource " + resource.getRootPath(), e);
@@ -4190,10 +4190,10 @@ public final class CmsSecurityManager {
     public CmsFile writeFile(CmsRequestContext context, CmsFile resource) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check if the user has write access 
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
         CmsFile result = null;
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             result = m_driverManager.writeFile(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, "Error writing file " + resource.getRootPath(), e);
@@ -4247,9 +4247,9 @@ public final class CmsSecurityManager {
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check the permissions
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
             m_driverManager.writePropertyObject(dbc, resource, property);
         } catch (Exception e) {
             dbc.report(
@@ -4281,9 +4281,10 @@ public final class CmsSecurityManager {
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check the permissions
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
+
             // write the properties
             m_driverManager.writePropertyObjects(dbc, resource, properties);
 
@@ -4313,9 +4314,9 @@ public final class CmsSecurityManager {
     public void writeResource(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        // check if the user has write access 
-        checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.writeResource(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, "Error writing resource " + resource.getRootPath(), e);
