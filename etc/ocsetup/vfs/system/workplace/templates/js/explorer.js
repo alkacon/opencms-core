@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-* Date   : $Date: 2002/03/07 14:54:08 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2002/04/24 07:05:35 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@
   * If we are in project-view mode this is set to true
   */
  var projectView = false;
-
+ 
   /**
    *  contains information about the actual help page.
    *  instead of the function show_help every template displayed in the explorer view
@@ -285,6 +285,14 @@ var ns,ie,gecko;
      }
  //    window.frames[1].frames[1].frames[0].document.forms[0].document.location.href=window.frames[1].frames[1].frames[0].document.forms[0].url.value;
     openurl();
+ }
+ 
+ /**
+  *  display search form
+  */
+ function dispSearchForm(){
+	top.window.frames[1].frames[0].document.location="ocms_searchform.html";
+	top.window.frames[1].frames[1].document.location="explorer_files.html?mode=projectview&submode=search";
  }
 
  /**
@@ -772,10 +780,14 @@ function showTree(doc,windowed) {
      if(window.frames[1].frames[1].frames[0].document.forms[0].url.value=="/") bt_up.src = vi.iconPath+'bt_up_in.gif';
      else bt_up.src = vi.iconPath+'bt_up_off.gif';
 
+     bt_search = new Image(32,32);
+     bt_search.src = vi.iconPath+'bt_search_off.gif';
+     
      eval("doc.images[0].src=bt_back.src;");
      eval("doc.images[1].src=bt_up.src;");
-     eval("doc.images[2].src=bt_new.src;");
-     eval("doc.images[3].src=bt_folder.src;");
+     eval("doc.images[2].src=bt_search.src;");
+     eval("doc.images[3].src=bt_new.src;");
+     eval("doc.images[4].src=bt_folder.src;");
  }
 
  /**
@@ -820,7 +832,10 @@ if(pages>1){
             "<img alt='"+vr.langback+"' src='"+vi.iconPath+"bt_back_off.gif' width=32 height=32  border=0 name='bt_back'></a></td>"+
             "<td class=menu nowrap width=32px>"+
             dirup+
-            "<img alt='"+vr.langup+"' name='bt_up' src='"+vi.iconPath+"bt_up_off.gif' width=32 height=32 border=0 name=bt_up ></a></td>";
+            "<img alt='"+vr.langup+"' name='bt_up' src='"+vi.iconPath+"bt_up_off.gif' width=32 height=32 border=0 name=bt_up ></a></td>"+
+            "<td class=menu nowrap width=32px>"+
+            "<a href=javascript:top.dispSearchForm(); onmouseover=\"top.chon(document,'bt_search');\" onmouseout=\"top.choff(document,'bt_search');\" >"+
+            "<img alt='"+vr.langsearch+"' src='"+vi.iconPath+"bt_search_off.gif' width=32 height=32  border=0 name='bt_search'></a></td>";
 
     var headFoot="<td class=menu width=30px nowrap align=right>&nbsp;</td>"+
             "<td class=menubold nowrap align=right valign=middle><img border=0 id='bt_folder' src='"+vi.iconPath+"ic_file_folder.gif' width=16 height=16></td>"+
@@ -1313,19 +1328,17 @@ showKontext(doc, welche, id,x,y);
 
 function dU(doc, pages, actpage){
 
-
     vi.lastLayer=null;
     vi.locklength=0;
     vi.doc=doc;
     showCols(vr.viewcfg);
     printList(doc);
 
-    folderOpen(vr.actDirId);
-
-    displayHead(window.body.explorer_content.explorer_head.document, pages, actpage);
-
-    showTree(window.body.explorer_tree.document,0);
-
+    if(window.body.explorer_content.explorer_head){
+    	folderOpen(vr.actDirId);
+    	displayHead(window.body.explorer_content.explorer_head.document, pages, actpage);
+    	showTree(window.body.explorer_tree.document,0);
+    }
     
 }
 
