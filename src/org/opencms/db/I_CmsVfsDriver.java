@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/30 09:26:57 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/07/30 10:34:31 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.24 $ $Date: 2003/07/30 09:26:57 $
+ * @version $Revision: 1.25 $ $Date: 2003/07/30 10:34:31 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -112,6 +112,19 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if somethong goes wrong
      */    
     void createFileContent(CmsUUID fileId, byte[] fileContent, int versionId, int projectId, boolean writeBackup) throws CmsException;
+
+    /**
+     * Creates a new link from an given CmsResource object and a new filename.<p>
+     * 
+     * @param project the project where to create the link
+     * @param resource the link prototype
+     * @param userId the id of the user creating the link
+     * @param parentId the id of the folder where the link is created
+     * @param filename the name of the link
+     * @return a valid link resource
+     * @throws CmsException if something goes wrong
+     */
+    CmsResource createVfsLink(CmsProject project, CmsResource resource, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
     
     CmsFolder createFolder(CmsUser user, CmsProject project, CmsFolder folder, CmsUUID parentId, String foldername) throws CmsException;
     CmsFolder createFolder(CmsUser user, CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags) throws CmsException;

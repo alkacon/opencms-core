@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/30 09:26:57 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2003/07/30 10:34:31 $
+ * Version: $Revision: 1.100 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.99 $ $Date: 2003/07/30 09:26:57 $
+ * @version $Revision: 1.100 $ $Date: 2003/07/30 10:34:31 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1687,9 +1687,19 @@ public class CmsDriverManager extends Object {
         }
     }
 
+    /**
+     * Creates a new link to a target resource.<p>
+     * 
+     * @param context the context
+     * @param linkName the name of the link
+     * @param targetName the name of the target
+     * @param linkProperties the properties to attach via the the link
+     * @return the new resource
+     * @throws CmsException if something goes wrong
+     */
     public CmsResource createVfsLink(CmsRequestContext context, String linkName, String targetName, Map linkProperties) throws CmsException {
         CmsResource targetResource = null;
-        CmsFile linkResource = null;
+        CmsResource linkResource = null;
         String parentFolderName = null;
         CmsFolder parentFolder = null;
         String resourceName = null;
@@ -1702,38 +1712,34 @@ public class CmsDriverManager extends Object {
         // read the parent folder
         parentFolder = this.readFolder(context, parentFolderName, false);
 
-        // for the parernt folder is write access required
+        // for the parent folder is write access required
         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // construct a dummy that is written to the db
         linkResource =
-            new CmsFile(
+            new CmsResource(
                 new CmsUUID(),
                 targetResource.getResourceId(),
                 parentFolder.getId(),
                 CmsUUID.getNullUUID(),
                 resourceName,
-                /*targetResource.getType(),*/
                 CmsResourceTypePointer.C_RESOURCE_TYPE_ID,
                 targetResource.getFlags(),
-                /* context.currentUser().getId(), */
-                /* context.currentUser().getDefaultGroupId(), */
-                context.currentProject().getId(),
-                com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
-                com.opencms.core.I_CmsConstants.C_STATE_NEW,
+                context.currentProject().getId(), 
+                com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS, 
+                com.opencms.core.I_CmsConstants.C_STATE_NEW, 
                 CmsUUID.getNullUUID(),
-                targetResource.getLoaderId(),
+                targetResource.getLoaderId(),  
                 System.currentTimeMillis(),
                 context.currentUser().getId(),
-                System.currentTimeMillis(),
-                context.currentUser().getId(),
-                new byte[0],
+                System.currentTimeMillis(), 
+                context.currentUser().getId(), 
                 0,
                 context.currentProject().getId(),
-                targetResource.getLinkCount()+1);
-
+                targetResource.getLinkCount()+1);            
+            
         // write the link
-        linkResource = m_vfsDriver.createFile(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName);
+        linkResource = m_vfsDriver.createVfsLink(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName);
         // write its properties
         readPath(context,linkResource,true);
         m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType());

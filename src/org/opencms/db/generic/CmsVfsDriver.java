@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/30 09:37:41 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2003/07/30 10:34:31 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.63 $ $Date: 2003/07/30 09:37:41 $
+ * @version $Revision: 1.64 $ $Date: 2003/07/30 10:34:31 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -462,7 +462,86 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         return readFile(project.getId(), false, file.getId());
     }
-    
+
+    /**
+     * Creates a new link from an given CmsResource object and a new filename.<p>
+     * 
+     * @param project the project where to create the link
+     * @param resource the link prototype
+     * @param userId the id of the user creating the link
+     * @param parentId the id of the folder where the link is created
+     * @param filename the name of the link
+     * @return a valid link resource
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource createVfsLink(CmsProject project, CmsResource resource, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        int newState = 0;
+        
+        // validate the resource name
+        if (filename.length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
+            throw new CmsException("The resource name '" + filename + "' is too long! (max. allowed length must be <= " + I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME + " chars.!)", CmsException.C_BAD_NAME);
+        }
+
+        // force some attribs when creating or publishing a file 
+        if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            newState = I_CmsConstants.C_STATE_UNCHANGED;
+        } else {
+            newState = I_CmsConstants.C_STATE_NEW;
+        }
+
+        // check if the structure already exists
+        try {
+            readFileHeader(project.getId(), parentId, filename, false);
+            throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
+        } catch (CmsException e) {
+            if (e.getType() == CmsException.C_RESOURCE_DELETED) {
+                // if an existing resource is deleted, it will be finally removed now
+                removeFile(project, parentId, filename);
+                newState = I_CmsConstants.C_STATE_CHANGED;
+            }
+            if (e.getType() == CmsException.C_FILE_EXISTS) {
+                // we have a collision which has to be handled in the app.
+                throw e;
+            }
+        }
+        
+        // check if the resource already exists
+        if (!existsResource(project, resource))
+            throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_NOT_FOUND);
+
+        // write a new structure referring to the resource
+        try {
+            conn = m_sqlManager.getConnection(project);
+
+            // write the structure
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
+            stmt.setString(1, resource.getId().toString());
+            stmt.setString(2, parentId.toString());
+            stmt.setString(3, resource.getResourceId().toString());
+            stmt.setString(4, filename);
+            stmt.setInt(5, newState);
+            stmt.executeUpdate(); 
+
+            m_sqlManager.closeAll(null, stmt, null);
+            
+            // update the link Count
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_LINK_COUNT");
+            stmt.setInt(1, this.countVfsLinks(project.getId(), resource.getResourceId()));
+            stmt.setString(2, resource.getResourceId().toString());
+            stmt.executeUpdate();
+                                        
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+
+        return this.readFileHeader(project.getId(), resource.getId(), false); 
+    }
+        
     private boolean existsResource (CmsProject project, CmsResource resource) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -1918,7 +1997,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      * The reading excludes the filecontent.
      *
      * @param projectId The Id of the project
-     * @param resourceId The Id of the resource.
+     * @param resource The resource.
      *
      * @return file The read file.
      *
