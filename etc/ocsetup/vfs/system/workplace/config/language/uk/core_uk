@@ -410,7 +410,7 @@
                 <lock>Lock</lock>
                 <move>Move</move>
                 <newsedit>Edit News</newsedit>
-				<noaccess>Insufficient access rights</noaccess>
+                <noaccess>Insufficient access rights</noaccess>
                 <overridelock>Steal Lock</overridelock>
                 <pageedit>Edit Page</pageedit>
                 <project>Create as project</project>
@@ -603,7 +603,7 @@
             <size>Size</size>
             <state>State</state>
             <suredeletingproject1>Are you sure that you want to delete the project</suredeletingproject1>
-            <suredeletingproject2>?</suredeletingproject2>
+            <suredeletingproject2>and delete all changes that are made in this project?</suredeletingproject2>
             <syncproperties>Properties for Synchronisation</syncproperties>
             <syncdestinationpath>Destination path</syncdestinationpath>
             <title>Title</title>
@@ -1046,7 +1046,7 @@ A new task was reactivated for you or your role.</content>
             <rename>Rename File</rename>
             <renamefolder>Rename Folder</renamefolder>
             <rootfolder>(Root Folder)</rootfolder>
-			<setup>Setup</setup>            
+            <setup>Setup</setup>            
             <size>Size</size>
             <state>State</state>
             <title>Title</title>
