@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<XMLTEMPLATE>
+
+<!-- enable this for debugging -->
+<debug><![CDATA[true]]></debug>
+<debug_receiver><![CDATA[edna.falkenhan@framfab.de]]></debug_receiver>
+
+
+<!-- Alles was man für die email braucht -->
+
+<emailcc><![CDATA[]]></emailcc>
+<emailbcc><![CDATA[]]></emailbcc>
+<emailtype><![CDATA[text/html]]></emailtype>
+
+<emailfrom><![CDATA[edna.falkenhan@framfab.de]]></emailfrom>
+<emailto><![CDATA[edna.falkenhan@framfab.de]]></emailto>
+<emailsubject><![CDATA[Check External Links, ]]><process>actdate</process></emailsubject>
+
+
+<!-- the email message -->
+<single_message>
+<![CDATA[
+Last check of external links on ]]><process>actdate</process><![CDATA[<br><br>
+]]>
+</single_message>
+
+<single_url>
+<![CDATA[<br>
+<h3>]]><process>url</process><![CDATA[</h3><br>
+]]><process>links</process><![CDATA[<br>
+]]>
+</single_url>
+
+<single_link>
+<![CDATA[
+]]><process>linkname</process><![CDATA[<br> 
+]]>
+</single_link>
+
+<TEMPLATE>
+</TEMPLATE>
+
+</XMLTEMPLATE>
