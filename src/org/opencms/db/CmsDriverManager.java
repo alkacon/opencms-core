@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/12/15 12:29:45 $
- * Version: $Revision: 1.457 $
+ * Date   : $Date: 2004/12/17 13:07:00 $
+ * Version: $Revision: 1.458 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,19 @@ import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 import org.opencms.workplace.CmsWorkplaceManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
@@ -73,7 +85,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.457 $ $Date: 2004/12/15 12:29:45 $
+ * @version $Revision: 1.458 $ $Date: 2004/12/17 13:07:00 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -489,11 +501,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         // get all groups of the user
-        Vector groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
+        List groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
 
         // test, if the user is in the same groups like the project.
         for (int i = 0; i < groups.size(); i++) {
-            CmsUUID groupId = ((CmsGroup)groups.elementAt(i)).getId();
+            CmsUUID groupId = ((CmsGroup)groups.get(i)).getId();
             if ((groupId.equals(testProject.getGroupId())) || (groupId.equals(testProject.getManagerGroupId()))) {
                 return (true);
             }
@@ -3010,7 +3022,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsProject project = null;
 
         // get all groups of the user
-        Vector groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
+        List groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
 
         // get all projects which are owned by the user.
         List projects = m_projectDriver.readProjectsForUser(dbc, dbc.currentUser());
@@ -3020,12 +3032,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             List projectsByGroup = new ArrayList();
 
             // is this the admin-group?
-            if (((CmsGroup)groups.elementAt(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
+            if (((CmsGroup)groups.get(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
                 // yes - all unlocked projects are accessible for him
                 projectsByGroup.addAll(m_projectDriver.readProjects(dbc, I_CmsConstants.C_PROJECT_STATE_UNLOCKED));
             } else {
                 // no - get all projects, which can be accessed by the current group
-                projectsByGroup.addAll(m_projectDriver.readProjectsForGroup(dbc, (CmsGroup)groups.elementAt(i)));
+                projectsByGroup.addAll(m_projectDriver.readProjectsForGroup(dbc, (CmsGroup)groups.get(i)));
             }
 
             // merge the projects to the vector
@@ -3071,7 +3083,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsProject project = null;
 
         // get all groups of the user
-        Vector groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
+        List groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
 
         // get all projects which are owned by the user.
         List projects = m_projectDriver.readProjectsForUser(dbc, dbc.currentUser());
@@ -3082,12 +3094,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             List projectsByGroup = new ArrayList();
 
             // is this the admin-group?
-            if (((CmsGroup)groups.elementAt(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
+            if (((CmsGroup)groups.get(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
                 // yes - all unlocked projects are accessible for him
                 projectsByGroup.addAll(m_projectDriver.readProjects(dbc, I_CmsConstants.C_PROJECT_STATE_UNLOCKED));
             } else {
                 // no - get all projects, which can be accessed by the current group
-                projectsByGroup.addAll(m_projectDriver.readProjectsForManagerGroup(dbc, (CmsGroup)groups.elementAt(i)));
+                projectsByGroup.addAll(m_projectDriver.readProjectsForManagerGroup(dbc, (CmsGroup)groups.get(i)));
             }
 
             // merge the projects to the vector
@@ -3256,7 +3268,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return a vector of Cms groups filtered by the specified IP address
      * @throws CmsException if operation was not succesful
      */
-    public Vector getGroupsOfUser(CmsDbContext dbc, String username)
+    public List getGroupsOfUser(CmsDbContext dbc, String username)
     throws CmsException {
 
         return getGroupsOfUser(dbc, username, dbc.getRequestContext().getRemoteAddress());
@@ -3272,7 +3284,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return a vector of Cms groups
      * @throws CmsException if operation was not succesful
      */
-    public Vector getGroupsOfUser(
+    public List getGroupsOfUser(
         CmsDbContext dbc,
         String username,
         String remoteAddress) throws CmsException {
@@ -3280,7 +3292,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsUser user = readUser(dbc, username);
         String cacheKey = m_keyGenerator.getCacheKeyForUserGroups(remoteAddress, dbc, user);
 
-        Vector allGroups = (Vector)m_userGroupsCache.get(cacheKey);
+        List allGroups = (List)m_userGroupsCache.get(cacheKey);
         if ((allGroups == null) || (allGroups.size() == 0)) {
 
             CmsGroup subGroup;
@@ -3296,7 +3308,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 subGroup = getParent(dbc, group.getName());
                 while ((subGroup != null) && (!allGroups.contains(subGroup))) {
 
-                    allGroups.addElement(subGroup);
+                    allGroups.add(subGroup);
                     // read next sub group
                     subGroup = getParent(dbc, subGroup.getName());
                 }
@@ -3953,7 +3965,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         // get all groups of the user
-        Vector groups;
+        List groups;
         try {
             groups = getGroupsOfUser(dbc, dbc.currentUser().getName());
         } catch (CmsException e) {
@@ -3963,7 +3975,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         for (int i = 0; i < groups.size(); i++) {
             // check if the user is a member in the current projects manager group
-            if (((CmsGroup)groups.elementAt(i)).getId().equals(dbc.currentProject().getManagerGroupId())) {
+            if (((CmsGroup)groups.get(i)).getId().equals(dbc.currentProject().getManagerGroupId())) {
                 // this group is manager of the project
                 return true;
             }
@@ -5628,9 +5640,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return all project resources that belong to the given view criteria
      * @throws CmsException if something goes wrong
      */
-    public Vector readPublishProjectView(CmsDbContext dbc, int projectId, String criteria) throws CmsException {
+    public List readPublishProjectView(CmsDbContext dbc, int projectId, String criteria) throws CmsException {
 
-        Vector retValue = new Vector();
+        List retValue = new Vector();
         List resources = m_projectDriver.readProjectView(dbc, projectId, criteria);
         boolean onlyLocked = false;
 
@@ -5654,11 +5666,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     // check if resource is locked
                     CmsLock lock = getLock(dbc, currentResource);
                     if (!lock.isNullLock()) {
-                        retValue.addElement(currentResource);
+                        retValue.add(currentResource);
                     }
                 } else {
                     // add all resources with correct permissions
-                    retValue.addElement(currentResource);
+                    retValue.add(currentResource);
                 }
             }
         }
@@ -6975,10 +6987,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         String username,
         String groupname) throws CmsException {
 
-        Vector groups = getGroupsOfUser(dbc, username);
+        List groups = getGroupsOfUser(dbc, username);
         CmsGroup group;
         for (int z = 0; z < groups.size(); z++) {
-            group = (CmsGroup)groups.elementAt(z);
+            group = (CmsGroup)groups.get(z);
             if (groupname.equals(group.getName())) {
                 return true;
             }

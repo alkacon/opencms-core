@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/15 12:29:45 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/12/17 13:07:00 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -1081,8 +1081,6 @@ public final class CmsSecurityManager {
     /**
      * Creates a new task.<p>
      *
-     * All users are granted.<p>
-     *
      * @param context the current request context
      * @param agentName username who will edit the task
      * @param roleName usergroupname for the task
@@ -1452,7 +1450,7 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param resource the resource to read the access control entries for
      * @param getInherited true if the result should include all access control entries inherited by parent folders
-     * @return a vector of access control entries defining all permissions for the given resource
+     * @return a list of access control entries defining all permissions for the given resource
      * @throws CmsException if something goes wrong
      */
     public List getAccessControlEntries(CmsRequestContext context, CmsResource resource, boolean getInherited)
@@ -1523,11 +1521,11 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns a Vector with all projects from history.<p>
+     * Returns a list with all projects from history.<p>
      *
      * @param context the current request context
      * 
-     * @return Vector with all projects from history.
+     * @return list with all projects from history.
      * @throws CmsException if operation was not succesful.
      */
     public List getAllBackupProjects(CmsRequestContext context) throws CmsException {
@@ -1593,7 +1591,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param groupname the name of the group
-     * @return groups a Vector of all child groups or null
+     * @return groups a list of all child groups or null
      * @throws CmsException if operation was not succesful.
      */
     public List getChild(CmsRequestContext context, String groupname) throws CmsException {
@@ -1619,7 +1617,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param groupname the name of the group
-     * @return a Vector of all child groups or null
+     * @return a list of all child groups or null
      * @throws CmsException if operation was not succesful
      */
     public List getChilds(CmsRequestContext context, String groupname) throws CmsException {
@@ -1655,7 +1653,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param username The name of the user.
-     * @return Vector of groups
+     * @return list of groups
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public List getDirectGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
@@ -1678,7 +1676,7 @@ public final class CmsSecurityManager {
      * All users are granted, except the anonymous user.<p>
      *
      * @param context the current request context
-     * @return users a Vector of all existing groups
+     * @return users a list of all existing groups
      * @throws CmsException if operation was not succesful
      */
     public List getGroups(CmsRequestContext context) throws CmsException {
@@ -1700,7 +1698,7 @@ public final class CmsSecurityManager {
      * 
      * @param context the current request context
      * @param username the name of the user
-     * @return a vector of Cms groups filtered by the specified IP address
+     * @return a list of Cms groups filtered by the specified IP address
      * @throws CmsException if operation was not succesful
      */
     public List getGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
@@ -1722,8 +1720,8 @@ public final class CmsSecurityManager {
      * 
      * @param context the current request context
      * @param username the name of the user
-     * @param remoteAddress the IP address to filter the groups in the result vector
-     * @return a vector of Cms groups
+     * @param remoteAddress the IP address to filter the groups in the result list
+     * @return a list of Cms groups
      * @throws CmsException if operation was not succesful
      */
     public List getGroupsOfUser(CmsRequestContext context, String username, String remoteAddress) throws CmsException {
@@ -1959,7 +1957,7 @@ public final class CmsSecurityManager {
      * All users are granted, except the anonymous user.<p>
      *
      * @param context the current request context
-     * @return a Vector of all existing users
+     * @return a list of all existing users
      * @throws CmsException if operation was not succesful.
      */
     public List getUsers(CmsRequestContext context) throws CmsException {
@@ -1983,7 +1981,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param type the type of the users
-     * @return a Vector of all existing users
+     * @return a list of all existing users
      * @throws CmsException if operation was not succesful
      */
     public List getUsers(CmsRequestContext context, int type) throws CmsException {
@@ -2007,7 +2005,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param groupname the name of the group to list users from
-     * @return vector of users
+     * @return list of users
      * @throws CmsException if operation was not succesful
      */
     public List getUsersOfGroup(CmsRequestContext context, String groupname) throws CmsException {
@@ -2130,7 +2128,7 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Writes a vector of access control entries as new access control entries of a given resource.<p>
+     * Writes a list of access control entries as new access control entries of a given resource.<p>
      * 
      * Already existing access control entries of this resource are removed before.<p>
      * 
@@ -2619,7 +2617,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param mappingtype the mapping type to read the propertydefinitions for
-     * @return propertydefinitions a Vector with propertydefefinitions for the mapping type. The Vector is maybe empty.
+     * @return propertydefinitions a list with propertydefefinitions for the mapping type. The list is maybe empty.
      * @throws CmsException if something goes wrong
      */
     public List readAllPropertydefinitions(CmsRequestContext context, int mappingtype) throws CmsException {
@@ -2789,7 +2787,7 @@ public final class CmsSecurityManager {
      * @param orderBy chooses, how to order the tasks
      * @param sort sorting of the tasks
      * 
-     * @return vector of tasks
+     * @return list of tasks
      * @throws CmsException if something goes wrong
      */
     public List readGivenTasks(CmsRequestContext context, int projectId, String ownerName, int taskType, String orderBy, String sort)
@@ -3512,7 +3510,7 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param taskid the task for the tasklog to read
      * 
-     * @return a Vector of new TaskLog objects
+     * @return a list of new TaskLog objects
      * @throws CmsException if something goes wrong
      */
     public List readTaskLogs(CmsRequestContext context, int taskid) throws CmsException {
@@ -3540,7 +3538,7 @@ public final class CmsSecurityManager {
      * @param orderBy chooses, how to order the tasks
      * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
      * 
-     * @return a vector of tasks
+     * @return a list of tasks
      * @throws CmsException  if something goes wrong
      */
     public List readTasksForProject(CmsRequestContext context, int projectId, int tasktype, String orderBy, String sort) throws CmsException {
@@ -3567,7 +3565,7 @@ public final class CmsSecurityManager {
      * @param orderBy chooses, how to order the tasks
      * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
      * 
-     * @return a vector of tasks
+     * @return a list of tasks
      * @throws CmsException if something goes wrong
      */
     public List readTasksForRole(CmsRequestContext context, int projectId, String roleName, int tasktype, String orderBy, String sort)
@@ -3595,7 +3593,7 @@ public final class CmsSecurityManager {
      * @param orderBy chooses, how to order the tasks
      * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
      * 
-     * @return a vector of tasks
+     * @return a list of tasks
      * @throws CmsException if something goes wrong
      */
     public List readTasksForUser(CmsRequestContext context, int projectId, String userName, int taskType, String orderBy, String sort)
