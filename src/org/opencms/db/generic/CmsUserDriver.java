@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/12/15 12:29:45 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2004/12/15 15:29:57 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,6 +59,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -69,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.73 $ $Date: 2004/12/15 12:29:45 $
+ * @version $Revision: 1.74 $ $Date: 2004/12/15 15:29:57 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -1397,9 +1398,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             "The projectmanager group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName(), null);
 
         guest = importUser(dbc, CmsUUID.getConstantUUID(guestUser), guestUser, OpenCms.getPasswordHandler().digest(""), 
-            "The guest user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, Collections.EMPTY_MAP, " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
+            "The guest user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
         admin = importUser(dbc, CmsUUID.getConstantUUID(adminUser), adminUser, OpenCms.getPasswordHandler().digest("admin"), 
-            "The admin user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, Collections.EMPTY_MAP, " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
+            "The admin user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
 
         createUserInGroup(dbc, guest.getId(), guests.getId(), null);
         createUserInGroup(dbc, admin.getId(), administrators.getId(), null);
