@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2001/01/10 10:11:20 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.9 $ $Date: 2000/08/08 14:08:30 $
+ * @version $Revision: 1.10 $ $Date: 2001/01/10 10:11:20 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFileListUsers {
@@ -160,7 +160,16 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
 		String servletPath = ((HttpServletRequest) cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
 		String downloadPath = servletPath + res.getAbsolutePath();
 		filelistTemplate.setData("fullpath", downloadPath); 
-		filelistTemplate.setData("name_value", res.getName()); 
+		filelistTemplate.setData("name_value", res.getName());
+		String title="";
+		try {
+		    title=cms.readProperty(res.getAbsolutePath(),C_PROPERTY_TITLE);
+		} catch (CmsException e) {
+		}
+		if (title==null) {
+		    title="";
+		}
+		filelistTemplate.setData("title_value", title); 
 	}
 	public Integer getDownGalleryNames(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
@@ -300,7 +309,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
 	 * @param cms Cms object for accessing system resources.
 	 * @param prefs Old bit pattern.
 	 * @return New modified bit pattern.
-	 * @see I_CmsFileListUsers
+	 * @see I_CmsFileListUsers 
 	 */
 	public int modifyDisplayedColumns(CmsObject cms, int prefs) {  
 		// not display the following columns
@@ -310,6 +319,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
 		prefs = ((prefs & C_FILELIST_GROUP) == 0) ? prefs : (prefs - C_FILELIST_GROUP);
 		prefs = ((prefs & C_FILELIST_ACCESS) == 0) ? prefs : (prefs - C_FILELIST_ACCESS);
 		prefs = ((prefs & C_FILELIST_STATE) == 0) ? prefs : (prefs - C_FILELIST_STATE); 
+		prefs = ((prefs & C_FILELIST_LOCKED) == 0) ? prefs : (prefs - C_FILELIST_LOCKED); 
 		return prefs;
 	}
 	/**
