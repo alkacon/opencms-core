@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2002/10/25 14:02:20 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/10/31 11:37:40 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2002/10/25 14:02:20 $
+ * @version $Revision: 1.13 $ $Date: 2002/10/31 11:37:40 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -372,7 +372,7 @@ public class CmsImportFolder implements I_CmsConstants {
                     oldProperties = m_cms.readAllProperties(filename);
                     
                     // trash the old file
-                    m_cms.deleteFile( filename );
+                    m_cms.deleteResource( filename );
                 } 
                 catch(CmsException e) {
                     // ignore the exception (did not exist)
@@ -380,7 +380,7 @@ public class CmsImportFolder implements I_CmsConstants {
                 
                 try {
                     // create the new file ...
-                    m_cms.createFile( actImportPath, path[path.length-1], buffer, type );
+                    m_cms.createResource(actImportPath, path[path.length-1], type, null, buffer);
                     
                     // set the properties of the old file on the new file
                     if (oldProperties!=null) {
