@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2004/11/11 16:05:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/11 16:39:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -157,6 +157,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         cms.createResource("/sites/othersite", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
         cms.unlockResource("/sites/othersite");
          
+        CmsResourceTranslator oldFolderTranslator = OpenCms.getResourceManager().getFolderTranslator();
+        
         CmsResourceTranslator folderTranslator = new CmsResourceTranslator(
             new String[] {
                 "s#^/sites(.*)#/sites$1#",
@@ -173,7 +175,9 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             false);
         
         // set modified folder translator
-        OpenCms.getResourceManager().setTranslators(folderTranslator, OpenCms.getResourceManager().getFileTranslator());
+        OpenCms.getResourceManager().setTranslators(
+            folderTranslator, 
+            OpenCms.getResourceManager().getFileTranslator());
         
         // update OpenCms context to ensure new translator is used
         cms = getCmsObject();    
@@ -286,6 +290,11 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         assertTrue(links.size() == 2);
         assertTrue(links.contains("/sites/mysite/importtest/page2.html"));
         assertTrue(links.contains("/sites/mysite/importtest/page3.html"));  
+        
+        // reset the translation rules
+        OpenCms.getResourceManager().setTranslators(
+            oldFolderTranslator, 
+            OpenCms.getResourceManager().getFileTranslator());        
     }
     
     /**

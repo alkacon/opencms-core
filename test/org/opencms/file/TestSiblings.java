@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/11 16:39:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,11 @@
 
 package org.opencms.file;
 
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
@@ -46,7 +49,7 @@ import junit.framework.TestSuite;
  * Unit test for operations on siblings.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -72,6 +75,7 @@ public class TestSiblings extends OpenCmsTestCase {
         
         suite.addTest(new TestSiblings("testSiblingsCopy"));
         suite.addTest(new TestSiblings("testSiblingsCreate"));
+        suite.addTest(new TestSiblings("testSiblingIssueAfterImport"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -200,6 +204,43 @@ public class TestSiblings extends OpenCmsTestCase {
         echo("Creating a new sibling " + target + " from " + source);
         createSibling(this, cms, source, target);
     }
+    
+    /**
+     * Error scenario where an import is deleted that contains siblings inside the same folders.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testSiblingIssueAfterImport() throws Exception {       
+        
+        echo("Testing sibling issue after import");
+        CmsObject cms = getCmsObject();        
+
+        cms.getRequestContext().setSiteRoot("/");
+
+        // need to create the "galleries" folder manually
+        cms.createResource("/system/galleries", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.unlockResource("/system/galleries");
+        
+        cms.getRequestContext().setSiteRoot("/sites/default");
+        
+        // import the files
+        String importFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testimport01.zip");
+        OpenCms.getImportExportManager().importData(cms, importFile, "/", new CmsShellReport());                                    
+        
+        // clean up for the next test
+        cms.getRequestContext().setSiteRoot("/");        
+        cms.lockResource("/sites/default");
+        cms.lockResource("/system");       
+        
+        // using the option "C_DELETE_OPTION_DELETE_SIBLINGS" causes an error here!
+        cms.deleteResource("/sites/default/importtest", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
+        cms.deleteResource("/system/bodies", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
+        cms.deleteResource("/system/galleries/pics", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
+        
+        cms.unlockResource("/sites/default");
+        cms.unlockResource("/system");               
+        cms.publishProject();
+    }    
     
     /**
      * Does an "undo changes" from the online project on a resource with more than 1 sibling.<p>
