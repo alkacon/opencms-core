@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/09/12 08:11:16 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2001/10/24 14:21:46 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,6 +52,11 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
     private CmsLruCache m_elements;
 
     /**
+     * link to the extern dependencies vector
+     */
+    private Hashtable m_dependenciesExtern = null;
+
+    /**
      * The default constructor for this locator.
      */
     CmsElementLocator(int cacheSize) {
@@ -70,7 +75,50 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
      * @param element - the Element to put in this locator.
      */
     private void put(CmsElementDescriptor desc, A_CmsElement element) {
-        m_elements.put(desc, element);
+        Vector removedElement =  m_elements.put(desc, element);
+        if(removedElement != null && m_dependenciesExtern != null){
+            // look if the element is critical and if clear the m_dependenciesExtern table
+            removeElementFromDependencies((CmsElementDescriptor)removedElement.firstElement(),
+                                            (A_CmsElement)removedElement.lastElement());
+        }
+    }
+
+    /**
+     * Deletes all variantdependenciesEntries of an Element from the extern dependencies table.
+     *
+     * @param the descriptor of the element.
+     * @param the element itself.
+     */
+    private void removeElementFromDependencies(CmsElementDescriptor desc, A_CmsElement element){
+        if(element.hasDependenciesVariants()){
+            Vector variantKeys = element.getAllVariantKeys();
+            String cacheStart = desc.getClassName() +"|"+ desc.getTemplateName() +"|";
+            for(int i=0; i<variantKeys.size(); i++){
+                String key = (String)variantKeys.elementAt(i);
+                removeVariantFromDependencies(cacheStart + key, element.getVariant(key));
+            }
+        }
+    }
+
+    /**
+     * Deletes all variantdependenciesEntries of an Variant from the extern dependencies table.
+     *
+     * @param key the compleate entry in the table like "classname|template|variantcachekey"
+     * @param the variant
+     */
+    private void removeVariantFromDependencies(String key, CmsElementVariant variant){
+
+        if(variant != null){
+            Vector variantDeps = variant.getDependencies();
+            if(variantDeps != null){
+                for(int j=0; j<variantDeps.size(); j++){
+                    Vector externEntrys = (Vector)m_dependenciesExtern.get(variantDeps.elementAt(j));
+                    if(externEntrys != null){
+                        externEntrys.removeElement(key);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -134,13 +182,164 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
     }
 
     /**
+     * for debbuging only. Prints information about the cache system.
+     *
+     * @param selector Selects which info is printed.
+     */
+    public void printCacheInfo(int selector){
+
+        if(selector == 1){
+            // info about the dependencies stores
+            System.err.println("");
+            System.err.println("");
+            System.err.println("=======================");
+            System.err.println("The dependencies stores");
+            System.err.println("=======================");
+            System.err.println("");
+            System.err.println("=======================");
+            System.err.println("The extern Hashtable:");
+            System.err.println("=======================");
+            int countExtern = 0;
+            int countIntern = 0;
+            if(m_dependenciesExtern != null){
+                Enumeration enu = m_dependenciesExtern.keys();
+                int count = 1;
+                System.err.println("");
+                while(enu.hasMoreElements()){
+                    String key = (String)enu.nextElement();
+                    System.err.println("<"+count+"> "+key);
+                    Vector entrysVector = (Vector)m_dependenciesExtern.get(key);
+                    if(entrysVector == null){
+                        System.err.println("        Vector is null.");
+                    }else{
+                        if(entrysVector.size() == 0){
+                            System.err.println("        Vector is empty.");
+                        }
+                        for(int i=0; i<entrysVector.size(); i++){
+                            System.err.println("    ("+i+") "+(String)entrysVector.elementAt(i));
+                            countExtern++;
+                        }
+                    }
+                    System.err.println("");
+                    count++;
+                }
+            }else{
+                System.err.println("... is null!");
+            }
+            System.err.println("");
+            System.err.println("===================================");
+            System.err.println("The values in the element Variants:");
+            System.err.println("===================================");
+            //first we need all elements
+            Vector elementKeys = m_elements.getAllKeys();
+            for(int i=0; i<elementKeys.size(); i++){
+                A_CmsElement element = (A_CmsElement)m_elements.get(elementKeys.elementAt(i));
+                if(element.hasDependenciesVariants()){
+                    System.err.println("");
+                    System.err.println("<"+i+"> element:"+element.toString());
+                    Vector variants = (Vector)element.getAllVariantKeys();
+                    if(variants == null || variants.size() == 0){
+                        System.err.println("    no variants.");
+                    }else{
+                        // now all variants from this elemetn
+                        for(int j=0; j<variants.size(); j++){
+                            CmsElementVariant vari = element.getVariant(variants.elementAt(j));
+                            System.err.println("");
+                            System.err.println("        ("+j+")variant:"+(String)variants.elementAt(j));
+                            Vector currentDeps = vari.getDependencies();
+                            if(currentDeps == null || currentDeps.size() == 0){
+                                System.err.println("                no dependencies in this element");
+                            }else{
+                                for(int k=0; k<currentDeps.size(); k++){
+                                    System.err.println("                ["+k+"] "+(String)currentDeps.elementAt(k));
+                                    countIntern++;
+                                }
+                                System.err.println("");
+                            }
+                        }
+                    }
+                }
+            }
+            System.err.println("");
+            System.err.println("==================================");
+            System.err.println("==== found in Extern store: "+countExtern);
+            System.err.println("===================================");
+            System.err.println("==== found in Intern store: "+countIntern);
+            System.err.println("===================================");
+            System.err.println("");
+        }
+    }
+
+    /**
      * deletes all elements in the cache that depend on one of the invalid Templates.
      * @param invalidTemplates A vector with the ablolute path of the templates (String)
      */
     public void cleanupElementCache(Vector invalidTemplates){
-        m_elements.deleteElementsAfterPublish();
+
+        cleanupExternDependencies(m_elements.deleteElementsAfterPublish());
         for(int i=0; i < invalidTemplates.size(); i++){
-            m_elements.deleteElementsByTemplate((String)invalidTemplates.elementAt(i)) ;
+            cleanupExternDependencies(
+                    m_elements.deleteElementsByTemplate((String)invalidTemplates.elementAt(i)));
+        }
+    }
+
+    /**
+     *mgmtodo
+     *
+     * @param invalidResources A vector of Strings with the entrys to compare to the
+     *          externDependencies Hashtable. These entrys are resources in the vfs or
+     *          the cos that are changed or deleted.
+     */
+    public void cleanupDependencies(Vector invalidResources){
+
+        if(invalidResources != null){
+            for(int i=0; i<invalidResources.size(); i++){
+                Enumeration extKeys = m_dependenciesExtern.keys();
+                String aktInvalid = (String)invalidResources.elementAt(i);
+                while(extKeys.hasMoreElements()){
+                    String current = (String)extKeys.nextElement();
+                    if(aktInvalid.startsWith(current) || current.startsWith(aktInvalid)){
+                        Vector variantsToDelete = (Vector)m_dependenciesExtern.get(current);
+                        if(variantsToDelete != null){
+                            // delete all the variants in this vector
+                            for(int j=0; j < variantsToDelete.size(); j++){
+                                String variantKey = (String)variantsToDelete.elementAt(j);
+                                // get the element for this variant
+                                StringTokenizer tocy = new StringTokenizer(variantKey, "|", false);
+                                String classname = tocy.nextToken();
+                                String templatename = tocy.nextToken();
+                                String cacheDirectivesKey = tocy.nextToken();
+                                CmsElementDescriptor desc  = new CmsElementDescriptor(classname, templatename);
+                                A_CmsElement currentElement = (A_CmsElement)m_elements.get(desc);
+                                removeVariantFromDependencies(variantKey, currentElement.getVariant(cacheDirectivesKey));
+                                currentElement.removeVariant(cacheDirectivesKey);
+                            }
+                        }
+                    }
+                }
+            }
+            // now remove all empty entrys in the extern table
+            Enumeration extKeys = m_dependenciesExtern.keys();
+            while(extKeys.hasMoreElements()){
+                String currentKey = (String)extKeys.nextElement();
+                Vector currentValue = (Vector)m_dependenciesExtern.get(currentKey);
+                if(currentValue == null || currentValue.size() == 0){
+                    m_dependenciesExtern.remove(currentKey);
+                }
+            }
+        }
+    }
+
+    /**
+     * mgm todo comment
+     */
+    private void cleanupExternDependencies(Vector elements){
+        if(elements != null){
+            for(int i=0; i<elements.size(); i++){
+                Vector actElement = (Vector)elements.elementAt(i);
+                removeElementFromDependencies((CmsElementDescriptor)actElement.firstElement(),
+                                                (A_CmsElement)actElement.lastElement());
+            }
         }
     }
 
@@ -149,5 +348,24 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
      */
     public void clearCache(){
         m_elements.clearCache();
+        if(m_dependenciesExtern != null){
+            m_dependenciesExtern.clear();
+        }
     }
+
+    /**
+     * TODO: there should be only one way to get this vector. remove the way through the
+     * cms Object?
+     */
+    public Hashtable getExternDependencies(){
+        return m_dependenciesExtern;
+    }
+
+    /**
+     * sets the extern dependencies vector used to keep the dep information syncron.
+     */
+    public void setExternDependencies(Hashtable externDeps){
+        m_dependenciesExtern = externDeps;
+    }
+
 }

@@ -54,7 +54,7 @@ top.help_url='Administration/elementCache.html';
                                 <td class=dialogtxt>]]><PROCESS>urisize</PROCESS><![CDATA[</td> 
                             </tr>
                             <tr>
-                                <td class=dialogtxt>]]><LABEL value="elementcache.label.element" /><![CDATA[:</td>
+                                <td class=dialogtxt>]]><LABEL value="elementcache.label.element" /><![CDATA[<a href="index.html?info=dep_out">:</a></td>
                                 <td class=dialogtxt>]]><PROCESS>elementsize</PROCESS><![CDATA[</td> 
                             </tr>
                             <tr> 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
-* Date   : $Date: 2001/10/02 13:32:32 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2001/10/24 14:21:46 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -90,12 +90,14 @@ public class CmsLruCache {
      * inserts a new object in the cache. If it is there already the value is updated.
      * @param key The key to find the object.
      * @param value The object.
+     * @return if the cache is full the deleted object, null otherwise.
      */
-    public synchronized void put (Object key, Object value){
+    public synchronized Vector put (Object key, Object value){
 
         int hashIndex = (key.hashCode() & 0x7FFFFFFF) % m_maxSize;
         CacheItem item = m_cache[hashIndex];
         CacheItem newItem = null;
+        Vector returnValue = null;
         if(C_DEBUG){
             System.err.println("put in cache:   "+key);
         }
@@ -106,22 +108,28 @@ public class CmsLruCache {
                 if(item.key.equals(key)){
                     item.value = value;
                     // TODO: put it to the end of the chain
-                    return;
+                    return null;
                 }
                 item = item.chain;
             }
             if(item.key.equals(key)){
                 item.value = value;
                 //TODO: put it on the end of the chain
-                return;
+                return null;
             }
             if(m_size >= m_maxSize){
                 // cache full, we have to remove the old head
                 CacheItem helper = head.next;
                 if (item == head){
                     newItem = item;
+                    returnValue = new Vector(2);
+                    returnValue.add(0, item.key);
+                    returnValue.add(1, item.value);
                 }else{
                     newItem = head;
+                    returnValue = new Vector(2);
+                    returnValue.add(0, head.key);
+                    returnValue.add(1, head.value);
                     removeFromTable(head);
                     newItem.chain = null;
                     item.chain = newItem;
@@ -141,6 +149,9 @@ public class CmsLruCache {
                     // cache full, we have to remove the old head
                     CacheItem helper = head.next;
                     newItem = head;
+                    returnValue = new Vector(2);
+                    returnValue.add(0, head.key);
+                    returnValue.add(1, head.value);
                     removeFromTable(head);
                     newItem.next = null;
                     newItem.chain = null;
@@ -167,6 +178,7 @@ public class CmsLruCache {
             newItem.previous = tail;
             tail = newItem;
         }
+        return returnValue;
     }
 
     /**
@@ -209,6 +221,24 @@ public class CmsLruCache {
     }
 
     /**
+     * removes on item from the cache.
+     * @param key .The key to find the item.
+     */
+    public void remove(Object key){
+        if(key != null){
+            int hashIndex = (key.hashCode() & 0x7FFFFFFF) % m_maxSize;
+            CacheItem item = m_cache[hashIndex];
+            while (item != null){
+                if(item.key.equals(key)){
+                    // got it
+                    removeItem(item);
+                }
+                item = item.chain;
+            }
+        }
+    }
+
+    /**
      * deletes one item from the cache. Not from the sequence chain.
      * @param oldItem The item to be deleted.
      */
@@ -236,68 +266,93 @@ public class CmsLruCache {
     /**
      * removes one item from the cache and from the sequence chain.
      */
-    private void removeItem(CacheItem item){
+    private synchronized void removeItem(CacheItem item){
 
         if(C_DEBUG){
             System.err.println("--remove item from cache: "+item.key);
         }
-        //first remove it from the hashtable
-        removeFromTable(item);
-        // now from the sequence chain
-        if((item != head) && (item != tail)){
-            item.previous.next = item.next;
-            item.next.previous = item.previous;
+        if(m_size < 2){
+            clearCache();
         }else{
-            if(item == head){
-                head = item.next;
-                head.previous = null;
+            //first remove it from the hashtable
+            removeFromTable(item);
+            // now from the sequence chain
+            if((item != head) && (item != tail)){
+                item.previous.next = item.next;
+                item.next.previous = item.previous;
+            }else{
+                if(item == head){
+                    head = item.next;
+                    head.previous = null;
+                }
+                if (item == tail){
+                    tail = item.previous;
+                    tail.next = null;
+                }
             }
-            if (item == tail){
-                tail = item.previous;
-                tail.next = null;
-            }
+            m_size--;
         }
-        m_size--;
     }
 
     /**
      * Deletes all elements that depend on the template.
      * use only if the cache is for elements.
+     *
+     * @return Vector a Vector with deleted items. Each item is a Vector with two elements: key and value.
      */
-    public void deleteElementsByTemplate(String templateName){
+    public synchronized Vector deleteElementsByTemplate(String templateName){
         CacheItem item = head;
+        Vector ret = new Vector();
         while (item != null){
             if(templateName.equals(((CmsElementDescriptor)item.key).getTemplateName())){
+                Vector actItem = new Vector();
+                actItem.add(0, item.key);
+                actItem.add(1, item.value);
+                ret.add(actItem);
                 removeItem(item);
             }
             item = item.next;
         }
+        return ret;
     }
 
     /**
      * Deletes all elements that depend on the class.
      * use only if this cache is for elements.
+     * @return Vector a Vector with deleted items. Each item is a Vector with two elements: key and value.
      */
-    public void deleteElementsByClass(String className){
+    public synchronized Vector deleteElementsByClass(String className){
         CacheItem item = head;
+        Vector ret = new Vector();
         while (item != null){
             if(className.equals(((CmsElementDescriptor)item.key).getClassName())){
+                Vector actItem = new Vector();
+                actItem.add(0, item.key);
+                actItem.add(1, item.value);
+                ret.add(actItem);
                 removeItem(item);
             }
             item = item.next;
         }
+        return ret;
     }
 
     /**
      * Deletes elements after publish. All elements that depend on the
      * uri and all element that say so have to be removed.
      * use only if this cache is for elements.
+     * @return Vector a Vector with deleted items. Each item is a Vector with two elements: key and value.
      */
-    public synchronized void deleteElementsAfterPublish(){
+    public synchronized Vector deleteElementsAfterPublish(){
         CacheItem item = head;
+        Vector ret = new Vector();
         while (item != null){
             try{
                 if (((A_CmsElement)item.value).getCacheDirectives().shouldRenew()){
+                    Vector actItem = new Vector();
+                    actItem.add(0, item.key);
+                    actItem.add(1, item.value);
+                    ret.add(actItem);
                     removeItem(item);
                 }
             }catch(NullPointerException e){
@@ -306,10 +361,15 @@ public class CmsLruCache {
                 System.err.println("Element_value:"+((A_CmsElement)item.value));
                 System.err.println("-- CacheDirectives:"+((A_CmsElement)item.value).getCacheDirectives());
                 e.printStackTrace();
+                Vector actItem = new Vector();
+                actItem.add(0, item.key);
+                actItem.add(1, item.value);
+                ret.add(actItem);
                 removeItem(item);
             }
             item = item.next;
         }
+        return ret;
     }
 
     /**
@@ -364,6 +424,19 @@ public class CmsLruCache {
         return info;
     }
 
+    /**
+     * gets all keys in the cache.
+     * @return a vector with the keys.
+     */
+    public synchronized Vector getAllKeys(){
+        Vector ret = new Vector();
+        CacheItem item = head;
+        while (item != null){
+            ret.add(item.key);
+            item = item.next;
+        }
+        return ret;
+    }
 
     /**
      * used for debuging only. Checks if the Cache is in a valid condition.
@@ -377,7 +450,7 @@ public class CmsLruCache {
         System.err.println("--");
         System.err.println("--testing content from head to tail:");
         while(item!=null){
-            System.err.println("    --"+count+". "+(String)item.key);
+            System.err.println("    --"+count+". "+item.key);
             count++;
             item=item.next;
         }
@@ -386,7 +459,7 @@ public class CmsLruCache {
         item = tail;
         count--;
         while(item!=null){
-            System.err.println("    --"+count+". "+(String)item.key);
+            System.err.println("    --"+count+". "+item.key);
             count--;
             item=item.previous;
         }
@@ -394,14 +467,15 @@ public class CmsLruCache {
         count = 1;
         for (int i=0; i<m_maxSize; i++){
             item = m_cache[i];
-            System.err.print("    element "+i+" ");
             if(item == null){
-                System.err.println(" null");
+//                System.err.print("    element "+i+" ");
+//                System.err.println(" null");
             }else{
-                System.err.println(" count="+count++ +" "+(String)item.key);
+                System.err.print("    element "+i+" ");
+                System.err.println(" count="+count++ +" "+item.key);
                 while(item.chain != null){
                     item = item.chain;
-                    System.err.println("        chainelement "+" count="+count++ +" "+(String)item.key);
+                    System.err.println("        chainelement "+" count="+count++ +" "+item.key);
                 }
             }
         }

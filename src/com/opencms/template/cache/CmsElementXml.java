@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/08/30 13:50:01 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/10/24 14:21:46 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -95,14 +95,12 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
         CmsElementVariant variant = null;
 
         // Now check, if there is a variant of this element in the cache.
-        //if(cacheable && !templateClass.shouldReload(cms, m_templateName, m_elementName, parameters, null)) {
         if(cd.isInternalCacheable()) {
 
             checkReadAccess(cms);
             if (cd.isTimeCritical() && (m_timestamp < cd.getTimeout().getLastChange())){
                 clearVariantCache();
             }else{
-                //variant = getVariant(templateClass.getKey(cms, m_templateName, parameters, null));
                 variant = getVariant(cd.getCacheKey(cms, parameters));
             }
             if(variant != null) {

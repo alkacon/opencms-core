@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/10/22 15:09:16 $
-* Version: $Revision: 1.196 $
+* Date   : $Date: 2001/10/24 14:21:46 $
+* Version: $Revision: 1.197 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.196 $ $Date: 2001/10/22 15:09:16 $
+ * @version $Revision: 1.197 $ $Date: 2001/10/24 14:21:46 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1608,6 +1608,14 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
      */
     public CmsElementCache getOnlineElementCache(){
         return OpenCms.getOnlineElementCache();
+    }
+
+    /**
+     * Gets the hashtable with the variant dependencies used for the elementcache.
+     * @return Hashtable
+     */
+    public Hashtable getVariantDependencies(){
+        return OpenCms.getVariantDependencies();
     }
 
     /**

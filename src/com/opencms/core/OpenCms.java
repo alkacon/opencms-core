@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/10/05 07:33:07 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2001/10/24 14:21:46 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.63 $ $Date: 2001/10/05 07:33:07 $
+ * @version $Revision: 1.64 $ $Date: 2001/10/24 14:21:46 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -105,6 +105,14 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * URIs and elements in cache.
      */
     private static CmsElementCache c_elementCache = null;
+
+    /**
+     * In this hashtable the dependencies for all variants in the elementcache
+     * are stored. The keys are Strings with resourceNames like "cos/ContentClass/news4"
+     * and the value is a Vector with strings (The elementvariants that depend on the keys)
+     * like "ElementClass|ElementTemplate|VariantCacheKey"
+     */
+    private static Hashtable c_variantDeps = null;
 
     /**
      * Constructor, creates a new OpenCms object.
@@ -185,6 +193,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
                 }
             }
+            c_variantDeps = new Hashtable();
+            c_elementCache.getElementLocator().setExternDependencies(c_variantDeps);
         }
     }
 
@@ -214,6 +224,14 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     public static CmsElementCache getOnlineElementCache(){
         return c_elementCache;
+    }
+
+    /**
+     * Gets the hashtable with the variant dependencies used for the elementcache.
+     * @return Hashtable
+     */
+    public static Hashtable getVariantDependencies(){
+        return c_variantDeps;
     }
 
     /**

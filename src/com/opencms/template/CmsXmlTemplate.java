@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/10/12 07:46:09 $
-* Version: $Revision: 1.78 $
+* Date   : $Date: 2001/10/24 14:21:46 $
+* Version: $Revision: 1.79 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import java.io.*;
 import com.opencms.launcher.*;
 import com.opencms.file.*;
 import com.opencms.util.*;
+import com.opencms.defaults.*;
 import com.opencms.core.*;
 import com.opencms.template.cache.*;
 import org.w3c.dom.*;
@@ -45,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.78 $ $Date: 2001/10/12 07:46:09 $
+ * @version $Revision: 1.79 $ $Date: 2001/10/24 14:21:46 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -919,6 +920,101 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     }
 
     /**
+     * Saves the dependencies for this elementvariante.
+     * We save the deps two ways.
+     * First we have an so called extern Hashtable where we use as key a resource
+     * (represented by a String) and as values an Vector with all ElementVariants
+     * that depend on this resource (again represented by a String in which we save
+     * the variant and the element it is in)
+     * The second saveplace is the elementvariant itselv. The intern way to save.
+     * There we store which resoucess affect this variant.
+     *
+     * @param elementName only needed for getCachDirectives, if it is not used there it may be null
+     * @param templateSelector only needed for getCachDirectives, if it is not used there it may be null
+     * @param vfsDeps A vector (of CmsResource objects) with the resources that variant depends on.
+     * @param cosDeps A vector (of CmsContentDefinitions) with the cd-resources that variant depends on.
+     * @param cosClassDeps A vector (of Class objects) with the contentdefinitions that variant depends on.
+     */
+    protected void registerVariantDeps(CmsObject cms, String templateName, String elementName,
+                        String templateSelector, Hashtable parameters, Vector vfsDeps,
+                        Vector cosDeps, Vector cosClassDeps) throws CmsException {
+
+        String cacheKey = getCacheDirectives(cms, templateName, elementName,
+                                parameters, templateSelector).getCacheKey(cms, parameters);
+        if(cms.getRequestContext().isElementCacheEnabled() && (cacheKey != null) &&
+                (cms.getRequestContext().currentProject().equals(cms.onlineProject()) )) {
+            Hashtable externVarDeps = cms.getVariantDependencies();
+            // this will be the entry for the extern hashtable
+            String variantEntry = getClass().getName() + "|"+ templateName +"|"+ cacheKey;
+
+            // the vector for the intern variant store. it contains the keys for the extern Hashtable
+            Vector allDeps = new Vector();
+            // first the dependencies for the cos system
+            if(cosDeps != null){
+                for (int i = 0; i < cosDeps.size(); i++){
+                    A_CmsContentDefinition contentDef = (A_CmsContentDefinition)cosDeps.elementAt(i);
+                    String key = "cos/"+contentDef.getClass().getName() +"/"+contentDef.getUniqueId(cms);
+                    allDeps.add(key);
+                }
+            }
+            // now for the Classes
+            if(cosClassDeps != null){
+                for(int i=0; i<cosClassDeps.size(); i++){
+                    String key = "cos/" + ((Class)cosClassDeps.elementAt(i)).getName() +"/";
+                    allDeps.add(key);
+                }
+            }
+            // now for the vfs mgmtodo: instead of "vfs: ... .getAbsolutePath" use getResourceName
+            if(vfsDeps != null){
+                for(int i = 0; i < vfsDeps.size(); i++){
+                    allDeps.add("vfs:"+((CmsResource)vfsDeps.elementAt(i)).getAbsolutePath() );
+                }
+            }
+            // now put them all in the extern store
+            for(int i=0; i<allDeps.size(); i++){
+                String key = (String)allDeps.elementAt(i);
+                Vector variantsForDep = (Vector)externVarDeps.get(key);
+                if (variantsForDep == null){
+                    variantsForDep = new Vector();
+                }
+                if(!variantsForDep.contains(variantEntry)){
+                    variantsForDep.add(variantEntry);
+                }
+                externVarDeps.put(key, variantsForDep);
+            }
+            // at last we have to fill the intern store. that means we have to
+            // put the alldeps vector in our variant that will be created later
+            // in the startproccessing method.
+            // Get current element.
+            CmsElementCache elementCache = cms.getRequestContext().getElementCache();
+            CmsElementDescriptor elKey = new CmsElementDescriptor(getClass().getName(), templateName);
+            A_CmsElement currElem = elementCache.getElementLocator().get(cms, elKey, parameters);
+            // add an empty variant with the vector to the element
+            CmsElementVariant emptyVar = new CmsElementVariant();
+            emptyVar.addDependencies(allDeps);
+            Vector removedVar = currElem.addVariant(cacheKey, emptyVar);
+            if((removedVar != null) ){
+                // adding a new variant deleted this variant so we have to update the extern store
+                String key = (String)removedVar.firstElement();
+                CmsElementVariant oldVar = (CmsElementVariant)removedVar.lastElement();
+                Vector oldVarDeps = oldVar.getDependencies();
+                if (oldVarDeps != null){
+                    String oldVariantEntry = getClass().getName() + "|"+ templateName +"|"+ key;
+                    for(int i=0; i<oldVarDeps.size(); i++){
+                        Vector externEntrys = (Vector)externVarDeps.get(oldVarDeps.elementAt(i));
+                        if(externEntrys != null){
+                            externEntrys.removeElement(oldVariantEntry);
+                        }
+                    }
+                }
+            }
+            // mark this element so it wont be deleted without updating the extern store
+            currElem.thisElementHasDepVariants();
+
+        }
+    }
+
+    /**
      * Starts the processing of the given template file by calling the
      * <code>getProcessedTemplateContent()</code> method of the content defintition
      * of the corresponding content type.
@@ -957,7 +1053,22 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             // If this elemement is cacheable, store the new variant
             if(currElem.getCacheDirectives().isInternalCacheable()) {
                 //currElem.addVariant(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector), variant);
-                currElem.addVariant(currElem.getCacheDirectives().getCacheKey(cms, parameters), variant);
+                Vector removedVar = currElem.addVariant(currElem.getCacheDirectives().getCacheKey(cms, parameters), variant);
+                if((removedVar != null) && currElem.hasDependenciesVariants()){
+                    // adding a new variant deleted this variant so we have to update the extern dependencies store
+                    String key = (String)removedVar.firstElement();
+                    CmsElementVariant oldVar = (CmsElementVariant)removedVar.lastElement();
+                    Vector oldVarDeps = oldVar.getDependencies();
+                    if (oldVarDeps != null){
+                        String oldVariantEntry = getClass().getName() + "|"+ xmlTemplateDocument.getAbsoluteFilename() +"|"+ key;
+                        for(int i=0; i<oldVarDeps.size(); i++){
+                            Vector externEntrys = (Vector)cms.getVariantDependencies().get(oldVarDeps.elementAt(i));
+                            if(externEntrys != null){
+                                externEntrys.removeElement(oldVariantEntry);
+                            }
+                        }
+                    }
+                }
             }
             result = ((CmsElementXml)currElem).resolveVariant(cms, variant, elementCache, mergedElDefs, elementName, parameters);
         } else {

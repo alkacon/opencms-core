@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/10/24 14:21:46 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -86,19 +86,46 @@ public class CmsElementCache {
     /**
      * Deletes all the content of the caches that depend on the changed resources
      * after publishProject.
-     * @param changedResources A vector with the resources that have changed during publishing.
+     * @param changedResources A vector (of Strings) with the resources that have
+     *                          changed during publishing.
      */
     public void cleanupCache(Vector changedResources){
-        m_uriLocator.deleteUris(changedResources);
-        m_elementLocator.cleanupElementCache(changedResources);
+
+        // chanchedResources have chanched, first we have to edit them
+        Vector resForUpdate = new Vector();
+        if(changedResources != null){
+            for(int i=0; i<changedResources.size(); i++){
+                String current = (String)changedResources.elementAt(i);
+                int rootIndex = current.indexOf("/", current.indexOf("/",1)+1);
+                resForUpdate.add(current.substring(rootIndex));
+            }
+        }
+        m_uriLocator.deleteUris(resForUpdate);
+        m_elementLocator.cleanupElementCache(resForUpdate);
+
+        // for the dependencies cache we use the original vector
+        m_elementLocator.cleanupDependencies(changedResources);
     }
 
     /**
      * Clears the uri and the element cache compleatly.
+     * and the extern dependencies.
      */
     public void clearCache(){
         m_elementLocator.clearCache();
         m_uriLocator.clearCache();
+    }
+
+    /**
+     * prints the cache info in the errorlog.
+     * @param int   1: print the info for the dependencies cache.
+     *              2:
+     */
+    public void printCacheInfo(int which){
+        if(which ==1){
+            // the dependencies cache
+            m_elementLocator.printCacheInfo(which);
+        }
     }
 
     /**

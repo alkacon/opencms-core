@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementVariant.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/10/24 14:21:46 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -47,6 +47,13 @@ public class CmsElementVariant {
      * and of CmsElementLink can be stored.
      */
     Vector m_content;
+
+    /**
+     * The dependencies of this variant. In this vector objects of type String
+     * can be stored. These Strings are resources in the vfs or the cos. If one
+     * of the resources change this variant is decleared void.
+     */
+    Vector m_dependencies;
 
     /**
      * Creates a new empty variant for an element.
@@ -103,6 +110,39 @@ public class CmsElementVariant {
      */
     public Object get(int i) {
         return m_content.get(i);
+    }
+
+    /**
+     * Sets the dependencies Vector for this Variant.
+     * @param dependencies A Vector of Strings.
+     */
+    public void setDependencies(Vector dependencies){
+        m_dependencies = dependencies;
+    }
+
+    /**
+     * Gets the dependencies Vector of this Variant.
+     *
+     * @return dependencies A Vector of Strings.
+     */
+    public Vector getDependencies(){
+        return m_dependencies;
+    }
+
+    /**
+     * Add a dependencies Vector to this.
+     *
+     * @param depVariant The Vector with the dependencies.
+     */
+    public void addDependencies(Vector depVariant){
+        if(m_dependencies == null){
+            m_dependencies = depVariant;
+        }else if (depVariant != null){
+            // both vectors not null, we have to merge
+            for (int i = 0; i < depVariant.size(); i++){
+                m_dependencies.add(depVariant.elementAt(i));
+            }
+        }
     }
 
     /**

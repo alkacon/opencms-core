@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminElementCache.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/10/24 14:21:46 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.3 $ $Date: 2001/07/31 15:50:17 $
+ * @version $Revision: 1.4 $ $Date: 2001/10/24 14:21:46 $
  */
 public class CmsAdminElementCache extends CmsWorkplaceDefault {
 
@@ -74,6 +74,12 @@ public class CmsAdminElementCache extends CmsWorkplaceDefault {
 
         // need the element cache
         CmsElementCache cache = cms.getOnlineElementCache();
+        // any debug action?
+        String info = (String)parameters.get("info");
+        if(info != null && "dep_out".equals(info)){
+            // print out the pependencies cache
+            cache.printCacheInfo(1);
+        }
         // get the parameter
         String action = (String)parameters.get("action");
         if((action == null) || ("".equals(action))){

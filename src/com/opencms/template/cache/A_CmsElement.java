@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/09/11 15:12:59 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2001/10/24 14:21:46 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,6 +73,12 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     /** LruCache for element variant cache */
     private CmsLruCache m_variants;
 
+    /** indicates if this element may have a variant that has dependencies
+     *  if such a element is deletet from elementcache the extern dependencies
+     *  hashtable must be updated.
+     */
+    protected boolean m_hasDepVariants = false;
+
     /**
      * Initializer for an element with the given class and template name.
      */
@@ -114,13 +120,31 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     /**
      * Adds a single variant to this element.
      * @param def - the ElementVariant to add.
+     * @return a CmsElementVariant of dependencies that must be deleted from extern store for this element
      */
-    public void addVariant(Object key, CmsElementVariant variant) {
+    public Vector addVariant(Object key, CmsElementVariant variant) {
         if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, toString() + " adding variant \"" + key + "\" to cache. ");
         }
         if(key != null){
-            m_variants.put(key, variant);
+            CmsElementVariant old = (CmsElementVariant)m_variants.get(key);
+            if ((old != null) && (old.size() == 0)){
+                variant.addDependencies(old.getDependencies());
+            }
+            return m_variants.put(key, variant);
+        }
+        return null;
+    }
+
+    /**
+     *
+     */
+    public void removeVariant(Object key){
+        if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, toString() + " removing variant \"" + key + "\" from cache. ");
+        }
+        if(key != null){
+            m_variants.remove(key);
         }
     }
 
@@ -184,6 +208,13 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     }
 
     /**
+     *
+     */
+    public Vector getAllVariantKeys(){
+        return m_variants.getAllKeys();
+    }
+
+    /**
      * Get a variant from the vatiant cache
      * @param key Key of the ElementVariant.
      * @return Cached CmsElementVariant object
@@ -193,6 +224,9 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
             return null;
         }
         CmsElementVariant result = (CmsElementVariant)m_variants.get(key);
+        if(result != null && result.size() == 0){
+            result = null;
+        }
         if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             if(result != null) {
                 A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, toString() + " getting variant \"" + key + "\" from cache. ");
@@ -200,7 +234,22 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                 A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, toString() + " Variant \"" + key + "\" is not in element cache. ");
             }
         }
-        return (CmsElementVariant)m_variants.get(key);
+        return result;
+    }
+
+    /**
+     * says if the extern dependenciescache has to be updated when this element
+     * is deleted.
+     */
+    public boolean hasDependenciesVariants(){
+        return m_hasDepVariants;
+    }
+
+    /**
+     * indicates this element critical for delete.
+     */
+    public void thisElementHasDepVariants(){
+        m_hasDepVariants = true;
     }
 
     /**
