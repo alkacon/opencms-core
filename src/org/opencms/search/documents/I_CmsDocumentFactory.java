@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2005/03/04 13:42:45 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/03/07 21:02:12 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.search.documents;
 
 import org.opencms.file.CmsObject;
@@ -36,13 +37,12 @@ import org.opencms.search.A_CmsIndexResource;
 
 import java.util.List;
 
-
 import org.apache.lucene.document.Document;
 
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.13 $ $Date: 2005/03/04 13:42:45 $
+ * @version $Revision: 1.14 $ $Date: 2005/03/07 21:02:12 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
@@ -50,28 +50,31 @@ public interface I_CmsDocumentFactory {
 
     /** Search field for document content. */
     String DOC_CONTENT = "content";
-    
+
     /** Search field for document creation date. */
     String DOC_DATE_CREATED = "created";
 
     /** Search field for document last update. */
     String DOC_DATE_LASTMODIFIED = "lastmodified";
-    
+
     /** Search field for document description. */
     String DOC_DESCRIPTION = "description";
-    
+
     /** Search field for document keywords. */
     String DOC_KEYWORDS = "keywords";
-    
+
     /** Search field for document path within a site. */
     String DOC_PATH = "path";
 
+    /** Search field for optimized path searches. */
+    String DOC_ROOT = "root";
+
     /** (Internal used) Search field for the document source. */
     String DOC_SOURCE = "source";
-    
+
     /** Search field for document title. */
     String DOC_TITLE = "title";
-    
+
     /**
      * Returns the document key for the search manager.<p>
      * 
@@ -92,14 +95,14 @@ public interface I_CmsDocumentFactory {
      * @throws CmsException if something goes wrong
      */
     List getDocumentKeys(List resourceTypes, List mimeTypes) throws CmsException;
-    
+
     /**
      * Returns the name of the documenttype.<p>
      * 
      * @return the name of the documenttype
      */
     String getName();
-    
+
     /**
      * Returns the raw content of a given resource according to the concrete file type.<p>
      * 
@@ -110,7 +113,7 @@ public interface I_CmsDocumentFactory {
      * @throws CmsException if somethin goes wrong
      */
     String getRawContent(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException;
-    
+
     /**
      * Creates a new instance of a lucene document type for the concrete file type.<p>
      * 
