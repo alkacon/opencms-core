@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/09/26 16:00:00 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/09/29 08:30:56 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -112,11 +112,13 @@ public final class CmsSiteManager implements Cloneable {
                 cms.readFileHeader(m_defaultSite.getSiteRoot());
             } catch (Throwable t) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error initializing default site " + m_defaultSite + " (setting default site to null)", t);
+                    OpenCms.getLog(this).error("Error initializing default site " + m_defaultSite + " (setting default site to '/')", t);
                 }
-                m_defaultSite = null;
             }
-        } 
+        }
+        if (m_defaultSite == null) {
+            m_defaultSite = new CmsSite("/", CmsSiteMatcher.C_DEFAULT_MATCHER);
+        }
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site root default    : " + (m_defaultSite!=null?"" + m_defaultSite: "(not configured)"));
         }
