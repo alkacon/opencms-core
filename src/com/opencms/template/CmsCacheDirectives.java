@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/05/29 11:09:25 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/05/29 12:32:09 $
+* Version: $Revision: 1.10 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,7 @@ import java.util.*;
  * used keys.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2001/05/29 11:09:25 $
+ * @version $Revision: 1.10 $ $Date: 2001/05/29 12:32:09 $
  */
 public class CmsCacheDirectives implements I_CmsLogChannels {
 
@@ -292,14 +292,17 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
     }
 
     /**
-     *
+     * defines if the group is part of the cacheKey
+     * @param groupCache if true the group will be part of the cache key.
      */
     public void setCacheGroups(boolean groupCache){
         m_group = groupCache;
     }
 
     /**
-     *
+     * if this Vector is set the groups are part of the cache key and the element
+     * will be cacheable only if the current group is in the Vector. If not it is dynamic.
+     * @param groupNames A Vector with the names of the groups for which the element is cacheable.
      */
     public void setCacheGroups(Vector groupNames){
         m_group = true;
@@ -307,7 +310,8 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
     }
 
     /**
-     *
+     * includes the user in the cache key.
+     * @param userCache if true the user will be part of the cachekey.
      */
     public void setCacheUser(boolean userCache){
         m_user = userCache;
@@ -315,7 +319,8 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
     }
 
     /**
-     *
+     * includes the uri in the cache key.
+     * @param uriCache if true the uri will be part of the cachekey.
      */
     public void setCacheUri(boolean uriCache){
         m_uri = uriCache;
@@ -323,7 +328,9 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
     }
 
     /**
-     *
+     * if this Vector is set the values of each of the parameters in the Vector
+     * will appear in the cachekey.
+     * @param parameterNames the parameter that should take part in the cachkey generation.
      */
     public void setCacheParameters(Vector parameterNames){
         m_cacheParameter = parameterNames;
@@ -331,7 +338,8 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
     }
 
     /**
-     *
+     * If one of this parameters apear in the request the element is dynamic! (no cachkey).
+     * @param parameterNames the names of the parameter that make a element dynamic
      */
     public void setNoCacheParameters(Vector parameterNames){
         m_dynamicParameter = parameterNames;
