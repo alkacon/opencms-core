@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2002/05/24 12:51:08 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2002/06/07 11:38:42 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.53 $ $Date: 2002/05/24 12:51:08 $
+ * @version $Revision: 1.54 $ $Date: 2002/06/07 11:38:42 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -519,9 +519,12 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
     try {
         // get all file-nodes
         fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
+        int importSize = fileNodes.getLength();
 
         // walk through all files in manifest
         for (int i = 0; i < fileNodes.getLength(); i++) {
+
+            m_report.addString(" ( "+(i+1)+" / "+importSize+" )  ");
             currentElement = (Element) fileNodes.item(i);
 
             // get all information for a file-import
@@ -797,10 +800,14 @@ private boolean inExcludeList(Vector excludeList, String path) {
      */
     private void updatePageLinks(){
         LinkChecker checker = new LinkChecker();
-        for(int i=0; i<m_importedPages.size(); i++){
+        int importPagesSize = m_importedPages.size();
+        for(int i=0; i<importPagesSize; i++){
+            m_report.addString(" ( "+(i+1)+" / "+importPagesSize+" )  ");
             try{
                 // first parse the page
                 CmsPageLinks links = m_cms.getPageLinks((String)m_importedPages.elementAt(i));
+                m_report.addString(" checking page "+(String)m_importedPages.elementAt(i));
+                m_report.addSeperator(0);
                 // now save the result in the database
                 m_cms.createLinkEntrys(links.getResourceId(), links.getLinkTargets());
             }catch(CmsException e){
