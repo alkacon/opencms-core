@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/04/01 12:27:22 $
- * Version: $Revision: 1.166 $
+ * Date   : $Date: 2004/04/01 12:28:47 $
+ * Version: $Revision: 1.167 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.166 $ $Date: 2004/04/01 12:27:22 $
+ * @version $Revision: 1.167 $ $Date: 2004/04/01 12:28:47 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -2472,10 +2472,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @see org.opencms.db.I_CmsVfsDriver#writePropertyObjects(org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.List)
      */
     public void writePropertyObjects(CmsProject project, CmsResource resource, List properties) throws CmsException {
+
         CmsProperty property = null;
-        
-        for (int i=0;i<properties.size();i++) {
-            property = (CmsProperty) properties.get(i);
+
+        for (int i = 0; i < properties.size(); i++) {
+            property = (CmsProperty)properties.get(i);
             writePropertyObject(project, resource, property);
         }
     }
