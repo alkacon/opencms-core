@@ -77,7 +77,8 @@ case 1:
 		</tr>
 		<tr>
 			<td style="white-space: nowrap;"><%= wp.key("input.startupview") %></td><td><%= wp.buildSelectView("name=\"" + wp.PARAM_WORKPLACE_VIEW + "\" style=\"width: 200px;\"") %></td>
-			<td colspan="4">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td colspan="3"><input type="checkbox" name="<%= wp.PARAM_WORKPLACE_RESTRICTEXPLORERVIEW %>" value="true"<%= wp.isChecked(wp.getParamTabWpRestrictExplorerView()) %>> <%= wp.key("input.restrictexplorerview") %></td>
 		</tr>		
 		</table>
 		<%= wp.dialogBlockEnd() %>
