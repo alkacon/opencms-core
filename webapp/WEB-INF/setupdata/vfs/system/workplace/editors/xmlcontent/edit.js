@@ -118,6 +118,10 @@ function opensmallwin(url, name, w, h) {
 
 // add an optional element to the currently edited content
 function addElement(elemName, insertAfter) {
+	// calculate y coordinate of current add button
+	var posElem = document.getElementById("add_" + elemName + insertAfter);
+	top.edit.buttonbar.lastPosY = findPosY(posElem);
+	// fill field values
 	var _form = document.EDITOR;
 	_form.elementname.value = elemName;
 	_form.elementindex.value = insertAfter;
@@ -126,6 +130,10 @@ function addElement(elemName, insertAfter) {
 
 // remove an optional element from currently edited content
 function removeElement(elemName, index) {
+	// calculate y coordinate of current remove button
+	var posElem = document.getElementById("del_" + elemName + index);
+	top.edit.buttonbar.lastPosY = findPosY(posElem);
+	// fill field values
 	var _form = document.EDITOR;
 	_form.elementname.value = elemName;
 	_form.elementindex.value = index;
@@ -170,6 +178,15 @@ function checkPreview(fieldId) {
 	} catch (e) {
 		document.getElementById("preview" + fieldId).className = "hide";
 	}
+}
+
+// scrolls the input form to the position where last element was added or removed
+function scrollForm() {
+	var posY = 0;
+	try {
+		posY = top.edit.buttonbar.lastPosY;
+	} catch (e) {}
+	window.scrollTo(0, posY);
 }
 
 // closes the popup window, this method is called by the onunload event

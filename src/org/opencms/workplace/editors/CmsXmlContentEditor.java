@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/02/24 12:33:14 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -453,7 +453,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             href.append(elementName);
             href.append("', ");
             href.append(insertAfter);
-            href.append(");");
+            href.append(");\" id=\"");
+            href.append("add_");
+            href.append(elementName);
+            href.append(insertAfter);
             return button(href.toString(), null, "new", "button.addnew", 0);    
         } else {
             return "<td style=\"width: 22px;\">&nbsp;</td>";
@@ -476,7 +479,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             href.append(elementName);
             href.append("', ");
             href.append(index);
-            href.append(");");
+            href.append(");\" id=\"");
+            href.append("del_");
+            href.append(elementName);
+            href.append(index);
             return button(href.toString(), null, "deletecontent", "button.delete", 0);    
         } else {
             return "<td style=\"width: 22px;\">&nbsp;</td>";
