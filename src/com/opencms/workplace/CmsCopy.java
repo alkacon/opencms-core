@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2001/07/31 15:50:18 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2001/09/24 14:00:17 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.41 $ $Date: 2001/07/31 15:50:18 $
+ * @version $Revision: 1.42 $ $Date: 2001/09/24 14:00:17 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -177,25 +177,42 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
             session.putValue(C_PARA_FILE, filename);
         }
         filename = (String)session.getValue(C_PARA_FILE);
+        CmsResource file = (CmsResource)cms.readFileHeader(filename);
 
         // read all request parameters
-        String newFile = (String)parameters.get(C_PARA_NEWFILE);
-        if(newFile != null) {
+        String newFolder = new String();
+        String newFile = new String();
+        String wholePath = (String)parameters.get(C_PARA_NEWFOLDER);
+        // the wholePath includes the folder and/or the filename
+        if(wholePath != null && !("".equals(wholePath))){
+            if(wholePath.startsWith("/")){
+                // get the foldername
+                newFolder = wholePath.substring(0, wholePath.lastIndexOf("/")+1);
+                newFile = wholePath.substring(wholePath.lastIndexOf("/")+1);
+                if (newFile == null || "".equals(newFile)){
+                    newFile = file.getName();
+                }
+            } else {
+                newFolder = file.getParent();
+                newFile = wholePath;
+            }
+        }
+
+        if(newFile != null && !("".equals(newFile))) {
             session.putValue(C_PARA_NEWFILE, newFile);
         }
         newFile = (String)session.getValue(C_PARA_NEWFILE);
-        String newFolder = (String)parameters.get(C_PARA_NEWFOLDER);
-        if(newFolder != null) {
+        if(newFolder != null && !("".equals(newFolder))) {
             session.putValue(C_PARA_NEWFOLDER, newFolder);
         }
         newFolder = (String)session.getValue(C_PARA_NEWFOLDER);
+
         String flags = (String)parameters.get(C_PARA_FLAGS);
         if(flags != null) {
             session.putValue(C_PARA_FLAGS, flags);
         }
         flags = (String)session.getValue(C_PARA_FLAGS);
         String action = (String)parameters.get("action");
-        CmsResource file = (CmsResource)cms.readFileHeader(filename);
 
         // select the template to be displayed
         if(file.isFile()) {
@@ -207,7 +224,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
         // modify the folderaname if nescessary (the root folder is always given
         // as a nice name)
-        if(newFolder != null) {
+        if(newFolder != null && !("".equals(newFolder))) {
             if(newFolder.equals(lang.getLanguageValue("title.rootfolder"))) {
                 newFolder = "/";
             }
@@ -215,7 +232,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
         //check if the newfile parameter was included in the request
         // if not, the copy page is shown for the first time
-        if(newFile == null) {
+        if(newFile == null || "".equals(newFile)) {
             session.putValue(C_PARA_NAME, file.getName());
         }
         else {
