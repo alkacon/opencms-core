@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/25 13:40:05 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2000/08/25 14:24:11 $
+ * Version: $Revision: 1.110 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.template.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.109 $ $Date: 2000/08/25 13:40:05 $
+ * @version $Revision: 1.110 $ $Date: 2000/08/25 14:24:11 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3317,7 +3317,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
 		throws CmsException {
 		if(isAdmin(currentUser, currentProject)) {
-			new CmsImport(importFile, importPath, cms);
+			CmsImport imp = new CmsImport(importFile, importPath, cms);
+			imp.importResources();
 		} else {
 			 throw new CmsException("[" + this.getClass().getName() + "] importResources",
 				 CmsException.C_NO_ACCESS);
@@ -4059,7 +4060,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 										   filename);
 		 } catch(CmsException exc) {
 			 // the resource was not readable
-			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+			 if (exc.getType()==CmsException.C_RESOURCE_DELETED) {
+				//resource deleted
+				throw exc;
+			 } else if(currentProject.equals(onlineProject(currentUser, currentProject))) {
 				 // this IS the onlineproject - throw the exception
 				 throw exc;
 			 } else {
@@ -4231,7 +4235,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 }
 		 } catch(CmsException exc) {
 			 // the resource was not readable
-			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+			 if (exc.getType()==CmsException.C_RESOURCE_DELETED) {
+				throw exc;
+			 } else if(currentProject.equals(onlineProject(currentUser, currentProject))) {
 				 // this IS the onlineproject - throw the exception
 				 throw exc;
 			 } else {

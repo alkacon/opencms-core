@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/25 13:18:22 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/08/25 14:24:12 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2000/08/25 13:18:22 $
+ * @version $Revision: 1.26 $ $Date: 2000/08/25 14:24:12 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1283,9 +1283,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		CmsTemplateClassManager.clearCache();
 
 	}
-
-
-	
 	/**
 	 * Copies a file in the Cms. <br>
 	 * 
@@ -3321,7 +3318,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
 		throws CmsException {
 		if(isAdmin(currentUser, currentProject)) {
-			new CmsImport(importFile, importPath, cms);
+			CmsImport imp = new CmsImport(importFile, importPath, cms);
+			imp.importResources();
 		} else {
 			 throw new CmsException("[" + this.getClass().getName() + "] importResources",
 				 CmsException.C_NO_ACCESS);
@@ -4069,7 +4067,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 										   filename);
 		 } catch(CmsException exc) {
 			 // the resource was not readable
-			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+			 if (exc.getType()==CmsException.C_RESOURCE_DELETED) {
+				throw exc;
+			 } else if(currentProject.equals(onlineProject(currentUser, currentProject))) {
 				 // this IS the onlineproject - throw the exception
 				 throw exc;
 			 } else {
@@ -4241,7 +4241,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 }
 		 } catch(CmsException exc) {
 			 // the resource was not readable
-			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+			 if (exc.getType()==CmsException.C_RESOURCE_DELETED) {
+				throw exc;
+			 } else if(currentProject.equals(onlineProject(currentUser, currentProject))) {
 				 // this IS the onlineproject - throw the exception
 				 throw exc;
 			 } else {

@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/08/22 13:33:57 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2000/08/25 14:24:11 $
+ * Version: $Revision: 1.100 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.99 $ $Date: 2000/08/22 13:33:57 $
+ * @version $Revision: 1.100 $ $Date: 2000/08/25 14:24:11 $
  */
 public interface I_CmsConstants
 {
@@ -790,7 +790,7 @@ public interface I_CmsConstants
 	 * The filename of the xml manifest.
 	 */
 	public static String C_EXPORT_XMLFILENAME = "manifest.xml";
-
+	
 	/**
 	 * A tag in the manifest-file.
 	 */

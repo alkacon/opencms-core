@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/08/24 09:25:37 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2000/08/25 14:24:11 $
+ * Version: $Revision: 1.117 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.116 $ $Date: 2000/08/24 09:25:37 $ * 
+ * @version $Revision: 1.117 $ $Date: 2000/08/25 14:24:11 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -3615,7 +3615,7 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 	  
 			   // check if the file is marked as deleted
 			   if (file.getState() == C_STATE_DELETED) {
-				   throw new CmsException("["+this.getClass().getName()+"] "+CmsException.C_NOT_FOUND); 
+				   throw new CmsException("["+this.getClass().getName()+"] "+CmsException.C_RESOURCE_DELETED); 
 			   }
 			   // read the file content
 		 

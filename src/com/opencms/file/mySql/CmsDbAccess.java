@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/08/22 13:22:49 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/08/25 14:24:12 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.21 $ $Date: 2000/08/22 13:22:49 $ * 
+ * @version $Revision: 1.22 $ $Date: 2000/08/25 14:24:12 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -3612,7 +3612,7 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlin
 	  
 			   // check if the file is marked as deleted
 			   if (file.getState() == C_STATE_DELETED) {
-				   throw new CmsException("["+this.getClass().getName()+"] "+CmsException.C_NOT_FOUND); 
+				   throw new CmsException("["+this.getClass().getName()+"] "+CmsException.C_RESOURCE_DELETED); 
 			   }
 			   // read the file content
 		 

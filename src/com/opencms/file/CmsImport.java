@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/08/15 16:25:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/08/25 14:24:11 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2000/08/15 16:25:30 $
+ * @version $Revision: 1.16 $ $Date: 2000/08/25 14:24:11 $
  */
 public class CmsImport implements I_CmsConstants {
 	
@@ -95,8 +95,7 @@ public class CmsImport implements I_CmsConstants {
 		// read the xml-config file
 		getXmlConfigFile(); 
 		
-		// import the resources
-		importResources();
+		// import the resources 
 	}
 	/**
 	 * Creates missing property definitions if needed.
@@ -108,16 +107,56 @@ public class CmsImport implements I_CmsConstants {
 	 * @exception throws CmsException if something goes wrong.
 	 */
 	private void createPropertydefinition(String name, String propertyType, String resourceType) 
-		throws CmsException {
-		
+		throws CmsException { 
 		// does the propertydefinition exists already?
 		try {
 			m_cms.readPropertydefinition(name, resourceType);
 		} catch(CmsException exc) {
-			// no: create it
+			// no: create it 
 			m_cms.createPropertydefinition(name, resourceType, Integer.parseInt(propertyType));
 		}
 	}
+/**
+ * Insert the method's description here.
+ * Creation date: (24.08.00 16:18:23)
+ * @return java.util.Vector
+ */
+public Vector getConflictingFilenames() throws CmsException {
+	NodeList fileNodes;
+	Element currentElement, currentProperty;
+	String source, destination, path;
+	Vector conflictNames = new Vector();
+	try {
+		// get all file-nodes
+		fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
+
+		// walk through all files in manifest
+		for (int i = 0; i < fileNodes.getLength(); i++) {
+			currentElement = (Element) fileNodes.item(i);
+			source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
+			destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
+			path = m_importPath + destination;
+			if (source != null) {
+				// only consider files
+				boolean exists = true; 
+				try {
+					CmsResource res=m_cms.readFileHeader(m_importPath + destination); 
+					if (res.getState()==C_STATE_DELETED) {
+						exists=false;
+					}
+				} catch (CmsException e) { 
+					exists = false;
+				}
+				if (exists) {
+					conflictNames.addElement(m_importPath + destination);
+				}
+			}
+		} 
+	} catch (Exception exc) {
+		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+	}
+	return conflictNames;
+}
 	/**
 	 * Returns a byte-array containing the content of the file.
 	 * 
@@ -208,7 +247,8 @@ public class CmsImport implements I_CmsConstants {
 		}
 	}
 	/**
-	 * Gets the xml-config file from the import resource and stroes it in object-member.
+	 * Gets the xml-config file from the import resource and stores it in object-member.
+	 * Checks whether the import is from a module file
 	 */
 	private void getXmlConfigFile() 
 		throws CmsException {
@@ -220,7 +260,7 @@ public class CmsImport implements I_CmsConstants {
 		 } catch(Exception exc) {
 	   
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-		}
+		} 
 	}
 	/**
 	 * Imports a file into the cms.
@@ -231,8 +271,9 @@ public class CmsImport implements I_CmsConstants {
 	 * @param group the group of the file
 	 * @param access the access-flags of the file
 	 * @param properties a hashtable with properties for this resource
+	 * @return true if file was actually written, false if an error occurred
 	 */
-	private void importFile(String source, String destination, String type, String user, String group, String access, Hashtable properties) {
+	private boolean importFile(String source, String destination, String type, String user, String group, String access, Hashtable properties) {
 		// print out the information for shell-users
 		System.out.print("Importing ");
 		System.out.print(source + ", ");	
@@ -242,6 +283,7 @@ public class CmsImport implements I_CmsConstants {
 		System.out.print(group + ", ");	
 		System.out.print(access + "... ");
 		
+		boolean successfull = false;
 		try {			
 			String path = m_importPath + destination.substring(0,destination.lastIndexOf("/")+1);
 			String name = destination.substring((destination.lastIndexOf("/")+1),destination.length());
@@ -252,7 +294,8 @@ public class CmsImport implements I_CmsConstants {
 				// this is a directory
 				try {
 				   CmsFolder cmsfolder= m_cms.createFolder(path, name, properties);
-				   fullname = cmsfolder.getAbsolutePath();                             
+				   fullname = cmsfolder.getAbsolutePath();
+				   successfull=true;
 				   state=C_STATE_NEW;
 				} catch (CmsException e) { 
 					// an exception is thrown if the folder already exists
@@ -270,6 +313,7 @@ public class CmsImport implements I_CmsConstants {
 				}
 				// now create the file 
 				fullname = m_cms.createFile(path, name, getFileBytes(source), type, properties).getAbsolutePath();
+				successfull=true;
 			}
 		  
 			if (fullname!=null) {
@@ -281,66 +325,120 @@ public class CmsImport implements I_CmsConstants {
 			System.out.println("OK");
 		} catch(Exception exc) {
 			// an error while importing the file
+			successfull = false;
 			System.out.println("Error");
 			exc.printStackTrace();
-		}		
+		}	
+		return successfull;	
 	}
-	/**
-	 * Imports the resources and writes them to the cms.
-	 */
-	private void importResources() 
-		throws CmsException {
-		
-		NodeList fileNodes, propertyNodes;
-		Element currentElement, currentProperty;
-		String source, destination, type, user, group, access;
-		Hashtable properties;
-		
-		// first lock the resource to import
-		m_cms.lockResource(m_importPath);
-		
-		try {
-			// get all file-nodes
-			fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
-			
-			// walk through all files in manifest
-			for(int i = 0; i < fileNodes.getLength(); i++) {
-				currentElement = (Element) fileNodes.item(i);
-				
-				// get all information for a file-import
-				source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
-				destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
-				type = getTextNodeValue(currentElement, C_EXPORT_TAG_TYPE);
-				user = getTextNodeValue(currentElement, C_EXPORT_TAG_USER);
-				group = getTextNodeValue(currentElement, C_EXPORT_TAG_GROUP);
-				access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
-				
+/**
+ * Imports the resources and writes them to the cms even if there already exist conflicting files
+ */
+public void importResources() throws CmsException {
+	importResources(null, null, null, null, null);
+}
+/**
+ * Imports the resources and writes them to the cms.
+ * param excludeList filenames of files which should not be (over) written in the virtual file system
+ * param writtenFilenames filenames of the files which have actually been successfully written
+ *       not used when null
+ * param fileCodes code of the written files (for the registry) 
+ *       not used when null
+ * param propertyName name of a property to be added to all resources
+ * param propertyValue value of that property
+ */
+public void importResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
+	 
+	NodeList fileNodes, propertyNodes;
+	Element currentElement, currentProperty;
+	String source, destination, type, user, group, access;
+	Hashtable properties;
+	Vector types = new Vector(); // stores the file types for which the property already exists
+
+	// first lock the resource to import
+	m_cms.lockResource(m_importPath);
+	try {
+		// get all file-nodes
+		fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
+
+		// walk through all files in manifest
+		for (int i = 0; i < fileNodes.getLength(); i++) {
+			currentElement = (Element) fileNodes.item(i);
+
+			// get all information for a file-import
+			source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
+			destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
+			type = getTextNodeValue(currentElement, C_EXPORT_TAG_TYPE);
+			user = getTextNodeValue(currentElement, C_EXPORT_TAG_USER);
+			group = getTextNodeValue(currentElement, C_EXPORT_TAG_GROUP);
+			access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
+			if (!inExcludeList(excludeList, m_importPath + destination)) {
+
 				// get all properties for this file
 				propertyNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_PROPERTY);
-				// clear all stores for propertyinformations
+				// clear all stores for property information
 				properties = new Hashtable();
+				// add the module property to properties
+				if (propertyName != null && propertyValue != null && !"".equals(propertyName)) {
+					if (!types.contains(type)) {
+						types.addElement(type);
+						createPropertydefinition(propertyName, "" + C_PROPERTYDEF_TYPE_OPTIONAL, type);
+					}
+					properties.put(propertyName, propertyValue);
+				}
 				// walk through all properties
-				for(int j = 0; j < propertyNodes.getLength(); j++) {
+				for (int j = 0; j < propertyNodes.getLength(); j++) {
 					currentProperty = (Element) propertyNodes.item(j);
 					// get all information for this property
 					String name = getTextNodeValue(currentProperty, C_EXPORT_TAG_NAME);
 					String propertyType = getTextNodeValue(currentProperty, C_EXPORT_TAG_TYPE);
 					String value = getTextNodeValue(currentProperty, C_EXPORT_TAG_VALUE);
 					// store these informations
-					if( (name != null) && (value != null) ) {
+					if ((name != null) && (value != null)) {
 						properties.put(name, value);
-	   					createPropertydefinition(name, propertyType, type);
+						createPropertydefinition(name, propertyType, type);
 					}
 				}
-				
+
 				// import the specified file
-				importFile(source, destination, type, user, group, access, properties);
+				boolean succes = importFile(source, destination, type, user, group, access, properties);
+				boolean isFile = (source != null);
+				if (succes && isFile) {
+					if (writtenFilenames != null) {
+						writtenFilenames.addElement(m_importPath + destination);
+					}
+					if (fileCodes != null) {
+						// TODO
+						fileCodes.addElement("code of " + m_importPath + destination);
+					}
+				}
+			} else {
+				System.out.print("skipping " + destination);
 			}
-			
-		} catch(Exception exc) {
-			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-		}		
-		// all is done, unlock the resource 
-		m_cms.unlockResource(m_importPath); 
+		}
+	} catch (Exception exc) {
+		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 	}
+	// all is done, unlock the resource 
+	m_cms.unlockResource(m_importPath);
+}
+/**
+ * Checks whether the path is on the list of files which are excluded from the import
+ *  
+ * @return boolean true if path is on the excludeList
+ * @param excludeList list of pathnames which should not be (over) written
+ * @param path a complete path of a resource
+ */
+private boolean inExcludeList(Vector excludeList, String path) {
+	boolean onList = false;
+	if (excludeList == null) {
+		return onList;
+	}
+	int i=0;
+	while (!onList && i<excludeList.size()) {
+		onList = (path.equals(excludeList.elementAt(i)));
+		i++;
+	} 
+	return onList;
+}
 }
