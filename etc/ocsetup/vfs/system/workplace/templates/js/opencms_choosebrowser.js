@@ -1,3 +1,31 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_choosebrowser.js,v $
+ * Date   : $Date: 2000/04/06 10:20:48 $
+ * Version: $Revision: 1.3 $
+ *
+ * Copyright (C) 2000  The OpenCms Group 
+ * 
+ * This File is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.com
+ * 
+ * You should have received a copy of the GNU General Public License
+ * long with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 //---------------------------------
 // help to choose the right browser
 // m.schleich 21.12.1999
@@ -82,6 +110,7 @@ function hidelyr(welche)
 		eval(layerverstecken_01+welche+layerverstecken_02);
 		//shown = false;
 }
+
 
 //------------------------------------------------------------------------------------
 // content exchange between 2 layers (used in explorer_files_neu_ordner.html)

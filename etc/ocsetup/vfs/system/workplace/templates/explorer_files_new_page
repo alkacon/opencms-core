@@ -66,7 +66,7 @@ function show_help()
 									<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
 								</tr>
      							<tr>
-									<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="this.checked=false;switchlyr('NEWLINK','NEWWITHOUTLINK');"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
+									<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData('NEU','LINK','NEWWITHOUTLINK','NEWLINK');this.checked=false;switchlyr('NEWLINK','NEWWITHOUTLINK');"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
 								</tr>
 								<tr>
 									<td colspan=2 class="leerzeile"><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=70px></td>
@@ -123,7 +123,7 @@ function show_help()
 											<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
 										</tr>
 										<tr>
-											<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
+											<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
 										</tr>
 										<tr>
 											<td colspan=2 class=leerzeile><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=10px</td>
