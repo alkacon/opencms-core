@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/23 13:01:51 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2000/06/23 13:24:19 $
+ * Version: $Revision: 1.67 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.66 $ $Date: 2000/06/23 13:01:51 $
+ * @version $Revision: 1.67 $ $Date: 2000/06/23 13:24:19 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -836,6 +836,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         CmsResourceType resType = getResourceType(currentUser,currentProject,resourcetype);
         CmsPropertydefinition returnValue = null;
         returnValue = (CmsPropertydefinition)m_propertyDefCache.get(name + resType.getResourceType());
+
         if (returnValue == null){
 			returnValue = m_dbAccess.readPropertydefinition(name, resType);
 			m_propertyDefCache.put(name + resType.getResourceType(), returnValue);

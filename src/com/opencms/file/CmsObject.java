@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/20 14:41:22 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2000/06/23 13:24:19 $
+ * Version: $Revision: 1.90 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.89 $ $Date: 2000/06/20 14:41:22 $ 
+ * @version $Revision: 1.90 $ $Date: 2000/06/23 13:24:19 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1792,7 +1792,7 @@ public class CmsObject implements I_CmsConstants {
 	public CmsPropertydefinition readPropertydefinition(String name, 
 												  String resourcetype)
 		throws CmsException { 
-		return( c_rb.readPropertydefinition(m_context.currentUser(), 
+ 		return( c_rb.readPropertydefinition(m_context.currentUser(), 
 										m_context.currentProject(), 
 										name,
 										resourcetype) );
