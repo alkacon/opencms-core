@@ -5,7 +5,7 @@
 <html>
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 <!-- Beginn Style -->
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -16,15 +16,15 @@
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_editbrowser.js"></SCRIPT>
 
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
-	// URL for pictures
-	var pfad="]]><METHOD name="picsUrl"/><![CDATA["; 
-	var page=parseInt(]]><PROCESS>page</PROCESS><![CDATA[);  // the actual page
-	var filter="]]><PROCESS>filter</PROCESS><![CDATA[";      // the actual filter
-	var maxpage=parseInt(]]><PROCESS>maxpage</PROCESS><![CDATA[);  // the maximum page number 
-	list='downlist';
-	ctrl='downctrl';
-	browser='downloadbrowser';
-	uploadurl="../administration/downloadgallery/administration_content_downgallery_upload.html?lasturl=]]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/downlist.html&filelist=";
+    // URL for pictures
+    var pfad="]]><METHOD name="picsUrl"/><![CDATA["; 
+    var page=parseInt(]]><PROCESS>page</PROCESS><![CDATA[);  // the actual page
+    var filter="]]><PROCESS>filter</PROCESS><![CDATA[";      // the actual filter
+    var maxpage=parseInt(]]><PROCESS>maxpage</PROCESS><![CDATA[);  // the maximum page number 
+    list='downlist';
+    ctrl='downctrl';
+    browser='downloadbrowser';
+    uploadurl="../administration/downloadgallery/administration_content_downgallery_upload.html?lasturl=]]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/downlist.html&filelist=";
 </SCRIPT>
 
 <!-- Ende JavaScript -->
@@ -43,17 +43,17 @@
 <td class=dialogtxt width=100%>&nbsp;</td>
 <td class=menubold>]]><LABEL value="input.gallery" /><![CDATA[:&nbsp;</td>
 <td class=dialogtxt>]]>
-	<SELECT class="textfeld1" name="galerie" width="200" method="getDownGalleryNames" 
-			style="width:200px" onDblClick="" onchange="updateSelection();"/><![CDATA[
+    <SELECT class="textfeld1" name="galerie" width="200" method="getDownGalleryNames" 
+            style="width:200px" onDblClick="" onchange="updateSelection();"/><![CDATA[
 </td>
 <td class=dialogtxt><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" width="32" height="32" alt="" border="0"></td>
 </tr> 
 <tr>
-	<td class=dialogtxt colspan=4>&nbsp;</td>
-	<td class=dialogtxt width=100%>&nbsp;</td> 
-	<td class="menubold">]]><LABEL value="input.search" /><![CDATA[:&nbsp;</td>
-	<td class=dialogtxt><INPUT class="textfeld1" ID="FilterInput" NAME="FilterInput" TYPE=TEXT SIZE=20 value="]]><PROCESS>filter</PROCESS><![CDATA["><IMG SRC="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" alt="" border=0 width=5 height=5></td>
-	<td class=dialogtxt><a href="javascript:doEdit(DO_SEARCH)" onMouseDown="ChPush('bt_search')" onMouseUp="ChOn('bt_search')" onMouseOver="ChOn('bt_search')" onMouseOut="ChOff('bt_search')"><IMG SRC="]]><METHOD name="picsUrl">bt_search_off.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.search" /><![CDATA[" name="bt_search" border=0 width=32 height=32></a></td>
+    <td class=dialogtxt colspan=4>&nbsp;</td>
+    <td class=dialogtxt width=100%>&nbsp;</td> 
+    <td class="menubold">]]><LABEL value="input.search" /><![CDATA[:&nbsp;</td>
+    <td class=dialogtxt><INPUT class="textfeld1" ID="FilterInput" NAME="FilterInput" TYPE=TEXT SIZE=20 value="]]><PROCESS>filter</PROCESS><![CDATA["><IMG SRC="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" alt="" border=0 width=5 height=5></td>
+    <td class=dialogtxt><a href="javascript:doEdit(DO_SEARCH)" onMouseDown="ChPush('bt_search')" onMouseUp="ChOn('bt_search')" onMouseOver="ChOn('bt_search')" onMouseOut="ChOff('bt_search')"><IMG SRC="]]><METHOD name="picsUrl">bt_search_off.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.search" /><![CDATA[" name="bt_search" border=0 width=32 height=32></a></td>
 </tr>
 </table>
 </form>
