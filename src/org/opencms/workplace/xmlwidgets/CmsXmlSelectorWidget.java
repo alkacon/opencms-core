@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlSelectorWidget.java,v $
- * Date   : $Date: 2005/01/18 15:48:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/02/04 16:35:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,11 +45,11 @@ import java.util.StringTokenizer;
  * The select box options have to be written in the "default" appinfo node and use the following syntax:<br>
  * valueattribute1*:displayed text 1|valueattribute2:displayed text 2<br>
  * The asterisk marks the preselected value when creating a new value, the displayed text is optional.
- * You can use localized keys for the displayed text like ${key:keyname}.<p>
+ * You can use localized keys for the displayed text like ${key.keyname}.<p>
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.3
  */
 public class CmsXmlSelectorWidget extends A_CmsXmlWidget {

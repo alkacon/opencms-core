@@ -31,7 +31,7 @@
 		<xsd:appinfo>
 			<defaults>
 				<default element="DateTime" value="${currenttime}" />
-				<default element="Locale" value="${request:locale}" />
+				<default element="Locale" value="${request.locale}" />
 			</defaults>
 			<layouts>
 				<layout element="Image" widget="ImageGalleryWidget" />

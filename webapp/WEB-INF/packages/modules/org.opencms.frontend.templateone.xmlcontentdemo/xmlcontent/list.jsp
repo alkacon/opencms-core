@@ -16,7 +16,7 @@
 <cms:contentshow element="Teaser" /></br>
 <small>
 By <cms:contentshow element="Author" />
-<a href="<cms:link><cms:contentshow element="${opencms:filename}" /></cms:link>">read more...</a>
+<a href="<cms:link><cms:contentshow element="${opencms.filename}" /></cms:link>">read more...</a>
 </small>
 </p>
 </div>

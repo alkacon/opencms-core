@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringMapper.java,v $
- * Date   : $Date: 2005/01/20 08:49:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/02/04 16:35:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * A string mapper to resolve EL like strings in tag attributes of Cms JSP tags.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 6.0 alpha 3
  */
 public class CmsStringMapper implements I_CmsStringMapper {
@@ -116,6 +116,21 @@ public class CmsStringMapper implements I_CmsStringMapper {
      * @see org.opencms.util.I_CmsStringMapper#getValue(java.lang.String)
      */
     public String getValue(String key) {
+        
+        // TODO: remove following check for colon in key after it is assured that old macros are all replaced
+        int colonIndex = key.indexOf(':');
+        int dotIndex = key.indexOf('.');
+        if (colonIndex != -1 && (colonIndex < dotIndex || dotIndex == -1)) {
+            // log as error and replace first appearance of deprecated colon with dot
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                String error = "Usage of deprecated macro key: " + key;
+                if (m_cms != null) {
+                    error += " [" + m_cms.getRequestContext().getUri() + "]";
+                }
+                OpenCms.getLog(this).error(error);
+            }
+            key = key.replaceFirst("\\:", ".");
+        }
 
         if (m_pageContext != null && key.startsWith(I_CmsStringMapper.C_KEY_REQUEST_PARAM)) {
 
@@ -128,7 +143,7 @@ public class CmsStringMapper implements I_CmsStringMapper {
 
         if (m_cms != null && key.startsWith(I_CmsStringMapper.C_KEY_PROPERTY)) {
 
-            // the key is a Cms property to be read on the current request URI
+            // the key is a cms property to be read on the current request URI
 
             key = key.substring(I_CmsStringMapper.C_KEY_PROPERTY.length());
             try {
@@ -148,7 +163,7 @@ public class CmsStringMapper implements I_CmsStringMapper {
 
         if (m_cms != null && key.startsWith(I_CmsStringMapper.C_KEY_PROPERTY_ELEMENT)) {
 
-            // the key is a Cms property to be read on the current element
+            // the key is a cms property to be read on the current element
 
             key = key.substring(I_CmsStringMapper.C_KEY_PROPERTY_ELEMENT.length());
             CmsFlexController controller = (CmsFlexController)m_pageContext.getRequest().getAttribute(
@@ -187,7 +202,7 @@ public class CmsStringMapper implements I_CmsStringMapper {
 
         if (m_resourceName != null && m_cms != null && key.startsWith(I_CmsStringMapper.C_KEY_OPENCMS)) {
 
-            // the key is a shortcut for a Cms runtime value
+            // the key is a shortcut for a cms runtime value
 
             String originalKey = key;
             key = key.substring(I_CmsStringMapper.C_KEY_OPENCMS.length());
@@ -217,56 +232,69 @@ public class CmsStringMapper implements I_CmsStringMapper {
         }
 
         if (I_CmsStringMapper.KEY_CURRENT_TIME.equals(key)) {
+            // the key is the current system time
             return String.valueOf(System.currentTimeMillis());
         }
 
         if (I_CmsStringMapper.KEY_CURRENT_USER_NAME.equals(key) && m_cms != null) {
+            // the key is the current users login name
             return m_cms.getRequestContext().currentUser().getName();
         }
 
         if (I_CmsStringMapper.KEY_CURRENT_USER_FIRSTNAME.equals(key) && m_cms != null) {
+            // the key is the current users first name
             return m_cms.getRequestContext().currentUser().getFirstname();
         }
 
         if (I_CmsStringMapper.KEY_CURRENT_USER_LASTNAME.equals(key) && m_cms != null) {
+            // the key is the current users last name
             return m_cms.getRequestContext().currentUser().getLastname();
         }
 
         if (I_CmsStringMapper.KEY_CURRENT_USER_FULLNAME.equals(key) && m_cms != null) {
+            // the key is the current users full name
             return m_cms.getRequestContext().currentUser().getFullName();
         }
 
         if (I_CmsStringMapper.KEY_CURRENT_USER_EMAIL.equals(key) && m_cms != null) {
+            // the key is the current users email address
             return m_cms.getRequestContext().currentUser().getEmail();
         }
 
         if (I_CmsStringMapper.KEY_CURRENT_USER_STREET.equals(key) && m_cms != null) {
+            // the key is the current users address
             return m_cms.getRequestContext().currentUser().getAddress();
         }
 
         if (I_CmsStringMapper.KEY_CURRENT_USER_ZIP.equals(key) && m_cms != null) {
+            // the key is the current users zip code
             return (String)m_cms.getRequestContext().currentUser().getAdditionalInfo(
                 I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
         }
 
         if (I_CmsStringMapper.KEY_CURRENT_USER_CITY.equals(key) && m_cms != null) {
+            // the key is the current users city
             return (String)m_cms.getRequestContext().currentUser().getAdditionalInfo(
                 I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
         }
 
         if (I_CmsStringMapper.KEY_REQUEST_URI.equals(key) && m_cms != null) {
+            // the key is the currently requested uri
             return m_cms.getRequestContext().getUri();
         }
 
         if (I_CmsStringMapper.KEY_REQUEST_FOLDER.equals(key) && m_cms != null) {
+            // the key is the currently requested folder
             return CmsResource.getParentFolder(m_cms.getRequestContext().getUri());
         }
 
         if (I_CmsStringMapper.KEY_REQUEST_ENCODING.equals(key) && m_cms != null) {
+            // the key is the current encoding of the request
             return m_cms.getRequestContext().getEncoding();
         }
 
         if (I_CmsStringMapper.KEY_REQUEST_LOCALE.equals(key) && m_cms != null) {
+            // the key is the current locale of the request
             return m_cms.getRequestContext().getLocale().toString();
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/01/18 13:06:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/02/04 16:35:25 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -129,14 +129,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public static final String APPINFO_VALIDATIONRULES = "validationrules";
 
     /** Default message for validation errors. */
-    protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = "${validation:path}: "
-        + "${key:editor.xmlcontent.validation.error.1}${validation:value}${key:editor.xmlcontent.validation.error.2}"
-        + "[${validation:regex}]";
+    protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = "${validation.path}: "
+        + "${key.editor.xmlcontent.validation.error.1}${validation.value}${key.editor.xmlcontent.validation.error.2}"
+        + "[${validation.regex}]";
 
     /** Default message for validation warnings. */
-    protected static final String MESSAGE_VALIDATION_DEFAULT_WARNING = "${validation:path}: "
-        + "${key:editor.xmlcontent.validation.warning.1}${validation:value}${key:editor.xmlcontent.validation.warning.2}"
-        + "[${validation:regex}]";
+    protected static final String MESSAGE_VALIDATION_DEFAULT_WARNING = "${validation.path}: "
+        + "${key.editor.xmlcontent.validation.warning.1}${validation.value}${key.editor.xmlcontent.validation.warning.2}"
+        + "[${validation.regex}]";
 
     /** The default values for the elements (as defined in the annotations). */
     protected Map m_defaultValues;

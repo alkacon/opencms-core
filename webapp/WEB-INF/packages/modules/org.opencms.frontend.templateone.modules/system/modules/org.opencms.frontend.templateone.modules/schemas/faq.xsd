@@ -40,7 +40,7 @@
 			<validationrules/>
 			<defaults>
 				<default element="Date" value="${currenttime}"/>
-				<default element="Author" value="${currentuser:fullname}"/>
+				<default element="Author" value="${currentuser.fullname}"/>
 			</defaults>
 		</xsd:appinfo>
 

@@ -30,7 +30,7 @@
 				<layout element="MailType" widget="SelectorWidget" />
 			</layouts>
 			<defaults>
-				<default element="MailType" value="html*:${key:form.email.type.html}|text:${key:form.email.type.text}"/>
+				<default element="MailType" value="html*:${key.form.email.type.html}|text:${key.form.email.type.text}"/>
 			</defaults>
 		</xsd:appinfo>
 	</xsd:annotation>  

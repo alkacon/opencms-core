@@ -29,12 +29,12 @@
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.workplace.workplace" />			
 			<validationrules>
-				<rule element="Test" regex="!.*err.*" message="${validation:path}: ${key:editor.xmlcontent.validation.error.1}${validation:value}${key:editor.xmlcontent.validation.error.2}${validation:regex}" />
-				<rule element="Test" regex="!.*warn.*" type="warning" message=" ${validation:path}: ${key:editor.xmlcontent.validation.warning.1}${validation:value}${key:editor.xmlcontent.validation.warning.2}${validation:regex}" />
-				<rule element="Toast" regex="!.*warn.*" type="warning" message=" ${validation:path}: ${key:editor.xmlcontent.validation.warning.1}${validation:value}${key:editor.xmlcontent.validation.warning.2}${validation:regex}" />
+				<rule element="Test" regex="!.*err.*" message="${validation.path}: ${key.editor.xmlcontent.validation.error.1}${validation.value}${key.editor.xmlcontent.validation.error.2}${validation.regex}" />
+				<rule element="Test" regex="!.*warn.*" type="warning" message=" ${validation.path}: ${key.editor.xmlcontent.validation.warning.1}${validation.value}${key.editor.xmlcontent.validation.warning.2}${validation.regex}" />
+				<rule element="Toast" regex="!.*warn.*" type="warning" message=" ${validation.path}: ${key.editor.xmlcontent.validation.warning.1}${validation.value}${key.editor.xmlcontent.validation.warning.2}${validation.regex}" />
 			</validationrules>
 			<defaults>					
-				<default element="Option" value="${key:label.author}: ${currentuser:fullname}, ${currentuser:street} - ${currentuser:email}" />
+				<default element="Option" value="${key.label.author}: ${currentuser.fullname}, ${currentuser.street} - ${currentuser.email}" />
 			</defaults>
 		</xsd:appinfo>
 	</xsd:annotation>  

@@ -11,7 +11,7 @@ pageContext.setAttribute("locale", locale);
 %><fmt:setLocale value="${locale}" /><%--
 --%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
 
---%><cms:contentload collector="allInFolderDateReleasedDesc" property="style_news_articles" param="news_${number}.html|30|4" editable="true">
+--%><cms:contentload collector="allInFolderDateReleasedDesc" property="style_news_articles" param="${opencms.folder}news_${number}.html|30|4" editable="true">
 
 <div class="element2">
 <b><cms:contentshow element="Title" /></b><br>
