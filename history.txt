@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/03/02 15:39:49 $
- * Version: $Revision: 1.528 $
+ * Date   : $Date: 2004/03/02 21:51:56 $
+ * Version: $Revision: 1.529 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,14 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.3.4 Ix - March xx, 2004
+- Updated all jars, also added version numbers to all jars
+- Added "opencms.xml" as replacement for "registry.xml",
+  this is a work in progress, "registy.xml" will be removed in the end
+! Added new package org.opencms.configuration that will hold
+  all new XML configuration classes
+! New XML configuration in "opencms.xml" is read by Apache Digester
 
 OpenCms 5.3.3 Ix - March 01, 2004
 - Refactored classes com.opencms.file.* to org.opencms.file.*
