@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/31 13:11:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/11/02 17:10:38 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.3 $ $Date: 2000/10/31 13:11:28 $
+ * @version $Revision: 1.4 $ $Date: 2000/11/02 17:10:38 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 	
@@ -437,15 +437,15 @@ public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject
  * and force was set to false.
  */
 public void lockResource(CmsUser currentUser, CmsProject currentProject, String resourcename, boolean force) throws CmsException {
-	//CmsResource cmsResource = null;
-	//CmsFolder cmsFolder = null;
-	//CmsFile cmsFile = null;
+	CmsResource cmsResource = null;
+	CmsFolder cmsFolder = null;
+	CmsFile cmsFile = null;
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	//Vector resources = dbAccess.lockResource(currentUser, currentProject, resourcename, force);
-	dbAccess.lockResource(currentUser, currentProject, resourcename, force);
-	m_resourceCache.clear();
+	Vector resources = dbAccess.lockResource(currentUser, currentProject, resourcename, force);
+	//dbAccess.lockResource(currentUser, currentProject, resourcename, force);
+	//m_resourceCache.clear();
 	// update the cache
-/*	
+	
 	for (int i = 0; i < resources.size(); i++) {		
 		cmsResource = (CmsResource) resources.elementAt(i);
 		String resourceName = cmsResource.getAbsolutePath();
@@ -471,7 +471,7 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
 			m_resourceCache.put(C_FILE + currentProject.getId() + resourceName, cmsFile);
 		}
 	}
-*/	
+	
 	m_subresCache.clear();
 }
 /**
@@ -581,10 +581,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
 		cmsFile = dbAccess.readFile(currentUser.getId(), currentProject.getId(), onlineProject(currentUser, currentProject).getId(), filename);
 	} catch (CmsException exc) {
 		// the resource was not readable
-		if (exc.getType() == CmsException.C_RESOURCE_DELETED) {
-			//resource deleted
-			throw exc;
-		}
+		throw exc;
 	}
 	return cmsFile;
 }
@@ -617,15 +614,15 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
  */
 public void unlockResource(CmsUser currentUser, CmsProject currentProject, String resourcename) throws CmsException {
 
-//	CmsResource cmsResource = null;
-//	CmsFolder cmsFolder = null;
-//	CmsFile cmsFile = null;
+	CmsResource cmsResource = null;
+	CmsFolder cmsFolder = null;
+	CmsFile cmsFile = null;
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-//	Vector resources = dbAccess.unlockResource(currentUser, currentProject, resourcename);
-	dbAccess.unlockResource(currentUser, currentProject, resourcename);
-	m_resourceCache.clear();
+	Vector resources = dbAccess.unlockResource(currentUser, currentProject, resourcename);
+	//dbAccess.unlockResource(currentUser, currentProject, resourcename);
+	//m_resourceCache.clear();
 	// update the cache
-/*
+
 	for (int i=0; i < resources.size(); i++) {
 		cmsResource = (CmsResource)resources.elementAt(i);
 		String resourceName = cmsResource.getAbsolutePath();
@@ -650,8 +647,8 @@ public void unlockResource(CmsUser currentUser, CmsProject currentProject, Strin
 
 			m_resourceCache.put(C_FILE+currentProject.getId()+resourceName, cmsFile);			
 		}		
-	}	
-*/
+	}
+	
 	m_subresCache.clear();
 }
 	/**

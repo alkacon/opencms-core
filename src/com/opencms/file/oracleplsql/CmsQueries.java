@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/10/31 13:11:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/11/02 17:10:38 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,11 +40,11 @@ public class CmsQueries extends com.opencms.file.genericSql.CmsQueries
 	// oracle PL/SQL specific statement.
 	// statements for resources
 	public Integer C_PLSQL_RESOURCES_LOCKRESOURCE_KEY = new Integer(10000);
-//	public String C_PLSQL_RESOURCES_LOCKRESOURCE = "{call opencmsResource.lockResource(?,?,?,?,?)}";
-	public String C_PLSQL_RESOURCES_LOCKRESOURCE = "{call opencmsResource.lockResource(?,?,?,?)}";
+	public String C_PLSQL_RESOURCES_LOCKRESOURCE = "{call opencmsResource.lockResource(?,?,?,?,?)}";
+//	public String C_PLSQL_RESOURCES_LOCKRESOURCE = "{call opencmsResource.lockResource(?,?,?,?)}";
 	public Integer C_PLSQL_RESOURCES_UNLOCKRESOURCE_KEY = new Integer(10001);
-//	public String C_PLSQL_RESOURCES_UNLOCKRESOURCE = "{call opencmsResource.unlockResource(?,?,?,?)}";
-	public String C_PLSQL_RESOURCES_UNLOCKRESOURCE = "{call opencmsResource.unlockResource(?,?,?)}";
+	public String C_PLSQL_RESOURCES_UNLOCKRESOURCE = "{call opencmsResource.unlockResource(?,?,?,?)}";
+//	public String C_PLSQL_RESOURCES_UNLOCKRESOURCE = "{call opencmsResource.unlockResource(?,?,?)}";
 	public Integer C_PLSQL_RESOURCES_READFOLDER_KEY = new Integer(10002);
 	public String C_PLSQL_RESOURCES_READFOLDER = "{? = call opencmsResource.readFolder(?,?,?)}";
 	public Integer C_PLSQL_RESOURCES_READFILEHEADER_KEY = new Integer(10003);

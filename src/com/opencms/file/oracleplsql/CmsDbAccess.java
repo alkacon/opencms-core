@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/10/31 17:11:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/11/02 17:10:38 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.4 $ $Date: 2000/10/31 17:11:18 $ * 
+ * @version $Revision: 1.5 $ $Date: 2000/11/02 17:10:38 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -616,9 +616,12 @@ private CmsException getCmsException(String errorIn, Exception exc) {
 	exceptionMessage = exc.getMessage();
 	try {
 		exceptionNumber = Integer.parseInt(exceptionMessage.substring(4, 9));
-	} catch(StringIndexOutOfBoundsException iobexc) {
-		System.err.println("Error in getCmsException() " + exceptionMessage);
-	}
+	} catch(StringIndexOutOfBoundsException iobexc) {	
+		System.err.println("Error in getCmsException() " + exceptionMessage);	
+	} catch(Exception otherExc) {
+		cmsException = new CmsException(errorIn + exceptionMessage, CmsException.C_UNKNOWN_EXCEPTION);		
+	}	
+	
 	switch (exceptionNumber) {
 		case 20000 :
 			cmsException = new CmsException(errorIn, CmsException.C_UNKNOWN_EXCEPTION);
@@ -811,9 +814,9 @@ protected void initStatements() throws CmsException {
 		
 	// init statements for resources
 	pool.initCallableStatement(cq.C_PLSQL_RESOURCES_LOCKRESOURCE_KEY, cq.C_PLSQL_RESOURCES_LOCKRESOURCE);
-	//pool.initRegisterOutParameter(cq.C_PLSQL_RESOURCES_LOCKRESOURCE_KEY, 5, oracle.jdbc.driver.OracleTypes.CURSOR);
+	pool.initRegisterOutParameter(cq.C_PLSQL_RESOURCES_LOCKRESOURCE_KEY, 5, oracle.jdbc.driver.OracleTypes.CURSOR);
 	pool.initCallableStatement(cq.C_PLSQL_RESOURCES_UNLOCKRESOURCE_KEY, cq.C_PLSQL_RESOURCES_UNLOCKRESOURCE);
-	//pool.initRegisterOutParameter(cq.C_PLSQL_RESOURCES_UNLOCKRESOURCE_KEY, 4, oracle.jdbc.driver.OracleTypes.CURSOR);
+	pool.initRegisterOutParameter(cq.C_PLSQL_RESOURCES_UNLOCKRESOURCE_KEY, 4, oracle.jdbc.driver.OracleTypes.CURSOR);
 	
 	pool.initCallableStatement(cq.C_PLSQL_RESOURCES_READFOLDER_KEY, cq.C_PLSQL_RESOURCES_READFOLDER);
 	pool.initRegisterOutParameter(cq.C_PLSQL_RESOURCES_READFOLDER_KEY, 1, oracle.jdbc.driver.OracleTypes.CURSOR);
@@ -916,15 +919,15 @@ public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject
   * @param project the project to delete.
   * @exception CmsException Throws CmsException if something goes wrong.
   */
-public void lockResource(CmsUser currentUser, CmsProject currentProject, String resourcename, boolean force) throws CmsException {
+public Vector lockResource(CmsUser currentUser, CmsProject currentProject, String resourcename, boolean force) throws CmsException {
 	//System.out.println("PL/SQL: lockResource");
 	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CallableStatement statement = null;
 	String exceptionMessage = null;
-	//	ResultSet res = null;
-	//	Vector resources = new Vector();
-	//	CmsResource resource = null;
+	ResultSet res = null;
+	Vector resources = new Vector();
+	CmsResource resource = null;
 	try {
 		// create the statement
 		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_RESOURCES_LOCKRESOURCE_KEY);
@@ -937,39 +940,33 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
 			statement.setString(4, "FALSE");
 		}
 		statement.execute();
-		/*
 		res = (ResultSet) statement.getObject(5);
 		while (res.next()) {
-		int resId = res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
-		int parentId = res.getInt(m_cq.C_RESOURCES_PARENT_ID);
-		String resName = res.getString(m_cq.C_RESOURCES_RESOURCE_NAME);
-		int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
-		int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
-		int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
-		int groupId = res.getInt(m_cq.C_RESOURCES_GROUP_ID);
-		int projectId = res.getInt(m_cq.C_RESOURCES_PROJECT_ID);
-		int fileId = res.getInt(m_cq.C_RESOURCES_FILE_ID);
-		int accessFlags = res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
-		int state = res.getInt(m_cq.C_RESOURCES_STATE);
-		int lockedBy = res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
-		int launcherType = res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
-		String launcherClass = res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
-		long created = SqlHelper.getTimestamp(res,m_cq.C_RESOURCES_DATE_CREATED).getTime();
-		long modified = SqlHelper.getTimestamp(res,m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
-		int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
-		int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
-		 
-		resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags,
-		userId, groupId, projectId, accessFlags, state, lockedBy,
-		launcherType, launcherClass, created, modified, modifiedBy,
-		resSize);						
-		
-		resources.addElement(resource);
+			int resId = res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
+			int parentId = res.getInt(m_cq.C_RESOURCES_PARENT_ID);
+			String resName = res.getString(m_cq.C_RESOURCES_RESOURCE_NAME);
+			int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
+			int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
+			int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
+			int groupId = res.getInt(m_cq.C_RESOURCES_GROUP_ID);
+			int projectId = res.getInt(m_cq.C_RESOURCES_PROJECT_ID);
+			int fileId = res.getInt(m_cq.C_RESOURCES_FILE_ID);
+			int accessFlags = res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
+			int state = res.getInt(m_cq.C_RESOURCES_STATE);
+			int lockedBy = res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
+			int launcherType = res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
+			String launcherClass = res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
+			long created = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_CREATED).getTime();
+			long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
+			int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
+			int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
+			resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId, 
+										groupId, projectId, accessFlags, state, lockedBy, launcherType, 
+										launcherClass, created, modified, modifiedBy, resSize);
+			resources.addElement(resource);
 		}
-		res.close();			
+		res.close();
 		return resources;
-		*/
-
 	} catch (SQLException sqlexc) {
 		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
 		throw cmsException;
@@ -1192,10 +1189,12 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 			  if (bytesRead ==-1) break;
 			  outStream.write(buffer,0,bytesRead);
 			  }
-			  byte[] content=outStream.toByteArray();*/
+			  byte[] content=outStream.toByteArray();*/ 
 
-			file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId, currentProjectId, accessFlags, state, lockedBy, launcherType, launcherClass, created, modified, modifiedBy, content, resSize);
-			res.close();
+			file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId, 
+								currentProjectId, accessFlags, state, lockedBy, launcherType, launcherClass, 
+								created, modified, modifiedBy, content, resSize);
+			res.close();	
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
 		}
@@ -1259,14 +1258,14 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
   * @param project the project to delete.
   * @exception CmsException Throws CmsException if something goes wrong.
   */
-public void unlockResource(CmsUser currentUser, CmsProject currentProject, String resourcename) throws CmsException {
+public Vector unlockResource(CmsUser currentUser, CmsProject currentProject, String resourcename) throws CmsException {
 	//System.out.println("PL/SQL: unlockResource");
 	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CallableStatement statement = null;
-	//ResultSet res = null;
-	//CmsResource resource = null;
-	//Vector resources = new Vector();
+	ResultSet res = null;
+	CmsResource resource = null;
+	Vector resources = new Vector();
 	try {
 		// create the statement
 		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_RESOURCES_UNLOCKRESOURCE_KEY);
@@ -1274,38 +1273,33 @@ public void unlockResource(CmsUser currentUser, CmsProject currentProject, Strin
 		statement.setInt(2, currentProject.getId());
 		statement.setString(3, resourcename);
 		statement.execute();
-		/*
 		res = (ResultSet) statement.getObject(4);
 		while (res.next()) {
-		int resId = res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
-		int parentId = res.getInt(m_cq.C_RESOURCES_PARENT_ID);
-		String resName = res.getString(m_cq.C_RESOURCES_RESOURCE_NAME);
-		int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
-		int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
-		int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
-		int groupId = res.getInt(m_cq.C_RESOURCES_GROUP_ID);
-		int projectId = res.getInt(m_cq.C_RESOURCES_PROJECT_ID);
-		int fileId = res.getInt(m_cq.C_RESOURCES_FILE_ID);
-		int accessFlags = res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
-		int state = res.getInt(m_cq.C_RESOURCES_STATE);
-		int lockedBy = res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
-		int launcherType = res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
-		String launcherClass = res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
-		long created = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_CREATED).getTime();
-		long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
-		int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
-		int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
-		
-		resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId, groupId, 
-		projectId, accessFlags, state, lockedBy, launcherType, launcherClass, 
-		created, modified, modifiedBy, resSize);
-		
-		resources.addElement(resource);
+			int resId = res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
+			int parentId = res.getInt(m_cq.C_RESOURCES_PARENT_ID);
+			String resName = res.getString(m_cq.C_RESOURCES_RESOURCE_NAME);
+			int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
+			int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
+			int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
+			int groupId = res.getInt(m_cq.C_RESOURCES_GROUP_ID);
+			int projectId = res.getInt(m_cq.C_RESOURCES_PROJECT_ID);
+			int fileId = res.getInt(m_cq.C_RESOURCES_FILE_ID);
+			int accessFlags = res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
+			int state = res.getInt(m_cq.C_RESOURCES_STATE);
+			int lockedBy = res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
+			int launcherType = res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
+			String launcherClass = res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
+			long created = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_CREATED).getTime();
+			long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
+			int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
+			int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
+			resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId, groupId, 
+										projectId, accessFlags, state, lockedBy, launcherType, launcherClass, 
+										created, modified, modifiedBy, resSize);
+			resources.addElement(resource);
 		}
 		res.close();
 		return resources;
-		*/
-
 	} catch (SQLException sqlexc) {
 		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
 		throw cmsException;
