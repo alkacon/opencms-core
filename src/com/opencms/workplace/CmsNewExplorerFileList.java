@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
- * Date   : $Date: 2000/12/07 09:18:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/12/07 16:13:09 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/12/07 09:18:51 $
+ * @version $Revision: 1.7 $ $Date: 2000/12/07 16:13:09 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate, I_CmsLogChannels, I_CmsConstants, I_CmsWpConstants {
 	
@@ -61,6 +61,14 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate, I_CmsLogChanne
 	}
 /**
  * Insert the method's description here.
+ * Creation date: (07.12.00 16:10:35)
+ * @return java.lang.String
+ */
+private String clearString() {
+	return null;
+}
+/**
+ * Insert the method's description here.
  * Creation date: (29.11.00 14:05:21)
  * @return boolean
  * @param cms com.opencms.file.CmsObject
@@ -73,6 +81,25 @@ private boolean folderExists(CmsObject cms, String path) {
 		return false;
 	}
 	return true;
+}
+/**
+ * Insert the method's description here.
+ * Creation date: (07.12.00 17:08:30)
+ * @return java.lang.String
+ * @param value java.lang.String
+ */
+private String getChars(String value) {
+	String ret = "";
+	int num;
+	for(int i=0;i<value.length();i++) {
+		num = value.charAt(i);
+		if(num > 127) {
+			ret += "&#" + num + ";";
+		} else {
+			ret += value.charAt(i);
+		}
+	}
+	return ret + "";
 }
 /**
  * Gets the content of a given template file.
@@ -143,6 +170,10 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	content.append(" top.setOnlineProject(" + cms.onlineProject().getId() + ");\n");
 	// set the checksum for the tree
 	content.append(" top.setChecksum(" + check + ");\n");
+	
+//	int filelist=getDefaultPreferences(cms);
+//	jsOutput.append(" top.viewcfg = "+filelist+";\n");
+	
 	// the folder
 	content.append(" top.setDirectory(" + currentFolderId + ",\"" + currentFolder + "\");\n");
 	content.append(" top.rD();\n\n");
@@ -164,7 +195,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		if (title == null) {
 			title = "";
 		}
-		content.append("\"" + title + "\", ");
+		content.append("\"" + getChars(title) + "\", ");
 		// the type
 		content.append("\"" + res.getType() + "\", ");
 		// date of last change
@@ -265,7 +296,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	content.append(" top.dU(document); \n");
 	content.append("}\n");
 	content.append("</script>\n</head> \n<BODY onLoad=\"initialize()\"></BODY> \n</html>\n");
-	
 	return (content.toString()).getBytes();
 }
 	/**
@@ -282,6 +312,22 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
 		// ignore the templateSelector since we only dump the template
 		return getContent(cms, templateFile, elementName, parameters);
+	}
+	 /**
+	 * Sets the default preferences for the current user if those values are not available.
+	 * @return Hashtable with default preferences.
+	 */
+	private int getDefaultPreferences(CmsObject cms) {
+		int filelist; 
+		String explorerSettings=(String)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_EXPLORERSETTINGS);
+		  
+		if (explorerSettings!=null) {
+			filelist=new Integer(explorerSettings).intValue();
+		} else {
+			filelist=C_FILELIST_NAME+C_FILELIST_TITLE+C_FILELIST_TYPE+C_FILELIST_CHANGED;
+		}
+   
+		return filelist;
 	}
 	/**
 	 * Gets the key that should be used to cache the results of
