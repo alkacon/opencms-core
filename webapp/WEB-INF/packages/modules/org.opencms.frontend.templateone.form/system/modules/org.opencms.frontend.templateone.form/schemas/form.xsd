@@ -3,6 +3,7 @@
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.form/schemas/inputfield.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.form/schemas/optionalconfig.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.form/schemas/optionalconfirmation.xsd"/>
 		
 	<xsd:element name="OnlineForms" type="OpenCmsOnlineForms"/>
 	
@@ -21,7 +22,8 @@
 			<xsd:element name="FormText" type="OpenCmsHtml" />		
 			<xsd:element name="InputField" type="OpenCmsInputField" maxOccurs="unbounded" /> 			
 			<xsd:element name="FormConfirmation" type="OpenCmsHtml" />
-			<xsd:element name="OptionalFormConfiguration" type="OpenCmsOptionalFormConfiguration" minOccurs="0" />		
+			<xsd:element name="OptionalFormConfiguration" type="OpenCmsOptionalFormConfiguration" minOccurs="0" />
+			<xsd:element name="OptionalConfirmationMail" type="OpenCmsOptionalConfirmationMail" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>

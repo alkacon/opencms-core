@@ -15,7 +15,7 @@ out.println("<div class=\"element\">");
 
 boolean showForm = cms.showForm();
 
-if (! cms.showForm()) {
+if (! showForm) {
 	// form has been submitted with correct values, decide further actions
 	if (cms.showCheck()) {
 		// show optional check page
@@ -37,9 +37,8 @@ if (! cms.showForm()) {
 			//--><%
 		}
 	}
-}	
-
-if (showForm) {
+	
+} else {
 
 	// get the configured form elements
 	CmsForm formConfiguration = cms.getFormConfiguration();
@@ -59,7 +58,8 @@ if (showForm) {
 		
 		// loop through all form input fields 
 		CmsField field = (CmsField)i.next();
-		String fieldType = field.getType();		
+		String fieldType = field.getType();	
+		String fieldLabel = field.getLabel();	
 		// get the error message and mandatory marker for the current field
 		String errorMessage = (String)cms.getErrors().get(field.getName());
 		String mandatory = "";
@@ -68,10 +68,10 @@ if (showForm) {
 			if (CmsFormHandler.C_ERROR_MANDATORY.equals(errorMessage)) {
 				errorMessage = messages.key("form.error.mandatory");
 			} else {
-				errorMessage = messages.key("form.error.validation") + field.getValidationExpression();
+				errorMessage = messages.key("form.error.validation");
 			}
-			
-			errorMessage = messages.key("form.html.row.start") + messages.key("form.html.error.start") + errorMessage + messages.key("form.html.error.end") + messages.key("form.html.row.end");
+			errorMessage = messages.key("form.html.error.start") + errorMessage + messages.key("form.html.error.end");
+			fieldLabel = messages.key("form.html.label.error.start") + fieldLabel + messages.key("form.html.label.error.end");
 		} else {
 			errorMessage = "";
 		}

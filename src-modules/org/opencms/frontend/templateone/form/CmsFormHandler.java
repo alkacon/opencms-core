@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/01/18 13:07:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/02/01 14:28:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * output formats of a submitted form.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsFormHandler extends CmsJspActionElement {
     
@@ -209,97 +209,6 @@ public class CmsFormHandler extends CmsJspActionElement {
     }
     
     /**
-     * Creates the output String of the submitted fields for email creation.<p>
-     * 
-     * @param isHtmlMail if true, the output is formatted as HTML, otherwise as plain text
-     * @return the output String of the submitted fields for email creation
-     */
-    public String createMailTextFromFields(boolean isHtmlMail) {
-        
-        List resultList = createValuesFromFields();
-        StringBuffer result = new StringBuffer(resultList.size() * 8);
-        if (isHtmlMail) {
-            // create html head with style definitions and body
-            result.append("<html><head>\n");
-            result.append("<style type=\"text/css\"><!--\n");
-            String style = getMessages().key("form.email.style.body");
-            if (CmsStringUtil.isNotEmpty(style)) {
-                result.append("body,h1,p,td { ");
-                result.append(style);
-                result.append(" }\n");
-            }
-            style = getMessages().key("form.email.style.h1");
-            if (CmsStringUtil.isNotEmpty(style)) {
-                result.append("h1 { ");
-                result.append(style);
-                result.append(" }\n");
-            }
-            style = getMessages().key("form.email.style.p");
-            if (CmsStringUtil.isNotEmpty(style)) {
-                result.append("p { ");
-                result.append(style);
-                result.append(" }\n");
-            }
-            style = getMessages().key("form.email.style.fields");
-            if (CmsStringUtil.isNotEmpty(style)) {
-                result.append("table.fields { ");
-                result.append(style);
-                result.append(" }\n");
-            }
-            style = getMessages().key("form.email.style.fieldlabel");
-            if (CmsStringUtil.isNotEmpty(style)) {
-                result.append("td.fieldlabel { ");
-                result.append(style);
-                result.append(" }\n");
-            }
-            style = getMessages().key("form.email.style.fieldvalue");
-            if (CmsStringUtil.isNotEmpty(style)) {
-                result.append("td.fieldvalue { ");
-                result.append(style);
-                result.append(" }\n");
-            }
-            style = getMessages().key("form.email.style.misc");
-            if (CmsStringUtil.isNotEmpty(style)) {
-                result.append(getMessages().key("form.email.style.misc"));
-            }
-            result.append("//--></style>\n");
-            result.append("</head><body>\n");
-            // append the email text
-            result.append(getFormConfiguration().getMailText());
-            result.append("<table border=\"0\" class=\"fields\">\n");
-        } else {
-            // generate simple text mail
-            result.append(getFormConfiguration().getMailTextPlain());
-            result.append("\n\n");
-        }
-        // generate output for submitted form fields
-        Iterator i = resultList.iterator();
-        while (i.hasNext()) {
-            CmsFieldValue current = (CmsFieldValue)i.next();
-            if (isHtmlMail) {
-                // format output as HTML
-                result.append("<tr><td class=\"fieldlabel\">");
-                result.append(current.getLabel());
-                result.append("</td><td class=\"fieldvalue\">");
-                result.append(convertToHtmlValue(current.getValue()));
-                result.append("</td></tr>\n");
-            } else {
-                // format output as plain text
-                result.append(current.getLabel());
-                result.append("\t");
-                result.append(current.getValue());
-                result.append("\n");
-            }
-        }
-        if (isHtmlMail) {
-            // create html closing tags
-            result.append("</table>\n");
-            result.append("</body></html>");
-        }
-        return result.toString();
-    }
-    
-    /**
      * Creates a list of field values to create an output for email or confirmation pages.<p>
      * 
      * The list contains CmsFieldValue objects with the following information:
@@ -314,14 +223,18 @@ public class CmsFormHandler extends CmsJspActionElement {
     public List createValuesFromFields() {
         
         if (m_fieldValues == null) {
-            // get the form fields
-            List fields = getFormConfiguration().getFields();
+            // get the form field size
+            int fieldSize = getFormConfiguration().getFields().size();
+            if (getFormConfiguration().isConfirmationMailEnabled() && getFormConfiguration().isConfirmationMailOptional()) {
+                // descrease field size to avoid displaying optional confirmation email checkbox
+                fieldSize -= 1;
+            }
             // create the empty result list
-            List result = new ArrayList(getFormConfiguration().getFields().size());
-            Iterator i = fields.iterator();
+            List result = new ArrayList(fieldSize);
+    
             // validate each form field
-            while (i.hasNext()) {
-                CmsField currentField = (CmsField)i.next();
+            for (int i=0; i<fieldSize; i++) {
+                CmsField currentField = (CmsField)getFormConfiguration().getFields().get(i);
                 CmsFieldValue fieldValue = new CmsFieldValue(currentField);
                 // add field field value object to list
                 result.add(fieldValue);
@@ -375,13 +288,60 @@ public class CmsFormHandler extends CmsJspActionElement {
     }
     
     /**
+     * Sends the confirmation mail with the form data to the specified email address.<p>
+     * 
+     * @throws Exception if sending the confirmation mail fails
+     */
+    public void sendConfirmationMail() throws Exception {
+        
+        // get the field which contains the confirmation email address
+        CmsField mailField = (CmsField)getFormConfiguration().getFields().get(getFormConfiguration().getConfirmationMailField());
+        String mailTo = mailField.getValue();
+        
+        // create the new confirmation mail message depending on the configured email type
+        if (getFormConfiguration().getMailType().equals(CmsForm.C_MAILTYPE_HTML)) {
+            // create a HTML email
+            CmsHtmlMail theMail = new CmsHtmlMail();
+            if (CmsStringUtil.isNotEmpty(getFormConfiguration().getMailFrom())) {
+                theMail.setFrom(getFormConfiguration().getMailFrom());
+            }
+            theMail.setTo(createInternetAddresses(mailTo));        
+            theMail.setSubject(getFormConfiguration().getConfirmationMailSubject());
+            theMail.setHtmlMsg(createMailTextFromFields(true, true));
+            theMail.setTextMsg(createMailTextFromFields(false, true));
+            // send the mail
+            theMail.send();
+        } else {
+            // create a plain text email
+            CmsSimpleMail theMail = new CmsSimpleMail();
+            if (CmsStringUtil.isNotEmpty(getFormConfiguration().getMailFrom())) {
+                theMail.setFrom(getFormConfiguration().getMailFrom());
+            }
+            theMail.setTo(createInternetAddresses(mailTo));
+            theMail.setSubject(getFormConfiguration().getConfirmationMailSubject());
+            theMail.setMsg(createMailTextFromFields(false, true));               
+            // send the mail
+            theMail.send();
+        }
+    }
+    
+    /**
      * Sends the mail with the form data to the specified recipients.<p>
+     * 
+     * If configured, sends also a confirmation mail to the form submitter.<p>
      * 
      * @return true if the mail has been successfully sent, otherwise false
      */
     public boolean sendMail() {
         
         try {
+            // send optional confirmation mail
+            if (getFormConfiguration().isConfirmationMailEnabled()) {
+                if (! getFormConfiguration().isConfirmationMailOptional() 
+                        || "true".equals(getRequest().getParameter(CmsForm.C_PARAM_SENDCONFIRMATION))) {
+                    sendConfirmationMail();
+                }
+            }
             // create the new mail message depending on the configured email type
             if (getFormConfiguration().getMailType().equals(CmsForm.C_MAILTYPE_HTML)) {
                 // create a HTML email
@@ -393,8 +353,8 @@ public class CmsFormHandler extends CmsJspActionElement {
                 theMail.setCc(createInternetAddresses(getFormConfiguration().getMailCC()));
                 theMail.setBcc(createInternetAddresses(getFormConfiguration().getMailBCC()));
                 theMail.setSubject(getFormConfiguration().getMailSubject());
-                theMail.setHtmlMsg(createMailTextFromFields(true));
-                theMail.setTextMsg(createMailTextFromFields(false));
+                theMail.setHtmlMsg(createMailTextFromFields(true, false));
+                theMail.setTextMsg(createMailTextFromFields(false, false));
                 // send the mail
                 theMail.send();
             } else {
@@ -407,7 +367,7 @@ public class CmsFormHandler extends CmsJspActionElement {
                 theMail.setCc(createInternetAddresses(getFormConfiguration().getMailCC()));
                 theMail.setBcc(createInternetAddresses(getFormConfiguration().getMailBCC()));
                 theMail.setSubject(getFormConfiguration().getMailSubject());
-                theMail.setMsg(createMailTextFromFields(false));               
+                theMail.setMsg(createMailTextFromFields(false, false));               
                 // send the mail
                 theMail.send();
             }
@@ -528,6 +488,131 @@ public class CmsFormHandler extends CmsJspActionElement {
             // no address given, return empty list
             return Collections.EMPTY_LIST;
         }
+    }
+    
+    /**
+     * Creates the output String of the submitted fields for email creation.<p>
+     * 
+     * @param isHtmlMail if true, the output is formatted as HTML, otherwise as plain text
+     * @param isConfirmationMail if true, the text for the confirmation mail is created, otherwise the text for mail receiver
+     * @return the output String of the submitted fields for email creation
+     */
+    protected String createMailTextFromFields(boolean isHtmlMail, boolean isConfirmationMail) {
+        
+        List resultList = createValuesFromFields();
+        StringBuffer result = new StringBuffer(resultList.size() * 8);
+        if (isHtmlMail) {
+            // create html head with style definitions and body
+            result.append("<html><head>\n");
+            result.append("<style type=\"text/css\"><!--\n");
+            String style = getMessages().key("form.email.style.body");
+            if (CmsStringUtil.isNotEmpty(style)) {
+                result.append("body,h1,p,td { ");
+                result.append(style);
+                result.append(" }\n");
+            }
+            style = getMessages().key("form.email.style.h1");
+            if (CmsStringUtil.isNotEmpty(style)) {
+                result.append("h1 { ");
+                result.append(style);
+                result.append(" }\n");
+            }
+            style = getMessages().key("form.email.style.p");
+            if (CmsStringUtil.isNotEmpty(style)) {
+                result.append("p { ");
+                result.append(style);
+                result.append(" }\n");
+            }
+            style = getMessages().key("form.email.style.fields");
+            if (CmsStringUtil.isNotEmpty(style)) {
+                result.append("table.fields { ");
+                result.append(style);
+                result.append(" }\n");
+            }
+            style = getMessages().key("form.email.style.fieldlabel");
+            if (CmsStringUtil.isNotEmpty(style)) {
+                result.append("td.fieldlabel { ");
+                result.append(style);
+                result.append(" }\n");
+            }
+            style = getMessages().key("form.email.style.fieldvalue");
+            if (CmsStringUtil.isNotEmpty(style)) {
+                result.append("td.fieldvalue { ");
+                result.append(style);
+                result.append(" }\n");
+            }
+            style = getMessages().key("form.email.style.misc");
+            if (CmsStringUtil.isNotEmpty(style)) {
+                result.append(getMessages().key("form.email.style.misc"));
+            }
+            result.append("//--></style>\n");
+            result.append("</head><body>\n");
+            if (isConfirmationMail) {
+                // append the confirmation mail text
+                result.append(getFormConfiguration().getConfirmationMailText());
+            } else {
+                // append the email text
+                result.append(getFormConfiguration().getMailText());
+            }
+            result.append("<table border=\"0\" class=\"fields\">\n");
+        } else {
+            // generate simple text mail
+            if (isConfirmationMail) {
+                // append the confirmation mail text
+                result.append(getFormConfiguration().getConfirmationMailTextPlain());
+            } else {
+                // append the email text
+                result.append(getFormConfiguration().getMailTextPlain());
+            }
+            result.append("\n\n");
+        }
+        // generate output for submitted form fields
+        Iterator i = resultList.iterator();
+        while (i.hasNext()) {
+            CmsFieldValue current = (CmsFieldValue)i.next();
+            if (isHtmlMail) {
+                // format output as HTML
+                result.append("<tr><td class=\"fieldlabel\">");
+                result.append(current.getLabel());
+                result.append("</td><td class=\"fieldvalue\">");
+                result.append(convertToHtmlValue(current.getValue()));
+                result.append("</td></tr>\n");
+            } else {
+                // format output as plain text
+                result.append(current.getLabel());
+                result.append("\t");
+                result.append(current.getValue());
+                result.append("\n");
+            }
+        }
+        if (isHtmlMail) {
+            // create html table closing tag
+            result.append("</table>\n");
+            if (! isConfirmationMail && getFormConfiguration().hasConfigurationErrors()) {
+                // write form configuration errors to html mail
+                result.append("<h1>");
+                result.append(getMessages().key("form.configuration.error.headline"));
+                result.append("</h1>\n<p>");
+                for (int k=0; k<getFormConfiguration().getConfigurationErrors().size(); k++) {
+                    result.append(getFormConfiguration().getConfigurationErrors().get(k));
+                    result.append("<br>");
+                }
+                result.append("</p>\n");
+            }
+            // create body and html closing tags
+            result.append("</body></html>");
+        } else if (! isConfirmationMail && getFormConfiguration().hasConfigurationErrors()) {
+            // write form configuration errors to text mail
+            result.append("\n");
+            result.append(getMessages().key("form.configuration.error.headline"));
+            result.append("\n");
+            for (int k=0; k<getFormConfiguration().getConfigurationErrors().size(); k++) {
+                result.append(getFormConfiguration().getConfigurationErrors().get(k));
+                result.append("\n");
+            }
+        }
+
+        return result.toString();
     }
     
     /**

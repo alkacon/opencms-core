@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/Attic/CmsField.java,v $
- * Date   : $Date: 2005/01/18 13:07:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/02/01 14:28:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,15 +37,17 @@ import java.util.List;
  * Represents a single input field configuration object.<p>
  * 
  * Provides the necessary information to create a form input field,
- * e.g. the field type, label, validation rule, etc.<p>
+ * e.g. the field type, label, name, validation rule, etc.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsField {
 
     /** HTML field type: checkbox. */
     public static final String C_TYPE_CHECKBOX = "checkbox";
+    /** HTML field type: email field. */
+    public static final String C_TYPE_EMAIL = "email";
     /** HTML field type: hidden field. */
     public static final String C_TYPE_HIDDEN = "hidden";
     /** HTML field type: radio button. */
@@ -57,8 +59,11 @@ public class CmsField {
     /** HTML field type: textarea. */
     public static final String C_TYPE_TEXTAREA = "textarea";
     
-    private String m_description;
-    private List m_items;
+    /** Regular expression to validate email addresses. */
+    public static final String C_VALIDATION_EMAIL = "(\\w[-._\\w]*\\w@\\w[-._\\w]*\\w\\.\\w{2,4})";
+    
+    private List m_items;  
+    private String m_label;
     private boolean m_mandatory;
     private String m_name;
     private String m_type;
@@ -70,23 +75,10 @@ public class CmsField {
      */
     public CmsField() {
         
-        m_type = C_TYPE_TEXT;
-        m_name= "";
+        m_items = new ArrayList();
         m_mandatory = false;
-        m_description = "";
         m_value = "";
         m_validationExpression = "";
-        m_items = new ArrayList();
-    }
-    
-    /**
-     * Returns the description text of the input field.<p>
-     * 
-     * @return the description text of the input field
-     */
-    public String getDescription() {
-        
-        return m_description;
     }
     
     /**
@@ -104,6 +96,16 @@ public class CmsField {
     public List getItems() {
         
         return m_items;
+    }
+    
+    /**
+     * Returns the description text of the input field.<p>
+     * 
+     * @return the description text of the input field
+     */
+    public String getLabel() {
+        
+        return m_label;
     }
     
     /**
@@ -167,16 +169,6 @@ public class CmsField {
     }
     
     /**
-     * Sets the description text of the input field.<p>
-     * 
-     * @param description the description text of the input field
-     */
-    protected void setDescription(String description) {
-        
-        m_description = description;
-    }
-    
-    /**
      * Sets the list of items for select boxes, radio buttons and checkboxes.<p>
      * 
      * The list contains CmsFieldItem objects with the following information:
@@ -191,6 +183,16 @@ public class CmsField {
     public void setItems(List items) {
         
         m_items = items;
+    }
+    
+    /**
+     * Sets the description text of the input field.<p>
+     * 
+     * @param description the description text of the input field
+     */
+    protected void setLabel(String description) {
+        
+        m_label = description;
     }
     
     /**
@@ -238,7 +240,7 @@ public class CmsField {
      * 
      * @param value the initial value of the field
      */
-    public void setValue(String value) {
+    protected void setValue(String value) {
         
         m_value = value;
     }

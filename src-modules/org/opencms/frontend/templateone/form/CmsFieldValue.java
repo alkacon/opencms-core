@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldValue.java,v $
- * Date   : $Date: 2005/01/18 13:07:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/02/01 14:28:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Iterator;
  * or the final page after submission.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsFieldValue {
     
@@ -85,7 +85,7 @@ public class CmsFieldValue {
         }
         
         // set the label String of current field
-        m_label = field.getDescription();
+        m_label = field.getLabel();
     }
     
     /**

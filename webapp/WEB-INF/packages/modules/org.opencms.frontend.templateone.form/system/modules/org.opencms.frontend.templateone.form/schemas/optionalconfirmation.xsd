@@ -1,0 +1,31 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="OptionalConfirmationMails" type="OpenCmsOptionalConfirmationMails"/>
+	
+	<xsd:complexType name="OpenCmsOptionalConfirmationMails">
+		<xsd:sequence>
+			<xsd:element name="OptionalConfirmationMail" type="OpenCmsOptionalConfirmationMail" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsOptionalConfirmationMail">
+		<xsd:sequence>
+			<xsd:element name="ConfirmationMailEnabled" type="OpenCmsBoolean" />
+			<xsd:element name="ConfirmationMailOptional" type="OpenCmsBoolean" />
+			<xsd:element name="ConfirmationCheckboxLabel" type="OpenCmsString" />
+			<xsd:element name="ConfirmationField" type="OpenCmsString" />
+			<xsd:element name="ConfirmationMailSubject" type="OpenCmsString" />
+			<xsd:element name="ConfirmationMailText" type="OpenCmsHtml" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.form.workplace"/>
+		</xsd:appinfo>
+	</xsd:annotation>  
+
+</xsd:schema>

@@ -28,7 +28,7 @@
 				<layout element="FieldType" widget="SelectorWidget" />
 			</layouts>
 			<defaults>
-				<default element="FieldType" value="text*:${key:form.field.type.text}|textarea:${key:form.field.type.textarea}|checkbox:${key:form.field.type.checkbox}|radio:${key:form.field.type.radio}|select:${key:form.field.type.select}|hidden:${key:form.field.type.hidden}"/>
+				<default element="FieldType" value="text*:${key:form.field.type.text}|textarea:${key:form.field.type.textarea}|checkbox:${key:form.field.type.checkbox}|radio:${key:form.field.type.radio}|select:${key:form.field.type.select}|hidden:${key:form.field.type.hidden}|email:${key:form.field.type.email}"/>
 			</defaults>
 		</xsd:appinfo>
 	</xsd:annotation>  

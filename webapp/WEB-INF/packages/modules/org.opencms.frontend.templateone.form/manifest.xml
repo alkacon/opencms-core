@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
 <export>
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0 alpha 3 Caladan</opencms_version>
-		<createdate>1/19/05 12:52 PM</createdate>
+		<createdate>2/1/05 3:13 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -13,9 +13,8 @@
 		<nicename><![CDATA[OpenCms 6.0 'templateone' online input form]]></nicename>
 		<class/>
 		<description><![CDATA[This module contains online form functionality for the OpenCms frontend template one. This module can easily be used to create online input forms.
-(c) 2005 by Alkacon Software (http://www.alkacon.com).
-]]></description>
-		<version>0.9.7</version>
+(c) 2005 by Alkacon Software (http://www.alkacon.com).]]></description>
+		<version>0.9.8</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Wed, 19 Jan 2005 12:52:20 GMT+01:00</datecreated>
@@ -58,13 +57,22 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 25 Oct 2004 15:35:59 GMT+01:00</datelastmodified>
+			<datelastmodified>Thu, 07 Oct 2004 08:49:54 GMT+01:00</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Jan 2005 10:03:29 GMT+01:00</datecreated>
+			<datecreated>Wed, 26 Jan 2005 10:55:58 GMT+01:00</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/modules</destination>
@@ -164,7 +172,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace.properties</destination>
 			<type>plain</type>
 			<uuidresource>9175ff70-6316-11d9-8f91-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 17 Jan 2005 17:46:14 GMT+01:00</datelastmodified>
+			<datelastmodified>Tue, 01 Feb 2005 15:07:36 GMT+01:00</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Jan 2005 15:47:36 GMT+01:00</datecreated>
 			<usercreated>Admin</usercreated>
@@ -177,7 +185,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>ef61baa7-695b-11d9-8aac-f55bb5376c24</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 16:01:20 GMT+01:00</datelastmodified>
+			<datelastmodified>Tue, 01 Feb 2005 15:09:25 GMT+01:00</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 18 Jan 2005 15:19:16 GMT+01:00</datecreated>
 			<usercreated>Admin</usercreated>
@@ -189,7 +197,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>9175ff70-6316-11d9-8f91-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 17 Jan 2005 17:46:14 GMT+01:00</datelastmodified>
+			<datelastmodified>Tue, 01 Feb 2005 15:07:36 GMT+01:00</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Jan 2005 15:47:36 GMT+01:00</datecreated>
 			<usercreated>Admin</usercreated>
@@ -268,7 +276,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/jsptemplates/inputfields.txt</destination>
 			<type>plain</type>
 			<uuidresource>c5d9a9d2-6577-11d9-8a19-f55bb5376c24</uuidresource>
-			<datelastmodified>Thu, 13 Jan 2005 16:31:33 GMT+01:00</datelastmodified>
+			<datelastmodified>Tue, 01 Feb 2005 12:22:01 GMT+01:00</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 13 Jan 2005 16:28:27 GMT+01:00</datecreated>
 			<usercreated>Admin</usercreated>
@@ -308,7 +316,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/pages/form.html</destination>
 			<type>jsp</type>
 			<uuidresource>ffb9f73b-63b8-11d9-ab74-f55bb5376c24</uuidresource>
-			<datelastmodified>Tue, 18 Jan 2005 15:15:48 GMT+01:00</datelastmodified>
+			<datelastmodified>Tue, 01 Feb 2005 12:24:18 GMT+01:00</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 11 Jan 2005 11:10:19 GMT+01:00</datecreated>
 			<usercreated>Admin</usercreated>
@@ -349,7 +357,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</destination>
 			<type>plain</type>
 			<uuidresource>a58c4c68-630d-11d9-ba58-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 17 Jan 2005 16:19:31 GMT+01:00</datelastmodified>
+			<datelastmodified>Mon, 31 Jan 2005 16:43:46 GMT+01:00</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Jan 2005 14:43:44 GMT+01:00</datecreated>
 			<usercreated>Admin</usercreated>
@@ -367,7 +375,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/inputfield.xsd</destination>
 			<type>plain</type>
 			<uuidresource>adf38d6e-630b-11d9-ba58-f55bb5376c24</uuidresource>
-			<datelastmodified>Fri, 14 Jan 2005 17:52:56 GMT+01:00</datelastmodified>
+			<datelastmodified>Tue, 01 Feb 2005 11:31:00 GMT+01:00</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Jan 2005 14:29:39 GMT+01:00</datecreated>
 			<usercreated>Admin</usercreated>
@@ -394,6 +402,24 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Nested XSD for optional configurations]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/schemas/optionalconfirmation.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/optionalconfirmation.xsd</destination>
+			<type>plain</type>
+			<uuidresource>477afeb3-739e-11d9-9536-eb1fdbd690a5</uuidresource>
+			<datelastmodified>Tue, 01 Feb 2005 12:08:41 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 31 Jan 2005 16:39:22 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for optional confirmation email]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldItem.java,v $
- * Date   : $Date: 2005/01/18 13:07:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/02/01 14:28:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package org.opencms.frontend.templateone.form;
  * and represents an item for these types.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsFieldItem {
     
@@ -60,12 +60,12 @@ public class CmsFieldItem {
      * Constructor that creates an initialized field item.<p>
      * 
      * @param value the value of the field item
-     * @param description the description of the field item
+     * @param label the label of the field item
      * @param isSelected true if the current item is selected, otherwise false
      */
-    public CmsFieldItem(String value, String description, boolean isSelected) {
+    public CmsFieldItem(String value, String label, boolean isSelected) {
         
-        m_label = description;
+        m_label = label;
         m_isSelected = isSelected;
         m_value = value;
     }
