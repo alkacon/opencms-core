@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/25 15:54:22 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2000/06/26 07:22:17 $
+ * Version: $Revision: 1.73 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.72 $ $Date: 2000/06/25 15:54:22 $
+ * @version $Revision: 1.73 $ $Date: 2000/06/26 07:22:17 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2133,6 +2133,26 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 
     }
 
+    
+    /** 
+	 * Deletes a user from the Cms.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param userId The Id of the user to be deleted.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void deleteWebUser(CmsUser currentUser, CmsProject currentProject, 
+						   int userId)
+        throws CmsException {
+        CmsUser user = readUser(currentUser,currentProject,userId);
+       	m_dbAccess.deleteUser(user.getName());
+        // delete user from cache
+        m_userCache.remove(user.getName());
+    }
+    
+    
 	/** 
 	 * Deletes a user from the Cms.
 	 * 

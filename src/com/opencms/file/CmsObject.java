@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/23 13:24:19 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2000/06/26 07:22:16 $
+ * Version: $Revision: 1.91 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.90 $ $Date: 2000/06/23 13:24:19 $ 
+ * @version $Revision: 1.91 $ $Date: 2000/06/26 07:22:16 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1500,6 +1500,17 @@ public class CmsObject implements I_CmsConstants {
 							  flags) );
     }
     
+ 	/** 
+	 * Deletes a user from the Cms.
+	 * 
+	 * @param name The Id of the user to be deleted.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void deleteWebUser(int userId)
+		throws CmsException { 
+		c_rb.deleteWebUser(m_context.currentUser(), m_context.currentProject(), userId);
+	}
 	
 	/** 
 	 * Deletes a user from the Cms.

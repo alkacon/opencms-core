@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/18 14:50:33 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2000/06/26 07:22:16 $
+ * Version: $Revision: 1.87 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.86 $ $Date: 2000/06/18 14:50:33 $
+ * @version $Revision: 1.87 $ $Date: 2000/06/26 07:22:16 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -1119,6 +1119,21 @@ public interface I_CmsResourceBroker {
 					  Hashtable additionalInfos, int flags)
 		throws CmsException;
 
+  	/** 
+	 * Deletes a user from the Cms.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param userId The Id of the user to be deleted.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void deleteWebUser(CmsUser currentUser, CmsProject currentProject, 
+						   int userId)
+		throws CmsException;
+
+    
+    
 	/** 
 	 * Deletes a user from the Cms.
 	 * 
