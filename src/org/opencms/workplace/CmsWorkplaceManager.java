@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/05/14 10:31:00 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/06/08 16:05:36 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.3.1
  */
@@ -412,6 +412,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         try {
             req.setCharacterEncoding(m_defaultEncoding);
         } catch (UnsupportedEncodingException e) {
+            // should not ever really happen
             OpenCms.getLog(this).error("Unsupported encoding set for workplace '" + m_defaultEncoding + "'", e);
         }
         

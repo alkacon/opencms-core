@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2004/06/06 10:34:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/08 16:05:36 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsFlexController {
     
@@ -220,10 +220,20 @@ public class CmsFlexController {
      * @param dateExpires the date to set (if this is not in the future, it is ignored)
      */    
     public static void setDateExpiresHeader(HttpServletResponse res, long dateExpires) {
-        if ((dateExpires > System.currentTimeMillis())
+        long now = System.currentTimeMillis();
+        if ((dateExpires > now)
         && (dateExpires != CmsResource.DATE_EXPIRED_DEFAULT)) {
+            // important: many caches (browsers or proxy) use the "Expires" header
+            // to avoid re-loading of pages that are not expired
+            // while this is right in general, no changes before the expiration date
+            // will be displayed
+            // therefore it is better to not use an expiration to far in the future            
+            if ((dateExpires - now) > 86400000) {
+                // set "Expires" header max one day into the future
+                dateExpires = now + 86400000;
+            }
             res.setDateHeader(I_CmsConstants.C_HEADER_EXPIRES, dateExpires);
-        }
+        }        
     }    
     
     /**

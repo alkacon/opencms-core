@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/06/08 15:14:19 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/06/08 16:05:36 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,7 +97,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -440,8 +440,13 @@ public class CmsJspLoader implements I_CmsResourceLoader {
 
                     // check if the content was modified since the last request
                     if (controller.isTop()
-                        && CmsFlexController.isNotModifiedSince(f_req, controller.getDateLastModified())) {
-                        CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
+                    && CmsFlexController.isNotModifiedSince(f_req, controller.getDateLastModified())) {
+                        if (f_req.getParameterMap().size() == 0) {
+                            // only use "expires" header on pages that have no parameters,
+                            // otherwise some browsers (e.g. IE 6) will not even try to request 
+                            // updated versions of the page
+                            CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
+                        }
                         res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                         return null;
                     }
@@ -458,7 +463,12 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         res.setContentLength(result.length);
                         // set date last modified header
                         CmsFlexController.setDateLastModifiedHeader(res, controller.getDateLastModified());
-                        CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
+                        if (f_req.getParameterMap().size() == 0) {
+                            // only use "expires" header on pages that have no parameters,
+                            // otherwise some browsers (e.g. IE 6) will not even try to request 
+                            // updated versions of the page
+                            CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
+                        }                      
                         CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
                         res.getOutputStream().write(result);
                         res.getOutputStream().flush();
