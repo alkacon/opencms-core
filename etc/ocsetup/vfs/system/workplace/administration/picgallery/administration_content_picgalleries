@@ -34,7 +34,7 @@ function show_help()
 
 <!-- begin content list with galleries-->
 <table cellspacing=1 cellpadding=1 border=0>
-]]><FILELIST method="getFiles" template="explorerFilelistTemplate" customtemplate="piclistTemplate"/><![CDATA[ 
+]]><FILELIST method="getFiles" template="explorerFilelistTemplate" customtemplate="picListTemplate"/><![CDATA[ 
 </table>
 <!-- end Inhalt Aufgaben Projektbezogen -->
 
