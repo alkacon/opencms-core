@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Attic/CmsAccessGuard.java,v $
- * Date   : $Date: 2003/06/13 11:02:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/16 16:20:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.file.CmsUser;
  * An access guard checks the permissions of an user on a given resource against required permissions,
  * additionally depending on the policy that is implemented in a subclass.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2003/06/13 11:02:44 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/16 16:20:48 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public abstract class CmsAccessGuard {
@@ -86,7 +86,7 @@ public abstract class CmsAccessGuard {
 	
 	
 	/**
-	 * Blocking permission check on a resource.
+	 * Blocking permission check on a resource (strong check, all required permissions are neccessary).
 	 * If the required permissions are not satisfied by the permissions the user has on a resource,
 	 * an access denied exception is thrown.
 	 * 
@@ -97,7 +97,7 @@ public abstract class CmsAccessGuard {
 	 */
 	public void check (CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
 		
-		check (resource, requiredPermissions, true);
+		check (resource, requiredPermissions, true, true);
 	}
 	
 	/**
@@ -109,17 +109,23 @@ public abstract class CmsAccessGuard {
 	 * 
 	 * @param resource				the resource on which permissions are required
 	 * @param requiredPermissions	the set of permissions required to access the resource
+	 * @param strongCheck			if set to true, all required permission have to be granted, otherwise only one
 	 * @param blockAccess			if true, an access denied exception is thrown if the required permissions are not satisfied
 	 * @return						if the required permissions are satisfied
 	 * @throws CmsException			if something goes wrong
 	 */
-	public boolean check (CmsResource resource, CmsPermissionSet requiredPermissions, boolean blockAccess) throws CmsException {
+	public boolean check (CmsResource resource, CmsPermissionSet requiredPermissions, boolean strongCheck, boolean blockAccess) throws CmsException {
 	
 		CmsPermissionSet currentPermissions = evaluatePermissions(resource, m_checks);
-		boolean hasPermissions = (requiredPermissions.getPermissions() & (currentPermissions.getPermissions())) == requiredPermissions.getPermissions();
+		boolean hasPermissions = false;
+		
+		if (strongCheck)
+			hasPermissions = (requiredPermissions.getPermissions() & (currentPermissions.getPermissions())) == requiredPermissions.getPermissions();
+		else
+			hasPermissions = (requiredPermissions.getPermissions() & (currentPermissions.getPermissions())) > 0;
 		
 		if (blockAccess && ! hasPermissions) {
-			throw new CmsException("[" + this.getClass().getName() + "] denied access to resource " + resource.getAbsolutePath() + ", required permissions are " + requiredPermissions.getPermissionString(), CmsException.C_NO_ACCESS);
+			throw new CmsException("[" + this.getClass().getName() + "] denied access to resource " + resource.getAbsolutePath() + ", required permissions are " + requiredPermissions.getPermissionString() + ((strongCheck) ? " (required each)": " (required one)"), CmsException.C_NO_ACCESS);
 		}
 		
 		return hasPermissions;
@@ -132,12 +138,13 @@ public abstract class CmsAccessGuard {
 	 *
 	 * @param resource				the resource on which permissions are required
 	 * @param requiredPermissions	the set of permissions required to access the resource
+	 * @param strongCheck			if set to true, all required permission have to be granted, otherwise only one
 	 * @param performChecks			flags defining the checks to perform when evaluating the permissions
 	 * @param blockAccess			if true, an access denied exception is thrown if the required permissions are not satisfied
 	 * @return						true, if the required permissions are satisfied
 	 * @throws CmsException			C_NO_ACCESS if the required permissions are not satisfied and blockAccess is true
 	 */
-	public boolean check (CmsResource resource, CmsPermissionSet requiredPermissions, int performChecks, boolean blockAccess) throws CmsException {
+	public boolean check (CmsResource resource, CmsPermissionSet requiredPermissions, boolean strongCheck, int performChecks, boolean blockAccess) throws CmsException {
 	
 		CmsPermissionSet currentPermissions = evaluatePermissions(resource, performChecks);
 		boolean hasPermissions = (requiredPermissions.getPermissions() & (currentPermissions.getPermissions())) == requiredPermissions.getPermissions();

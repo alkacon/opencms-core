@@ -75,7 +75,7 @@ addFileExtension jsp jsp
 createTempfileProject
 setCurrentProject 2
 importResources "ocsetup/vfs"
-chacc "/system/" "Users" "-v-w"
+chacc "/system/" "group" "Users" "-v-w"
 publishProject "2"
 writeExportPath "export/"
 createDefaultProject "Offline" "The Offline Project"

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2003/06/13 10:03:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/16 16:20:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.StringTokenizer;
  * The access control entry contains two binary permission sets, the first grants permissions
  * and the second revokes permissions explicitly (second should have precedence)
  * 
- * @version $Revision: 1.1 $ $Date: 2003/06/13 10:03:10 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/16 16:20:48 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlEntry {
@@ -126,8 +126,8 @@ public class CmsAccessControlEntry {
 			String suffix = tok.nextToken();
 			switch (suffix.charAt(0)) {
 				case 'I': case 'i':
-					if (prefix.charAt(0) == '+') m_flags |= I_CmsConstants.C_ACCESSFLAGS_INHERITED;
-					if (prefix.charAt(0) == '-') m_flags &= ~I_CmsConstants.C_ACCESSFLAGS_INHERITED;
+					if (prefix.charAt(0) == '+') m_flags |= I_CmsConstants.C_ACCESSFLAGS_INHERIT;
+					if (prefix.charAt(0) == '-') m_flags &= ~I_CmsConstants.C_ACCESSFLAGS_INHERIT;
 					break;
 				default:
 					permissionString.append(prefix);
@@ -247,6 +247,17 @@ public class CmsAccessControlEntry {
 		
 		return m_flags;
 	}	
+
+	/**
+	 * Returns if this access control entry has the inherited flag set.
+	 * Note: to check if an access control entry is inherited, also the
+	 * resource id and the id of the current resource must be different.
+	 * 
+	 * @return true, if the inherited flag is set
+	 */
+	public boolean isInherited() {
+		return ((m_flags & I_CmsConstants.C_ACCESSFLAGS_INHERITED) > 0);		
+	}
 	
 	/**
 	 * @see java.lang.Object#toString()

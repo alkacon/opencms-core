@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/06/13 16:15:55 $
-* Version: $Revision: 1.232 $
+* Date   : $Date: 2003/06/16 16:19:39 $
+* Version: $Revision: 1.233 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.232 $ $Date: 2003/06/13 16:15:55 $
+ * @version $Revision: 1.233 $ $Date: 2003/06/16 16:19:39 $
  */
 public interface I_CmsConstants {
 
@@ -403,6 +403,11 @@ public interface I_CmsConstants {
 	 */
 	CmsPermissionSet C_CONTROL_ACCESS = new CmsPermissionSet(C_PERMISSION_CONTROL);
  
+ 	/**
+ 	 * Permission set to check read and/or view access
+ 	 */
+ 	CmsPermissionSet C_READVIEW_ACCESS = new CmsPermissionSet(C_PERMISSION_READ|C_PERMISSION_VIEW);
+ 	
     /**
      * Group may read this resource
      */
@@ -483,7 +488,22 @@ public interface I_CmsConstants {
 	/**
 	 * Flag to indicate that an access control entry should be inherited
 	 */
-	final static int C_ACCESSFLAGS_INHERITED = 2;
+	final static int C_ACCESSFLAGS_INHERIT = 2;
+	
+	/**
+	 * Flag to indicate that an access control entry was inherited (read only)
+	 */
+	final static int C_ACCESSFLAGS_INHERITED = 4;
+	
+	/**
+	 * Flag to signal the principal type user
+	 */
+	final static int C_ACCESSFLAGS_USER = 8;
+	
+	/**
+	 * Flag to signal the pricipal type group
+	 */
+	final static int C_ACCESSFLAGS_GROUP = 16;
 	
     /**
      * Is set, if the resource is unchanged in this project.

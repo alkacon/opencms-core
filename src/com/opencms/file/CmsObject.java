@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/16 13:36:25 $
-* Version: $Revision: 1.286 $
+* Date   : $Date: 2003/06/16 16:19:39 $
+* Version: $Revision: 1.287 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.286 $
+ * @version $Revision: 1.287 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4429,33 +4429,70 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * 
 	 * @param principalName
 	 * @return
-	 * @throws CmsException
+	 * @throws CmsException	if something goes wrong
 	 */
 	public I_CmsPrincipal lookupPrincipal (String principalName) throws CmsException {
     	return m_driverManager.lookupPrincipal(m_context.currentUser(), m_context.currentProject(), principalName);
     }
     
-    // TODO: added for testing purposes - check later, if useful/neccessary
-    public CmsAccessControlList getAccessControlList(String resourceName) throws CmsException {
+
+    /**
+     * Returns the access control list (summarized access control entries) of a given resource.
+     * 
+	 * @param resourceName	the name of the resource
+	 * @return				the access control list of the resource
+	 * @throws CmsException	if something goes wrong
+	 */
+	public CmsAccessControlList getAccessControlList(String resourceName) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
 		return m_driverManager.getAccessControlList(m_context.currentUser(), m_context.currentProject(), res); 
     }
     
+	/**
+	 * Returns the vector of access control entries of a resource.
+	 * 
+	 * @param resourceName	the name of the resource.
+	 * @return				a vector of access control entries
+	 * @throws CmsException	if something goes wrong
+	 */
 	public Vector getAccessControlEntries(String resourceName) throws CmsException {
 		return getAccessControlEntries(resourceName, true);    
 	}
 	
+	/**
+	 * Returns the vector of access control entries of a resource.
+	 * 
+	 * @param resourceName	the name of the resource.
+	 * @param getInherited	true, if inherited access control entries should be returned, too
+	 * @return				a vector of access control entries
+	 * @throws CmsException	if something goes wrong
+	 */
 	public Vector getAccessControlEntries(String resourceName, boolean getInherited) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
 		return m_driverManager.getAccessControlEntries(m_context.currentUser(), m_context.currentProject(), res, getInherited);
 	}
 	
+	/**
+	 * Returns the set set of permissions of a given user for a given resource.
+	 * 
+	 * @param resourceName	the name of the resource
+	 * @param userName		the name of the user
+	 * @return				the current permissions on this resource
+	 * @throws CmsException	if something goes wrong
+	 */
 	public CmsPermissionSet getPermissions(String resourceName, String userName) throws CmsException {
 		CmsAccessControlList acList = getAccessControlList(resourceName);
 		CmsUser user = readUser(userName);
 		return acList.getPermissions(user, getGroupsOfUser(userName));		
 	}
 	
+	/**
+	 * Returns the set set of permissions of the current user for a given resource. 
+	 * 
+	 * @param resourceName		the name of the resource
+	 * @return					the set of the permissions of the current user
+	 * @throws CmsException		if something goes wrong
+	 */
 	public CmsPermissionSet getPermissions(String resourceName) throws CmsException {
 		// reading permissions is allowed even if the resource is marked as deleted
 		CmsResource resource = readFileHeader(resourceName, true);
@@ -4464,64 +4501,127 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		return m_driverManager.getPermissions(m_context.currentUser(), m_context.currentProject(), resource,user);		
 	}
 	
+	/**
+	 * Checks if the current user has required permissions to access a given resource
+	 * 
+	 * @param resourceName			the name of the resource that will be accessed
+	 * @param requiredPermissions	the set of required permissions
+	 * @return						true if the required permissions are satisfied
+	 * @throws CmsException			if something goes wrong
+	 */
 	public boolean checkPermissions(String resourceName, CmsPermissionSet requiredPermissions) throws CmsException {
 		CmsResource resource = readFileHeader(resourceName);
-		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), m_context.currentProject()).check(resource, requiredPermissions, false);		
+		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), m_context.currentProject()).check(resource, requiredPermissions, true, false);		
 	}
 		
+	/**
+	 * Checks if the current user has required permissions to access a given resource.
+	 * 
+	 * @param resource				the resource that will be accessed
+	 * @param requiredPermissions	the set of required permissions
+	 * @return						true if the required permissions are satisfied
+	 * @throws CmsException			if something goes wrong
+	 */
 	public boolean checkPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
-		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), m_context.currentProject()).check(resource, requiredPermissions, false);		
+		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), m_context.currentProject()).check(resource, requiredPermissions, true, false);		
 	}
 		
+	/**
+	 * Checks if the current user has required permissions to access a given resource in a given project.
+	 * 
+	 * @param project				the project 
+	 * @param resource				the resource that will be accessed
+	 * @param requiredPermissions	the set of required permissions
+	 * @return						true if the required permissions are satisfied
+	 * @throws CmsException			if something goes wrong
+	 */
 	public boolean checkPermissions(CmsProject project, CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
-		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), project).check(resource, requiredPermissions, false);
+		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), project).check(resource, requiredPermissions, true, false);
 	}
 	
 	/**
 	 * Changes the access control for a given resource and a given principal(user/group).
 	 * 
-	 * @param resourceName	name of the resource
-	 * @param principalName	name of the principal
-	 * @param permissions	the permissions in the format ((+|-)(r|w|v|c|i))*
-	 * @throws CmsException
+	 * @param resourceName	name 	of the resource
+	 * @param principalType			the type of the principal (group or user)
+	 * @param principalName	name 	of the principal
+	 * @param permissionString		the permissions in the format ((+|-)(r|w|v|c|i))*
+	 * @throws CmsException			if something goes wrong
 	 */
-	public void chacc(String resourceName, String principalName, String permissionString) throws CmsException {
+	// TODO: find a better mechanism to select the principalType
+	public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
-		I_CmsPrincipal principal = m_driverManager.lookupPrincipal(m_context.currentUser(), m_context.currentProject(), principalName);
-		
+		CmsAccessControlEntry acEntry = null;
+		I_CmsPrincipal principal = null;
+
 		if ("".equals(permissionString)) {
 			m_driverManager.removeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, principal.getId());	
-		} else {
-			CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceAceId(), principal.getId(), permissionString);
-			m_driverManager.writeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, acEntry);
+		} 
+				
+		if ("group".equals(principalType.toLowerCase())) {
+			principal = readGroup (principalName);
+			acEntry =  new CmsAccessControlEntry(res.getResourceAceId(), principal.getId(), permissionString);
+			acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_GROUP);
+		} else if ("user".equals(principalType.toLowerCase())) {
+			principal = readUser(principalName);
+			acEntry = new CmsAccessControlEntry(res.getResourceAceId(), principal.getId(), permissionString);
+			acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_USER);
 		}
+				
+		m_driverManager.writeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, acEntry);
 	}
 	
 	/**
 	 * Changes the access control for a given resource and a given principal(user/group).
 	 * 
 	 * @param resourceName			name of the resource
+	 * @param principalType			the type of the principal (currently group or user)
 	 * @param principalName			name of the principal
 	 * @param allowedPermissions	bitset of allowed permissions
 	 * @param deniedPermissions		bitset of denied permissions
 	 * @param flags					flags
+	 * @throws CmsException			if something goes wrong
 	 */
-	public void chacc(String resourceName, String principalName, int allowedPermissions, int deniedPermissions, int flags) throws CmsException {
+	// TODO: find a better mechanism to select the principalType
+	public void chacc(String resourceName, String principalType, String principalName, int allowedPermissions, int deniedPermissions, int flags) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
-		I_CmsPrincipal principal = m_driverManager.lookupPrincipal(m_context.currentUser(), m_context.currentProject(), principalName);
-				
-		CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceAceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
+		CmsAccessControlEntry acEntry = null;
+		I_CmsPrincipal principal = null;
+		
+		if ("group".equals(principalType.toLowerCase())) {
+			principal = readGroup (principalName);
+			acEntry =  new CmsAccessControlEntry(res.getResourceAceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
+			acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_GROUP);
+		} else if ("user".equals(principalType.toLowerCase())) {
+			principal = readUser(principalName);
+			acEntry = new CmsAccessControlEntry(res.getResourceAceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
+			acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_USER);
+		}		
+
 		m_driverManager.writeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, acEntry);
 	}
 	
+	/**
+	 * @param sourceName	the name of the resource of which the access control entries are copied
+	 * @param destName		the name of the resource to which the access control entries are applied
+	 * @throws CmsException	if something goes wrong
+	 */
 	public void cpacc(String sourceName, String destName) throws CmsException {
 		CmsResource source = readFileHeader(sourceName);
 		CmsResource dest = readFileHeader(destName);
 		m_driverManager.copyAccessControlEntries(m_context.currentUser(), m_context.currentProject(), source, dest);
 }
 	
+	/**
+	 * Writes access control entries for a given resource
+	 * 
+	 * @param resourceName		the name of the resource
+	 * @param acEntries			a vector of access control entries
+	 * @throws CmsException		if something goes wrong
+	 */
+	// TODO: force the access control entries to belong to the given resource
 	public void writeAccessControlEntries(String resourceName, Vector acEntries) throws CmsException {
 		CmsResource resource = readFileHeader(resourceName);
 		m_driverManager.writeAccessControlEntries(m_context.currentUser(), m_context.currentProject(), resource, acEntries);
-}
+	}
 }

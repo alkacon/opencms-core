@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/06/13 16:15:55 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2003/06/16 16:19:39 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.opencms.security.I_CmsPrincipal;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.77 $ $Date: 2003/06/13 16:15:55 $
+ * @version $Revision: 1.78 $ $Date: 2003/06/16 16:19:39 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -3613,12 +3613,13 @@ class CmsShellCommands implements I_CmsConstants {
      * Changes the access control for a given resource and a given principal(user/group).
      * 
 	 * @param resourceName		the name of the reosurce
+	 * @param principalType		the type of the principal (user or group)
 	 * @param principalName		the name of the principal
 	 * @param permissionString	the permissions in the format ((+|-)(r|w|v|c|i))*
 	 */
-	public void chacc(String resourceName, String principalName, String permissionString) {
+	public void chacc(String resourceName, String principalType, String principalName, String permissionString) {
 		try {
-			m_cms.chacc(resourceName, principalName, permissionString);
+			m_cms.chacc(resourceName, principalType, principalName, permissionString);
 		} catch (Exception e) {
 			CmsShell.printException(e);	
 		}    	
@@ -3628,14 +3629,15 @@ class CmsShellCommands implements I_CmsConstants {
 	 * Changes the access control for a given resource and a given principal(user/group).
 	 * 
 	 * @param resourceName			the name of the resource
+	 * @param principalType			the principalType (user or group)
 	 * @param principalName			the name of the principal
 	 * @param allowedPermissions	bitset of allowed permissions
 	 * @param deniedPermissions		bitset of denied permissions
 	 * @param flags					flags
 	 */
-	public void chacc(String resourceName, String principalName, int allowedPermissions, int deniedPermissions, int flags){
+	public void chacc(String resourceName, String principalType, String principalName, int allowedPermissions, int deniedPermissions, int flags){
 		try {
-			m_cms.chacc(resourceName, principalName, allowedPermissions, deniedPermissions, flags);
+			m_cms.chacc(resourceName, principalType, principalName, allowedPermissions, deniedPermissions, flags);
 		} catch (Exception e) {
 			CmsShell.printException(e);	
 		}		
