@@ -99,7 +99,7 @@
 			<PARAM NAME="PrintJobName" VALUE="Document">
 			<PARAM NAME="ZeroSubstitute" VALUE="0">            
 		</OBJECT>
-		<INPUT TYPE=HIDDEN NAME="CONTENT">	<INPUT TYPE=HIDDEN NAME="action">	
+		<INPUT TYPE=HIDDEN NAME="content">	<INPUT TYPE=HIDDEN NAME="action">	
 		<INPUT TYPE=HIDDEN NAME="file" value="]]><PROCESS>file</PROCESS><![CDATA[">	
 	</td>
 </tr>
@@ -138,7 +138,7 @@
 	//-->
 	</script>	
 	
-	<INPUT TYPE=HIDDEN NAME="CONTENT">
+	<INPUT TYPE=HIDDEN NAME="content">
 	<INPUT TYPE=HIDDEN NAME="action">
 	<INPUT TYPE=HIDDEN NAME="file" value="' + filename + '">
 	<!-- </td>

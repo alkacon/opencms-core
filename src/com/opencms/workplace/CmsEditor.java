@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
- * Date   : $Date: 2000/03/08 14:39:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/03/22 10:38:46 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,10 +40,11 @@ import javax.servlet.http.*;
 
 /**
  * Template class for displaying the text editor of the OpenCms workplace.<P>
- * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
+ * Reads the edirtor layout from a editor template file of the content type 
+ * <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/03/08 14:39:54 $
+ * @version $Revision: 1.10 $ $Date: 2000/03/22 10:38:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsEditor extends CmsWorkplaceDefault {
@@ -79,57 +80,34 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * @param templateSelector template section that should be processed.
      */
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
-        }
-
-        CmsFile editFile = null;
         
         // Get all editor parameters
-        String content = (String)parameters.get("CONTENT");
-        String file = (String)parameters.get("file");
-        String action = (String)parameters.get("action");
-        String jsfile = (String)parameters.get("editor.jsfile");
+        String content = (String)parameters.get(C_PARA_CONTENT);
+        String file = (String)parameters.get(C_PARA_FILE);
+        String action = (String)parameters.get(C_PARA_ACTION);
+        String jsfile = (String)parameters.get(C_ROOT_TEMPLATE_NAME + "." + C_PARA_JSFILE);
         
         boolean existsFileParam = ((file != null) && (!"".equals(file)));
-        boolean saveRequested = ((action != null) && ("save".equals(action) || "saveexit".equals(action)));
-        boolean exitRequested = ((action != null) && ("exit".equals(action) || "saveexit".equals(action)));
-                
+        boolean saveRequested = ((action != null) && (C_EDIT_ACTION_SAVE.equals(action) || C_EDIT_ACTION_SAVEEXIT.equals(action)));
+        boolean exitRequested = ((action != null) && (C_EDIT_ACTION_EXIT.equals(action) || C_EDIT_ACTION_SAVEEXIT.equals(action)));
+
+        // For further processing we possibly need the encoder            
+        Encoder enc = new Encoder();
+
+        // CmsFile object of the file to be edited
+        CmsFile editFile = null;
+        
         // If there is a file parameter and no content, try to read the file. 
         // If the user requested a "save file", also load the file.
         if(existsFileParam && (content == null || saveRequested)) {
-            try {
-                editFile = cms.readFile(file);
-            } catch(Exception e) {
-                // Anything is wrong. Perhaps a wrong file name ???
-                String errorMessage = "Error while reading file " + file + ": " + e;
-                if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
-                    if(!(e instanceof CmsException)) {
-                        // Should not happen. Print out detailled error information                    
-                        e.printStackTrace();
-                    }
-                }
-                // throw this exception again, so it can be displayed in the servlet.
-                if(e instanceof CmsException) {
-                    throw (CmsException)e;
-                } else {
-                    throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
-                }
-            }
-
-            // OK. The file was loaded successfully            
-            // For further processing we possibly need the encoder            
-            Encoder enc = new Encoder();
+            editFile = readFile(cms, file);
             
             // If there is no content set, this is the first request of the editor.
             // So load the file content and set the "content" parameter.        
             if(content == null) {
                 content = new String(editFile.getContents());
                 content = enc.escape(content);
-                parameters.put("CONTENT", content);
+                parameters.put(C_PARA_CONTENT, content);
             }
             
             // If the user requested a file save, write the file content
@@ -157,8 +135,8 @@ public class CmsEditor extends CmsWorkplaceDefault {
 
         // Put the "file" datablock for processing in the template file.
         // It will be inserted in a hidden input field and given back when submitting.
-        xmlTemplateDocument.setXmlData("file", file);
-        xmlTemplateDocument.setXmlData("jsfile", jsfile);                
+        xmlTemplateDocument.setXmlData(C_PARA_FILE, file);
+        xmlTemplateDocument.setXmlData(C_PARA_JSFILE, jsfile);                
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, sectionName);
     }                  
     
@@ -177,13 +155,44 @@ public class CmsEditor extends CmsWorkplaceDefault {
      */
     public Object setText(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) {        
         Hashtable parameters = (Hashtable)userObj;
-        String content = (String)parameters.get("CONTENT");        
+        String content = (String)parameters.get(C_PARA_CONTENT);        
         if(content==null) {
             content = "";
         }                    
         return content;
     }        
 
+    /**
+     * Reads in the requested file to be edited by calling the corresponding
+     * method in the cms object.
+     * @param cms Cms object for accessing system resources
+     * @param filename Name of the file to be loaded
+     * @return CmsFile object of the loaded file
+     */
+    private CmsFile readFile(A_CmsObject cms, String filename) throws CmsException {
+        CmsFile result = null;
+        try {
+            result = cms.readFile(filename);
+        } catch(Exception e) {
+            // Anything is wrong. Perhaps a wrong file name ???
+            String errorMessage = "Error while reading file " + filename + ": " + e;
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+                if(!(e instanceof CmsException)) {
+                    // Should not happen. Print out detailled error information                    
+                    e.printStackTrace();
+                }
+            }
+            // throw this exception again, so it can be displayed in the servlet.
+            if(e instanceof CmsException) {
+                throw (CmsException)e;
+            } else {
+                throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+            }
+        }
+        return result;
+    }
+    
     /**
      * Get the name of the section that should be loaded from the editor's
      * template file for displaying the editor.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/21 11:39:41 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2000/03/22 10:39:45 $
+ * Version: $Revision: 1.68 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.67 $ $Date: 2000/03/21 11:39:41 $
+ * @version $Revision: 1.68 $ $Date: 2000/03/22 10:39:45 $
  */
 public interface I_CmsWpConstants {
 
@@ -175,6 +175,16 @@ public interface I_CmsWpConstants {
     /** Parameter for the usersettings value */
     public static final String C_PARA_USERSETTINGS = "USERSETTINGS";
     
+    /** Parameter for text/html editor content */
+    public static final String C_PARA_CONTENT = "content";
+
+    /** Parameter for action commands */
+    public static final String C_PARA_ACTION = "action";
+    
+    /** Parameter for java script filenames */
+    public static final String C_PARA_JSFILE = "jsfile";
+    
+    
     // Filenames of workplace files
         
 	/** The filename to the icontemplate */
@@ -237,6 +247,20 @@ public interface I_CmsWpConstants {
      *  Name of the template containing radiobutton definitions
      */
     public static final String C_RADIOTEMPLATE = "radioTemplate";    
+    
+    
+    
+    // Constants for editors
+    
+   /** Save action */
+   public static final String C_EDIT_ACTION_SAVE = "save";   
+
+   /** Save &amp; Exit action */
+   public static final String C_EDIT_ACTION_SAVEEXIT = "saveexit";   
+   
+   /** Exit action */
+   public static final String C_EDIT_ACTION_EXIT = "exit";   
+    
     
     // tag defnitions
 	

@@ -4,7 +4,7 @@
 <![CDATA[
 <html>
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-<title>OpenCms</title>
+<title>]]><LABEL value="label.wptitle" /><![CDATA[ ]]><METHOD name="userName" /><![CDATA[</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">	
@@ -40,7 +40,7 @@
 			document.PREVIEW.bodytitle.value = document.EDITOR.bodytitle.value;
 			document.PREVIEW.template.value = document.EDITOR.template.value;
 			document.PREVIEW.editor.value = document.EDITOR.editor.value;
-			document.PREVIEW.CONTENT.value = document.EDITOR.CONTENT.value;
+			document.PREVIEW.content.value = document.EDITOR.content.value;
 			document.PREVIEW.file.value = document.EDITOR.file.value;
 			document.PREVIEW.action.value = "preview";
 			document.PREVIEW.submit();
@@ -171,7 +171,7 @@
 	<INPUT TYPE=HIDDEN name="bodytitle">
 	<INPUT TYPE=HIDDEN name="template">
 	<INPUT TYPE=HIDDEN name="editor">
-	<INPUT TYPE=HIDDEN NAME="CONTENT">
+	<INPUT TYPE=HIDDEN NAME="content">
 	<INPUT TYPE=HIDDEN NAME="file">		
 </form>
 </td></tr>
