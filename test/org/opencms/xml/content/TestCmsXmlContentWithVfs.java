@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2004/12/09 15:59:46 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/01/18 13:08:30 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -105,6 +105,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         suite.addTest(new TestCmsXmlContentWithVfs("testAddRemoveElements"));
         suite.addTest(new TestCmsXmlContentWithVfs("testContentHandler"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testDefaultNested"));
         suite.addTest(new TestCmsXmlContentWithVfs("testNestedSchema"));
         suite.addTest(new TestCmsXmlContentWithVfs("testAddRemoveNestedElements"));
         suite.addTest(new TestCmsXmlContentWithVfs("testAccessNestedElements"));
@@ -576,6 +577,42 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertTrue(xmlcontent.hasValue("VfsLink", Locale.ENGLISH));
         assertSame(definition.getContentHandler().getClass().getName(), TestXmlContentHandler.class.getName());
     }
+    
+    /**
+     * Test default values in the appinfo node using a nested XML content schema.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testDefaultNested() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing for  default values in nested XML content schemas");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-4.xsd",
+            CmsEncoder.C_UTF8_ENCODING);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_4, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+
+        // now create the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-4.xml", CmsEncoder.C_UTF8_ENCODING);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        System.out.println(xmlcontent.toString());
+
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+
+        I_CmsXmlContentValue value1;
+
+        value1 = xmlcontent.addValue(cms, "Cascade[1]/Option", Locale.ENGLISH, 0);
+        assertEquals("Default value from the XML", value1.getStringValue(cms));   
+        assertEquals("Default value from the appinfos", value1.getContentDefinition().getContentHandler().getDefault(cms, value1, Locale.ENGLISH));
+    }
 
     /**
      * Test using the GUI widget mapping appinfo nodes.<p>
@@ -744,7 +781,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         
         titleProperty = cms.readPropertyObject(resourcename, I_CmsConstants.C_PROPERTY_TITLE, false);
         assertEquals(titleStr, titleProperty.getValue());
-    } 
+    }
     
     /**
      * Test using a nested XML content schema.<p>

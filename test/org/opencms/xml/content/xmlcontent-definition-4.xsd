@@ -23,7 +23,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
+			<handler class="org.opencms.xml.content.TestXmlContentHandler" />		
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>
