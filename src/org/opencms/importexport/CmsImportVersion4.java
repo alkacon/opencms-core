@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/07/18 16:32:33 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/07/27 11:15:54 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -273,12 +273,12 @@ public class CmsImportVersion4 extends A_CmsImport {
      * Reads all file nodes plus their meta-information (properties, ACL) 
      * from manifest.xml and imports them as Cms resources to the VFS.<p>
      * 
-     * @param ignoredResources a list of resource names which should not be (over)written in the VFS, or null
+     * @param excludeList a list of resource names which should not be (over)written in the VFS, or null
      * @param propertyKey name of a property to be added to all resources, or null
      * @param propertyValue value of the property to be added to all resources, or null
      * @throws CmsException if something goes wrong
      */
-    private void readResourcesFromManifest(Vector ignoredResources, String propertyKey, String propertyValue)
+    private void readResourcesFromManifest(Vector excludeList, String propertyKey, String propertyValue)
     throws CmsException {
 
         String source = null, destination = null, type = null, uuidresource = null, uuidcontent = null, userlastmodified = null, usercreated = null, flags = null, timestamp = null;
@@ -300,8 +300,8 @@ public class CmsImportVersion4 extends A_CmsImport {
         if (OpenCms.getImportExportManager().getImmutableResources() != null) {
             immutableResources.addAll(OpenCms.getImportExportManager().getImmutableResources());
         }
-        if (ignoredResources != null) {
-            immutableResources.addAll(ignoredResources);
+        if (excludeList != null) {
+            immutableResources.addAll(excludeList);
         }
         
         // get list of ignored properties
@@ -412,14 +412,16 @@ public class CmsImportVersion4 extends A_CmsImport {
                 // <flags>              
                 flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
 
-                String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
+                // apply name translation and import path
+                String translatedName = destination;
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
-                    translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
+                    // ensure folders end with a "/"
+                    if (! CmsResource.isFolder(translatedName)) {
+                        translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
+                    }
                 }
-
-                // translate the name during import
-                translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
-
+                translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + translatedName);
+                
                 // check if this resource is immutable
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
                 translatedName = m_cms.getRequestContext().removeSiteRoot(translatedName);
