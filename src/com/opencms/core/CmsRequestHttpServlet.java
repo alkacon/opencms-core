@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2003/01/16 09:51:41 $
-* Version: $Revision: 1.27.4.2 $
+* Date   : $Date: 2003/01/20 09:12:47 $
+* Version: $Revision: 1.27.4.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.27.4.2 $ $Date: 2003/01/16 09:51:41 $
+ * @version $Revision: 1.27.4.3 $ $Date: 2003/01/20 09:12:47 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -151,27 +151,27 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
         // Test if this is a multipart-request.
         // If it is, extract all files from it.
         String type = req.getHeader("content-type");
-		if(req.getContentLength() > -1){
-            //Gridnine AB Aug 6, 2002
-            // Set request content encoding.
-            String encoding = req.getCharacterEncoding();
-            if (encoding == null) {
-                // First try to get current encoding from session
-                HttpSession httpSession = req.getSession(false);
-                I_CmsSession session = (httpSession != null) ?
-                    new CmsSession(httpSession) : null;
-                if (session != null) {
-                    encoding = (String)session.getValue(
-                        I_CmsConstants.C_SESSION_CONTENT_ENCODING);
-                }
-                // if encoding not found in session - use default one
-                if (encoding == null) {
-                    encoding = OpenCms.getEncoding();
-                }
-                req.setCharacterEncoding(encoding);
-            }
-            A_OpenCms.log(C_OPENCMS_DEBUG, "request character encoding - " + req.getCharacterEncoding());
+
+		//Gridnine AB Aug 6, 2002
+		// Set request content encoding.
+		String encoding = req.getCharacterEncoding();
+		if (encoding == null) {
+			// First try to get current encoding from session
+			HttpSession httpSession = req.getSession(false);
+			I_CmsSession session = (httpSession != null) ?
+				new CmsSession(httpSession) : null;
+			if (session != null) {
+				encoding = (String)session.getValue(
+					I_CmsConstants.C_SESSION_CONTENT_ENCODING);
+			}
+			// if encoding not found in session - use default one
+			if (encoding == null) {
+				encoding = OpenCms.getEncoding();
+			}
+			req.setCharacterEncoding(encoding);
 		}
+		A_OpenCms.log(C_OPENCMS_DEBUG, "request character encoding - " + req.getCharacterEncoding());
+
         if((type != null) && type.startsWith("multipart/form-data")&& (req.getContentLength() > -1)) {
             readRequest();
 		}
