@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/18 16:15:29 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2003/07/18 16:50:36 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.66 $ $Date: 2003/07/18 16:15:29 $
+ * @version $Revision: 1.67 $ $Date: 2003/07/18 16:50:36 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1799,13 +1799,14 @@ public class CmsDriverManager extends Object {
      * @param resource			the resource
      * @throws CmsException		if something goes wrong
      */
-    public void deleteAllAccessControlEntries(CmsRequestContext context, CmsResource resource) throws CmsException {
+    private void deleteAllAccessControlEntries(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
         m_userDriver.deleteAllAccessControlEntries(context.currentProject(), resource.getResourceAceId());
         
-        touchResource(context, resource, System.currentTimeMillis());
+        // not here
+        // touchResource(context, resource, System.currentTimeMillis());
         clearAccessControlListCache();
     }
 
@@ -7610,13 +7611,15 @@ public class CmsDriverManager extends Object {
      * @param resource			the resource
      * @throws CmsException		if something goes wrong
      */
-    public void undeleteAllAccessControlEntries(CmsRequestContext context, CmsResource resource) throws CmsException {
+    private void undeleteAllAccessControlEntries(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
         m_userDriver.undeleteAllAccessControlEntries(context.currentProject(), resource.getResourceAceId());
         clearAccessControlListCache();
-        touchResource(context, resource, System.currentTimeMillis());
+        
+        // not here
+        //touchResource(context, resource, System.currentTimeMillis());
     }
 
     /**
