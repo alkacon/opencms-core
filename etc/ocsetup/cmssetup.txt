@@ -31,7 +31,7 @@ createFolder "/content/" templates
 lockResource "/content/templates/"
 chgrp "/content/templates/" Users
 unlockResource "/content/templates/"
-importDb "workplace.dat" "/"
+importDb "config/workplace.dat" "/"
 publishProject "__setupproj"
 addMountPoint "/system/workplace/pics/" "C:/Programme/Apache/html/pics/" pics Guest Guests plain "383"
 exit
