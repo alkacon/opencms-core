@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2003/12/10 17:35:49 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/12/11 13:37:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import com.opencms.workplace.I_CmsWpConstants;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +69,7 @@ import org.xml.sax.InputSource;
  * The content of each element is stored as CDATA, links within the 
  * content are processed and are seperately accessible as entries of a CmsLinkTable.
  * 
- * @version $Revision: 1.7 $ $Date: 2003/12/10 17:35:49 $
+ * @version $Revision: 1.8 $ $Date: 2003/12/11 13:37:14 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsXmlPage {
@@ -318,23 +319,38 @@ public class CmsXmlPage {
     public CmsFile marshal(CmsFile file, String encoding) 
         throws CmsPageException {
         
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        file.setContents(((ByteArrayOutputStream)marshal(out, encoding)).toByteArray());
         
+        return file;
+    }
+
+    /**
+     * Method to marshal (write) the xml contents into an output stream.<p>
+     * 
+     * @param out the output stream to write to
+     * @param encoding the encoding to use
+     * @return the output stream with the xml content
+     * @throws CmsPageException if something goes wrong
+     */
+
+    public OutputStream marshal(OutputStream out, String encoding)
+        throws CmsPageException {
+        
+        try {
+            
             OutputFormat format = OutputFormat.createPrettyPrint();
             format.setEncoding(encoding);
             
             XMLWriter writer = new XMLWriter(out, format);
             writer.write(m_document);
             writer.close();
-        
-            file.setContents(out.toByteArray());
             
         } catch (Exception exc) {
             throw new CmsPageException("Marshalling xml page failed", exc);
         }
         
-        return file;
+        return out;
     }
     
     /**
