@@ -18,6 +18,12 @@ function show_help()
 	return '4_4_17.html';
 }
 
+function preselect_entries(groupindex, userindex)
+{
+	document.NEWTASK.TEAM.selectedIndex=groupindex;
+	setUser(document.NEWTASK.USER, document.NEWTASK.TEAM.options[groupindex].value);
+	document.NEWTASK.USER.selectedIndex=userindex;
+}
 
 ]]><METHOD name="getUsers" /><![CDATA[
 
@@ -60,7 +66,8 @@ function setValues() {
 </head>
 
 <!-- Im onLoad-Handler den Index der select-Box auf den des vorherigen Bearbeiters setzen !! -->
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="setValues();" onUnload="if(treewin!=null)treewin.close();">
+<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed 
+onLoad="setValues();preselect_entries(]]><PROCESS>groupindex</PROCESS><![CDATA[, ]]><PROCESS>userindex</PROCESS><![CDATA[)" onUnload="if(treewin!=null)treewin.close();">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms_choosebrowser.js,v $
- * Date   : $Date: 2000/04/03 13:31:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/20 12:35:52 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,7 +30,8 @@
 // help to choose the right browser
 // m.schleich 21.12.1999
 // changed am 03.01.2000
-//---------------------------------
+//---------------------------------  
+
 ns = (document.layers)? true:false;
 ie = (document.all)? true:false;
 if(ie)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
- * Date   : $Date: 2000/04/20 08:11:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/20 12:35:52 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/04/20 08:11:55 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/20 12:35:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -131,7 +131,8 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 		String paraAll = "";
 		String paraCompletion = "";
 		String paraDelivery = "";
-
+		String userIdxString = "";
+		String groupIdxString = "";
 		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
 		
 		CmsXmlWpTemplateFile xmlTemplateDocument = 
@@ -154,10 +155,38 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 			paraCompletion = cms.getTaskPar(task.getId(), C_TASKPARA_COMPLETION);
 			paraDelivery = cms.getTaskPar(task.getId(), C_TASKPARA_DELIVERY);
 			due = Utils.getNiceShortDate(task.getTimeOut().getTime());
+
+			// preselect the old user and role in the dialog for forwarding and resurrection
+			// compute the indices of the user and role
+			String username = cms.readAgent(task).getName();
+			String groupname = cms.readGroup(task).getName(); 
+			int userindex = 0;
+			int groupindex = 0;
+			Vector groups = cms.getGroups();
+			Vector users = cms.getUsersOfGroup(groupname);
+			
+			int n=0;
+			for (int z=0; z < groups.size(); z++) {
+				A_CmsGroup group = (A_CmsGroup)groups.elementAt(z);
+				if (group.getRole()) {
+					n++;
+					if (group.getName().equals(groupname)) {
+						groupindex = n;
+					}
+				}
+			}
+			for (int z=0; z < users.size(); z++) {
+				if (((A_CmsUser) users.elementAt(z)).getName().equals(username)) {
+					userindex = z+1;
+				}
+			} 
+			userIdxString = (new Integer(userindex)).toString();
+			groupIdxString = (new Integer(groupindex)).toString();
+			
 		} catch (Exception exc) {
 			// unexpected exception - ignoring
 		}
-		
+		 
 		xmlTemplateDocument.setData("task", Encoder.escape( taskName ));
 		xmlTemplateDocument.setData("description", Encoder.escape( taskDescription ));
 		xmlTemplateDocument.setData("due", due);
@@ -165,10 +194,12 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 		xmlTemplateDocument.setData(C_TASKPARA_ALL, paraAll);
 		xmlTemplateDocument.setData(C_TASKPARA_COMPLETION, paraCompletion);
 		xmlTemplateDocument.setData(C_TASKPARA_DELIVERY, paraDelivery);
+		xmlTemplateDocument.setData("groupindex", groupIdxString);
+		xmlTemplateDocument.setData("userindex", userIdxString);
 		
-		// Now load the template file and start the processing
+		// Now load the template file and start the processing 
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
-    }
+	}
 
 
     /**
@@ -305,8 +336,7 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 			// create entry for user
 			retValue.append(C_USER_1 + C_ALL_ROLES + C_USER_2 + (m + 1) + C_USER_3 + 
 							user.getName() + C_USER_4 + user.getName() + C_USER_5);
-		}			
-		
+		}			 
         return retValue.toString();
     }
 	
