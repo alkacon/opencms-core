@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/08/14 15:37:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/08/15 13:36:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $ $Date: 2003/08/14 15:37:26 $ 
+ * @version $Revision: 1.2 $ $Date: 2003/08/15 13:36:49 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -2013,6 +2013,16 @@ class CmsShellCommands {
      * @param password The password.
      */
     public void login(String username, String password) {
+        loginUser(username, password);
+    }
+
+    /**
+     * Logs a user into the system.<p>
+     *
+     * @param username the name of the user to log in
+     * @param password the password
+     */
+    public void loginUser(String username, String password) {
         try {
             m_cms.loginUser(username, password);
             whoami();
@@ -2023,15 +2033,22 @@ class CmsShellCommands {
     }
 
     /**
-     * Logs a user into the system.
+     * Logs a user with a given remote address into the system.<p>
      *
-     * @param username The name of the user to log in.
-     * @param password The password.
+     * @param username the name of the user to log in
+     * @param password the password
+     * @param remoteAddress the ip address
      */
-    public void loginUser(String username, String password) {
-        login(username, password);
+    public void loginUser(String username, String password, String remoteAddress) {
+        try {
+            m_cms.loginUser(username, password, remoteAddress);
+            whoami();
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+            System.out.println("Login failed!");
+        }
     }
-
+    
     /**
      * Logs a web user into the Cms, if the password is correct.
      *
