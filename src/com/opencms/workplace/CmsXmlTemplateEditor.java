@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/05/30 12:05:52 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/05/30 14:00:56 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.27 $ $Date: 2000/05/30 12:05:52 $
+ * @version $Revision: 1.28 $ $Date: 2000/05/30 14:00:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -424,7 +424,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         xmlTemplateDocument.setData("editor", editor);
-        xmlTemplateDocument.setData("jsfile", editor.equals(C_SELECTBOX_EDITORVIEWS[2])?C_SELECTBOX_EDITORVIEWS[1]:editor);
         xmlTemplateDocument.setData("bodyfile", bodyElementFilename);
         xmlTemplateDocument.setData("bodyclass", bodyElementClassName);
         xmlTemplateDocument.setData("editorframe", (String)parameters.get("root.editorframe"));                
