@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
-* Date   : $Date: 2003/07/07 17:24:22 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/07/15 12:17:04 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2003/07/07 17:24:22 $
+ * @version $Revision: 1.35 $ $Date: 2003/07/15 12:17:04 $
  */
 
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -92,7 +92,7 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
             // create the new file
             Hashtable prop = new Hashtable();
             prop.put(C_PROPERTY_TITLE, title);
-            cms.createResource(foldername, filename, type, prop, new byte[0]);
+            cms.createResource(foldername, filename, cms.getResourceTypeId(type), prop, new byte[0]);
 
             if( keywords != null && !keywords.equals("") ) {
                 cms.writeProperty(foldername + filename, C_PROPERTY_KEYWORDS, keywords);

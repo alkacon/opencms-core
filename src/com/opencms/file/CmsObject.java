@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/15 10:42:58 $
-* Version: $Revision: 1.319 $
+* Date   : $Date: 2003/07/15 12:17:05 $
+* Version: $Revision: 1.320 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.319 $
+ * @version $Revision: 1.320 $
  */
 public class CmsObject extends Object {
 
@@ -613,7 +613,7 @@ public class CmsObject extends Object {
             Hashtable properties = new Hashtable();
             int newChannelId = org.opencms.db.CmsIdGenerator.nextId(com.opencms.defaults.master.CmsChannelBackoffice.C_TABLE_CHANNELID);
             properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId + "");
-            return (CmsFolder) createResource(parentChannel, newChannelName, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME, properties);
+            return (CmsFolder) createResource(parentChannel, newChannelName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, properties);
         } finally {
             setContextToVfs();
         }
@@ -634,9 +634,10 @@ public class CmsObject extends Object {
      *
      * @deprecated Use createResource instead.
      */
-    public CmsFile createFile(String folder, String filename, byte[] contents, String type) throws CmsException {
+    public CmsFile createFile(String folder, String filename, byte[] contents, int type) throws CmsException {
         return (CmsFile) createResource(folder, filename, type, null, contents);
     }
+    
     /**
      * Creates a new file with the given content and resourcetype.
      *
@@ -656,7 +657,7 @@ public class CmsObject extends Object {
      *
      * @deprecated Use createResource instead.
      */
-    public CmsFile createFile(String folder, String filename, byte[] contents, String type, Hashtable properties) throws CmsException {
+    public CmsFile createFile(String folder, String filename, byte[] contents, int type, Hashtable properties) throws CmsException {
         return (CmsFile) createResource(folder, filename, type, properties, contents);
     }
 
@@ -675,7 +676,7 @@ public class CmsObject extends Object {
      * @deprecated Use createResource instead.
      */
     public CmsFolder createFolder(String folder, String newFolderName) throws CmsException {
-        return (CmsFolder) createResource(folder, newFolderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME);
+        return (CmsFolder) createResource(folder, newFolderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
     }
     /**
      * Adds a new group to the Cms.<p>
@@ -779,24 +780,24 @@ public class CmsObject extends Object {
      *
      * @throws CmsException if operation was not successful.
      */
-    public CmsPropertydefinition createPropertydefinition(String name, String resourcetype) throws CmsException {
+    public CmsPropertydefinition createPropertydefinition(String name, int resourcetype) throws CmsException {
         return (m_driverManager.createPropertydefinition(m_context, name, resourcetype));
     }
 
-    public CmsResource createResource(String newResourceName, String type, Map properties, byte[] contents, Object parameter) throws CmsException {
+    public CmsResource createResource(String newResourceName, int type, Map properties, byte[] contents, Object parameter) throws CmsException {
         I_CmsResourceType rt = getResourceType(type);
         return rt.createResource(this, newResourceName, properties, contents, parameter);
     }
 
-    public CmsResource createResource(String folder, String name, String type) throws CmsException {
+    public CmsResource createResource(String folder, String name, int type) throws CmsException {
         return this.createResource(folder + name, type, new HashMap(), new byte[0], null);
     }
 
-    public CmsResource createResource(String folder, String name, String type, Map properties) throws CmsException {
+    public CmsResource createResource(String folder, String name, int type, Map properties) throws CmsException {
         return this.createResource(folder + name, type, properties, new byte[0], null);
     }
 
-    public CmsResource createResource(String folder, String name, String type, Map properties, byte[] contents) throws CmsException {
+    public CmsResource createResource(String folder, String name, int type, Map properties, byte[] contents) throws CmsException {
         return this.createResource(folder + name, type, properties, contents, null);
     }
 
@@ -997,7 +998,7 @@ public class CmsObject extends Object {
      *
      * @throws CmsException if operation was not successful.
      */
-    public void deletePropertydefinition(String name, String resourcetype) throws CmsException {
+    public void deletePropertydefinition(String name, int resourcetype) throws CmsException {
         m_driverManager.deletePropertydefinition(m_context, name, resourcetype);
     }
 
@@ -1360,7 +1361,7 @@ public class CmsObject extends Object {
         m_driverManager.renameResource(m_context, addSiteRoot(oldname), newname);
     }
 
-    protected CmsResource doReplaceResource(String resName, byte[] newResContent, String newResType, Map newResProps) throws CmsException {
+    protected CmsResource doReplaceResource(String resName, byte[] newResContent, int newResType, Map newResProps) throws CmsException {
         CmsResource res = null;
 
         res = m_driverManager.replaceResource(m_context, addSiteRoot(resName), newResType, newResProps, newResContent);
@@ -3731,7 +3732,7 @@ public class CmsObject extends Object {
      *
      * @throws CmsException if operation was not successful.
      */
-    public CmsPropertydefinition readPropertydefinition(String name, String resourcetype) throws CmsException {
+    public CmsPropertydefinition readPropertydefinition(String name, int resourcetype) throws CmsException {
         return (m_driverManager.readPropertydefinition(m_context, name, resourcetype));
     }
 
@@ -3989,9 +3990,9 @@ public class CmsObject extends Object {
      * 
      * @param filename the resource to replace
      * @param type the type of the new resource
-     * @param newContent the content of the new resource
+     * @param content the content of the new resource
      */
-    public void replaceResource(String resName, String newResType, Map newProps, byte[] newResContent) throws CmsException {
+    public void replaceResource(String resName, int type, Map properties, byte[] content) throws CmsException {
         // read the properties of the existing file
         Map resProps = null;
         try {
@@ -4001,12 +4002,12 @@ public class CmsObject extends Object {
         }
 
         // add the properties that might have been collected during a file-upload
-        if (newProps != null) {
-            resProps.putAll(newProps);
+        if (properties != null) {
+            resProps.putAll(properties);
         }
 
         I_CmsResourceType res = getResourceType(readFileHeader(resName, true).getType());
-        res.replaceResource(this, resName, resProps, newResContent, newResType);
+        res.replaceResource(this, resName, resProps, content, type);
 
         // clean-up the link management
         joinLinksToTargets(new CmsShellReport());
@@ -4465,8 +4466,7 @@ public class CmsObject extends Object {
      * @deprecated Do not use this method any longer because there is no type of propertydefinition
      */
     public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition definition) throws CmsException {
-        return readPropertydefinition(definition.getName(), getResourceType(definition.getType()).getResourceTypeName());
-        //return (m_driverManager.writePropertydefinition(m_context.currentUser(), m_context.currentProject(), definition));
+        return readPropertydefinition(definition.getName(), definition.getType());
     }
 
     /**

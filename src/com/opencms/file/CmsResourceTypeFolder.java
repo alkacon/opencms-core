@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/15 10:42:58 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/07/15 12:17:05 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -634,9 +634,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#replaceResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
+     * @see com.opencms.file.I_CmsResourceType#replaceResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], int)
      */
-    public void replaceResource(CmsObject cms, String resourceName, Map resourceProperties, byte[] resourceContent, String newResType) throws CmsException {
+    public void replaceResource(CmsObject cms, String resourceName, Map resourceProperties, byte[] resourceContent, int newResType) throws CmsException {
         // folders cannot be replaced yet...
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/07/15 12:17:04 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.40 $ $Date: 2003/07/15 12:17:04 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -245,16 +245,15 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 if(newValue != null) {
 
                     // try to add the property
-                    I_CmsResourceType type = cms.getResourceType(file.getType());
                     try {
-                        cms.createPropertydefinition(newValue, type.getResourceTypeName());
+                        cms.createPropertydefinition(newValue, file.getType());
                         template = "ownlocked";
                     }
                     catch(CmsException e) {
 
                         // todo: add an error message that this key is already exisitng
                         StringBuffer errmesg = new StringBuffer();
-                        errmesg.append(lang.getLanguageValue("error.reason.newprop1") + " '" + newValue + "' " + lang.getLanguageValue("error.reason.newprop2") + " '" + type.getResourceTypeName() + "' " + lang.getLanguageValue("error.reason.newprop3") + "\n\n");
+                        errmesg.append(lang.getLanguageValue("error.reason.newprop1") + " '" + newValue + "' " + lang.getLanguageValue("error.reason.newprop2") + " '" + file.getType() + "' " + lang.getLanguageValue("error.reason.newprop3") + "\n\n");
                         errmesg.append(Utils.getStackTrace(e));
                         xmlTemplateDocument.setData("NEWDETAILS", errmesg.toString());
                         template = "newerror";

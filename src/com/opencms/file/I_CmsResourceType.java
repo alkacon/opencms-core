@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/15 10:17:20 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/07/15 12:17:05 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -186,7 +186,7 @@ public interface I_CmsResourceType {
      * @throws CmsException if something goes wrong
      */
     // TODO: Allow null valued for properties / content / type
-    void replaceResource(CmsObject cms, String resourcename, Map properties, byte[] content, String type) throws CmsException;
+    void replaceResource(CmsObject cms, String resourcename, Map properties, byte[] content, int type) throws CmsException;
 
     /**
      * Undo all changes in the resource, restoring the online version.<p>

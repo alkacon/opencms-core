@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/15 10:42:59 $
-* Version: $Revision: 1.103 $
+* Date   : $Date: 2003/07/15 12:17:05 $
+* Version: $Revision: 1.104 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.103 $ $Date: 2003/07/15 10:42:59 $
+ * @version $Revision: 1.104 $ $Date: 2003/07/15 12:17:05 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -300,7 +300,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      *
      * @throws CmsException if something goes wrong
      */
-    private void createPropertydefinition(String name, String resourceType) throws CmsException {
+    private void createPropertydefinition(String name, int resourceType) throws CmsException {
         // does the propertydefinition exists already?
         try {
             m_cms.readPropertydefinition(name, resourceType);
@@ -771,10 +771,11 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     // clear all stores for property information
                     properties = (Map) new HashMap();
                     // add the module property to properties
+                    int resType = m_cms.getResourceTypeId(type);
                     if (propertyName != null && propertyValue != null && !"".equals(propertyName)) {
                         if (!types.contains(type)) {
                             types.addElement(type);
-                            createPropertydefinition(propertyName, type);
+                            createPropertydefinition(propertyName, resType);
                         }
                         properties.put(propertyName, propertyValue);
                     }
@@ -793,7 +794,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                             }
                             // add property
                             properties.put(name, value);
-                            createPropertydefinition(name, type);
+                            createPropertydefinition(name, resType);
                         }
                     }
     

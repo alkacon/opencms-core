@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2003/07/15 10:42:59 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/07/15 12:17:05 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.14 $ $Date: 2003/07/15 10:42:59 $
+ * @version $Revision: 1.15 $ $Date: 2003/07/15 12:17:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -135,7 +135,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
 
                     // get the path from the workplace.ini
                     String superfolder = getConfigFile(cms).getHtmlGalleryPath();
-                    CmsResource folder = cms.createResource(superfolder, galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME);
+                    CmsResource folder = cms.createResource(superfolder, galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     if(title != null) {
                         cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                     }
@@ -203,7 +203,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
 					// create the new file
 					Hashtable prop = new Hashtable();
 					prop.put(C_PROPERTY_TITLE, pagetitle);
-					cms.createResource(foldername,	filename, type,	prop, new byte[0]);
+					cms.createResource(foldername, filename, cms.getResourceTypeId(type), prop, new byte[0]);
 				}
 			}
 		}

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/07/15 10:42:59 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/07/15 12:17:04 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.42 $ $Date: 2003/07/15 10:42:59 $
+ * @version $Revision: 1.43 $ $Date: 2003/07/15 12:17:04 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
     
@@ -259,7 +259,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                 if(step.equals("2")) {
 
                     // get the selected resource and check if it is an image
-                    I_CmsResourceType type = cms.getResourceType(newtype);
+                    int type = cms.getResourceTypeId(newtype);
                     if(newtype.equals(CmsResourceTypeImage.C_RESOURCE_TYPE_NAME)) {
                         // check if the resource already exists to get its title
                         try {
@@ -284,12 +284,12 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
 
                         // create the new file.
                         try {
-                            cms.createResource(currentFolder + filename, type.getResourceTypeName(), new Hashtable(), filecontent, null);
+                            cms.createResource(currentFolder + filename, type, new Hashtable(), filecontent, null);
                         }
                         catch (CmsException e) {
                             if (replaceResource) {
                                 cms.lockResource(currentFolder + filename, true);
-                                cms.replaceResource(currentFolder + filename, type.getResourceTypeName(), null, filecontent);
+                                cms.replaceResource(currentFolder + filename, type, null, filecontent);
                                 //cms.unlockResource( currentFolder + filename );
                                 session.putValue(CmsNewResourceUpload.C_PARAM_OVERWRITE, "no");
                             }
@@ -337,7 +337,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                         // create the new file.
 
                         // todo: error handling if file already exits
-                        I_CmsResourceType type = cms.getResourceType(newtype);
+                        int type = cms.getResourceTypeId(newtype);
                         Hashtable prop = new Hashtable();
                         // check if a file title was given
                         if (title != null) {
@@ -345,12 +345,12 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                         }
 
                         try {
-                            cms.createResource(currentFolder + filename, type.getResourceTypeName(), prop, filecontent, null);
+                            cms.createResource(currentFolder + filename, type, prop, filecontent, null);
                         }
                         catch (CmsException e) {
                             if (replaceResource) {
                                 cms.lockResource(currentFolder + filename, true);
-                                cms.replaceResource(currentFolder + filename, type.getResourceTypeName(), prop, filecontent);
+                                cms.replaceResource(currentFolder + filename, type, prop, filecontent);
                                 //cms.unlockResource( currentFolder + filename );
                                 session.putValue(CmsNewResourceUpload.C_PARAM_OVERWRITE, "no");
                             }

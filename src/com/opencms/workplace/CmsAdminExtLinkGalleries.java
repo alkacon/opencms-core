@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2003/07/15 10:42:59 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/07/15 12:17:05 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.file.CmsLinkCheck;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
+import com.opencms.file.CmsResourceTypeLink;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -46,7 +47,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.14 $ $Date: 2003/07/15 10:42:59 $
+ * @version $Revision: 1.15 $ $Date: 2003/07/15 12:17:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -139,7 +140,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                 try {
 
                     // create the folder
-                    CmsResource folder = cms.createResource(C_VFS_GALLERY_EXTERNALLINKS, galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME);
+                    CmsResource folder = cms.createResource(C_VFS_GALLERY_EXTERNALLINKS, galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     if(title != null) {
                         cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                     }
@@ -231,7 +232,6 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                         }
                         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
                         String firstTitlePart = lang.getLanguageValue("explorer.linkto") + " " + link;
-                        String type = "link";
                         // create the new file
                         Hashtable prop = new Hashtable();
                         prop.put(C_PROPERTY_TITLE, firstTitlePart);
@@ -240,7 +240,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                                 checkurl = CmsLinkCheck.checkUrl(link);
                             }
                             if(checkurl){
-                                cms.createResource(foldername, filename, type, prop, link.getBytes());
+                                cms.createResource(foldername, filename, CmsResourceTypeLink.C_RESOURCE_TYPE_ID, prop, link.getBytes());
                             }
                         } catch (CmsException e){
                             error = e.getShortException();

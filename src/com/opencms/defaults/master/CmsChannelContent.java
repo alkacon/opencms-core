@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/07/15 10:42:59 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/07/15 12:17:05 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,8 +55,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.37 $
- * $Date: 2003/07/15 10:42:59 $
+ * $Revision: 1.38 $
+ * $Date: 2003/07/15 12:17:05 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -349,7 +349,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
                 // this is a new row - call the create statement
                 // first set the new channelId
                 setNewChannelId();
-                newChannel = cms.createResource(m_parentchannel, m_channelname, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME, m_properties);
+                newChannel = cms.createResource(m_parentchannel, m_channelname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, m_properties);
                 cms.lockResource(cms.readAbsolutePath(newChannel), true);
             } else {
                 if (!"".equals(m_channel.getResourceName())) {

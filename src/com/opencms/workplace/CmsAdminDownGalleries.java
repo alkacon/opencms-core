@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2003/07/15 10:42:59 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/07/15 12:17:05 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.33 $ $Date: 2003/07/15 10:42:59 $
+ * @version $Revision: 1.34 $ $Date: 2003/07/15 12:17:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -162,7 +162,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
 
                 // get the path from the workplace.ini
                 String superfolder = getConfigFile(cms).getDownGalleryPath();
-                CmsFolder folder = (CmsFolder)cms.createResource(superfolder, galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME);
+                CmsFolder folder = (CmsFolder)cms.createResource(superfolder, galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                 cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                 // TODO: check how to set the appropriate access using acl 
                 /*
@@ -298,7 +298,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                 // todo: error handling if file already exits
 
                                 try{
-                                    cms.createResource(foldername, filename, type.getResourceTypeName(), new Hashtable(), filecontent);
+                                    cms.createResource(foldername, filename, type.getResourceType(), new Hashtable(), filecontent);
                                 }catch(CmsException e){
                                     // remove the values form the session
                                     session.removeValue(C_PARA_FILE);
@@ -349,8 +349,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                 if(title != null) {
                                     prop.put(C_PROPERTY_TITLE, title);
                                 }
-                                cms.createResource(foldername, filename,
-                                    type.getResourceTypeName(), prop, filecontent);
+                                cms.createResource(foldername, filename, type.getResourceType(), prop, filecontent);
 
                                 // remove the values form the session
                                 session.removeValue(C_PARA_FILE);

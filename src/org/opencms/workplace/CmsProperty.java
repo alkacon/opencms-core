@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/15 12:17:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -388,10 +388,9 @@ public class CmsProperty extends CmsDialog {
      */
     private boolean performDefineOperation() throws CmsException {
         CmsResource res = (CmsResource)getCms().readFileHeader(getParamFile());
-        I_CmsResourceType type = getCms().getResourceType(res.getType());
         String newProperty = getParamNewproperty();
         if (newProperty != null && !"".equals(newProperty.trim())) {
-            getCms().createPropertydefinition(newProperty, type.getResourceTypeName());
+            getCms().createPropertydefinition(newProperty, res.getType());
             return true;
         } else {
             throw new CmsException("You entered an invalid property name", CmsException.C_BAD_NAME); 

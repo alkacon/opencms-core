@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2003/07/15 10:42:59 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/07/15 12:17:05 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.46 $ $Date: 2003/07/15 10:42:59 $
+ * @version $Revision: 1.47 $ $Date: 2003/07/15 12:17:05 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -163,12 +163,13 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                 }else{
                     try {
                         // create the folder
-                        CmsFolder folder = (CmsFolder)cms.createResource(currentFilelist, newFolder, "folder");
+                        CmsFolder folder = (CmsFolder)cms.createResource(currentFilelist, newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                         //cms.lockResource(cms.readPath(folder));
                         cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                         // create the folder in content bodys
+                        // TODO: We don't need this anymore
                         try{
-                            CmsFolder bodyFolder = (CmsFolder)cms.createResource(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1)+currentFilelist, newFolder, "folder");
+                            CmsFolder bodyFolder = (CmsFolder)cms.createResource(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1)+currentFilelist, newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                             //cms.lockResource(cms.readPath(bodyFolder));
                             cms.writeProperty(cms.readAbsolutePath(bodyFolder), C_PROPERTY_TITLE, title);
                         } catch (CmsException ce){
@@ -228,7 +229,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                             return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
                         }
                         // create the folder
-                        CmsFolder folder = (CmsFolder)cms.createResource(currentFilelist, newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME);
+                        CmsFolder folder = (CmsFolder)cms.createResource(currentFilelist, newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                         try{
                             cms.lockResource(cms.readAbsolutePath(folder));
                         }catch(CmsException e){
@@ -237,7 +238,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                         cms.writeProperties(cms.readAbsolutePath(folder), allProperties);
                         // create the folder in content bodys
                         try{
-                            CmsFolder bodyFolder = (CmsFolder)cms.createResource(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1)+currentFilelist, newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME);
+                            CmsFolder bodyFolder = (CmsFolder)cms.createResource(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1)+currentFilelist, newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                             cms.lockResource(cms.readAbsolutePath(bodyFolder));
                             cms.writeProperty(cms.readAbsolutePath(bodyFolder), C_PROPERTY_TITLE, title);
                         } catch (CmsException ce){

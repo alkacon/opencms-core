@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/15 10:42:59 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/07/15 12:17:05 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.29 $ $Date: 2003/07/15 10:42:59 $
+ * @version $Revision: 1.30 $ $Date: 2003/07/15 12:17:05 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -3582,7 +3582,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#replaceResource(com.opencms.file.CmsUser, com.opencms.file.CmsProject, com.opencms.file.CmsResource, java.util.Map, byte[])
      */
-    public CmsResource replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] resContent, I_CmsResourceType newResType) throws CmsException {
+    public CmsResource replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] resContent, int newResType) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;   
         long dateModified = res.isTouched() ? res.getDateLastModified() : System.currentTimeMillis();
@@ -3599,7 +3599,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             // update the resource and structure
             conn = m_sqlManager.getConnection(currentProject);
             stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCE_REPLACE"); 
-            stmt.setInt(1, newResType.getResourceType());
+            stmt.setInt(1, newResType);
             stmt.setTimestamp(2, new Timestamp(dateModified));
 			stmt.setString(3, currentUser.getId().toString());
 			stmt.setInt(4,state);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/14 11:05:23 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/15 12:17:05 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2003/07/14 11:05:23 $
+ * @version $Revision: 1.11 $ $Date: 2003/07/15 12:17:05 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -390,7 +390,7 @@ public interface I_CmsVfsDriver {
      * @return CmsResource the resource with replaced content and properties
      * @throws CmsException if something goes wrong
      */
-    CmsResource replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] newResContent, I_CmsResourceType newResType) throws CmsException;
+    CmsResource replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] newResContent, int newResType) throws CmsException;
     
     /**
      * Gets all sub folders or sub files in a given parent folder.<p>

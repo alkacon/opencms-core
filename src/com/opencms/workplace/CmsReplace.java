@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2003/06/13 15:13:13 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/15 12:17:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Vector;
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public final class CmsReplace extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
 
@@ -90,7 +90,7 @@ public final class CmsReplace extends CmsWorkplaceDefault implements I_CmsConsta
 		else if ("2".equals(m_NextStep)) {
 			// the type of the new resource was selected, so replace the old with the new resource
 			//cms.lockResource(m_OldResourceName, true);
-			cms.replaceResource(m_OldResourceName, m_UploadResourceType, null, m_UploadResourceContent);
+			cms.replaceResource(m_OldResourceName, cms.getResourceTypeId(m_UploadResourceType), null, m_UploadResourceContent);
 			//cms.unlockResource( m_OldResourceName ); 
             
             // leave the session clean
@@ -116,7 +116,6 @@ public final class CmsReplace extends CmsWorkplaceDefault implements I_CmsConsta
 		m_OldResourceName = null;
 		m_OldResourceType = null;
 		m_UploadResourceName = null;
-		m_UploadResourceType = null;
 		m_UploadResourceContent = null;
 		m_UploadResourceType = null;
 		m_NextStep = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeLink.java,v $
- * Date   : $Date: 2003/07/14 20:12:41 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/15 12:17:05 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * All resource types are created by the factory getResourceType() in CmsObject.
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsResourceTypeLink extends A_CmsResourceType {
 
@@ -132,7 +132,7 @@ public class CmsResourceTypeLink extends A_CmsResourceType {
                     // add the property definition if the property is not yet defined for links
                     if (DEBUG > 0)
                         System.out.println("adding property definition " + currentProperty + " for resource type " + getResourceTypeName());
-                    cms.createPropertydefinition(currentProperty, getResourceTypeName());
+                    cms.createPropertydefinition(currentProperty, getResourceType());
                 }
 
                 // write the target property on the link

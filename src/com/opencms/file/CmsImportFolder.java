@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2003/07/15 10:42:58 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/07/15 12:17:05 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.zip.ZipInputStream;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.23 $ $Date: 2003/07/15 10:42:58 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/15 12:17:05 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -224,11 +224,11 @@ public class CmsImportFolder implements I_CmsConstants {
 
             if(currentFile.isDirectory()) {
                 // create directory in cms
-                m_cms.createResource(importPath, currentFile.getName(), CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME);
+                m_cms.createResource(importPath, currentFile.getName(), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                 importResources(currentFile, importPath + currentFile.getName() + "/");
             } else {
                 // import file into cms
-                String type = getFileType( currentFile.getName() );
+                int type = m_cms.getResourceTypeId(getFileType(currentFile.getName()));
                 byte[] content = getFileBytes(currentFile);
                 // create the file
                 m_cms.createResource(importPath, currentFile.getName(), type, null, content);
@@ -288,7 +288,7 @@ public class CmsImportFolder implements I_CmsConstants {
             // now write the folders ...
             for(r=0; r < stop; r++) {
                 try {
-                    m_cms.createResource(actImportPath, path[r], CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME);
+                    m_cms.createResource(actImportPath, path[r], CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                 } catch(CmsException e) {
                     // of course some folders did already exist!
                 }
@@ -296,7 +296,7 @@ public class CmsImportFolder implements I_CmsConstants {
             }
             if(isFolder == false) {
                 // import file into cms
-                String type = getFileType( path[path.length-1] );
+                int type = m_cms.getResourceTypeId(getFileType(path[path.length-1]));
 
                 size = new Long(entry.getSize()).intValue();
                 if(size == -1) {

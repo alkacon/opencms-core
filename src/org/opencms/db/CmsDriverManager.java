@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/15 10:42:59 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2003/07/15 12:17:05 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.45 $ $Date: 2003/07/15 10:42:59 $
+ * @version $Revision: 1.46 $ $Date: 2003/07/15 12:17:05 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1670,7 +1670,7 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsPropertydefinition createPropertydefinition(CmsRequestContext context, String name, String resourcetype) throws CmsException {
+    public CmsPropertydefinition createPropertydefinition(CmsRequestContext context, String name, int resourcetype) throws CmsException {
         // check the security
         if (isAdmin(context)) {
             // no space before or after the name
@@ -1678,7 +1678,7 @@ public class CmsDriverManager extends Object {
             // check the name
             validFilename(name);
             m_propertyDefVectorCache.clear();
-            return (m_vfsDriver.createPropertydefinition(name, context.currentProject().getId(), getResourceType(context, resourcetype).getResourceType()));
+            return (m_vfsDriver.createPropertydefinition(name, context.currentProject().getId(), resourcetype));
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
         }
@@ -2240,7 +2240,7 @@ public class CmsDriverManager extends Object {
 
         // read the metadefinition
         I_CmsResourceType resType = getResourceType(context, res.getType());
-        CmsPropertydefinition metadef = readPropertydefinition(context, property, resType.getResourceTypeName());
+        CmsPropertydefinition metadef = readPropertydefinition(context, property, resType.getResourceType());
 
         if ((metadef != null)) {
             m_vfsDriver.deleteProperty(property, context.currentProject().getId(), res, res.getType());
@@ -2280,7 +2280,7 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public void deletePropertydefinition(CmsRequestContext context, String name, String resourcetype) throws CmsException {
+    public void deletePropertydefinition(CmsRequestContext context, String name, int resourcetype) throws CmsException {
         // check the security
         if (isAdmin(context)) {
             // first read and then delete the metadefinition.
@@ -6617,15 +6617,13 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsPropertydefinition readPropertydefinition(CmsRequestContext context, String name, String resourcetype) throws CmsException {
-
-        I_CmsResourceType resType = getResourceType(context, resourcetype);
+    public CmsPropertydefinition readPropertydefinition(CmsRequestContext context, String name, int resourcetype) throws CmsException {
         CmsPropertydefinition returnValue = null;
-        returnValue = (CmsPropertydefinition) m_propertyDefCache.get(name + resType.getResourceType());
+        returnValue = (CmsPropertydefinition) m_propertyDefCache.get(name + resourcetype);
 
         if (returnValue == null) {
-            returnValue = m_vfsDriver.readPropertydefinition(name, context.currentProject().getId(), resType);
-            m_propertyDefCache.put(name + resType.getResourceType(), returnValue);
+            returnValue = m_vfsDriver.readPropertydefinition(name, context.currentProject().getId(), resourcetype);
+            m_propertyDefCache.put(name + resourcetype, returnValue);
         }
         return returnValue;
     }
@@ -7135,7 +7133,7 @@ public class CmsDriverManager extends Object {
      * @return CmsResource the resource with replaced content and properties
      * @throws CmsException if something goes wrong
      */
-    public CmsResource replaceResource(CmsRequestContext context, String resName, String newResType, Map newResProps, byte[] newResContent) throws CmsException {
+    public CmsResource replaceResource(CmsRequestContext context, String resName, int newResType, Map newResProps, byte[] newResContent) throws CmsException {
         CmsResource resource = null;
 
         // read the existing resource
@@ -7145,7 +7143,7 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
         // replace the resource
-        m_vfsDriver.replaceResource(context.currentUser(), context.currentProject(), resource, newResContent, getResourceType(context, newResType));
+        m_vfsDriver.replaceResource(context.currentUser(), context.currentProject(), resource, newResContent, newResType);
 
         // write the properties
         m_vfsDriver.writeProperties(newResProps, context.currentProject().getId(), resource, resource.getType());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/07/15 10:17:20 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2003/07/15 12:17:05 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.62 $ $Date: 2003/07/15 10:17:20 $
+ * @version $Revision: 1.63 $ $Date: 2003/07/15 12:17:05 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -709,11 +709,10 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * @throws CmsException if something goes wrong
      */
     private void writeXmlEntrys(CmsResource resource) throws CmsException {
-        String source, type, /*user, group, access,*/ launcherStartClass, lastModified;
+        String source, launcherStartClass, lastModified;
 
         // get all needed informations from the resource
         source = getSourceFilename(m_cms.readAbsolutePath(resource));
-        type = m_cms.getResourceType(resource.getType()).getResourceTypeName();
         // TODO: fix this later
         // user = m_cms.readOwner(resource).getName();
         // group = m_cms.readGroup(resource).getName();
@@ -736,7 +735,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
             m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
         addElement(m_docXml, file, C_EXPORT_TAG_DESTINATION, source);
-        addElement(m_docXml, file, C_EXPORT_TAG_TYPE, type);
+        addElement(m_docXml, file, C_EXPORT_TAG_TYPE, m_cms.getResourceType(resource.getType()).getResourceTypeName());
         // addElement(m_docXml, file, C_EXPORT_TAG_USER, user);
         // addElement(m_docXml, file, C_EXPORT_TAG_GROUP, group);
         // addElement(m_docXml, file, C_EXPORT_TAG_ACCESS, access);
@@ -765,7 +764,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
                 properties.appendChild(property);
     
                 String value = (String)fileProperties.get(key);
-                String propertyType = m_cms.readPropertydefinition(key, type).getType() + "";
+                String propertyType = m_cms.readPropertydefinition(key, resource.getType()).getType() + "";
     
                 addElement(m_docXml, property, C_EXPORT_TAG_NAME, key);
                 addElement(m_docXml, property, C_EXPORT_TAG_TYPE, propertyType);

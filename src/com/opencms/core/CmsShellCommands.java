@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/15 10:42:58 $
-* Version: $Revision: 1.91 $
+* Date   : $Date: 2003/07/15 12:17:04 $
+* Version: $Revision: 1.92 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.91 $ $Date: 2003/07/15 10:42:58 $
+ * @version $Revision: 1.92 $ $Date: 2003/07/15 12:17:04 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -419,7 +419,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void createFolder(String folder, String newFolderName) {
         try {
-            System.out.println((CmsFolder)m_cms.createResource(folder, newFolderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME));
+            System.out.println((CmsFolder)m_cms.createResource(folder, newFolderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID));
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -533,7 +533,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void createPropertydefinition(String name, String resourcetype) throws CmsException {
         try {
-            System.out.println(m_cms.createPropertydefinition(name, resourcetype));
+            System.out.println(m_cms.createPropertydefinition(name, m_cms.getResourceTypeId(resourcetype)));
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -727,7 +727,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void deletepropertydefinition(String name, String resourcetype) {
         try {
-            m_cms.deletePropertydefinition(name, resourcetype);
+            m_cms.deletePropertydefinition(name, m_cms.getResourceTypeId(resourcetype));
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -1335,24 +1335,10 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void getResourcesWithProperty(String propertyDefinition, String propertyValue, String resourceType) {
         try {
-            int resTypeId = m_cms.getResourceType(resourceType).getResourceType();
-            Vector resources = m_cms.getResourcesWithProperty(propertyDefinition, propertyValue, resTypeId);
+            Vector resources = m_cms.getResourcesWithProperty(propertyDefinition, propertyValue, m_cms.getResourceTypeId(resourceType));
             for(int i = 0;i < resources.size();i++) {
                 System.out.println((CmsResource)resources.elementAt(i));
             }
-        } catch(Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-    
-    /**
-     * Returns a CmsResourceTypes.
-     *
-     * @param resourceType the name of the resource to get.
-     */
-    public void getResourceType(String resourceType) {
-        try {
-            System.out.println(m_cms.getResourceType(resourceType));
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -2395,7 +2381,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void readPropertydefinition(String name, String resourcetype) {
         try {
-            System.out.println(m_cms.readPropertydefinition(name, resourcetype));
+            System.out.println(m_cms.readPropertydefinition(name, m_cms.getResourceTypeId(resourcetype)));
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -3002,7 +2988,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void uploadFile(String lokalfile, String folder, String filename, String type) {
         try {
-            System.out.println((CmsFile)m_cms.createResource(folder, filename, type, null, importFile(lokalfile)));
+            System.out.println((CmsFile)m_cms.createResource(folder, filename, m_cms.getResourceTypeId(type), null, importFile(lokalfile)));
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }

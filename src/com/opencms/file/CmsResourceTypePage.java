@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/15 10:42:59 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2003/07/15 12:17:05 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.71 $
+ * @version $Revision: 1.72 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -427,9 +427,9 @@ public class CmsResourceTypePage implements I_CmsResourceType {
     }    
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#replaceResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
+     * @see com.opencms.file.I_CmsResourceType#replaceResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], int)
      */
-    public void replaceResource(CmsObject cms, String resourcename, Map resourceProperties, byte[] resourceContent, String newResType) throws CmsException {
+    public void replaceResource(CmsObject cms, String resourcename, Map resourceProperties, byte[] resourceContent, int newResType) throws CmsException {
         // page files cannot be replaced yet...
     }    
 

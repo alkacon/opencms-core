@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2003/07/15 07:10:27 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/07/15 12:17:05 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.42 $ $Date: 2003/07/15 07:10:27 $
+ * @version $Revision: 1.43 $ $Date: 2003/07/15 12:17:05 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher {
 
@@ -93,8 +93,13 @@ public class CmsDumpLauncher extends A_CmsLauncher {
         String uri = cms.getRequestContext().getUri();
         CmsUri cmsUri = null;
 
-        String templateClass = startTemplateClass;
-        if((templateClass == null) || ("".equals(templateClass)) || ("org.opencms.loader.CmsDumpLoader".equals(startTemplateClass)) || (I_CmsConstants.C_UNKNOWN_LAUNCHER.equals(startTemplateClass))) {
+        String templateClass;
+        // this is an ugly hack, but it is actually more efficient then the previous stuff
+        // this can be removed once the XML workplace is deprecated
+        if (file.getResourceName().equals("explorer_files.html")) {
+            // TODO: Improve deprecated handling of launcher class names for resource types
+            templateClass = "com.opencms.workplace.CmsNewExplorerFileList";
+        } else {
             templateClass = "com.opencms.template.CmsDumpTemplate";
         }
 
@@ -107,10 +112,7 @@ public class CmsDumpLauncher extends A_CmsLauncher {
             cmsUri = uriLoc.get(uriDesc);
 
             if(cmsUri == null) {
-                // hammer nich
                 CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, cms.readAbsolutePath(file));
-//				TODO: fix this later - check how to do this without getReadingpermittedGroup
-//				String readAccessGroup = CmsObject.C_GROUP_ADMIN;
 				String readAccessGroup = cms.getReadingpermittedGroup(cms.getRequestContext().currentProject().getId(), cms.readAbsolutePath(file));
                 cmsUri = new CmsUri(elemDesc, readAccessGroup, (CmsElementDefinitionCollection)null,
                         Utils.isHttpsResource(cms, file));

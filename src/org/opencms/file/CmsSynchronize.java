@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/15 10:42:59 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/15 12:17:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/07/15 10:42:59 $
+ * @version $Revision: 1.8 $ $Date: 2003/07/15 12:17:05 $
  */
 public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
@@ -296,7 +296,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         } catch (CmsException e) {
             // the folder could not be read, so create it
             // extract the foldername
-            CmsResource newFolder = m_cms.createResource(translate(folder), CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME, new HashMap(), new byte[0], null);
+            CmsResource newFolder = m_cms.createResource(translate(folder), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, new HashMap(), new byte[0], null);
             // now check if there is some external method to be called which 
             // should modify the imported resource in the VFS
             Iterator i = m_checkFile.iterator();
@@ -433,7 +433,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             String type = getFileType(resName);
             // create the file
             String filename = translate(fsFile.getName());
-            CmsFile newFile = (CmsFile)m_cms.createResource(translate(folder), filename, type, null, content);
+            CmsFile newFile = (CmsFile)m_cms.createResource(translate(folder), filename, m_cms.getResourceTypeId(type), null, content);
             // now check if there is some external method to be called which
             // should modify the imported resource in the VFS
             Iterator i = m_checkFile.iterator();
