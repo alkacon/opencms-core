@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChflags.java,v $
- * Date   : $Date: 2004/11/29 15:49:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/29 16:02:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import junit.framework.TestSuite;
  * Unit test for the "chflags" method of the CmsObject.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0 alpha 2
  */
 public class TestChflags extends OpenCmsTestCase {
@@ -71,7 +71,7 @@ public class TestChflags extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestChflags.class.getName());
 
-        suite.addTest(new TestChflags("testChangeFlagInternal"));
+        suite.addTest(new TestChflags("testAddFlagInternal"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -94,12 +94,12 @@ public class TestChflags extends OpenCmsTestCase {
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testChangeFlagInternal() throws Throwable {
+    public void testAddFlagInternal() throws Throwable {
 
         CmsObject cms = getCmsObject();
 
         echo("Tests setting the \"internal\" flag on a resource");
-        changeFlagInternal(this, cms);
+        addFlagInternal(this, cms);
     }
 
     /**
@@ -109,7 +109,7 @@ public class TestChflags extends OpenCmsTestCase {
      * @param cms the CmsObject
      * @throws Throwable if something goes wrong
      */
-    public static void changeFlagInternal(OpenCmsTestCase tc, CmsObject cms) throws Throwable {
+    public static void addFlagInternal(OpenCmsTestCase tc, CmsObject cms) throws Throwable {
 
         String resource1 = "/index.html";
 
@@ -126,6 +126,8 @@ public class TestChflags extends OpenCmsTestCase {
         // add the "internal" flag
         if ((flags & I_CmsConstants.C_ACCESS_INTERNAL_READ) == 0) {
             flags += I_CmsConstants.C_ACCESS_INTERNAL_READ;
+        } else {
+            fail("Resource " + resource1 + " has the \"internal\" flag already set!");
         }
 
         // change the flag
