@@ -11,6 +11,33 @@
 <PROCESS>TEMPLATE_END</PROCESS>
 </template>
 
+<!-- channel backoffice template remove it if not used -->
+<template name="Channels">
+<PROCESS>TEMPLATE_START</PROCESS>
+<![CDATA[ 
+<table cellpadding="3" cellspacing="2" border="0" align="center">
+<tr>
+    <td class="formular" >verfügbare Channels</td><td></td><td class="formular" >ausgewählte Channels</td>
+</tr>
+<tr>
+    <td>
+        ]]><SELECT class="textfeld" name="channelAvailable" size="20" width="400" method="getAvailableChannels" onchange=""/><![CDATA[</td>
+    </td>
+    <td>
+        <input value="  >>  " type=button onclick="javascript:moveChannel(document.Editor.channelSelected,document.Editor.channelAvailable);copySelection();"><br>
+        <input value="  <<  " type=button onclick="javascript:moveChannel(document.Editor.channelAvailable,document.Editor.channelSelected);copySelection();"><br>
+    </td>
+    <td>
+        ]]><SELECT class="textfeld" name="channelSelected" size="20" width="400" method="getSelectedChannels" onchange=""/><![CDATA[</td>
+    </td>
+</tr>
+<input type=hidden name="availablechannels">
+<input type=hidden name="selectedchannels">
+</table>
+]]>
+<PROCESS>TEMPLATE_END</PROCESS>
+</template>
+
 <!-- Templateselectors needed for abstract backoffice. DO NOT MODIFY! -->
 
 <TEMPLATE>
@@ -58,6 +85,7 @@
 		  }
 	  }	 	  
 	 </script>
+	 <script LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_channelbackoffice.js"></script>	 
    	 <script LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js""></script>
 </head>
 ]]>
