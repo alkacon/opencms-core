@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/04/24 07:16:12 $
-* Version: $Revision: 1.229 $
+* Date   : $Date: 2002/04/30 09:32:13 $
+* Version: $Revision: 1.230 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.229 $ $Date: 2002/04/24 07:16:12 $
+ * @version $Revision: 1.230 $ $Date: 2002/04/30 09:32:13 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -3871,5 +3871,50 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      */
     public Vector readResourcesLikeName(String resourcename) throws CmsException {
         return m_rb.readResourcesLikeName(m_context.currentUser(), m_context.currentProject(), resourcename);
+    }
+
+    /**
+     * Reads all files from the Cms, that are of the given type.<BR/>
+     *
+     * @param projectId A project id for reading online or offline resources
+     * @param resourcetype The type of the files.
+     *
+     * @return A Vector of files.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+    public Vector readFilesByType(int projectId, int resourcetype) throws CmsException {
+        return m_rb.readFilesByType(m_context.currentUser(), m_context.currentProject(), projectId, resourcetype);
+    }
+
+    /**
+     * Writes the Linkchecktable.
+     *
+     * <B>Security:</B>
+     * Only a administrator can do this<BR/>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param linkchecktable The hashtable that contains the links that were not reachable
+     *
+     * @return the linkchecktable.
+     */
+    public void writeLinkCheckTable(Hashtable linkchecktable) throws CmsException {
+        m_rb.writeLinkCheckTable(m_context.currentUser(), m_context.currentProject(), linkchecktable);
+    }
+
+    /**
+     * Gets the Linkchecktable.
+     *
+     * <B>Security:</B>
+     * All users are garnted<BR/>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     *
+     * @return the linkchecktable.
+     */
+    public Hashtable readLinkCheckTable() throws CmsException {
+        return m_rb.readLinkCheckTable(m_context.currentUser(), m_context.currentProject());
     }
 }

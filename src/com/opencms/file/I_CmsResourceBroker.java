@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/04/24 07:16:34 $
-* Version: $Revision: 1.174 $
+* Date   : $Date: 2002/04/30 09:31:33 $
+* Version: $Revision: 1.175 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.174 $ $Date: 2002/04/24 07:16:34 $
+ * @version $Revision: 1.175 $ $Date: 2002/04/30 09:31:33 $
  *
  */
 
@@ -3601,4 +3601,45 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
     public Vector readResourcesLikeName(CmsUser currentUser, CmsProject currentProject, String resourcename) throws CmsException;
+
+    /**
+     * Reads all files from the Cms, that are of the given type.<BR/>
+     *
+     * @param projectId A project id for reading online or offline resources
+     * @param resourcetype The type of the files.
+     *
+     * @return A Vector of files.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+    public Vector readFilesByType(CmsUser currentUser, CmsProject currentProject, int projectId, int resourcetype) throws CmsException;
+
+    /**
+     * Writes the Linkchecktable.
+     *
+     * <B>Security:</B>
+     * Only a administrator can do this<BR/>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param linkchecktable The hashtable that contains the links that were not reachable
+     *
+     * @return the linkchecktable.
+     */
+    public void writeLinkCheckTable(CmsUser currentUser, CmsProject currentProject, Hashtable linkchecktable)
+        throws CmsException;
+
+    /**
+     * Gets the Linkchecktable.
+     *
+     * <B>Security:</B>
+     * All users are garnted<BR/>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     *
+     * @return the linkchecktable.
+     */
+    public Hashtable readLinkCheckTable(CmsUser currentUser, CmsProject currentProject)
+        throws CmsException;
 }
