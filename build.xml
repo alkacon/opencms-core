@@ -25,7 +25,7 @@
     <property name="build.inputlib.servlet"     value="${build.inputlib}/servlet.jar"/>
     <property name="build.inputlib.activation"  value="${build.inputlib}/activation.jar"/>
     <property name="build.inputlib.mail"        value="${build.inputlib}/mail.jar"/>
-    <property name="build.inputlib.xerces"      value="${build.inputlib}/xerces.jar"/>
+    <property name="build.inputlib.xerces"      value="${build.inputlib}/xerces-1_4_4.jar"/>
     <property name="build.inputlib.mysql"       value="${build.inputlib}/mm.mysql-2.0.4-bin.jar"/>
     <property name="build.inputlib.fesi"        value="${build.inputlib}/fesi.jar"/>            
     <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>
