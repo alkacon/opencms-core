@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/03/07 15:16:36 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/03/07 15:17:20 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourceLoader {
@@ -173,7 +173,6 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
         I_CmsRequest cms_req = cms.getRequestContext().getRequest();        
         HttpServletRequest originalreq = (HttpServletRequest)cms_req.getOriginalRequest();
         try {                        
-            System.err.println("service() loading subelement");
             // get the CmsRequest
             byte[] result = null;
             com.opencms.file.CmsFile fx = req.getCmsObject().readFile(file.getAbsolutePath());            

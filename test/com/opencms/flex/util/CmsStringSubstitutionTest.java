@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/flex/util/Attic/CmsStringSubstitutionTest.java,v $
- * Date   : $Date: 2003/03/05 18:43:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/03/07 15:16:36 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import junit.framework.TestCase;
  * Test cases for the class "CmsStringSubstitution"
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.0
  */
@@ -52,16 +52,23 @@ public class CmsStringSubstitutionTest extends TestCase {
 	}
 
 	public void testSubstitute() {
-		String test;
+		String test, result;
+        
 		String content = "<a href=\"/opencms/opencms/test.jpg\">";
 		String search = "/opencms/opencms/";
 		String replace = "\\${path}";
 		
 		test = CmsStringSubstitution.substitute(content, search, replace);
-		assertEquals(test,"<a href=\"${path}test.jpg\">");
+        System.err.println(test);
+		assertEquals(test,"<a href=\"\\${path}test.jpg\">");
 		
 		test = CmsStringSubstitution.substitute(test, replace, search);	
 		assertEquals(test,"<a href=\"/opencms/opencms/test.jpg\">");
+        
+        content = "[0-9]$1/[^a]|/([}>\"'\\[]\\s*)/pics/";
+        result  = "[0-9]$1/[^a]|/([}>\"'\\[]\\s*)/pucs/";
+        test = CmsStringSubstitution.substitute(content, "i", "u");   
+        assertEquals(test, result);   
 	}
 
 	public void testEscapePattern() {
@@ -77,9 +84,9 @@ public class CmsStringSubstitutionTest extends TestCase {
 		String content = "<p>A paragraph with text...<img src=\"/opencms/opencms/empty.gif\"></p>\n<a href=\"/opencms/opencms/test.jpg\">";
 		String search = "/opencms/opencms/";
 		String replace = "${path}";
-		test = CmsStringSubstitution.substitute(content, CmsStringSubstitution.escapePattern(search), CmsStringSubstitution.escapePattern(replace));	
+		test = CmsStringSubstitution.substitute(content, search, replace);	
 		assertEquals(test,"<p>A paragraph with text...<img src=\"${path}empty.gif\"></p>\n<a href=\"${path}test.jpg\">");
-		test = CmsStringSubstitution.substitute(test, CmsStringSubstitution.escapePattern(replace), CmsStringSubstitution.escapePattern(search));;		
+		test = CmsStringSubstitution.substitute(test, replace, search);;		
 		assertEquals(test,"<p>A paragraph with text...<img src=\"/opencms/opencms/empty.gif\"></p>\n<a href=\"/opencms/opencms/test.jpg\">");
 	}
     
@@ -97,7 +104,7 @@ public class CmsStringSubstitutionTest extends TestCase {
             "<cms:link>/mymodule/pics/test.gif</cms:link> <img src=\"/mymodule/pics/test.gif\"> script = '/mymodule/pics/test.gif' <cms:link> /mymodule/system/galleries/pics/othertest.gif </cms:link>";
         String search = "([>\"']\\s*)/pics/";
         String replace = "$1/system/galleries/pics/";
-        String test = CmsStringSubstitution.substitute(content, search, replace);
+        String test = CmsStringSubstitution.substitutePerl(content, search, replace, "g");
         assertEquals(test, 
             "<cms:link>/system/galleries/pics/test.gif</cms:link> <img src=\"/system/galleries/pics/test.gif\"> script = '/system/galleries/pics/test.gif' <cms:link> /system/galleries/pics/othertest.gif </cms:link>\n" +
             "<cms:link>/mymodule/pics/test.gif</cms:link> <img src=\"/mymodule/pics/test.gif\"> script = '/mymodule/pics/test.gif' <cms:link> /mymodule/system/galleries/pics/othertest.gif </cms:link>");    

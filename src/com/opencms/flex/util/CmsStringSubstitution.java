@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2003/02/26 15:19:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/03/07 15:16:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.apache.oro.text.perl.MalformedPerl5PatternException;
  * with Perl regular expressions.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.0
  */
 public class CmsStringSubstitution {
@@ -61,7 +61,7 @@ public class CmsStringSubstitution {
      * @return String the substituted String
      */
     public static String substitute(String content, String searchString, String replaceItem) {
-    	return substitute(content, searchString, replaceItem, "g");
+    	return substitutePerl(content, escapePattern(searchString), escapePattern(replaceItem), "g");
     }
     
     /**
@@ -73,7 +73,7 @@ public class CmsStringSubstitution {
      * @return String the substituted String
      */
     public static String substituteFirst(String content, String searchString, String replaceItem) {
-    	return substitute(content, searchString, replaceItem, "");
+    	return substitutePerl(content, escapePattern(searchString), escapePattern(replaceItem), "");
     }
     
     /**
@@ -85,7 +85,7 @@ public class CmsStringSubstitution {
      * @param occurences must be a "g" if all occurences of searchString shall be replaced
      * @return String the substituted String
      */
-    public static String substitute(String content, String searchString, String replaceItem, String occurences) {
+    public static String substitutePerl(String content, String searchString, String replaceItem, String occurences) {
     	String translationRule = "s#"+searchString+"#"+replaceItem+"#"+occurences;
     	Perl5Util perlUtil = new Perl5Util();
     	try {
@@ -96,16 +96,13 @@ public class CmsStringSubstitution {
     	}
     	return content;		
     }
-    
-    
+        
     /**
      * Escapes a String so it may be used as a Perl5 regular expression.<p>
      * 
-     * This method replaces the following characters in a String:
-     * <ul>
-     * <li><b>/</b> with \/
-     * <li><b>$</b> with \$
-     * </ul>
+     * This method replaces the following characters in a String:<br>
+     * <code>{}[]()\$^.*+/</code>
+     * 
      * 
      * @param source the string to escape
      * @return the escaped string
@@ -117,12 +114,51 @@ public class CmsStringSubstitution {
     	for(int i = 0;i < source.length(); ++i) {
     		char ch = source.charAt(i);
     		switch (ch) {
+                case '\\' :
+                    result.append("\\\\");
+                    break;                
     			case '/' :
     				result.append("\\/");
     				break;
-    			case '$' :
+    			case '$' :                
     				result.append("\\$");
     				break;
+                case '^' :                
+                    result.append("\\^");
+                    break;    
+                case '.' :                
+                    result.append("\\.");
+                    break; 
+                case '*' :                
+                    result.append("\\*");
+                    break;   
+                case '+' :                
+                    result.append("\\+");
+                    break;                      
+                case '|' :                
+                    result.append("\\|");
+                    break;  
+                case '?' :                
+                    result.append("\\?");
+                    break;   
+                case '{' :
+                    result.append("\\{");
+                    break;          
+                case '}' :
+                    result.append("\\}");
+                    break;    
+                case '[' :
+                    result.append("\\[");
+                    break;          
+                case ']' :
+                    result.append("\\]");
+                    break;        
+                case '(' :
+                    result.append("\\(");
+                    break;          
+                case ')' :
+                    result.append("\\)");
+                    break; 
     			default :
     				result.append(ch);
     		}
@@ -130,30 +166,4 @@ public class CmsStringSubstitution {
     	if (DEBUG>0) System.err.println("[CmsStringSubstitution]: escaped String to: "+result.toString());
     	return new String(result);
     }
-    
-    /**
-     * Escapes the occurences of a pattern in a String so it 
-     * may be used as a Perl5 regular expression.<p>
-     * 
-     * @param source the string to escape
-     * @param pattern the character which has to be escaped
-     * @return the escaped string
-     */
-    public static String escapePattern(String source, char pattern) {
-        if (DEBUG>0) System.err.println("[CmsStringSubstitution]: escaping String: "+source);
-        if (source == null) return null;
-        StringBuffer result = new StringBuffer(source.length()*2);
-        for(int i = 0;i < source.length(); ++i) {
-            char ch = source.charAt(i);
-            if (ch == pattern) {
-                result.append("\\"+pattern);
-            }
-            else {
-                result.append(ch);
-            }                     
-        }
-        if (DEBUG>0) System.err.println("[CmsStringSubstitution]: escaped String to: "+result.toString());
-        return new String(result);
-    }
-
 }

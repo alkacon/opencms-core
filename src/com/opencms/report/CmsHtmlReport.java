@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsHtmlReport.java,v $
- * Date   : $Date: 2003/01/20 23:59:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/03/07 15:16:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,20 +31,20 @@ package com.opencms.report;
 
 import com.opencms.file.CmsResource;
 import com.opencms.flex.util.CmsMessages;
+import com.opencms.flex.util.CmsStringSubstitution;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * HTML report output to be used for import / export / publish operations 
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.0 rc 1
  */
@@ -183,11 +183,9 @@ public class CmsHtmlReport implements I_CmsReport {
             buf.append("<span style='color: #990000;'>");
             buf.append(m_messages.key("report.exception"));
             String exception = Encoder.escapeXml(Utils.getStackTrace(throwable));
-            StringTokenizer tok = new StringTokenizer(exception, "\r\n");
-            while (tok.hasMoreTokens()) {
-                buf.append(tok.nextToken());
-                buf.append(C_LINEBREAK);
-            }
+            exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
+            exception = CmsStringSubstitution.substitute(exception, "\r\n", C_LINEBREAK);
+            buf.append(exception);
             buf.append("</span>");
         } else {
             buf.append("<span style='color: #990000;'>");

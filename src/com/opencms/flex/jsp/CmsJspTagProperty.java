@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagProperty.java,v $
- * Date   : $Date: 2003/03/04 17:27:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/03/07 15:16:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,11 @@ import com.opencms.util.Encoder;
  * Provides access to the properties of a resource in the OpenCms VFS .<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
-    // internal member variabled
+    // internal member variables
     private String m_propertyName = null;    
     private String m_propertyFile = null;    
     private String m_defaultValue = null;
@@ -59,6 +59,9 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     public static final String USE_THIS = "this";
     public static final String USE_SEARCH_ELEMENT_URI = "search.element.uri";
     public static final String USE_SEARCH_THIS = "search-this";
+    
+    // DEBUG flag
+    private final static int DEBUG = 0;
     
     /** static array of the possible "file" properties */
     private static final String[] m_actionValues =
@@ -213,6 +216,14 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     public static String propertyTagAction(String property, String action, String defaultValue, boolean escape, CmsFlexRequest req) 
     throws CmsException
     {
+        if (DEBUG > 0) {      
+            System.err.println("propertyTagAction() called!\nproperty=" + property 
+                + "\naction=" + action 
+                + "\ndefaultValue=" + defaultValue 
+                + "\nescape=" + escape);
+            System.err.println("propertyTagAction() request URI=" + req.getCmsObject().getRequestContext().getUri());
+        }
+        
         // Make sure that no null String is returned
         if (defaultValue == null) defaultValue = "";
         String value;
@@ -246,7 +257,10 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
                 // Read properties of the file named in the attribute            
                 value = req.getCmsObject().readProperty(req.toAbsolute(action), property, false, defaultValue);
         }           
-        if (escape) value = Encoder.escapeHtml(value);        
+        if (escape) value = Encoder.escapeHtml(value);    
+        if (DEBUG > 0) {
+            System.err.println("propertyTagAction(): result=" + value );
+        }
         return value;
     }
 
