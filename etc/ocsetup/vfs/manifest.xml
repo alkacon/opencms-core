@@ -4404,12 +4404,12 @@
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Dateien in die Gallerie hochladen]]></value>
+                    <value><![CDATA[Dateien in die Galerie hochladen]]></value>
                 </property>
                 <property>
                     <name>NavText</name>
                     <type>3</type>
-                    <value><![CDATA[Dateien in die Gallerie hochladen]]></value>
+                    <value><![CDATA[Dateien in die Galerie hochladen]]></value>
                 </property>
             </properties>
         </file>
@@ -4454,7 +4454,7 @@
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Downloadgallerien]]></value>
+                    <value><![CDATA[Downloadgalerien]]></value>
                 </property>
                 <property>
                     <name>NavText</name>
@@ -4479,12 +4479,12 @@
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Neue Downloadgallerie anlegen]]></value>
+                    <value><![CDATA[Neue Downloadgalerie anlegen]]></value>
                 </property>
                 <property>
                     <name>NavText</name>
                     <type>3</type>
-                    <value><![CDATA[Neue Downloadgallerie anlegen]]></value>
+                    <value><![CDATA[Neue Downloadgalerie anlegen]]></value>
                 </property>
             </properties>
         </file>
@@ -5331,7 +5331,7 @@
                 <property>
                     <name>NavText</name>
                     <type>3</type>
-                    <value><![CDATA[Histiorie]]></value>
+                    <value><![CDATA[Historie]]></value>
                 </property>
             </properties>
         </file>
