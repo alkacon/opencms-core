@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/08/10 13:42:08 $
-* Version: $Revision: 1.186 $
+* Date   : $Date: 2001/09/06 13:19:23 $
+* Version: $Revision: 1.187 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.186 $ $Date: 2001/08/10 13:42:08 $
+ * @version $Revision: 1.187 $ $Date: 2001/09/06 13:19:23 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1040,11 +1040,23 @@ public CmsProject createProject(String name, String description, String groupnam
  *
  * @exception CmsException if operation was not successful.
  */
-public CmsProject createProject(String name, String description, String groupname, String managergroupname, String projecttype) throws CmsException
+public CmsProject createProject(String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException
 {
-    CmsProject newProject = m_rb.createProject(m_context.currentUser(), m_context.currentProject(), name, description, groupname, managergroupname, Integer.parseInt(projecttype));
+    CmsProject newProject = m_rb.createProject(m_context.currentUser(), m_context.currentProject(), name, description, groupname, managergroupname, projecttype);
     return (newProject);
 }
+
+/**
+ * Creates a new project for the temporary files.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public CmsProject createTempfileProject() throws CmsException
+{
+    CmsProject newProject = m_rb.createTempfileProject(this, m_context.currentUser(), m_context.currentProject());
+    return (newProject);
+}
+
 /**
  * Creates the property-definition for a resource type.
  *
