@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsRequestHandler.java,v $
- * Date   : $Date: 2003/10/09 15:30:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/06 09:45:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.main;
 
 import java.io.IOException;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -47,16 +48,17 @@ public interface I_CmsRequestHandler {
      * 
      * @param req the current request
      * @param res the current response 
-     * @throws ServletException
+     * @param name the handler name to invoke
+     * @throws ServletException in case an error occurs
      * @throws IOException in case an error occurs
      */       
-    void handle(HttpServletRequest req, HttpServletResponse res) throws IOException;
+    void handle(HttpServletRequest req, HttpServletResponse res, String name) throws IOException, ServletException;
     
     /**
      * Returns the handler name.<p>
      * 
      * @return the handler name
      */
-    String getHandlerName();
+    String[] getHandlerNames();
 }
 

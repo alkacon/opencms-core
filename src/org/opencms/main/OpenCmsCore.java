@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/12/12 15:37:27 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/01/06 09:45:59 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -122,6 +122,7 @@ public final class OpenCmsCore {
     /** Prefix for error messages for initialization errors */
     private static final String C_ERRORMSG = "OpenCms initialization error!\n\n";     
     
+    /** Prefix for a critical init error */
     public static final String C_MSG_CRITICAL_ERROR = "Critical init error/";
     
     /** One instance to rule them all, one instance to find them... */        
@@ -316,13 +317,17 @@ public final class OpenCmsCore {
         if (handler == null) {
             return;
         }
-        if (m_requestHandlers.get(handler.getHandlerName()) != null) {
-            if (getLog(this).isErrorEnabled()) {
-                getLog(this).error("Duplicate OpenCms request handler, ignoring '" + handler.getHandlerName() + "'");
+        String[] names = handler.getHandlerNames();
+        for (int i=0; i<names.length; i++) {
+            String name = names[i];
+            if (m_requestHandlers.get(name) != null) {
+                if (getLog(this).isErrorEnabled()) {
+                    getLog(this).error("Duplicate OpenCms request handler, ignoring '" + name + "'");
+                }
+                continue;
             }
-            return;
+            m_requestHandlers.put(name, handler);
         }
-        m_requestHandlers.put(handler.getHandlerName(), handler);
     }
     
     /**
@@ -1800,7 +1805,7 @@ public final class OpenCmsCore {
                 String currentClass = (String)i.next();
                 try {
                     I_CmsRequestHandler handler = (I_CmsRequestHandler)Class.forName(currentClass).newInstance();
-                    m_requestHandlers.put(handler.getHandlerName(), handler);
+                    addRequestHandler(handler);
                     if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                         getLog(CmsLog.CHANNEL_INIT).info(". Request handler class: " + currentClass + " instanciated");
                     }
