@@ -31,7 +31,7 @@
             <goto>Gehe zu</goto>
             <help>Hilfe</help>
             <hidedetails>Details verbergen</hidedetails>
-            <htmlgallery>HTML-Gallerie</htmlgallery>            
+            <htmlgallery>HTML-Galerie</htmlgallery>            
             <image>Bildparameter</image>
             <imagelist>Bilderliste</imagelist>
             <indentin>Einzug vergrößern</indentin>
@@ -315,7 +315,7 @@
                 <downnogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/Downloadgalerien an.</downnogallery>
                 <editorsave>Speichern Sie den Dateiinhalt in einem lokalen Editor zwischen, schließen Sie die Datei und überprüfen Sie die Sperrung.</editorsave>
                 <htmlbrowser>Legen sie den Ordner für die HTML-Galerien an oder kontaktieren Sie Ihren Systemadministrator.</htmlbrowser>
-                <htmlnogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/HTML-Gallerie an.</htmlnogallery>                
+                <htmlnogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/HTML-Galerie an.</htmlnogallery>                
                 <linkbrowser>Legen sie den Ordner für die Linkgalerien an oder kontaktieren Sie Ihren Systemadministrator.</linkbrowser>
                 <linknogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/Externe Link-Verwaltung an.</linknogallery>
                 <lock></lock>
@@ -422,7 +422,7 @@
             <exportmoduledata>Export Moduldaten</exportmoduledata>
             <extlinkgallery>Externe Links<![CDATA[<br>]]>verwalten</extlinkgallery>
             <groups>Gruppe</groups>
-            <htmlgallery>HTML-Gallerie</htmlgallery>            
+            <htmlgallery>HTML-Galerie</htmlgallery>            
             <imagelist>Bilderliste</imagelist>
             <import>Import</import>
             <linkmanagement>Projekt prüfen</linkmanagement>
@@ -1160,7 +1160,7 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <newpropdeffor>Neue Eigenschaft für Dateityp</newpropdeffor>
             <newextension>Neue Dateiendung zuordnen</newextension>
             <newextensionfor>Neue Dateiendung für Dateityp</newextensionfor>
-            <newhtmlgal>HTML-Gallerie anlegen</newhtmlgal>                        
+            <newhtmlgal>HTML-Galerie anlegen</newhtmlgal>                        
             <newpage>Neue Seite anlegen</newpage>
             <newtable>Tabelle anlegen</newtable>
             <owner>Eigentümer</owner>
