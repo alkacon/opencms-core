@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/flex/util/Attic/CmsStringSubstitutionTest.java,v $
- * Date   : $Date: 2003/02/28 13:02:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/03/04 08:37:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,15 +30,13 @@
 
 package com.opencms.flex.util;
 
-import com.opencms.flex.util.CmsStringSubstitution;
-
 import junit.framework.TestCase;
 
 /** 
  * Test cases for the class "CmsStringSubstitution"
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.0
  */
@@ -101,7 +99,6 @@ public class CmsStringSubstitutionTest extends TestCase {
         String test = CmsStringSubstitution.substitute(content, search, replace);
         assertEquals(test, 
             "<cms:link>/system/galleries/pics/test.gif</cms:link> <img src=\"/system/galleries/pics/test.gif\"> script = '/system/galleries/pics/test.gif' <cms:link> /system/galleries/pics/othertest.gif </cms:link>\n" +
-            "<cms:link>/mymodule/pics/test.gif</cms:link> <img src=\"/mymodule/pics/test.gif\"> script = '/mymodule/pics/test.gif' <cms:link> /mymodule/system/galleries/pics/othertest.gif </cms:link>");
+            "<cms:link>/mymodule/pics/test.gif</cms:link> <img src=\"/mymodule/pics/test.gif\"> script = '/mymodule/pics/test.gif' <cms:link> /mymodule/system/galleries/pics/othertest.gif </cms:link>");    
     }
-
 }
