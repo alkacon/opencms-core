@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2003/11/24 16:40:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/11/26 15:13:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.JspException;
  * Provides methods for building the file editors of OpenCms.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.12
  */
@@ -85,6 +85,8 @@ public abstract class CmsEditor extends CmsDialog {
     
     private String m_paramEditormode;
     private String m_paramBodyelement;
+    private String m_paramOldbodyelement;
+    private String m_paramBodyTitle;
     private String m_paramDirectedit;
     private String m_paramPageTitle;
     private String m_paramPageTemplate;
@@ -144,6 +146,47 @@ public abstract class CmsEditor extends CmsDialog {
      */
     public void setParamBodyelement(String element) {
         m_paramBodyelement = element;
+    }
+    
+    /**
+     * Returns the name of the old body element.<p>
+     * 
+     * This is needed to save the content to the temporary file after changing the body.<p>
+     * 
+     * @return the name of the old body element
+     */
+    public String getParamOldbodyelement() {
+        return m_paramOldbodyelement;
+    }
+    
+    /**
+     * Sets the name of the old body element.<p>
+     * 
+     * @param oldBody the name of the old body element
+     */
+    public void setParamOldbodyelement(String oldBody) {
+        m_paramOldbodyelement = oldBody;
+    }
+    
+    /** 
+     * Returns the title of the body element.<p>
+     * 
+     * @return the title of the body element
+     */
+    public String getParamBodytitle() {
+        if (m_paramBodyTitle == null) {
+            m_paramBodyTitle = "";
+        }
+        return m_paramBodyTitle;
+    }
+    
+    /**
+     * Sets the title of the body element.<p>
+     * 
+     * @param bodyTitle the title of the body element
+     */
+    public void setParamBodytitle(String bodyTitle) {
+        m_paramBodyTitle = bodyTitle;
     }
 
     /**
@@ -378,6 +421,22 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
+     * Determines if the online help is available in the currently selected user language.<p>
+     * 
+     * @return true if the online help is found, otherwise false
+     */
+    public boolean isHelpEnabled() {
+        try {
+            getCms().readFolder(I_CmsWpConstants.C_VFS_PATH_HELP + getSettings().getLanguage());
+            return true;
+        } catch (CmsException e) {
+            // help folder is not available
+            return false;
+            
+        }
+    }
+    
+    /**
      * Helper method to change back from the temporary project to the current project.<p>
      * 
      * @throws CmsException if switching back fails
@@ -508,6 +567,11 @@ public abstract class CmsEditor extends CmsDialog {
      * @throws IOException if a redirection fails
      * @throws JspException if something goes wrong
      */
-    public abstract void actionSave() throws CmsException, IOException, JspException; 
+    public abstract void actionSave() throws CmsException, IOException, JspException;
+    
+    /**
+     * Initializes the editor content when openening the editor for the first time.<p>
+     */
+    public abstract void initContent();
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorFrameset.java,v $
- * Date   : $Date: 2003/11/24 16:40:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/11/26 15:13:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */
@@ -122,5 +122,10 @@ public class CmsEditorFrameset extends CmsEditor {
      * @see org.opencms.workplace.editor.CmsEditor#actionSave()
      */
     public void actionSave() { }
+    
+    /**
+     * @see org.opencms.workplace.editor.CmsEditor#initContent()
+     */
+    public void initContent() { }
     
 }

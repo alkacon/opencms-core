@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/11/24 16:42:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/11/26 15:13:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,9 @@ import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
-import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
+import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.IOException;
@@ -47,6 +48,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
 
 /**
  * Creates the output for editing a resource.<p> 
@@ -57,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */
@@ -119,8 +121,7 @@ public class CmsMSDHtmlEditor extends CmsEditor {
         } catch (CmsException e) {
             // TODO: show error page!
         }
-        prepareContent(false);       
-        setParamContent(Encoder.escapeWBlanks(getParamContent(), Encoder.C_UTF8_ENCODING));        
+        prepareContent(false);              
     }
     
     /**
@@ -147,11 +148,18 @@ public class CmsMSDHtmlEditor extends CmsEditor {
                 content = content.substring(0, content.indexOf("</body>"));
             }      
             if (!"".equals(stylesheet)) {
+                // create a head with stylesheet for template and base URL to display images
+                String server = getJsp().getRequest().getScheme() + "://" + getJsp().getRequest().getServerName() + ":" + getJsp().getRequest().getServerPort();
                 stylesheet = getJsp().link(stylesheet);
-                stylesheet = getJsp().getRequest().getScheme() + "://" + getJsp().getRequest().getServerName() + ":" + getJsp().getRequest().getServerPort() + stylesheet;
-                content = "<html><head><link href=\"" + stylesheet + "\" rel=\"stylesheet\" type=\"text/css\"></head><body>" +  content;
+                String head = "<html><head><link href=\"" + server + stylesheet + "\" rel=\"stylesheet\" type=\"text/css\">";
+                head += "<base href=\"" + server + OpenCms.getOpenCmsContext() + "\"></base></head><body>";
+                content =  head + content;
                 content += "</body></html>";
             }  
+        }
+        if (!save) {
+            // escape the content String if it is not saved
+            content = Encoder.escapeWBlanks(content, Encoder.C_UTF8_ENCODING); 
         }
         setParamContent(content);
     }
@@ -257,8 +265,7 @@ public class CmsMSDHtmlEditor extends CmsEditor {
         switchToCurrentProject();
     
         // now redirect to the workplace explorer view
-        getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));
-    
+        getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));   
     }
 
     /**
@@ -266,6 +273,40 @@ public class CmsMSDHtmlEditor extends CmsEditor {
      */
     public void actionSave() { 
         // TODO: save modified content
+        
+        //commitTempFile();
+    }
+    
+    /**
+     * @see org.opencms.workplace.editor.CmsEditor#initContent()
+     */
+    public void initContent() {
+        // TODO: initialize content of editor properly
+        try {
+            CmsXmlPage page = new CmsXmlPage(getCms().readFile(this.getParamTempfile()));
+            setParamContent(new String(page.getElementData("Body", "de")));
+        } catch (CmsException e) {
+            // reading of file contents failed, show error dialog
+            setParamErrorstack(e.getStackTraceAsString());
+            setParamTitle(key("error.title.editorread"));
+            setParamMessage(key("error.message.editorread"));
+            String reasonSuggestion = key("error.reason.editorread") + "<br>\n" + key("error.suggestion.editorread") + "\n";
+            setParamReasonSuggestion(reasonSuggestion);
+            // log the error 
+            String errorMessage = "Error while reading file " + getParamResource() + ": " + e;
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error(errorMessage, e);
+            }
+            try {
+                // include the common error dialog
+                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            } catch (JspException exc) {
+                // inclusion of error page failed, ignore
+            }
+        }
+        //setParamBodyelement("");
+        setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));                    
+        setParamPagetitle(getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getParamTempfile(), ""));
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2003/11/24 16:40:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/26 15:13:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import com.opencms.file.CmsFile;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -56,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
@@ -100,9 +101,11 @@ public class CmsSimpleEditor extends CmsEditor {
     }
     
     /**
-     * Initializes the editor content when opened for the first time.<p>
+     * Initializes the editor content when openening the editor for the first time.<p>
      */
     public void initContent() {
+        // save initialized instance of this class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         // get the default encoding
         String encoding = getCms().getRequestContext().getEncoding();
         String content = "";
@@ -117,7 +120,23 @@ public class CmsSimpleEditor extends CmsEditor {
                 content = new String(editFile.getContents());
             }
         } catch (CmsException e) {
-            // reading of file contents failed
+            // reading of file contents failed, show error dialog
+            setParamErrorstack(e.getStackTraceAsString());
+            setParamTitle(key("error.title.editorread"));
+            setParamMessage(key("error.message.editorread"));
+            String reasonSuggestion = key("error.reason.editorread") + "<br>\n" + key("error.suggestion.editorread") + "\n";
+            setParamReasonSuggestion(reasonSuggestion);
+            // log the error 
+            String errorMessage = "Error while reading file " + getParamResource() + ": " + e;
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error(errorMessage, e);
+            }
+            try {
+                // include the common error dialog
+                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            } catch (JspException exc) {
+                // inclusion of error page failed, ignore
+            }
         }
         setParamContent(content);
     }
@@ -128,7 +147,7 @@ public class CmsSimpleEditor extends CmsEditor {
      * @see org.opencms.workplace.editor.CmsEditor#actionExit()
      */
     public void actionExit() throws IOException {    
-        // now redirect to the workplace explorer view
+        // redirect to the workplace explorer view
         getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));
     }
 
