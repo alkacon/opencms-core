@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/17 17:20:53 $
  */
 public class CmsRbProperty extends A_CmsRbProperty  {
 	
@@ -32,6 +32,20 @@ public class CmsRbProperty extends A_CmsRbProperty  {
     {
         m_accessProperty=accessProperty;
     }
+        
+     /**
+	 * Creates a new a serializable object to the propertys.
+	 * 
+	 * @param name The name of the property.
+	 * @param object The property-object.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public Serializable createProperty(String name, Serializable object)
+         throws CmsException {
+               
+         return m_accessProperty.createProperty(name,object);
+     }
     
 	/**
 	 * Reads a serializable object from the propertys.
@@ -42,7 +56,7 @@ public class CmsRbProperty extends A_CmsRbProperty  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public Serializable readProperty(String name) 
+	 Serializable readProperty(String name) 
         throws CmsException {
         
         return m_accessProperty.readProperty(name);
@@ -54,13 +68,14 @@ public class CmsRbProperty extends A_CmsRbProperty  {
 	 * @param name The name of the property.
 	 * @param object The property-object.
 	 * 
+	 * @return object The property-object.
+	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if something goes wrong.
 	 */
-	 public void writeProperty(String name, Serializable object)
-        throws CmsDuplicateKeyException, CmsException {
+	 Serializable writeProperty(String name, Serializable object)
+        throws  CmsException {
          
-        m_accessProperty.writeProperty(name,object);
+        return m_accessProperty.writeProperty(name,object);
      }
 
 	/**
@@ -70,7 +85,7 @@ public class CmsRbProperty extends A_CmsRbProperty  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public void deleteProperty(String name)
+	 void deleteProperty(String name)
         throws CmsException {
         
         m_accessProperty.deleteProperty(name);

@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/16 18:13:09 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/17 17:20:53 $
  */
 public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
 
@@ -85,6 +85,42 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
         initStatements();
     }
         
+     /**
+	 * Creates a serializable object in the propertys.
+	 * 
+	 * @param name The name of the property.
+	 * @param object The property-object.
+	 * 
+	 * @return object The property-object.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 Serializable createProperty(String name, Serializable object)
+         throws CmsException {
+         
+        Serializable property=null;
+        byte[] value;
+        
+         try	{			
+            // serialize the object
+            ByteArrayOutputStream bout= new ByteArrayOutputStream();            
+            ObjectOutputStream oout=new ObjectOutputStream(bout);
+            oout.writeObject(object);
+            oout.close();
+            value=bout.toByteArray();
+            
+            // create the object
+            m_statementPropertyWrite.setString(1,name);
+            m_statementPropertyWrite.setBytes(2,value);
+            m_statementPropertyWrite.executeUpdate();
+        } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} catch (IOException e){
+            throw new CmsException(CmsException. C_SERIALIZATION, e);			
+		}
+       
+        return readProperty(name);
+     }
     
 	/**
 	 * Reads a serializable object from the propertys.
@@ -134,9 +170,11 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
 	 * @param name The name of the property.
 	 * @param object The property-object.
 	 * 
+	 * @return object The property-object.
+	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	void writeProperty(String name, Serializable object)
+	Serializable writeProperty(String name, Serializable object)
         throws CmsException {
         
         byte[] value=null;
@@ -147,21 +185,12 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
             ObjectOutputStream oout=new ObjectOutputStream(bout);
             oout.writeObject(object);
             oout.close();
-            value=bout.toByteArray();
-            
-            // check if this property exists already
-            if (readProperty(name) == null)	{
-                m_statementPropertyWrite.setString(1,name);
-                m_statementPropertyWrite.setBytes(2,value);
-             	m_statementPropertyWrite.executeUpdate();
-                ByteArrayInputStream bin= new ByteArrayInputStream(value);
-                ObjectInputStream oin = new ObjectInputStream(bin);
-                Serializable property=(Serializable)oin.readObject();       
-         	} else {
-                m_statementPropertyUpdate.setBytes(1,value);
-                m_statementPropertyUpdate.setString(2,name);
-				m_statementPropertyUpdate.executeUpdate();
-			}
+            value=bout.toByteArray();   
+    
+            m_statementPropertyUpdate.setBytes(1,value);
+            m_statementPropertyUpdate.setString(2,name);
+		    m_statementPropertyUpdate.executeUpdate();
+			
         }
         catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
@@ -169,9 +198,8 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
         catch (IOException e){
             throw new CmsException(CmsException. C_SERIALIZATION, e);			
 		}
-         catch (ClassNotFoundException e){
-            throw new CmsException(CmsException. C_SERIALIZATION, e);			
-		}	
+
+          return readProperty(name);
     }
 
 	/**

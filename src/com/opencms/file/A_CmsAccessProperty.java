@@ -12,10 +12,24 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/16 18:13:09 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.4 $ $Date: 1999/12/17 17:20:53 $
  */
 abstract class A_CmsAccessProperty {
-	
+
+     /**
+	 * Creates a serializable object in the propertys.
+	 * 
+	 * @param name The name of the property.
+	 * @param object The property-object.
+	 * 
+	 * @return object The property-object.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	abstract Serializable createProperty(String name, Serializable object)
+		throws CmsException;
+    
 	/**
 	 * Reads a serializable object from the propertys.
 	 * 
@@ -34,9 +48,11 @@ abstract class A_CmsAccessProperty {
 	 * @param name The name of the property.
 	 * @param object The property-object.
 	 * 
+	 * @return object The property-object.
+	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void writeProperty(String name, Serializable object)
+	abstract Serializable writeProperty(String name, Serializable object)
 		throws  CmsException;
 
 	/**
