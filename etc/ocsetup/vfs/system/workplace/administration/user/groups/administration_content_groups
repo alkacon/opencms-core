@@ -64,7 +64,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
 							<tr><td class=dialogtxt>
 								<table cellspacing=0 cellpadding=5 width=100%>
 								<tr>
-								<td class=formular align=right width=60%><INPUT  class=button width = 100 type="submit" value="]]><LABEL value="button.new" /><![CDATA[" id=NEW name=NEW onClick="location.href='index.html.html'"></td>
+								<td class=formular align=right width=60%><INPUT class=button width = 100 type="submit" value="]]><LABEL value="button.new" /><![CDATA[" id=NEW name=NEW onClick="location.href='index.html.html'"></td>
 								<td class=formular align=middle width=30%><INPUT class=button width = 100 type="submit" value="]]><LABEL value="button.edit" /><![CDATA[" id=CHANGE name=CHANGE onClick="location.href='index.html.html'"></td>
 								<td class=formular align=left width=30%><INPUT class=button width = 100 type="submit" value="]]><LABEL value="button.delete" /><![CDATA[" id=DELETE name=DELETE onClick="location.href='index.html.html'"></td>
 								</tr>
@@ -106,6 +106,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
 
 <HTML>
 <!-- Include internal JavaScripts -->
+<HEAD>
 <script language="JavaScript" Type="text/javascript" src="../../../templates/js/opencms.js"> </script>
 
 <script language="JavaScript">
@@ -133,14 +134,17 @@ function checkFormData()
 			result= false;
 		}
 	}
-	//return result;
-	if(result==true)location.href='index.html'
+	
+	
+
+	return result;
+
 }		
 
 //-->
 </script>
 
-<HEAD>
+
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
@@ -156,7 +160,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
 <tr><td align=middle valign=center>
 
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
-<form id=GROUPNEW name=GROUPNEW>
+<form id=GROUPNEW name=GROUPNEW onSubmit="return checkFormData();">
 <input type=hidden name="perspective" value="newgroup">
 <table cellspacing=0 cellpadding=0 border=2 width=500>
 	<tr><td>
@@ -237,7 +241,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
 			<tr><td class=dialogtxt>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id="OK" name="OK" onClick="javascript:checkFormData();"></td>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.ok" /><![CDATA[" id="OK" name="OK" ></td>
 					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id="CANCEL" name="CANCEL" onClick="location.href='index.html'"></td>
 				</tr>
 				</table>
