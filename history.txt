@@ -18,6 +18,7 @@ OpenCms 4.5.31 Chusuk       - xx December 2001
 - Added opencms.property for file.encoding used to encode encrypted passwords. This helps for
   switching the default file.encoding after setting up the system.
 - Changed Methodname getStackTrace for Java 1.4 support.
+- Changed the appearance of the media-management in mastermodules. Added some language tags.
 
 OpenCms 4.5si.30 Chusuk     - 14 December 2001
 * bugfix static export: if a extern link is in a link tag (should not happen) no strange folders are created.

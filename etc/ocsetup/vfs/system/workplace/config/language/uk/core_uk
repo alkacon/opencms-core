@@ -15,6 +15,7 @@
             <color>Color</color>
             <copy>Copy</copy>
             <cut>Paste</cut>
+            <clear>Clear</clear>
             <close>Close</close>
             <default>Default</default>
             <delete>Delete</delete>
@@ -633,6 +634,15 @@
             <wptitle>OpenCms Workplace of</wptitle>
             <writerights>permission to write for others</writerights>
         </label>
+
+        <media>
+            <mediaAltText>Alt-Text</mediaAltText>
+            <mediaPosition>Position</mediaPosition>
+            <mediaName>Name</mediaName>
+            <mediaText>Text</mediaText>
+            <mediaSize>Size</mediaSize>
+            <mediaType>Type</mediaType>
+        </media>
         
         <message>
             <chtype>Please select a new File type</chtype>

@@ -36,90 +36,69 @@
 <media_content>
 <![CDATA[
 <SCRIPT language="JavaScript">
-    ]]><PROCESS>preview</PROCESS><![CDATA[
-    
-    function setMediaAction(para) {
-        window.top.body.admin_content.Editor.backofficepage.value=window.top.body.admin_head.backofficepage.value;
-        switch(para) {
-        case 1: {
-                document.Editor.media_action.value = "delPicture";
-                document.Editor.submit();
-                break;
-                }
-        case 2: {   
-                document.Editor.media_action.value = "editPicture";
-                document.Editor.submit();
-                break;
-                }
-        case 3: {
-                document.Editor.media_action.value = "prevPicture";
-                document.Editor.submit();
-                break;
-                }
-        case 4: {
-                document.Editor.media_action.value = "addPicture";
-                document.Editor.submit();
-                break;
-                }
-        case 5: {
-                document.Editor.media_action.value = "clear";
-                document.Editor.submit();
-                break;
-                }
-          }
-    }
+	]]><PROCESS>preview</PROCESS><![CDATA[
 </script>
 
 <center>
-<table cellspacing=5>
+<table width="100%" cellspacing=5>
 <tr>
     <td>
         ]]><process>media_file</process><![CDATA[
     </td>
     <td>
-        Alt-Text:
+        ]]><Label value="media.mediaAltText"/><![CDATA[:
     </td>
     <td>
         <input name="media_alt_text" style="width:350px" value="]]><process>media_alt_text</process><![CDATA[">
     </td>
     <td>
-        Position:
+        ]]><Label value="media.mediaPosition"/><![CDATA[:
     </td>
     <td>
-        ]]><select name="media_position" width="150" style="width:150px" method="getMediaPosition"/><![CDATA[
+    	]]><select name="media_position" width="150" style="width:150px" method="getMediaPosition"/><![CDATA[
     </td>    
 </tr>
 <tr>
     <td colspan=5>
-        <input type=button value="Delete" onClick="setMediaAction(1);">&nbsp;&nbsp;
-        <input type=button value="Edit" onClick="setMediaAction(2);">&nbsp;&nbsp;
-        <input type=button value="Preview" onClick="setMediaAction(3);">&nbsp;&nbsp;
-        <input type=button value="Add" onClick="setMediaAction(4);">&nbsp;&nbsp;
-        <input type=button value="Clear" onClick="setMediaAction(5);">&nbsp;&nbsp;
+        <input type=button value="]]><LABEL value="button.addnew"/><![CDATA[" onClick="setMediaAction(4);">&nbsp;&nbsp;
+        <input type=button value="]]><LABEL value="button.clear"/><![CDATA[" onClick="setMediaAction(5);">&nbsp;&nbsp;
     </td>
-</td>
+</tr>
+<tr>
+    <td colspan=5>
+       	&nbsp;
+    </td>
+</tr>
+<tr>
+    <td colspan=5>
+        <input type=button value="]]><LABEL value="button.delete"/><![CDATA[" onClick="setMediaAction(1);">&nbsp;&nbsp;
+        <input type=button value="]]><LABEL value="button.edit"/><![CDATA[" onClick="setMediaAction(2);">&nbsp;&nbsp;
+        <input type=button value="]]><LABEL value="button.preview"/><![CDATA[" onClick="setMediaAction(3);">&nbsp;&nbsp;
+    </td>
+</tr>
 </table>
 
-<br><br>
+<br/>
 
-<table width=100%>
+<table width="100%" cellspacing=5>
     <tr>
         <td>
+       		&nbsp;
+    	</td>
+        <td>
+            <b>]]><LABEL value="media.mediaName"/><![CDATA[:
         </td>
         <td>
-            <b>Name:
+            <b>]]><Label value="media.mediaText"/><![CDATA[:
         </td>
         <td>
-            <b>Text:
+            <b>]]><Label value="media.mediaPosition"/><![CDATA[:
         </td>
         <td>
-            <b>Position:
+            <b>]]><Label value="media.mediaSize"/><![CDATA[:
         </td>
         <td>
-            <b>Dateigröße:
-        </td>
-        <td>
-            <b>Typ:
+            <b>]]><Label value="media.mediaType"/><![CDATA[:
         </td>
     </tr>
     ]]><process>media_line</process><![CDATA[
