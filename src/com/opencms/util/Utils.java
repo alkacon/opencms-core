@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
- * Date   : $Date: 2000/03/16 13:39:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/03/17 09:35:40 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.util.*;
  * This is a general helper class.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/03/16 13:39:27 $
+ * @version $Revision: 1.8 $ $Date: 2000/03/17 09:35:40 $
  */
 public class Utils implements I_CmsConstants, I_CmsLogChannels {
 	/** Constant for sorting files upward by name */
@@ -178,8 +178,8 @@ public class Utils implements I_CmsConstants, I_CmsLogChannels {
             }
                                      
          }catch (Exception e){
-            if(OpenCms.isLogging()) {               
-                 OpenCms.log(C_OPENCMS_CRITICAL, "[MhtXmlDocloader] :"+e.toString());
+            if(A_OpenCms.isLogging()) {               
+                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[Utils] :"+e.toString());
             }
         }
          return v;
