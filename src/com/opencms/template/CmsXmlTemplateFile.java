@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/03/27 09:17:10 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/04/05 08:45:55 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2000/03/27 09:17:10 $
+ * @version $Revision: 1.18 $ $Date: 2000/04/05 08:45:55 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -338,7 +338,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         if(html) {
             tempXmlString.append("<![CDATA[");
             content = replace(content, "[", "]]><");
-            tempXmlString.append(content);
+            tempXmlString.append(content.trim());
             tempXmlString.append("]]>");
         } else {
             tempXmlString.append(content);
@@ -440,6 +440,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             result.append("\n</BODY>\n</HTML>");        
             xmlString = result.toString();
         }
+
         return xmlString;
     }
     
@@ -689,7 +690,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     private String replace(String s, String search, String replace) {
         StringBuffer tempContent = new StringBuffer();                
         //int index = s.indexOf(search);
-        int index = min(s.indexOf("<CODE>["), s.indexOf("]</CODE>"));
+        int index = min(s.indexOf("["), s.indexOf("]"));
         index = min(index, s.indexOf("&quot;"));
         int lastindex = 0;
         while(index != -1) {
@@ -698,16 +699,16 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             tempContent.append(sub);
             if(s.charAt(index) == ']') {                
                 tempContent.append("><![CDATA[");
-                lastindex = index + 8;
-            } else if(s.charAt(index) == '<') {
+                lastindex = index + 1;
+            } else if(s.charAt(index) == '[') {
                 tempContent.append("]]><");
-                lastindex = index + 7;
+                lastindex = index + 1;
             } else {
                 tempContent.append("\"");
                 lastindex = index + 6;
             }
             //index = s.indexOf(search, index+1);
-            index = min(s.indexOf("<CODE>[", index+1), min(s.indexOf("]</CODE>", index+1), s.indexOf("&quot;", index+1)));
+            index = min(s.indexOf("[", index+1), min(s.indexOf("]", index+1), s.indexOf("&quot;", index+1)));
         }
         tempContent.append(s.substring(lastindex));
         return new String(tempContent);
@@ -717,19 +718,27 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         StringBuffer tempContent = new StringBuffer();                
         //int index = s.indexOf(search);
         int index = min(s.indexOf("<"), s.indexOf(">"));
+        index = min(index, s.indexOf("\""));
         int lastindex = 0;
         while(index != -1) {
             String sub = s.substring(lastindex, index);
             tempContent.append(sub);
             if(s.charAt(index) == '>') {                
-                tempContent.append("]</CODE>");
+                //tempContent.append("]</CODE>");
+                tempContent.append("]");
+                lastindex = index + 1;
+            } else if(s.charAt(index) == '<'){
+                //tempContent.append("<CODE>[");
+                tempContent.append("[");
                 lastindex = index + 1;
             } else {
-                tempContent.append("<CODE>[");
+                tempContent.append("&quot;");
                 lastindex = index + 1;
             }
+
             //index = s.indexOf(search, index+1);
-            index = min(s.indexOf("<", index+1), s.indexOf(">", index+1));
+            //index = min(s.indexOf("<", index+1), s.indexOf(">", index+1));
+            index = min(s.indexOf("<", index+1), min(s.indexOf(">", index+1), s.indexOf("\"", index+1)));
         }
         tempContent.append(s.substring(lastindex));
         return new String(tempContent);

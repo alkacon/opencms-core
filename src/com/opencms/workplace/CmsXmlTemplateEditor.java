@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/04/04 10:03:40 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/04/05 08:45:55 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2000/04/04 10:03:40 $
+ * @version $Revision: 1.20 $ $Date: 2000/04/05 08:45:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -90,8 +90,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         
         // Get all URL parameters
         String content = (String)parameters.get(C_PARA_CONTENT);
-        String file = (String)parameters.get(C_PARA_FILE);
         String body = (String)parameters.get("body");
+        String file = (String)parameters.get(C_PARA_FILE);
         String editor = (String)parameters.get("editor");
         String title = (String)parameters.get(C_PARA_TITLE);
         String bodytitle = (String)parameters.get("bodytitle");
@@ -399,6 +399,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         xmlTemplateDocument.setXmlData("editor", editor);
         xmlTemplateDocument.setXmlData("bodyfile", bodyElementFilename);
         xmlTemplateDocument.setXmlData("bodyclass", bodyElementClassName);
+        xmlTemplateDocument.setXmlData("editorframe", (String)parameters.get("root.editorframe"));                
         
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }            

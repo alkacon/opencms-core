@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+	<meta http-equiv="refresh" content="600;url=edit_reload_dummy.html">
+	<title>opencms</title>
+</head>
+
+<body>
+This is an empty dummy document reloaded every 10 minutes.
+</body>
+]]>
+</TEMPLATE>
+</WORKPLACE>

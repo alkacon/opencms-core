@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/03/27 09:55:34 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2000/04/05 08:45:55 $
+ * Version: $Revision: 1.37 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.36 $ $Date: 2000/03/27 09:55:34 $
+ * @version $Revision: 1.37 $ $Date: 2000/04/05 08:45:55 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -216,8 +216,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
                 }
                 throw (CmsException)e;
             } else {
-                e.printStackTrace();
-                throwException(errorMessage);
+                throwException(errorMessage, e);
             }            
         }
              return result; 

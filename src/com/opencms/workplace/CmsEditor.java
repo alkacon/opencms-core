@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
- * Date   : $Date: 2000/03/22 10:38:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/05 08:45:55 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/03/22 10:38:46 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/05 08:45:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsEditor extends CmsWorkplaceDefault {
@@ -82,10 +82,10 @@ public class CmsEditor extends CmsWorkplaceDefault {
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         
         // Get all editor parameters
-        String content = (String)parameters.get(C_PARA_CONTENT);
         String file = (String)parameters.get(C_PARA_FILE);
+        String content = (String)parameters.get(C_PARA_CONTENT);
         String action = (String)parameters.get(C_PARA_ACTION);
-        String jsfile = (String)parameters.get(C_ROOT_TEMPLATE_NAME + "." + C_PARA_JSFILE);
+        String jsfile = (String)parameters.get(C_ROOT_TEMPLATE_NAME + "." + C_PARA_JSFILE);        
         
         boolean existsFileParam = ((file != null) && (!"".equals(file)));
         boolean saveRequested = ((action != null) && (C_EDIT_ACTION_SAVE.equals(action) || C_EDIT_ACTION_SAVEEXIT.equals(action)));
@@ -137,6 +137,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         // It will be inserted in a hidden input field and given back when submitting.
         xmlTemplateDocument.setXmlData(C_PARA_FILE, file);
         xmlTemplateDocument.setXmlData(C_PARA_JSFILE, jsfile);                
+        xmlTemplateDocument.setXmlData("editorframe", (String)parameters.get("root.editorframe"));                
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, sectionName);
     }                  
     

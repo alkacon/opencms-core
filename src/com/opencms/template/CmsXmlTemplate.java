@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/04/04 10:01:41 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/04/05 08:45:55 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.26 $ $Date: 2000/04/04 10:01:41 $
+ * @version $Revision: 1.27 $ $Date: 2000/04/05 08:45:55 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -486,7 +486,29 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 		return cms.getRequestContext().getFileUri().getBytes();
 	}
 
-	
+    /**
+     * Inserts the correct servlet path title into the template.
+     * <P>
+     * This method can be called using <code>&lt;METHOD name="getTitle"&gt;</code>
+     * in the template file.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getQueryString(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException {
+        String query = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getQueryString();
+        if(query != null && !"".equals(query)) {
+            query = "?" + query;
+        }
+        return query;
+    }  
+
+    
     /**
      * For debugging purposes only.
      * Prints out all parameters.
@@ -664,7 +686,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
         if(e instanceof CmsException) {
             throw (CmsException)e;
         } else {
-            throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+            throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION, e);
         }
     }
         

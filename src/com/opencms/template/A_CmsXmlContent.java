@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/04/04 10:00:40 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/04/05 08:45:55 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -72,7 +72,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2000/04/04 10:00:40 $
+ * @version $Revision: 1.21 $ $Date: 2000/04/05 08:45:55 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -1253,9 +1253,42 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     protected void throwException(String errorMessage, int type) throws CmsException {
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
-        }        throw new CmsException(errorMessage, type);
+        }        
+        throw new CmsException(errorMessage, type);
     }
-            
+
+    /**
+     * Help method that handles any occuring exception by writing
+     * an error message to the OpenCms logfile and throwing a 
+     * CmsException of the type "unknown".
+     * @param errorMessage String with the error message to be printed.
+     * @param e Original exception.
+     * @exception CmsException
+     */
+    protected void throwException(String errorMessage, Exception e) throws CmsException {
+        throwException(errorMessage, e, CmsException.C_UNKNOWN_EXCEPTION);
+    }
+
+    /**
+     * Help method that handles any occuring exception by writing
+     * an error message to the OpenCms logfile and throwing a 
+     * CmsException of the type "unknown".
+     * @param errorMessage String with the error message to be printed.
+     * @param e Original exception.
+     * @param type Type of the exception to be thrown.
+     * @exception CmsException
+     */
+    protected void throwException(String errorMessage, Exception e, int type) throws CmsException {
+        if(A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+        }        
+        if(e instanceof CmsException) {
+            throw (CmsException)e;
+        } else {
+            throw new CmsException(errorMessage, type, e);
+        }
+    }
+    
     /**
 	 * Starts the XML parser with the content of the given CmsFile object.
 	 * After parsing the document it is scanned for INCLUDE and DATA tags

@@ -225,10 +225,10 @@ function doAction(action) {
 			location.href='explorer_files_metashow.html';
 			break;
 		} case 14: {
-			top.location.href='texteditor.html?file='+ kontextparam;
+			top.location.href='edit_text.html?file='+ kontextparam;
 			break;
 		} case 15: {
-			top.location.href='htmleditor.html?file='+ kontextparam;
+			top.location.href='edit_html.html?file='+ kontextparam;
 			break;
 		}
 		case 16:
@@ -239,7 +239,7 @@ function doAction(action) {
 	    case 18: 
 		{
 		    // Template Editor
-		    top.location.href='templateeditor.html?file='+ kontextparam;
+		    top.location.href='edit_page.html?file='+ kontextparam;
 			break;
 		}
 

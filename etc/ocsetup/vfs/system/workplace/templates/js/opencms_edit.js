@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edit.js,v $
- * Date   : $Date: 2000/03/23 15:35:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/05 08:45:55 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -105,6 +105,7 @@ function doNsEdit(para)
 	{
 		document.EDITOR.content.value = escape(document.EDITOR.edit1.value);
 		document.EDITOR.action.value = "exit";
+		document.EDITOR.target = "_top";
 		document.EDITOR.submit();
 		break;
 	}
@@ -112,6 +113,7 @@ function doNsEdit(para)
 	{
 		document.EDITOR.content.value = escape(document.EDITOR.edit1.value);
 		document.EDITOR.action.value = "saveexit";
+		document.EDITOR.target = "_top";
 		document.EDITOR.submit();
 		break;
 	}
@@ -134,6 +136,7 @@ function doEdit(para)
 	{
 		doSubmit();
 		document.EDITOR.action.value = "exit";
+		document.EDITOR.target = "_top";
 		document.EDITOR.submit();
 		break;
 	}
@@ -141,6 +144,7 @@ function doEdit(para)
 	{
 		doSubmit();
 		document.EDITOR.action.value = "saveexit";
+		document.EDITOR.target = "_top";
 		document.EDITOR.submit();
 		break;
 	}
