@@ -10,6 +10,11 @@ Legend:
 
 OpenCms 4.5.31 Chusuk       - xx December 2001
 ! Modification on Explorer-View for "Gecko" support. The "Gecko-Support" is not finished yet.
+! New property exportname used for the static export. While exporting the name is replaced
+  by the value of this property if existent.
+! New property dynamic used for the static export. Resources with the propertyvalue true or https are
+  not exported and the exported resources link to them to the OpenCms system. For the https the Protocol
+  is changed to https and back.
 * Bugfix in form "create new page". Now the selected default body will be copied by switching navigation 
   from on to off.
 * In emails for taskaction the port of the webserver was added to the generated URL.
