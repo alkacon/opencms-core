@@ -8,6 +8,8 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.26 Chusuk       - 3 December 2001
+
 OpenCms 4.5si.25 Chusuk     - 27 November 2001
 * Bugfixing mastermodule.
 * Bugfixing linkmechanism.
