@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsXmlPageDocument.java,v $
- * Date   : $Date: 2004/02/17 12:10:52 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/18 10:33:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypeXmlPage</code>.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2004/02/17 12:10:52 $
+ * @version $Revision: 1.6 $ $Date: 2004/02/18 10:33:01 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsXmlPageDocument extends CmsVfsDocument {
@@ -81,10 +81,14 @@ public class CmsXmlPageDocument extends CmsVfsDocument {
             CmsFile file = m_cms.readFile(m_cms.getRequestContext().removeSiteRoot(resource.getRootPath()));
             CmsXmlPage page = CmsXmlPage.read(m_cms, file);
             
+            List pageLocales = page.getLocales();
+            if (pageLocales.size() == 0) {
+                pageLocales = OpenCms.getLocaleManager().getDefaultLocales(m_cms, resource.getRootPath());
+            }
             Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(
                     CmsLocaleManager.getLocale(language), 
                     OpenCms.getLocaleManager().getDefaultLocales(m_cms, resource.getRootPath()), 
-                    page.getLocales());
+                    pageLocales);
             
             List elements = page.getNames(locale);
             StringBuffer content = new StringBuffer();
