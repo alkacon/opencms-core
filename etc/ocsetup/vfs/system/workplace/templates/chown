@@ -12,6 +12,26 @@ function show_help()
 	return '2_2_2_2_8_1.html';
 }
 
+
+
+
+var selectedowner=null;
+
+function checkSelected()
+{
+ for(i=0;i<document.USER.name.length;++i)if(document.USER.name.options[i].selected == true)selectedowner=document.USER.name.options[i].value;
+ 
+ location.href='chown.html?newowner='+selectedowner;
+ //alert(document.USER.name.options[i].value);
+}
+
+
+
+
+
+
+
+
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 //-->
@@ -74,7 +94,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='chown.html?newowner='+document.USER.name.value"></td>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="javascript:checkSelected();"></td>
 					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=lasturl"></td>
 				</tr>
 				</table>
@@ -107,6 +127,22 @@ function show_help()
 }
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
+
+
+var selectedowner=null;
+
+function checkSelected()
+{
+ for(i=0;i<document.USER.name.length;++i)if(document.USER.name.options[i].selected == true)selectedowner=document.USER.name.options[i].value;
+ 
+ location.href='chown.html?newowner='+selectedowner+'&flags='+document.USER.ALL.checked;
+ //alert(document.USER.name.options[i].value);
+}
+
+
+
+
+
 
 //-->
 </script>
@@ -173,7 +209,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='chown.html?newowner='+document.USER.name.value+'&flags='+document.USER.ALL.checked;"></td>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="javascript:checkSelected();"></td>
 					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=lasturl"></td>
 				</tr>
 				</table>
