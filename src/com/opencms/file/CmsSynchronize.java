@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/08/01 14:55:26 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -44,7 +44,7 @@ import source.org.apache.java.util.*;
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.8 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.9 $ $Date: 2001/08/01 14:55:26 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 
@@ -248,7 +248,8 @@ public class CmsSynchronize implements I_CmsConstants{
                         m_cms.lockResource(sfsAbsolutePath+currentFile.getName()+"/");
                     } catch (CmsException e){
                         // if the folder already exists do nothing
-                        if (e.getType() != CmsException.C_FILE_EXISTS){
+                        if (e.getType() != CmsException.C_FILE_EXISTS &&
+                            e.getType() != CmsException.C_LOCKED){
                             throw e;
                         }
                     }
@@ -272,7 +273,8 @@ public class CmsSynchronize implements I_CmsConstants{
                                 m_cms.lockResource(sfsAbsolutePath+currentFile.getName());
                                 m_synchronizeList.putDates(sfsAbsolutePath+currentFile.getName(), newFile.getDateLastModified(), currentFile.lastModified());
                             } catch (CmsException e) {
-                                if (e.getType() == CmsException.C_FILE_EXISTS){
+                                if (e.getType() == CmsException.C_FILE_EXISTS ||
+                                    e.getType() == CmsException.C_LOCKED){
                                     //System.out.println("File "+sfsAbsolutePath+currentFile.getName()+" already exists!");
                                     // if the file exists try to update the file
                                     //try {
