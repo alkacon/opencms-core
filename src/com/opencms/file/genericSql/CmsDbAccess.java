@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 12:49:08 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2000/06/09 12:57:17 $
+ * Version: $Revision: 1.48 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.47 $ $Date: 2000/06/09 12:49:08 $ * 
+ * @version $Revision: 1.48 $ $Date: 2000/06/09 12:57:17 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -2454,7 +2454,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                     // delete an exitsing old file in the online project
                     //removeFile(onlineProject,file.getAbsolutePath());
                     // write the new file
-					file=readFile(project,onlineProject,file.getAbsolutePath());
+					file=readFile(project.getId(),onlineProject.getId(),file.getAbsolutePath());
            
                     file.setLocked(C_UNKNOWN_ID);
                     file.setState(C_STATE_UNCHANGED);
@@ -2741,22 +2741,21 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public CmsFile readFile(CmsProject project,
-                             CmsProject onlineProject,
+	 public CmsFile readFile(int projectId,
+                             int onlineProjectId,
                              String filename)
          throws CmsException {
           
          CmsFile file = null;
-         int projectId;
          PreparedStatement statement = null;
          ResultSet res = null;
          try {
              // if the actual project is the online project read file header and content
              // from the online project
-             if (project.equals(onlineProject)) {
+             if (projectId == onlineProjectId) {
                     statement = m_pool.getPreparedStatement(C_FILE_READ_ONLINE_KEY);
                     statement.setString(1, filename);
-                    statement.setInt(2,onlineProject.getId());
+                    statement.setInt(2,onlineProjectId);
                     res = statement.executeQuery();  
                     if(res.next()) {
                          file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
@@ -2767,7 +2766,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                                             res.getInt(C_RESOURCES_RESOURCE_FLAGS),
                                             res.getInt(C_RESOURCES_USER_ID),
                                             res.getInt(C_RESOURCES_GROUP_ID),
-                                            onlineProject.getId(),
+                                            onlineProjectId,
                                             res.getInt(C_RESOURCES_ACCESS_FLAGS),
                                             res.getInt(C_RESOURCES_STATE),
                                             res.getInt(C_RESOURCES_LOCKED_BY),
@@ -2790,7 +2789,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                // or form the online project.
                
                // get the file header
-               file=readFileHeader(project.getId(),filename);
+               file=readFileHeader(projectId, filename);
                // check if the file is marked as deleted
                if (file.getState() == C_STATE_DELETED) {
                    throw new CmsException("["+this.getClass().getName()+"] "+CmsException.C_NOT_FOUND); 
@@ -2811,7 +2810,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
  		} catch( Exception exc ) {
             throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}finally {
-			if (project.equals(onlineProject)) {
+			if (projectId == onlineProjectId) {
 				if( statement != null) {
 					m_pool.putPreparedStatement(C_FILE_READ_ONLINE_KEY, statement);
 				}
@@ -2975,7 +2974,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 					m_pool.putPreparedStatement(C_FILES_WRITE_KEY, statementFileWrite);
 				}
 			 }	
-         return readFile(project,onlineProject,filename);
+         return readFile(project.getId(),onlineProject.getId(),filename);
      }
 	
     /**
@@ -3057,7 +3056,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 					m_pool.putPreparedStatement(C_FILES_WRITE_KEY, statementFileWrite);
 				}
 			 }	 
-         return readFile(project,onlineProject,filename);
+         return readFile(project.getId(),onlineProject.getId(),filename);
       }
      
     
