@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/17 07:29:20 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/09/17 10:05:32 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.24 $ $Date: 2003/09/17 07:29:20 $
+ * @version $Revision: 1.25 $ $Date: 2003/09/17 10:05:32 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -73,6 +73,19 @@ public interface I_CmsBackupDriver {
      */
     CmsBackupResource createBackupResource(ResultSet res, boolean hasContent) throws SQLException, CmsException;
 
+
+    
+    /**
+     * Deletes all backup versions of a backup resource that are older than a given project tag and
+     * where the version id is lower than a given value.<p>
+     * 
+     * @param res the backup resource
+     * @param tag the project tag date
+     * @param versions the deletion version
+     * @throws CmsException if something goes wrong
+     */
+    void deleteBackup(CmsBackupResource res, int tag, int versions) throws CmsException;
+
     /**
      * Deletes backup versions of a resource.<p>
      * 
@@ -84,19 +97,6 @@ public interface I_CmsBackupDriver {
      * @throws CmsException if something goes wrong
      */
     void deleteBackups(List existingBackups, int maxVersions) throws CmsException;
-
-    /**
-     * Deletes all backups that are older then the given date.<p>
-     *
-     * @param maxdate long timestamp of the last version that should remain
-     * @return int the oldest remaining version
-     * @throws CmsException if something goes wrong
-     * TODO: remove this later, its not required anymore
-     */
-    int deleteBackups(long maxdate) throws CmsException;
-
-
-    //void deleteBackup(CmsBackupResource res, long maxdate, int verisons) throws CmsException
 
 
     /**

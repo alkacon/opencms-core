@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/17 09:30:15 $
- * Version: $Revision: 1.229 $
+ * Date   : $Date: 2003/09/17 10:05:32 $
+ * Version: $Revision: 1.230 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.229 $ $Date: 2003/09/17 09:30:15 $
+ * @version $Revision: 1.230 $ $Date: 2003/09/17 10:05:32 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -486,17 +486,19 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if something goes wrong
      */
     public List setFullResourceNames(CmsRequestContext context, List resourceList) throws CmsException {
-        Iterator i = resourceList.iterator();
-
+        Iterator i=resourceList.iterator();
+      
         while (i.hasNext()) {
-            CmsResource res = (CmsResource) i.next();
+            CmsResource res=(CmsResource)i.next();
             if (!res.hasFullResourceName()) {
-                res.setFullResourceName(readPath(context, res, true));
-            }
+            res.setFullResourceName(readPath(context,res, true));
         }
-
+        }
+         
         return resourceList;
-    }      
+    }
+    
+    
 
     /**
      * Adds a user to the Cms.
@@ -1116,9 +1118,10 @@ public class CmsDriverManager extends Object {
             return;
         }
 
+
         // validate the destination path/filename
         validFilename(destination.replace('/', 'a'));
-
+        
         // extract the destination folder and filename
         destinationFolderName = destination.substring(0, destination.lastIndexOf("/") + 1);
         destinationFileName = destination.substring(destination.lastIndexOf("/") + 1, destination.length());
@@ -1127,36 +1130,38 @@ public class CmsDriverManager extends Object {
         CmsFile sourceFile = readFile(context, source, false);
         CmsFolder destinationFolder = readFolder(context, destinationFolderName);
 
+
         // check the link mode to see if this resource has to be copied as a link.
         // only check this if the override flag "copyAsLink" is not set.
         if (!copyAsLink) {
             // if we have the copy mode "copy as link, set the override flag to true
-            if (copyMode == I_CmsConstants.C_COPY_AS_LINK) {
-                copyAsLink = true;
+            if (copyMode==I_CmsConstants.C_COPY_AS_LINK) {
+                copyAsLink=true;
             }
             // if the mode is "preservre links", we have to check the link counter
-            if (copyMode == I_CmsConstants.C_COPY_PRESERVE_LINK) {
-                if (sourceFile.getLinkCount() > 1) {
-                    copyAsLink = true;
+            if (copyMode==I_CmsConstants.C_COPY_PRESERVE_LINK) {
+                if (sourceFile.getLinkCount()>1) {
+                    copyAsLink=true;
                 }
             }
         }
+
 
         // checks, if the type is valid, i.e. the user can copy files of this type
         // we can't utilize the access guard to do this, since it needs a resource to check   
         if (!isAdmin(context) && (sourceFile.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID || sourceFile.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] copyFile() " + source, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-
+        
         // check if the user has read access to the source file and write access to the destination folder
         checkPermissions(context, sourceFile, I_CmsConstants.C_READ_ACCESS);
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // read the source properties
         properties = readProperties(context, source, null, false);
-
+        
         if (copyAsLink) {
-            // create a copy of the source file in the destination parent folder      
+        // create a copy of the source file in the destination parent folder      
             newResource = createVfsLink(context, destination, source, properties, false);
         } else {
             // create a new resource in the destination folder
@@ -1167,14 +1172,14 @@ public class CmsDriverManager extends Object {
                 // reset "labeled" link flag
                 flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
             }
-
+            
             // create the file
             newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, flags, destinationFolder, sourceFile.getContents(), getResourceType(sourceFile.getType()));
             newResource.setFullResourceName(destination);
 
             // copy the properties
             m_vfsDriver.writeProperties(properties, context.currentProject().getId(), newResource, newResource.getType(), false);
-            m_propertyCache.clear();
+            m_propertyCache.clear();             
 
             // copy the access control entries
             ListIterator aceList = m_userDriver.readAccessControlEntries(context.currentProject(), sourceFile.getResourceId(), false).listIterator();
@@ -1183,20 +1188,20 @@ public class CmsDriverManager extends Object {
                 m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
 
             }
-
+                        
             m_vfsDriver.writeResourceState(context.currentProject(), newResource, C_UPDATE_ALL);
-
-            touch(context, destination, sourceFile.getDateLastModified(), sourceFile.getUserLastModified());
-
-            if (lockCopy) {
+            
+            touch(context,destination,sourceFile.getDateLastModified(),sourceFile.getUserLastModified());            
+        
+        if (lockCopy) {
                 lockResource(context, destination);
-            }
+        }
         }
 
         clearAccessControlListCache();
         m_accessCache.clear();
         clearResourceCache();
-
+        
         List modifiedResources = (List) new ArrayList();
         modifiedResources.add(sourceFile);
         modifiedResources.add(newResource);
@@ -1899,9 +1904,8 @@ public class CmsDriverManager extends Object {
             // "empty" properties are represented by an empty property map
             linkProperties = Collections.EMPTY_MAP;
         }
-        
         // write its properties
-        m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType(), false);      
+        m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType(), false);
         
         // if the source
         clearResourceCache();
@@ -1910,9 +1914,9 @@ public class CmsDriverManager extends Object {
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", parentFolder)));
         
         if (lockResource) {
-            // lock the resource
+        // lock the resource
             lockResource(context, linkName);
-        } 
+        }
 
         return linkResource;
     }
@@ -2005,6 +2009,8 @@ public class CmsDriverManager extends Object {
            int maxTag = m_backupDriver.readBackupProjectTag(timestamp);
            Iterator i=allBackupFiles.iterator();
        // TODO: work in progress, continue this code later           
+//System.err.println("");
+//System.err.println("");    
 //System.err.println("[keep verions] "+versions);
 //System.err.println("[max tag] "+maxTag);
 //System.err.println("[delete before] "+Utils.getNiceDate(timestamp));  
@@ -2017,16 +2023,12 @@ public class CmsDriverManager extends Object {
               int resVersions=m_backupDriver.readBackupMaxVersion(res.getResourceId());
               int versionsToDelete=resVersions-versions;
               // now we know which backup versions must be deleted, so remove them now
-if (resVersions>1) {                   
-//System.err.println("processing "+res.getName()+" ("+res.getVersionId()+")");
-//System.err.println(resVersions + " Versions");        
-//System.err.println("Delete "+ versionsToDelete);          
-//System.err.println("");
-}
-            
+              if (versionsToDelete>0) {
+                 //TODO: uncomment this later                                          
+                //m_backupDriver.deleteBackup(res, maxTag, versionsToDelete);           
+             }
            }
-       }
-           
+       }           
         return lastVersion;
     }
     
@@ -2709,6 +2711,7 @@ if (resVersions>1) {
           return m_vfsDriver.validateResourceIdExists(context.currentProject().getId(), resourceId);          
       }
     
+
     /**
      * Reads all siblings that point to the resource record of a specified resource name.<p>
      * 
@@ -2722,22 +2725,22 @@ if (resVersions>1) {
         if (resourcename == null || "".equals(resourcename)) {
             return Collections.EMPTY_LIST;
         }
-
+        
         CmsResource resource = readFileHeader(context, resourcename);
         List siblings = m_vfsDriver.readSiblings(context.currentProject(), resource);
 
         int n = siblings.size();
         for (int i = 0; i < n; i++) {
             CmsResource currentResource = (CmsResource) siblings.get(i);
-
+    
             if (!readAllSiblings && currentResource.getStructureId().equals(resource.getStructureId())) {
                 siblings.remove(i);
                 n--;
-            }
+    }
         }
-
+    
         setFullResourceNames(context, siblings);
-        
+
         return siblings;
     }
     
@@ -5577,7 +5580,7 @@ if (resVersions>1) {
                 res.setFullResourceName(readPath(context,res,true));
                 retValue.addElement(res);
             }
-        }        
+        }
         return retValue;
     }
 
@@ -7787,13 +7790,13 @@ if (resVersions>1) {
      */
     public CmsLock unlockResource(CmsRequestContext context, String resourcename) throws CmsException {
         CmsLock oldLock = m_lockDispatcher.removeResource(this, context, resourcename, false);
-        clearResourceCache();
-
+        clearResourceCache();   
+        
         CmsResource resource = readFileHeader(context, resourcename);
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
 
-        return oldLock;
-    }
+        return oldLock;     
+        }
         
     /**
      * When a project is published this method aktualises the online link table.
@@ -7972,11 +7975,11 @@ if (resVersions>1) {
     public void writeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsAccessControlEntry acEntry) throws CmsException {
 
         // get the old values
-        long dateLastModified = resource.getDateLastModified();
-        CmsUUID userLastModified = resource.getUserLastModified();
-
+        long dateLastModified=resource.getDateLastModified();
+        CmsUUID userLastModified=resource.getUserLastModified();
+        
         checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS);
-
+        
         m_userDriver.writeAccessControlEntry(context.currentProject(), acEntry);
         clearAccessControlListCache();
         touchResource(context, resource, dateLastModified, userLastModified);

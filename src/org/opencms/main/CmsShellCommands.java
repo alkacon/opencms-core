@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/09/17 09:30:16 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/09/17 10:05:32 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $ $Date: 2003/09/17 09:30:16 $ 
+ * @version $Revision: 1.18 $ $Date: 2003/09/17 10:05:32 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -1591,66 +1591,6 @@ class CmsShellCommands {
         }
     }
 
-    /**
-     * Returns all users matching the given criteria.<p>
-     *
-     * @param Lastname the lastname of the users
-     * @param userType either "systemuser" or "webuser"
-     * @param userStatus either "enabled" or "disabled"
-     * @param wasLoggedIn "never" or "once" or "whatever"
-     * @param nMax maximum number of user entries to return
-     */
-    public void getUsersByLastname(String Lastname, String userType, String userStatus, String wasLoggedIn, String nMax) {
-        int iUserType = 0;
-        int iUserStatus = 0;
-        int iWasLoggedIn = 0;
-        int iNMax = 0;
-
-        if (userType.equalsIgnoreCase("webuser")) {
-            iUserType = I_CmsConstants.C_USER_TYPE_WEBUSER;
-        } else if (userType.equalsIgnoreCase("systemuser")) {
-            iUserType = I_CmsConstants.C_USER_TYPE_SYSTEMUSER;
-        } else {
-            System.out.println("second parameter has to be a \"webuser\" or" + " \"systemuser\"!");
-            return;
-        }
-
-        if (userStatus.equalsIgnoreCase("enabled")) {
-            iUserStatus = I_CmsConstants.C_FLAG_ENABLED;
-        } else if (userStatus.equalsIgnoreCase("disabled")) {
-            iUserStatus = I_CmsConstants.C_FLAG_DISABLED;
-        } else {
-            System.out.println("third parameter has to be a \"enabled\" or" + " \"disabled\"!");
-            return;
-        }
-
-        if (wasLoggedIn.equalsIgnoreCase("never")) {
-            iWasLoggedIn = I_CmsConstants.C_NEVER;
-        } else if (wasLoggedIn.equalsIgnoreCase("once")) {
-            iWasLoggedIn = I_CmsConstants.C_AT_LEAST_ONCE;
-        } else if (wasLoggedIn.equalsIgnoreCase("whatever")) {
-            iWasLoggedIn = I_CmsConstants.C_WHATEVER;
-        } else {
-            System.out.println("fourth parameter has to be a \"never\"," + " \"once\" or \"whatever\"!");
-            return;
-        }
-
-        try {
-            iNMax = Integer.parseInt(nMax);
-        } catch (NumberFormatException e) {
-            System.out.println("last parameter has to be a number!");
-            return;
-        }
-
-        try {
-            Vector users = m_cms.getUsersByLastname(Lastname, iUserType, iUserStatus, iWasLoggedIn, iNMax);
-            for (int i = 0; i < users.size(); i++) {
-                System.out.println(users.elementAt(i));
-            }
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
 
     /**
      * Returns all groups of a user.

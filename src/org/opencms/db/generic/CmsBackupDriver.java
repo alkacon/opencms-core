@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/17 09:30:15 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2003/09/17 10:05:32 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.db.generic;
 
-import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsDbUtil;
+import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsBackupDriver;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.main.CmsLog;
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.55 $ $Date: 2003/09/17 09:30:15 $
+ * @version $Revision: 1.56 $ $Date: 2003/09/17 10:05:32 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -159,10 +159,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         }
     }
 
-    /**
-     * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(long)
-     */
-    public int deleteBackups(long maxdate) throws CmsException {
+    //TODO: Remove this if not nescessary
+   /* public int deleteBackups(long maxdate) throws CmsException {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -197,6 +195,47 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             m_sqlManager.closeAll(conn, stmt, res);
         }
         return maxVersion;
+    }*/
+    
+    
+    
+    /**
+     * @see org.opencms.db.I_CmsBackupDriver#deleteBackup(com.opencms.file.CmsBackupResource, long, int)
+     */
+    public void deleteBackup(CmsBackupResource resource, int tag, int versions) throws CmsException {
+//System.err.println("++delete++");
+//System.err.println(resource.getName()+" ("+resource.getVersionId()+")");
+//System.err.println("delete older than project tag"+tag);
+//System.err.println("delete versions less than "+versions);     
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        List backupIds= new ArrayList();
+        
+        // first get all backup ids of the entries which should be deleted
+        try {
+            conn = m_sqlManager.getConnectionForBackup();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_READ_BACKUPID_FOR_DELETION");
+            stmt.setString(1, resource.getStructureId().toString());
+            stmt.setString(2, resource.getResourceId().toString());
+            stmt.setInt(3, versions);
+            stmt.setInt(4, tag);           
+            res = stmt.executeQuery();
+            while (res.next()) {
+                backupIds.add(res.getString(1));
+            }
+//System.err.println(backupIds);
+            
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception ex) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+
+   
     }
 
     /**
