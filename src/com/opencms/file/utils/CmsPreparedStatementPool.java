@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/07/03 08:15:31 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/07/04 08:55:26 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -83,6 +83,11 @@ public class CmsPreparedStatementPool {
 	private Vector m_connections;
 	
 	/*
+	 * the connection for generating an Id.
+	 */
+	private Connection m_idConnection = null;
+		
+	/*
 	 * counter
 	 */
 	private int count = 0;
@@ -127,6 +132,12 @@ public class CmsPreparedStatementPool {
 				throw new CmsException(CmsException.C_SQL_ERROR, e);
 			}
 		}
+		// init IdConnection
+		try {
+			m_idConnection = DriverManager.getConnection(m_url, m_user, m_passwd);
+		}catch (SQLException e) {	
+			throw new CmsException(CmsException.C_SQL_ERROR, e);
+		}
 	}
 	
 	/**
@@ -154,6 +165,36 @@ public class CmsPreparedStatementPool {
 		}
 		
 		m_prepStatements.put(key, temp);
+	}
+
+	/**
+	 * Init the IdPreparedStatement on the IdConnections and store the sql statement in an hashtable.
+	 * 
+	 * @param key - the hashtable key
+	 * @param sql - a SQL statement that may contain one or more '?' IN parameter placeholders
+	 */
+	public void initIdStatement(Integer key, String sql) throws CmsException {
+
+		m_prepStatementsCache.put(key, sql);
+		
+		try {
+			PreparedStatement pstmt = m_idConnection.prepareStatement(sql);
+			m_prepStatements.put(key, pstmt);
+			
+		}catch (SQLException e) {
+			throw new CmsException(CmsException.C_SQL_ERROR, e);
+		}
+		
+	}
+
+	/**
+	 * Gets a PreparedStatement object for Id access.
+	 * 
+	 * @param key - the hashtable key
+	 * @return a prepared statement matching the key
+	 */
+	public PreparedStatement getIdStatement(Integer key){
+		return (PreparedStatement)m_prepStatements.get(key);
 	}
 	
 	/**

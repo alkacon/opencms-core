@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/03 16:10:03 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2000/07/04 08:55:25 $
+ * Version: $Revision: 1.87 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.86 $ $Date: 2000/07/03 16:10:03 $ * 
+ * @version $Revision: 1.87 $ $Date: 2000/07/04 08:55:25 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -3893,7 +3893,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 // check if the file content for this file is already existing in the
                 // offline project. If not, load it from the online project and add it
                 // to the offline project.
-                  
+
                if ((file.getState() == C_STATE_UNCHANGED) && (changed == true) ) {
                     // read file content form the online project
                     statementFileRead = m_pool.getPreparedStatement(C_FILE_READ_KEY);
@@ -4153,7 +4153,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	
            int resourceId = nextId(C_TABLE_RESOURCES);
 	       int fileId = nextId(C_TABLE_FILES);
-	
 		   PreparedStatement statement = null;
             try {   
                 // write new resource to the database
@@ -4747,6 +4746,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		m_pool.initPreparedStatement(C_PROPERTIES_DELETEALL_KEY,C_PROPERTIES_DELETEALL);
 		m_pool.initPreparedStatement(C_PROPERTIES_DELETE_KEY,C_PROPERTIES_DELETE);
 		
+		// init statements for id
+		m_pool.initPreparedStatement(C_SYSTEMID_INIT_KEY,C_SYSTEMID_INIT);
+		
+		m_pool.initIdStatement(C_SYSTEMID_LOCK_KEY,C_SYSTEMID_LOCK);
+		m_pool.initIdStatement(C_SYSTEMID_READ_KEY,C_SYSTEMID_READ);
+		m_pool.initIdStatement(C_SYSTEMID_WRITE_KEY,C_SYSTEMID_WRITE);
+		m_pool.initIdStatement(C_SYSTEMID_UNLOCK_KEY,C_SYSTEMID_UNLOCK);
+		
+	
 	}
 	
 
@@ -4755,6 +4763,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 */
 	private void fillDefaults() 
 		throws CmsException {
+		// insert the first Id
+		initId();
 		
 		// the resourceType "folder" is needed always - so adding it
 		Hashtable resourceTypes = new Hashtable(1);
@@ -4814,7 +4824,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * Private method to init the max-id of the projects-table.
 	 * 
 	 * @param key the key for the prepared statement to use.
-	  * @return the max-id
+	 * @return the max-id
 	 * @exception throws CmsException if something goes wrong.
 	 */
 	private int initMaxId(Integer key) 
@@ -4844,15 +4854,70 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	}
 	
 	/**
+	 * Private method to init the id-Table of the Database.
+	 * 
+	 * @exception throws CmsException if something goes wrong.
+	 */
+	private void initId() 
+		throws CmsException {
+		
+		PreparedStatement statement = null;
+			
+        try {
+			statement = m_pool.getPreparedStatement(C_SYSTEMID_INIT_KEY);
+			for (int i = 0; i < C_MAX_TABLES; i++){
+				statement.setInt(1,i);
+				statement.executeUpdate();
+				statement.clearParameters();
+			}
+        } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_SYSTEMID_INIT_KEY, statement);
+			}
+		}
+	}
+
+
+	/**
 	 * Private method to get the next id for a table.
 	 * This method is synchronized, to generate unique id's.
 	 * 
 	 * @param key A key for the table to get the max-id from.
 	 * @return next-id The next possible id for this table.
 	 */
-	private synchronized int nextId(int key) {
-		// increment the id-value and return it.
-		return( ++m_maxIds[key] );
+	private synchronized int nextId(int key) 
+         throws CmsException {
+		
+		int newId = C_UNKNOWN_INT;
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		try {
+			statement = m_pool.getIdStatement(C_SYSTEMID_LOCK_KEY);
+			statement.executeUpdate();
+			
+			statement = m_pool.getIdStatement(C_SYSTEMID_READ_KEY);
+			statement.setInt(1,key);
+			res = statement.executeQuery();
+			if (res.next()){
+				newId = res.getInt(C_SYSTEMID_ID);
+				res.close();
+			}else{
+                 throw new CmsException("[" + this.getClass().getName() + "] "+" cant read Id! ",CmsException.C_NO_GROUP);		
+			}
+			statement = m_pool.getIdStatement(C_SYSTEMID_WRITE_KEY);
+			statement.setInt(1,newId+1);
+			statement.setInt(2,key);
+			statement.executeUpdate();
+			
+			statement = m_pool.getIdStatement(C_SYSTEMID_UNLOCK_KEY);
+			statement.executeUpdate();
+			
+		} catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		}
+		return(	newId );
 	}
 	
 	/**
@@ -5028,18 +5093,27 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		// close all statements
 		while(keys.hasMoreElements()) {
 			Object key = keys.nextElement();
-			statements = (Vector) allStatements.get(key);
-			for(int i = 0; i < statements.size(); i++) {
-				try {
-					((PreparedStatement) statements.elementAt(i)).close();
+			if (allStatements.get(key) instanceof PreparedStatement){
+				try{
+					((PreparedStatement) allStatements.get(key)).close();
 				} catch(SQLException exc) {
 					if(A_OpenCms.isLogging()) {
-						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing statement: " + exc.getMessage());
+							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing Id-statement: " + exc.getMessage());
+						}
+				}	
+			}else{
+				statements = (Vector) allStatements.get(key);
+				for(int i = 0; i < statements.size(); i++) {
+					try {
+						((PreparedStatement) statements.elementAt(i)).close();
+					} catch(SQLException exc) {
+						if(A_OpenCms.isLogging()) {
+							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing statement: " + exc.getMessage());
+						}
 					}
 				}
 			}
 		}
-		
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] closing all connections.");
 		}
