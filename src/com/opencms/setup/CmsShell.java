@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/04/18 09:12:46 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2000/04/28 14:12:14 $
+ * Version: $Revision: 1.39 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.38 $ $Date: 2000/04/18 09:12:46 $
+ * @version $Revision: 1.39 $ $Date: 2000/04/28 14:12:14 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1531,5 +1531,21 @@ public class CmsShell implements I_CmsConstants {
 		} catch( Exception exc ) {
 			printException(exc);
 		}		
+	}
+
+    /**
+	 * Changes the resourcetype for this resource<BR/>
+	 * 
+	 * The user may change this, if he is admin of the resource.
+	 * 
+	 * @param filename The complete path to the resource.
+	 * @param newType The name of the new resourcetype for this resource.
+	 */
+	public void chtype(String filename, String newType) {
+		try {
+			m_cms.chtype(filename, newType);
+		} catch( Exception exc ) {
+			printException(exc);
+		}
 	}
 }

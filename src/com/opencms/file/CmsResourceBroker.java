@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/20 09:05:39 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2000/04/28 14:12:14 $
+ * Version: $Revision: 1.110 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.109 $ $Date: 2000/04/20 09:05:39 $
+ * @version $Revision: 1.110 $ $Date: 2000/04/28 14:12:14 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3808,6 +3808,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				
 			// write-acces  was granted - write the file.
             resource.setType(type.getResourceType());
+			resource.setLauncherType(type.getLauncherType());
             m_fileRb.writeFileHeader(currentProject, onlineProject(currentUser, currentProject),(CmsFile)resource,true);    
 		//	m_fileRb.chgrp(currentProject, onlineProject(currentUser, currentProject), 
 		//				   filename, group );

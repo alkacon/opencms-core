@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
- * Date   : $Date: 2000/04/28 08:58:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/04/28 14:12:14 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/04/28 08:58:46 $
+ * @version $Revision: 1.4 $ $Date: 2000/04/28 14:12:14 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -262,7 +262,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 		String link = "#";
 		String servlets=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
 		
-		if( res.isFile() ) {
+		if( res.isFile() && ( res.getState() != C_STATE_DELETED) ) {
 			link = "javascript:openwinfull('" + servlets + res.getAbsolutePath() + "', 'preview', 0, 0);";
 		}		
 		
