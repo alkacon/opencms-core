@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/12/07 11:14:30 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2002/12/12 18:55:49 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.file;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.report.CmsShellReport;
+import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.I_CmsXmlParser;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -63,7 +64,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.54 $ $Date: 2002/12/07 11:14:30 $
+ * @version $Revision: 1.55 $ $Date: 2002/12/12 18:55:49 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
@@ -492,186 +493,209 @@ public Vector deleteCheckDependencies(String modulename) throws CmsException {
             }
         }           
     }
-/**
- *  Deletes a module. This method is synchronized, so only one module can be deleted at one time.
- *
- *  @param module-name the name of the module that should be deleted.
- *  @param exclusion a Vector with resource-names that should be excluded from this deletion.
- */
-public synchronized void deleteModule(String module, Vector exclusion) throws CmsException {
-
-    if (DEBUG > 2) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Starting to delete module " + module);
-
-    // check if the module exists
-    if (!moduleExists(module)) {
-        throw new CmsException("Module '"+module+"' does not exist", CmsException.C_REGISTRY_ERROR);
-    }
-
-    // check if the user is allowed to perform this action
-    if (!hasAccess()) {
-        throw new CmsException("No access to perform the action 'deleteModule'", CmsException.C_REGISTRY_ERROR);
-    }
-
-    // check, if deletion is allowed
-    Vector deps = deleteCheckDependencies(module);
-    if(deps.size() != 0) {
-        // there are dependencies - throw exception
-        throw new CmsException("There are dependencies for the module " + module + ": deletion is not allowed.", CmsException.C_REGISTRY_ERROR);
-    }
-
-    // try to invoke the event-method for delete on this calss.
-    Class eventClass = getModuleMaintenanceEventClass(module);
-
-    try {
-        Class declaration[] = {CmsObject.class};
-        Object arguments[] = {m_cms};
-        Method eventMethod = eventClass.getMethod(C_DELETE_EVENT_METHOD_NAME, declaration);
-        eventMethod.invoke(null, arguments);
-    } catch(Exception exc) {
-        // ignore the exception.
-    }
-
-    if (this.getModuleType(module).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
-        // SIMPLE module: Just delete all the folders of the module
-            
-        // check if additional resources outside the system/modules/{exportName} folder were 
-        // specified as module resources by reading the module property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
-        // just delete these resources plus the "standard" module paths under system/modules
+    
+    /**
+     * Deletes a module.<p>
+     * 
+     * This method is synchronized, so only one module can be deleted at a time.
+     *
+     * @param module the name of the module to be deleted
+     * @param exclusion a Vector with resource names that should be excluded from this deletion
+     * @param report a report for the output
+     * 
+     * @throws CmsException in case of an error during deletion
+     * 
+     * @see com.opencms.file.I_CmsRegistry#deleteModule(java.lang.String, java.util.Vector, com.opencms.report.I_CmsReport)
+     */
+    public synchronized void deleteModule(String module, Vector exclusion, I_CmsReport report) throws CmsException {
+    
+        if (DEBUG > 2) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Starting to delete module " + module);
+    
+        // check if the module exists
+        if (!moduleExists(module)) {
+            throw new CmsException("Module '"+module+"' does not exist", CmsException.C_REGISTRY_ERROR);
+        }
+    
+        // check if the user is allowed to perform this action
+        if (!hasAccess()) {
+            throw new CmsException("No access to perform the action 'deleteModule'", CmsException.C_REGISTRY_ERROR);
+        }
+    
+        // check, if deletion is allowed
+        Vector deps = deleteCheckDependencies(module);
+        if(deps.size() != 0) {
+            // there are dependencies - throw exception
+            throw new CmsException("There are dependencies for the module " + module + ": deletion is not allowed.", CmsException.C_REGISTRY_ERROR);
+        }
+    
+        // try to invoke the event-method for delete on this calss.
+        Class eventClass = getModuleMaintenanceEventClass(module);
+    
+        try {
+            Class declaration[] = {CmsObject.class};
+            Object arguments[] = {m_cms};
+            Method eventMethod = eventClass.getMethod(C_DELETE_EVENT_METHOD_NAME, declaration);
+            eventMethod.invoke(null, arguments);
+        } catch(Exception exc) {
+            // ignore the exception.
+        }
+    
+        if (this.getModuleType(module).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
+            // SIMPLE module: Just delete all the folders of the module
                 
-        String additionalResources = this.getModuleParameterString( module, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES );
-        Vector resources = new Vector();
-                            
-        if (additionalResources!=null && !additionalResources.equals("")) {                            
-            // add each additonal folder plus its content folder under "content/bodys"
-            StringTokenizer additionalResourceTokens = null;
-            additionalResourceTokens = new StringTokenizer( additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR ); 
-                                   
-            while (additionalResourceTokens.hasMoreTokens()) {
-                String currentResource = additionalResourceTokens.nextToken();
-                
-                if (DEBUG>0) {
-                    System.err.println( "Adding resource: " + currentResource );
-                    System.err.println( "Adding resource: " + C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + currentResource );
-                }
-                                        
-                resources.add( currentResource );
-                resources.add( C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + currentResource );                           
-            }                       
-        }          
-        
-        resources.add(I_CmsWpConstants.C_VFS_PATH_MODULES + module + "/");
-        // move through all resource-names and try to delete them
-        for (int i = resources.size() - 1; i >= 0; i--) {
-            String currentResource = null;
-            try {
-                currentResource = (String) resources.elementAt(i);
-                if (DEBUG > 1) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Deleting resource " + currentResource);
-                // lock the resource
-                m_cms.lockResource(currentResource, true);
-                 // delete the resource
-                m_cms.deleteResource(currentResource);
-            } catch (CmsException exc) {
-                // ignore the exception and delete the next resource
-                if (DEBUG > 0) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Exception " + exc + " deleting resource " + currentResource);
-            }
-        }              
- 
-    } else {
-        // TRADITIONAL module: Check file dependencies
-
-        // get the files, that are belonging to the module.
-        Vector resourceNames = new Vector();
-        Vector missingFiles = new Vector();
-        Vector wrongChecksum = new Vector();
-        Vector filesInUse = new Vector();
-        Vector resourceCodes = new Vector();
-    
-        // get files by property
-        deleteGetConflictingFileNames(module, resourceNames, missingFiles, wrongChecksum, filesInUse, new Vector());
-    
-        // get files by registry
-        getModuleFiles(module, resourceNames, resourceCodes);
-    
-        // move through all resource-names and try to delete them
-        for (int i = resourceNames.size() - 1; i >= 0; i--) {
-            try {
-                String currentResource = (String) resourceNames.elementAt(i);
-                if ((!exclusion.contains(currentResource)) && (!filesInUse.contains(currentResource))) {
-                    m_cms.lockResource(currentResource, true);
-                    if(currentResource.endsWith("/") ) {
-                        // this is a folder
-                        m_cms.deleteEmptyFolder(currentResource);
-                    } else {
-                        // this is a file
-                        m_cms.deleteResource(currentResource);
+            // check if additional resources outside the system/modules/{exportName} folder were 
+            // specified as module resources by reading the module property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
+            // just delete these resources plus the "standard" module paths under system/modules
+                    
+            String additionalResources = this.getModuleParameterString( module, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES );
+            Vector resources = new Vector();
+                                
+            if (additionalResources!=null && !additionalResources.equals("")) {                            
+                // add each additonal folder plus its content folder under "content/bodys"
+                StringTokenizer additionalResourceTokens = null;
+                additionalResourceTokens = new StringTokenizer( additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR ); 
+                                       
+                while (additionalResourceTokens.hasMoreTokens()) {
+                    String currentResource = additionalResourceTokens.nextToken();
+                    
+                    if (DEBUG>0) {
+                        System.err.println( "Adding resource: " + currentResource );
+                        System.err.println( "Adding resource: " + C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + currentResource );
                     }
+                                            
+                    resources.add( currentResource );
+                    resources.add( C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + currentResource );                           
+                }                       
+            }          
+            
+            resources.add(I_CmsWpConstants.C_VFS_PATH_MODULES + module + "/");
+            // move through all resource-names and try to delete them
+            for (int i = resources.size() - 1; i >= 0; i--) {
+                String currentResource = null;
+                try {
+                    currentResource = (String)resources.elementAt(i);
+                    if (DEBUG > 1) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Deleting resource " + currentResource);                
+                    // lock the resource
+                    m_cms.lockResource(currentResource, true);
+                     // delete the resource
+                    m_cms.deleteResource(currentResource);
+                    // update the report
+                    report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
+                    report.println(currentResource);
+                } catch (CmsException exc) {
+                    // ignore the exception and delete the next resource
+                    if (DEBUG > 0) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Exception " + exc + " deleting resource " + currentResource);
+                    report.println(exc);
                 }
-            } catch (CmsException exc) {
-                // ignore the exception and delete the next resource.
+            }              
+     
+        } else {
+            // TRADITIONAL module: Check file dependencies
+    
+            // get the files, that are belonging to the module.
+            Vector resourceNames = new Vector();
+            Vector missingFiles = new Vector();
+            Vector wrongChecksum = new Vector();
+            Vector filesInUse = new Vector();
+            Vector resourceCodes = new Vector();
+        
+            // get files by property
+            deleteGetConflictingFileNames(module, resourceNames, missingFiles, wrongChecksum, filesInUse, new Vector());
+        
+            // get files by registry
+            getModuleFiles(module, resourceNames, resourceCodes);
+        
+            // move through all resource-names and try to delete them
+            for (int i = resourceNames.size() - 1; i >= 0; i--) {
+                try {
+                    String currentResource = (String) resourceNames.elementAt(i);
+                    if ((!exclusion.contains(currentResource)) && (!filesInUse.contains(currentResource))) {
+                        m_cms.lockResource(currentResource, true);
+                        if(currentResource.endsWith("/") ) {
+                            // this is a folder
+                            m_cms.deleteEmptyFolder(currentResource);
+                        } else {
+                            // this is a file
+                            m_cms.deleteResource(currentResource);
+                        }
+                        // update the report
+                        report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);                    
+                        report.println(currentResource);
+                    }
+                } catch (CmsException exc) {
+                    // ignore the exception and delete the next resource.
+                    report.println(exc);                
+                }
             }
         }
-    }
-
-    // delete all entries for the module in the registry
-    Element moduleElement = getModuleElement(module);
-    moduleElement.getParentNode().removeChild(moduleElement);
-    saveRegistry();
-
-    try {
-        init();
-    } catch (Exception exc) {
-        throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
+    
+        // delete all entries for the module in the registry
+        Element moduleElement = getModuleElement(module);
+        moduleElement.getParentNode().removeChild(moduleElement);
+        saveRegistry();
+    
+        try {
+            init();
+        } catch (Exception exc) {
+            throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
+        }
+        
+        if (DEBUG > 2) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Finished for module " + module);    
     }
     
-    if (DEBUG > 2) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Finished for module " + module);    
-}
-/**
- * Deletes the view for a module.
- *
- * @param String the name of the module.
- */
-public void deleteModuleView(String modulename) throws CmsException {
-    // check if the user is allowed to perform this action
-    if (!hasAccess()) {
-        throw new CmsException("No access to perform the action 'deleteModuleView'", CmsException.C_REGISTRY_ERROR);
-    }
-    try {
-        Element module = getModuleElement(modulename);
-        Element view = (Element) (module.getElementsByTagName("view").item(0));
-
-        // delete all subnodes
-        while(view.hasChildNodes()) {
-            view.removeChild(view.getFirstChild());
+    /**
+     * Deletes the view for a module.
+     *
+     * @param String the name of the module.
+     */
+    public void deleteModuleView(String modulename) throws CmsException {
+        // check if the user is allowed to perform this action
+        if (!hasAccess()) {
+            throw new CmsException("No access to perform the action 'deleteModuleView'", CmsException.C_REGISTRY_ERROR);
         }
-        saveRegistry();
-    } catch (Exception exc) {
-        // ignore the exception - reg is not welformed
-    }
-}
-/**
- * This method exports a module to the filesystem.
- *
- * @param moduleName the name of the module to be exported.
- * @param String[] an array of resources to be exported.
- * @param fileName the name of the file to write the export to.
- */
-public void exportModule(String moduleName, String[] resources, String fileName) throws CmsException {
-    // check if the user is allowed to import a module.
-
-    if (!hasAccess()) {
-        throw new CmsException("No access to perform the action 'exportModule'", CmsException.C_REGISTRY_ERROR);
+        try {
+            Element module = getModuleElement(modulename);
+            Element view = (Element) (module.getElementsByTagName("view").item(0));
+    
+            // delete all subnodes
+            while(view.hasChildNodes()) {
+                view.removeChild(view.getFirstChild());
+            }
+            saveRegistry();
+        } catch (Exception exc) {
+            // ignore the exception - reg is not welformed
+        }
     }
 
-    CmsExport exp = new CmsExport(fileName, resources, m_cms, getModuleElement(moduleName));
-}
+    /**
+     * This method exports a module to the filesystem.<p>
+     *
+     * @param moduleName the name of the module to be exported
+     * @param String[] an array of resources to be exported
+     * @param fileName the name of the file to write the export to
+     * @param report a report for the output 
+     * 
+     * @throws CmsException in case of an error during export
+     */
+    public void exportModule(String moduleName, String[] resources, String fileName, I_CmsReport report) throws CmsException {
+        // check if the user is allowed to import a module.
+        if (!hasAccess()) {
+            throw new CmsException("No access to perform the action 'exportModule'", CmsException.C_REGISTRY_ERROR);
+        }
+        // export the module using the standard export
+        CmsExport exp = new CmsExport(fileName, resources, m_cms, false, false, getModuleElement(moduleName), false, 0, report);
+    }
+    
     /**
      * Gets a description of this content type.
-     * For OpenCms internal use only.
+     * For OpenCms internal use only.<p>
+     * 
      * @return Content type description.
      */
     public String getContentDescription() {
         return "Registry";
     }
+    
 /**
  * This method returns the author of the module.
  *
@@ -1673,7 +1697,7 @@ public Vector importGetResourcesForProject(String moduleZip) throws CmsException
  *  @param moduleZip the name of the zip-file to import from.
  *  @param exclusion a Vector with resource-names that should be excluded from this import.
  */
-public synchronized void importModule(String moduleZip, Vector exclusion) throws CmsException {
+public synchronized void importModule(String moduleZip, Vector exclusion, I_CmsReport report) throws CmsException {
     // check if the user is allowed to import a module.
 
     if (!hasAccess()) {
@@ -1736,7 +1760,7 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
         propertyValue = newModuleName + "_" + newModuleVersion;        
     }
     
-    CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms, new CmsShellReport());
+    CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms, report);
     cmsImport.importResources(exclusion, resourceNames, resourceCodes, propertyName, propertyValue );
     
     // import the module data into the registry
