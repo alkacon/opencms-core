@@ -91,24 +91,36 @@ var imgEndInakitv = "_in.gif";
 var pfad="pics/";
 
 
-function ChOn(imgID) //changes a imageobject on mouseover
+function ChOn(imgID,div) //changes a imageobject on mouseover
 {
-document.images[imgID].src = pfad + imgID + imgEndOn;
+if (ns && div)
+	document[div].document[imgID].src = pfad + imgID + imgEndOn;
+else
+	document.images[imgID].src = pfad + imgID + imgEndOn;
 }
 
-function ChOff(imgID) //changes a imageobject on mouseout
+function ChOff(imgID,div) //changes a imageobject on mouseout
 {
-document.images[imgID].src = pfad + imgID + imgEndOff;
+if (ns && div)
+	document[div].document[imgID].src = pfad + imgID + imgEndOff;
+else
+	document.images[imgID].src = pfad + imgID + imgEndOff;
 }
 
-function ChPush(imgID) //changes a imageobject on clicked or mousedown
+function ChPush(imgID,div) //changes a imageobject on clicked or mousedown
 {
-document.images[imgID].src = pfad + imgID + imgEndPush;
+if (ns && div)
+	document[div].document[imgID].src = pfad + imgID + imgEndPush;
+else
+	document.images[imgID].src = pfad + imgID + imgEndPush;
 }
 
-function ChIn(imgID) //changes a imageobject on clicked or mousedown
+function ChIn(imgID,div) //changes a imageobject on clicked or mousedown
 {
-document.images[imgID].src = pfad + imgID + imgEndInaktiv;
+if (ns && div)
+	document[div].document[imgID].src = pfad + imgID + imgEndInaktiv;
+else
+	document.images[imgID].src = pfad + imgID + imgEndInaktiv;
 }
 
 function ChImg(imgID,src)
