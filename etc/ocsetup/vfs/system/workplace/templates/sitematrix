@@ -7,13 +7,14 @@
 
 <html>
 <head>
-	<title>Matrix</title>
+<title>Matrix</title>
 	
 <script type="text/javascript" language="JavaScript" src="../templates/js/gigaMatrix/warp_layer.js"></script>
 <script type="text/javascript" language="JavaScript" src="../templates/js/gigaMatrix/table.js"></script>
 <script type="text/javascript" language="JavaScript" src="../templates/js/gigaMatrix/style_giga_context_menu.js"></script>
 <script type="text/javascript" language="JavaScript" src="../templates/js/gigaMatrix/giga_context_menu.js"></script>
 <script type="text/javascript" language="JavaScript" src="../templates/js/gigaMatrix/giga_site_matrix.js"></script>
+<script type="text/javascript" language="JavaScript" src="../templates/js/opencms.js"></script>
 
 <script language="JavaScript">
 
@@ -27,7 +28,7 @@ function editSiteConfig(id)
 }
 function previewSite(id)
 {
-	alert("Preview Site with id " + id.substring(1));
+	openwinfull('http://' + nodeurls[id] + '/', 'preview', 0, 0);
 }
 function deleteSite(id)
 {
@@ -54,6 +55,7 @@ function initMatrix() {
 	sM.drawMatrix();
  // alert(sM.siteDomains[1]["domainId"])
 }
+var nodeurls = new Array();
 	
 </script>
 <script language="JavaScript" type="text/javascript">
@@ -82,6 +84,8 @@ function initContextMenus() {
 
   cM.menus['m001'].addItem('i004','---','');
   cM.menus['m001'].addItem('i005','Delete','javascript:deleteSite(currSiteNodeId);');
+  cM.menus['m001'].addItem('i006','---','');
+  cM.menus['m001'].addItem('i007','Properties','javascript:siteProperties(currSiteNodeId);');
 
 
   cM2.menus['m001'].addItem('i001','Edit Site','javascript:editSite(currSiteNodeId);');
@@ -90,6 +94,8 @@ function initContextMenus() {
 
   cM2.menus['m001'].addItem('i004','---','');
   cM2.menus['m001'].addItem('i005','Delete','javascript:deleteSite(currSiteNodeId);');
+  cM2.menus['m001'].addItem('i006','---','');
+  cM2.menus['m001'].addItem('i007','Properties','javascript:siteProperties(currSiteNodeId);');
   
    drawContextMenus();
   
@@ -141,6 +147,7 @@ function drawContextMenus() {
 
 <sitenode>
 <![CDATA[	sM.addSiteNode('n]]><process>id</process><![CDATA[', ']]><process>name</process><![CDATA[', 'd]]><process>x</process><![CDATA[', 't]]><process>y</process><![CDATA[', true);
+	nodeurls['n]]><process>id</process><![CDATA['] = ']]><process>url</process><![CDATA[';
 ]]>
 </sitenode>
 
