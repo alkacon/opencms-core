@@ -216,7 +216,18 @@
 																<td align="center">
 																	<input type="radio" name="loggingChannelOpencms_streaming" value="false" <% if (Bean.getLoggingChannelOpencms_streaming().equals("false")) {out.print("checked");} %>>
 																</td>
-															</tr>																				
+															</tr>
+															<tr>
+																<td align="left">
+																	opencms_elementcache
+																</td>
+																<td align="center">
+																	<input type="radio" name="loggingChannelOpencms_elementcache" value="true" <% if (Bean.getLoggingChannelOpencms_elementcache().equals("true")) {out.print("checked");} %>>
+																</td>
+																<td align="center">
+																	<input type="radio" name="loggingChannelOpencms_elementcache" value="false" <% if (Bean.getLoggingChannelOpencms_elementcache().equals("false")) {out.print("checked");} %>>
+																</td>
+															</tr>															
 															<tr>
 																<td align="left">
 																	opencms_critical

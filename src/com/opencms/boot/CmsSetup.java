@@ -83,7 +83,10 @@ public class CmsSetup {
   public void initProperties(String props)  {
     String path = getConfigFolder() + props;
     try {
-      m_extProp = new ExtendedProperties(path);
+      FileInputStream fis = new FileInputStream(new File(path));
+      m_extProp = new ExtendedProperties();
+      m_extProp.load(fis);
+      fis.close();
       m_dbSetupProps = new Properties();
       m_dbSetupProps.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetup.properties"));
     }
@@ -873,6 +876,24 @@ public class CmsSetup {
       return "";
     }
   }
+
+  /** Enables/Disables channel opencms_elementcache in the log messages */
+  public void setLoggingChannelOpencms_elementcache(String loggingChannelOpencms_elementcache)  {
+    setProperties("log.channel.opencms_elementcache",loggingChannelOpencms_elementcache);
+  }
+
+  /** Indicates if channel opencms_elementcache is enabled in the log messages */
+  public String getLoggingChannelOpencms_elementcache()  {
+    Object temp =  m_extProp.get("log.channel.opencms_elementcache");
+    if(temp != null)  {
+      return temp.toString();
+    }
+    else  {
+      return "";
+    }
+  }
+
+
 
   /** Enables/Disables channel modules_debug in the log messages */
   public void setLoggingChannelModules_debug(String loggingChannelModules_debug)  {
